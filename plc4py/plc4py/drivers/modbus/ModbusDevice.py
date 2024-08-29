@@ -56,6 +56,11 @@ from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcValues import PlcList, PlcNull
 from plc4py.utils.GenericTypes import AtomicInteger, ByteOrder
 
+from protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import ModbusPDUWriteMultipleCoilsRequest
+from protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import \
+    ModbusPDUWriteMultipleHoldingRegistersRequest, ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
+from protocols.modbus.readwrite.ModbusPDUWriteSingleCoilRequest import ModbusPDUWriteSingleCoilRequest
+
 
 @dataclass
 class ModbusDevice:
@@ -156,4 +161,49 @@ class ModbusDevice:
         """
         Writes one field from the Modbus Device
         """
+        if len(request.tags) > 1:
+            raise NotImplementedError(
+                "The Modbus driver only supports writing single tags at once"
+            )
+        if len(request.tags) == 0:
+            raise PlcRuntimeException("No tags have been specified to write")
+        tag = request.tags[request.tag_names[0]]
+        logging.debug(f"Writing tag {str(tag)} from Modbus Device")
+
+        # Create future to be returned when a value is returned
+        loop = asyncio.get_running_loop()
+        message_future = loop.create_future()
+
+        if isinstance(tag, ModbusTagCoil):
+            pdu = ModbusPDUWriteMultipleCoilsRequest(tag.address, tag.quantity, [v for k, v in request.values])
+        elif isinstance(tag, ModbusTagDiscreteInput):
+            raise PlcRuntimeException("Modbus doesn't support writing to discrete inputs")
+        elif isinstance(tag, ModbusTagInputRegister):
+            raise PlcRuntimeException("Modbus doesn't support writing to input registers")
+        elif isinstance(tag, ModbusTagHoldingRegister):
+            pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(tag.address, tag.quantity, request.values).build()
+        else:
+            raise NotImplementedError(
+                "Modbus tag type not implemented " + str(tag.__class__)
+            )
+
+        adu = ModbusTcpADU(
+            False,
+            self._transaction_generator.increment(),
+            self._configuration.unit_identifier,
+            pdu,
+        )
+        write_buffer = WriteBufferByteBased(adu.length_in_bytes(), ByteOrder.BIG_ENDIAN)
+        adu.serialize(write_buffer)
+
+        protocol = transport.protocol
+        protocol.write_wait_for_response(
+            write_buffer.get_bytes(),
+            transport,
+            adu.transaction_identifier,
+            message_future,
+        )
+
+        await message_future
+        result = message_future.result()
         pass

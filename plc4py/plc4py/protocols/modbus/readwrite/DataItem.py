@@ -58,7 +58,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.BOOL
             and number_of_values == int(1)
-            and big_endian == true
+            and big_endian == True
         ):  # BOOL
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -79,7 +79,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.BOOL
             and number_of_values == int(1)
-            and big_endian == false
+            and big_endian == False
         ):  # BOOL
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -120,7 +120,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.BYTE
             and number_of_values == int(1)
-            and big_endian == true
+            and big_endian == True
         ):  # BYTE
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -141,7 +141,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.BYTE
             and number_of_values == int(1)
-            and big_endian == false
+            and big_endian == False
         ):  # BYTE
 
             # Simple Field (value)
@@ -189,7 +189,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.SINT
             and number_of_values == int(1)
-            and big_endian == true
+            and big_endian == True
         ):  # SINT
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -210,7 +210,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.SINT
             and number_of_values == int(1)
-            and big_endian == false
+            and big_endian == False
         ):  # SINT
 
             # Simple Field (value)
@@ -287,7 +287,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.USINT
             and number_of_values == int(1)
-            and big_endian == true
+            and big_endian == True
         ):  # USINT
 
             # Reserved Field (Compartmentalized so the "reserved" variable can't leak)
@@ -308,7 +308,7 @@ class DataItem:
         if (
             data_type == ModbusDataType.USINT
             and number_of_values == int(1)
-            and big_endian == false
+            and big_endian == False
         ):  # USINT
 
             # Simple Field (value)

@@ -24,6 +24,8 @@ from plc4py.PlcDriverManager import PlcDriverManager
 from plc4py.api.value.PlcValue import PlcResponseCode
 import logging
 
+from plc4py.spi.values.PlcValues import PlcINT
+
 logger = logging.getLogger("testing")
 
 
@@ -46,7 +48,7 @@ async def manual_test_plc_driver_modbus_connect():
 
 @pytest.mark.asyncio
 @pytest.mark.xfail
-async def test_plc_driver_modbus_read():
+async def test_plc_driver_modbus_read_coil():
     """
     Test reading data from a Modbus PLC.
     """
@@ -56,17 +58,109 @@ async def test_plc_driver_modbus_read():
     driver_manager = PlcDriverManager()
 
     # Establish a connection to the Modbus PLC
-    async with driver_manager.connection("modbus://127.0.0.1:5020") as connection:
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
         with connection.read_request_builder() as builder:
-            builder.add_item("Random Tag", "4x00001[10]")
+            builder.add_item("Random Tag", "0x00001[9]")
             request = builder.build()
-
-        # Execute the read request
-        for _ in range(100):
-            future = connection.execute(request)
-
-            response = await future
+            response = await connection.execute(request)
             value = response.tags["Random Tag"].value
-            log.info("Read tag 4x00001[10] - %s", value)
 
-    pass
+
+@pytest.mark.asyncio
+@pytest.mark.xfail
+async def test_plc_driver_modbus_read_coil_array():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "0x00001[10]")
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"].value
+
+
+@pytest.mark.asyncio
+async def test_plc_driver_modbus_read_contact_array():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "1x00001[10]")
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"].value
+            pass
+
+
+@pytest.mark.asyncio
+async def test_plc_driver_modbus_read_input_register_array():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "3x00001")
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"].value
+            pass
+
+
+@pytest.mark.asyncio
+async def test_plc_driver_modbus_read_holding_array():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
+        with connection.read_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001")
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"].value
+            pass
+
+
+@pytest.mark.asyncio
+async def test_plc_driver_modbus_write_holding():
+    """
+    Test reading data from a Modbus PLC.
+    """
+    log = logging.getLogger(__name__)
+
+    # Initialize the PlcDriverManager
+    driver_manager = PlcDriverManager()
+
+    # Establish a connection to the Modbus PLC
+    async with driver_manager.connection("modbus://192.168.174.128:502") as connection:
+        with connection.write_request_builder() as builder:
+            builder.add_item("Random Tag", "4x00001", 2)
+            request = builder.build()
+            response = await connection.execute(request)
+            value = response.tags["Random Tag"]
+            pass

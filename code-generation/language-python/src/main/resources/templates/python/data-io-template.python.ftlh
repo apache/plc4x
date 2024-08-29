@@ -76,7 +76,7 @@ class ${type.name}:
                         <#if discriminatorType.isEnumTypeReference()>
                         ${helper.getLanguageTypeNameForTypeReference(discriminatorType)}.${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         <#else>
-                        ${helper.camelCaseToSnakeCase(helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments))}
+                        ${helper.toParseExpression(dataIoTypeDefinition.switchField.orElseThrow(), discriminatorType, discriminatorValueTerm, parserArguments)}
                         </#if>
                         <#sep> and </#sep>
                     </#list>
@@ -131,7 +131,7 @@ class ${type.name}:
                 )
                 </@compress>
 
-            <#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
+            <#-- A terminated array keeps on reading data as long as the termination expression evaluates to False -->
                             <#elseif arrayField.isTerminatedArrayField()>
             # Terminated array
             ${arrayField.name}: ${helper.getNonPrimitiveLanguageTypeNameForField(arrayField)} = new LinkedList<>()
@@ -387,7 +387,7 @@ class ${type.name}:
 
                     <#if case.name == "BOOL">
             while write_buffer.getPos() < len(write_buffer.get_data()):
-                        write_buffer.write_bit(false)
+                        write_buffer.write_bit(False)
                     </#if>
                     <#break>
                     <#case "const">

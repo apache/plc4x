@@ -25,7 +25,7 @@ from plc4py.api.messages.PlcRequest import (
     PlcReadRequest,
     PlcRequest,
     PlcWriteRequest,
-    ReadRequestBuilder,
+    ReadRequestBuilder, WriteRequestBuilder,
 )
 from plc4py.api.messages.PlcResponse import (
     PlcResponse,
@@ -39,7 +39,7 @@ from plc4py.drivers.modbus.ModbusProtocol import ModbusProtocol
 from plc4py.drivers.modbus.ModbusTag import ModbusTagBuilder
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.spi.messages.PlcReader import DefaultPlcReader
-from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder
+from plc4py.spi.messages.PlcRequest import DefaultReadRequestBuilder, DefaultWriteRequestBuilder
 from plc4py.spi.messages.PlcWriter import DefaultPlcWriter
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
@@ -135,6 +135,12 @@ class ModbusConnection(PlcConnection, DefaultPlcReader, DefaultPlcWriter):
         :return: read request builder.
         """
         return DefaultReadRequestBuilder(ModbusTagBuilder)
+
+    def write_request_builder(self) -> WriteRequestBuilder:
+        """
+        :return: write request builder.
+        """
+        return DefaultWriteRequestBuilder(ModbusTagBuilder)
 
 
 class ModbusDriver(PlcDriver):
