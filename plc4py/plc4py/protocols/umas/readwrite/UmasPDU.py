@@ -66,6 +66,11 @@ class UmasPDU(ModbusPDU):
     ):
         read_buffer.push_context("UmasPDU")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         item: UmasPDUItem = read_buffer.read_complex(
             read_function=UmasPDUItem.static_parse,
             logical_name="item",

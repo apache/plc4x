@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -81,6 +82,9 @@ class ModbusPDUReadFifoQueueResponse(ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFifoQueueResponse")
+
+        if isinstance(response, str):
+            response = bool(strtobool(response))
 
         byte_count: int = read_buffer.read_unsigned_short(
             logical_name="byte_count", response=response

@@ -16,3 +16,7 @@
 # specific language governing permissions and limitations
 # under the License.
 #
+
+import pluggy  # type: ignore
+
+hookimpl = pluggy.HookimplMarker("plc4py.transports")

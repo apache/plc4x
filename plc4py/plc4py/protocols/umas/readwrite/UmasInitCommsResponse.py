@@ -110,6 +110,11 @@ class UmasInitCommsResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasInitCommsResponse")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         max_frame_size: int = read_buffer.read_unsigned_short(
             logical_name="max_frame_size",
             bit_length=16,

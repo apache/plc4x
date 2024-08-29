@@ -57,6 +57,11 @@ class UmasPDUPlcStatusRequest(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUPlcStatusRequest")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         read_buffer.pop_context("UmasPDUPlcStatusRequest")
         # Create the instance
         return UmasPDUPlcStatusRequestBuilder()

@@ -123,6 +123,12 @@ class ModbusPDU(ABC, PlcMessage):
         read_buffer: ReadBuffer, umas_request_function_key: int, byte_length: int
     ):
         read_buffer.push_context("ModbusPDU")
+
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         error_flag: bool = read_buffer.read_bit(
             logical_name="error_flag",
             bit_length=1,

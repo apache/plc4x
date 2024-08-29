@@ -87,6 +87,11 @@ class UmasMemoryBlockBasicInfo(UmasMemoryBlock):
     def static_parse_builder(read_buffer: ReadBuffer, block_number: int, offset: int):
         read_buffer.push_context("UmasMemoryBlockBasicInfo")
 
+        if isinstance(block_number, str):
+            block_number = int(block_number)
+        if isinstance(offset, str):
+            offset = int(offset)
+
         range: int = read_buffer.read_unsigned_short(
             logical_name="range",
             bit_length=16,

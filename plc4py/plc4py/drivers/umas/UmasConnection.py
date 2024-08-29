@@ -18,23 +18,23 @@
 #
 import asyncio
 import logging
-from typing import Type, Awaitable
+from typing import Awaitable, Type
 
 import plc4py
-from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
-from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcConnectionException
 from plc4py.api.messages.PlcRequest import (
-    ReadRequestBuilder,
-    PlcRequest,
-    PlcReadRequest,
     BrowseRequestBuilder,
     PlcBrowseRequest,
+    PlcReadRequest,
+    PlcRequest,
+    ReadRequestBuilder,
 )
 from plc4py.api.messages.PlcResponse import (
     PlcResponse,
 )
+from plc4py.api.PlcConnection import PlcConnection, PlcConnectionMetaData
+from plc4py.api.PlcDriver import PlcDriver
 from plc4py.api.value.PlcValue import PlcResponseCode
 from plc4py.drivers.PlcDriverLoader import PlcDriverLoader
 from plc4py.drivers.umas.UmasConfiguration import UmasConfiguration
@@ -44,8 +44,8 @@ from plc4py.drivers.umas.UmasTag import UmasTagBuilder
 from plc4py.spi.messages.PlcBrowser import DefaultPlcBrowser
 from plc4py.spi.messages.PlcReader import DefaultPlcReader
 from plc4py.spi.messages.PlcRequest import (
-    DefaultReadRequestBuilder,
     DefaultBrowseRequestBuilder,
+    DefaultReadRequestBuilder,
 )
 from plc4py.spi.transport.Plc4xBaseTransport import Plc4xBaseTransport
 from plc4py.spi.transport.TCPTransport import TCPTransport
@@ -104,7 +104,8 @@ class UmasConnection(PlcConnection, DefaultPlcReader, DefaultPlcBrowser):
             )
         except TimeoutError as e:
             raise PlcConnectionException(
-                f"Time out while opening UMAS connection to device - {config.host}", e
+                f"Time out while opening UMAS connection to device - {config.host}",
+                e,
             )
         return connection
 
@@ -162,11 +163,11 @@ class UmasDriverLoader(PlcDriverLoader):
     """
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def get_driver() -> Type[UmasDriver]:
         return UmasDriver
 
     @staticmethod
-    @plc4py.hookimpl
+    @plc4py.drivers.hookimpl
     def key() -> str:
         return "umas"

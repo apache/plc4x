@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -101,6 +102,11 @@ class ModbusTcpADU(ModbusADU):
         read_buffer: ReadBuffer, driver_type: DriverType, response: bool
     ):
         read_buffer.push_context("ModbusTcpADU")
+
+        if isinstance(driver_type, str):
+            driver_type = DriverType[driver_type]
+        if isinstance(response, str):
+            response = bool(strtobool(response))
 
         transaction_identifier: int = read_buffer.read_unsigned_short(
             logical_name="transaction_identifier",

@@ -20,10 +20,9 @@ import re
 from typing import AnyStr, Pattern
 
 from plc4py.api.exceptions.exceptions import PlcFieldParseException
-from plc4py.spi.messages.PlcRequest import TagBuilder
-
 from plc4py.api.messages.PlcField import PlcTag
 from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
+from plc4py.spi.messages.PlcRequest import TagBuilder
 
 
 class UmasTag(PlcTag):

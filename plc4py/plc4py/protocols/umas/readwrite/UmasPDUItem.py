@@ -130,6 +130,11 @@ class UmasPDUItem(ABC, PlcMessage):
     ):
         read_buffer.push_context("UmasPDUItem")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         pairing_key: int = read_buffer.read_unsigned_byte(
             logical_name="pairing_key",
             bit_length=8,

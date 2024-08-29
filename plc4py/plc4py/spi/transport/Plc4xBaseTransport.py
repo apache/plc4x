@@ -19,7 +19,7 @@
 
 from __future__ import annotations
 
-from asyncio import Transport, BaseTransport, BaseProtocol
+from asyncio import BaseProtocol, BaseTransport, Transport
 from dataclasses import dataclass
 
 

@@ -18,20 +18,19 @@
 #
 import re
 from dataclasses import dataclass
-from typing import Dict, List, Pattern, AnyStr, Union
-
-from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
-
-from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
-    VariableReadRequestReference,
-)
+from typing import AnyStr, Dict, List, Pattern, Union
 
 from plc4py.api.exceptions.exceptions import PlcDataTypeNotFoundException
-from plc4py.protocols.umas.readwrite.UmasDatatypeReference import UmasDatatypeReference
+from plc4py.protocols.umas.readwrite.UmasDataType import UmasDataType
+from plc4py.protocols.umas.readwrite.UmasDatatypeReference import (
+    UmasDatatypeReference,
+)
 from plc4py.protocols.umas.readwrite.UmasUDTDefinition import UmasUDTDefinition
-
 from plc4py.protocols.umas.readwrite.UmasUnlocatedVariableReference import (
     UmasUnlocatedVariableReference,
+)
+from plc4py.protocols.umas.readwrite.VariableReadRequestReference import (
+    VariableReadRequestReference,
 )
 
 

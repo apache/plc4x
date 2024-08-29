@@ -19,17 +19,17 @@ import types
 from abc import ABCMeta
 from ctypes import (
     c_byte,
-    c_ubyte,
-    c_uint16,
-    c_uint32,
-    c_uint64,
+    c_double,
+    c_float,
+    c_int8,
     c_int16,
     c_int32,
     c_int64,
-    c_float,
-    c_double,
-    c_int8,
+    c_ubyte,
     c_uint8,
+    c_uint16,
+    c_uint32,
+    c_uint64,
 )
 from dataclasses import dataclass
 from typing import List, Union
@@ -37,10 +37,12 @@ from typing import List, Union
 from bitarray import bitarray
 from bitarray.util import zeros
 from typing_extensions import override
+import xml.etree.ElementTree as ET
 
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.utils.GenericTypes import ByteOrder, ByteOrderAware
+from xsdata.utils.text import camel_case
 
 
 class PositionAware:
@@ -130,7 +132,7 @@ class WriteBuffer(ByteOrderAware, PositionAware):
         bit_length: int = -1,
         logical_name: str = "",
         encoding: str = "UTF-8",
-        **kwargs
+        **kwargs,
     ) -> None:
         raise NotImplementedError
 
@@ -211,11 +213,15 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="B", **kwargs
+                int(value), bit_length, numeric_format="B", **kwargs
             )
 
     def write_unsigned_short(
-        self, value: int, bit_length: int = 16, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 16,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("unsigned short must contain at least 1 bit")
@@ -223,11 +229,15 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned short can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="H", **kwargs
+                int(value), bit_length, numeric_format="H", **kwargs
             )
 
     def write_unsigned_int(
-        self, value: int, bit_length: int = 32, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("unsigned int must contain at least 1 bit")
@@ -235,11 +245,15 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned int can only contain max 32 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="I", **kwargs
+                int(value), bit_length, numeric_format="I", **kwargs
             )
 
     def write_unsigned_long(
-        self, value: int, bit_length: int = 64, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("unsigned long must contain at least 1 bit")
@@ -247,7 +261,7 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("unsigned long can only contain max 16 bits")
         else:
             self._handle_numeric_encoding(
-                value, bit_length, numeric_format="Q", **kwargs
+                int(value), bit_length, numeric_format="Q", **kwargs
             )
 
     def write_signed_byte(
@@ -257,37 +271,61 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             raise SerializationException("Signed byte must contain at least 1 bit")
         elif bit_length > 8:
             raise SerializationException("Signed byte can only contain max 8 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="b", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="b", **kwargs
+        )
 
     def write_short(
-        self, value: int, bit_length: int = 16, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 16,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("Signed short must contain at least 1 bit")
         elif bit_length > 16:
             raise SerializationException("Signed short can only contain max 16 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="h", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="h", **kwargs
+        )
 
     def write_int(
-        self, value: int, bit_length: int = 32, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("Signed int must contain at least 1 bit")
         elif bit_length > 32:
             raise SerializationException("Signed int can only contain max 32 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="i", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="i", **kwargs
+        )
 
     def write_long(
-        self, value: int, bit_length: int = 64, logical_name: str = "", **kwargs
+        self,
+        value: int,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("Signed long must contain at least 1 bit")
         elif bit_length > 64:
             raise SerializationException("Signed long can only contain max 64 bits")
-        self._handle_numeric_encoding(value, bit_length, numeric_format="q", **kwargs)
+        self._handle_numeric_encoding(
+            int(value), bit_length, numeric_format="q", **kwargs
+        )
 
     def write_float(
-        self, value: float, bit_length: int = 32, logical_name: str = "", **kwargs
+        self,
+        value: float,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("Float must contain at least 1 bit")
@@ -296,7 +334,11 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
         self._handle_numeric_encoding(value, bit_length, numeric_format="f", **kwargs)
 
     def write_double(
-        self, value: float, bit_length: int = 64, logical_name: str = "", **kwargs
+        self,
+        value: float,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
     ) -> None:
         if bit_length <= 0:
             raise SerializationException("Double must contain at least 1 bit")
@@ -332,6 +374,8 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             endianness: str = ">"
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
+            if not isinstance(value, int):
+                pass
             result: bytes = struct.pack(
                 endianness + numeric_format,
                 value,
@@ -344,234 +388,226 @@ class WriteBufferByteBased(WriteBuffer, metaclass=ABCMeta):
             self.position += bit_length
 
 
-# class WriteBufferBoxBased(WriteBuffer):
-#     def __init__(self, ascii_box_writer: AsciiBoxWriter = AsciiBoxWriter.DEFAULT, ascii_box_writer_light: AsciiBoxWriter = AsciiBoxWriter.LIGHT, merge_single_boxes: bool = False, omit_empty_boxes: bool = False):
-#         self.ascii_box_writer: AsciiBoxWriter = ascii_box_writer
-#         self.ascii_box_writer_light = ascii_box_writer_light
-#         self.merge_single_boxes = merge_single_boxes
-#         self.omit_empty_boxes = omit_empty_boxes
-#         self.boxes: List[Union[AsciiBox, List[AsciiBox]]] = []
-#         self.desired_width: int = 120
-#         self.current_width: int = self.desired_width - 2
-#         self.pos: int = 1
-#
-#
-#     @property
-#     def get_byte_order(self) -> ByteOrder:
-#         # NO OP
-#         return ByteOrder.BIG_ENDIAN
-#
-#     @property
-#     def pos(self) -> int:
-#         return int(self.pos / 8)
-#
-#     @override
-#     def push_context(self, logical_name: str, **kargs):
-#         self.current_width -= Hex.box_line_overheat
-#         self.boxes.offer_last([])
-#
-#     @Override
-#     public void writeBit(String logicalName, boolean value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("b%d %b%s", value ? 1 : 0, value, additionalStringRepresentation), 0)));
-#         move(1);
-#     }
-#
-#     @Override
-#     public void writeByte(String logicalName, byte value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%02x '%c'%s", value, value < 32 || value > 126 ? '.' : value, additionalStringRepresentation), 0)));
-#         move(8);
-#     }
-#
-#     @Override
-#     public void writeByteArray(String logicalName, byte[] bytes, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         if (StringUtils.isNotBlank(additionalStringRepresentation)) {
-#             additionalStringRepresentation += "\n";
-#         }
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%s%s", Hex.dump(bytes), additionalStringRepresentation), 0)));
-#         move(8 * bytes.length);
-#     }
-#
-#     @Override
-#     public void writeUnsignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeUnsignedShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeUnsignedInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeUnsignedLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeUnsignedBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeSignedByte(String logicalName, int bitLength, byte value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeShort(String logicalName, int bitLength, short value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeInt(String logicalName, int bitLength, int value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeLong(String logicalName, int bitLength, long value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeBigInteger(String logicalName, int bitLength, BigInteger value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeFloat(String logicalName, int bitLength, float value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %f%s", Float.valueOf(value).longValue(), value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeDouble(String logicalName, int bitLength, double value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %f%s", Double.valueOf(value).longValue(), value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeBigDecimal(String logicalName, int bitLength, BigDecimal value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("0x%0" + Math.max(bitLength / 4, 1) + "x %d%s", value, value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeString(String logicalName, int bitLength, String value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         boxes.offerLast(Either.left(asciiBoxWriter.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0)));
-#         move(bitLength);
-#     }
-#
-#     @Override
-#     public void writeVirtual(String logicalName, Object value, WithWriterArgs... writerArgs) throws SerializationException {
-#         String additionalStringRepresentation = extractAdditionalStringRepresentation(writerArgs).map(s -> " " + s).orElse("");
-#         AsciiBox virtualBox;
-#         if (value instanceof String) {
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%s%s", value, additionalStringRepresentation), 0);
-#         } else if (value instanceof Float) {
-#             Float number = (Float) value;
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%f%s", number, additionalStringRepresentation), 0);
-#         } else if (value instanceof Double) {
-#             Double number = (Double) value;
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%f%s", number, additionalStringRepresentation), 0);
-#         } else if (value instanceof Number) {
-#             // TODO: adjust rendering
-#             Number number = (Number) value;
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("0x%x %d%s", number, number, additionalStringRepresentation), 0);
-#         } else if (value instanceof Boolean) {
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("b%d %b%s", (Boolean) value ? 1 : 0, value, additionalStringRepresentation), 0);
-#         } else if (value instanceof Enum) {
-#             Enum<?> enumValue = (Enum<?>) value;
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, String.format("%s%s", enumValue.name(), additionalStringRepresentation), 0);
-#         } else if (value instanceof Serializable) {
-#             Serializable serializable = (Serializable) value;
-#             try {
-#                 WriteBufferBoxBased writeBuffer = new WriteBufferBoxBased(true, true);
-#                 serializable.serialize(writeBuffer);
-#                 virtualBox = asciiBoxWriterLight.boxBox(logicalName, writeBuffer.getBox(), 0);
-#             } catch (SerializationException e) {
-#                 virtualBox = asciiBoxWriterLight.boxString(logicalName, e.getMessage(), 0);
-#             }
-#         } else {
-#             virtualBox = asciiBoxWriterLight.boxString(logicalName, "un-renderable", 0);
-#         }
-#         boxes.offerLast(Either.left(virtualBox));
-#     }
-#
-#     @Override
-#     public void popContext(String logicalName, WithWriterArgs... writerArgs) {
-#         currentWidth += Hex.boxLineOverheat;
-#         Deque<AsciiBox> finalBoxes = new LinkedList<>();
-#         findTheBox:
-#         for (Either<AsciiBox, Deque<AsciiBox>> back = boxes.pollLast(); back != null; back = boxes.pollLast()) {
-#             if (back.isLeft()) {
-#                 AsciiBox asciiBox = back.getLeft();
-#                 if (omitEmptyBoxes && asciiBox.isEmpty()) {
-#                     continue;
-#                 }
-#                 finalBoxes.offerFirst(asciiBox);
-#             } else {
-#                 Deque<AsciiBox> asciiBoxes = back.get();
-#                 LinkedList<AsciiBox> reversedList = new LinkedList<>(asciiBoxes);
-#                 Collections.reverse(reversedList);
-#                 for (AsciiBox box : asciiBoxes) {
-#                     finalBoxes.offerFirst(box);
-#                 }
-#                 break findTheBox;
-#             }
-#         }
-#         if (mergeSingleBoxes && finalBoxes.size() == 1) {
-#             AsciiBox onlyChild = finalBoxes.remove();
-#             String childName = onlyChild.getBoxName();
-#             onlyChild = onlyChild.changeBoxName(logicalName + "/" + childName);
-#             if (omitEmptyBoxes && onlyChild.isEmpty()) {
-#                 return;
-#             }
-#             boxes.offerLast(Either.left(onlyChild));
-#             return;
-#         }
-#         AsciiBox asciiBox = asciiBoxWriter.boxBox(logicalName, asciiBoxWriter.alignBoxes(finalBoxes, currentWidth), 0);
-#         if (omitEmptyBoxes && asciiBox.isEmpty()) {
-#             return;
-#         }
-#         boxes.offerLast(Either.left(asciiBox));
-#     }
-#
-#     public AsciiBox getBox() {
-#         return boxes.peek().getLeft();
-#     }
-#
-#     private void move(int bits) {
-#         pos += bits;
-#     }
-# }
+class WriteBufferXmlBased(WriteBuffer, metaclass=ABCMeta):
+    NUMERIC_UNION = Union[
+        c_ubyte,
+        c_byte,
+        c_uint8,
+        c_uint16,
+        c_uint32,
+        c_uint64,
+        c_int8,
+        c_int16,
+        c_int32,
+        c_int64,
+        c_float,
+        c_double,
+    ]
+
+    def __init__(self, byte_order: ByteOrder = ByteOrder.BIG_ENDIAN):
+        # This refers to the bit alignment, which we always use big bit endianess
+        self.byte_order = byte_order
+        self.position = 0
+        self.stack = []
+
+    def get_bytes(self) -> memoryview:
+        return memoryview(bytearray([]))
+
+    def get_pos(self) -> int:
+        return self.position
+
+    def push_context(self, logical_name: str, **kwargs) -> None:
+        new_element: ET.Element = ET.Element(logical_name)
+        if len(self.stack) > 0:
+            self.stack[-1].append(new_element)
+        else:
+            self.stack.append(new_element)
+        self.stack.append(new_element)
+
+    def pop_context(self, logical_name: str, **kwargs) -> None:
+        self.stack.pop()
+
+    def write_bit(self, value: bool, logical_name: str = "", **kwargs) -> None:
+        data_type: str = "bit"
+        data: str = str(value).lower()
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
+        else:
+            kwargs["bit_length"] = str(1)
+        self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
+
+    def write_byte(self, value: int, logical_name: str = "", **kwargs) -> None:
+        data_type: str = "byte"
+        data: str = str(value)
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
+        else:
+            kwargs["bit_length"] = str(8)
+        self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
+
+    def write_byte_array(
+        self, value: List[int], logical_name: str = "", **kwargs
+    ) -> None:
+        data_type: str = "byte"
+        data: str = str(value)
+        if "bit_length" in kwargs:
+            kwargs["bit_length"] = str(kwargs["bit_length"])
+        else:
+            kwargs["bit_length"] = str(len(value) * 8)
+        self._create_and_append(camel_case(logical_name), data_type, data, **kwargs)
+
+    def write_unsigned_byte(
+        self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
+    ) -> None:
+        data_type: str = "uint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_unsigned_short(
+        self,
+        value: int,
+        bit_length: int = 16,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "uint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_unsigned_int(
+        self,
+        value: int,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "udint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_unsigned_long(
+        self,
+        value: int,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "ulint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_signed_byte(
+        self, value: int, bit_length: int = 8, logical_name: str = "", **kwargs
+    ) -> None:
+        data_type: str = "byte"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_short(
+        self,
+        value: int,
+        bit_length: int = 16,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "int"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_int(
+        self,
+        value: int,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "dint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_long(
+        self,
+        value: int,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "lint"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_float(
+        self,
+        value: float,
+        bit_length: int = 32,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "real"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_double(
+        self,
+        value: float,
+        bit_length: int = 64,
+        logical_name: str = "",
+        **kwargs,
+    ) -> None:
+        data_type: str = "lreal"
+        data: str = str(value)
+        bit_length: str = str(bit_length)
+        self._create_and_append(
+            camel_case(logical_name), data_type, data, bit_length, **kwargs
+        )
+
+    def write_complex_array(
+        self, value: List[PlcMessage], logical_name: str = "", **kwargs
+    ) -> None:
+        for _ in value:
+            new_element: ET.Element = ET.Element(logical_name)
+            self.stack[-1].append(new_element)
+            self.stack.append(new_element)
+
+    def _create_and_append(
+        self, logical_name: str, data_type: str, data: str, bit_length: str, **kwargs
+    ) -> None:
+        new_element: ET.Element = ET.Element(logical_name)
+        new_element.set("dataType", data_type)
+        new_element.set("bitlength", bit_length)
+        new_element.text = data
+        if len(self.stack) > 0:
+            self.stack[-1].append(new_element)
+        else:
+            self.stack.append(new_element)
+
+    def to_xml_string(self) -> str:
+        ET.indent(self.stack[0], space="\t", level=0)
+        return ET.tostring(self.stack[0]).decode("utf-8")

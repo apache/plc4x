@@ -97,6 +97,11 @@ class UmasPDUPlcStatusResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUPlcStatusResponse")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         not_used1: int = read_buffer.read_unsigned_byte(
             logical_name="not_used1",
             bit_length=8,

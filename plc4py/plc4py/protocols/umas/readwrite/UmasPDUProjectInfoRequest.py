@@ -67,6 +67,11 @@ class UmasPDUProjectInfoRequest(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUProjectInfoRequest")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         subcode: int = read_buffer.read_unsigned_byte(
             logical_name="subcode",
             bit_length=8,

@@ -19,10 +19,10 @@
 from abc import abstractmethod
 from dataclasses import dataclass
 
-from plc4py.api.PlcConnection import PlcConnection
 from plc4py.api.authentication.PlcAuthentication import PlcAuthentication
 from plc4py.api.exceptions.exceptions import PlcNotImplementedException
 from plc4py.api.messages.PlcDiscovery import PlcDiscoveryRequestBuilder
+from plc4py.api.PlcConnection import PlcConnection
 
 
 @dataclass

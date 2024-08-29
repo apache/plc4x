@@ -88,6 +88,11 @@ class UmasPDUReadVariableRequest(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUReadVariableRequest")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         crc: int = read_buffer.read_unsigned_int(
             logical_name="crc",
             bit_length=32,

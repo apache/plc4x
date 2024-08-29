@@ -67,6 +67,6 @@ async def test_plc_driver_modbus_read():
 
             response = await future
             value = response.tags["Random Tag"].value
-            log.error("Read tag 4x00001[10] - %s", value)
+            log.info("Read tag 4x00001[10] - %s", value)
 
     pass

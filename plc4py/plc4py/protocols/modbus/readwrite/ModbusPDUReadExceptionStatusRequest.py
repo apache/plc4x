@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -53,6 +54,9 @@ class ModbusPDUReadExceptionStatusRequest(ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadExceptionStatusRequest")
+
+        if isinstance(response, str):
+            response = bool(strtobool(response))
 
         read_buffer.pop_context("ModbusPDUReadExceptionStatusRequest")
         # Create the instance

@@ -19,6 +19,7 @@
 
 from dataclasses import dataclass
 
+from distutils.util import strtobool
 from plc4py.api.exceptions.exceptions import PlcRuntimeException
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -28,7 +29,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUReadFileRecordResponseItem impor
 )
 from plc4py.spi.generation.ReadBuffer import ReadBuffer
 from plc4py.spi.generation.WriteBuffer import WriteBuffer
-from sys import getsizeof
+from plc4py.spi.values.Common import get_size_of_array
 from typing import Any
 from typing import ClassVar
 from typing import List
@@ -47,7 +48,7 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
         write_buffer.push_context("ModbusPDUReadFileRecordResponse")
 
         # Implicit Field (byte_count) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-        byte_count: int = int(getsizeof(self.items))
+        byte_count: int = int(get_size_of_array(self.items))
         write_buffer.write_unsigned_byte(byte_count, logical_name="byte_count")
 
         # Array Field (items)
@@ -75,6 +76,9 @@ class ModbusPDUReadFileRecordResponse(ModbusPDU):
     @staticmethod
     def static_parse_builder(read_buffer: ReadBuffer, response: bool):
         read_buffer.push_context("ModbusPDUReadFileRecordResponse")
+
+        if isinstance(response, str):
+            response = bool(strtobool(response))
 
         byte_count: int = read_buffer.read_unsigned_byte(
             logical_name="byte_count", response=response

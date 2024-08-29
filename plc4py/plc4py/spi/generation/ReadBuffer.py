@@ -16,13 +16,13 @@
 #  under the License.
 import struct
 import types
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import List, Union, Any
+from typing import Any, List, Union
 
 import aenum
 from bitarray import bitarray
-from bitarray.util import zeros, ba2int, ba2base
+from bitarray.util import ba2base, ba2int, zeros
 
 from plc4py.api.exceptions.exceptions import SerializationException
 from plc4py.api.messages.PlcMessage import PlcMessage
@@ -132,7 +132,11 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
 
     @abstractmethod
     def read_enum(
-        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+        self,
+        bit_length: int = -1,
+        logical_name: str = "",
+        read_function=None,
+        **kwargs,
     ) -> Any:
         raise NotImplementedError
 
@@ -144,7 +148,7 @@ class ReadBuffer(ByteOrderAware, PositionAware, ABC):
         count: int = None,
         length: int = None,
         terminated=None,
-        **kwargs
+        **kwargs,
     ) -> List[Any]:
         raise NotImplementedError
 
@@ -206,7 +210,8 @@ class ReadBufferByteBased(ReadBuffer):
             raise SerializationException("unsigned byte can only contain max 8 bits")
         else:
             result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+                self.bb[self.position : self.position + bit_length],
+                signed=False,
             )
             self.position += bit_length
             return result
@@ -281,7 +286,8 @@ class ReadBufferByteBased(ReadBuffer):
             raise SerializationException("signed byte can only contain max 8 bits")
         else:
             result: int = ba2int(
-                self.bb[self.position : self.position + bit_length], signed=False
+                self.bb[self.position : self.position + bit_length],
+                signed=False,
             )
             self.position += bit_length
             return result
@@ -351,7 +357,8 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "f", self.bb[self.position : self.position + bit_length]
+                endianness + "f",
+                self.bb[self.position : self.position + bit_length],
             )[0]
             self.position += bit_length
             return result
@@ -367,7 +374,8 @@ class ReadBufferByteBased(ReadBuffer):
             if byte_order == ByteOrder.LITTLE_ENDIAN:
                 endianness = "<"
             result: float = struct.unpack(
-                endianness + "d", self.bb[self.position : self.position + bit_length]
+                endianness + "d",
+                self.bb[self.position : self.position + bit_length],
             )[0]
             self.position += bit_length
             return result
@@ -381,12 +389,17 @@ class ReadBufferByteBased(ReadBuffer):
             return read_function()
 
     def read_enum(
-        self, bit_length: int = -1, logical_name: str = "", read_function=None, **kwargs
+        self,
+        bit_length: int = -1,
+        logical_name: str = "",
+        read_function=None,
+        **kwargs,
     ) -> Any:
         if isinstance(read_function, aenum._enum.EnumType):
             enum_return_value = read_function(
                 ba2int(
-                    self.bb[self.position : self.position + bit_length], signed=False
+                    self.bb[self.position : self.position + bit_length],
+                    signed=False,
                 )
             )
             return enum_return_value
@@ -412,11 +425,19 @@ class ReadBufferByteBased(ReadBuffer):
         count: int = None,
         length: int = None,
         terminated=None,
-        **kwargs
+        **kwargs,
     ) -> List[Any]:
         if count is not None:
             parsed_array = []
             for _ in range(count):
+                parsed_array.append(
+                    read_function(logical_name=logical_name, read_buffer=self, **kwargs)
+                )
+            return parsed_array
+        elif length is not None:
+            parsed_array = []
+            end_pos = self.get_pos() + (length * 8)
+            while self.get_pos() < end_pos:
                 parsed_array.append(
                     read_function(logical_name=logical_name, read_buffer=self, **kwargs)
                 )

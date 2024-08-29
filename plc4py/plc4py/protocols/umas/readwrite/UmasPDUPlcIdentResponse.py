@@ -178,6 +178,11 @@ class UmasPDUPlcIdentResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUPlcIdentResponse")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         range: int = read_buffer.read_unsigned_short(
             logical_name="range",
             bit_length=16,

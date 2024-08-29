@@ -101,6 +101,11 @@ class UmasMemoryBlock(ABC, PlcMessage):
     def static_parse_context(read_buffer: ReadBuffer, block_number: int, offset: int):
         read_buffer.push_context("UmasMemoryBlock")
 
+        if isinstance(block_number, str):
+            block_number = int(block_number)
+        if isinstance(offset, str):
+            offset = int(offset)
+
         # Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
         builder: UmasMemoryBlockBuilder = None
         from plc4py.protocols.umas.readwrite.UmasMemoryBlockBasicInfo import (

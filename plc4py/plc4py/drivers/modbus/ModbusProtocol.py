@@ -19,12 +19,11 @@
 import logging
 from asyncio import Future
 from dataclasses import dataclass, field
-from typing import Dict, Awaitable
+from typing import Awaitable, Dict
 
 from plc4py.protocols.modbus.readwrite.DriverType import DriverType
-from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
-
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+from plc4py.spi.generation.ReadBuffer import ReadBufferByteBased
 from plc4py.spi.Plc4xBaseProtocol import Plc4xBaseProtocol
 from plc4py.utils.GenericTypes import ByteOrder
 

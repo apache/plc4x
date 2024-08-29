@@ -24,40 +24,37 @@ from typing import Dict, List
 
 from bitarray import bitarray
 
-from plc4py.protocols.modbus.readwrite.DataItem import DataItem
-from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
-from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
-
+from plc4py.api.exceptions.exceptions import PlcRuntimeException
+from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcWriteRequest
+from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcWriteResponse
+from plc4py.api.value.PlcValue import PlcResponseCode, PlcValue
+from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
 from plc4py.drivers.modbus.ModbusTag import (
-    ModbusTagHoldingRegister,
     ModbusTagCoil,
     ModbusTagDiscreteInput,
+    ModbusTagHoldingRegister,
     ModbusTagInputRegister,
 )
-
-from plc4py.api.exceptions.exceptions import PlcRuntimeException
-from plc4py.drivers.modbus.ModbusConfiguration import ModbusConfiguration
+from plc4py.protocols.modbus.readwrite.DataItem import DataItem
+from plc4py.protocols.modbus.readwrite.ModbusPDUError import ModbusPDUError
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadCoilsRequest import (
     ModbusPDUReadCoilsRequest,
 )
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadDiscreteInputsRequest import (
     ModbusPDUReadDiscreteInputsRequest,
 )
-from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
-    ModbusPDUReadInputRegistersRequest,
-)
-from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
-
-from plc4py.api.messages.PlcRequest import PlcReadRequest, PlcWriteRequest
-from plc4py.api.messages.PlcResponse import PlcReadResponse, PlcWriteResponse
-from plc4py.api.value.PlcValue import PlcValue, PlcResponseCode
 from plc4py.protocols.modbus.readwrite.ModbusPDUReadHoldingRegistersRequest import (
     ModbusPDUReadHoldingRegistersRequest,
 )
+from plc4py.protocols.modbus.readwrite.ModbusPDUReadInputRegistersRequest import (
+    ModbusPDUReadInputRegistersRequest,
+)
 from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
+from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
+from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
 from plc4py.spi.values.PlcValues import PlcList, PlcNull
-from plc4py.utils.GenericTypes import ByteOrder, AtomicInteger
+from plc4py.utils.GenericTypes import AtomicInteger, ByteOrder
 
 
 @dataclass

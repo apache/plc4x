@@ -70,6 +70,11 @@ class UmasPDUWriteVariableResponse(UmasPDUItem):
     ):
         read_buffer.push_context("UmasPDUWriteVariableResponse")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         block: List[Any] = read_buffer.read_array_field(
             logical_name="block",
             read_function=read_buffer.read_unsigned_byte,

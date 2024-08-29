@@ -68,6 +68,11 @@ class ModbusPDUError(ModbusPDU):
     ):
         read_buffer.push_context("ModbusPDUError")
 
+        if isinstance(umas_request_function_key, str):
+            umas_request_function_key = int(umas_request_function_key)
+        if isinstance(byte_length, str):
+            byte_length = int(byte_length)
+
         exception_code: ModbusErrorCode = read_buffer.read_enum(
             read_function=ModbusErrorCode,
             bit_length=8,

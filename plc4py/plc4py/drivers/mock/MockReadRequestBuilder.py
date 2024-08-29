@@ -18,13 +18,13 @@
 #
 
 from dataclasses import dataclass, field
-from typing import Union, List, Dict
+from typing import Dict, List, Union
 
 from plc4py.api.messages.PlcMessage import PlcMessage
 from plc4py.api.messages.PlcRequest import (
-    ReadRequestBuilder,
-    PlcTag,
     PlcReadRequest,
+    PlcTag,
+    ReadRequestBuilder,
 )
 from plc4py.api.messages.PlcResponse import PlcReadResponse
 
