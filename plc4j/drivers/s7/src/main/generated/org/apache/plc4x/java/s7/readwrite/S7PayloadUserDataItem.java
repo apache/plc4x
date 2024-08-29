@@ -131,46 +131,6 @@ public abstract class S7PayloadUserDataItem implements Message {
     return lengthInBits;
   }
 
-  public static S7PayloadUserDataItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 3)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 3, but got " + args.length);
-    }
-    Byte cpuFunctionGroup;
-    if (args[0] instanceof Byte) {
-      cpuFunctionGroup = (Byte) args[0];
-    } else if (args[0] instanceof String) {
-      cpuFunctionGroup = Byte.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Byte or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    Byte cpuFunctionType;
-    if (args[1] instanceof Byte) {
-      cpuFunctionType = (Byte) args[1];
-    } else if (args[1] instanceof String) {
-      cpuFunctionType = Byte.valueOf((String) args[1]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 1 expected to be of type Byte or a string which is parseable but was "
-              + args[1].getClass().getName());
-    }
-    Short cpuSubfunction;
-    if (args[2] instanceof Short) {
-      cpuSubfunction = (Short) args[2];
-    } else if (args[2] instanceof String) {
-      cpuSubfunction = Short.valueOf((String) args[2]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 2 expected to be of type Short or a string which is parseable but was "
-              + args[2].getClass().getName());
-    }
-    return staticParse(readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction);
-  }
-
   public static S7PayloadUserDataItem staticParse(
       ReadBuffer readBuffer, Byte cpuFunctionGroup, Byte cpuFunctionType, Short cpuSubfunction)
       throws ParseException {

@@ -21,12 +21,14 @@ package _default
 
 import (
 	"context"
+	"runtime/debug"
+
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
-	"runtime/debug"
 )
 
 // DefaultBrowserRequirements adds required methods to Browser that are needed when using DefaultBrowser

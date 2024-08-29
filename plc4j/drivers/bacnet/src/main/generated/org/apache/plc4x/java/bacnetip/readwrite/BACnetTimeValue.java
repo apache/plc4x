@@ -89,12 +89,6 @@ public class BACnetTimeValue implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTimeValue staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetTimeValue staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTimeValue");
     PositionAware positionAware = readBuffer;

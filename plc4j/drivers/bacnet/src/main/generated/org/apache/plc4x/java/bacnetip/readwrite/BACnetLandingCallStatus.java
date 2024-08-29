@@ -106,12 +106,6 @@ public class BACnetLandingCallStatus implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLandingCallStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLandingCallStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLandingCallStatus");
     PositionAware positionAware = readBuffer;

@@ -194,12 +194,6 @@ public class GroupObjectDescriptorRealisationType7 implements Message {
     return lengthInBits;
   }
 
-  public static GroupObjectDescriptorRealisationType7 staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static GroupObjectDescriptorRealisationType7 staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("GroupObjectDescriptorRealisationType7");

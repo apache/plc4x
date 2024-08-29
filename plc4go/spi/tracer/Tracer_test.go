@@ -20,11 +20,12 @@
 package tracer
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/assert"
 	"sync/atomic"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewTracer(t *testing.T) {

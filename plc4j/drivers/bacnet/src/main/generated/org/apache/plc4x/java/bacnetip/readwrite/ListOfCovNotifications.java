@@ -124,12 +124,6 @@ public class ListOfCovNotifications implements Message {
     return lengthInBits;
   }
 
-  public static ListOfCovNotifications staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ListOfCovNotifications staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ListOfCovNotifications");
     PositionAware positionAware = readBuffer;

@@ -33,17 +33,15 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
     private static final Logger LOGGER = LoggerFactory.getLogger(GeneratedDriverByteToMessageCodec.class);
 
     private final ByteOrder byteOrder;
-    private final Object[] parserArgs;
     private final MessageInput<T> messageInput;
     private final MessageOutput<T> messageOutput;
 
     protected GeneratedDriverByteToMessageCodec(MessageInput<T> messageInput, MessageOutput<T> messageOutput,
-                                                Class<T> outboundMessageType, ByteOrder byteOrder, Object[] parserArgs) {
+                                                Class<T> outboundMessageType, ByteOrder byteOrder) {
         super(outboundMessageType);
         this.messageInput = messageInput;
         this.messageOutput = messageOutput;
         this.byteOrder = byteOrder;
-        this.parserArgs = parserArgs;
     }
 
     @Override
@@ -84,7 +82,7 @@ public abstract class GeneratedDriverByteToMessageCodec<T extends Message> exten
                 ReadBuffer readBuffer = new ReadBufferByteBased(bytes, byteOrder);
 
                 // Parse the packet.
-                T packet = messageInput.parse(readBuffer, parserArgs);
+                T packet = messageInput.parse(readBuffer);
 
                 // Pass the packet to the pipeline.
                 out.add(packet);

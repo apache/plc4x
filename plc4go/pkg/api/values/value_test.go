@@ -21,8 +21,9 @@ package values
 
 import (
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestValues(t *testing.T) {

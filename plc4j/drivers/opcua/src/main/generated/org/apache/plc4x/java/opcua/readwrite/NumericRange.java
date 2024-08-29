@@ -63,12 +63,6 @@ public class NumericRange implements Message {
     return lengthInBits;
   }
 
-  public static NumericRange staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NumericRange staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NumericRange");
     PositionAware positionAware = readBuffer;

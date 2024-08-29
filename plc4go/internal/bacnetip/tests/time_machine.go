@@ -25,9 +25,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 var globalTimeMachine *TimeMachine
@@ -37,23 +38,51 @@ func IsGlobalTimeMachineSet() bool {
 	return globalTimeMachine != nil
 }
 
-func NewGlobalTimeMachine(localLog zerolog.Logger) {
+// NewGlobalTimeMachine creates a new TimeMachine and set it as global.
+// Usually it is sufficient to use ExclusiveGlobalTimeMachine
+func NewGlobalTimeMachine(t *testing.T) {
+	testingLogger := testutils.ProduceTestingLogger(t)
 	if globalTimeMachine != nil {
-		localLog.Warn().Msg("global time machine set, overwriting")
+		testingLogger.Warn().Msg("global time machine set, overwriting")
 	}
-	globalTimeMachine = NewTimeMachine(localLog)
+	testingLogger.Trace().Msg("creating new global time machine")
+	globalTimeMachine = NewTimeMachine(testingLogger)
+	testingLogger.Trace().Msg("overwriting global task manager")
+	oldManager := bacnetip.OverwriteTaskManager(testingLogger, globalTimeMachine)
+	t.Cleanup(func() {
+		testingLogger.Trace().Msg("clearing task manager")
+		bacnetip.ClearTaskManager(testingLogger)
+		testingLogger.Trace().Msg("Restoring old manager")
+		bacnetip.OverwriteTaskManager(testingLogger, oldManager)
+	})
 }
 
-func ClearGlobalTimeMachine(localLog zerolog.Logger) {
+// ClearGlobalTimeMachine clears the global time machine during the test duration.
+// Usually it is sufficient to use ExclusiveGlobalTimeMachine.
+// Attention: Use in combination with LockGlobalTimeMachine to avoid side effects.
+func ClearGlobalTimeMachine(t *testing.T) {
+	testingLogger := testutils.ProduceTestingLogger(t)
 	if globalTimeMachine == nil {
-		localLog.Warn().Msg("global time machine not set")
+		testingLogger.Warn().Msg("global time machine not set")
 	}
 	globalTimeMachine = nil
+	bacnetip.ClearTaskManager(testingLogger)
 }
 
+// LockGlobalTimeMachine locks the global time machine during the test duration.
+// Usually it is sufficient to use ExclusiveGlobalTimeMachine
 func LockGlobalTimeMachine(t *testing.T) {
 	globalTimeMachineMutex.Lock()
 	t.Cleanup(globalTimeMachineMutex.Unlock)
+}
+
+// ExclusiveGlobalTimeMachine is a combination of LockGlobalTimeMachine, NewGlobalTimeMachine and ClearGlobalTimeMachine
+func ExclusiveGlobalTimeMachine(t *testing.T) {
+	LockGlobalTimeMachine(t)
+	NewGlobalTimeMachine(t)
+	t.Cleanup(func() {
+		ClearGlobalTimeMachine(t)
+	})
 }
 
 type TimeMachine struct {
@@ -71,12 +100,11 @@ func NewTimeMachine(localLog zerolog.Logger) *TimeMachine {
 		log: localLog,
 	}
 	t.TaskManager = bacnetip.NewTaskManager(localLog)
-	bacnetip.OverwriteTaskManager(t)
 	return t
 }
 
 func (t *TimeMachine) GetTime() time.Time {
-	t.log.Debug().Time("currentTime", t.currentTime).Msg("GetTime")
+	t.log.Trace().Time("currentTime", t.currentTime).Msg("GetTime")
 	return t.currentTime
 }
 
@@ -177,6 +205,10 @@ func (t *TimeMachine) GetNextTask() (bacnetip.TaskRequirements, *time.Duration) 
 func (t *TimeMachine) ProcessTask(task bacnetip.TaskRequirements) {
 	t.log.Debug().Time("currentTime", t.currentTime).Stringer("task", task).Msg("ProcessTask")
 	t.TaskManager.ProcessTask(task)
+}
+
+func (t *TimeMachine) String() string {
+	return fmt.Sprintf("TimeMachine(%s, currentTime:%s, timeLimit: %s, startTime, %s)", t.TaskManager, t.currentTime, t.timeLimit, t.startTime)
 }
 
 // ResetTimeMachine This function is called to reset the clock before running a set of tests.

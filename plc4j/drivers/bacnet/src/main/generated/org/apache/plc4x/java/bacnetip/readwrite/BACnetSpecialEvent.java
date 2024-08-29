@@ -105,12 +105,6 @@ public class BACnetSpecialEvent implements Message {
     return lengthInBits;
   }
 
-  public static BACnetSpecialEvent staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetSpecialEvent staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSpecialEvent");
     PositionAware positionAware = readBuffer;

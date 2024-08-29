@@ -22,7 +22,6 @@ package utils
 import (
 	"bytes"
 	"context"
-	"github.com/rs/zerolog"
 	"net"
 	"runtime/debug"
 	"sync"
@@ -32,6 +31,7 @@ import (
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcap"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 func GetIPAddresses(localLog zerolog.Logger, ctx context.Context, netInterface net.Interface, useArpBasedScan bool) (foundIps chan net.IP, err error) {

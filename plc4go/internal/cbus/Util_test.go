@@ -20,10 +20,12 @@
 package cbus
 
 import (
+	"testing"
+
+	"github.com/stretchr/testify/assert"
+
 	"github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
-	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 func TestCreateRequestContext(t *testing.T) {

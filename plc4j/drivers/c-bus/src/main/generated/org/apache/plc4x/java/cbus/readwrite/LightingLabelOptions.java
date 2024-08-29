@@ -145,12 +145,6 @@ public class LightingLabelOptions implements Message {
     return lengthInBits;
   }
 
-  public static LightingLabelOptions staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LightingLabelOptions staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LightingLabelOptions");
     PositionAware positionAware = readBuffer;

@@ -118,12 +118,6 @@ public class Confirmation implements Message {
     return lengthInBits;
   }
 
-  public static Confirmation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Confirmation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Confirmation");
     PositionAware positionAware = readBuffer;

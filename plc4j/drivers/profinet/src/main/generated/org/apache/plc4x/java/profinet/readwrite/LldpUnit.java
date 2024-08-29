@@ -99,11 +99,6 @@ public abstract class LldpUnit implements Message {
     return lengthInBits;
   }
 
-  public static LldpUnit staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LldpUnit staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LldpUnit");
     PositionAware positionAware = readBuffer;

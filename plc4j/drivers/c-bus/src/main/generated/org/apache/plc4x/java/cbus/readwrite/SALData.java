@@ -90,25 +90,6 @@ public abstract class SALData implements Message {
     return lengthInBits;
   }
 
-  public static SALData staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    ApplicationId applicationId;
-    if (args[0] instanceof ApplicationId) {
-      applicationId = (ApplicationId) args[0];
-    } else if (args[0] instanceof String) {
-      applicationId = ApplicationId.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type ApplicationId or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, applicationId);
-  }
-
   public static SALData staticParse(ReadBuffer readBuffer, ApplicationId applicationId)
       throws ParseException {
     readBuffer.pullContext("SALData");

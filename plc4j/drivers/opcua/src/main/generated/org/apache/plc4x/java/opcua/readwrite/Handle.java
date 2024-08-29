@@ -63,11 +63,6 @@ public class Handle implements Message {
     return lengthInBits;
   }
 
-  public static Handle staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Handle staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Handle");
     PositionAware positionAware = readBuffer;

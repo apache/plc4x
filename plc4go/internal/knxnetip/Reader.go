@@ -21,21 +21,21 @@ package knxnetip
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"strconv"
 	"strings"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	driverModel "github.com/apache/plc4x/plc4go/protocols/knxnetip/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type Reader struct {

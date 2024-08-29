@@ -101,12 +101,6 @@ public abstract class BACnetFaultParameterFaultExtendedParametersEntry implement
     return lengthInBits;
   }
 
-  public static BACnetFaultParameterFaultExtendedParametersEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetFaultParameterFaultExtendedParametersEntry staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetFaultParameterFaultExtendedParametersEntry");

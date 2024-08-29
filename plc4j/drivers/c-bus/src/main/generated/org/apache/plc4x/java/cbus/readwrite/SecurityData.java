@@ -116,12 +116,6 @@ public abstract class SecurityData implements Message {
     return lengthInBits;
   }
 
-  public static SecurityData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SecurityData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SecurityData");
     PositionAware positionAware = readBuffer;

@@ -21,20 +21,20 @@ package s7
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transactions"
-	"github.com/rs/zerolog"
 	"runtime/debug"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transactions"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 type Reader struct {

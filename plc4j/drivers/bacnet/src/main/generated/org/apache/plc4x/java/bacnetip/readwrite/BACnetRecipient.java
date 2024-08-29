@@ -91,12 +91,6 @@ public abstract class BACnetRecipient implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRecipient staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetRecipient staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRecipient");
     PositionAware positionAware = readBuffer;

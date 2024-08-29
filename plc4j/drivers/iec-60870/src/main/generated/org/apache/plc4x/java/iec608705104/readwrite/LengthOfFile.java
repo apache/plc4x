@@ -63,12 +63,6 @@ public class LengthOfFile implements Message {
     return lengthInBits;
   }
 
-  public static LengthOfFile staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LengthOfFile staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LengthOfFile");
     PositionAware positionAware = readBuffer;

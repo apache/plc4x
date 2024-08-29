@@ -22,10 +22,11 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type quickBrownFox struct {
@@ -52,14 +53,6 @@ func QuickBrownFox(args ...any) *quickBrownFox {
 		panic(err)
 	}
 	return q
-}
-
-func Enumerated(arg ...any) *bacnetip.Enumerated {
-	Enumerated, err := bacnetip.NewEnumerated(arg...)
-	if err != nil {
-		panic(err)
-	}
-	return Enumerated
 }
 
 func EnumeratedTag(x string) bacnetip.Tag {

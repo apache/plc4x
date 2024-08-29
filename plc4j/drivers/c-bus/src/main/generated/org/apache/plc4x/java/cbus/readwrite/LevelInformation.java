@@ -181,12 +181,6 @@ public abstract class LevelInformation implements Message {
     return lengthInBits;
   }
 
-  public static LevelInformation staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static LevelInformation staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("LevelInformation");
     PositionAware positionAware = readBuffer;

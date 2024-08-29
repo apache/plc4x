@@ -154,12 +154,6 @@ public class BACnetLightingCommand implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLightingCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLightingCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLightingCommand");
     PositionAware positionAware = readBuffer;

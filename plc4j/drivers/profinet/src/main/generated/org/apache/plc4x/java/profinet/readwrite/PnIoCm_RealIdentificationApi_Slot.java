@@ -129,12 +129,6 @@ public class PnIoCm_RealIdentificationApi_Slot implements Message {
     return lengthInBits;
   }
 
-  public static PnIoCm_RealIdentificationApi_Slot staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnIoCm_RealIdentificationApi_Slot staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("PnIoCm_RealIdentificationApi_Slot");

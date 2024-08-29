@@ -21,13 +21,13 @@ package pcap
 
 import (
 	"bufio"
-	"github.com/rs/zerolog/log"
 	"testing"
 
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-
 	"github.com/gopacket/gopacket/pcap"
+	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
+
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewPcapTransportInstance(t *testing.T) {

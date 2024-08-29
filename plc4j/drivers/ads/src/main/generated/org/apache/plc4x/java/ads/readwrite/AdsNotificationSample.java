@@ -103,12 +103,6 @@ public class AdsNotificationSample implements Message {
     return lengthInBits;
   }
 
-  public static AdsNotificationSample staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsNotificationSample staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsNotificationSample");
     PositionAware positionAware = readBuffer;

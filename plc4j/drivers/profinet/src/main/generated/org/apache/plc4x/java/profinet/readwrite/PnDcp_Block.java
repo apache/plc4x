@@ -112,12 +112,6 @@ public abstract class PnDcp_Block implements Message {
     return lengthInBits;
   }
 
-  public static PnDcp_Block staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PnDcp_Block staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PnDcp_Block");
     PositionAware positionAware = readBuffer;

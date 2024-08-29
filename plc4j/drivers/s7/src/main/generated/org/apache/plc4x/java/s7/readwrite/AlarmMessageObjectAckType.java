@@ -159,12 +159,6 @@ public class AlarmMessageObjectAckType implements Message {
     return lengthInBits;
   }
 
-  public static AlarmMessageObjectAckType staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AlarmMessageObjectAckType staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AlarmMessageObjectAckType");
     PositionAware positionAware = readBuffer;

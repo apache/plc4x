@@ -90,12 +90,6 @@ public class BACnetPrescale implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPrescale staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetPrescale staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetPrescale");
     PositionAware positionAware = readBuffer;

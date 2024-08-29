@@ -107,12 +107,6 @@ public class PanicStatus implements Message {
     return lengthInBits;
   }
 
-  public static PanicStatus staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static PanicStatus staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("PanicStatus");
     PositionAware positionAware = readBuffer;

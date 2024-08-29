@@ -23,17 +23,17 @@ import (
 	"context"
 	"encoding/hex"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"regexp"
 	"strconv"
 	"strings"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/s7/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 type TagType uint8

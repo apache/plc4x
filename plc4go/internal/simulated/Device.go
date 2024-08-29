@@ -21,8 +21,9 @@ package simulated
 
 import (
 	"context"
-	"github.com/rs/zerolog"
 	"math/rand"
+
+	"github.com/rs/zerolog"
 
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/simulated/readwrite/model"

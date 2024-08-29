@@ -160,12 +160,6 @@ public class QualityDescriptorForPointsOfProtectionEquipment implements Message 
     return lengthInBits;
   }
 
-  public static QualityDescriptorForPointsOfProtectionEquipment staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static QualityDescriptorForPointsOfProtectionEquipment staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("QualityDescriptorForPointsOfProtectionEquipment");

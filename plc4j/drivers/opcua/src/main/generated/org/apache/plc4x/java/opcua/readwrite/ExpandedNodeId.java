@@ -144,12 +144,6 @@ public class ExpandedNodeId implements Message {
     return lengthInBits;
   }
 
-  public static ExpandedNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ExpandedNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ExpandedNodeId");
     PositionAware positionAware = readBuffer;

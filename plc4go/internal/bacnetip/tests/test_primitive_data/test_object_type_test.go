@@ -24,10 +24,11 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 type myObjectType struct {
@@ -66,21 +67,6 @@ func MyObjectType(args ...any) *myObjectType {
 		panic(err)
 	}
 	return o
-}
-
-func ObjectType(args ...any) *bacnetip.ObjectType {
-	if len(args) == 0 {
-		ObjectType, err := bacnetip.NewObjectType(nil)
-		if err != nil {
-			panic(err)
-		}
-		return ObjectType
-	}
-	ObjectType, err := bacnetip.NewObjectType(args)
-	if err != nil {
-		panic(err)
-	}
-	return ObjectType
 }
 
 func ObjectTypeTag(x string) bacnetip.Tag {

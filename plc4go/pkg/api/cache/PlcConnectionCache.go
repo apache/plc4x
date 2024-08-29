@@ -22,16 +22,18 @@ package cache
 import (
 	"context"
 	"fmt"
+	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/viney-shih/go-lock"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	"github.com/apache/plc4x/plc4go/pkg/api/config"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-	"github.com/viney-shih/go-lock"
-	"time"
 )
 
 type PlcConnectionCache interface {

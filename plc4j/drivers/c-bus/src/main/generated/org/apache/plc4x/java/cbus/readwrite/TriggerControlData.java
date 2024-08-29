@@ -127,12 +127,6 @@ public abstract class TriggerControlData implements Message {
     return lengthInBits;
   }
 
-  public static TriggerControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TriggerControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("TriggerControlData");
     PositionAware positionAware = readBuffer;

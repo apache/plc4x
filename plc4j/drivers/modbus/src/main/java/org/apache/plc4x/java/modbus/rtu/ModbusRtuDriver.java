@@ -32,6 +32,7 @@ import org.apache.plc4x.java.modbus.tcp.config.ModbusTcpTransportConfiguration;
 import org.apache.plc4x.java.spi.connection.GeneratedDriverBase;
 import org.apache.plc4x.java.spi.connection.ProtocolStackConfigurer;
 import org.apache.plc4x.java.spi.connection.SingleProtocolStackConfigurer;
+import org.apache.plc4x.java.spi.generation.MessageInput;
 import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBufferByteBased;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
@@ -129,12 +130,9 @@ public class ModbusRtuDriver extends GeneratedDriverBase<ModbusRtuADU> {
 
     @Override
     protected ProtocolStackConfigurer<ModbusRtuADU> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class,
-                (io, args) -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, args))
+        return SingleProtocolStackConfigurer.builder(ModbusRtuADU.class, io -> (ModbusRtuADU) ModbusRtuADU.staticParse(io, DriverType.MODBUS_RTU, true))
             .withProtocol(ModbusRtuProtocolLogic.class)
             .withPacketSizeEstimator(ModbusRtuDriver.ByteLengthEstimator.class)
-            // Every incoming message is to be treated as a response.
-            .withParserArgs(DriverType.MODBUS_RTU, true)
             .build();
     }
 

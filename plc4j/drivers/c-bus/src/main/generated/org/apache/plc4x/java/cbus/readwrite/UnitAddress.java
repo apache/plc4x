@@ -77,12 +77,6 @@ public class UnitAddress implements Message {
     return lengthInBits;
   }
 
-  public static UnitAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static UnitAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("UnitAddress");
     PositionAware positionAware = readBuffer;

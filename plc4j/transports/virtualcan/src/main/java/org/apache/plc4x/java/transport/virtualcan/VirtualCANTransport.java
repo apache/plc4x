@@ -95,9 +95,9 @@ public class VirtualCANTransport extends TestTransport implements CANTransport<V
             }
 
             @Override
-            public <T extends Message> T read(MessageInput<T> input, Object... args) {
+            public <T extends Message> T read(MessageInput<T> input) {
                 try {
-                    return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN), args);
+                    return input.parse(new ReadBufferByteBased(getData(), ByteOrder.LITTLE_ENDIAN));
                 } catch (ParseException e) {
                     throw new PlcRuntimeException(e);
                 }

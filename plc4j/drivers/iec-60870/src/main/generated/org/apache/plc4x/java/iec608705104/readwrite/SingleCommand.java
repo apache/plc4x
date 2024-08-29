@@ -107,12 +107,6 @@ public class SingleCommand implements Message {
     return lengthInBits;
   }
 
-  public static SingleCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SingleCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SingleCommand");
     PositionAware positionAware = readBuffer;

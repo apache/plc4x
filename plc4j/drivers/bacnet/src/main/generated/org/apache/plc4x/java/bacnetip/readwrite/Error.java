@@ -89,11 +89,6 @@ public class Error implements Message {
     return lengthInBits;
   }
 
-  public static Error staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Error staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Error");
     PositionAware positionAware = readBuffer;

@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func Boolean(arg ...any) *bacnetip.Boolean {
-	if len(arg) == 0 {
-		boolean, err := bacnetip.NewBoolean(nil)
-		if err != nil {
-			panic(err)
-		}
-		return boolean
-	}
-	boolean, err := bacnetip.NewBoolean(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return boolean
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 func booleanTag(value bool) bacnetip.Tag {
 	intValue := 0

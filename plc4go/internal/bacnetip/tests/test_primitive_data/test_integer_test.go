@@ -23,29 +23,18 @@ import (
 	"math"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-func Integer(arg ...any) *bacnetip.Integer {
-	if len(arg) == 0 {
-		Integer, err := bacnetip.NewInteger(nil)
-		if err != nil {
-			panic(err)
-		}
-		return Integer
-	}
-	Integer, err := bacnetip.NewInteger(arg[0])
+func IntegerTag(x string) bacnetip.Tag {
+	b, err := bacnetip.Xtob(x)
 	if err != nil {
 		panic(err)
 	}
-	return Integer
-}
-
-func IntegerTag(x string) bacnetip.Tag {
-	b := xtob(x)
 	tag := Tag(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_SIGNED_INTEGER, len(b), b)
 	return tag
 }

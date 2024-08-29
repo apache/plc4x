@@ -27,17 +27,17 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	"github.com/apache/plc4x/plc4go/spi/transports/test"
-
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/mock"
+
+	"github.com/apache/plc4x/plc4go/spi"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/test"
 )
 
 func TestDefaultExpectation_GetAcceptsMessage(t *testing.T) {

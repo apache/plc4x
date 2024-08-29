@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func ObjectIdentifier(args ...any) *bacnetip.ObjectIdentifier {
-	if len(args) == 0 {
-		ObjectIdentifier, err := bacnetip.NewObjectIdentifier(nil)
-		if err != nil {
-			panic(err)
-		}
-		return ObjectIdentifier
-	}
-	ObjectIdentifier, err := bacnetip.NewObjectIdentifier(args)
-	if err != nil {
-		panic(err)
-	}
-	return ObjectIdentifier
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 func ObjectIdentifierTag(x string) bacnetip.Tag {
 	b := xtob(x)

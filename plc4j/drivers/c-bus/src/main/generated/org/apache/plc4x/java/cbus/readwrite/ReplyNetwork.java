@@ -89,12 +89,6 @@ public class ReplyNetwork implements Message {
     return lengthInBits;
   }
 
-  public static ReplyNetwork staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ReplyNetwork staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ReplyNetwork");
     PositionAware positionAware = readBuffer;

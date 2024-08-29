@@ -63,12 +63,6 @@ public class FileReadyQualifier implements Message {
     return lengthInBits;
   }
 
-  public static FileReadyQualifier staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static FileReadyQualifier staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("FileReadyQualifier");
     PositionAware positionAware = readBuffer;

@@ -101,12 +101,6 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
   }
 
   public static BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
-  public static BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry staticParse(
       ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
     PositionAware positionAware = readBuffer;

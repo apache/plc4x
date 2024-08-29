@@ -20,12 +20,12 @@
 package pool
 
 import (
-	"github.com/rs/zerolog"
 	"sync"
 	"sync/atomic"
 	"testing"
 	"time"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 )
 

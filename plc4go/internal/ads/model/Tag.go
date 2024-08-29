@@ -26,12 +26,12 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/ads/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
 )
 
 const NONE = int32(-1)

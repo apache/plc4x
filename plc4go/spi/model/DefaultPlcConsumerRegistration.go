@@ -20,9 +20,10 @@
 package model
 
 import (
+	"math/rand"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"math/rand"
 )
 
 var _ apiModel.PlcConsumerRegistration = &DefaultPlcConsumerRegistration{}

@@ -20,17 +20,19 @@
 package pcap
 
 import (
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
+	"net/url"
+	"os"
+	"testing"
+	"time"
+
 	"github.com/gopacket/gopacket"
 	"github.com/gopacket/gopacket/layers"
 	"github.com/gopacket/gopacket/pcapgo"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"net/url"
-	"os"
-	"testing"
-	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 func TestNewTransport(t *testing.T) {

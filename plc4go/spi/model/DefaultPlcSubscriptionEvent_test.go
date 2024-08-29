@@ -20,16 +20,16 @@
 package model
 
 import (
-	"github.com/rs/zerolog/log"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
+
+	"github.com/rs/zerolog/log"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDefaultPlcSubscriptionEvent_GetAddress(t *testing.T) {

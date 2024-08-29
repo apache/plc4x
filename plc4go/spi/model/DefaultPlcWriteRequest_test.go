@@ -22,18 +22,18 @@ package model
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/mock"
 	"testing"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/mock"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/interceptors"
-
-	"github.com/stretchr/testify/assert"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestDefaultPlcWriteRequestBuilder_AddTag(t *testing.T) {

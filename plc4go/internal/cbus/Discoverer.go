@@ -22,10 +22,6 @@ package cbus
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/pool"
-	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"runtime/debug"
@@ -33,11 +29,16 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
 	"github.com/apache/plc4x/plc4go/spi/transports"
+	"github.com/apache/plc4x/plc4go/spi/transports/tcp"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 

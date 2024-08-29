@@ -107,12 +107,6 @@ public class BACnetVTSession implements Message {
     return lengthInBits;
   }
 
-  public static BACnetVTSession staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetVTSession staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetVTSession");
     PositionAware positionAware = readBuffer;

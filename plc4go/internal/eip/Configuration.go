@@ -20,10 +20,10 @@
 package eip
 
 import (
-	"github.com/rs/zerolog"
 	"strconv"
 
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 )
 
 type Configuration struct {

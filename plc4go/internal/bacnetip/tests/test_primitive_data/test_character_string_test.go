@@ -22,29 +22,15 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
 const foxMessage = "the quick brown fox jumped over the lazy dog"
-
-func CharacterString(arg ...any) *bacnetip.CharacterString {
-	if len(arg) == 0 {
-		CharacterString, err := bacnetip.NewCharacterString(nil)
-		if err != nil {
-			panic(err)
-		}
-		return CharacterString
-	}
-	CharacterString, err := bacnetip.NewCharacterString(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return CharacterString
-}
 
 // Convert a hex string to a character_string application tag.
 func CharacterStringTag(x string) bacnetip.Tag {

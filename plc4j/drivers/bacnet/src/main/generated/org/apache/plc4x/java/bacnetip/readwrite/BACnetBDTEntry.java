@@ -92,12 +92,6 @@ public class BACnetBDTEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetBDTEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetBDTEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetBDTEntry");
     PositionAware positionAware = readBuffer;

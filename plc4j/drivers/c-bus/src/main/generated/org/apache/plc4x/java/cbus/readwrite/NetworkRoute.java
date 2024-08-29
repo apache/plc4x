@@ -96,12 +96,6 @@ public class NetworkRoute implements Message {
     return lengthInBits;
   }
 
-  public static NetworkRoute staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static NetworkRoute staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("NetworkRoute");
     PositionAware positionAware = readBuffer;

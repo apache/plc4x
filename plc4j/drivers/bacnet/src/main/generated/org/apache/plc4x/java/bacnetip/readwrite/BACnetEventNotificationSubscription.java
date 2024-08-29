@@ -123,12 +123,6 @@ public class BACnetEventNotificationSubscription implements Message {
     return lengthInBits;
   }
 
-  public static BACnetEventNotificationSubscription staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetEventNotificationSubscription staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetEventNotificationSubscription");

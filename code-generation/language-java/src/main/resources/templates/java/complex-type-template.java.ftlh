@@ -580,32 +580,6 @@ public<#if type.isDiscriminatedParentTypeDefinition()> abstract</#if> class ${ty
         return lengthInBits;
     }
 
-<#-- The parse and serialize methods here are just proxies for forwardning the requests to static counterparts -->
-    <#if !type.isDiscriminatedChildTypeDefinition()>
-    public static ${type.name} staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-        PositionAware positionAware = readBuffer;
-        <#if parserArguments?has_content>
-        if((args == null) || (args.length != ${parserArguments?size})) {
-            throw new PlcRuntimeException("Wrong number of arguments, expected ${parserArguments?size}, but got " + args.length);
-        }
-            <#list parserArguments as parserArgument>
-                <#assign languageName=helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)>
-        ${languageName} ${parserArgument.name};
-        if(args[${parserArgument?index}] instanceof ${languageName}) {
-            ${parserArgument.name} = (${languageName}) args[${parserArgument?index}];
-                <#if parserArgument.type.isSimpleTypeReference() || parserArgument.type.isEnumTypeReference()>
-        } else if (args[${parserArgument?index}] instanceof String) {
-            ${parserArgument.name} = ${languageName}.valueOf((String) args[${parserArgument?index}]);
-                </#if>
-        } else {
-            throw new PlcRuntimeException("Argument ${parserArgument?index} expected to be of type ${languageName} or a string which is parseable but was " + args[${parserArgument?index}].getClass().getName());
-        }
-            </#list>
-        </#if>
-        return staticParse(readBuffer<#if parserArguments?has_content>, <#list parserArguments as parserArgument>${parserArgument.name}<#sep>, </#sep></#list></#if>);
-    }
-
-    </#if>
 <#-- Here come the actual parse and serialize methods that actually do the parsing and serlaizing -->
     <#assign hasParserArguments=parserArguments?has_content/>
     <#assign parserArgumentList><#if hasParserArguments><#list parserArguments as parserArgument>${helper.getLanguageTypeNameForTypeReference(parserArgument.type, false)} ${parserArgument.name}<#sep>, </#sep></#list></#if></#assign>

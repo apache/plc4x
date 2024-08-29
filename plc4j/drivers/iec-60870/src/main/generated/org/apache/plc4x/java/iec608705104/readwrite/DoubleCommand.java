@@ -97,12 +97,6 @@ public class DoubleCommand implements Message {
     return lengthInBits;
   }
 
-  public static DoubleCommand staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static DoubleCommand staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("DoubleCommand");
     PositionAware positionAware = readBuffer;

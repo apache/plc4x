@@ -133,12 +133,6 @@ public abstract class Plc4xMessage implements Message {
     return lengthInBits;
   }
 
-  public static Plc4xMessage staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Plc4xMessage staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Plc4xMessage");
     PositionAware positionAware = readBuffer;

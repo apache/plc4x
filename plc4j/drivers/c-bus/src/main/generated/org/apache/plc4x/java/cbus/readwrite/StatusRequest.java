@@ -81,12 +81,6 @@ public abstract class StatusRequest implements Message {
     return lengthInBits;
   }
 
-  public static StatusRequest staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static StatusRequest staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("StatusRequest");
     PositionAware positionAware = readBuffer;

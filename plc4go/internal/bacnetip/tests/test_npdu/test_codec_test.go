@@ -22,118 +22,15 @@ package test_npdu
 import (
 	"testing"
 
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-
-	"github.com/rs/zerolog"
-	"github.com/stretchr/testify/suite"
 )
-
-func WhoIsRouterToNetwork(net uint16) *bacnetip.WhoIsRouterToNetwork {
-	network, err := bacnetip.NewWhoIsRouterToNetwork(bacnetip.WithWhoIsRouterToNetworkNet(net))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func IAmRouterToNetwork(netList ...uint16) *bacnetip.IAmRouterToNetwork {
-	network, err := bacnetip.NewIAmRouterToNetwork(bacnetip.WithIAmRouterToNetworkNetworkList(netList...))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func ICouldBeRouterToNetwork(net uint16, perf uint8) *bacnetip.ICouldBeRouterToNetwork {
-	network, err := bacnetip.NewICouldBeRouterToNetwork(bacnetip.WithICouldBeRouterToNetworkNetwork(net), bacnetip.WithICouldBeRouterToNetworkPerformanceIndex(perf))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func RejectMessageToNetwork(reason uint8, dnet uint16) *bacnetip.RejectMessageToNetwork {
-	network, err := bacnetip.NewRejectMessageToNetwork(bacnetip.WithRejectMessageToNetworkRejectionReason(readWriteModel.NLMRejectMessageToNetworkRejectReason(reason)), bacnetip.WithRejectMessageToNetworkDnet(dnet))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func RouterBusyToNetwork(netList ...uint16) *bacnetip.RouterBusyToNetwork {
-	network, err := bacnetip.NewRouterBusyToNetwork(bacnetip.WithRouterBusyToNetworkDnet(netList))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func RouterAvailableToNetwork(netList ...uint16) *bacnetip.RouterAvailableToNetwork {
-	network, err := bacnetip.NewRouterAvailableToNetwork(bacnetip.WithRouterAvailableToNetworkDnet(netList))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func InitializeRoutingTable(irtTable ...*bacnetip.RoutingTableEntry) *bacnetip.InitializeRoutingTable {
-	network, err := bacnetip.NewInitializeRoutingTable(bacnetip.WithInitializeRoutingTableIrtTable(irtTable...))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func RoutingTableEntry(address uint16, portId uint8, portInfo []byte) *bacnetip.RoutingTableEntry {
-	return bacnetip.NewRoutingTableEntry(
-		bacnetip.WithRoutingTableEntryDestinationNetworkAddress(address),
-		bacnetip.WithRoutingTableEntryPortId(portId),
-		bacnetip.WithRoutingTableEntryPortInfo(portInfo),
-	)
-}
-
-func InitializeRoutingTableAck(irtaTable ...*bacnetip.RoutingTableEntry) *bacnetip.InitializeRoutingTableAck {
-	network, err := bacnetip.NewInitializeRoutingTableAck(bacnetip.WithInitializeRoutingTableAckIrtaTable(irtaTable...))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func EstablishConnectionToNetwork(dnet uint16, terminationTime uint8) *bacnetip.EstablishConnectionToNetwork {
-	network, err := bacnetip.NewEstablishConnectionToNetwork(bacnetip.WithEstablishConnectionToNetworkDNET(dnet), bacnetip.WithEstablishConnectionToNetworkTerminationTime(terminationTime))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func DisconnectConnectionToNetwork(dnet uint16) *bacnetip.DisconnectConnectionToNetwork {
-	network, err := bacnetip.NewDisconnectConnectionToNetwork(bacnetip.WithDisconnectConnectionToNetworkDNET(dnet))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func WhatIsNetworkNumber(dnet uint16) *bacnetip.WhatIsNetworkNumber {
-	network, err := bacnetip.NewWhatIsNetworkNumber()
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
-
-func NetworkNumberIs(net uint16, flag bool) *bacnetip.NetworkNumberIs {
-	network, err := bacnetip.NewNetworkNumberIs(bacnetip.WithNetworkNumberIsNET(net), bacnetip.WithNetworkNumberIsTerminationConfigured(flag))
-	if err != nil {
-		panic(err)
-	}
-	return network
-}
 
 type TestNPDUCodecSuite struct {
 	suite.Suite
@@ -145,12 +42,8 @@ type TestNPDUCodecSuite struct {
 	log zerolog.Logger
 }
 
-func (suite *TestNPDUCodecSuite) SetupSuite() {
-	t := suite.T()
-	suite.log = testutils.ProduceTestingLogger(t)
-}
-
 func (suite *TestNPDUCodecSuite) SetupTest() {
+	suite.log = testutils.ProduceTestingLogger(suite.T())
 	var err error
 	suite.codec, err = NewNPDUCodec(suite.log)
 	suite.Require().NoError(err)
@@ -219,7 +112,7 @@ func (suite *TestNPDUCodecSuite) TestWhoIsRouterToNetwork() { // Test the Result
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.WhoIsRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWWirtnNetwork, uint16(1)))
 }
@@ -245,7 +138,7 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworkEmpty() { // Test the Res
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.IAmRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, networkList))
 }
@@ -271,7 +164,7 @@ func (suite *TestNPDUCodecSuite) TestIAMRouterToNetworks() { // Test the Result 
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.IAmRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, networkList))
 }
@@ -296,7 +189,7 @@ func (suite *TestNPDUCodecSuite) TestICouldBeRouterToNetworks() { // Test the Re
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.ICouldBeRouterToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWIcbrtnNetwork, uint16(1), bacnetip.KWIcbrtnPerformanceIndex, uint8(2)))
 }
@@ -321,7 +214,7 @@ func (suite *TestNPDUCodecSuite) TestRejectMessageToNetwork() { // Test the Resu
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RejectMessageToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRmtnRejectionReason, readWriteModel.NLMRejectMessageToNetworkRejectReason(1), bacnetip.KWRmtnDNET, uint16(2)))
 }
@@ -347,7 +240,7 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkEmpty() { // Test the Re
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterBusyToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRbtnNetworkList, networkList))
 }
@@ -373,7 +266,7 @@ func (suite *TestNPDUCodecSuite) TestRouterBusyToNetworkNetworks() { // Test the
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterBusyToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRbtnNetworkList, networkList))
 }
@@ -399,7 +292,7 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkEmpty() { // Test t
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterAvailableToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRatnNetworkList, networkList))
 }
@@ -425,7 +318,7 @@ func (suite *TestNPDUCodecSuite) TestRouterAvailableToNetworkNetworks() { // Tes
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.RouterAvailableToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWRatnNetworkList, networkList))
 }
@@ -450,7 +343,7 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableEmpty() { // Test the
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, []*bacnetip.RoutingTableEntry{}))
 }
@@ -482,7 +375,7 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable01() { // Test the Re
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, rtEntries))
 }
@@ -514,7 +407,7 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTable02() { // Test the Re
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTable{}), bacnetip.NewKWArgs(bacnetip.KWIrtTable, rtEntries))
 }
@@ -546,7 +439,7 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck01() { // Test the
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTableAck{}), bacnetip.NewKWArgs(bacnetip.KWIrtaTable, rtEntries))
 }
@@ -578,7 +471,7 @@ func (suite *TestNPDUCodecSuite) TestInitializeRoutingTableAck02() { // Test the
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.InitializeRoutingTableAck{}), bacnetip.NewKWArgs(bacnetip.KWIrtaTable, rtEntries))
 }
@@ -603,7 +496,7 @@ func (suite *TestNPDUCodecSuite) TestEstablishConnectionToNetworks() { // Test t
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.EstablishConnectionToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWEctnDNET, uint16(5), bacnetip.KWEctnTerminationTime, uint8(6)))
 }
@@ -628,7 +521,7 @@ func (suite *TestNPDUCodecSuite) TestDisconnectConnectionToNetwork() { // Test t
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.DisconnectConnectionToNetwork{}), bacnetip.NewKWArgs(bacnetip.KWDctnDNET, uint16(7)))
 }
@@ -653,7 +546,7 @@ func (suite *TestNPDUCodecSuite) TestWhatIsNetworkNumber() { // Test the Result 
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.WhatIsNetworkNumber{}), bacnetip.NoKWArgs)
 }
@@ -662,7 +555,7 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 	// Request successful
 	pduBytes, err := bacnetip.Xtob(
 		"01.80" + // version, network layer message
-			"13 0008 01", // message type, network, flqg
+			"13 0008 01", // message type, network, flag
 	)
 	suite.Require().NoError(err)
 	{ // Parse with plc4x parser to validate
@@ -678,10 +571,11 @@ func (suite *TestNPDUCodecSuite) TestNetworkNumberIs() { // Test the Result enco
 	err = suite.Indication(bacnetip.NoArgs, bacnetip.NewKWArgs(bacnetip.KWPDUData, pduBytes))
 	suite.Assert().NoError(err)
 
-	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(&bacnetip.MessageBridge{Bytes: pduBytes})), bacnetip.NoKWArgs)
+	err = suite.Response(bacnetip.NewArgs(bacnetip.NewPDU(bacnetip.NewMessageBridge(pduBytes...))), bacnetip.NoKWArgs)
 	suite.Assert().NoError(err)
 	err = suite.Confirmation(bacnetip.NewArgs(&bacnetip.NetworkNumberIs{}), bacnetip.NewKWArgs(bacnetip.KWNniNet, uint16(8), bacnetip.KWNniFlag, true))
 }
+
 func TestNPDUCodec(t *testing.T) {
 	suite.Run(t, new(TestNPDUCodecSuite))
 }

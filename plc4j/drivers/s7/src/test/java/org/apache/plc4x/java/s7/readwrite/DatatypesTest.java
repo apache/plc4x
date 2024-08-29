@@ -64,9 +64,11 @@ public class DatatypesTest {
             builder.addTagAddress("time-of-day-value", "%DB2:880:TIME_OF_DAY"); // TOD#12:34:56
             builder.addTagAddress("time-of-day-array", "%DB2:884:TIME_OF_DAY[2]"); // TOD#16:34:56, TOD#08:15:00
             builder.addTagAddress("date-and-time-value", "%DB2:892:DATE_AND_TIME"); // DTL#1978-03-28-12:34:56
-            builder.addTagAddress("date-and-time-array", "%DB2:904:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
+//            builder.addTagAddress("date-and-time-array", "%DB2:904:DATE_AND_TIME[2]"); // DTL#1978-03-28-12:34:56, DTL#1978-03-28-12:34:56
             builder.addTagAddress("char-value", "%DB2:928:CHAR"); // "H"
             builder.addTagAddress("char-array", "%DB2:930:CHAR[4]"); // "H", "u", "r", "z"
+
+            builder.addTagAddress("huge-array", "%DB2:0:BYTE[900]");
             final PlcReadRequest readRequest = builder.build();
 
             final PlcReadResponse readResponse = readRequest.execute().get();

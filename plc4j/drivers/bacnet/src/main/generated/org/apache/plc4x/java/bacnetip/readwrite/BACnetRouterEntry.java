@@ -120,12 +120,6 @@ public class BACnetRouterEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetRouterEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetRouterEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetRouterEntry");
     PositionAware positionAware = readBuffer;

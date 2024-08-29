@@ -91,12 +91,6 @@ public abstract class BACnetEventParameter implements Message {
     return lengthInBits;
   }
 
-  public static BACnetEventParameter staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetEventParameter staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetEventParameter");
     PositionAware positionAware = readBuffer;

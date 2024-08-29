@@ -23,56 +23,12 @@ import (
 	"math"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
-
-func Unsigned(arg ...any) *bacnetip.Unsigned {
-	if len(arg) == 0 {
-		unsigned, err := bacnetip.NewUnsigned(nil)
-		if err != nil {
-			panic(err)
-		}
-		return unsigned
-	}
-	unsigned, err := bacnetip.NewUnsigned(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return unsigned
-}
-
-func Unsigned8(arg ...any) *bacnetip.Unsigned8 {
-	if len(arg) == 0 {
-		unsigned, err := bacnetip.NewUnsigned8(nil)
-		if err != nil {
-			panic(err)
-		}
-		return unsigned
-	}
-	unsigned, err := bacnetip.NewUnsigned8(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return unsigned
-}
-
-func Unsigned16(arg ...any) *bacnetip.Unsigned16 {
-	if len(arg) == 0 {
-		unsigned, err := bacnetip.NewUnsigned16(nil)
-		if err != nil {
-			panic(err)
-		}
-		return unsigned
-	}
-	unsigned, err := bacnetip.NewUnsigned16(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return unsigned
-}
 
 func UnsignedTag(x string) bacnetip.Tag {
 	b := xtob(x)

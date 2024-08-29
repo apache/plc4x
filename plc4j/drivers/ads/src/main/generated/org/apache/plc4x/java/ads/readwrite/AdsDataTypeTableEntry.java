@@ -429,12 +429,6 @@ public class AdsDataTypeTableEntry implements Message {
     return lengthInBits;
   }
 
-  public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AdsDataTypeTableEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AdsDataTypeTableEntry");
     PositionAware positionAware = readBuffer;

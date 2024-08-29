@@ -140,12 +140,6 @@ public class BACnetCOVMultipleSubscription implements Message {
     return lengthInBits;
   }
 
-  public static BACnetCOVMultipleSubscription staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetCOVMultipleSubscription staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetCOVMultipleSubscription");

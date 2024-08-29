@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func OctetString(args ...any) *bacnetip.OctetString {
-	if len(args) == 0 {
-		OctetString, err := bacnetip.NewOctetString(nil)
-		if err != nil {
-			panic(err)
-		}
-		return OctetString
-	}
-	OctetString, err := bacnetip.NewOctetString(args[0])
-	if err != nil {
-		panic(err)
-	}
-	return OctetString
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 func OctetStringTag(x string) bacnetip.Tag {
 	b := xtob(x)

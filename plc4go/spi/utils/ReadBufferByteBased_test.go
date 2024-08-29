@@ -23,11 +23,12 @@ import (
 	"bytes"
 	"encoding/binary"
 	"fmt"
-	"github.com/icza/bitio"
-	"github.com/stretchr/testify/assert"
 	"math"
 	"math/big"
 	"testing"
+
+	"github.com/icza/bitio"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewReadBuffer(t *testing.T) {

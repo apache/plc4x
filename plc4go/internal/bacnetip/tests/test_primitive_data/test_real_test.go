@@ -23,26 +23,12 @@ import (
 	"math"
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func Real(arg ...any) *bacnetip.Real {
-	if len(arg) == 0 {
-		Real, err := bacnetip.NewReal(nil)
-		if err != nil {
-			panic(err)
-		}
-		return Real
-	}
-	Real, err := bacnetip.NewReal(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return Real
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 func RealTag(x string) bacnetip.Tag {
 	b := xtob(x)

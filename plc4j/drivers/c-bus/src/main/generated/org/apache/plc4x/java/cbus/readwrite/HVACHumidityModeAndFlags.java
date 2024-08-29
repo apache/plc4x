@@ -229,12 +229,6 @@ public class HVACHumidityModeAndFlags implements Message {
     return lengthInBits;
   }
 
-  public static HVACHumidityModeAndFlags staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HVACHumidityModeAndFlags staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HVACHumidityModeAndFlags");
     PositionAware positionAware = readBuffer;

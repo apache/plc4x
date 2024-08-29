@@ -116,12 +116,6 @@ public class HPAIControlEndpoint implements Message {
     return lengthInBits;
   }
 
-  public static HPAIControlEndpoint staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static HPAIControlEndpoint staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("HPAIControlEndpoint");
     PositionAware positionAware = readBuffer;

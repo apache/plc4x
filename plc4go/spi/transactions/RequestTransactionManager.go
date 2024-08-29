@@ -22,8 +22,6 @@ package transactions
 import (
 	"container/list"
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/pool"
 	"io"
 	"os"
 	"os/signal"
@@ -33,11 +31,13 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/pkg/api/config"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/config"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/pool"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var sharedExecutorInstance pool.Executor // shared instance

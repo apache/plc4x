@@ -156,12 +156,6 @@ public class AmsSerialFrame implements Message {
     return lengthInBits;
   }
 
-  public static AmsSerialFrame staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AmsSerialFrame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AmsSerialFrame");
     PositionAware positionAware = readBuffer;

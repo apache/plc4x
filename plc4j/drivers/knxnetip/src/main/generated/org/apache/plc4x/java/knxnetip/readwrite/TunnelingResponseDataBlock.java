@@ -116,12 +116,6 @@ public class TunnelingResponseDataBlock implements Message {
     return lengthInBits;
   }
 
-  public static TunnelingResponseDataBlock staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TunnelingResponseDataBlock staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TunnelingResponseDataBlock");

@@ -77,12 +77,6 @@ public class BridgeAddress implements Message {
     return lengthInBits;
   }
 
-  public static BridgeAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BridgeAddress staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BridgeAddress");
     PositionAware positionAware = readBuffer;

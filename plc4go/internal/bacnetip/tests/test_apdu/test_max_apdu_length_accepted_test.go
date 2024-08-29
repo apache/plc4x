@@ -19,29 +19,4 @@
 
 package test_apdu
 
-import (
-	"context"
-	"testing"
-
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
-	"github.com/stretchr/testify/assert"
-	"github.com/stretchr/testify/require"
-)
-
-func TestMaxApduLengthAcceptedEncode(t *testing.T) {
-	t.Skip("Plc4x doesn't normalise at model level")
-	apdu := model.NewAPDU(50)
-	assert.Equal(t, 0, 50, apdu.ApduLength)
-}
-
-func TestMaxApduLengthAcceptedDecode(t *testing.T) {
-	t.Skip("Plc4x doesn't normalise at model level")
-	apdu := model.NewAPDU(0)
-	serialize, err := apdu.Serialize()
-	require.NoError(t, err)
-	apduParse, err := model.APDUParse(context.Background(), serialize, 0)
-	require.NoError(t, err)
-	// TODO: no way to access the length
-	_ = apduParse
-}
+// TODO: implement

@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func Double(arg ...any) *bacnetip.Double {
-	if len(arg) == 0 {
-		Double, err := bacnetip.NewDouble(nil)
-		if err != nil {
-			panic(err)
-		}
-		return Double
-	}
-	Double, err := bacnetip.NewDouble(arg[0])
-	if err != nil {
-		panic(err)
-	}
-	return Double
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 func DoubleTag(x string) bacnetip.Tag {
 	b := xtob(x)

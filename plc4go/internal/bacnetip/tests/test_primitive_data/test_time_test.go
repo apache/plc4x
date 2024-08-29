@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func Time(arg ...any) *bacnetip.Time {
-	if len(arg) == 0 {
-		Time, err := bacnetip.NewTime(nil, nil)
-		if err != nil {
-			panic(err)
-		}
-		return Time
-	}
-	Time, err := bacnetip.NewTime(arg[0], nil)
-	if err != nil {
-		panic(err)
-	}
-	return Time
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 // Convert a hex string to a character_string application tag.
 func timeTag(x string) bacnetip.Tag {

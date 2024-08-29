@@ -125,26 +125,6 @@ public abstract class COTPPacket implements Message {
     return lengthInBits;
   }
 
-  public static COTPPacket staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Integer cotpLen;
-    if (args[0] instanceof Integer) {
-      cotpLen = (Integer) args[0];
-    } else if (args[0] instanceof String) {
-      cotpLen = Integer.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Integer or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, cotpLen);
-  }
-
   public static COTPPacket staticParse(ReadBuffer readBuffer, Integer cotpLen)
       throws ParseException {
     readBuffer.pullContext("COTPPacket");

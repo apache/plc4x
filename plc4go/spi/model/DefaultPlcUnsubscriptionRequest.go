@@ -21,10 +21,11 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/pkg/errors"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var _ apiModel.PlcUnsubscriptionRequestBuilder = &DefaultPlcUnsubscriptionRequestBuilder{}

@@ -23,10 +23,11 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"math/big"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewJsonWriteBuffer(t *testing.T) {

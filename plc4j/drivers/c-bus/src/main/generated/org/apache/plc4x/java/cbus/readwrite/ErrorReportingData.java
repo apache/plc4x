@@ -104,12 +104,6 @@ public abstract class ErrorReportingData implements Message {
     return lengthInBits;
   }
 
-  public static ErrorReportingData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ErrorReportingData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ErrorReportingData");
     PositionAware positionAware = readBuffer;

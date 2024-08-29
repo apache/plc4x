@@ -124,12 +124,6 @@ public class BACnetDeviceObjectPropertyReference implements Message {
     return lengthInBits;
   }
 
-  public static BACnetDeviceObjectPropertyReference staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetDeviceObjectPropertyReference staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetDeviceObjectPropertyReference");

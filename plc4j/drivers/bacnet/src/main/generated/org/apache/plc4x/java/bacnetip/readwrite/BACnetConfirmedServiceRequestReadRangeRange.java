@@ -116,12 +116,6 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     return lengthInBits;
   }
 
-  public static BACnetConfirmedServiceRequestReadRangeRange staticParse(
-      ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetConfirmedServiceRequestReadRangeRange staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetConfirmedServiceRequestReadRangeRange");

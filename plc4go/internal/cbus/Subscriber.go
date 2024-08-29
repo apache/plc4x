@@ -27,15 +27,15 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/options"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber

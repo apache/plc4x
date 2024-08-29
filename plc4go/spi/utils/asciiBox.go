@@ -20,10 +20,11 @@
 package utils
 
 import (
-	"github.com/rs/zerolog/log"
 	"math"
 	"regexp"
 	"strings"
+
+	"github.com/rs/zerolog/log"
 )
 
 // AsciiBox is a string surrounded by an ascii border (and an optional name)

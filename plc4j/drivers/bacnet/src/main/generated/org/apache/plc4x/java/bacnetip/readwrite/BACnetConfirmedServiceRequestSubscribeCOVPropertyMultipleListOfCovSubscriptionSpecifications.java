@@ -138,13 +138,6 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
 
   public static
   BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
-      staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
-  public static
-  BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications
       staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext(
         "BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecifications");

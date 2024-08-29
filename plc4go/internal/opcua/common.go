@@ -21,18 +21,17 @@ package opcua
 
 import (
 	"fmt"
-	"github.com/rs/zerolog"
 	"strconv"
 	"time"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
-	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	spiValues "github.com/apache/plc4x/plc4go/spi/values"
 )
 
 func generateNodeId(tag Tag) (readWriteModel.NodeId, error) {

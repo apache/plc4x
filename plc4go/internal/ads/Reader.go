@@ -26,6 +26,8 @@ import (
 	"runtime/debug"
 	"strings"
 
+	"github.com/pkg/errors"
+
 	"github.com/apache/plc4x/plc4go/internal/ads/model"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"
@@ -33,8 +35,6 @@ import (
 	spiModel "github.com/apache/plc4x/plc4go/spi/model"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 	spiValues "github.com/apache/plc4x/plc4go/spi/values"
-
-	"github.com/pkg/errors"
 )
 
 func (m *Connection) ReadRequestBuilder() apiModel.PlcReadRequestBuilder {

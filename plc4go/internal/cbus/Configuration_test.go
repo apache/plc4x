@@ -21,9 +21,11 @@ package cbus
 
 import (
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 func TestParseFromOptions(t *testing.T) {

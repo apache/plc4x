@@ -89,12 +89,6 @@ public class SecurityHeader implements Message {
     return lengthInBits;
   }
 
-  public static SecurityHeader staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static SecurityHeader staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("SecurityHeader");
     PositionAware positionAware = readBuffer;

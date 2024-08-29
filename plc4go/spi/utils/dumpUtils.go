@@ -21,8 +21,9 @@ package utils
 
 import (
 	"fmt"
-	"github.com/rs/zerolog/log"
 	"reflect"
+
+	"github.com/rs/zerolog/log"
 )
 
 // BoxedDump dumps a 56+2 char wide hex string

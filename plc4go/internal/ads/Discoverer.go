@@ -23,13 +23,14 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"runtime/debug"
 	"strconv"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
 
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	apiValues "github.com/apache/plc4x/plc4go/pkg/api/values"

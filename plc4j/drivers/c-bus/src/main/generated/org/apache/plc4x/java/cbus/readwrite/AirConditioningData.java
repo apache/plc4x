@@ -104,12 +104,6 @@ public abstract class AirConditioningData implements Message {
     return lengthInBits;
   }
 
-  public static AirConditioningData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AirConditioningData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("AirConditioningData");
     PositionAware positionAware = readBuffer;

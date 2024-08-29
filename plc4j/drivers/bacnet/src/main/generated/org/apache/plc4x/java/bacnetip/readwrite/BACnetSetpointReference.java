@@ -80,12 +80,6 @@ public class BACnetSetpointReference implements Message {
     return lengthInBits;
   }
 
-  public static BACnetSetpointReference staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetSetpointReference staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetSetpointReference");
     PositionAware positionAware = readBuffer;

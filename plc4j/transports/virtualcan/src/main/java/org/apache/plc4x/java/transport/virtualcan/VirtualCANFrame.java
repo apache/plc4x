@@ -37,7 +37,7 @@ public class VirtualCANFrame implements Message {
     public final static MessageInput<VirtualCANFrame> PARSER = new MessageInput<VirtualCANFrame>() {
 
         @Override
-        public VirtualCANFrame parse(ReadBuffer io, Object... args) throws ParseException {
+        public VirtualCANFrame parse(ReadBuffer io) throws ParseException {
             WithOption withOption = WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN);
 
             short length = io.readUnsignedShort("length", 8, withOption);

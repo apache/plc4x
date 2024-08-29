@@ -22,11 +22,12 @@ package utils
 import (
 	"encoding/xml"
 	"fmt"
-	"github.com/stretchr/testify/assert"
 	"io"
 	"math/big"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewStrictXmlReadBuffer(t *testing.T) {

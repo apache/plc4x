@@ -21,12 +21,14 @@ package testutils
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"testing"
+	"time"
+
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog/log"
 	"github.com/stretchr/testify/assert"
-	"testing"
-	"time"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func TestExplodingGlobalLogger(t *testing.T) {
@@ -64,7 +66,7 @@ func (A *ASerializable) String() string {
 	return wbbb.GetBox().String()
 }
 
-func TestProduceTestingLogger_BetterStackrendering(t *testing.T) {
+func TestProduceTestingLogger_BetterStackRendering(t *testing.T) {
 	got := ProduceTestingLogger(t)
 	f1 := func() error {
 		return errors.New("a error")
@@ -91,6 +93,13 @@ func TestProduceTestingLogger_ASerializableLog(t *testing.T) {
 		Stringer("aSerializableStringer", aSerializable).
 		Str("aString", "asdasdasd").
 		Msg("something")
+}
+
+func TestProduceTestingLogger_Improved_Output(t *testing.T) {
+	t.Run("multilinestring", func(t *testing.T) {
+		logger := ProduceTestingLogger(t)
+		logger.Info().Str("amultiline", "a\nb\nc").Msg("look at that")
+	})
 }
 
 func Test__explodingGlobalLogger_Write(t *testing.T) {

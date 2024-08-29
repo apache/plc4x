@@ -119,11 +119,6 @@ public abstract class APDU implements Message {
     return lengthInBits;
   }
 
-  public static APDU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static APDU staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("APDU");
     PositionAware positionAware = readBuffer;

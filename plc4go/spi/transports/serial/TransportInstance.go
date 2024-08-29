@@ -26,13 +26,13 @@ import (
 	"sync"
 	"sync/atomic"
 
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/apache/plc4x/plc4go/spi/transports"
-	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
-
 	"github.com/jacobsa/go-serial/serial"
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/transports"
+	transportUtils "github.com/apache/plc4x/plc4go/spi/transports/utils"
 )
 
 type TransportInstance struct {

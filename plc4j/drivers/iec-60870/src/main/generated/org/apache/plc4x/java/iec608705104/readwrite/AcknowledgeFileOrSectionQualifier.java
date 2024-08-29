@@ -63,12 +63,6 @@ public class AcknowledgeFileOrSectionQualifier implements Message {
     return lengthInBits;
   }
 
-  public static AcknowledgeFileOrSectionQualifier staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static AcknowledgeFileOrSectionQualifier staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("AcknowledgeFileOrSectionQualifier");

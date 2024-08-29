@@ -23,9 +23,10 @@ import (
 	"context"
 	"time"
 
+	"github.com/pkg/errors"
+
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	"github.com/apache/plc4x/plc4go/spi"
-	"github.com/pkg/errors"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=DefaultPlcSubscriptionRequestBuilder

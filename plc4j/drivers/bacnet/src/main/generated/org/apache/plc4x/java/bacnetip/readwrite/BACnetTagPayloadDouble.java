@@ -77,12 +77,6 @@ public class BACnetTagPayloadDouble implements Message {
     return lengthInBits;
   }
 
-  public static BACnetTagPayloadDouble staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetTagPayloadDouble staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetTagPayloadDouble");
     PositionAware positionAware = readBuffer;

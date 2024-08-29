@@ -121,12 +121,6 @@ public class EnableControlData implements Message {
     return lengthInBits;
   }
 
-  public static EnableControlData staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static EnableControlData staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("EnableControlData");
     PositionAware positionAware = readBuffer;

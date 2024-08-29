@@ -138,12 +138,6 @@ public class BACnetPropertyAccessResult implements Message {
     return lengthInBits;
   }
 
-  public static BACnetPropertyAccessResult staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetPropertyAccessResult staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetPropertyAccessResult");

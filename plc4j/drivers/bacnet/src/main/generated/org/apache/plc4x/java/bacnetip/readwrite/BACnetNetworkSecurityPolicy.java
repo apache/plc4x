@@ -90,12 +90,6 @@ public class BACnetNetworkSecurityPolicy implements Message {
     return lengthInBits;
   }
 
-  public static BACnetNetworkSecurityPolicy staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetNetworkSecurityPolicy staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetNetworkSecurityPolicy");

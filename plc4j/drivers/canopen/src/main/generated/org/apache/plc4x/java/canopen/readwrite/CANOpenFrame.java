@@ -146,12 +146,6 @@ public class CANOpenFrame implements Message {
     return lengthInBits;
   }
 
-  public static CANOpenFrame staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static CANOpenFrame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("CANOpenFrame");
     PositionAware positionAware = readBuffer;

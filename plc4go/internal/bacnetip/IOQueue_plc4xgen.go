@@ -46,13 +46,6 @@ func (d *IOQueue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), "UTF-8", d.name); err != nil {
 		return err
 	}
-	{
-		_value := fmt.Sprintf("%v", d.queue)
-
-		if err := writeBuffer.WriteString("queue", uint32(len(_value)*8), "UTF-8", _value); err != nil {
-			return err
-		}
-	}
 	if err := writeBuffer.PopContext("IOQueue"); err != nil {
 		return err
 	}

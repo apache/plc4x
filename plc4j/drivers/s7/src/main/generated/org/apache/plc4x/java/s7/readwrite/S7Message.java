@@ -158,11 +158,6 @@ public abstract class S7Message implements Message {
     return lengthInBits;
   }
 
-  public static S7Message staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7Message staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7Message");
     PositionAware positionAware = readBuffer;

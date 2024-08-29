@@ -23,10 +23,11 @@ import (
 	"bytes"
 	"encoding/gob"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog/log"
 	"math"
 	"strings"
+
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog/log"
 )
 
 // DefaultWidth defaults to a default screen dumps size

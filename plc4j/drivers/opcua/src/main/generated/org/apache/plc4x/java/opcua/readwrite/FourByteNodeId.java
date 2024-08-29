@@ -89,12 +89,6 @@ public class FourByteNodeId implements Message {
     return lengthInBits;
   }
 
-  public static FourByteNodeId staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static FourByteNodeId staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("FourByteNodeId");
     PositionAware positionAware = readBuffer;

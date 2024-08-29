@@ -22,11 +22,12 @@ package pool
 import (
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 	"sync"
 	"testing"
 	"time"
+
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_future_AwaitCompletion(t *testing.T) {

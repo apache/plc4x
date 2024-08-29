@@ -22,26 +22,12 @@ package test_primitive_data
 import (
 	"testing"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
-
 	"github.com/stretchr/testify/assert"
-)
 
-func Date(arg ...any) *bacnetip.Date {
-	if len(arg) == 0 {
-		Date, err := bacnetip.NewDate(nil, nil)
-		if err != nil {
-			panic(err)
-		}
-		return Date
-	}
-	Date, err := bacnetip.NewDate(arg[0], nil)
-	if err != nil {
-		panic(err)
-	}
-	return Date
-}
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip/constructors"
+	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 // Convert a hex string to a character_string application tag.
 func DateTag(x string) bacnetip.Tag {

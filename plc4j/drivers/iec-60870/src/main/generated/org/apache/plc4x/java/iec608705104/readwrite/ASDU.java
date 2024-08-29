@@ -224,11 +224,6 @@ public class ASDU implements Message {
     return lengthInBits;
   }
 
-  public static ASDU staticParse(ReadBuffer readBuffer, Object... args) throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static ASDU staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("ASDU");
     PositionAware positionAware = readBuffer;

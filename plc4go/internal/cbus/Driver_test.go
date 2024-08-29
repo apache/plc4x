@@ -26,6 +26,9 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/stretchr/testify/assert"
+
 	plc4go "github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	_default "github.com/apache/plc4x/plc4go/spi/default"
@@ -35,9 +38,6 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/test"
 	"github.com/apache/plc4x/plc4go/spi/utils"
-
-	"github.com/pkg/errors"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestDriver_DiscoverWithContext(t *testing.T) {

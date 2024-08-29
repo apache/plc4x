@@ -91,12 +91,6 @@ public abstract class BACnetCalendarEntry implements Message {
     return lengthInBits;
   }
 
-  public static BACnetCalendarEntry staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetCalendarEntry staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetCalendarEntry");
     PositionAware positionAware = readBuffer;

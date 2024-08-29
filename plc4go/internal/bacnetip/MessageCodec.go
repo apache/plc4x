@@ -22,18 +22,19 @@ package bacnetip
 import (
 	"context"
 	"fmt"
-	"github.com/apache/plc4x/plc4go/spi/options"
-	"github.com/rs/zerolog"
 	"net"
 	"net/url"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 	"github.com/apache/plc4x/plc4go/spi"
 	"github.com/apache/plc4x/plc4go/spi/default"
+	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/transports"
 	"github.com/apache/plc4x/plc4go/spi/transports/udp"
-	"github.com/pkg/errors"
 )
 
 // ApplicationLayerMessageCodec is a wrapper for MessageCodec which takes care of segmentation, retries etc.
@@ -184,7 +185,7 @@ func (m *ApplicationLayerMessageCodec) SendRequest(ctx context.Context, message 
 					nil,
 					nil,
 					nil,
-					response.GetMessage().(model.APDU),
+					response.GetRootMessage().(model.APDU),
 					0,
 				),
 				0,

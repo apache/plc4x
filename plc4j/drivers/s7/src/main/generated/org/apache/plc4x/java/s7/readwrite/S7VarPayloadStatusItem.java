@@ -84,12 +84,6 @@ public class S7VarPayloadStatusItem implements Message {
     return lengthInBits;
   }
 
-  public static S7VarPayloadStatusItem staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static S7VarPayloadStatusItem staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("S7VarPayloadStatusItem");
     PositionAware positionAware = readBuffer;

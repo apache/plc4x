@@ -81,9 +81,9 @@ public class PayloadConverter {
         return Payload.staticParse(buffer, extensible, (long) (extensible ? -1 : payload.length - 8));
     }
 
-    public static MessagePDU fromStream(ByteBuffer chunkBuffer, boolean response, boolean encrypted) throws ParseException {
+    public static MessagePDU fromStream(ByteBuffer chunkBuffer, boolean response) throws ParseException {
         ReadBufferByteBased buffer = new ReadBufferByteBased(chunkBuffer.array(), ByteOrder.LITTLE_ENDIAN);
-        return MessagePDU.staticParse(buffer, response, encrypted);
+        return MessagePDU.staticParse(buffer, response);
     }
 
     public static MessagePDU pduFromStream(byte[] message, boolean response) throws ParseException {

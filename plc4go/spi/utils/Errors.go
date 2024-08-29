@@ -21,9 +21,10 @@ package utils
 
 import (
 	"fmt"
-	"github.com/pkg/errors"
 	"strings"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // ErrorIdentify is an interface defining the inline interface defined in errors.Is(err, target error) bool (wrap.go)

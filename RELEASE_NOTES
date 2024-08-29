@@ -14,6 +14,10 @@ New Features
 - The CachedPlcConnection now implements the EventPlcConnection
   interface which forwards listener registrations to the
   connection.
+- The S7 driver is now able to automatically split up large
+  array requests into multiple ones and transparently merge
+  them back together. It is now possible to read arrays of
+  almost unlimited size.
 
 Incompatible changes
 --------------------

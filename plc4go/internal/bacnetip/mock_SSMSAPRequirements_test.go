@@ -936,7 +936,7 @@ func (_c *MockSSMSAPRequirements_String_Call) RunAndReturn(run func() string) *M
 }
 
 // _setClientPeer provides a mock function with given fields: server
-func (_m *MockSSMSAPRequirements) _setClientPeer(server _Server) {
+func (_m *MockSSMSAPRequirements) _setClientPeer(server Server) {
 	_m.Called(server)
 }
 
@@ -946,14 +946,14 @@ type MockSSMSAPRequirements__setClientPeer_Call struct {
 }
 
 // _setClientPeer is a helper method to define mock.On call
-//   - server _Server
+//   - server Server
 func (_e *MockSSMSAPRequirements_Expecter) _setClientPeer(server interface{}) *MockSSMSAPRequirements__setClientPeer_Call {
 	return &MockSSMSAPRequirements__setClientPeer_Call{Call: _e.mock.On("_setClientPeer", server)}
 }
 
-func (_c *MockSSMSAPRequirements__setClientPeer_Call) Run(run func(server _Server)) *MockSSMSAPRequirements__setClientPeer_Call {
+func (_c *MockSSMSAPRequirements__setClientPeer_Call) Run(run func(server Server)) *MockSSMSAPRequirements__setClientPeer_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_Server))
+		run(args[0].(Server))
 	})
 	return _c
 }
@@ -963,13 +963,13 @@ func (_c *MockSSMSAPRequirements__setClientPeer_Call) Return() *MockSSMSAPRequir
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements__setClientPeer_Call) RunAndReturn(run func(_Server)) *MockSSMSAPRequirements__setClientPeer_Call {
+func (_c *MockSSMSAPRequirements__setClientPeer_Call) RunAndReturn(run func(Server)) *MockSSMSAPRequirements__setClientPeer_Call {
 	_c.Call.Return(run)
 	return _c
 }
 
 // _setServiceElement provides a mock function with given fields: serviceElement
-func (_m *MockSSMSAPRequirements) _setServiceElement(serviceElement _ApplicationServiceElement) {
+func (_m *MockSSMSAPRequirements) _setServiceElement(serviceElement ApplicationServiceElementContract) {
 	_m.Called(serviceElement)
 }
 
@@ -979,14 +979,14 @@ type MockSSMSAPRequirements__setServiceElement_Call struct {
 }
 
 // _setServiceElement is a helper method to define mock.On call
-//   - serviceElement _ApplicationServiceElement
+//   - serviceElement ApplicationServiceElementContract
 func (_e *MockSSMSAPRequirements_Expecter) _setServiceElement(serviceElement interface{}) *MockSSMSAPRequirements__setServiceElement_Call {
 	return &MockSSMSAPRequirements__setServiceElement_Call{Call: _e.mock.On("_setServiceElement", serviceElement)}
 }
 
-func (_c *MockSSMSAPRequirements__setServiceElement_Call) Run(run func(serviceElement _ApplicationServiceElement)) *MockSSMSAPRequirements__setServiceElement_Call {
+func (_c *MockSSMSAPRequirements__setServiceElement_Call) Run(run func(serviceElement ApplicationServiceElementContract)) *MockSSMSAPRequirements__setServiceElement_Call {
 	_c.Call.Run(func(args mock.Arguments) {
-		run(args[0].(_ApplicationServiceElement))
+		run(args[0].(ApplicationServiceElementContract))
 	})
 	return _c
 }
@@ -996,7 +996,7 @@ func (_c *MockSSMSAPRequirements__setServiceElement_Call) Return() *MockSSMSAPRe
 	return _c
 }
 
-func (_c *MockSSMSAPRequirements__setServiceElement_Call) RunAndReturn(run func(_ApplicationServiceElement)) *MockSSMSAPRequirements__setServiceElement_Call {
+func (_c *MockSSMSAPRequirements__setServiceElement_Call) RunAndReturn(run func(ApplicationServiceElementContract)) *MockSSMSAPRequirements__setServiceElement_Call {
 	_c.Call.Return(run)
 	return _c
 }

@@ -76,12 +76,6 @@ public class RequestTermination implements Message {
     return lengthInBits;
   }
 
-  public static RequestTermination staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static RequestTermination staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("RequestTermination");
     PositionAware positionAware = readBuffer;

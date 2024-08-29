@@ -23,8 +23,9 @@ import (
 	"container/list"
 	"context"
 	"fmt"
-	"github.com/pkg/errors"
 	"math/big"
+
+	"github.com/pkg/errors"
 )
 
 type WriteBufferBoxBased interface {

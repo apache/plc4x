@@ -104,12 +104,6 @@ public class BACnetAuthenticationFactor implements Message {
     return lengthInBits;
   }
 
-  public static BACnetAuthenticationFactor staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetAuthenticationFactor staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("BACnetAuthenticationFactor");

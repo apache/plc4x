@@ -25,6 +25,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+
 	"github.com/apache/plc4x/plc4go/pkg/api"
 	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
 	readWriteModel "github.com/apache/plc4x/plc4go/protocols/cbus/readwrite/model"
@@ -34,10 +37,7 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/options"
 	"github.com/apache/plc4x/plc4go/spi/tracer"
 	"github.com/apache/plc4x/plc4go/spi/transactions"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=AlphaGenerator

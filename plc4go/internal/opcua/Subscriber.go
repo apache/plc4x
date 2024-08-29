@@ -22,19 +22,19 @@ package opcua
 import (
 	"context"
 	"encoding/binary"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"runtime/debug"
 	"strconv"
 	"sync"
 	"time"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	spiModel "github.com/apache/plc4x/plc4go/spi/model"
-	"github.com/apache/plc4x/plc4go/spi/options"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	spiModel "github.com/apache/plc4x/plc4go/spi/model"
+	"github.com/apache/plc4x/plc4go/spi/options"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Subscriber

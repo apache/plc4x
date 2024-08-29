@@ -74,26 +74,6 @@ public abstract class KnxGroupAddress implements Message {
     return lengthInBits;
   }
 
-  public static KnxGroupAddress staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    Byte numLevels;
-    if (args[0] instanceof Byte) {
-      numLevels = (Byte) args[0];
-    } else if (args[0] instanceof String) {
-      numLevels = Byte.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type Byte or a string which is parseable but was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, numLevels);
-  }
-
   public static KnxGroupAddress staticParse(ReadBuffer readBuffer, Byte numLevels)
       throws ParseException {
     readBuffer.pullContext("KnxGroupAddress");

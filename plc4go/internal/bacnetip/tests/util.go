@@ -20,42 +20,20 @@
 package tests
 
 import (
-	"context"
-	"encoding/hex"
 	"fmt"
 	"time"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 )
 
-var StartTime = time.Time{}.Add(1 * time.Hour)
+var StartTime = time.Time{}
 
 type DummyMessage struct {
-	Data []byte
+	bacnetip.MessageBridge
 }
 
 func NewDummyMessage(data ...byte) *DummyMessage {
-	return &DummyMessage{Data: data}
-}
-
-func (d DummyMessage) String() string {
-	return hex.EncodeToString(d.Data)
-}
-
-func (d DummyMessage) Serialize() ([]byte, error) {
-	return d.Data, nil
-}
-
-func (d DummyMessage) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
-	return writeBuffer.WriteByteArray("data", d.Data)
-}
-
-func (d DummyMessage) GetLengthInBytes(_ context.Context) uint16 {
-	return uint16(len(d.Data))
-}
-
-func (d DummyMessage) GetLengthInBits(_ context.Context) uint16 {
-	return uint16(len(d.Data))
+	return &DummyMessage{bacnetip.NewMessageBridge(data...)}
 }
 
 type AssertionError struct {

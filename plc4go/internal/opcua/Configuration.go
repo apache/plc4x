@@ -25,12 +25,12 @@ import (
 	"reflect"
 	"strconv"
 
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
-
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 	"golang.org/x/text/cases"
 	"golang.org/x/text/language"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 )
 
 //go:generate go run ../../tools/plc4xgenerator/gen.go -type=Configuration

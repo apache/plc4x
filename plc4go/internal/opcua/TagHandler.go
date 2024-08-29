@@ -21,14 +21,14 @@ package opcua
 
 import (
 	"fmt"
-	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
 	"regexp"
 	"strconv"
 
-	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
+
+	apiModel "github.com/apache/plc4x/plc4go/pkg/api/model"
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/opcua/readwrite/model"
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type TagHandler struct {

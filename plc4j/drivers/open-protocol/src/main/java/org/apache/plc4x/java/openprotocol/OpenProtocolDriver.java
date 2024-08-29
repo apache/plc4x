@@ -112,8 +112,7 @@ public class OpenProtocolDriver extends GeneratedDriverBase<OpenProtocolMessage>
 
     @Override
     protected ProtocolStackConfigurer<OpenProtocolMessage> getStackConfigurer() {
-        return SingleProtocolStackConfigurer.builder(OpenProtocolMessage.class,
-                OpenProtocolMessage::staticParse)
+        return SingleProtocolStackConfigurer.builder(OpenProtocolMessage.class, io -> OpenProtocolMessage.staticParse(io, 1))
             .withProtocol(OpenProtocolProtocolLogic.class)
             .withPacketSizeEstimator(ByteLengthEstimator.class)
             .build();

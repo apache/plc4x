@@ -21,8 +21,10 @@ package model
 
 import (
 	"context"
-	"github.com/apache/plc4x/plc4go/spi/utils"
+
 	"github.com/snksoft/crc"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 var table *crc.Table

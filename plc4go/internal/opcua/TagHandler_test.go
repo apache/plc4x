@@ -20,11 +20,13 @@
 package opcua
 
 import (
-	"github.com/apache/plc4x/plc4go/pkg/api/model"
-	"github.com/stretchr/testify/assert"
 	"reflect"
 	"regexp"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
+
+	"github.com/apache/plc4x/plc4go/pkg/api/model"
 )
 
 func TestNewTagHandler(t *testing.T) {

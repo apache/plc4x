@@ -106,12 +106,6 @@ public class BACnetLogRecord implements Message {
     return lengthInBits;
   }
 
-  public static BACnetLogRecord staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetLogRecord staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetLogRecord");
     PositionAware positionAware = readBuffer;

@@ -113,12 +113,6 @@ public class Ethernet_Frame implements Message {
     return lengthInBits;
   }
 
-  public static Ethernet_Frame staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static Ethernet_Frame staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("Ethernet_Frame");
     PositionAware positionAware = readBuffer;

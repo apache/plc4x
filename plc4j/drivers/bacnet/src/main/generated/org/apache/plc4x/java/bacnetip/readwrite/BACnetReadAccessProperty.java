@@ -114,27 +114,6 @@ public class BACnetReadAccessProperty implements Message {
     return lengthInBits;
   }
 
-  public static BACnetReadAccessProperty staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    if ((args == null) || (args.length != 1)) {
-      throw new PlcRuntimeException(
-          "Wrong number of arguments, expected 1, but got " + args.length);
-    }
-    BACnetObjectType objectTypeArgument;
-    if (args[0] instanceof BACnetObjectType) {
-      objectTypeArgument = (BACnetObjectType) args[0];
-    } else if (args[0] instanceof String) {
-      objectTypeArgument = BACnetObjectType.valueOf((String) args[0]);
-    } else {
-      throw new PlcRuntimeException(
-          "Argument 0 expected to be of type BACnetObjectType or a string which is parseable but"
-              + " was "
-              + args[0].getClass().getName());
-    }
-    return staticParse(readBuffer, objectTypeArgument);
-  }
-
   public static BACnetReadAccessProperty staticParse(
       ReadBuffer readBuffer, BACnetObjectType objectTypeArgument) throws ParseException {
     readBuffer.pullContext("BACnetReadAccessProperty");

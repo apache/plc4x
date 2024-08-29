@@ -20,10 +20,11 @@
 package utils
 
 import (
-	"github.com/stretchr/testify/assert"
 	"math"
 	"strings"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 func init() {

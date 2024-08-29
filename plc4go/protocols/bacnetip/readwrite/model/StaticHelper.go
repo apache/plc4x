@@ -26,9 +26,9 @@ import (
 	"math/big"
 	"reflect"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-
 	"github.com/pkg/errors"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 func ReadEnumGenericFailing(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, template any) (any, error) {

@@ -90,12 +90,6 @@ public class BACnetKeyIdentifier implements Message {
     return lengthInBits;
   }
 
-  public static BACnetKeyIdentifier staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BACnetKeyIdentifier staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BACnetKeyIdentifier");
     PositionAware positionAware = readBuffer;

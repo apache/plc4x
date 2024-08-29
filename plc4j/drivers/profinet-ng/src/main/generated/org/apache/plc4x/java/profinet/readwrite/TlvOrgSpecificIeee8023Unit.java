@@ -85,12 +85,6 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
     return lengthInBits;
   }
 
-  public static TlvOrgSpecificIeee8023Unit staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static TlvOrgSpecificIeee8023Unit staticParse(ReadBuffer readBuffer)
       throws ParseException {
     readBuffer.pullContext("TlvOrgSpecificIeee8023Unit");

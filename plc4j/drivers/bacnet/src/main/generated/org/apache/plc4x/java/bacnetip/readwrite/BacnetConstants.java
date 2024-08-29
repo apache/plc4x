@@ -77,12 +77,6 @@ public class BacnetConstants implements Message {
     return lengthInBits;
   }
 
-  public static BacnetConstants staticParse(ReadBuffer readBuffer, Object... args)
-      throws ParseException {
-    PositionAware positionAware = readBuffer;
-    return staticParse(readBuffer);
-  }
-
   public static BacnetConstants staticParse(ReadBuffer readBuffer) throws ParseException {
     readBuffer.pullContext("BacnetConstants");
     PositionAware positionAware = readBuffer;

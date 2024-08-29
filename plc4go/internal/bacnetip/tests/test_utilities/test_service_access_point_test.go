@@ -22,15 +22,16 @@ package test_utilities
 import (
 	"testing"
 
+	"github.com/pkg/errors"
+	"github.com/rs/zerolog"
+	"github.com/stretchr/testify/suite"
+
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
-	"github.com/stretchr/testify/suite"
-
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
 )
 
+// TODO: find out what is going on here... requirements get deep injected that just looks wrong...
 type EchoAccessPointRequirements interface {
 	SapResponse(args bacnetip.Args, kwArgs bacnetip.KWArgs) error
 }
