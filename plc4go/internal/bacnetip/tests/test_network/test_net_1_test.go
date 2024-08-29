@@ -35,8 +35,8 @@ import (
 type TNetwork1 struct {
 	*tests.StateMachineGroup
 
-	vlan1    *Network
 	iut      *RouterNode
+	vlan1    *Network
 	td       *NetworkLayerStateMachine
 	sniffer1 *SnifferStateMachine
 	vlan2    *Network
