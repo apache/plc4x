@@ -29,9 +29,7 @@ import (
 )
 
 type TrappedApplicationServiceElementRequirements interface {
-	Request(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	Response(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 }
 

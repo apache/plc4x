@@ -61,7 +61,6 @@ func (e *EchoAccessPoint) SapConfirmation(args bacnetip.Args, kwargs bacnetip.KW
 }
 
 type TrappedEchoAccessPoint struct {
-	bacnetip.ServiceAccessPointContract // just to make go happy, we might need to export functions or whatnot to not have this trouble(get/set methods hidden)
 	*tests.TrappedServiceAccessPoint
 	*EchoAccessPoint
 }
@@ -70,13 +69,12 @@ var _ bacnetip.ServiceAccessPoint = (*TrappedEchoAccessPoint)(nil)
 
 func NewTrappedEchoAccessPoint(localLog zerolog.Logger) (*TrappedEchoAccessPoint, error) {
 	t := &TrappedEchoAccessPoint{}
+	t.EchoAccessPoint = NewEchoAccessPoint(localLog, t)
 	var err error
-	t.TrappedServiceAccessPoint, err = tests.NewTrappedServiceAccessPoint(localLog, t)
+	t.TrappedServiceAccessPoint, err = tests.NewTrappedServiceAccessPoint(localLog, t.EchoAccessPoint)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating trapped service access point")
 	}
-	t.ServiceAccessPointContract = t.TrappedServiceAccessPoint.ServiceAccessPointContract // TODO: we extract that here
-	t.EchoAccessPoint = NewEchoAccessPoint(localLog, t)
 	return t, nil
 }
 
@@ -133,20 +131,18 @@ func (e *EchoServiceElement) String() string {
 }
 
 type TrappedEchoServiceElement struct {
-	bacnetip.ApplicationServiceElementContract // just to make go happy, we might need to export functions or whatnot to not have this trouble(get/set methods hidden)
 	*tests.TrappedApplicationServiceElement
 	*EchoServiceElement
 }
 
 func NewTrappedEchoServiceElement(localLog zerolog.Logger) (*TrappedEchoServiceElement, error) {
 	t := &TrappedEchoServiceElement{}
+	t.EchoServiceElement = NewEchoServiceElement(localLog, t)
 	var err error
-	t.TrappedApplicationServiceElement, err = tests.NewTrappedApplicationServiceElement(localLog, t)
+	t.TrappedApplicationServiceElement, err = tests.NewTrappedApplicationServiceElement(localLog, t.EchoServiceElement)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating trapped application service element")
 	}
-	t.ApplicationServiceElementContract = t.TrappedApplicationServiceElement.ApplicationServiceElementContract // TODO: we extract that here
-	t.EchoServiceElement = NewEchoServiceElement(localLog, t)
 	return t, nil
 }
 
@@ -155,7 +151,7 @@ func (t *TrappedEchoServiceElement) Request(args bacnetip.Args, kwargs bacnetip.
 }
 
 func (t *TrappedEchoServiceElement) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
-	return t.EchoServiceElement.Indication(args, kwargs)
+	return t.TrappedApplicationServiceElement.Indication(args, kwargs)
 }
 
 func (t *TrappedEchoServiceElement) Response(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
@@ -163,7 +159,7 @@ func (t *TrappedEchoServiceElement) Response(args bacnetip.Args, kwargs bacnetip
 }
 
 func (t *TrappedEchoServiceElement) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
-	return t.EchoServiceElement.Confirmation(args, kwargs)
+	return t.TrappedApplicationServiceElement.Confirmation(args, kwargs)
 }
 
 func (t *TrappedEchoServiceElement) String() string {
@@ -231,6 +227,5 @@ func (suite *TestApplicationSuite) TestAseRequest() {
 }
 
 func TestApplicationService(t *testing.T) {
-	t.Skip("currently broken") // TODO: fixme...
 	suite.Run(t, new(TestApplicationSuite))
 }
