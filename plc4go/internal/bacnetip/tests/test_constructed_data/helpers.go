@@ -79,7 +79,7 @@ type SimpleSequence struct {
 func NewSimpleSequence(kwargs KWArgs) (*SimpleSequence, error) {
 	s := &SimpleSequence{
 		sequenceElements: []Element{
-			NewElement("hydrogen", func(args Args, _ KWArgs) (interface{ Encode(Arg) error }, error) {
+			NewElement("hydrogen", func(args Args, _ KWArgs) (ElementKlass, error) {
 				var arg any
 				if len(args) == 1 {
 					arg = args[0]
@@ -109,9 +109,89 @@ func (e *SimpleSequence) GetSequenceElements() []Element {
 type CompoundSequence1 struct {
 	*Sequence
 	*SequenceEquality
+
+	sequenceElements []Element
+}
+
+func NewCompoundSequence1(kwargs KWArgs) (*CompoundSequence1, error) {
+	s := &CompoundSequence1{
+		sequenceElements: []Element{
+			NewElement("hydrogen", func(args Args, _ KWArgs) (ElementKlass, error) {
+				var arg any
+				if len(args) == 1 {
+					arg = args[0]
+				}
+				boolean, err := NewBoolean(arg)
+				return boolean, err
+			}),
+			NewElement("helium", func(args Args, _ KWArgs) (ElementKlass, error) {
+				var arg any
+				if len(args) == 1 {
+					arg = args[0]
+				}
+				boolean, err := NewInteger(arg)
+				return boolean, err
+			}),
+		},
+	}
+	var err error
+	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create sequence")
+	}
+	s.SequenceEquality = NewSequenceEquality(s)
+	return s, nil
+}
+
+func (e *CompoundSequence1) SetSequence(sequence *Sequence) {
+	e.Sequence = sequence
+}
+
+func (e *CompoundSequence1) GetSequenceElements() []Element {
+	return e.sequenceElements
 }
 
 type CompoundSequence2 struct {
 	*Sequence
 	*SequenceEquality
+
+	sequenceElements []Element
+}
+
+func NewCompoundSequence2(kwargs KWArgs) (*CompoundSequence2, error) {
+	s := &CompoundSequence2{
+		sequenceElements: []Element{
+			NewElement("lithium", func(args Args, _ KWArgs) (ElementKlass, error) {
+				var arg any
+				if len(args) == 1 {
+					arg = args[0]
+				}
+				boolean, err := NewBoolean(arg)
+				return boolean, err
+			}, WithElementOptional(true)),
+			NewElement("beryllium", func(args Args, _ KWArgs) (ElementKlass, error) {
+				var arg any
+				if len(args) == 1 {
+					arg = args[0]
+				}
+				boolean, err := NewInteger(arg)
+				return boolean, err
+			}),
+		},
+	}
+	var err error
+	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create sequence")
+	}
+	s.SequenceEquality = NewSequenceEquality(s)
+	return s, nil
+}
+
+func (e *CompoundSequence2) SetSequence(sequence *Sequence) {
+	e.Sequence = sequence
+}
+
+func (e *CompoundSequence2) GetSequenceElements() []Element {
+	return e.sequenceElements
 }

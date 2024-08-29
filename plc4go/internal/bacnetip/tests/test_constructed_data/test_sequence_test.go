@@ -90,3 +90,102 @@ func TestSimpleSequence(t *testing.T) {
 		require.NoError(t, err)
 	})
 }
+
+func TestCompoundSequence1(t *testing.T) {
+	t.Run("test_missing_element", func(t *testing.T) {
+		// create a sequence with a missing required element
+		seq, err := NewCompoundSequence1(NoKWArgs)
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList := NewTagList(nil)
+		err = seq.Encode(tagList)
+		require.Error(t, err)
+
+		// create a sequence with a missing required element
+		seq, err = NewCompoundSequence1(NewKWArgs(KnownKey("hydrogen"), true))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList = NewTagList(nil)
+		err = seq.Encode(tagList)
+		require.Error(t, err)
+
+		// create a sequence with a missing required element
+		seq, err = NewCompoundSequence1(NewKWArgs(KnownKey("helium"), 2))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList = NewTagList(nil)
+		err = seq.Encode(tagList)
+		require.Error(t, err)
+
+	})
+	t.Run("test_codec", func(t *testing.T) {
+		// create a sequence
+		seq, err := NewCompoundSequence1(NewKWArgs(KnownKey("hydrogen"), true, KnownKey("helium"), 2))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList := NewTagList(nil)
+		err = seq.Encode(tagList)
+
+		// create another sequence and decode the taglist
+		seq, err = NewCompoundSequence1(NoKWArgs)
+		require.NoError(t, err)
+		err = seq.Decode(tagList)
+		require.NoError(t, err)
+	})
+}
+
+func TestCompoundSequence2(t *testing.T) {
+	t.Run("test_missing_element", func(t *testing.T) {
+		// create a sequence with a missing required element
+		seq, err := NewCompoundSequence2(NoKWArgs)
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList := NewTagList(nil)
+		err = seq.Encode(tagList)
+		require.Error(t, err)
+
+		// create a sequence with a missing required element
+		seq, err = NewCompoundSequence2(NewKWArgs(KnownKey("lithium"), true))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList = NewTagList(nil)
+		err = seq.Encode(tagList)
+		require.Error(t, err)
+	})
+	t.Run("test_codec_1", func(t *testing.T) {
+		// create a sequence
+		seq, err := NewCompoundSequence2(NewKWArgs(KnownKey("beryllium"), 2))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList := NewTagList(nil)
+		err = seq.Encode(tagList)
+
+		// create another sequence and decode the taglist
+		seq, err = NewCompoundSequence2(NoKWArgs)
+		require.NoError(t, err)
+		err = seq.Decode(tagList)
+		require.NoError(t, err)
+	})
+	t.Run("test_codec_2", func(t *testing.T) {
+		// create a sequence
+		seq, err := NewCompoundSequence2(NewKWArgs(KnownKey("lithium"), true, KnownKey("beryllium"), 2))
+		require.NoError(t, err)
+
+		// encode it in a tag list
+		tagList := NewTagList(nil)
+		err = seq.Encode(tagList)
+
+		// create another sequence and decode the taglist
+		seq, err = NewCompoundSequence2(NoKWArgs)
+		require.NoError(t, err)
+		err = seq.Decode(tagList)
+		require.NoError(t, err)
+	})
+}

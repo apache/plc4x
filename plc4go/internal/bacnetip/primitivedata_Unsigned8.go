@@ -33,10 +33,14 @@ import (
 type Unsigned8 struct {
 	*Atomic[uint8]
 	*CommonMath
+
+	_appTag model.BACnetDataType
 }
 
 func NewUnsigned8(arg Arg) (*Unsigned8, error) {
-	i := &Unsigned8{}
+	i := &Unsigned8{
+		_appTag: model.BACnetDataType_UNSIGNED_INTEGER,
+	}
 	i.Atomic = NewAtomic[uint8](i)
 
 	if arg == nil {
@@ -70,29 +74,33 @@ func NewUnsigned8(arg Arg) (*Unsigned8, error) {
 	return i, nil
 }
 
-func (i *Unsigned8) Encode(arg Arg) error {
+func (u *Unsigned8) GetAppTag() model.BACnetDataType {
+	return u._appTag
+}
+
+func (u *Unsigned8) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
 	data := make([]byte, 4)
-	binary.BigEndian.PutUint32(data, uint32(i.value))
+	binary.BigEndian.PutUint32(data, uint32(u.value))
 
 	// reduce the value to the smallest number of bytes
 	for len(data) > 1 && data[0] == 0 {
 		data = data[1:]
 	}
 
-	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
+	tag.setAppData(uint(u._appTag), data)
 	return nil
 }
 
-func (i *Unsigned8) Decode(arg Arg) error {
+func (u *Unsigned8) Decode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(u._appTag) {
 		return errors.New("Unsigned8 application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {
@@ -108,11 +116,11 @@ func (i *Unsigned8) Decode(arg Arg) error {
 	}
 
 	// save the result
-	i.value = rslt
+	u.value = rslt
 	return nil
 }
 
-func (i *Unsigned8) IsValid(arg any) bool {
+func (u *Unsigned8) IsValid(arg any) bool {
 	switch arg := arg.(type) {
 	case string:
 		_, err := strconv.Atoi(arg)
@@ -130,6 +138,6 @@ func (i *Unsigned8) IsValid(arg any) bool {
 	}
 }
 
-func (i *Unsigned8) String() string {
-	return fmt.Sprintf("Unsigned8(%d)", i.value)
+func (u *Unsigned8) String() string {
+	return fmt.Sprintf("Unsigned8(%d)", u.value)
 }

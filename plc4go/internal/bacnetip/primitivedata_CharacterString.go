@@ -31,12 +31,16 @@ type CharacterString struct {
 	*Atomic[string]
 	*CommonMath
 
+	_appTag model.BACnetDataType
+
 	strEncoding byte
 	strValue    []byte
 }
 
 func NewCharacterString(arg Arg) (*CharacterString, error) {
-	c := &CharacterString{}
+	c := &CharacterString{
+		_appTag: model.BACnetDataType_CHARACTER_STRING,
+	}
 	c.Atomic = NewAtomic[string](c)
 
 	if arg == nil {
@@ -63,12 +67,16 @@ func NewCharacterString(arg Arg) (*CharacterString, error) {
 	return c, nil
 }
 
+func (c *CharacterString) GetAppTag() model.BACnetDataType {
+	return c._appTag
+}
+
 func (c *CharacterString) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.setAppData(uint(model.BACnetDataType_CHARACTER_STRING), append([]byte{c.strEncoding}, c.strValue...))
+	tag.setAppData(uint(c._appTag), append([]byte{c.strEncoding}, c.strValue...))
 	return nil
 }
 
@@ -77,7 +85,7 @@ func (c *CharacterString) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_CHARACTER_STRING) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(c._appTag) {
 		return errors.New("CharacterString application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {

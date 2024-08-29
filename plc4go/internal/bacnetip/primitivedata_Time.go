@@ -41,10 +41,14 @@ type TimeTuple struct {
 
 type Time struct {
 	value TimeTuple
+
+	_appTag model.BACnetDataType
 }
 
 func NewTime(arg Arg, args Args) (*Time, error) {
-	d := &Time{}
+	d := &Time{
+		_appTag: model.BACnetDataType_TIME,
+	}
 	hour := 255
 	if len(args) > 0 {
 		hour = args[0].(int)
@@ -124,6 +128,10 @@ func NewTime(arg Arg, args Args) (*Time, error) {
 	return d, nil
 }
 
+func (t *Time) GetAppTag() model.BACnetDataType {
+	return t._appTag
+}
+
 func (t *Time) now(arg float32) {
 	panic("implement me") // TODO
 }
@@ -133,7 +141,7 @@ func (t *Time) Encode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.setAppData(uint(model.BACnetDataType_TIME), []byte{byte(t.value.Hour), byte(t.value.Minute), byte(t.value.Second), byte(t.value.Hundredth)})
+	tag.setAppData(uint(t._appTag), []byte{byte(t.value.Hour), byte(t.value.Minute), byte(t.value.Second), byte(t.value.Hundredth)})
 	return nil
 }
 
@@ -142,7 +150,7 @@ func (t *Time) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_TIME) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(t._appTag) {
 		return errors.New("Time application tag required")
 	}
 	if len(tag.GetTagData()) != 4 {

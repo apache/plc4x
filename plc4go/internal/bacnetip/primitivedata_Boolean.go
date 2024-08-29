@@ -29,10 +29,14 @@ import (
 
 type Boolean struct {
 	*Atomic[int] //Note we need int as bool can't be used
+
+	_appTag model.BACnetDataType
 }
 
 func NewBoolean(arg Arg) (*Boolean, error) {
-	b := &Boolean{}
+	b := &Boolean{
+		_appTag: model.BACnetDataType_BOOLEAN,
+	}
 	b.Atomic = NewAtomic[int](b)
 
 	if arg == nil {
@@ -66,12 +70,16 @@ func NewBoolean(arg Arg) (*Boolean, error) {
 	return b, nil
 }
 
+func (b *Boolean) GetAppTag() model.BACnetDataType {
+	return b._appTag
+}
+
 func (b *Boolean) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	} //TODO: move tag number into member variable
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, b.value, []byte{}))
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, b._appTag, b.value, []byte{}))
 	return nil
 }
 
@@ -80,7 +88,7 @@ func (b *Boolean) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BOOLEAN) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(b._appTag) {
 		return errors.New("boolean application tag required")
 	}
 	if tag.GetTagLvt() > 1 {

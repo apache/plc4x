@@ -29,11 +29,15 @@ import (
 )
 
 type OctetString struct {
+	_appTag model.BACnetDataType
+
 	value []byte
 }
 
 func NewOctetString(arg Arg) (*OctetString, error) {
-	o := &OctetString{}
+	o := &OctetString{
+		_appTag: model.BACnetDataType_OCTET_STRING,
+	}
 	o.value = make([]byte, 0)
 
 	if arg == nil {
@@ -60,12 +64,16 @@ func NewOctetString(arg Arg) (*OctetString, error) {
 	return o, nil
 }
 
+func (o *OctetString) GetAppTag() model.BACnetDataType {
+	return o._appTag
+}
+
 func (o *OctetString) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.setAppData(uint(model.BACnetDataType_OCTET_STRING), o.value)
+	tag.setAppData(uint(o._appTag), o.value)
 	return nil
 }
 
@@ -74,7 +82,7 @@ func (o *OctetString) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_OCTET_STRING) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(o._appTag) {
 		return errors.New("OctetString application tag required")
 	}
 

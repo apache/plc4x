@@ -38,13 +38,17 @@ type ObjectIdentifierTuple struct {
 type ObjectIdentifier struct {
 	//*Atomic[...] won't work here
 
+	_appTag model.BACnetDataType
+
 	objectTypeClass *ObjectType
 
 	value ObjectIdentifierTuple
 }
 
 func NewObjectIdentifier(args Args) (*ObjectIdentifier, error) {
-	i := &ObjectIdentifier{}
+	i := &ObjectIdentifier{
+		_appTag: model.BACnetDataType_BACNET_OBJECT_IDENTIFIER,
+	}
 	var err error
 	i.objectTypeClass, err = NewObjectType(nil)
 	if err != nil {
@@ -99,6 +103,10 @@ func NewObjectIdentifier(args Args) (*ObjectIdentifier, error) {
 	}
 
 	return i, nil
+}
+
+func (o *ObjectIdentifier) GetAppTag() model.BACnetDataType {
+	return o._appTag
 }
 
 func (o *ObjectIdentifier) setTuple(objType any, objInstance int) error {
@@ -165,7 +173,7 @@ func (o *ObjectIdentifier) Encode(arg Arg) error {
 	}
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(o.getLong()))
-	tag.setAppData(uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER), data)
+	tag.setAppData(uint(o._appTag), data)
 	return nil
 }
 
@@ -174,7 +182,7 @@ func (o *ObjectIdentifier) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(o._appTag) {
 		return errors.New("ObjectIdentifier application tag required")
 	}
 	if len(tag.GetTagData()) != 4 {

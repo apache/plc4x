@@ -37,35 +37,49 @@ func init() {
 
 type Element interface {
 	GetName() string
-	GetKlass() func(Args, KWArgs) (interface{ Encode(Arg) error }, error)
+	GetKlass() func(Args, KWArgs) (ElementKlass, error)
 	GetContext() *int
 	IsOptional() bool
 	Encode(tagList Arg) error
 }
 
+type ElementKlass interface {
+	Encode(Arg) error
+	GetAppTag() readWriteModel.BACnetDataType
+}
+
 // TODO: finish
 type _Element struct {
 	Name     string
-	Klass    func(Args, KWArgs) (interface{ Encode(Arg) error }, error)
+	Klass    func(Args, KWArgs) (ElementKlass, error)
 	Context  *int
 	Optional bool
 }
 
-func NewElement(name string, klass func(Args, KWArgs) (interface{ Encode(Arg) error }, error)) Element {
+func NewElement(name string, klass func(Args, KWArgs) (ElementKlass, error), opts ...func(*_Element)) Element {
 	e := &_Element{
 		Name:  name,
 		Klass: klass,
+	}
+	for _, opt := range opts {
+		opt(e)
 	}
 	return e
 }
 
 var _ Element = (*_Element)(nil)
 
+func WithElementOptional(optional bool) func(*_Element) {
+	return func(e *_Element) {
+		e.Optional = optional
+	}
+}
+
 func (e *_Element) GetName() string {
 	return e.Name
 }
 
-func (e *_Element) GetKlass() func(Args, KWArgs) (interface{ Encode(Arg) error }, error) {
+func (e *_Element) GetKlass() func(Args, KWArgs) (ElementKlass, error) {
 	return e.Klass
 }
 
@@ -309,21 +323,24 @@ func (a *Sequence) Decode(arg Arg) error {
 		} else if isAtomic {
 			// convert it to application encoding
 			if context := element.GetContext(); context != nil {
-				if tag.GetTagClass() != readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS { // TODO: store the application tag klass into Boolean for example so we can inspect that here
+				if tag.GetTagClass() != readWriteModel.TagClass_CONTEXT_SPECIFIC_TAGS && tag.GetTagNumber() != uint(*context) {
 					if !element.IsOptional() {
-						return errors.Errorf("%s expected context tag %d", element.GetName(), context)
+						return errors.Errorf("%s expected context tag %d", element.GetName(), *context)
 					} else {
 						// TODO: we don't do this
 						//a.attr[element.GetName()] = nil
 						continue
 					}
 				}
-				tag, err = tag.ContextToApp(uint(readWriteModel.BACnetDataType_BOOLEAN)) // TODO: store the application tag klass into Boolean for example so we can inspect that here
+				atomicTag := tag.(interface {
+					GetAppTag() readWriteModel.BACnetDataType
+				})
+				tag, err = tag.ContextToApp(uint(atomicTag.GetAppTag()))
 				if err != nil {
 					return errors.Wrap(err, "error converting tag")
 				}
 			} else {
-				if tag.GetTagClass() != readWriteModel.TagClass_APPLICATION_TAGS { // TODO: store the application tag klass into Boolean for example so we can inspect that here
+				if tag.GetTagClass() != readWriteModel.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(elementKlass.GetAppTag()) {
 					if !element.IsOptional() {
 						return errors.Errorf("%s expected context tag %d", element.GetName(), context)
 					} else {

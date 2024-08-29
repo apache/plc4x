@@ -77,10 +77,14 @@ type DateTuple struct {
 
 type Date struct {
 	value DateTuple
+
+	_appTag model.BACnetDataType
 }
 
 func NewDate(arg Arg, args Args) (*Date, error) {
-	d := &Date{}
+	d := &Date{
+		_appTag: model.BACnetDataType_DATE,
+	}
 	year := 255
 	if len(args) > 0 {
 		year = args[0].(int)
@@ -245,6 +249,10 @@ func NewDate(arg Arg, args Args) (*Date, error) {
 	return d, nil
 }
 
+func (d *Date) GetAppTag() model.BACnetDataType {
+	return d._appTag
+}
+
 func (d *Date) calcDayOfWeek() {
 	year, month, day, dayOfWeek := d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek
 
@@ -281,7 +289,7 @@ func (d *Date) Encode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.setAppData(uint(model.BACnetDataType_DATE), []byte{byte(d.value.Year), byte(d.value.Month), byte(d.value.Day), byte(d.value.DayOfWeek)})
+	tag.setAppData(uint(d._appTag), []byte{byte(d.value.Year), byte(d.value.Month), byte(d.value.Day), byte(d.value.DayOfWeek)})
 
 	return nil
 }
@@ -291,7 +299,7 @@ func (d *Date) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DATE) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(d._appTag) {
 		return errors.New("Date application tag required")
 	}
 	if len(tag.GetTagData()) != 4 {

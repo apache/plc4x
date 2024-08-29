@@ -51,13 +51,17 @@ type Enumerated struct {
 	*Atomic[uint64]
 	EnumeratedContract
 
+	_appTag model.BACnetDataType
+
 	_xlateTable map[any]any
 
 	valueString string
 }
 
 func NewEnumerated(args ...any) (*Enumerated, error) {
-	e := &Enumerated{}
+	e := &Enumerated{
+		_appTag: model.BACnetDataType_ENUMERATED,
+	}
 	e.EnumeratedContract = e
 	e.Atomic = NewAtomic[uint64](e)
 
@@ -131,6 +135,10 @@ func NewEnumerated(args ...any) (*Enumerated, error) {
 	return e, nil
 }
 
+func (e *Enumerated) GetAppTag() model.BACnetDataType {
+	return e._appTag
+}
+
 func (e *Enumerated) GetEnumerations() map[string]uint64 {
 	return make(map[string]uint64)
 }
@@ -191,7 +199,7 @@ func (e *Enumerated) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_ENUMERATED) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(e._appTag) {
 		return errors.New("bit string application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {
@@ -234,7 +242,7 @@ func (e *Enumerated) Encode(arg Arg) error {
 	}
 
 	// encode the tag
-	tag.setAppData(uint(model.BACnetDataType_ENUMERATED), data)
+	tag.setAppData(uint(e._appTag), data)
 	return nil
 }
 

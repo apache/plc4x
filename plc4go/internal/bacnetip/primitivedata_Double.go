@@ -32,10 +32,14 @@ import (
 type Double struct {
 	*Atomic[float64]
 	*CommonMath
+
+	_appTag model.BACnetDataType
 }
 
 func NewDouble(arg Arg) (*Double, error) {
-	b := &Double{}
+	b := &Double{
+		_appTag: model.BACnetDataType_DOUBLE,
+	}
 	b.Atomic = NewAtomic[float64](b)
 
 	if arg == nil {
@@ -63,6 +67,10 @@ func NewDouble(arg Arg) (*Double, error) {
 	return b, nil
 }
 
+func (d *Double) GetAppTag() model.BACnetDataType {
+	return d._appTag
+}
+
 func (d *Double) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
@@ -70,7 +78,7 @@ func (d *Double) Encode(arg Arg) error {
 	}
 	var _b = make([]byte, 8)
 	binary.BigEndian.PutUint64(_b, math.Float64bits(d.value))
-	tag.setAppData(uint(model.BACnetDataType_DOUBLE), _b)
+	tag.setAppData(uint(d._appTag), _b)
 	return nil
 }
 
@@ -79,7 +87,7 @@ func (d *Double) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DOUBLE) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(d._appTag) {
 		return errors.New("Double application tag required")
 	}
 	if len(tag.GetTagData()) != 8 {

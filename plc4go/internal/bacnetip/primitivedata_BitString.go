@@ -36,6 +36,8 @@ type BitStringExtension interface {
 }
 
 type BitString struct {
+	_appTag model.BACnetDataType
+
 	bitStringExtension BitStringExtension
 	value              []bool
 }
@@ -46,6 +48,7 @@ func NewBitString(args Args) (*BitString, error) {
 
 func NewBitStringWithExtension(bitStringExtension BitStringExtension, args Args) (*BitString, error) {
 	b := &BitString{
+		_appTag:            model.BACnetDataType_BIT_STRING,
 		bitStringExtension: bitStringExtension,
 	}
 	if len(args) == 0 {
@@ -92,12 +95,16 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, args Args)
 	return b, nil
 }
 
+func (b *BitString) GetAppTag() model.BACnetDataType {
+	return b._appTag
+}
+
 func (b *BitString) Decode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BIT_STRING) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(b._appTag) {
 		return errors.New("bit string application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {
@@ -157,7 +164,7 @@ func (b *BitString) Encode(arg Arg) error {
 		data = append(data, x)
 	}
 
-	tag.setAppData(uint(model.BACnetDataType_BIT_STRING), data)
+	tag.setAppData(uint(b._appTag), data)
 	return nil
 }
 

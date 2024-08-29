@@ -32,10 +32,14 @@ import (
 type Real struct {
 	*Atomic[float32]
 	*CommonMath
+
+	_appTag model.BACnetDataType
 }
 
 func NewReal(arg Arg) (*Real, error) {
-	b := &Real{}
+	b := &Real{
+		_appTag: model.BACnetDataType_REAL,
+	}
 	b.Atomic = NewAtomic[float32](b)
 
 	if arg == nil {
@@ -64,23 +68,27 @@ func NewReal(arg Arg) (*Real, error) {
 	return b, nil
 }
 
-func (d *Real) Encode(arg Arg) error {
+func (r *Real) GetAppTag() model.BACnetDataType {
+	return r._appTag
+}
+
+func (r *Real) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
 	var _b = make([]byte, 4)
-	binary.BigEndian.PutUint32(_b, math.Float32bits(d.value))
-	tag.setAppData(uint(model.BACnetDataType_REAL), _b)
+	binary.BigEndian.PutUint32(_b, math.Float32bits(r.value))
+	tag.setAppData(uint(r._appTag), _b)
 	return nil
 }
 
-func (d *Real) Decode(arg Arg) error {
+func (r *Real) Decode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_REAL) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(r._appTag) {
 		return errors.New("Real application tag required")
 	}
 	if len(tag.GetTagData()) != 4 {
@@ -88,11 +96,11 @@ func (d *Real) Decode(arg Arg) error {
 	}
 
 	// extract the data
-	d.value = math.Float32frombits(binary.BigEndian.Uint32(tag.GetTagData()))
+	r.value = math.Float32frombits(binary.BigEndian.Uint32(tag.GetTagData()))
 	return nil
 }
 
-func (d *Real) IsValid(arg any) bool {
+func (r *Real) IsValid(arg any) bool {
 	switch arg := arg.(type) {
 	case float32:
 		return true
@@ -106,6 +114,6 @@ func (d *Real) IsValid(arg any) bool {
 	}
 }
 
-func (d *Real) String() string {
-	return fmt.Sprintf("Real(%g)", d.value)
+func (r *Real) String() string {
+	return fmt.Sprintf("Real(%g)", r.value)
 }

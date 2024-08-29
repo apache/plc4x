@@ -19,7 +19,11 @@
 
 package bacnetip
 
-import "cmp"
+import (
+	"cmp"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
 
 type ComparableAndOrdered interface {
 	comparable
@@ -48,6 +52,8 @@ type Atomic[T ComparableAndOrdered] struct {
 	AtomicContract[T]
 	atomicRequirements AtomicRequirements
 
+	_appTag readWriteModel.BACnetDataType
+
 	value T
 }
 
@@ -66,6 +72,10 @@ func NewAtomic[T ComparableAndOrdered](subStruct interface {
 
 func (a *Atomic[T]) isAtomic() bool {
 	return true
+}
+
+func (a *Atomic[T]) GetAppTag() readWriteModel.BACnetDataType {
+	return a._appTag
 }
 
 func (a *Atomic[T]) Compare(other any) int {

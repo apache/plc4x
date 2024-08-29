@@ -29,10 +29,14 @@ import (
 
 type Null struct {
 	*Atomic[int]
+
+	_appTag model.BACnetDataType
 }
 
 func NewNull(arg Arg) (*Null, error) {
-	b := &Null{}
+	b := &Null{
+		_appTag: model.BACnetDataType_NULL,
+	}
 	b.Atomic = NewAtomic[int](b)
 
 	if arg == nil {
@@ -54,21 +58,25 @@ func NewNull(arg Arg) (*Null, error) {
 	return b, nil
 }
 
-func (b *Null) Encode(arg Arg) error {
+func (n *Null) GetAppTag() model.BACnetDataType {
+	return n._appTag
+}
+
+func (n *Null) Encode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, b.value, []byte{}))
+	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, n._appTag, n.value, []byte{}))
 	return nil
 }
 
-func (b *Null) Decode(arg Arg) error {
+func (n *Null) Decode(arg Arg) error {
 	tag, ok := arg.(Tag)
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_NULL) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(n._appTag) {
 		return errors.New("Null application tag required")
 	}
 	if tag.GetTagLvt() > 1 {
@@ -77,19 +85,19 @@ func (b *Null) Decode(arg Arg) error {
 
 	// get the data
 	if tag.GetTagLvt() == 1 {
-		b.value = 1
+		n.value = 1
 	}
 	return nil
 }
 
-func (b *Null) IsValid(arg any) bool {
+func (n *Null) IsValid(arg any) bool {
 	_, ok := arg.(bool)
 	return ok
 }
 
-func (b *Null) String() string {
+func (n *Null) String() string {
 	value := "False"
-	if b.value == 1 {
+	if n.value == 1 {
 		value = "True"
 	}
 	return fmt.Sprintf("Null(%s)", value)

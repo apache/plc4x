@@ -32,10 +32,14 @@ import (
 type Integer struct {
 	*Atomic[int32]
 	*CommonMath
+
+	_appTag model.BACnetDataType
 }
 
 func NewInteger(arg Arg) (*Integer, error) {
-	i := &Integer{}
+	i := &Integer{
+		_appTag: model.BACnetDataType_SIGNED_INTEGER,
+	}
 	i.Atomic = NewAtomic[int32](i)
 
 	if arg == nil {
@@ -62,6 +66,10 @@ func NewInteger(arg Arg) (*Integer, error) {
 	}
 
 	return i, nil
+}
+
+func (i *Integer) GetAppTag() model.BACnetDataType {
+	return i._appTag
 }
 
 func (i *Integer) Encode(arg Arg) error {
@@ -96,7 +104,7 @@ func (i *Integer) Encode(arg Arg) error {
 		}
 	}
 
-	tag.setAppData(uint(model.BACnetDataType_SIGNED_INTEGER), data)
+	tag.setAppData(uint(i._appTag), data)
 	return nil
 }
 
@@ -105,7 +113,7 @@ func (i *Integer) Decode(arg Arg) error {
 	if !ok {
 		return errors.Errorf("%T is not a Tag", arg)
 	}
-	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_SIGNED_INTEGER) {
+	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(i._appTag) {
 		return errors.New("Integer application tag required")
 	}
 	if len(tag.GetTagData()) == 0 {
