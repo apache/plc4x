@@ -48,6 +48,18 @@ type ElementKlass interface {
 	GetAppTag() readWriteModel.BACnetDataType
 }
 
+// V2E accepts a function which takes an Arg and maps it to a ElementKlass
+func V2E[T any](b func(arg Arg) (*T, error)) func(Args, KWArgs) (ElementKlass, error) {
+	return func(args Args, kwargs KWArgs) (ElementKlass, error) {
+		var arg any
+		if len(args) == 1 {
+			arg = args[0]
+		}
+		r, err := b(arg)
+		return any(r).(ElementKlass), err
+	}
+}
+
 // TODO: finish
 type _Element struct {
 	Name     string
@@ -72,6 +84,12 @@ var _ Element = (*_Element)(nil)
 func WithElementOptional(optional bool) func(*_Element) {
 	return func(e *_Element) {
 		e.Optional = optional
+	}
+}
+
+func WithElementContext(context int) func(*_Element) {
+	return func(e *_Element) {
+		e.Context = &context
 	}
 }
 
@@ -105,7 +123,7 @@ type SequenceContract interface {
 type SequenceContractRequirement interface {
 	SequenceContract
 	// SetSequence callback is needed as we work in the constructor already with the finished object // TODO: maybe we need to return as init again as it might not be finished constructing....
-	SetSequence(sequence *Sequence)
+	SetSequence(s *Sequence)
 }
 
 // TODO: finish
@@ -156,7 +174,7 @@ func NewSequence(kwargs KWArgs, opts ...func(*Sequence)) (*Sequence, error) {
 	return s, nil
 }
 
-func WithSequenceContract(contract SequenceContractRequirement) func(*Sequence) {
+func WithSequenceExtension(contract SequenceContractRequirement) func(*Sequence) {
 	return func(s *Sequence) {
 		s._contract = contract
 	}

@@ -54,8 +54,8 @@ type APCI interface {
 	getApduMaxSegs() *uint8
 	setApduMaxResp(*uint8)
 	getApduMaxResp() *uint8
-	setApduService(*readWriteModel.BACnetConfirmedServiceChoice)
-	getApduService() *readWriteModel.BACnetConfirmedServiceChoice
+	setApduService(*uint8)
+	getApduService() *uint8
 	setApduInvokeID(*uint8)
 	getApduInvokeID() *uint8
 	setApduAbortRejectReason(*uint8)
@@ -76,7 +76,7 @@ type _APCI struct {
 	apduWin               *uint8 // actual/proposed window size
 	apduMaxSegs           *uint8 // maximum segments accepted (decoded)
 	apduMaxResp           *uint8 // max response accepted (decoded)
-	apduService           *readWriteModel.BACnetConfirmedServiceChoice
+	apduService           *uint8
 	apduInvokeID          *uint8
 	apduAbortRejectReason *uint8
 
@@ -155,10 +155,10 @@ func (a *_APCI) setApduMaxResp(apduMaxResp *uint8) {
 func (a *_APCI) getApduMaxResp() *uint8 {
 	return a.apduMaxResp
 }
-func (a *_APCI) setApduService(apduService *readWriteModel.BACnetConfirmedServiceChoice) {
+func (a *_APCI) setApduService(apduService *uint8) {
 	a.apduService = apduService
 }
-func (a *_APCI) getApduService() *readWriteModel.BACnetConfirmedServiceChoice {
+func (a *_APCI) getApduService() *uint8 {
 	return a.apduService
 }
 func (a *_APCI) setApduInvokeID(apduInvokeID *uint8) {

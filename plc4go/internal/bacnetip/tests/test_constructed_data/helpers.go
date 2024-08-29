@@ -57,7 +57,7 @@ type EmptySequence struct {
 func NewEmptySequence(kwargs KWArgs) (*EmptySequence, error) {
 	e := &EmptySequence{}
 	var err error
-	e.Sequence, err = NewSequence(kwargs, WithSequenceContract(e))
+	e.Sequence, err = NewSequence(kwargs, WithSequenceExtension(e))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -79,18 +79,11 @@ type SimpleSequence struct {
 func NewSimpleSequence(kwargs KWArgs) (*SimpleSequence, error) {
 	s := &SimpleSequence{
 		sequenceElements: []Element{
-			NewElement("hydrogen", func(args Args, _ KWArgs) (ElementKlass, error) {
-				var arg any
-				if len(args) == 1 {
-					arg = args[0]
-				}
-				boolean, err := NewBoolean(arg)
-				return boolean, err
-			}),
+			NewElement("hydrogen", V2E(NewBoolean)),
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -116,26 +109,12 @@ type CompoundSequence1 struct {
 func NewCompoundSequence1(kwargs KWArgs) (*CompoundSequence1, error) {
 	s := &CompoundSequence1{
 		sequenceElements: []Element{
-			NewElement("hydrogen", func(args Args, _ KWArgs) (ElementKlass, error) {
-				var arg any
-				if len(args) == 1 {
-					arg = args[0]
-				}
-				boolean, err := NewBoolean(arg)
-				return boolean, err
-			}),
-			NewElement("helium", func(args Args, _ KWArgs) (ElementKlass, error) {
-				var arg any
-				if len(args) == 1 {
-					arg = args[0]
-				}
-				boolean, err := NewInteger(arg)
-				return boolean, err
-			}),
+			NewElement("hydrogen", V2E(NewBoolean)),
+			NewElement("helium", V2E(NewInteger)),
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}
@@ -161,26 +140,12 @@ type CompoundSequence2 struct {
 func NewCompoundSequence2(kwargs KWArgs) (*CompoundSequence2, error) {
 	s := &CompoundSequence2{
 		sequenceElements: []Element{
-			NewElement("lithium", func(args Args, _ KWArgs) (ElementKlass, error) {
-				var arg any
-				if len(args) == 1 {
-					arg = args[0]
-				}
-				boolean, err := NewBoolean(arg)
-				return boolean, err
-			}, WithElementOptional(true)),
-			NewElement("beryllium", func(args Args, _ KWArgs) (ElementKlass, error) {
-				var arg any
-				if len(args) == 1 {
-					arg = args[0]
-				}
-				boolean, err := NewInteger(arg)
-				return boolean, err
-			}),
+			NewElement("lithium", V2E(NewBoolean), WithElementOptional(true)),
+			NewElement("beryllium", V2E(NewInteger)),
 		},
 	}
 	var err error
-	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	s.Sequence, err = NewSequence(kwargs, WithSequenceExtension(s))
 	if err != nil {
 		return nil, errors.Wrap(err, "could not create sequence")
 	}

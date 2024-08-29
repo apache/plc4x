@@ -19,33 +19,42 @@
 
 package bacnetip
 
-import "github.com/pkg/errors"
+import (
+	"github.com/pkg/errors"
 
-// TODO: implement it...
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
+
 type UnconfirmedRequestPDU struct {
 	*___APDU
+
+	// args
+	argChoice *readWriteModel.BACnetUnconfirmedServiceChoice
+
+	pduType readWriteModel.ApduType
 }
 
-func NewUnconfirmedRequestPDU() (*UnconfirmedRequestPDU, error) {
-	u := &UnconfirmedRequestPDU{}
+func NewUnconfirmedRequestPDU(opts ...func(*UnconfirmedRequestPDU)) (*UnconfirmedRequestPDU, error) {
+	u := &UnconfirmedRequestPDU{
+		pduType: readWriteModel.ApduType_UNCONFIRMED_REQUEST_PDU,
+	}
+	for _, opt := range opts {
+		opt(u)
+	}
 	apdu, err := new_APDU()
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
 	u.___APDU = apdu.(*___APDU)
+
+	u.apduType = &u.pduType
+	u.apduService = (*uint8)(u.argChoice)
+
 	return u, nil
 }
 
-func NewUnconfirmedRequestSequence() (*UnconfirmedRequestSequence, error) {
-	u := &UnconfirmedRequestSequence{}
-	var err error
-	u.APCISequence, err = NewAPCISequence()
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating _APCISequence")
+func WithUnconfirmedRequestPDU(choice readWriteModel.BACnetUnconfirmedServiceChoice) func(*UnconfirmedRequestPDU) {
+	return func(u *UnconfirmedRequestPDU) {
+		u.argChoice = &choice
 	}
-	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU()
-	if err != nil {
-		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
-	}
-	return u, nil
 }

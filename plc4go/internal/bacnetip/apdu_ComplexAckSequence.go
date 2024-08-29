@@ -19,14 +19,72 @@
 
 package bacnetip
 
+import (
+	"github.com/pkg/errors"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
+)
+
 // TODO: implement it...
 type ComplexAckSequence struct {
 	*APCISequence
 	*ComplexAckPDU
 }
 
-// TODO: implement it...
+// UnconfirmedRequestSequenceContract provides a set of functions which can be overwritten by a sub struct
+type UnconfirmedRequestSequenceContract interface {
+	APCISequenceContractRequirement
+	GetServiceChoice() *readWriteModel.BACnetUnconfirmedServiceChoice
+}
+
+// UnconfirmedRequestSequenceContractRequirement is needed when one want to extend using SequenceContract
+type UnconfirmedRequestSequenceContractRequirement interface {
+	UnconfirmedRequestSequenceContract
+	// SetUnconfirmedRequestSequence callback is needed as we work in the constructor already with the finished object // TODO: maybe we need to return as init again as it might not be finished constructing....
+	SetUnconfirmedRequestSequence(urs *UnconfirmedRequestSequence)
+}
+
 type UnconfirmedRequestSequence struct {
 	*APCISequence
 	*UnconfirmedRequestPDU
+
+	_contract UnconfirmedRequestSequenceContract
+}
+
+func NewUnconfirmedRequestSequence(opts ...func(*UnconfirmedRequestSequence)) (*UnconfirmedRequestSequence, error) {
+	u := &UnconfirmedRequestSequence{}
+	for _, opt := range opts {
+		opt(u)
+	}
+	if u._contract == nil {
+		u._contract = u
+	} else {
+		u._contract.(UnconfirmedRequestSequenceContractRequirement).SetUnconfirmedRequestSequence(u)
+	}
+	var err error
+	u.APCISequence, err = NewAPCISequence(WithAPCISequenceExtension(u._contract))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
+	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU(func(pdu *UnconfirmedRequestPDU) {
+		pdu.argChoice = u.GetServiceChoice()
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")
+	}
+	return u, nil
+}
+
+func WithUnconfirmedRequestSequenceExtension(contract UnconfirmedRequestSequenceContractRequirement) func(*UnconfirmedRequestSequence) {
+	return func(a *UnconfirmedRequestSequence) {
+		a._contract = contract
+	}
+}
+
+func (u *UnconfirmedRequestSequence) GetServiceChoice() *readWriteModel.BACnetUnconfirmedServiceChoice {
+	return nil
+}
+
+func (u *UnconfirmedRequestSequence) SetAPCISequence(a *APCISequence) {
+	u.APCISequence = a
 }

@@ -21,23 +21,43 @@ package bacnetip
 
 import (
 	"github.com/pkg/errors"
-
-	"github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
+
+// APCISequenceContract provides a set of functions which can be overwritten by a sub struct
+type APCISequenceContract interface {
+	SequenceContractRequirement
+}
+
+// APCISequenceContractRequirement is needed when one want to extend using SequenceContract
+type APCISequenceContractRequirement interface {
+	APCISequenceContract
+	// SetAPCISequence callback is needed as we work in the constructor already with the finished object // TODO: maybe we need to return as init again as it might not be finished constructing....
+	SetAPCISequence(a *APCISequence)
+}
 
 // TODO: implement it...
 type APCISequence struct {
 	*_APCI
 	*Sequence
 
+	_contract APCISequenceContract
+
 	tagList *TagList
 }
 
-func NewAPCISequence() (*APCISequence, error) {
+func NewAPCISequence(opts ...func(*APCISequence)) (*APCISequence, error) {
 	a := &APCISequence{}
+	for _, opt := range opts {
+		opt(a)
+	}
+	if a._contract == nil {
+		a._contract = a
+	} else {
+		a._contract.(APCISequenceContractRequirement).SetAPCISequence(a)
+	}
 	a._APCI = NewAPCI(nil).(*_APCI) // TODO: what to pass up?
 	var err error
-	a.Sequence, err = NewSequence(NoKWArgs, WithSequenceContract(a))
+	a.Sequence, err = NewSequence(NoKWArgs, WithSequenceExtension(a._contract))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating sequence")
 	}
@@ -45,6 +65,12 @@ func NewAPCISequence() (*APCISequence, error) {
 	// start with an empty tag list
 	a.tagList = NewTagList(nil)
 	return a, nil
+}
+
+func WithAPCISequenceExtension(contract APCISequenceContractRequirement) func(*APCISequence) {
+	return func(a *APCISequence) {
+		a._contract = contract
+	}
 }
 
 func (a *APCISequence) SetSequence(sequence *Sequence) {
@@ -78,18 +104,17 @@ func (a *APCISequence) Decode(apdu Arg) error {
 		if err := a.Update(apdu); err != nil {
 			return errors.Wrap(err, "error updating APDU")
 		}
-		switch pduUserData := apdu.GetRootMessage().(type) {
-		case model.APDUExactly:
-			a.tagList = NewTagList(nil)
-			if err := a.tagList.Decode(apdu); err != nil {
-				return errors.Wrap(err, "error decoding TagList")
-			}
-			// pass the taglist to the Sequence for additional decoding
-			if err := a.Sequence.Decode(a.tagList); err != nil {
-				return errors.Wrap(err, "error encoding TagList")
-			}
+		a.tagList = NewTagList(nil)
+		if err := a.tagList.Decode(apdu); err != nil {
+			return errors.Wrap(err, "error decoding TagList")
+		}
+		// pass the taglist to the Sequence for additional decoding
+		if err := a.Sequence.Decode(a.tagList); err != nil {
+			return errors.Wrap(err, "error encoding TagList")
+		}
 
-			_ = pduUserData
+		if len(a.tagList.GetTagList()) > 0 {
+			return errors.New("trailing unmatched tags")
 		}
 		return nil
 	default:

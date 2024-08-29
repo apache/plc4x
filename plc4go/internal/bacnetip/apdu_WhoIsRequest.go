@@ -20,26 +20,42 @@
 package bacnetip
 
 import (
-	"fmt"
-
 	"github.com/pkg/errors"
+
+	readWriteModel "github.com/apache/plc4x/plc4go/protocols/bacnetip/readwrite/model"
 )
 
-// TODO: implement it...
 type WhoIsRequest struct {
 	*UnconfirmedRequestSequence
+
+	serviceChoice    readWriteModel.BACnetUnconfirmedServiceChoice
+	sequenceElements []Element
 }
 
 func NewWhoIsRequest() (*WhoIsRequest, error) {
-	w := &WhoIsRequest{}
+	w := &WhoIsRequest{
+		serviceChoice: readWriteModel.BACnetUnconfirmedServiceChoice_WHO_IS,
+		sequenceElements: []Element{
+			NewElement("deviceInstanceRangeLowLimit", V2E(NewUnsigned), WithElementContext(0), WithElementOptional(true)),
+			NewElement("deviceInstanceRangeHighLimit", V2E(NewUnsigned), WithElementContext(1), WithElementOptional(true)),
+		},
+	}
 	var err error
-	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence()
+	w.UnconfirmedRequestSequence, err = NewUnconfirmedRequestSequence(WithUnconfirmedRequestSequenceExtension(w))
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestSequence")
 	}
 	return w, nil
 }
 
-func (r *WhoIsRequest) String() string {
-	return fmt.Sprintf("WhoIsRequest{%s}", r.UnconfirmedRequestSequence)
+func (w *WhoIsRequest) GetServiceChoice() *readWriteModel.BACnetUnconfirmedServiceChoice {
+	return &w.serviceChoice
+}
+
+func (w *WhoIsRequest) GetSequenceElements() []Element {
+	return w.sequenceElements
+}
+
+func (w *WhoIsRequest) SetUnconfirmedRequestSequence(u *UnconfirmedRequestSequence) {
+	w.UnconfirmedRequestSequence = u
 }
