@@ -207,6 +207,7 @@ func (n *_NPCI) Update(npci Arg) error {
 	}
 }
 
+// TODO: this needs work as it doesn't do anything any more right now...
 func (n *_NPCI) buildNPDU(hopCount uint8, source *Address, destination *Address, expectingReply bool, networkPriority model.NPDUNetworkPriority, nlm model.NLM, apdu model.APDU) (model.NPDU, error) {
 	switch {
 	case nlm != nil && apdu != nil:
@@ -434,5 +435,17 @@ func (n *_NPCI) Decode(pdu Arg) error {
 }
 
 func (n *_NPCI) deepCopy() *_NPCI {
-	return &_NPCI{_PCI: n._PCI.deepCopy(), nlm: n.nlm}
+	return &_NPCI{
+		_PCI:           n._PCI.deepCopy(),
+		npduVersion:    n.npduVersion,
+		npduControl:    n.npduControl,
+		npduDADR:       n.npduDADR.deepCopy(),
+		npduSADR:       n.npduSADR.deepCopy(),
+		npduHopCount:   CopyPtr(n.npduHopCount),
+		npduNetMessage: CopyPtr(n.npduNetMessage),
+		npduVendorID:   CopyPtr(n.npduVendorID),
+		npdu:           n.npdu,
+		nlm:            n.nlm,
+		apdu:           n.apdu,
+	}
 }

@@ -53,7 +53,7 @@ func NewApplicationIOController(localLog zerolog.Logger, localDevice *LocalDevic
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating io controller")
 	}
-	a.Application, err = NewApplication(localLog, localDevice, a, func(application *Application) {
+	a.Application, err = NewApplication(localLog, localDevice, func(application *Application) {
 		application.deviceInfoCache = a.argDeviceInfoCache
 		application.argAseID = a.argAseID
 	})

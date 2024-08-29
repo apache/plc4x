@@ -53,8 +53,8 @@ type TrappedApplicationServiceElementRequirements interface {
 //
 //	The Snort functions will be called after the PDU is trapped.
 type TrappedApplicationServiceElement struct {
-	TrappedApplicationServiceElementRequirements
-	*bacnetip.ApplicationServiceElement
+	bacnetip.ApplicationServiceElementContract
+	requirements TrappedApplicationServiceElementRequirements
 
 	requestSent          bacnetip.PDU
 	indicationReceived   bacnetip.PDU
@@ -64,15 +64,17 @@ type TrappedApplicationServiceElement struct {
 	log zerolog.Logger
 }
 
+var _ bacnetip.ApplicationServiceElement = (*TrappedApplicationServiceElement)(nil)
+
 func NewTrappedApplicationServiceElement(localLog zerolog.Logger, requirements TrappedApplicationServiceElementRequirements) (*TrappedApplicationServiceElement, error) {
 	t := &TrappedApplicationServiceElement{
-		TrappedApplicationServiceElementRequirements: requirements,
-		log: localLog,
+		requirements: requirements,
+		log:          localLog,
 	}
 	var err error
-	t.ApplicationServiceElement, err = bacnetip.NewApplicationServiceElement(localLog, t)
+	t.ApplicationServiceElementContract, err = bacnetip.NewApplicationServiceElement(localLog)
 	if err != nil {
-		return nil, errors.Wrap(err, "error building application service element")
+		return nil, errors.Wrap(err, "error creating SAP")
 	}
 	return t, nil
 }
@@ -100,23 +102,23 @@ func (s *TrappedApplicationServiceElement) String() string {
 func (s *TrappedApplicationServiceElement) Request(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Request")
 	s.requestSent = args.Get0PDU()
-	return s.TrappedApplicationServiceElementRequirements.Request(args, kwargs)
+	return s.ApplicationServiceElementContract.Request(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Indication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Indication")
 	s.indicationReceived = args.Get0PDU()
-	return s.TrappedApplicationServiceElementRequirements.Indication(args, kwargs)
+	return s.requirements.Indication(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Response(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Response")
 	s.responseSent = args.Get0PDU()
-	return s.TrappedApplicationServiceElementRequirements.Response(args, kwargs)
+	return s.ApplicationServiceElementContract.Response(args, kwargs)
 }
 
 func (s *TrappedApplicationServiceElement) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
 	s.confirmationReceived = args.Get0PDU()
-	return s.TrappedApplicationServiceElementRequirements.Confirmation(args, kwargs)
+	return s.requirements.Confirmation(args, kwargs)
 }

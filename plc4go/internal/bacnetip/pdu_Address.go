@@ -20,6 +20,7 @@
 package bacnetip
 
 import (
+	"bytes"
 	"encoding/binary"
 	"fmt"
 	"net"
@@ -65,6 +66,15 @@ func (a AddressType) String() string {
 type AddressTuple[L any, R any] struct {
 	Left  L
 	Right R
+}
+
+func (a *AddressTuple[L, R]) deepCopy() *AddressTuple[L, R] {
+	// TODO: check if that works like intended (might just fail for pointer types)
+	return &AddressTuple[L, R]{*CopyPtr[L](&a.Left), *CopyPtr[R](&a.Right)}
+}
+
+func (a *AddressTuple[L, R]) DeepCopy() any {
+	return a.deepCopy()
 }
 
 func (a *AddressTuple[L, R]) String() string {
@@ -782,4 +792,29 @@ func (a *Address) GoString() string { //TODO: not valid yet, needs adjustments t
 		_, _ = fmt.Fprintf(&sb, ", broadcast tuple: %s", a.AddrBroadcastTuple)
 	}
 	return sb.String()
+}
+
+func (a *Address) deepCopy() *Address {
+	if a == nil {
+		return nil
+	}
+	return &Address{
+		a.AddrType,
+		CopyPtr(a.AddrNet),
+		bytes.Clone(a.AddrAddress),
+		CopyPtr(a.AddrLen),
+		a.AddrRoute.deepCopy(),
+		CopyPtr(a.AddrIP),
+		CopyPtr(a.AddrMask),
+		CopyPtr(a.AddrHost),
+		CopyPtr(a.AddrSubnet),
+		CopyPtr(a.AddrPort),
+		a.AddrTuple.deepCopy(),
+		a.AddrBroadcastTuple.deepCopy(),
+		a.log,
+	}
+}
+
+func (a *Address) DeepCopy() any {
+	return a.deepCopy()
 }

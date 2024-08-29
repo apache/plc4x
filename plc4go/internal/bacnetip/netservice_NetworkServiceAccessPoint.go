@@ -30,7 +30,7 @@ import (
 )
 
 type NetworkServiceAccessPoint struct {
-	*ServiceAccessPoint
+	ServiceAccessPointContract
 	Server
 	adapters        map[netKey]*NetworkAdapter
 	routerInfoCache *RouterInfoCache
@@ -52,7 +52,7 @@ func NewNetworkServiceAccessPoint(localLog zerolog.Logger, opts ...func(*Network
 		opt(n)
 	}
 	var err error
-	n.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, n, func(point *ServiceAccessPoint) {
+	n.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(point *serviceAccessPoint) {
 		point.serviceID = n.argSapID
 	})
 	if err != nil {

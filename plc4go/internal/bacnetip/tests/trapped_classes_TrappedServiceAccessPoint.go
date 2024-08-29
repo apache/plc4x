@@ -27,9 +27,7 @@ import (
 )
 
 type TrappedServiceAccessPointRequirements interface {
-	SapRequest(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	SapIndication(args bacnetip.Args, kwargs bacnetip.KWArgs) error
-	SapResponse(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 	SapConfirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error
 }
 
@@ -53,8 +51,8 @@ type TrappedServiceAccessPointRequirements interface {
 //
 //		The Snort functions will be called after the PDU is trapped.
 type TrappedServiceAccessPoint struct {
-	TrappedServiceAccessPointRequirements
-	*bacnetip.ServiceAccessPoint
+	bacnetip.ServiceAccessPointContract
+	requirements TrappedServiceAccessPointRequirements
 
 	sapRequestSent          bacnetip.PDU
 	sapIndicationReceived   bacnetip.PDU
@@ -66,13 +64,13 @@ type TrappedServiceAccessPoint struct {
 
 func NewTrappedServiceAccessPoint(localLog zerolog.Logger, requirements TrappedServiceAccessPointRequirements) (*TrappedServiceAccessPoint, error) {
 	t := &TrappedServiceAccessPoint{
-		TrappedServiceAccessPointRequirements: requirements,
-		log:                                   localLog,
+		requirements: requirements,
+		log:          localLog,
 	}
 	var err error
-	t.ServiceAccessPoint, err = bacnetip.NewServiceAccessPoint(localLog, t)
+	t.ServiceAccessPointContract, err = bacnetip.NewServiceAccessPoint(localLog)
 	if err != nil {
-		return nil, errors.Wrap(err, "error building service access point")
+		return nil, errors.Wrap(err, "error creating SAP")
 	}
 	return t, nil
 }
@@ -96,23 +94,23 @@ func (s *TrappedServiceAccessPoint) GetSapConfirmationReceived() bacnetip.PDU {
 func (s *TrappedServiceAccessPoint) SapRequest(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapRequest")
 	s.sapRequestSent = args.Get0PDU()
-	return s.TrappedServiceAccessPointRequirements.SapRequest(args, kwargs)
+	return s.ServiceAccessPointContract.SapRequest(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapIndication(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapIndication")
 	s.sapIndicationReceived = args.Get0PDU()
-	return s.TrappedServiceAccessPointRequirements.SapIndication(args, kwargs)
+	return s.requirements.SapIndication(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapResponse(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapResponse")
 	s.sapResponseSent = args.Get0PDU()
-	return s.TrappedServiceAccessPointRequirements.SapResponse(args, kwargs)
+	return s.ServiceAccessPointContract.SapResponse(args, kwargs)
 }
 
 func (s *TrappedServiceAccessPoint) SapConfirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Debug().Stringer("args", args).Stringer("kwargs", kwargs).Msg("SapConfirmation")
 	s.sapConfirmationReceived = args.Get0PDU()
-	return s.TrappedServiceAccessPointRequirements.SapConfirmation(args, kwargs)
+	return s.requirements.SapConfirmation(args, kwargs)
 }

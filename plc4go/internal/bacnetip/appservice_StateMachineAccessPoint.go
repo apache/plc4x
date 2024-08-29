@@ -30,7 +30,7 @@ import (
 
 type StateMachineAccessPoint struct {
 	Client
-	*ServiceAccessPoint
+	ServiceAccessPointContract
 
 	localDevice           *LocalDeviceObject
 	deviceInfoCache       *DeviceInfoCache
@@ -96,20 +96,19 @@ func NewStateMachineAccessPoint(localLog zerolog.Logger, localDevice *LocalDevic
 		Interface("cid", s.argCid).
 		Msg("NewStateMachineAccessPoint")
 	// basic initialization
-	client, err := NewClient(localLog, s, func(client *client) {
+	var err error
+	s.Client, err = NewClient(localLog, s, func(client *client) {
 		client.clientID = s.argCid
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building client for %d", s.argCid)
 	}
-	s.Client = client
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, s, func(point *ServiceAccessPoint) {
+	s.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(point *serviceAccessPoint) {
 		point.serviceID = s.argSapID
 	})
 	if err != nil {
 		return nil, errors.Wrapf(err, "error building serviceAccessPoint for %d", s.argSapID)
 	}
-	s.ServiceAccessPoint = serviceAccessPoint
 	return s, nil
 }
 

@@ -37,7 +37,7 @@ type TNetwork3 struct {
 
 	iut      *RouterNode
 	vlan1    *Network
-	td       *NetworkLayerStateMachine
+	td       *ApplicationLayerStateMachine
 	sniffer1 *SnifferStateMachine
 	vlan2    *Network
 	app2     *ApplicationNode
@@ -69,7 +69,7 @@ func NewTNetwork3(t *testing.T) *TNetwork3 {
 	tn.vlan1 = NewNetwork(localLog, WithNetworkName("vlan1"), WithNetworkBroadcastAddress(NewLocalBroadcast(nil)))
 
 	// Test devices
-	tn.td, err = NewNetworkLayerStateMachine(localLog, "1", tn.vlan1)
+	tn.td, err = NewApplicationLayerStateMachine(localLog, "1", tn.vlan1)
 	require.NoError(t, err)
 	tn.Append(tn.td)
 

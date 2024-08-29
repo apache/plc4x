@@ -33,7 +33,7 @@ type ApplicationRequirements interface {
 }
 
 type Application struct {
-	*ApplicationServiceElement
+	ApplicationServiceElementContract
 	Collector
 
 	objectName       map[string]*LocalDeviceObject
@@ -51,7 +51,7 @@ type Application struct {
 	log zerolog.Logger
 }
 
-func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, requirements ApplicationRequirements, opts ...func(*Application)) (*Application, error) {
+func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, opts ...func(*Application)) (*Application, error) {
 	a := &Application{
 		log: localLog,
 	}
@@ -64,7 +64,7 @@ func NewApplication(localLog zerolog.Logger, localDevice *LocalDeviceObject, req
 		Interface("aseID", a.argAseID).
 		Msg("NewApplication")
 	var err error
-	a.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, requirements, func(element *ApplicationServiceElement) {
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, func(element *applicationServiceElement) {
 		element.elementID = a.argAseID
 	})
 	if err != nil {
@@ -238,7 +238,7 @@ func (a *Application) Request(args Args, kwargs KWArgs) error {
 	default:
 		return errors.New("APDU expected")
 	}
-	return a.ApplicationServiceElement.Request(args, kwargs)
+	return a.ApplicationServiceElementContract.Request(args, kwargs)
 }
 
 func (a *Application) Indication(args Args, kwargs KWArgs) error {

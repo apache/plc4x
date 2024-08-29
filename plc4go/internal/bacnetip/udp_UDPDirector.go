@@ -34,7 +34,7 @@ import (
 
 type UDPDirector struct {
 	Server
-	*ServiceAccessPoint
+	ServiceAccessPointContract
 
 	timeout uint32
 	reuse   bool
@@ -59,7 +59,7 @@ func NewUDPDirector(localLog zerolog.Logger, address AddressTuple[string, uint16
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating server")
 	}
-	d.ServiceAccessPoint, err = NewServiceAccessPoint(localLog, d, func(point *ServiceAccessPoint) {
+	d.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(point *serviceAccessPoint) {
 		point.serviceID = sapID
 	})
 	if err != nil {
@@ -149,7 +149,7 @@ func (d *UDPDirector) AddActor(actor *UDPActor) {
 	d.peers[actor.peer] = actor
 
 	// tell the ASE there is a new client
-	if d.serviceElement != nil {
+	if d._getServiceElement() != nil {
 		if err := d.SapRequest(NoArgs, NewKWArgs(KWAddActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in add actor")
 		}
@@ -163,7 +163,7 @@ func (d *UDPDirector) DelActor(actor *UDPActor) {
 	delete(d.peers, actor.peer)
 
 	// tell the ASE the client has gone away
-	if d.serviceElement != nil {
+	if d._getServiceElement() != nil {
 		if err := d.SapRequest(NoArgs, NewKWArgs(KWDelActor, actor)); err != nil {
 			d.log.Error().Err(err).Msg("Error in del actor")
 		}
@@ -176,7 +176,7 @@ func (d *UDPDirector) GetActor(address Address) *UDPActor {
 
 func (d *UDPDirector) ActorError(actor *UDPActor, err error) {
 	// tell the ASE the actor had an error
-	if d.serviceElement != nil {
+	if d._getServiceElement() != nil {
 		if err := d.SapRequest(NoArgs, NewKWArgs(KWActorError, actor, KWError, err)); err != nil {
 			d.log.Error().Err(err).Msg("Error in actor error")
 		}

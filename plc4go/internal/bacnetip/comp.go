@@ -311,6 +311,13 @@ type Copyable interface {
 	DeepCopy() any
 }
 
+// DeepCopy copies things implementing Copyable
 func DeepCopy[T Copyable](copyable Copyable) T {
 	return copyable.(T)
+}
+
+// CopyPtr copies things that are a pointer to something
+func CopyPtr[T any](t *T) *T {
+	tc := *t
+	return &tc
 }

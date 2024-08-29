@@ -41,7 +41,7 @@ var _ APDU = (*__APDU)(nil)
 func NewAPDU() (APDU, error) {
 	a := &__APDU{}
 
-	a._APCI = NewAPCI(nil, nil).(*_APCI)
+	a._APCI = NewAPCI(nil).(*_APCI)
 	a._PDUData = NewPDUData(NoArgs).(*_PDUData)
 	return a, nil
 }
@@ -55,10 +55,7 @@ func (a *__APDU) Decode(pdu Arg) error {
 }
 
 func (a *__APDU) GetApduType() model.ApduType {
-	if a.apdu == nil {
-		return 0xf
-	}
-	return a.apdu.GetApduType()
+	panic("implement me")
 }
 
 func (a *__APDU) deepCopy() *__APDU {

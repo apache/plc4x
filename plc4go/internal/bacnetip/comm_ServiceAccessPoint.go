@@ -27,27 +27,45 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type ServiceAccessPoint interface {
+	ServiceAccessPointContract
+	ServiceAccessPointRequirements
+}
+
 // ServiceAccessPointContract provides a set of functions which can be overwritten by a sub struct
 type ServiceAccessPointContract interface {
 	fmt.Stringer
-	SapConfirmation(Args, KWArgs) error
 	SapRequest(Args, KWArgs) error
-	SapIndication(Args, KWArgs) error
 	SapResponse(Args, KWArgs) error
-	_setServiceElement(serviceElement ApplicationServiceElementContract)
+	_setServiceElement(serviceElement ServiceElement)
+	_getServiceElement() ServiceElement
 }
 
-type ServiceAccessPoint struct {
+// ServiceAccessPointRequirements provides a set of functions which must be overwritten by a sub struct
+type ServiceAccessPointRequirements interface {
+	SapIndication(Args, KWArgs) error
+	SapConfirmation(Args, KWArgs) error
+}
+
+type ServiceElement interface {
+	Indication(args Args, kwargs KWArgs) error
+	Confirmation(args Args, kwargs KWArgs) error
+}
+
+type serviceAccessPoint struct {
 	serviceID      *int
-	serviceElement ApplicationServiceElementContract
+	serviceElement ServiceElement
+
+	// arguments
+	argSAPExtension ServiceAccessPoint
 
 	log zerolog.Logger
 }
 
-var _ ServiceAccessPointContract = (*ServiceAccessPoint)(nil)
+var _ ServiceAccessPointContract = (*serviceAccessPoint)(nil)
 
-func NewServiceAccessPoint(localLog zerolog.Logger, serviceAccessPointContract ServiceAccessPointContract, opts ...func(point *ServiceAccessPoint)) (*ServiceAccessPoint, error) {
-	s := &ServiceAccessPoint{
+func NewServiceAccessPoint(localLog zerolog.Logger, opts ...func(point *serviceAccessPoint)) (ServiceAccessPointContract, error) {
+	s := &serviceAccessPoint{
 		log: localLog,
 	}
 	for _, opt := range opts {
@@ -67,7 +85,7 @@ func NewServiceAccessPoint(localLog zerolog.Logger, serviceAccessPointContract S
 			}
 
 			// Note: we need to pass the requirements (which should contain s as delegate) here
-			if err := Bind(localLog, element, serviceAccessPointContract); err != nil {
+			if err := Bind(localLog, element, s.argSAPExtension); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -75,13 +93,17 @@ func NewServiceAccessPoint(localLog zerolog.Logger, serviceAccessPointContract S
 	return s, nil
 }
 
-func WithServiceAccessPointSapID(sapID int) func(*ServiceAccessPoint) {
-	return func(s *ServiceAccessPoint) {
+func WithServiceAccessPointSapID(sapID int, sap ServiceAccessPoint) func(*serviceAccessPoint) {
+	if sap == nil {
+		panic("saq required (completely build sap)") // TODO: might be hard because initialization not yet done
+	}
+	return func(s *serviceAccessPoint) {
 		s.serviceID = &sapID
+		s.argSAPExtension = sap
 	}
 }
 
-func (s *ServiceAccessPoint) String() string {
+func (s *serviceAccessPoint) String() string {
 	serviceID := "-"
 	if s.serviceID != nil {
 		serviceID = strconv.Itoa(*s.serviceID)
@@ -89,7 +111,7 @@ func (s *ServiceAccessPoint) String() string {
 	return fmt.Sprintf("ServiceAccessPoint(serviceID:%v, serviceElement: %s)", serviceID, s.serviceElement)
 }
 
-func (s *ServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
+func (s *serviceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapRequest")
 
 	if s.serviceElement == nil {
@@ -98,12 +120,7 @@ func (s *ServiceAccessPoint) SapRequest(args Args, kwargs KWArgs) error {
 	return s.serviceElement.Indication(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapIndication(Args, KWArgs) error {
-	// TODO: we should remove this asap to check where we have actual caps because we can compile here
-	panic("this should be implemented by outer struct")
-}
-
-func (s *ServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
+func (s *serviceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 	s.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Interface("serviceID", s.serviceID).Msg("SapResponse")
 
 	if s.serviceElement == nil {
@@ -112,12 +129,11 @@ func (s *ServiceAccessPoint) SapResponse(args Args, kwargs KWArgs) error {
 	return s.serviceElement.Confirmation(args, kwargs)
 }
 
-func (s *ServiceAccessPoint) SapConfirmation(Args, KWArgs) error {
-	// TODO: we should remove this asap to check where we have actual caps because we can compile here
-	panic("this should be implemented by outer struct")
-}
-
-func (s *ServiceAccessPoint) _setServiceElement(serviceElement ApplicationServiceElementContract) {
+func (s *serviceAccessPoint) _setServiceElement(serviceElement ServiceElement) {
 	s.log.Trace().Interface("serviceElement", serviceMap).Msg("setting service element")
 	s.serviceElement = serviceElement
+}
+
+func (s *serviceAccessPoint) _getServiceElement() ServiceElement {
+	return s.serviceElement
 }

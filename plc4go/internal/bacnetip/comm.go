@@ -32,15 +32,15 @@ var clientMap map[int]*client
 var serverMap map[int]*server
 
 // maps of named SAPs and ASEs
-var serviceMap map[int]*ServiceAccessPoint
+var serviceMap map[int]*serviceAccessPoint
 
-var elementMap map[int]*ApplicationServiceElement
+var elementMap map[int]*applicationServiceElement
 
 func init() {
 	clientMap = make(map[int]*client)
 	serverMap = make(map[int]*server)
-	serviceMap = make(map[int]*ServiceAccessPoint)
-	elementMap = make(map[int]*ApplicationServiceElement)
+	serviceMap = make(map[int]*serviceAccessPoint)
+	elementMap = make(map[int]*applicationServiceElement)
 }
 
 // Bind a list of clients and servers together, top down
@@ -128,8 +128,8 @@ func Bind(localLog zerolog.Logger, args ...any) error {
 		// make sure we're binding clients and servers
 		clientCast, okClient := left.(Client)
 		serverCast, okServer := right.(Server)
-		elementServiceCast, okElementService := left.(ApplicationServiceElementContract)
-		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPointContract)
+		elementServiceCast, okElementService := left.(ApplicationServiceElement)
+		serviceAccessPointCast, okServiceAccessPoint := right.(ServiceAccessPoint)
 		if okClient && okServer {
 			localLog.Trace().Msg("linking client-server")
 			clientCast._setClientPeer(serverCast)

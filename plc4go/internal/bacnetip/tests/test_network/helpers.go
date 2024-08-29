@@ -290,7 +290,7 @@ type TestDeviceObject struct {
 }
 
 type ApplicationLayerStateMachine struct {
-	*bacnetip.ApplicationServiceElement
+	bacnetip.ApplicationServiceElementContract
 	*tests.ClientStateMachine
 
 	name    string
@@ -305,7 +305,7 @@ type ApplicationLayerStateMachine struct {
 	log zerolog.Logger
 }
 
-func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*ApplicationLayerStateMachine, error) {
+func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vlan *bacnetip.Network) (*ApplicationLayerStateMachine, error) {
 	a := &ApplicationLayerStateMachine{
 		log: localLog,
 	}
@@ -327,7 +327,7 @@ func NewApplicationLayerStateMachine(localLog zerolog.Logger, address string, vl
 
 	var err error
 	// continue with initialization
-	a.ApplicationServiceElement, err = bacnetip.NewApplicationServiceElement(a.log, a)
+	a.ApplicationServiceElementContract, err = bacnetip.NewApplicationServiceElement(a.log)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service")
 	}
@@ -435,7 +435,7 @@ func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacnetip.
 
 	var err error
 	// continue with initialization
-	a.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject, a) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
+	a.Application, err = bacnetip.NewApplication(localLog, localDevice.LocalDeviceObject) //TODO: this is a indirection that wasn't intended... we don't use the annotation yet so that might be fine
 	if err != nil {
 		return nil, errors.Wrap(err, "error building application")
 	}

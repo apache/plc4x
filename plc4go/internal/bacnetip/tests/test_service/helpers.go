@@ -450,7 +450,7 @@ func (a *ApplicationStateMachine) Confirmation(args bacnetip.Args, kwargs bacnet
 	}
 
 	// allow the application to process it
-	return a.Application.Confirmation(args, kwargs)
+	return a.ApplicationIOController.Confirmation(args, kwargs)
 }
 
 type COVTestClientServicesRequirements interface {

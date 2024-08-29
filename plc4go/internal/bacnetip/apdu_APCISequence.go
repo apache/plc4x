@@ -35,7 +35,7 @@ type APCISequence struct {
 
 func NewAPCISequence() (*APCISequence, error) {
 	a := &APCISequence{}
-	a._APCI = NewAPCI(nil, nil).(*_APCI) // TODO: what to pass up?
+	a._APCI = NewAPCI(nil).(*_APCI) // TODO: what to pass up?
 	var err error
 	a.Sequence, err = NewSequence(NoKWArgs, WithSequenceContract(a))
 	if err != nil {
@@ -66,8 +66,6 @@ func (a *APCISequence) Encode(apdu Arg) error {
 
 		// encode the tag list
 		a.tagList.Encode(apdu)
-
-		apdu.setAPDU(a.apdu)
 		return nil
 	default:
 		return errors.Errorf("invalid APDU type %T", apdu)

@@ -26,3 +26,7 @@ func NewReadWritePropertyServices() (*ReadWritePropertyServices, error) {
 	// TODO: implement me
 	return nil, nil
 }
+
+func (*ReadWritePropertyServices) Confirmation(Args, KWArgs) error {
+	panic("implement me")
+}

@@ -255,7 +255,7 @@ func NewApplicationStateMachine(localLog zerolog.Logger, localDevice *bacnetip.L
 	a.log.Debug().Stringer("address", a.address).Msg("address")
 
 	// continue with initialization
-	a.Application, err = bacnetip.NewApplication(a.log, localDevice, a)
+	a.Application, err = bacnetip.NewApplication(a.log, localDevice)
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application io controller")
 	}

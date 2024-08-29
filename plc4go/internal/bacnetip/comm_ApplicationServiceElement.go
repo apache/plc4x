@@ -24,28 +24,43 @@ import (
 	"github.com/rs/zerolog"
 )
 
+type ApplicationServiceElement interface {
+	ApplicationServiceElementContract
+	ApplicationServiceElementRequirements
+}
+
+// ApplicationServiceElementRequirements provides a set of functions which must be overwritten by a sub struct
 type ApplicationServiceElementRequirements interface {
 	Confirmation(args Args, kwargs KWArgs) error
+	Indication(args Args, kwargs KWArgs) error
 }
 
 // ApplicationServiceElementContract provides a set of functions which can be overwritten by a sub struct
 type ApplicationServiceElementContract interface {
 	Request(args Args, kwargs KWArgs) error
-	Indication(args Args, kwargs KWArgs) error
 	Response(args Args, kwargs KWArgs) error
-	Confirmation(args Args, kwargs KWArgs) error
-	_setElementService(elementService ServiceAccessPointContract)
+	_setElementService(elementService ElementService)
+	_getElementService() ElementService
 }
 
-type ApplicationServiceElement struct {
+// ElementService is required by ApplicationServiceElementContract to work properly
+type ElementService interface {
+	SapIndication(args Args, kwargs KWArgs) error
+	SapConfirmation(args Args, kwargs KWArgs) error
+}
+
+type applicationServiceElement struct {
 	elementID      *int
-	elementService ServiceAccessPointContract
+	elementService ElementService
+
+	// arguments
+	argASEExtension ApplicationServiceElement
 
 	log zerolog.Logger
 }
 
-func NewApplicationServiceElement(localLog zerolog.Logger, requirements ApplicationServiceElementRequirements, opts ...func(*ApplicationServiceElement)) (*ApplicationServiceElement, error) {
-	a := &ApplicationServiceElement{
+func NewApplicationServiceElement(localLog zerolog.Logger, opts ...func(*applicationServiceElement)) (ApplicationServiceElementContract, error) {
+	a := &applicationServiceElement{
 		log: localLog,
 	}
 	for _, opt := range opts {
@@ -66,7 +81,7 @@ func NewApplicationServiceElement(localLog zerolog.Logger, requirements Applicat
 			}
 
 			// Note: we need to pass the requirements (which should contain us as a delegate) here
-			if err := Bind(localLog, requirements, service); err != nil {
+			if err := Bind(localLog, a.argASEExtension, service); err != nil {
 				return nil, errors.Wrap(err, "error binding")
 			}
 		}
@@ -74,13 +89,17 @@ func NewApplicationServiceElement(localLog zerolog.Logger, requirements Applicat
 	return a, nil
 }
 
-func WithApplicationServiceElementAseID(aseID int) func(*ApplicationServiceElement) {
-	return func(s *ApplicationServiceElement) {
+func WithApplicationServiceElementAseID(aseID int, ase ApplicationServiceElement) func(*applicationServiceElement) {
+	if ase == nil {
+		panic("saq required (completely build sap)") // TODO: might be hard because initialization not yet done
+	}
+	return func(s *applicationServiceElement) {
 		s.elementID = &aseID
+		s.argASEExtension = ase
 	}
 }
 
-func (a *ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
+func (a *applicationServiceElement) Request(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Request")
 
 	if a.elementService == nil {
@@ -90,12 +109,7 @@ func (a *ApplicationServiceElement) Request(args Args, kwargs KWArgs) error {
 	return a.elementService.SapIndication(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Indication(Args, KWArgs) error {
-	// TODO: we should remove this asap to check where we have actual caps because we can compile here
-	panic("this should be implemented by outer struct")
-}
-
-func (a *ApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
+func (a *applicationServiceElement) Response(args Args, kwargs KWArgs) error {
 	a.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("Response")
 
 	if a.elementService == nil {
@@ -105,11 +119,10 @@ func (a *ApplicationServiceElement) Response(args Args, kwargs KWArgs) error {
 	return a.elementService.SapConfirmation(args, kwargs)
 }
 
-func (a *ApplicationServiceElement) Confirmation(Args, KWArgs) error {
-	// TODO: we should remove this asap to check where we have actual caps because we can compile here
-	panic("this should be implemented by outer struct")
+func (a *applicationServiceElement) _setElementService(elementService ElementService) {
+	a.elementService = elementService
 }
 
-func (a *ApplicationServiceElement) _setElementService(elementService ServiceAccessPointContract) {
-	a.elementService = elementService
+func (a *applicationServiceElement) _getElementService() ElementService {
+	return a.elementService
 }

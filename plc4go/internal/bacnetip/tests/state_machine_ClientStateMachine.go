@@ -92,12 +92,12 @@ func WithClientStateMachineExtension(contract ClientStateMachineContract) func(*
 
 func (s *ClientStateMachine) Send(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Send")
-	return s.Request(args, kwargs)
+	return s.contract.Request(args, kwargs)
 }
 
 func (s *ClientStateMachine) Confirmation(args bacnetip.Args, kwargs bacnetip.KWArgs) error {
 	s.log.Trace().Stringer("args", args).Stringer("kwargs", kwargs).Msg("Confirmation")
-	return s.Receive(args, kwargs)
+	return s.contract.Receive(args, kwargs)
 }
 
 func (s *ClientStateMachine) String() string {

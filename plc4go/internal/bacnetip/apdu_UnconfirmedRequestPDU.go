@@ -32,7 +32,7 @@ func NewUnconfirmedRequestPDU() (*UnconfirmedRequestPDU, error) {
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating _APDU")
 	}
-	u.__APDU = apdu.(*__APDU)
+	u.___APDU = apdu.(*___APDU)
 	return u, nil
 }
 

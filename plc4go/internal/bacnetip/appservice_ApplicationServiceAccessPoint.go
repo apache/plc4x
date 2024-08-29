@@ -27,8 +27,8 @@ import (
 )
 
 type ApplicationServiceAccessPoint struct {
-	*ApplicationServiceElement
-	*ServiceAccessPoint
+	ApplicationServiceElementContract
+	ServiceAccessPointContract
 
 	// pass through args
 	argAseID *int
@@ -44,20 +44,19 @@ func NewApplicationServiceAccessPoint(localLog zerolog.Logger, opts ...func(*App
 	for _, opt := range opts {
 		opt(a)
 	}
-	applicationServiceElement, err := NewApplicationServiceElement(localLog, a, func(ase *ApplicationServiceElement) {
+	var err error
+	a.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, func(ase *applicationServiceElement) {
 		ase.elementID = a.argAseID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating application service element")
 	}
-	a.ApplicationServiceElement = applicationServiceElement
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, a, func(sap *ServiceAccessPoint) {
+	a.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(sap *serviceAccessPoint) {
 		sap.serviceID = a.argSapID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating service access point")
 	}
-	a.ServiceAccessPoint = serviceAccessPoint
 	return a, nil
 }
 
@@ -154,9 +153,10 @@ func (a *ApplicationServiceAccessPoint) SapIndication(args Args, kwargs KWArgs) 
 
 	// if the upper layers of the application did not assign an invoke ID,
 	// copy the one that was assigned on its way down the stack
-	if isConfirmed && apdu.GetApduInvokeID() != nil {
-		//apdu.invokeId = xpud.apduInvokeId // TODO: implement me
-	}
+	//if isConfirmed && apdu.GetApduInvokeID() != nil {
+	//apdu.invokeId = xpud.apduInvokeId // TODO: implement me
+	//}
+	_ = isConfirmed
 	return err
 }
 

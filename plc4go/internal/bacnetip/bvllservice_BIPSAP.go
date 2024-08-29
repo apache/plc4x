@@ -27,13 +27,13 @@ import (
 )
 
 type BIPSAPRequirements interface {
-	ServiceAccessPointContract
+	ServiceAccessPoint
 	Client
 }
 
 type BIPSAP struct {
-	*ServiceAccessPoint
-	rootStruct BIPSAPRequirements
+	ServiceAccessPointContract
+	requirements BIPSAPRequirements
 
 	// pass through args
 	argSapID *int
@@ -41,7 +41,7 @@ type BIPSAP struct {
 	log zerolog.Logger
 }
 
-func NewBIPSAP(localLog zerolog.Logger, bipSapRequirements BIPSAPRequirements, opts ...func(*BIPSAP)) (*BIPSAP, error) {
+func NewBIPSAP(localLog zerolog.Logger, requirements BIPSAPRequirements, opts ...func(*BIPSAP)) (*BIPSAP, error) {
 	b := &BIPSAP{
 		log: localLog,
 	}
@@ -50,16 +50,16 @@ func NewBIPSAP(localLog zerolog.Logger, bipSapRequirements BIPSAPRequirements, o
 	}
 	localLog.Debug().
 		Interface("sapID", b.argSapID).
-		Interface("bipSapRequirements", bipSapRequirements).
+		Interface("requirements", requirements).
 		Msg("NewBIPSAP")
-	serviceAccessPoint, err := NewServiceAccessPoint(localLog, bipSapRequirements, func(point *ServiceAccessPoint) {
+	var err error
+	b.ServiceAccessPointContract, err = NewServiceAccessPoint(localLog, func(point *serviceAccessPoint) {
 		point.serviceID = b.argSapID
 	})
 	if err != nil {
 		return nil, errors.Wrap(err, "Error creating service access point")
 	}
-	b.ServiceAccessPoint = serviceAccessPoint
-	b.rootStruct = bipSapRequirements
+	b.requirements = requirements
 	return b, nil
 }
 
@@ -70,17 +70,17 @@ func WithBIPSAPSapID(sapID int) func(*BIPSAP) {
 }
 
 func (b *BIPSAP) String() string {
-	return fmt.Sprintf("BIPSAP(SAP: %s)", b.ServiceAccessPoint)
+	return fmt.Sprintf("BIPSAP(SAP: %s)", b.ServiceAccessPointContract)
 }
 
 func (b *BIPSAP) SapIndication(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapIndication")
 	// this is a request initiated by the ASE, send this downstream
-	return b.rootStruct.Request(args, kwargs)
+	return b.requirements.Request(args, kwargs)
 }
 
 func (b *BIPSAP) SapConfirmation(args Args, kwargs KWArgs) error {
 	b.log.Debug().Stringer("Args", args).Stringer("KWArgs", kwargs).Msg("SapConfirmation")
 	// this is a response from the ASE, send this downstream
-	return b.rootStruct.Request(args, kwargs)
+	return b.requirements.Request(args, kwargs)
 }

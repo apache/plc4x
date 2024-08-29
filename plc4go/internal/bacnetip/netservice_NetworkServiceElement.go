@@ -31,7 +31,7 @@ import (
 )
 
 type NetworkServiceElement struct {
-	*ApplicationServiceElement
+	ApplicationServiceElementContract
 
 	networkNumberIsTask time.Time
 
@@ -52,7 +52,7 @@ func NewNetworkServiceElement(localLog zerolog.Logger, opts ...func(*NetworkServ
 		opt(n)
 	}
 	var err error
-	n.ApplicationServiceElement, err = NewApplicationServiceElement(localLog, n, func(element *ApplicationServiceElement) {
+	n.ApplicationServiceElementContract, err = NewApplicationServiceElement(localLog, func(element *applicationServiceElement) {
 		element.elementID = n.argEID
 	})
 	if err != nil {
@@ -89,7 +89,7 @@ func (n *NetworkServiceElement) Startup(_ Args, _ KWArgs) error {
 	n.log.Debug().Msg("Startup")
 
 	// reference the service access point
-	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
+	sap := n._getElementService().(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	n.log.Debug().Stringer("sap", sap).Msg("sap")
 
 	// loop through all the adapters
@@ -223,7 +223,7 @@ func (n *NetworkServiceElement) iamRouterToNetwork(adapter *NetworkAdapter, dest
 	n.log.Debug().Stringer("adapter", adapter).Stringer("destination", destination).Interface("network", network).Msg("IamRouterToNetwork")
 
 	// reference the service access point
-	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
+	sap := n._getElementService().(*NetworkServiceAccessPoint) // TODO: hard cast but seems like adapters appears first in network service access point (so hard binding)
 	n.log.Debug().Interface("sap", sap).Msg("SAP")
 
 	// if we're not a router, trouble
@@ -335,7 +335,7 @@ func (n *NetworkServiceElement) WhoIsRouteToNetwork(adapter *NetworkAdapter, npd
 	n.log.Debug().Stringer("adapter", adapter).Stringer("nlm", nlm).Msg("WhoIsRouteToNetwork")
 
 	// reference the service access point
-	sap := n.elementService.(*NetworkServiceAccessPoint) // TODO: check hard cast here...
+	sap := n._getElementService().(*NetworkServiceAccessPoint) // TODO: check hard cast here...
 	n.log.Debug().Stringer("sap", sap).Msg("sap")
 
 	// if we're not a router, skip it
