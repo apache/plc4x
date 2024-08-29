@@ -289,6 +289,13 @@ type NillableKey[T any] struct {
 	isNil bool
 }
 
+func (n NillableKey[T]) String() string {
+	if n.isNil {
+		return "nil"
+	}
+	return fmt.Sprintf("%v", n.value)
+}
+
 // NK creates a new NillableKey of type K
 func NK[T any, K NillableKey[T]](value *T) K {
 	var _nk NillableKey[T]

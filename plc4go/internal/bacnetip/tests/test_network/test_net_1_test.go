@@ -27,7 +27,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip"
 	"github.com/apache/plc4x/plc4go/internal/bacnetip/tests"
 	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
@@ -35,13 +35,13 @@ import (
 type TNetwork1 struct {
 	*tests.StateMachineGroup
 
-	vlan1    *bacnetip.Network
+	vlan1    *Network
 	iut      *RouterNode
 	td       *NetworkLayerStateMachine
 	sniffer1 *SnifferStateMachine
-	vlan2    *bacnetip.Network
+	vlan2    *Network
 	sniffer2 *SnifferStateMachine
-	vlan3    *bacnetip.Network
+	vlan3    *Network
 	sniffer3 *SnifferStateMachine
 
 	t *testing.T
@@ -67,7 +67,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	// make a little LAN
-	tn.vlan1 = bacnetip.NewNetwork(localLog, bacnetip.WithNetworkName("vlan1"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+	tn.vlan1 = NewNetwork(localLog, WithNetworkName("vlan1"), WithNetworkBroadcastAddress(NewLocalBroadcast(nil)))
 
 	// Test devices
 	tn.td, err = NewNetworkLayerStateMachine(localLog, "1", tn.vlan1)
@@ -84,7 +84,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	//  make another little LAN
-	tn.vlan2 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan2"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+	tn.vlan2 = NewNetwork(tn.log, WithNetworkName("vlan2"), WithNetworkBroadcastAddress(NewLocalBroadcast(nil)))
 
 	//  sniffer node
 	tn.sniffer2, err = NewSnifferStateMachine(localLog, "4", tn.vlan2)
@@ -96,7 +96,7 @@ func NewTNetwork1(t *testing.T) *TNetwork1 {
 	require.NoError(t, err)
 
 	//  make another little LAN
-	tn.vlan3 = bacnetip.NewNetwork(tn.log, bacnetip.WithNetworkName("vlan3"), bacnetip.WithNetworkBroadcastAddress(bacnetip.NewLocalBroadcast(nil)))
+	tn.vlan3 = NewNetwork(tn.log, WithNetworkName("vlan3"), WithNetworkBroadcastAddress(NewLocalBroadcast(nil)))
 
 	//  sniffer node
 	tn.sniffer3, err = NewSnifferStateMachine(localLog, "6", tn.vlan2)
@@ -133,97 +133,166 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 	assert.False(t.t, failed)
 }
 
-func TestSimple1(t *testing.T) {
-	tests.ExclusiveGlobalTimeMachine(t)
+func TestNet1(t *testing.T) {
+	t.Run("TestSimple1", func(t *testing.T) {
+		tests.ExclusiveGlobalTimeMachine(t)
 
-	t.Run("testIdle", func(t *testing.T) {
-		// create a network
-		tnet := NewTNetwork1(t)
+		t.Run("testIdle", func(t *testing.T) {
+			// create a network
+			tnet := NewTNetwork1(t)
 
-		// all start states are successful
-		tnet.td.GetStartState().Success("")
-		tnet.sniffer1.GetStartState().Success("")
-		tnet.sniffer2.GetStartState().Success("")
-		tnet.sniffer3.GetStartState().Success("")
+			// all start states are successful
+			tnet.td.GetStartState().Success("")
+			tnet.sniffer1.GetStartState().Success("")
+			tnet.sniffer2.GetStartState().Success("")
+			tnet.sniffer3.GetStartState().Success("")
 
-		// run the group
-		tnet.Run(0)
+			// run the group
+			tnet.Run(0)
+		})
 	})
-}
+	t.Run("TestWhoIsRouterToNetwork", func(t *testing.T) {
+		t.Run("test_01", func(t *testing.T) {
+			//Test broadcast for any router.
+			tests.ExclusiveGlobalTimeMachine(t)
 
-func TestWhoIsRouterToNetwork(t *testing.T) {
-	tests.ExclusiveGlobalTimeMachine(t)
+			// create a network
+			tnet := NewTNetwork1(t)
 
-	t.Run("test_01", func(t *testing.T) {
-		//Test broadcast for any router.
-		// create a network
-		tnet := NewTNetwork1(t)
+			// test device sends request, sees response
+			whois, err := NewWhoIsRouterToNetwork()
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("1-1-0").
+				Send(whois, nil).Doc("1-1-1").
+				Receive(NewArgs((*IAmRouterToNetwork)(nil)), NewKWArgs(KWIartnNetworkList, []uint16{2, 3})).Doc("1-1-2").
+				Success("")
 
-		// test device sends request, sees response
-		whois, err := bacnetip.NewWhoIsRouterToNetwork()
-		require.NoError(t, err)
-		whois.SetPDUDestination(bacnetip.NewLocalBroadcast(nil)) // TODO: upstream does this inline
-		tnet.td.GetStartState().Doc("1-1-0").
-			Send(whois, nil).Doc("1-1-1").
-			Receive(bacnetip.NewArgs((*bacnetip.IAmRouterToNetwork)(nil)), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, []uint16{2, 3})).Doc("1-1-2").
-			Success("")
+			// sniffer on network 1 sees the request and the response
+			tnet.sniffer1.GetStartState().Doc("1-2-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.80"+ //version, network layer
+							"00", //message type, no network
+					),
+					),
+				).Doc("1-2-1").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.80"+ //version, network layer
+							"01 0002 0003", //message type and network list
+					),
+					),
+				).Doc("1-2-2").
+				Success("")
 
-		// sniffer on network 1 sees the request and the response
-		tnet.sniffer1.GetStartState().Doc("1-2-0").
-			Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)),
-				bacnetip.NewKWArgs(bacnetip.KWPDUData, xtob(
-					"01.80"+ //version, network layer
-						"00", //message type, no network
-				),
-				),
-			).Doc("1-2-1").
-			Receive(bacnetip.NewArgs((bacnetip.PDU)(nil)),
-				bacnetip.NewKWArgs(bacnetip.KWPDUData, xtob(
-					"01.80"+ //version, network layer
-						"01 0002 0003", //message type and network list
-				),
-				),
-			).Doc("1-2-2").
-			Success("")
+			// nothing received on network 2
+			tnet.sniffer2.GetStartState().Doc("1-3-0").
+				Timeout(3*time.Second, nil).Doc("1-3-1").
+				Success("")
 
-		// nothing received on network 2
-		tnet.sniffer2.GetStartState().Doc("1-3-0").
-			Timeout(3*time.Second, nil).Doc("1-3-1").
-			Success("")
+			// nothing received on network 3
+			tnet.sniffer3.GetStartState().Doc("1-4-0").
+				Timeout(3*time.Second, nil).Doc("1-4-1").
+				Success("")
 
-		// nothing received on network 3
-		tnet.sniffer3.GetStartState().Doc("1-4-0").
-			Timeout(3*time.Second, nil).Doc("1-4-1").
-			Success("")
+			// run the group
+			tnet.Run(0)
+		})
+		t.Run("test_02", func(t *testing.T) {
+			//Test broadcast for existing router.
+			tests.ExclusiveGlobalTimeMachine(t)
+			// create a network
+			tnet := NewTNetwork1(t)
 
-		// run the group
-		tnet.Run(0)
-	})
-	t.Run("test_02", func(t *testing.T) {
-		//Test broadcast for existing router.
-		// create a network
-		tnet := NewTNetwork1(t)
+			// test device sends request, sees response
+			whois, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(2))
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("2-1-0").
+				Send(whois, nil).Doc("2-1-1").
+				Receive(NewArgs((*IAmRouterToNetwork)(nil)), NewKWArgs(KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
+				Success("")
 
-		// test device sends request, sees response
-		whois, err := bacnetip.NewWhoIsRouterToNetwork(bacnetip.WithWhoIsRouterToNetworkNet(2))
-		require.NoError(t, err)
-		whois.SetPDUDestination(bacnetip.NewLocalBroadcast(nil)) // TODO: upstream does this inline
-		tnet.td.GetStartState().Doc("2-1-0").
-			Send(whois, nil).Doc("2-1-1").
-			Receive(bacnetip.NewArgs((*bacnetip.IAmRouterToNetwork)(nil)), bacnetip.NewKWArgs(bacnetip.KWIartnNetworkList, []uint16{2})).Doc("2-1-2").
-			Success("")
+			tnet.sniffer1.GetStartState().Success("")
 
-		// sniffer on network 1 sees the request and the response
-		tnet.sniffer1.GetStartState().Success("")
+			// nothing received on network 2
+			tnet.sniffer2.GetStartState().Doc("2-2-0").
+				Timeout(3*time.Second, nil).Doc("2-2-1").
+				Success("")
 
-		// nothing received on network 2
-		tnet.sniffer2.GetStartState().Doc("2-2-0").
-			Timeout(3*time.Second, nil).Doc("2-2-1").
-			Success("")
+			tnet.sniffer3.GetStartState().Success("")
 
-		tnet.sniffer3.GetStartState().Success("")
+			// run the group
+			tnet.Run(0)
+		})
+		t.Run("test_03", func(t *testing.T) {
+			//Test broadcast for non-existing router.
+			tests.ExclusiveGlobalTimeMachine(t)
+			// create a network
+			tnet := NewTNetwork1(t)
 
-		// run the group
-		tnet.Run(0)
+			// test device sends request, sees response
+			whois, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(4))
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("3-1-0").
+				Send(whois, nil).Doc("3-1-1").
+				Timeout(3*time.Second, nil).Doc("3-1-2").
+				Success("")
+
+			// sniffer on network 1 sees the request and the response
+			tnet.sniffer1.GetStartState().Doc("3-2-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.80"+ //version, network layer
+							"00 0004", //message type, and network
+					)),
+				).Doc("3-2-1").
+				Success("")
+
+			// sniffer on network 2 sees request forwarded by router
+			tnet.sniffer2.GetStartState().Doc("3-3-0").
+				Receive(NewArgs((PDU)(nil)),
+					NewKWArgs(KWPDUData, xtob(
+						"01.88"+ //version, network layer
+							"0001 01 01"+ // snet/slen/sadr
+							"00 0004", //message type, and network
+					)),
+				).Doc("3-3-1").
+				Success("")
+
+			tnet.sniffer3.GetStartState().Success("")
+
+			// run the group
+			tnet.Run(0)
+		})
+		t.Run("test_04", func(t *testing.T) {
+			// Test broadcast for a router to the network it is on.
+			tests.ExclusiveGlobalTimeMachine(t)
+			// create a network
+			tnet := NewTNetwork1(t)
+
+			// test device sends request, sees response
+			whois, err := NewWhoIsRouterToNetwork(WithWhoIsRouterToNetworkNet(1))
+			require.NoError(t, err)
+			whois.SetPDUDestination(NewLocalBroadcast(nil)) // TODO: upstream does this inline
+			tnet.td.GetStartState().Doc("4-1-0").
+				Send(whois, nil).Doc("4-1-1").
+				Timeout(3*time.Second, nil).Doc("4-1-2").
+				Success("")
+
+			tnet.sniffer1.GetStartState().Success("")
+
+			// nothing received on network 2
+			tnet.sniffer2.GetStartState().Doc("4-3-0").
+				Timeout(3*time.Second, nil).Doc("4-2-1").
+				Success("")
+
+			tnet.sniffer3.GetStartState().Success("")
+
+			// run the group
+			tnet.Run(0)
+		})
 	})
 }

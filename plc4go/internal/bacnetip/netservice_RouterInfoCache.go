@@ -81,12 +81,28 @@ func NewRouterInfoCache(localLog zerolog.Logger) *RouterInfoCache {
 	}
 }
 
-func (n *RouterInfoCache) GetRouterInfo(netKey, netKey) *RouterInfo {
-	panic("not implemented yet")
-	return nil
+func (n *RouterInfoCache) GetRouterInfo(snet, dnet netKey) *RouterInfo {
+	n.log.Debug().Stringer("snet", snet).Stringer("dnet", dnet).Msg("GetRouterInfo")
+
+	// return the network and address
+	routerInfo, _ := n.pathInfo[snetDnetTuple{snet, dnet}]
+	return routerInfo
 }
 
-func (n *RouterInfoCache) UpdateRouterInfo(netKey, any, any) error {
+func (n *RouterInfoCache) UpdateRouterInfo(snet netKey, address *Address, dnets []uint16, status *RouterStatus) error {
+	n.log.Debug().Stringer("snet", snet).Stringer("dnet", address).Uints16("dnets", dnets).Msg("UpdateRouterInfo")
+
+	existingRouterInfo, _ := n.routers[snet] // TODO: what is happening here with the address
+
+	var otherRouters []*RouterInfo
+	for _, dnet := range dnets {
+		otherRouter, _ := n.pathInfo[snetDnetTuple{snet, nk(&dnet)}]
+		if otherRouter != nil && otherRouter != existingRouterInfo {
+			otherRouters = append(otherRouters, otherRouter)
+		}
+	}
+
+	// TODO: finish
 	panic("not implemented yet")
 	return nil
 }

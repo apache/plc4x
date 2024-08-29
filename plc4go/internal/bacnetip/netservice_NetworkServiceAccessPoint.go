@@ -162,7 +162,7 @@ func (n *NetworkServiceAccessPoint) Bind(server Server, net *uint16, address *Ad
 }
 
 // UpdateRouterReference Update references to routers.
-func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address, dnets any) error {
+func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address *Address, dnets []uint16) error {
 	n.log.Debug().
 		Interface("snet", snet).
 		Interface("address", address).
@@ -176,11 +176,11 @@ func (n *NetworkServiceAccessPoint) UpdateRouterReference(snet *uint16, address,
 	}
 
 	// pass this along to the cache
-	return n.routerInfoCache.UpdateRouterInfo(nk(snet), address, dnets)
+	return n.routerInfoCache.UpdateRouterInfo(nk(snet), address, dnets, nil)
 }
 
 // DeleteRouterReference Delete references to routers/networks.
-func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address, dnets any) error {
+func (n *NetworkServiceAccessPoint) DeleteRouterReference(snet *uint16, address *Address, dnets []uint16) error {
 	n.log.Debug().
 		Interface("snet", snet).
 		Interface("address", address).
