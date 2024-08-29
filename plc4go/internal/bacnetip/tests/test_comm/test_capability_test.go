@@ -22,9 +22,11 @@ package test_comm
 import (
 	"testing"
 
+	"github.com/rs/zerolog"
 	"github.com/stretchr/testify/assert"
 
 	"github.com/apache/plc4x/plc4go/internal/bacnetip"
+	"github.com/apache/plc4x/plc4go/spi/testutils"
 )
 
 // TODO: big WIP
@@ -33,9 +35,9 @@ type BaseCollector struct {
 	*bacnetip.Collector
 }
 
-func NewBaseCollector() *BaseCollector {
+func NewBaseCollector(localLog zerolog.Logger) *BaseCollector {
 	b := &BaseCollector{}
-	b.Collector = bacnetip.NewCollector()
+	b.Collector = bacnetip.NewCollector(localLog)
 	return b
 }
 
@@ -85,9 +87,9 @@ type Example1 struct {
 	*BaseCollector
 }
 
-func NewExample1() *Example1 {
+func NewExample1(localLog zerolog.Logger) *Example1 {
 	b := &Example1{}
-	b.BaseCollector = NewBaseCollector()
+	b.BaseCollector = NewBaseCollector(localLog)
 	return b
 }
 
@@ -100,9 +102,9 @@ type Example2 struct {
 	*PlusOne
 }
 
-func NewExample2() *Example2 {
+func NewExample2(localLog zerolog.Logger) *Example2 {
 	b := &Example2{}
-	b.BaseCollector = NewBaseCollector()
+	b.BaseCollector = NewBaseCollector(localLog)
 	b.PlusOne = NewPlusOne()
 	return b
 }
@@ -121,9 +123,9 @@ func (e *Example3) transform(value any) any {
 	return e.BaseCollector.transform(value)
 }
 
-func NewExample3() *Example3 {
+func NewExample3(localLog zerolog.Logger) *Example3 {
 	b := &Example3{}
-	b.BaseCollector = NewBaseCollector()
+	b.BaseCollector = NewBaseCollector(localLog)
 	b.TimesTen = NewTimesTen()
 	b.PlusOne = NewPlusOne()
 	return b
@@ -138,18 +140,23 @@ type Example4 struct {
 func TestExamples(t *testing.T) {
 	t.Skip("big WIP...") // TODO: big WIP
 	t.Run("test_example_1", func(t *testing.T) {
-		assert.Equal(t, 1, NewExample1().transform(1))
+		testingLogger := testutils.ProduceTestingLogger(t)
+		assert.Equal(t, 1, NewExample1(testingLogger).transform(1))
 	})
 	t.Run("test_example_2", func(t *testing.T) {
-		assert.Equal(t, 3, NewExample2().transform(2))
+		testingLogger := testutils.ProduceTestingLogger(t)
+		assert.Equal(t, 3, NewExample2(testingLogger).transform(2))
 	})
 	t.Run("test_example_3", func(t *testing.T) {
-		assert.Equal(t, 31, NewExample3().transform(3))
+		testingLogger := testutils.ProduceTestingLogger(t)
+		assert.Equal(t, 31, NewExample3(testingLogger).transform(3))
 	})
 	t.Run("test_example_4", func(t *testing.T) {
-		assert.Equal(t, []int{4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, NewExample3().transform(4))
+		testingLogger := testutils.ProduceTestingLogger(t)
+		assert.Equal(t, []int{4, 4, 4, 4, 4, 4, 4, 4, 4, 4}, NewExample3(testingLogger).transform(4))
 	})
 	t.Run("test_example_5", func(t *testing.T) {
-		assert.Equal(t, 6, NewExample3().transform(5))
+		testingLogger := testutils.ProduceTestingLogger(t)
+		assert.Equal(t, 6, NewExample3(testingLogger).transform(5))
 	})
 }

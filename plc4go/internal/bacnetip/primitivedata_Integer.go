@@ -64,7 +64,11 @@ func NewInteger(arg Arg) (*Integer, error) {
 	return i, nil
 }
 
-func (i *Integer) Encode(tag Tag) {
+func (i *Integer) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -93,9 +97,14 @@ func (i *Integer) Encode(tag Tag) {
 	}
 
 	tag.setAppData(uint(model.BACnetDataType_SIGNED_INTEGER), data)
+	return nil
 }
 
-func (i *Integer) Decode(tag Tag) error {
+func (i *Integer) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_SIGNED_INTEGER) {
 		return errors.New("Integer application tag required")
 	}

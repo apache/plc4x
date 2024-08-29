@@ -154,6 +154,64 @@ func (_c *MockTag_AppToObject_Call) RunAndReturn(run func() (interface{}, error)
 	return _c
 }
 
+// ContextToApp provides a mock function with given fields: dataType
+func (_m *MockTag) ContextToApp(dataType uint) (Tag, error) {
+	ret := _m.Called(dataType)
+
+	if len(ret) == 0 {
+		panic("no return value specified for ContextToApp")
+	}
+
+	var r0 Tag
+	var r1 error
+	if rf, ok := ret.Get(0).(func(uint) (Tag, error)); ok {
+		return rf(dataType)
+	}
+	if rf, ok := ret.Get(0).(func(uint) Tag); ok {
+		r0 = rf(dataType)
+	} else {
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(Tag)
+		}
+	}
+
+	if rf, ok := ret.Get(1).(func(uint) error); ok {
+		r1 = rf(dataType)
+	} else {
+		r1 = ret.Error(1)
+	}
+
+	return r0, r1
+}
+
+// MockTag_ContextToApp_Call is a *mock.Call that shadows Run/Return methods with type explicit version for method 'ContextToApp'
+type MockTag_ContextToApp_Call struct {
+	*mock.Call
+}
+
+// ContextToApp is a helper method to define mock.On call
+//   - dataType uint
+func (_e *MockTag_Expecter) ContextToApp(dataType interface{}) *MockTag_ContextToApp_Call {
+	return &MockTag_ContextToApp_Call{Call: _e.mock.On("ContextToApp", dataType)}
+}
+
+func (_c *MockTag_ContextToApp_Call) Run(run func(dataType uint)) *MockTag_ContextToApp_Call {
+	_c.Call.Run(func(args mock.Arguments) {
+		run(args[0].(uint))
+	})
+	return _c
+}
+
+func (_c *MockTag_ContextToApp_Call) Return(_a0 Tag, _a1 error) *MockTag_ContextToApp_Call {
+	_c.Call.Return(_a0, _a1)
+	return _c
+}
+
+func (_c *MockTag_ContextToApp_Call) RunAndReturn(run func(uint) (Tag, error)) *MockTag_ContextToApp_Call {
+	_c.Call.Return(run)
+	return _c
+}
+
 // Decode provides a mock function with given fields: pdu
 func (_m *MockTag) Decode(pdu PDUData) error {
 	ret := _m.Called(pdu)

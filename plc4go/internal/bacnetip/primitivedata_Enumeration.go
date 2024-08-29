@@ -186,7 +186,11 @@ func (e *Enumerated) Compare(other any) int {
 	}
 }
 
-func (e *Enumerated) Decode(tag Tag) error {
+func (e *Enumerated) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_ENUMERATED) {
 		return errors.New("bit string application tag required")
 	}
@@ -210,7 +214,11 @@ func (e *Enumerated) Decode(tag Tag) error {
 	return nil
 }
 
-func (e *Enumerated) Encode(tag Tag) {
+func (e *Enumerated) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	value := e.value
 	if mappedValue, ok := e.EnumeratedContract.GetXlateTable()[e.valueString]; ok {
 		value = mappedValue.(uint64)
@@ -227,6 +235,7 @@ func (e *Enumerated) Encode(tag Tag) {
 
 	// encode the tag
 	tag.setAppData(uint(model.BACnetDataType_ENUMERATED), data)
+	return nil
 }
 
 func (e *Enumerated) IsValid(arg any) bool {

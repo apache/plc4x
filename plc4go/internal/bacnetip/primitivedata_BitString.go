@@ -92,7 +92,11 @@ func NewBitStringWithExtension(bitStringExtension BitStringExtension, args Args)
 	return b, nil
 }
 
-func (b *BitString) Decode(tag Tag) error {
+func (b *BitString) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BIT_STRING) {
 		return errors.New("bit string application tag required")
 	}
@@ -123,7 +127,11 @@ func (b *BitString) Decode(tag Tag) error {
 	return nil
 }
 
-func (b *BitString) Encode(tag Tag) {
+func (b *BitString) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	used := len(b.value) % 8
 	unused := 8 - used
 	if unused == 8 {
@@ -150,6 +158,7 @@ func (b *BitString) Encode(tag Tag) {
 	}
 
 	tag.setAppData(uint(model.BACnetDataType_BIT_STRING), data)
+	return nil
 }
 
 func (b *BitString) Compare(other any) int {

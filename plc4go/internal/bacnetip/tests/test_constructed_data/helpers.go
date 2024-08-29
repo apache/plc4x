@@ -18,3 +18,100 @@
  */
 
 package test_constructed_data
+
+import (
+	"github.com/pkg/errors"
+
+	. "github.com/apache/plc4x/plc4go/internal/bacnetip"
+)
+
+type SequenceEqualityRequirements interface {
+	GetSequenceElements() []Element
+}
+
+type SequenceEquality struct {
+	_requirements SequenceEqualityRequirements
+}
+
+func NewSequenceEquality(requirements SequenceEqualityRequirements) *SequenceEquality {
+	if requirements == nil {
+		panic("requirements cannot be nil")
+	}
+	return &SequenceEquality{_requirements: requirements}
+}
+
+func (s *SequenceEquality) Equals(other any) bool {
+	for _, element := range s._requirements.GetSequenceElements() {
+		if !element.IsOptional() && true {
+			panic("what??")
+		}
+	}
+	return true
+}
+
+type EmptySequence struct {
+	*Sequence
+	*SequenceEquality
+}
+
+func NewEmptySequence(kwargs KWArgs) (*EmptySequence, error) {
+	e := &EmptySequence{}
+	var err error
+	e.Sequence, err = NewSequence(kwargs, WithSequenceContract(e))
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create sequence")
+	}
+	e.SequenceEquality = NewSequenceEquality(e)
+	return e, nil
+}
+
+func (e *EmptySequence) SetSequence(sequence *Sequence) {
+	e.Sequence = sequence
+}
+
+type SimpleSequence struct {
+	*Sequence
+	*SequenceEquality
+
+	sequenceElements []Element
+}
+
+func NewSimpleSequence(kwargs KWArgs) (*SimpleSequence, error) {
+	s := &SimpleSequence{
+		sequenceElements: []Element{
+			NewElement("hydrogen", func(args Args, _ KWArgs) (interface{ Encode(Arg) error }, error) {
+				var arg any
+				if len(args) == 1 {
+					arg = args[0]
+				}
+				boolean, err := NewBoolean(arg)
+				return boolean, err
+			}),
+		},
+	}
+	var err error
+	s.Sequence, err = NewSequence(kwargs, WithSequenceContract(s))
+	if err != nil {
+		return nil, errors.Wrap(err, "could not create sequence")
+	}
+	s.SequenceEquality = NewSequenceEquality(s)
+	return s, nil
+}
+
+func (e *SimpleSequence) SetSequence(sequence *Sequence) {
+	e.Sequence = sequence
+}
+
+func (e *SimpleSequence) GetSequenceElements() []Element {
+	return e.sequenceElements
+}
+
+type CompoundSequence1 struct {
+	*Sequence
+	*SequenceEquality
+}
+
+type CompoundSequence2 struct {
+	*Sequence
+	*SequenceEquality
+}

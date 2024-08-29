@@ -158,13 +158,22 @@ func (o *ObjectIdentifier) getLong() int {
 	return (objType.(int) << 22) + objInstance
 }
 
-func (o *ObjectIdentifier) Encode(tag Tag) {
+func (o *ObjectIdentifier) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(o.getLong()))
 	tag.setAppData(uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER), data)
+	return nil
 }
 
-func (o *ObjectIdentifier) Decode(tag Tag) error {
+func (o *ObjectIdentifier) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BACNET_OBJECT_IDENTIFIER) {
 		return errors.New("ObjectIdentifier application tag required")
 	}

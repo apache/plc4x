@@ -63,13 +63,22 @@ func NewDouble(arg Arg) (*Double, error) {
 	return b, nil
 }
 
-func (d *Double) Encode(tag Tag) {
+func (d *Double) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	var _b = make([]byte, 8)
 	binary.BigEndian.PutUint64(_b, math.Float64bits(d.value))
 	tag.setAppData(uint(model.BACnetDataType_DOUBLE), _b)
+	return nil
 }
 
-func (d *Double) Decode(tag Tag) error {
+func (d *Double) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DOUBLE) {
 		return errors.New("Double application tag required")
 	}

@@ -75,6 +75,7 @@ type Tag interface {
 	Decode(pdu PDUData) error
 	AppToObject() (any, error)
 	AppToContext(context uint) (*ContextTag, error)
+	ContextToApp(dataType uint) (Tag, error) // TODO: can't be ApplicationTag because boolean gets encoded as Tag???
 	setAppData(tagNumber uint, tdata []byte)
 	set(args Args)
 }
@@ -240,7 +241,7 @@ func (t *tag) AppToContext(context uint) (*ContextTag, error) {
 	return NewContextTag(NewArgs(context, t.tagData))
 }
 
-func (t *tag) ContextToApp(dataType uint) (any, error) {
+func (t *tag) ContextToApp(dataType uint) (Tag, error) {
 	if t.tagClass != model.TagClass_CONTEXT_SPECIFIC_TAGS {
 		return nil, errors.New("context tag required")
 	}

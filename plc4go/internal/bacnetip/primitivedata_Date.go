@@ -276,11 +276,21 @@ func (d *Date) now(arg float32) {
 	panic("implement me") // TODO
 }
 
-func (d *Date) Encode(tag Tag) {
+func (d *Date) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	tag.setAppData(uint(model.BACnetDataType_DATE), []byte{byte(d.value.Year), byte(d.value.Month), byte(d.value.Day), byte(d.value.DayOfWeek)})
+
+	return nil
 }
 
-func (d *Date) Decode(tag Tag) error {
+func (d *Date) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_DATE) {
 		return errors.New("Date application tag required")
 	}
@@ -288,8 +298,8 @@ func (d *Date) Decode(tag Tag) error {
 		return errors.New("invalid tag length")
 	}
 
-	arg := tag.GetTagData()
-	year, month, day, dayOfWeek := arg[0], arg[1], arg[2], arg[3]
+	td := tag.GetTagData()
+	year, month, day, dayOfWeek := td[0], td[1], td[2], td[3]
 	d.value.Year, d.value.Month, d.value.Day, d.value.DayOfWeek = int(year), int(month), int(day), int(dayOfWeek)
 	return nil
 }

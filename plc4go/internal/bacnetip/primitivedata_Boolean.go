@@ -66,11 +66,20 @@ func NewBoolean(arg Arg) (*Boolean, error) {
 	return b, nil
 }
 
-func (b *Boolean) Encode(tag Tag) {
+func (b *Boolean) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	} //TODO: move tag number into member variable
 	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_BOOLEAN, b.value, []byte{}))
+	return nil
 }
 
-func (b *Boolean) Decode(tag Tag) error {
+func (b *Boolean) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_BOOLEAN) {
 		return errors.New("boolean application tag required")
 	}

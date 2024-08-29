@@ -54,11 +54,20 @@ func NewNull(arg Arg) (*Null, error) {
 	return b, nil
 }
 
-func (b *Null) Encode(tag Tag) {
+func (b *Null) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	tag.set(NewArgs(model.TagClass_APPLICATION_TAGS, model.BACnetDataType_NULL, b.value, []byte{}))
+	return nil
 }
 
-func (b *Null) Decode(tag Tag) error {
+func (b *Null) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_NULL) {
 		return errors.New("Null application tag required")
 	}

@@ -70,7 +70,11 @@ func NewUnsigned16(arg Arg) (*Unsigned16, error) {
 	return i, nil
 }
 
-func (i *Unsigned16) Encode(tag Tag) {
+func (i *Unsigned16) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	data := make([]byte, 4)
 	binary.BigEndian.PutUint32(data, uint32(i.value))
 
@@ -80,9 +84,14 @@ func (i *Unsigned16) Encode(tag Tag) {
 	}
 
 	tag.setAppData(uint(model.BACnetDataType_UNSIGNED_INTEGER), data)
+	return nil
 }
 
-func (i *Unsigned16) Decode(tag Tag) error {
+func (i *Unsigned16) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_UNSIGNED_INTEGER) {
 		return errors.New("Unsigned16 application tag required")
 	}

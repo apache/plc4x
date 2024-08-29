@@ -19,6 +19,8 @@
 
 package bacnetip
 
+import "github.com/rs/zerolog"
+
 // TODO: implement
 type Capability struct {
 }
@@ -27,20 +29,51 @@ func NewCapability() *Capability {
 	return &Capability{}
 }
 
-// TODO: implement
-type Collector struct {
+func (c *Capability) getFN(fn string) func(args Args, kwargs KWArgs) error {
+	panic("implement me")
 }
 
-func NewCollector() *Collector {
-	return &Collector{}
+func (c *Capability) String() string {
+	panic("implement me")
+}
+
+// TODO: implement
+type Collector struct {
+	capabilities []*Capability
+
+	log zerolog.Logger
+}
+
+func NewCollector(localLog zerolog.Logger) *Collector {
+	return &Collector{log: localLog}
 }
 
 func (c *Collector) searchCapability() {
 	panic("not implemented") // TODO: implement me
 }
 
+// CapabilityFunctions generator yields functions that match the requested capability sorted by z-index.
 func (c *Collector) CapabilityFunctions(fn string) []func(args Args, kwargs KWArgs) error {
-	panic("not implemented") // TODO: implement me
+	c.log.Trace().Msg("CapabilityFunctions")
+
+	// build a list of functions to call
+	var fns []func(args Args, kwargs KWArgs) error
+	for _, capability := range c.capabilities {
+		xfn := capability.getFN(fn)
+		c.log.Trace().Stringer("capability", capability).Bool("xfn", xfn != nil).Msg("cap")
+		if xfn != nil {
+			// TODO: sorting
+			fns = append(fns, xfn)
+		}
+	}
+
+	// sort them by z-index
+	// TODO: sorting
+
+	// now yield them in order
+	// TODO: what?
+
+	return fns
 }
 
 func (c *Collector) AddCapability(cls any) {

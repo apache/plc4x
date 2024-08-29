@@ -128,11 +128,20 @@ func (t *Time) now(arg float32) {
 	panic("implement me") // TODO
 }
 
-func (t *Time) Encode(tag Tag) {
+func (t *Time) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	tag.setAppData(uint(model.BACnetDataType_TIME), []byte{byte(t.value.Hour), byte(t.value.Minute), byte(t.value.Second), byte(t.value.Hundredth)})
+	return nil
 }
 
-func (t *Time) Decode(tag Tag) error {
+func (t *Time) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_TIME) {
 		return errors.New("Time application tag required")
 	}

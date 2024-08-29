@@ -60,11 +60,20 @@ func NewOctetString(arg Arg) (*OctetString, error) {
 	return o, nil
 }
 
-func (o *OctetString) Encode(tag Tag) {
+func (o *OctetString) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	tag.setAppData(uint(model.BACnetDataType_OCTET_STRING), o.value)
+	return nil
 }
 
-func (o *OctetString) Decode(tag Tag) error {
+func (o *OctetString) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_OCTET_STRING) {
 		return errors.New("OctetString application tag required")
 	}

@@ -38,8 +38,11 @@ func NewUnconfirmedRequestPDU() (*UnconfirmedRequestPDU, error) {
 
 func NewUnconfirmedRequestSequence() (*UnconfirmedRequestSequence, error) {
 	u := &UnconfirmedRequestSequence{}
-	u.APCISequence = NewAPCISequence()
 	var err error
+	u.APCISequence, err = NewAPCISequence()
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating _APCISequence")
+	}
 	u.UnconfirmedRequestPDU, err = NewUnconfirmedRequestPDU()
 	if err != nil {
 		return nil, errors.Wrap(err, "error creating UnconfirmedRequestPDU")

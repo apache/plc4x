@@ -51,6 +51,9 @@ type Atomic[T ComparableAndOrdered] struct {
 	value T
 }
 
+var _ IsAtomic = (*Atomic[int])(nil)
+var _ AtomicContract[int] = (*Atomic[int])(nil)
+
 func NewAtomic[T ComparableAndOrdered](subStruct interface {
 	AtomicContract[T]
 	AtomicRequirements
@@ -61,7 +64,7 @@ func NewAtomic[T ComparableAndOrdered](subStruct interface {
 	}
 }
 
-func (a *Atomic[T]) isAtomic(bool) bool {
+func (a *Atomic[T]) isAtomic() bool {
 	return true
 }
 

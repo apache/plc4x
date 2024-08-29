@@ -63,11 +63,20 @@ func NewCharacterString(arg Arg) (*CharacterString, error) {
 	return c, nil
 }
 
-func (c *CharacterString) Encode(tag Tag) {
+func (c *CharacterString) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	tag.setAppData(uint(model.BACnetDataType_CHARACTER_STRING), append([]byte{c.strEncoding}, c.strValue...))
+	return nil
 }
 
-func (c *CharacterString) Decode(tag Tag) error {
+func (c *CharacterString) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_CHARACTER_STRING) {
 		return errors.New("CharacterString application tag required")
 	}

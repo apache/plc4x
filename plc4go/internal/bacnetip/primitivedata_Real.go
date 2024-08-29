@@ -64,13 +64,22 @@ func NewReal(arg Arg) (*Real, error) {
 	return b, nil
 }
 
-func (d *Real) Encode(tag Tag) {
+func (d *Real) Encode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	var _b = make([]byte, 4)
 	binary.BigEndian.PutUint32(_b, math.Float32bits(d.value))
 	tag.setAppData(uint(model.BACnetDataType_REAL), _b)
+	return nil
 }
 
-func (d *Real) Decode(tag Tag) error {
+func (d *Real) Decode(arg Arg) error {
+	tag, ok := arg.(Tag)
+	if !ok {
+		return errors.Errorf("%T is not a Tag", arg)
+	}
 	if tag.GetTagClass() != model.TagClass_APPLICATION_TAGS || tag.GetTagNumber() != uint(model.BACnetDataType_REAL) {
 		return errors.New("Real application tag required")
 	}

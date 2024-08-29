@@ -415,7 +415,7 @@ type ApplicationNode struct {
 	log zerolog.Logger
 }
 
-func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacnetip.IPNetwork) (*ApplicationNode, error) {
+func NewApplicationNode(localLog zerolog.Logger, address string, vlan *bacnetip.Network) (*ApplicationNode, error) {
 	a := &ApplicationNode{
 		log: localLog,
 	}

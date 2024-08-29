@@ -33,14 +33,22 @@ type APCISequence struct {
 	tagList *TagList
 }
 
-func NewAPCISequence() *APCISequence {
+func NewAPCISequence() (*APCISequence, error) {
 	a := &APCISequence{}
 	a._APCI = NewAPCI(nil, nil).(*_APCI) // TODO: what to pass up?
-	a.Sequence = NewSequence()
+	var err error
+	a.Sequence, err = NewSequence(NoKWArgs, WithSequenceContract(a))
+	if err != nil {
+		return nil, errors.Wrap(err, "error creating sequence")
+	}
 
 	// start with an empty tag list
 	a.tagList = NewTagList(nil)
-	return a
+	return a, nil
+}
+
+func (a *APCISequence) SetSequence(sequence *Sequence) {
+	a.Sequence = sequence
 }
 
 func (a *APCISequence) Encode(apdu Arg) error {

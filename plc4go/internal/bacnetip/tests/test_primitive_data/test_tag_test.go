@@ -48,7 +48,10 @@ func objDecode(blob []byte) any {
 // Encode the object into a tag, encode it in a PDU, return the data.
 func objEncode(obj any) []byte {
 	tag := Tag()
-	obj.(interface{ Encode(tag bacnetip.Tag) }).Encode(tag)
+	err := obj.(interface{ Encode(arg bacnetip.Arg) error }).Encode(tag)
+	if err != nil {
+		panic(err)
+	}
 	data := PDUData()
 	tag.Encode(data)
 	return data.GetPduData()

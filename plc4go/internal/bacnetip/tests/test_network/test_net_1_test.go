@@ -134,11 +134,10 @@ func (t *TNetwork1) Run(timeLimit time.Duration) {
 }
 
 func TestNet1(t *testing.T) {
-	t.Run("TestSimple1", func(t *testing.T) {
-		tests.ExclusiveGlobalTimeMachine(t)
-
+	t.Run("TestSimple", func(t *testing.T) {
 		t.Run("testIdle", func(t *testing.T) {
 			// create a network
+			tests.ExclusiveGlobalTimeMachine(t)
 			tnet := NewTNetwork1(t)
 
 			// all start states are successful
