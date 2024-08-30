@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,16 +16,13 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.ParseException;
-import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public interface DataReader<T> extends ByteOrderAware, PositionAware, ContextReader {
+public interface ContextReader {
+    void pullContext(String logicalName, WithReaderArgs... readerArgs);
 
-    T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
-
-    ReadBuffer getReadBuffer();
-
+    void closeContext(String logicalName, WithReaderArgs... readerArgs);
 }
