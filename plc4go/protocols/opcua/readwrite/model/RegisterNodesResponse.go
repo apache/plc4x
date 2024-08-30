@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,9 @@ func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfRegisteredNodeIds := _noOfRegisteredNodeIds
 
-	// Array field (registeredNodeIds)
-	if pullErr := readBuffer.PullContext("registeredNodeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for registeredNodeIds")
-	}
-	// Count array
-	registeredNodeIds := make([]NodeId, max(noOfRegisteredNodeIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(registeredNodeIds) == 0 {
-		registeredNodeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfRegisteredNodeIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NodeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'registeredNodeIds' field of RegisterNodesResponse")
-			}
-			registeredNodeIds[_curItem] = _item.(NodeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("registeredNodeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for registeredNodeIds")
+	registeredNodeIds, err := ReadCountArrayField[NodeId](ctx, "registeredNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfRegisteredNodeIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registeredNodeIds' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RegisterNodesResponse"); closeErr != nil {

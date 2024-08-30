@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -201,31 +203,9 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 	}
 	noOfSubscriptionIds := _noOfSubscriptionIds
 
-	// Array field (subscriptionIds)
-	if pullErr := readBuffer.PullContext("subscriptionIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subscriptionIds")
-	}
-	// Count array
-	subscriptionIds := make([]uint32, max(noOfSubscriptionIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(subscriptionIds) == 0 {
-		subscriptionIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfSubscriptionIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subscriptionIds' field of TransferSubscriptionsRequest")
-			}
-			subscriptionIds[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("subscriptionIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subscriptionIds")
+	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, 32), uint64(noOfSubscriptionIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionIds' field"))
 	}
 
 	var reservedField0 *uint8

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -166,31 +168,9 @@ func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	noOfDataValues := _noOfDataValues
 
-	// Array field (dataValues)
-	if pullErr := readBuffer.PullContext("dataValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataValues")
-	}
-	// Count array
-	dataValues := make([]DataValue, max(noOfDataValues, 0))
-	// This happens when the size is set conditional to 0
-	if len(dataValues) == 0 {
-		dataValues = nil
-	}
-	{
-		_numItems := uint16(max(noOfDataValues, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DataValueParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dataValues' field of HistoryData")
-			}
-			dataValues[_curItem] = _item.(DataValue)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("dataValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataValues")
+	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("HistoryData"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -257,31 +259,9 @@ func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	noOfAxisSteps := _noOfAxisSteps
 
-	// Array field (axisSteps)
-	if pullErr := readBuffer.PullContext("axisSteps", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for axisSteps")
-	}
-	// Count array
-	axisSteps := make([]float64, max(noOfAxisSteps, 0))
-	// This happens when the size is set conditional to 0
-	if len(axisSteps) == 0 {
-		axisSteps = nil
-	}
-	{
-		_numItems := uint16(max(noOfAxisSteps, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("", 64)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'axisSteps' field of AxisInformation")
-			}
-			axisSteps[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("axisSteps", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for axisSteps")
+	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, 64), uint64(noOfAxisSteps))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'axisSteps' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AxisInformation"); closeErr != nil {

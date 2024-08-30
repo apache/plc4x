@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -303,31 +305,9 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfSecurityGroupFolder := _noOfSecurityGroupFolder
 
-	// Array field (securityGroupFolder)
-	if pullErr := readBuffer.PullContext("securityGroupFolder", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityGroupFolder")
-	}
-	// Count array
-	securityGroupFolder := make([]PascalString, max(noOfSecurityGroupFolder, 0))
-	// This happens when the size is set conditional to 0
-	if len(securityGroupFolder) == 0 {
-		securityGroupFolder = nil
-	}
-	{
-		_numItems := uint16(max(noOfSecurityGroupFolder, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'securityGroupFolder' field of SecurityGroupDataType")
-			}
-			securityGroupFolder[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("securityGroupFolder", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityGroupFolder")
+	securityGroupFolder, err := ReadCountArrayField[PascalString](ctx, "securityGroupFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroupFolder))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroupFolder' field"))
 	}
 
 	// Simple Field (keyLifetime)
@@ -384,31 +364,15 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfRolePermissions := _noOfRolePermissions
 
-	// Array field (rolePermissions)
-	if pullErr := readBuffer.PullContext("rolePermissions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for rolePermissions")
-	}
-	// Count array
-	rolePermissions := make([]ExtensionObjectDefinition, max(noOfRolePermissions, 0))
-	// This happens when the size is set conditional to 0
-	if len(rolePermissions) == 0 {
-		rolePermissions = nil
-	}
-	{
-		_numItems := uint16(max(noOfRolePermissions, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "98")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'rolePermissions' field of SecurityGroupDataType")
-			}
-			rolePermissions[_curItem] = _item.(ExtensionObjectDefinition)
+	rolePermissions, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "rolePermissions", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("98"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("rolePermissions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for rolePermissions")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfRolePermissions))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rolePermissions' field"))
 	}
 
 	// Simple Field (noOfGroupProperties)
@@ -418,31 +382,15 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfGroupProperties := _noOfGroupProperties
 
-	// Array field (groupProperties)
-	if pullErr := readBuffer.PullContext("groupProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for groupProperties")
-	}
-	// Count array
-	groupProperties := make([]ExtensionObjectDefinition, max(noOfGroupProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(groupProperties) == 0 {
-		groupProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfGroupProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'groupProperties' field of SecurityGroupDataType")
-			}
-			groupProperties[_curItem] = _item.(ExtensionObjectDefinition)
+	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("groupProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for groupProperties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfGroupProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupProperties' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SecurityGroupDataType"); closeErr != nil {

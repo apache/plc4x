@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataKeySetsParseWithBuffer(ctx context.Context, readBuffer
 		}
 	}
 
-	// Array field (keySets)
-	if pullErr := readBuffer.PullContext("keySets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for keySets")
-	}
-	// Terminated array
-	var keySets []BACnetSecurityKeySet
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetSecurityKeySetParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'keySets' field of BACnetConstructedDataKeySets")
-			}
-			keySets = append(keySets, _item.(BACnetSecurityKeySet))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("keySets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for keySets")
+	keySets, err := ReadTerminatedArrayField[BACnetSecurityKeySet](ctx, "keySets", ReadComplex[BACnetSecurityKeySet](BACnetSecurityKeySetParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keySets' field"))
 	}
 
 	// Validation

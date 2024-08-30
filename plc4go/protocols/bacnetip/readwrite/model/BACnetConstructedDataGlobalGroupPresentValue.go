@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataGlobalGroupPresentValueParseWithBuffer(ctx context.Con
 		}
 	}
 
-	// Array field (presentValue)
-	if pullErr := readBuffer.PullContext("presentValue", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
-	}
-	// Terminated array
-	var presentValue []BACnetPropertyAccessResult
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPropertyAccessResultParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'presentValue' field of BACnetConstructedDataGlobalGroupPresentValue")
-			}
-			presentValue = append(presentValue, _item.(BACnetPropertyAccessResult))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("presentValue", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
+	presentValue, err := ReadTerminatedArrayField[BACnetPropertyAccessResult](ctx, "presentValue", ReadComplex[BACnetPropertyAccessResult](BACnetPropertyAccessResultParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGlobalGroupPresentValue"); closeErr != nil {

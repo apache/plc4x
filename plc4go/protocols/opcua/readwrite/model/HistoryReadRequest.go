@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -278,31 +280,15 @@ func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 	noOfNodesToRead := _noOfNodesToRead
 
-	// Array field (nodesToRead)
-	if pullErr := readBuffer.PullContext("nodesToRead", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToRead")
-	}
-	// Count array
-	nodesToRead := make([]ExtensionObjectDefinition, max(noOfNodesToRead, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToRead) == 0 {
-		nodesToRead = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToRead, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "637")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToRead' field of HistoryReadRequest")
-			}
-			nodesToRead[_curItem] = _item.(ExtensionObjectDefinition)
+	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("637"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToRead", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToRead")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfNodesToRead))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToRead' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("HistoryReadRequest"); closeErr != nil {

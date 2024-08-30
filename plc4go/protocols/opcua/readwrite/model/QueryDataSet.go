@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -214,31 +216,9 @@ func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	noOfValues := _noOfValues
 
-	// Array field (values)
-	if pullErr := readBuffer.PullContext("values", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for values")
-	}
-	// Count array
-	values := make([]Variant, max(noOfValues, 0))
-	// This happens when the size is set conditional to 0
-	if len(values) == 0 {
-		values = nil
-	}
-	{
-		_numItems := uint16(max(noOfValues, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := VariantParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'values' field of QueryDataSet")
-			}
-			values[_curItem] = _item.(Variant)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("values", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for values")
+	values, err := ReadCountArrayField[Variant](ctx, "values", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfValues))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("QueryDataSet"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,31 +149,9 @@ func SecurityDataStatusReport2ParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (zoneStatus)
-	if pullErr := readBuffer.PullContext("zoneStatus", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneStatus")
-	}
-	// Count array
-	zoneStatus := make([]ZoneStatus, max(uint16(48), 0))
-	// This happens when the size is set conditional to 0
-	if len(zoneStatus) == 0 {
-		zoneStatus = nil
-	}
-	{
-		_numItems := uint16(max(uint16(48), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ZoneStatusParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'zoneStatus' field of SecurityDataStatusReport2")
-			}
-			zoneStatus[_curItem] = _item.(ZoneStatus)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("zoneStatus", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneStatus")
+	zoneStatus, err := ReadCountArrayField[ZoneStatus](ctx, "zoneStatus", ReadComplex[ZoneStatus](ZoneStatusParseWithBuffer, readBuffer), uint64(int32(48)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataStatusReport2"); closeErr != nil {

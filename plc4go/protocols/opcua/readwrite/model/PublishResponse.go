@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -288,31 +290,9 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	noOfAvailableSequenceNumbers := _noOfAvailableSequenceNumbers
 
-	// Array field (availableSequenceNumbers)
-	if pullErr := readBuffer.PullContext("availableSequenceNumbers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for availableSequenceNumbers")
-	}
-	// Count array
-	availableSequenceNumbers := make([]uint32, max(noOfAvailableSequenceNumbers, 0))
-	// This happens when the size is set conditional to 0
-	if len(availableSequenceNumbers) == 0 {
-		availableSequenceNumbers = nil
-	}
-	{
-		_numItems := uint16(max(noOfAvailableSequenceNumbers, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'availableSequenceNumbers' field of PublishResponse")
-			}
-			availableSequenceNumbers[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("availableSequenceNumbers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for availableSequenceNumbers")
+	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, 32), uint64(noOfAvailableSequenceNumbers))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'availableSequenceNumbers' field"))
 	}
 
 	var reservedField0 *uint8
@@ -359,31 +339,9 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	noOfResults := _noOfResults
 
-	// Array field (results)
-	if pullErr := readBuffer.PullContext("results", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for results")
-	}
-	// Count array
-	results := make([]StatusCode, max(noOfResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(results) == 0 {
-		results = nil
-	}
-	{
-		_numItems := uint16(max(noOfResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'results' field of PublishResponse")
-			}
-			results[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("results", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for results")
+	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
 
 	// Simple Field (noOfDiagnosticInfos)
@@ -393,31 +351,9 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	noOfDiagnosticInfos := _noOfDiagnosticInfos
 
-	// Array field (diagnosticInfos)
-	if pullErr := readBuffer.PullContext("diagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfos")
-	}
-	// Count array
-	diagnosticInfos := make([]DiagnosticInfo, max(noOfDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(diagnosticInfos) == 0 {
-		diagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'diagnosticInfos' field of PublishResponse")
-			}
-			diagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("diagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfos")
+	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PublishResponse"); closeErr != nil {

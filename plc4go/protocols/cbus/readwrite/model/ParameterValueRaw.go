@@ -142,11 +142,10 @@ func ParameterValueRawParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(numBytes)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueRaw")
+
+	data, err := readBuffer.ReadByteArray("data", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueRaw"); closeErr != nil {

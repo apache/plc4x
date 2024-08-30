@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataListOfGroupMembersParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (listOfGroupMembers)
-	if pullErr := readBuffer.PullContext("listOfGroupMembers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfGroupMembers")
-	}
-	// Terminated array
-	var listOfGroupMembers []BACnetReadAccessSpecification
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessSpecificationParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfGroupMembers' field of BACnetConstructedDataListOfGroupMembers")
-			}
-			listOfGroupMembers = append(listOfGroupMembers, _item.(BACnetReadAccessSpecification))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfGroupMembers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfGroupMembers")
+	listOfGroupMembers, err := ReadTerminatedArrayField[BACnetReadAccessSpecification](ctx, "listOfGroupMembers", ReadComplex[BACnetReadAccessSpecification](BACnetReadAccessSpecificationParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfGroupMembers' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataListOfGroupMembers"); closeErr != nil {

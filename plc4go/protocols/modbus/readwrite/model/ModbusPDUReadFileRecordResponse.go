@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,25 +165,9 @@ func ModbusPDUReadFileRecordResponseParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReadFileRecordResponse")
 	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
-	}
-	// Length array
-	var items []ModbusPDUReadFileRecordResponseItem
-	{
-		_itemsLength := byteCount
-		_itemsEndPos := positionAware.GetPos() + uint16(_itemsLength)
-		for positionAware.GetPos() < _itemsEndPos {
-			_item, _err := ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of ModbusPDUReadFileRecordResponse")
-			}
-			items = append(items, _item.(ModbusPDUReadFileRecordResponseItem))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
+	items, err := ReadLengthArrayField[ModbusPDUReadFileRecordResponseItem](ctx, "items", ReadComplex[ModbusPDUReadFileRecordResponseItem](ModbusPDUReadFileRecordResponseItemParseWithBuffer, readBuffer), int(byteCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordResponse"); closeErr != nil {

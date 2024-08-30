@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,23 +176,15 @@ func BACnetWriteAccessSpecificationParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfPropertyWriteDefinition)
-	if pullErr := readBuffer.PullContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfPropertyWriteDefinition")
-	}
-	// Terminated array
-	var listOfPropertyWriteDefinition []BACnetPropertyWriteDefinition
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
-			_item, _err := BACnetPropertyWriteDefinitionParseWithBuffer(ctx, readBuffer, objectIdentifier.GetObjectType())
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfPropertyWriteDefinition' field of BACnetWriteAccessSpecification")
-			}
-			listOfPropertyWriteDefinition = append(listOfPropertyWriteDefinition, _item.(BACnetPropertyWriteDefinition))
+	listOfPropertyWriteDefinition, err := ReadTerminatedArrayField[BACnetPropertyWriteDefinition](ctx, "listOfPropertyWriteDefinition", ReadComplex[BACnetPropertyWriteDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetPropertyWriteDefinition, error) {
+		v, err := BACnetPropertyWriteDefinitionParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectIdentifier.GetObjectType()))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfPropertyWriteDefinition", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfPropertyWriteDefinition")
+		return v.(BACnetPropertyWriteDefinition), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfPropertyWriteDefinition' field"))
 	}
 
 	// Simple Field (closingTag)

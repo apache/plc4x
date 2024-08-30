@@ -142,11 +142,10 @@ func COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx context.Con
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(rest)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of COTPParameterDisconnectAdditionalInformation")
+
+	data, err := readBuffer.ReadByteArray("data", int(rest))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPParameterDisconnectAdditionalInformation"); closeErr != nil {

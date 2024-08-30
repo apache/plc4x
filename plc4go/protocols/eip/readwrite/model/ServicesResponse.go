@@ -249,11 +249,10 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(_supportsUDPErr, "Error parsing 'supportsUDP' field of ServicesResponse")
 	}
 	supportsUDP := _supportsUDP
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(serviceLen) - uint16(uint16(4)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ServicesResponse")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(serviceLen)-int32(int32(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ServicesResponse"); closeErr != nil {

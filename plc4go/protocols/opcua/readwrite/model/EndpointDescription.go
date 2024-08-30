@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -308,31 +310,15 @@ func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfUserIdentityTokens := _noOfUserIdentityTokens
 
-	// Array field (userIdentityTokens)
-	if pullErr := readBuffer.PullContext("userIdentityTokens", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityTokens")
-	}
-	// Count array
-	userIdentityTokens := make([]ExtensionObjectDefinition, max(noOfUserIdentityTokens, 0))
-	// This happens when the size is set conditional to 0
-	if len(userIdentityTokens) == 0 {
-		userIdentityTokens = nil
-	}
-	{
-		_numItems := uint16(max(noOfUserIdentityTokens, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "306")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'userIdentityTokens' field of EndpointDescription")
-			}
-			userIdentityTokens[_curItem] = _item.(ExtensionObjectDefinition)
+	userIdentityTokens, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "userIdentityTokens", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("306"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("userIdentityTokens", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userIdentityTokens")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfUserIdentityTokens))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokens' field"))
 	}
 
 	// Simple Field (transportProfileUri)

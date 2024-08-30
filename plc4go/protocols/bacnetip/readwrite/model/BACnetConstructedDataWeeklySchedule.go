@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataWeeklyScheduleParseWithBuffer(ctx context.Context, rea
 		}
 	}
 
-	// Array field (weeklySchedule)
-	if pullErr := readBuffer.PullContext("weeklySchedule", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for weeklySchedule")
-	}
-	// Terminated array
-	var weeklySchedule []BACnetDailySchedule
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDailyScheduleParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'weeklySchedule' field of BACnetConstructedDataWeeklySchedule")
-			}
-			weeklySchedule = append(weeklySchedule, _item.(BACnetDailySchedule))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("weeklySchedule", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for weeklySchedule")
+	weeklySchedule, err := ReadTerminatedArrayField[BACnetDailySchedule](ctx, "weeklySchedule", ReadComplex[BACnetDailySchedule](BACnetDailyScheduleParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'weeklySchedule' field"))
 	}
 
 	// Validation

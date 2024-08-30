@@ -20,6 +20,7 @@
 package io
 
 import (
+	"context"
 	"math/big"
 	"time"
 
@@ -92,7 +93,7 @@ func ReadEnum[T any, I any](enumResolver func(I) (T, bool), dataReader DataReade
 	return NewDataReaderEnumDefault[T, I](enumResolver, dataReader, logger)
 }
 
-func ReadComplex[T any](complexSupplier ComplexTypeSupplier[T], readBuffer utils.ReadBuffer) *DataReaderComplexDefault[T] {
+func ReadComplex[T any](complexSupplier func(context.Context, utils.ReadBuffer) (T, error), readBuffer utils.ReadBuffer) *DataReaderComplexDefault[T] {
 	return NewDataReaderComplexDefault[T](complexSupplier, readBuffer)
 }
 

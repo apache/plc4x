@@ -118,11 +118,10 @@ func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (octets)
-	numberOfBytesoctets := int(actualLength)
-	octets, _readArrayErr := readBuffer.ReadByteArray("octets", numberOfBytesoctets)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'octets' field of BACnetTagPayloadOctetString")
+
+	octets, err := readBuffer.ReadByteArray("octets", int(actualLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octets' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadOctetString"); closeErr != nil {

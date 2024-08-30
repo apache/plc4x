@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -166,31 +168,9 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(_numberOfClassesErr, "Error parsing 'numberOfClasses' field of CIPAttributes")
 	}
 
-	// Array field (classId)
-	if pullErr := readBuffer.PullContext("classId", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for classId")
-	}
-	// Count array
-	classId := make([]uint16, max(numberOfClasses, 0))
-	// This happens when the size is set conditional to 0
-	if len(classId) == 0 {
-		classId = nil
-	}
-	{
-		_numItems := uint16(max(numberOfClasses, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'classId' field of CIPAttributes")
-			}
-			classId[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("classId", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for classId")
+	classId, err := ReadCountArrayField[uint16](ctx, "classId", ReadUnsignedShort(readBuffer, 16), uint64(numberOfClasses))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classId' field"))
 	}
 
 	// Optional Field (numberAvailable) (Can be skipped, if a given expression evaluates to false)
@@ -224,13 +204,12 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 			numberActive = &_val
 		}
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf((bool((packetLength) > (((numberOfClasses) * (2)) + (6)))), func() any {
-		return uint16(uint16(packetLength) - uint16((uint16((uint16(numberOfClasses) * uint16(uint16(2)))) + uint16(uint16(6)))))
-	}, func() any { return uint16(uint16(0)) }).(uint16))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CIPAttributes")
+
+	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf((bool((packetLength) > (((numberOfClasses)*(2))+(6)))), func() any {
+		return int32(int32(packetLength) - int32((int32((int32(numberOfClasses) * int32(int32(2)))) + int32(int32(6)))))
+	}, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPAttributes"); closeErr != nil {

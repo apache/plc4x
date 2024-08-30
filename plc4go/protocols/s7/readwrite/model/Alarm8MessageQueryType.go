@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,31 +220,9 @@ func Alarm8MessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	byteCount := _byteCount
 
-	// Array field (messageObjects)
-	if pullErr := readBuffer.PullContext("messageObjects", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messageObjects")
-	}
-	// Count array
-	messageObjects := make([]AlarmMessageObjectQueryType, max(uint16(byteCount)/uint16(uint16(12)), 0))
-	// This happens when the size is set conditional to 0
-	if len(messageObjects) == 0 {
-		messageObjects = nil
-	}
-	{
-		_numItems := uint16(max(uint16(byteCount)/uint16(uint16(12)), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AlarmMessageObjectQueryTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of Alarm8MessageQueryType")
-			}
-			messageObjects[_curItem] = _item.(AlarmMessageObjectQueryType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("messageObjects", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messageObjects")
+	messageObjects, err := ReadCountArrayField[AlarmMessageObjectQueryType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectQueryType](AlarmMessageObjectQueryTypeParseWithBuffer, readBuffer), uint64(int32(byteCount)/int32(int32(12))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageObjects' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("Alarm8MessageQueryType"); closeErr != nil {

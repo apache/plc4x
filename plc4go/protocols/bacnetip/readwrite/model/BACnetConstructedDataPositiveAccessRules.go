@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataPositiveAccessRulesParseWithBuffer(ctx context.Context
 		}
 	}
 
-	// Array field (positiveAccessRules)
-	if pullErr := readBuffer.PullContext("positiveAccessRules", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for positiveAccessRules")
-	}
-	// Terminated array
-	var positiveAccessRules []BACnetAccessRule
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessRuleParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'positiveAccessRules' field of BACnetConstructedDataPositiveAccessRules")
-			}
-			positiveAccessRules = append(positiveAccessRules, _item.(BACnetAccessRule))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("positiveAccessRules", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for positiveAccessRules")
+	positiveAccessRules, err := ReadTerminatedArrayField[BACnetAccessRule](ctx, "positiveAccessRules", ReadComplex[BACnetAccessRule](BACnetAccessRuleParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'positiveAccessRules' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveAccessRules"); closeErr != nil {

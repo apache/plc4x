@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataBitTextParseWithBuffer(ctx context.Context, readBuffer
 		}
 	}
 
-	// Array field (bitText)
-	if pullErr := readBuffer.PullContext("bitText", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitText")
-	}
-	// Terminated array
-	var bitText []BACnetApplicationTagCharacterString
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'bitText' field of BACnetConstructedDataBitText")
-			}
-			bitText = append(bitText, _item.(BACnetApplicationTagCharacterString))
+	bitText, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "bitText", ReadComplex[BACnetApplicationTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagCharacterString, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("bitText", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitText")
+		return v.(BACnetApplicationTagCharacterString), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitText' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitText"); closeErr != nil {

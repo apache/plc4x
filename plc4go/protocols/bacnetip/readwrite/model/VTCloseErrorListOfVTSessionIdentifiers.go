@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,15 @@ func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfVtSessionIdentifiers)
-	if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
-	}
-	// Terminated array
-	var listOfVtSessionIdentifiers []BACnetApplicationTagUnsignedInteger
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseErrorListOfVTSessionIdentifiers")
-			}
-			listOfVtSessionIdentifiers = append(listOfVtSessionIdentifiers, _item.(BACnetApplicationTagUnsignedInteger))
+	listOfVtSessionIdentifiers, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfVtSessionIdentifiers")
+		return v.(BACnetApplicationTagUnsignedInteger), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfVtSessionIdentifiers' field"))
 	}
 
 	// Simple Field (closingTag)

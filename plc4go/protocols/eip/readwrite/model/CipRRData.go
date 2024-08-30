@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,31 +209,9 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(_typeIdCountErr, "Error parsing 'typeIdCount' field of CipRRData")
 	}
 
-	// Array field (typeIds)
-	if pullErr := readBuffer.PullContext("typeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeIds")
-	}
-	// Count array
-	typeIds := make([]TypeId, max(typeIdCount, 0))
-	// This happens when the size is set conditional to 0
-	if len(typeIds) == 0 {
-		typeIds = nil
-	}
-	{
-		_numItems := uint16(max(typeIdCount, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := TypeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'typeIds' field of CipRRData")
-			}
-			typeIds[_curItem] = _item.(TypeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("typeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeIds")
+	typeIds, err := ReadCountArrayField[TypeId](ctx, "typeIds", ReadComplex[TypeId](TypeIdParseWithBuffer, readBuffer), uint64(typeIdCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIds' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CipRRData"); closeErr != nil {

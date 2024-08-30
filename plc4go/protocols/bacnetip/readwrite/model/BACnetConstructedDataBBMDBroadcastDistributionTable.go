@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (bbmdBroadcastDistributionTable)
-	if pullErr := readBuffer.PullContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bbmdBroadcastDistributionTable")
-	}
-	// Terminated array
-	var bbmdBroadcastDistributionTable []BACnetBDTEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetBDTEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'bbmdBroadcastDistributionTable' field of BACnetConstructedDataBBMDBroadcastDistributionTable")
-			}
-			bbmdBroadcastDistributionTable = append(bbmdBroadcastDistributionTable, _item.(BACnetBDTEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("bbmdBroadcastDistributionTable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bbmdBroadcastDistributionTable")
+	bbmdBroadcastDistributionTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdBroadcastDistributionTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdBroadcastDistributionTable' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDBroadcastDistributionTable"); closeErr != nil {

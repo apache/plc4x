@@ -214,11 +214,10 @@ func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field of ModbusPDUGetComEventLogResponse")
 	}
 	messageCount := _messageCount
-	// Byte Array field (events)
-	numberOfBytesevents := int(uint16(byteCount) - uint16(uint16(6)))
-	events, _readArrayErr := readBuffer.ReadByteArray("events", numberOfBytesevents)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'events' field of ModbusPDUGetComEventLogResponse")
+
+	events, err := readBuffer.ReadByteArray("events", int(int32(byteCount)-int32(int32(6))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventLogResponse"); closeErr != nil {

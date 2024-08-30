@@ -55,15 +55,19 @@ func (f *FieldReaderArray[T]) ReadFieldCount(ctx context.Context, logicalName st
 	}
 	itemCount := int(max(0, count))
 	var result = make([]T, itemCount)
+	if itemCount == 0 {
+		result = nil
+	}
 	for curItem := 0; curItem < itemCount; curItem++ {
 		// Make some variables available that would be otherwise challenging to forward.
 		ctx := codegen.NewContextCurItem(ctx, curItem)
 		ctx = codegen.NewContextLastItem(ctx, curItem == itemCount-1)
+		ctx = utils.CreateArrayContext(ctx, itemCount, curItem)
 		read, err := dataReader.Read(ctx, "", readerArgs...)
 		if err != nil {
 			return nil, errors.Wrapf(err, "error reading item %d", curItem)
 		}
-		result = append(result, read)
+		result[curItem] = read
 	}
 	if err := dataReader.CloseContext(logicalName, readerArgs...); err != nil {
 		return nil, errors.Wrapf(err, "error closing context for %s", logicalName)

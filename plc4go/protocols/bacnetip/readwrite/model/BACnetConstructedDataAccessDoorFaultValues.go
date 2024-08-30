@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataAccessDoorFaultValuesParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (faultValues)
-	if pullErr := readBuffer.PullContext("faultValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultValues")
-	}
-	// Terminated array
-	var faultValues []BACnetDoorAlarmStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'faultValues' field of BACnetConstructedDataAccessDoorFaultValues")
-			}
-			faultValues = append(faultValues, _item.(BACnetDoorAlarmStateTagged))
+	faultValues, err := ReadTerminatedArrayField[BACnetDoorAlarmStateTagged](ctx, "faultValues", ReadComplex[BACnetDoorAlarmStateTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDoorAlarmStateTagged, error) {
+		v, err := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("faultValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultValues")
+		return v.(BACnetDoorAlarmStateTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessDoorFaultValues"); closeErr != nil {

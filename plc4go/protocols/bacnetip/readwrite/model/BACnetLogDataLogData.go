@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,23 +182,9 @@ func BACnetLogDataLogDataParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
-	// Array field (logData)
-	if pullErr := readBuffer.PullContext("logData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logData")
-	}
-	// Terminated array
-	var logData []BACnetLogDataLogDataEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
-			_item, _err := BACnetLogDataLogDataEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'logData' field of BACnetLogDataLogData")
-			}
-			logData = append(logData, _item.(BACnetLogDataLogDataEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("logData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logData")
+	logData, err := ReadTerminatedArrayField[BACnetLogDataLogDataEntry](ctx, "logData", ReadComplex[BACnetLogDataLogDataEntry](BACnetLogDataLogDataEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logData' field"))
 	}
 
 	// Simple Field (innerClosingTag)

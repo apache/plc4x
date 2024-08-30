@@ -473,13 +473,12 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_segmentReduction := utils.InlineIf((bool((segmentServiceChoice) != (nil))), func() any { return uint16((uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() any { return uint16(apduHeaderReduction) }).(uint16)
 	segmentReduction := uint16(_segmentReduction)
 	_ = segmentReduction
-	// Byte Array field (segment)
-	numberOfBytessegment := int(utils.InlineIf(segmentedMessage, func() any {
-		return uint16((utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(segmentReduction))) }, func() any { return uint16(uint16(0)) }).(uint16)))
-	}, func() any { return uint16(uint16(0)) }).(uint16))
-	segment, _readArrayErr := readBuffer.ReadByteArray("segment", numberOfBytessegment)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'segment' field of APDUConfirmedRequest")
+
+	segment, err := readBuffer.ReadByteArray("segment", int(utils.InlineIf(segmentedMessage, func() any {
+		return int32((utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(segmentReduction))) }, func() any { return int32(int32(0)) }).(int32)))
+	}, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segment' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUConfirmedRequest"); closeErr != nil {

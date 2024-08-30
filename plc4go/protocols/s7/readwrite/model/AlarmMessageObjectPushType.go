@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -315,31 +317,9 @@ func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
 	}
 
-	// Array field (AssociatedValues)
-	if pullErr := readBuffer.PullContext("AssociatedValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for AssociatedValues")
-	}
-	// Count array
-	AssociatedValues := make([]AssociatedValueType, max(numberOfValues, 0))
-	// This happens when the size is set conditional to 0
-	if len(AssociatedValues) == 0 {
-		AssociatedValues = nil
-	}
-	{
-		_numItems := uint16(max(numberOfValues, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AssociatedValueTypeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'AssociatedValues' field of AlarmMessageObjectPushType")
-			}
-			AssociatedValues[_curItem] = _item.(AssociatedValueType)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("AssociatedValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for AssociatedValues")
+	AssociatedValues, err := ReadCountArrayField[AssociatedValueType](ctx, "AssociatedValues", ReadComplex[AssociatedValueType](AssociatedValueTypeParseWithBuffer, readBuffer), uint64(numberOfValues))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'AssociatedValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageObjectPushType"); closeErr != nil {

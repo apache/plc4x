@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -236,37 +238,20 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field of AdsReadWriteRequest")
 	}
 
-	// Array field (items)
-	if pullErr := readBuffer.PullContext("items", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for items")
-	}
-	// Count array
-	items := make([]AdsMultiRequestItem, max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(items) == 0 {
-		items = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return uint16(indexOffset) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AdsMultiRequestItemParseWithBuffer(arrayCtx, readBuffer, indexGroup)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'items' field of AdsReadWriteRequest")
-			}
-			items[_curItem] = _item.(AdsMultiRequestItem)
+	items, err := ReadCountArrayField[AdsMultiRequestItem](ctx, "items", ReadComplex[AdsMultiRequestItem](func(ctx context.Context, buffer utils.ReadBuffer) (AdsMultiRequestItem, error) {
+		v, err := AdsMultiRequestItemParseWithBuffer(ctx, readBuffer, (uint32)(indexGroup))
+		if err != nil {
+			return nil, err
 		}
+		return v.(AdsMultiRequestItem), nil
+	}, readBuffer), uint64(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return int32(indexOffset) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
-	if closeErr := readBuffer.CloseContext("items", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for items")
-	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(writeLength) - uint16((uint16(uint16(len(items))) * uint16(uint16(12)))))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadWriteRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(writeLength)-int32((int32(int32(len(items)))*int32(int32(12))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadWriteRequest"); closeErr != nil {

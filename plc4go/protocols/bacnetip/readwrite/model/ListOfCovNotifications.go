@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,23 +176,15 @@ func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfValues)
-	if pullErr := readBuffer.PullContext("listOfValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
-	}
-	// Terminated array
-	var listOfValues []ListOfCovNotificationsValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1)) {
-			_item, _err := ListOfCovNotificationsValueParseWithBuffer(ctx, readBuffer, monitoredObjectIdentifier.GetObjectType())
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of ListOfCovNotifications")
-			}
-			listOfValues = append(listOfValues, _item.(ListOfCovNotificationsValue))
+	listOfValues, err := ReadTerminatedArrayField[ListOfCovNotificationsValue](ctx, "listOfValues", ReadComplex[ListOfCovNotificationsValue](func(ctx context.Context, buffer utils.ReadBuffer) (ListOfCovNotificationsValue, error) {
+		v, err := ListOfCovNotificationsValueParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(monitoredObjectIdentifier.GetObjectType()))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
+		return v.(ListOfCovNotificationsValue), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfValues' field"))
 	}
 
 	// Simple Field (closingTag)

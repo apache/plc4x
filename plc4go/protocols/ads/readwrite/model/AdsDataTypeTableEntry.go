@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -466,64 +469,19 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsDataTypeTableEntry_COMMENTTERMINATOR) + " but got " + fmt.Sprintf("%d", commentTerminator))
 	}
 
-	// Array field (arrayInfo)
-	if pullErr := readBuffer.PullContext("arrayInfo", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for arrayInfo")
-	}
-	// Count array
-	arrayInfo := make([]AdsDataTypeArrayInfo, max(arrayDimensions, 0))
-	// This happens when the size is set conditional to 0
-	if len(arrayInfo) == 0 {
-		arrayInfo = nil
-	}
-	{
-		_numItems := uint16(max(arrayDimensions, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AdsDataTypeArrayInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'arrayInfo' field of AdsDataTypeTableEntry")
-			}
-			arrayInfo[_curItem] = _item.(AdsDataTypeArrayInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("arrayInfo", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for arrayInfo")
+	arrayInfo, err := ReadCountArrayField[AdsDataTypeArrayInfo](ctx, "arrayInfo", ReadComplex[AdsDataTypeArrayInfo](AdsDataTypeArrayInfoParseWithBuffer, readBuffer), uint64(arrayDimensions), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayInfo' field"))
 	}
 
-	// Array field (children)
-	if pullErr := readBuffer.PullContext("children", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for children")
+	children, err := ReadCountArrayField[AdsDataTypeTableChildEntry](ctx, "children", ReadComplex[AdsDataTypeTableChildEntry](AdsDataTypeTableChildEntryParseWithBuffer, readBuffer), uint64(numChildren), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'children' field"))
 	}
-	// Count array
-	children := make([]AdsDataTypeTableChildEntry, max(numChildren, 0))
-	// This happens when the size is set conditional to 0
-	if len(children) == 0 {
-		children = nil
-	}
-	{
-		_numItems := uint16(max(numChildren, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AdsDataTypeTableChildEntryParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'children' field of AdsDataTypeTableEntry")
-			}
-			children[_curItem] = _item.(AdsDataTypeTableChildEntry)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("children", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for children")
-	}
-	// Byte Array field (rest)
-	numberOfBytesrest := int(uint16(entryLength) - uint16((positionAware.GetPos() - startPos)))
-	rest, _readArrayErr := readBuffer.ReadByteArray("rest", numberOfBytesrest)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'rest' field of AdsDataTypeTableEntry")
+
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((positionAware.GetPos()-startPos))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDataTypeTableEntry"); closeErr != nil {

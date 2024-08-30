@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataUnspecifiedParseWithBuffer(ctx context.Context, readBu
 		}
 	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Terminated array
-	var data []BACnetConstructedDataElement
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConstructedDataUnspecified")
-			}
-			data = append(data, _item.(BACnetConstructedDataElement))
+	data, err := ReadTerminatedArrayField[BACnetConstructedDataElement](ctx, "data", ReadComplex[BACnetConstructedDataElement](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedDataElement, error) {
+		v, err := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+		return v.(BACnetConstructedDataElement), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUnspecified"); closeErr != nil {

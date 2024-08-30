@@ -154,11 +154,10 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(ctx context.
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (items)
-	numberOfBytesitems := int(dataLength)
-	items, _readArrayErr := readBuffer.ReadByteArray("items", numberOfBytesitems)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'items' field of S7PayloadUserDataItemCpuFunctionReadSzlResponse")
+
+	items, err := readBuffer.ReadByteArray("items", int(dataLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); closeErr != nil {

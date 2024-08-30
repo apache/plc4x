@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 	noOfNodesToDelete := _noOfNodesToDelete
 
-	// Array field (nodesToDelete)
-	if pullErr := readBuffer.PullContext("nodesToDelete", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToDelete")
-	}
-	// Count array
-	nodesToDelete := make([]ExtensionObjectDefinition, max(noOfNodesToDelete, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToDelete) == 0 {
-		nodesToDelete = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToDelete, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "384")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToDelete' field of DeleteNodesRequest")
-			}
-			nodesToDelete[_curItem] = _item.(ExtensionObjectDefinition)
+	nodesToDelete, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToDelete", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("384"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToDelete", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToDelete")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfNodesToDelete))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToDelete' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DeleteNodesRequest"); closeErr != nil {

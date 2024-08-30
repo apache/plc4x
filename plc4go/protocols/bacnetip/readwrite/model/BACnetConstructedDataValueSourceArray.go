@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataValueSourceArrayParseWithBuffer(ctx context.Context, r
 		}
 	}
 
-	// Array field (vtClassesSupported)
-	if pullErr := readBuffer.PullContext("vtClassesSupported", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtClassesSupported")
-	}
-	// Terminated array
-	var vtClassesSupported []BACnetValueSource
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetValueSourceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'vtClassesSupported' field of BACnetConstructedDataValueSourceArray")
-			}
-			vtClassesSupported = append(vtClassesSupported, _item.(BACnetValueSource))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("vtClassesSupported", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtClassesSupported")
+	vtClassesSupported, err := ReadTerminatedArrayField[BACnetValueSource](ctx, "vtClassesSupported", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtClassesSupported' field"))
 	}
 
 	// Validation

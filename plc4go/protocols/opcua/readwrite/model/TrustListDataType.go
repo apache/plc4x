@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -271,31 +273,9 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfTrustedCertificates := _noOfTrustedCertificates
 
-	// Array field (trustedCertificates)
-	if pullErr := readBuffer.PullContext("trustedCertificates", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for trustedCertificates")
-	}
-	// Count array
-	trustedCertificates := make([]PascalByteString, max(noOfTrustedCertificates, 0))
-	// This happens when the size is set conditional to 0
-	if len(trustedCertificates) == 0 {
-		trustedCertificates = nil
-	}
-	{
-		_numItems := uint16(max(noOfTrustedCertificates, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalByteStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'trustedCertificates' field of TrustListDataType")
-			}
-			trustedCertificates[_curItem] = _item.(PascalByteString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("trustedCertificates", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for trustedCertificates")
+	trustedCertificates, err := ReadCountArrayField[PascalByteString](ctx, "trustedCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCertificates))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trustedCertificates' field"))
 	}
 
 	// Simple Field (noOfTrustedCrls)
@@ -305,31 +285,9 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfTrustedCrls := _noOfTrustedCrls
 
-	// Array field (trustedCrls)
-	if pullErr := readBuffer.PullContext("trustedCrls", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for trustedCrls")
-	}
-	// Count array
-	trustedCrls := make([]PascalByteString, max(noOfTrustedCrls, 0))
-	// This happens when the size is set conditional to 0
-	if len(trustedCrls) == 0 {
-		trustedCrls = nil
-	}
-	{
-		_numItems := uint16(max(noOfTrustedCrls, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalByteStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'trustedCrls' field of TrustListDataType")
-			}
-			trustedCrls[_curItem] = _item.(PascalByteString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("trustedCrls", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for trustedCrls")
+	trustedCrls, err := ReadCountArrayField[PascalByteString](ctx, "trustedCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCrls))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trustedCrls' field"))
 	}
 
 	// Simple Field (noOfIssuerCertificates)
@@ -339,31 +297,9 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfIssuerCertificates := _noOfIssuerCertificates
 
-	// Array field (issuerCertificates)
-	if pullErr := readBuffer.PullContext("issuerCertificates", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuerCertificates")
-	}
-	// Count array
-	issuerCertificates := make([]PascalByteString, max(noOfIssuerCertificates, 0))
-	// This happens when the size is set conditional to 0
-	if len(issuerCertificates) == 0 {
-		issuerCertificates = nil
-	}
-	{
-		_numItems := uint16(max(noOfIssuerCertificates, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalByteStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'issuerCertificates' field of TrustListDataType")
-			}
-			issuerCertificates[_curItem] = _item.(PascalByteString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("issuerCertificates", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuerCertificates")
+	issuerCertificates, err := ReadCountArrayField[PascalByteString](ctx, "issuerCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCertificates))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerCertificates' field"))
 	}
 
 	// Simple Field (noOfIssuerCrls)
@@ -373,31 +309,9 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfIssuerCrls := _noOfIssuerCrls
 
-	// Array field (issuerCrls)
-	if pullErr := readBuffer.PullContext("issuerCrls", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuerCrls")
-	}
-	// Count array
-	issuerCrls := make([]PascalByteString, max(noOfIssuerCrls, 0))
-	// This happens when the size is set conditional to 0
-	if len(issuerCrls) == 0 {
-		issuerCrls = nil
-	}
-	{
-		_numItems := uint16(max(noOfIssuerCrls, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalByteStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'issuerCrls' field of TrustListDataType")
-			}
-			issuerCrls[_curItem] = _item.(PascalByteString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("issuerCrls", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuerCrls")
+	issuerCrls, err := ReadCountArrayField[PascalByteString](ctx, "issuerCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCrls))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerCrls' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TrustListDataType"); closeErr != nil {

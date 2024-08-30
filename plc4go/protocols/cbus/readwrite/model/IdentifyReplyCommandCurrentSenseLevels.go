@@ -142,11 +142,10 @@ func IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx context.Context, 
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (currentSenseLevels)
-	numberOfBytescurrentSenseLevels := int(numBytes)
-	currentSenseLevels, _readArrayErr := readBuffer.ReadByteArray("currentSenseLevels", numberOfBytescurrentSenseLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'currentSenseLevels' field of IdentifyReplyCommandCurrentSenseLevels")
+
+	currentSenseLevels, err := readBuffer.ReadByteArray("currentSenseLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSenseLevels' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandCurrentSenseLevels"); closeErr != nil {

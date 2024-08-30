@@ -147,11 +147,10 @@ func BACnetContextTagUnknownParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (unknownData)
-	numberOfBytesunknownData := int(actualLength)
-	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytesunknownData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownData' field of BACnetContextTagUnknown")
+
+	unknownData, err := readBuffer.ReadByteArray("unknownData", int(actualLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagUnknown"); closeErr != nil {

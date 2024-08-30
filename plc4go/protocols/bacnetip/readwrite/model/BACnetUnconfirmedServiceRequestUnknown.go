@@ -143,11 +143,10 @@ func BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(ctx context.Context, 
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint16((uint16(serviceRequestLength) - uint16(uint16(1)))) }, func() any { return uint16(uint16(0)) }).(uint16))
-	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of BACnetUnconfirmedServiceRequestUnknown")
+
+	unknownBytes, err := readBuffer.ReadByteArray("unknownBytes", int(utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return int32((int32(serviceRequestLength) - int32(int32(1)))) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownBytes' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUnknown"); closeErr != nil {

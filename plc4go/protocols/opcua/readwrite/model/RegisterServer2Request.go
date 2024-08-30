@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -214,31 +216,15 @@ func RegisterServer2RequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	noOfDiscoveryConfiguration := _noOfDiscoveryConfiguration
 
-	// Array field (discoveryConfiguration)
-	if pullErr := readBuffer.PullContext("discoveryConfiguration", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discoveryConfiguration")
-	}
-	// Count array
-	discoveryConfiguration := make([]ExtensionObject, max(noOfDiscoveryConfiguration, 0))
-	// This happens when the size is set conditional to 0
-	if len(discoveryConfiguration) == 0 {
-		discoveryConfiguration = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiscoveryConfiguration, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectParseWithBuffer(arrayCtx, readBuffer, bool(true))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'discoveryConfiguration' field of RegisterServer2Request")
-			}
-			discoveryConfiguration[_curItem] = _item.(ExtensionObject)
+	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
+		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("discoveryConfiguration", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discoveryConfiguration")
+		return v.(ExtensionObject), nil
+	}, readBuffer), uint64(noOfDiscoveryConfiguration))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryConfiguration' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RegisterServer2Request"); closeErr != nil {

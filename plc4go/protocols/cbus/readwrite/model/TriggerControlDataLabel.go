@@ -219,11 +219,10 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 			return nil, errors.Wrap(closeErr, "Error closing for language")
 		}
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int((uint16(commandTypeContainer.NumBytes()) - uint16((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() any { return uint16((uint16(4))) }, func() any { return uint16((uint16(3))) }).(uint16)))))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of TriggerControlDataLabel")
+
+	data, err := readBuffer.ReadByteArray("data", int((int32(commandTypeContainer.NumBytes()) - int32((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() any { return int32((int32(4))) }, func() any { return int32((int32(3))) }).(int32))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TriggerControlDataLabel"); closeErr != nil {

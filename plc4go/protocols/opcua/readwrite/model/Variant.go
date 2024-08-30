@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -281,31 +283,9 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 		}
 	}
 
-	// Array field (arrayDimensions)
-	if pullErr := readBuffer.PullContext("arrayDimensions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for arrayDimensions")
-	}
-	// Count array
-	arrayDimensions := make([]bool, max(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(arrayDimensions) == 0 {
-		arrayDimensions = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return uint16(uint16(0)) }, func() any { return uint16((*noOfArrayDimensions)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'arrayDimensions' field of Variant")
-			}
-			arrayDimensions[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("arrayDimensions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for arrayDimensions")
+	arrayDimensions, err := ReadCountArrayField[bool](ctx, "arrayDimensions", ReadBoolean(readBuffer), uint64(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32((*noOfArrayDimensions)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("Variant"); closeErr != nil {

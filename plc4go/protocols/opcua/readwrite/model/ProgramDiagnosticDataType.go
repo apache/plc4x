@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -349,31 +351,15 @@ func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 	noOfLastMethodInputArguments := _noOfLastMethodInputArguments
 
-	// Array field (lastMethodInputArguments)
-	if pullErr := readBuffer.PullContext("lastMethodInputArguments", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodInputArguments")
-	}
-	// Count array
-	lastMethodInputArguments := make([]ExtensionObjectDefinition, max(noOfLastMethodInputArguments, 0))
-	// This happens when the size is set conditional to 0
-	if len(lastMethodInputArguments) == 0 {
-		lastMethodInputArguments = nil
-	}
-	{
-		_numItems := uint16(max(noOfLastMethodInputArguments, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "298")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'lastMethodInputArguments' field of ProgramDiagnosticDataType")
-			}
-			lastMethodInputArguments[_curItem] = _item.(ExtensionObjectDefinition)
+	lastMethodInputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodInputArguments", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("298"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("lastMethodInputArguments", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastMethodInputArguments")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfLastMethodInputArguments))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodInputArguments' field"))
 	}
 
 	// Simple Field (noOfLastMethodOutputArguments)
@@ -383,31 +369,15 @@ func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 	noOfLastMethodOutputArguments := _noOfLastMethodOutputArguments
 
-	// Array field (lastMethodOutputArguments)
-	if pullErr := readBuffer.PullContext("lastMethodOutputArguments", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodOutputArguments")
-	}
-	// Count array
-	lastMethodOutputArguments := make([]ExtensionObjectDefinition, max(noOfLastMethodOutputArguments, 0))
-	// This happens when the size is set conditional to 0
-	if len(lastMethodOutputArguments) == 0 {
-		lastMethodOutputArguments = nil
-	}
-	{
-		_numItems := uint16(max(noOfLastMethodOutputArguments, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "298")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'lastMethodOutputArguments' field of ProgramDiagnosticDataType")
-			}
-			lastMethodOutputArguments[_curItem] = _item.(ExtensionObjectDefinition)
+	lastMethodOutputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodOutputArguments", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("298"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("lastMethodOutputArguments", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastMethodOutputArguments")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfLastMethodOutputArguments))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodOutputArguments' field"))
 	}
 
 	// Simple Field (lastMethodCallTime)

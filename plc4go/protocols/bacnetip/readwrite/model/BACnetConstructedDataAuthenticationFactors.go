@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataAuthenticationFactorsParseWithBuffer(ctx context.Conte
 		}
 	}
 
-	// Array field (authenticationFactors)
-	if pullErr := readBuffer.PullContext("authenticationFactors", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactors")
-	}
-	// Terminated array
-	var authenticationFactors []BACnetCredentialAuthenticationFactor
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'authenticationFactors' field of BACnetConstructedDataAuthenticationFactors")
-			}
-			authenticationFactors = append(authenticationFactors, _item.(BACnetCredentialAuthenticationFactor))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("authenticationFactors", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationFactors")
+	authenticationFactors, err := ReadTerminatedArrayField[BACnetCredentialAuthenticationFactor](ctx, "authenticationFactors", ReadComplex[BACnetCredentialAuthenticationFactor](BACnetCredentialAuthenticationFactorParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationFactors' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthenticationFactors"); closeErr != nil {

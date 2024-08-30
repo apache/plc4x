@@ -170,11 +170,10 @@ func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApduDataMemoryResponse")
 	}
 	address := _address
-	// Byte Array field (data)
-	numberOfBytesdata := int(numBytes)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataMemoryResponse")
+
+	data, err := readBuffer.ReadByteArray("data", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryResponse"); closeErr != nil {

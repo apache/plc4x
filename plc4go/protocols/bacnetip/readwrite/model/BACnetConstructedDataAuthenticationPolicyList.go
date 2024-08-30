@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataAuthenticationPolicyListParseWithBuffer(ctx context.Co
 		}
 	}
 
-	// Array field (authenticationPolicyList)
-	if pullErr := readBuffer.PullContext("authenticationPolicyList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationPolicyList")
-	}
-	// Terminated array
-	var authenticationPolicyList []BACnetAuthenticationPolicy
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAuthenticationPolicyParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'authenticationPolicyList' field of BACnetConstructedDataAuthenticationPolicyList")
-			}
-			authenticationPolicyList = append(authenticationPolicyList, _item.(BACnetAuthenticationPolicy))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("authenticationPolicyList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationPolicyList")
+	authenticationPolicyList, err := ReadTerminatedArrayField[BACnetAuthenticationPolicy](ctx, "authenticationPolicyList", ReadComplex[BACnetAuthenticationPolicy](BACnetAuthenticationPolicyParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationPolicyList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthenticationPolicyList"); closeErr != nil {

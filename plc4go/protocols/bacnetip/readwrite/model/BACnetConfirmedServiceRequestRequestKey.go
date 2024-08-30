@@ -146,11 +146,10 @@ func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx context.Context,
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(serviceRequestPayloadLength)
-	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetConfirmedServiceRequestRequestKey")
+
+	bytesOfRemovedService, err := readBuffer.ReadByteArray("bytesOfRemovedService", int(serviceRequestPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bytesOfRemovedService' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestRequestKey"); closeErr != nil {

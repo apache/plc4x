@@ -803,180 +803,31 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		<#switch field.typeName>
 			<#case "array">
 				<#assign arrayField = field.asArrayField().orElseThrow()>
-                <#assign arrayElementType = arrayField.type.elementTypeReference>
-				<#if arrayElementType.isByteBased()>
-	// Byte Array field (${arrayField.name})
-	<#assign numberOfBytesExpression>
-		<#compress>
-		<#if field.isCountArrayField()>
-			numberOfBytes${arrayField.name} := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
-		<#elseif field.isLengthArrayField()>
-			numberOfBytes${arrayField.name} := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
-		<#elseif field.isTerminatedArrayField()>
-			<#-- TODO: we need to find out to implement this-->
-			numberOfBytes${arrayField.name} := int(${helper.toIntegerParseExpression(field, 16, arrayField.loopExpression, parserArguments)})
-		<#else>
-			<#-- TODO: we should throw a exception here-->
-			numberOfBytes${arrayField.name} := int(-1)
-		</#if>
-		</#compress>
-	</#assign>
-	${numberOfBytesExpression}
-	${arrayField.name}, _readArrayErr := readBuffer.ReadByteArray("${arrayField.name}", numberOfBytes${arrayField.name})
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing '${arrayField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
+				<#assign arrayElementTypeReference = arrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
+
+				<#if arrayElementTypeReference.isByteBased()>
+					<#if !field.isCountArrayField() && !field.isLengthArrayField()>${helper.fail("array fields of type byte only support 'count' and 'length' loop-types.")}</#if>
+	${namedField.name},err := readBuffer.ReadByteArray("${namedField.name}", int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
 				<#else>
-
-	// Array field (${arrayField.name})
-	if pullErr := readBuffer.PullContext("${arrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-			<#-- If this is a count array, we can directly initialize an array with the given size -->
+				<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
-	// Count array
-	${arrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
-	// This happens when the size is set conditional to 0
-	if len(${arrayField.name}) == 0 {
-		${arrayField.name} = nil
-	}
-	{
-		_numItems := uint16(max(${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-            <#-- TODO: find a way to do this nicer -->
-			_ = arrayCtx
-			_ = _curItem
-                        <@compress single_line=true>
-			_item, _err :=
-                            <#if arrayElementType.isSimpleTypeReference()>
-                                ${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
-                            <#else>
-                                <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
-                                <#assign typeName=complexTypeReference.name>
-                                <#assign typeDefinition=complexTypeReference.typeDefinition>
-                                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                                <#-- Usually you don't use child directly unless they are parameterized #-->
-                                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-                                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
-                                </#if>
-                                <#assign hasRefParams=complexTypeReference.params.isPresent()>
-                                <#assign refParams>
-                                    <#if hasRefParams>
-										,
-                                        <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                                            <#if <#--TODO: here DF1ResponseMessage throws a payloadLength not present: meaning that some feature is not rightfully implemented as the result should be a error not a missing pointer-->type.getPropertyFieldFromThisOrParentByName(parserArgument.name).isPresent() && helper.needsPointerAccess(type.getPropertyFieldFromThisOrParentByName(parserArgument.name).orElseThrow())>*</#if>
-                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
-                                            <#sep>, </#sep>
-                                        </#list>
-                                    </#if>
-                                </#assign>
-                                ${typeName}ParseWithBuffer(arrayCtx, readBuffer${refParams})
-                            </#if>
-                        </@compress>
-
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			}
-                        <#if arrayElementType.isSimpleTypeReference()>
-			${arrayField.name}[_curItem] = _item
-                        <#else>
-			${arrayField.name}[_curItem] = _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name})
-                        </#if>
-		}
-	}
-				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
-					<#elseif field.isLengthArrayField()>
-				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-	// Length array
-	var ${arrayField.name} ${helper.getLanguageTypeNameForField(field)}
-	{
-		_${arrayField.name}Length := ${helper.toIntegerParseExpression(arrayField, 16, arrayField.loopExpression, parserArguments)}
-		_${arrayField.name}EndPos := positionAware.GetPos() + uint16(_${arrayField.name}Length)
-		for ;positionAware.GetPos() < _${arrayField.name}EndPos; {
-                        <@compress single_line=true>
-							_item, _err := <#if arrayElementType.isSimpleTypeReference()>
-                            ${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
-                        <#else>
-                            <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
-                            <#assign typeName=complexTypeReference.name>
-                            <#assign typeDefinition=complexTypeReference.typeDefinition>
-                            <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
-                            <#-- Usually you don't use child directly unless they are parameterized #-->
-                                <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
-                                <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
-                            </#if>
-                            <#assign hasRefParams=complexTypeReference.params.isPresent()>
-                            <#assign refParams>
-                                <#if hasRefParams>
-									,
-                                    <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                                        ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
-                                        <#sep>, </#sep>
-                                    </#list>
-                                </#if>
-                            </#assign>
-                            ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
-                        </#if>
-                        </@compress>
-
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			}
-                        <#if arrayElementType.isSimpleTypeReference()>
-			${arrayField.name} = append(${arrayField.name}, _item)
-                        <#else>
-			${arrayField.name} = append(${arrayField.name}, _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name}))
-                        </#if>
-		}
-	}
-					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-					<#elseif field.isTerminatedArrayField()>
-	// Terminated array
-	var ${arrayField.name} ${helper.getLanguageTypeNameForField(field)}
-	{
-		for ;!bool(${helper.toParseExpression(arrayField, helper.boolTypeReference, arrayField.loopExpression, parserArguments)}); {
-						<@compress single_line=true>
-			_item, _err := <#if arrayElementType.isSimpleTypeReference()>
-								${helper.getReadBufferReadMethodCall("", arrayElementType.asSimpleTypeReference().orElseThrow(), arrayField)}
-							<#else>
-                                <#assign complexTypeReference=arrayElementType.asComplexTypeReference().orElseThrow()>
-                                <#assign typeName=complexTypeReference.name>
-                                <#assign typeDefinition=complexTypeReference.typeDefinition>
-                                <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
-                                <#-- Usually you don't use child directly unless they are parameterized #-->
-                                    <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
-                                    <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
-                                </#if>
-                                <#assign hasRefParams=complexTypeReference.params.isPresent()>
-                                <#assign refParams>
-                                    <#if hasRefParams>
-										,
-                                        <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                                            ${helper.toTypedParseExpression(arrayField, helper.getArgumentType(arrayElementType, parserArgument?index), parserArgument, parserArguments)}
-                                            <#sep>, </#sep>
-                                        </#list>
-                                    </#if>
-                                </#assign>
-                                ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
-							</#if>
-						</@compress>
-
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing '${arrayField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			}
-						<#if arrayElementType.isSimpleTypeReference()>
-			${arrayField.name} = append(${arrayField.name}, _item)
-						<#else>
-			${arrayField.name} = append(${arrayField.name}, _item.(${arrayElementType.asComplexTypeReference().orElseThrow().name}))
+	${arrayField.name},err := ReadCountArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, uint64(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+					<#-- In all other cases do we have to work with a list, that is later converted to an array -->
+					<#else>
+					<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
+						<#if field.isLengthArrayField()>
+	${arrayField.name},err := ReadLengthArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+						<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
+						<#elseif field.isTerminatedArrayField()>
+	${arrayField.name},err := ReadTerminatedArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, func() bool {return ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)});
 						</#if>
-		}
-	}
 					</#if>
-	if closeErr := readBuffer.CloseContext("${arrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
 				</#if>
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))
+	}
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field.asChecksumField().orElseThrow()>

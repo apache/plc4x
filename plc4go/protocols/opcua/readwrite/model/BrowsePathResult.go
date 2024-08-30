@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func BrowsePathResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfTargets := _noOfTargets
 
-	// Array field (targets)
-	if pullErr := readBuffer.PullContext("targets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targets")
-	}
-	// Count array
-	targets := make([]ExtensionObjectDefinition, max(noOfTargets, 0))
-	// This happens when the size is set conditional to 0
-	if len(targets) == 0 {
-		targets = nil
-	}
-	{
-		_numItems := uint16(max(noOfTargets, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "548")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'targets' field of BrowsePathResult")
-			}
-			targets[_curItem] = _item.(ExtensionObjectDefinition)
+	targets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "targets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("548"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("targets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targets")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfTargets))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targets' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BrowsePathResult"); closeErr != nil {

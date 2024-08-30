@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,25 +145,9 @@ func NLMRouterAvailableToNetworkParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (destinationNetworkAddresses)
-	if pullErr := readBuffer.PullContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destinationNetworkAddresses")
-	}
-	// Length array
-	var destinationNetworkAddresses []uint16
-	{
-		_destinationNetworkAddressesLength := uint16(apduLength) - uint16(uint16(1))
-		_destinationNetworkAddressesEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressesLength)
-		for positionAware.GetPos() < _destinationNetworkAddressesEndPos {
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddresses' field of NLMRouterAvailableToNetwork")
-			}
-			destinationNetworkAddresses = append(destinationNetworkAddresses, _item)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destinationNetworkAddresses")
+	destinationNetworkAddresses, err := ReadLengthArrayField[uint16](ctx, "destinationNetworkAddresses", ReadUnsignedShort(readBuffer, 16), int(int32(apduLength)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddresses' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMRouterAvailableToNetwork"); closeErr != nil {

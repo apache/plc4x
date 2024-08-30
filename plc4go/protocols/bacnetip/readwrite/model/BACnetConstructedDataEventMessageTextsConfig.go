@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -251,23 +253,9 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 		}
 	}
 
-	// Array field (eventMessageTextsConfig)
-	if pullErr := readBuffer.PullContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventMessageTextsConfig")
-	}
-	// Terminated array
-	var eventMessageTextsConfig []BACnetOptionalCharacterString
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetOptionalCharacterStringParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'eventMessageTextsConfig' field of BACnetConstructedDataEventMessageTextsConfig")
-			}
-			eventMessageTextsConfig = append(eventMessageTextsConfig, _item.(BACnetOptionalCharacterString))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("eventMessageTextsConfig", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventMessageTextsConfig")
+	eventMessageTextsConfig, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "eventMessageTextsConfig", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventMessageTextsConfig' field"))
 	}
 
 	// Virtual field

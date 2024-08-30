@@ -160,11 +160,10 @@ func ApduDataExtAuthorizeRequestParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ApduDataExtAuthorizeRequest")
 	}
 	level := _level
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(4))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataExtAuthorizeRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtAuthorizeRequest"); closeErr != nil {

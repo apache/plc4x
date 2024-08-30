@@ -169,11 +169,10 @@ func CipConnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipConnectedRequest")
 	}
-	// Byte Array field (pathSegments)
-	numberOfBytespathSegments := int(uint16(requestPathSize) * uint16(uint16(2)))
-	pathSegments, _readArrayErr := readBuffer.ReadByteArray("pathSegments", numberOfBytespathSegments)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'pathSegments' field of CipConnectedRequest")
+
+	pathSegments, err := readBuffer.ReadByteArray("pathSegments", int(int32(requestPathSize)*int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pathSegments' field"))
 	}
 
 	var reservedField0 *uint16

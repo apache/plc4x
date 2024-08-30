@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -166,31 +168,9 @@ func NLMInitializeRoutingTableParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 	numberOfPorts := _numberOfPorts
 
-	// Array field (portMappings)
-	if pullErr := readBuffer.PullContext("portMappings", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for portMappings")
-	}
-	// Count array
-	portMappings := make([]NLMInitializeRoutingTablePortMapping, max(numberOfPorts, 0))
-	// This happens when the size is set conditional to 0
-	if len(portMappings) == 0 {
-		portMappings = nil
-	}
-	{
-		_numItems := uint16(max(numberOfPorts, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMInitializeRoutingTablePortMappingParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'portMappings' field of NLMInitializeRoutingTable")
-			}
-			portMappings[_curItem] = _item.(NLMInitializeRoutingTablePortMapping)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("portMappings", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for portMappings")
+	portMappings, err := ReadCountArrayField[NLMInitializeRoutingTablePortMapping](ctx, "portMappings", ReadComplex[NLMInitializeRoutingTablePortMapping](NLMInitializeRoutingTablePortMappingParseWithBuffer, readBuffer), uint64(numberOfPorts))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portMappings' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMInitializeRoutingTable"); closeErr != nil {

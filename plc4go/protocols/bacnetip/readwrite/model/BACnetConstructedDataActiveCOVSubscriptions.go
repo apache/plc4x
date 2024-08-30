@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (activeCOVSubscriptions)
-	if pullErr := readBuffer.PullContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activeCOVSubscriptions")
-	}
-	// Terminated array
-	var activeCOVSubscriptions []BACnetCOVSubscription
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCOVSubscriptionParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeCOVSubscriptions' field of BACnetConstructedDataActiveCOVSubscriptions")
-			}
-			activeCOVSubscriptions = append(activeCOVSubscriptions, _item.(BACnetCOVSubscription))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activeCOVSubscriptions")
+	activeCOVSubscriptions, err := ReadTerminatedArrayField[BACnetCOVSubscription](ctx, "activeCOVSubscriptions", ReadComplex[BACnetCOVSubscription](BACnetCOVSubscriptionParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeCOVSubscriptions' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveCOVSubscriptions"); closeErr != nil {

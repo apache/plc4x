@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataDateListParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (dateList)
-	if pullErr := readBuffer.PullContext("dateList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateList")
-	}
-	// Terminated array
-	var dateList []BACnetCalendarEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetCalendarEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dateList' field of BACnetConstructedDataDateList")
-			}
-			dateList = append(dateList, _item.(BACnetCalendarEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("dateList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateList")
+	dateList, err := ReadTerminatedArrayField[BACnetCalendarEntry](ctx, "dateList", ReadComplex[BACnetCalendarEntry](BACnetCalendarEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateList"); closeErr != nil {

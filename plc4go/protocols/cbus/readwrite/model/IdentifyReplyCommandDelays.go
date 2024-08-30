@@ -153,11 +153,10 @@ func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (terminalLevels)
-	numberOfBytesterminalLevels := int(uint16(numBytes) - uint16(uint16(1)))
-	terminalLevels, _readArrayErr := readBuffer.ReadByteArray("terminalLevels", numberOfBytesterminalLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'terminalLevels' field of IdentifyReplyCommandDelays")
+
+	terminalLevels, err := readBuffer.ReadByteArray("terminalLevels", int(int32(numBytes)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminalLevels' field"))
 	}
 
 	// Simple Field (reStrikeDelay)

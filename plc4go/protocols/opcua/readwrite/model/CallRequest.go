@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	noOfMethodsToCall := _noOfMethodsToCall
 
-	// Array field (methodsToCall)
-	if pullErr := readBuffer.PullContext("methodsToCall", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for methodsToCall")
-	}
-	// Count array
-	methodsToCall := make([]ExtensionObjectDefinition, max(noOfMethodsToCall, 0))
-	// This happens when the size is set conditional to 0
-	if len(methodsToCall) == 0 {
-		methodsToCall = nil
-	}
-	{
-		_numItems := uint16(max(noOfMethodsToCall, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "706")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'methodsToCall' field of CallRequest")
-			}
-			methodsToCall[_curItem] = _item.(ExtensionObjectDefinition)
+	methodsToCall, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "methodsToCall", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("706"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("methodsToCall", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for methodsToCall")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfMethodsToCall))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodsToCall' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CallRequest"); closeErr != nil {

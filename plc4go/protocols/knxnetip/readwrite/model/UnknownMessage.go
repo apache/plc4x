@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,11 +147,10 @@ func UnknownMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (unknownData)
-	numberOfBytesunknownData := int(uint16(totalLength) - uint16(uint16(6)))
-	unknownData, _readArrayErr := readBuffer.ReadByteArray("unknownData", numberOfBytesunknownData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownData' field of UnknownMessage")
+
+	unknownData, err := readBuffer.ReadByteArray("unknownData", int(int32(totalLength)-int32(int32(6))), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UnknownMessage"); closeErr != nil {

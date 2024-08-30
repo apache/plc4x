@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -219,31 +221,9 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	noOfOperandStatusCodes := _noOfOperandStatusCodes
 
-	// Array field (operandStatusCodes)
-	if pullErr := readBuffer.PullContext("operandStatusCodes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operandStatusCodes")
-	}
-	// Count array
-	operandStatusCodes := make([]StatusCode, max(noOfOperandStatusCodes, 0))
-	// This happens when the size is set conditional to 0
-	if len(operandStatusCodes) == 0 {
-		operandStatusCodes = nil
-	}
-	{
-		_numItems := uint16(max(noOfOperandStatusCodes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'operandStatusCodes' field of ContentFilterElementResult")
-			}
-			operandStatusCodes[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("operandStatusCodes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operandStatusCodes")
+	operandStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "operandStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperandStatusCodes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operandStatusCodes' field"))
 	}
 
 	// Simple Field (noOfOperandDiagnosticInfos)
@@ -253,31 +233,9 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	noOfOperandDiagnosticInfos := _noOfOperandDiagnosticInfos
 
-	// Array field (operandDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("operandDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operandDiagnosticInfos")
-	}
-	// Count array
-	operandDiagnosticInfos := make([]DiagnosticInfo, max(noOfOperandDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(operandDiagnosticInfos) == 0 {
-		operandDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfOperandDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'operandDiagnosticInfos' field of ContentFilterElementResult")
-			}
-			operandDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("operandDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operandDiagnosticInfos")
+	operandDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "operandDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfOperandDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operandDiagnosticInfos' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ContentFilterElementResult"); closeErr != nil {

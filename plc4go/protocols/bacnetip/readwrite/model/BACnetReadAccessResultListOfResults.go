@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -155,23 +157,15 @@ func BACnetReadAccessResultListOfResultsParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfReadAccessProperty)
-	if pullErr := readBuffer.PullContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfReadAccessProperty")
-	}
-	// Terminated array
-	var listOfReadAccessProperty []BACnetReadAccessProperty
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetReadAccessPropertyParseWithBuffer(ctx, readBuffer, objectTypeArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfReadAccessProperty' field of BACnetReadAccessResultListOfResults")
-			}
-			listOfReadAccessProperty = append(listOfReadAccessProperty, _item.(BACnetReadAccessProperty))
+	listOfReadAccessProperty, err := ReadTerminatedArrayField[BACnetReadAccessProperty](ctx, "listOfReadAccessProperty", ReadComplex[BACnetReadAccessProperty](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetReadAccessProperty, error) {
+		v, err := BACnetReadAccessPropertyParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectTypeArgument))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfReadAccessProperty", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfReadAccessProperty")
+		return v.(BACnetReadAccessProperty), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfReadAccessProperty' field"))
 	}
 
 	// Simple Field (closingTag)

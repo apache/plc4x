@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -248,31 +250,9 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfInputArgumentResults := _noOfInputArgumentResults
 
-	// Array field (inputArgumentResults)
-	if pullErr := readBuffer.PullContext("inputArgumentResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentResults")
-	}
-	// Count array
-	inputArgumentResults := make([]StatusCode, max(noOfInputArgumentResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(inputArgumentResults) == 0 {
-		inputArgumentResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfInputArgumentResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'inputArgumentResults' field of CallMethodResult")
-			}
-			inputArgumentResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("inputArgumentResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inputArgumentResults")
+	inputArgumentResults, err := ReadCountArrayField[StatusCode](ctx, "inputArgumentResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfInputArgumentResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentResults' field"))
 	}
 
 	// Simple Field (noOfInputArgumentDiagnosticInfos)
@@ -282,31 +262,9 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfInputArgumentDiagnosticInfos := _noOfInputArgumentDiagnosticInfos
 
-	// Array field (inputArgumentDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inputArgumentDiagnosticInfos")
-	}
-	// Count array
-	inputArgumentDiagnosticInfos := make([]DiagnosticInfo, max(noOfInputArgumentDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(inputArgumentDiagnosticInfos) == 0 {
-		inputArgumentDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfInputArgumentDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'inputArgumentDiagnosticInfos' field of CallMethodResult")
-			}
-			inputArgumentDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inputArgumentDiagnosticInfos")
+	inputArgumentDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "inputArgumentDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfInputArgumentDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentDiagnosticInfos' field"))
 	}
 
 	// Simple Field (noOfOutputArguments)
@@ -316,31 +274,9 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfOutputArguments := _noOfOutputArguments
 
-	// Array field (outputArguments)
-	if pullErr := readBuffer.PullContext("outputArguments", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for outputArguments")
-	}
-	// Count array
-	outputArguments := make([]Variant, max(noOfOutputArguments, 0))
-	// This happens when the size is set conditional to 0
-	if len(outputArguments) == 0 {
-		outputArguments = nil
-	}
-	{
-		_numItems := uint16(max(noOfOutputArguments, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := VariantParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'outputArguments' field of CallMethodResult")
-			}
-			outputArguments[_curItem] = _item.(Variant)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("outputArguments", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for outputArguments")
+	outputArguments, err := ReadCountArrayField[Variant](ctx, "outputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfOutputArguments))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outputArguments' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CallMethodResult"); closeErr != nil {

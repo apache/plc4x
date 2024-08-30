@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -243,31 +245,9 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfLocaleIds := _noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
-	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of GetEndpointsRequest")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
 
 	// Simple Field (noOfProfileUris)
@@ -277,31 +257,9 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfProfileUris := _noOfProfileUris
 
-	// Array field (profileUris)
-	if pullErr := readBuffer.PullContext("profileUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for profileUris")
-	}
-	// Count array
-	profileUris := make([]PascalString, max(noOfProfileUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(profileUris) == 0 {
-		profileUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfProfileUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'profileUris' field of GetEndpointsRequest")
-			}
-			profileUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("profileUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for profileUris")
+	profileUris, err := ReadCountArrayField[PascalString](ctx, "profileUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfProfileUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'profileUris' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GetEndpointsRequest"); closeErr != nil {

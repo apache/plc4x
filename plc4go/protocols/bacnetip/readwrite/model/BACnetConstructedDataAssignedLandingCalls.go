@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataAssignedLandingCallsParseWithBuffer(ctx context.Contex
 		}
 	}
 
-	// Array field (assignedLandingCalls)
-	if pullErr := readBuffer.PullContext("assignedLandingCalls", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for assignedLandingCalls")
-	}
-	// Terminated array
-	var assignedLandingCalls []BACnetAssignedLandingCalls
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAssignedLandingCallsParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'assignedLandingCalls' field of BACnetConstructedDataAssignedLandingCalls")
-			}
-			assignedLandingCalls = append(assignedLandingCalls, _item.(BACnetAssignedLandingCalls))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("assignedLandingCalls", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for assignedLandingCalls")
+	assignedLandingCalls, err := ReadTerminatedArrayField[BACnetAssignedLandingCalls](ctx, "assignedLandingCalls", ReadComplex[BACnetAssignedLandingCalls](BACnetAssignedLandingCallsParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedLandingCalls' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAssignedLandingCalls"); closeErr != nil {

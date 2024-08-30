@@ -171,11 +171,10 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipReadRequest")
 	}
-	// Byte Array field (tag)
-	numberOfBytestag := int((uint16(requestPathSize) * uint16(uint16(2))))
-	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipReadRequest")
+
+	tag, err := readBuffer.ReadByteArray("tag", int((int32(requestPathSize) * int32(int32(2)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tag' field"))
 	}
 
 	// Simple Field (elementNb)

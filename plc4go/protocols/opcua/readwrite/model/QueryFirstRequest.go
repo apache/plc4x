@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -247,31 +249,15 @@ func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfNodeTypes := _noOfNodeTypes
 
-	// Array field (nodeTypes)
-	if pullErr := readBuffer.PullContext("nodeTypes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeTypes")
-	}
-	// Count array
-	nodeTypes := make([]ExtensionObjectDefinition, max(noOfNodeTypes, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodeTypes) == 0 {
-		nodeTypes = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodeTypes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "575")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodeTypes' field of QueryFirstRequest")
-			}
-			nodeTypes[_curItem] = _item.(ExtensionObjectDefinition)
+	nodeTypes, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodeTypes", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("575"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("nodeTypes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeTypes")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfNodeTypes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeTypes' field"))
 	}
 
 	// Simple Field (filter)

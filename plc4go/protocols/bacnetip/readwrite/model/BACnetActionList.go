@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,23 +153,9 @@ func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
-	// Array field (action)
-	if pullErr := readBuffer.PullContext("action", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for action")
-	}
-	// Terminated array
-	var action []BACnetActionCommand
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
-			_item, _err := BACnetActionCommandParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'action' field of BACnetActionList")
-			}
-			action = append(action, _item.(BACnetActionCommand))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("action", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for action")
+	action, err := ReadTerminatedArrayField[BACnetActionCommand](ctx, "action", ReadComplex[BACnetActionCommand](BACnetActionCommandParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'action' field"))
 	}
 
 	// Simple Field (innerClosingTag)

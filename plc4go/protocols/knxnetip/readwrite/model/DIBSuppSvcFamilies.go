@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,25 +147,9 @@ func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 	descriptionType := _descriptionType
 
-	// Array field (serviceIds)
-	if pullErr := readBuffer.PullContext("serviceIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceIds")
-	}
-	// Length array
-	var serviceIds []ServiceId
-	{
-		_serviceIdsLength := uint16(structureLength) - uint16(uint16(2))
-		_serviceIdsEndPos := positionAware.GetPos() + uint16(_serviceIdsLength)
-		for positionAware.GetPos() < _serviceIdsEndPos {
-			_item, _err := ServiceIdParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serviceIds' field of DIBSuppSvcFamilies")
-			}
-			serviceIds = append(serviceIds, _item.(ServiceId))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serviceIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceIds")
+	serviceIds, err := ReadLengthArrayField[ServiceId](ctx, "serviceIds", ReadComplex[ServiceId](ServiceIdParseWithBuffer, readBuffer), int(int32(structureLength)-int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceIds' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DIBSuppSvcFamilies"); closeErr != nil {

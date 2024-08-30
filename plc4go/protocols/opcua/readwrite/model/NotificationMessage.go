@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -202,31 +204,15 @@ func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfNotificationData := _noOfNotificationData
 
-	// Array field (notificationData)
-	if pullErr := readBuffer.PullContext("notificationData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationData")
-	}
-	// Count array
-	notificationData := make([]ExtensionObject, max(noOfNotificationData, 0))
-	// This happens when the size is set conditional to 0
-	if len(notificationData) == 0 {
-		notificationData = nil
-	}
-	{
-		_numItems := uint16(max(noOfNotificationData, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectParseWithBuffer(arrayCtx, readBuffer, bool(true))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'notificationData' field of NotificationMessage")
-			}
-			notificationData[_curItem] = _item.(ExtensionObject)
+	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
+		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("notificationData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationData")
+		return v.(ExtensionObject), nil
+	}, readBuffer), uint64(noOfNotificationData))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NotificationMessage"); closeErr != nil {

@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataStateChangeValuesParseWithBuffer(ctx context.Context, 
 		}
 	}
 
-	// Array field (stateChangeValues)
-	if pullErr := readBuffer.PullContext("stateChangeValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for stateChangeValues")
-	}
-	// Terminated array
-	var stateChangeValues []BACnetTimerStateChangeValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimerStateChangeValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'stateChangeValues' field of BACnetConstructedDataStateChangeValues")
-			}
-			stateChangeValues = append(stateChangeValues, _item.(BACnetTimerStateChangeValue))
+	stateChangeValues, err := ReadTerminatedArrayField[BACnetTimerStateChangeValue](ctx, "stateChangeValues", ReadComplex[BACnetTimerStateChangeValue](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetTimerStateChangeValue, error) {
+		v, err := BACnetTimerStateChangeValueParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectTypeArgument))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("stateChangeValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for stateChangeValues")
+		return v.(BACnetTimerStateChangeValue), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stateChangeValues' field"))
 	}
 
 	// Validation

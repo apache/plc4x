@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -336,31 +338,15 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfDataSetWriterProperties := _noOfDataSetWriterProperties
 
-	// Array field (dataSetWriterProperties)
-	if pullErr := readBuffer.PullContext("dataSetWriterProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetWriterProperties")
-	}
-	// Count array
-	dataSetWriterProperties := make([]ExtensionObjectDefinition, max(noOfDataSetWriterProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(dataSetWriterProperties) == 0 {
-		dataSetWriterProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfDataSetWriterProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dataSetWriterProperties' field of DataSetWriterDataType")
-			}
-			dataSetWriterProperties[_curItem] = _item.(ExtensionObjectDefinition)
+	dataSetWriterProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataSetWriterProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("dataSetWriterProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetWriterProperties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfDataSetWriterProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterProperties' field"))
 	}
 
 	// Simple Field (transportSettings)

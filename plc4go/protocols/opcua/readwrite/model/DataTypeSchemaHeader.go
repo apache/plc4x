@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -253,31 +255,9 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfNamespaces := _noOfNamespaces
 
-	// Array field (namespaces)
-	if pullErr := readBuffer.PullContext("namespaces", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaces")
-	}
-	// Count array
-	namespaces := make([]PascalString, max(noOfNamespaces, 0))
-	// This happens when the size is set conditional to 0
-	if len(namespaces) == 0 {
-		namespaces = nil
-	}
-	{
-		_numItems := uint16(max(noOfNamespaces, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'namespaces' field of DataTypeSchemaHeader")
-			}
-			namespaces[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("namespaces", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaces")
+	namespaces, err := ReadCountArrayField[PascalString](ctx, "namespaces", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaces))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaces' field"))
 	}
 
 	// Simple Field (noOfStructureDataTypes)
@@ -287,31 +267,15 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfStructureDataTypes := _noOfStructureDataTypes
 
-	// Array field (structureDataTypes)
-	if pullErr := readBuffer.PullContext("structureDataTypes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for structureDataTypes")
-	}
-	// Count array
-	structureDataTypes := make([]DataTypeDescription, max(noOfStructureDataTypes, 0))
-	// This happens when the size is set conditional to 0
-	if len(structureDataTypes) == 0 {
-		structureDataTypes = nil
-	}
-	{
-		_numItems := uint16(max(noOfStructureDataTypes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14525")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'structureDataTypes' field of DataTypeSchemaHeader")
-			}
-			structureDataTypes[_curItem] = _item.(DataTypeDescription)
+	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("structureDataTypes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for structureDataTypes")
+		return v.(DataTypeDescription), nil
+	}, readBuffer), uint64(noOfStructureDataTypes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDataTypes' field"))
 	}
 
 	// Simple Field (noOfEnumDataTypes)
@@ -321,31 +285,15 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfEnumDataTypes := _noOfEnumDataTypes
 
-	// Array field (enumDataTypes)
-	if pullErr := readBuffer.PullContext("enumDataTypes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enumDataTypes")
-	}
-	// Count array
-	enumDataTypes := make([]DataTypeDescription, max(noOfEnumDataTypes, 0))
-	// This happens when the size is set conditional to 0
-	if len(enumDataTypes) == 0 {
-		enumDataTypes = nil
-	}
-	{
-		_numItems := uint16(max(noOfEnumDataTypes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14525")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'enumDataTypes' field of DataTypeSchemaHeader")
-			}
-			enumDataTypes[_curItem] = _item.(DataTypeDescription)
+	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("enumDataTypes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enumDataTypes")
+		return v.(DataTypeDescription), nil
+	}, readBuffer), uint64(noOfEnumDataTypes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumDataTypes' field"))
 	}
 
 	// Simple Field (noOfSimpleDataTypes)
@@ -355,31 +303,15 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfSimpleDataTypes := _noOfSimpleDataTypes
 
-	// Array field (simpleDataTypes)
-	if pullErr := readBuffer.PullContext("simpleDataTypes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for simpleDataTypes")
-	}
-	// Count array
-	simpleDataTypes := make([]DataTypeDescription, max(noOfSimpleDataTypes, 0))
-	// This happens when the size is set conditional to 0
-	if len(simpleDataTypes) == 0 {
-		simpleDataTypes = nil
-	}
-	{
-		_numItems := uint16(max(noOfSimpleDataTypes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14525")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'simpleDataTypes' field of DataTypeSchemaHeader")
-			}
-			simpleDataTypes[_curItem] = _item.(DataTypeDescription)
+	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("simpleDataTypes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for simpleDataTypes")
+		return v.(DataTypeDescription), nil
+	}, readBuffer), uint64(noOfSimpleDataTypes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleDataTypes' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DataTypeSchemaHeader"); closeErr != nil {

@@ -144,11 +144,10 @@ func BinaryPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (payload)
-	numberOfBytespayload := int(byteCount)
-	payload, _readArrayErr := readBuffer.ReadByteArray("payload", numberOfBytespayload)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'payload' field of BinaryPayload")
+
+	payload, err := readBuffer.ReadByteArray("payload", int(byteCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BinaryPayload"); closeErr != nil {

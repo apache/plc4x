@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataConfigurationFilesParseWithBuffer(ctx context.Context,
 		}
 	}
 
-	// Array field (configurationFiles)
-	if pullErr := readBuffer.PullContext("configurationFiles", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for configurationFiles")
-	}
-	// Terminated array
-	var configurationFiles []BACnetApplicationTagObjectIdentifier
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'configurationFiles' field of BACnetConstructedDataConfigurationFiles")
-			}
-			configurationFiles = append(configurationFiles, _item.(BACnetApplicationTagObjectIdentifier))
+	configurationFiles, err := ReadTerminatedArrayField[BACnetApplicationTagObjectIdentifier](ctx, "configurationFiles", ReadComplex[BACnetApplicationTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagObjectIdentifier, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("configurationFiles", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for configurationFiles")
+		return v.(BACnetApplicationTagObjectIdentifier), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationFiles' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataConfigurationFiles"); closeErr != nil {

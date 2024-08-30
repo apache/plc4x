@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,9 @@ func BACnetTimeStampsEnclosedParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (timestamps)
-	if pullErr := readBuffer.PullContext("timestamps", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamps")
-	}
-	// Terminated array
-	var timestamps []BACnetTimeStamp
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'timestamps' field of BACnetTimeStampsEnclosed")
-			}
-			timestamps = append(timestamps, _item.(BACnetTimeStamp))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("timestamps", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamps")
+	timestamps, err := ReadTerminatedArrayField[BACnetTimeStamp](ctx, "timestamps", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamps' field"))
 	}
 
 	// Simple Field (closingTag)

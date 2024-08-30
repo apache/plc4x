@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -400,23 +402,15 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		}
 	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Terminated array
-	var data []BACnetPriorityValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPriorityValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetPriorityArray")
-			}
-			data = append(data, _item.(BACnetPriorityValue))
+	data, err := ReadTerminatedArrayField[BACnetPriorityValue](ctx, "data", ReadComplex[BACnetPriorityValue](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetPriorityValue, error) {
+		v, err := BACnetPriorityValueParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectTypeArgument))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+		return v.(BACnetPriorityValue), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	// Virtual field

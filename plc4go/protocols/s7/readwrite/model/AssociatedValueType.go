@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -182,31 +184,9 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		valueLength = _valueLength.(uint16)
 	}
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Count array
-	data := make([]uint8, max(EventItemLength(ctx, readBuffer, valueLength), 0))
-	// This happens when the size is set conditional to 0
-	if len(data) == 0 {
-		data = nil
-	}
-	{
-		_numItems := uint16(max(EventItemLength(ctx, readBuffer, valueLength), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of AssociatedValueType")
-			}
-			data[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+	data, err := ReadCountArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, 8), uint64(EventItemLength(ctx, readBuffer, valueLength)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AssociatedValueType"); closeErr != nil {

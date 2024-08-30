@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataDoorMembersParseWithBuffer(ctx context.Context, readBu
 		}
 	}
 
-	// Array field (doorMembers)
-	if pullErr := readBuffer.PullContext("doorMembers", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorMembers")
-	}
-	// Terminated array
-	var doorMembers []BACnetDeviceObjectReference
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'doorMembers' field of BACnetConstructedDataDoorMembers")
-			}
-			doorMembers = append(doorMembers, _item.(BACnetDeviceObjectReference))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("doorMembers", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorMembers")
+	doorMembers, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "doorMembers", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorMembers' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorMembers"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataAcceptedModesParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (acceptedModes)
-	if pullErr := readBuffer.PullContext("acceptedModes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for acceptedModes")
-	}
-	// Terminated array
-	var acceptedModes []BACnetLifeSafetyModeTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLifeSafetyModeTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'acceptedModes' field of BACnetConstructedDataAcceptedModes")
-			}
-			acceptedModes = append(acceptedModes, _item.(BACnetLifeSafetyModeTagged))
+	acceptedModes, err := ReadTerminatedArrayField[BACnetLifeSafetyModeTagged](ctx, "acceptedModes", ReadComplex[BACnetLifeSafetyModeTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetLifeSafetyModeTagged, error) {
+		v, err := BACnetLifeSafetyModeTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("acceptedModes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for acceptedModes")
+		return v.(BACnetLifeSafetyModeTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acceptedModes' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAcceptedModes"); closeErr != nil {

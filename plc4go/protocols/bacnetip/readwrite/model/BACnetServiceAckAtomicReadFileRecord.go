@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,31 +198,15 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(closeErr, "Error closing for returnedRecordCount")
 	}
 
-	// Array field (fileRecordData)
-	if pullErr := readBuffer.PullContext("fileRecordData", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileRecordData")
-	}
-	// Count array
-	fileRecordData := make([]BACnetApplicationTagOctetString, max(returnedRecordCount.GetPayload().GetActualValue(), 0))
-	// This happens when the size is set conditional to 0
-	if len(fileRecordData) == 0 {
-		fileRecordData = nil
-	}
-	{
-		_numItems := uint16(max(returnedRecordCount.GetPayload().GetActualValue(), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := BACnetApplicationTagParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'fileRecordData' field of BACnetServiceAckAtomicReadFileRecord")
-			}
-			fileRecordData[_curItem] = _item.(BACnetApplicationTagOctetString)
+	fileRecordData, err := ReadCountArrayField[BACnetApplicationTagOctetString](ctx, "fileRecordData", ReadComplex[BACnetApplicationTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagOctetString, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("fileRecordData", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileRecordData")
+		return v.(BACnetApplicationTagOctetString), nil
+	}, readBuffer), uint64(returnedRecordCount.GetPayload().GetActualValue()))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileRecordData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFileRecord"); closeErr != nil {

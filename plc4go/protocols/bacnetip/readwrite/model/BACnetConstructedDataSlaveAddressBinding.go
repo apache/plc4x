@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataSlaveAddressBindingParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (slaveAddressBinding)
-	if pullErr := readBuffer.PullContext("slaveAddressBinding", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for slaveAddressBinding")
-	}
-	// Terminated array
-	var slaveAddressBinding []BACnetAddressBinding
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'slaveAddressBinding' field of BACnetConstructedDataSlaveAddressBinding")
-			}
-			slaveAddressBinding = append(slaveAddressBinding, _item.(BACnetAddressBinding))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("slaveAddressBinding", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for slaveAddressBinding")
+	slaveAddressBinding, err := ReadTerminatedArrayField[BACnetAddressBinding](ctx, "slaveAddressBinding", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slaveAddressBinding' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveAddressBinding"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataRecipientListParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (recipientList)
-	if pullErr := readBuffer.PullContext("recipientList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipientList")
-	}
-	// Terminated array
-	var recipientList []BACnetDestination
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDestinationParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'recipientList' field of BACnetConstructedDataRecipientList")
-			}
-			recipientList = append(recipientList, _item.(BACnetDestination))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("recipientList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipientList")
+	recipientList, err := ReadTerminatedArrayField[BACnetDestination](ctx, "recipientList", ReadComplex[BACnetDestination](BACnetDestinationParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipientList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRecipientList"); closeErr != nil {

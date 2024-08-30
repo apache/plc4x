@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,25 +151,9 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Length array
-	var data []BACnetReadAccessSpecification
-	{
-		_dataLength := serviceRequestPayloadLength
-		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
-		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := BACnetReadAccessSpecificationParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetConfirmedServiceRequestReadPropertyMultiple")
-			}
-			data = append(data, _item.(BACnetReadAccessSpecification))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+	data, err := ReadLengthArrayField[BACnetReadAccessSpecification](ctx, "data", ReadComplex[BACnetReadAccessSpecification](BACnetReadAccessSpecificationParseWithBuffer, readBuffer), int(serviceRequestPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); closeErr != nil {

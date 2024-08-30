@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,9 @@ func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfTimeValues)
-	if pullErr := readBuffer.PullContext("listOfTimeValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
-	}
-	// Terminated array
-	var listOfTimeValues []BACnetTimeValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfTimeValues' field of BACnetSpecialEventListOfTimeValues")
-			}
-			listOfTimeValues = append(listOfTimeValues, _item.(BACnetTimeValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfTimeValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfTimeValues")
+	listOfTimeValues, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "listOfTimeValues", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfTimeValues' field"))
 	}
 
 	// Simple Field (closingTag)

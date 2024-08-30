@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx context.Context, rea
 		}
 	}
 
-	// Array field (carDoorCommand)
-	if pullErr := readBuffer.PullContext("carDoorCommand", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for carDoorCommand")
-	}
-	// Terminated array
-	var carDoorCommand []BACnetLiftCarDoorCommandTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'carDoorCommand' field of BACnetConstructedDataCarDoorCommand")
-			}
-			carDoorCommand = append(carDoorCommand, _item.(BACnetLiftCarDoorCommandTagged))
+	carDoorCommand, err := ReadTerminatedArrayField[BACnetLiftCarDoorCommandTagged](ctx, "carDoorCommand", ReadComplex[BACnetLiftCarDoorCommandTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetLiftCarDoorCommandTagged, error) {
+		v, err := BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("carDoorCommand", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for carDoorCommand")
+		return v.(BACnetLiftCarDoorCommandTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carDoorCommand' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarDoorCommand"); closeErr != nil {

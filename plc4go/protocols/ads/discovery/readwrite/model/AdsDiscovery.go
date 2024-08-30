@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -246,31 +249,9 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(_numBlocksErr, "Error parsing 'numBlocks' field of AdsDiscovery")
 	}
 
-	// Array field (blocks)
-	if pullErr := readBuffer.PullContext("blocks", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for blocks")
-	}
-	// Count array
-	blocks := make([]AdsDiscoveryBlock, max(numBlocks, 0))
-	// This happens when the size is set conditional to 0
-	if len(blocks) == 0 {
-		blocks = nil
-	}
-	{
-		_numItems := uint16(max(numBlocks, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AdsDiscoveryBlockParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'blocks' field of AdsDiscovery")
-			}
-			blocks[_curItem] = _item.(AdsDiscoveryBlock)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("blocks", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for blocks")
+	blocks, err := ReadCountArrayField[AdsDiscoveryBlock](ctx, "blocks", ReadComplex[AdsDiscoveryBlock](AdsDiscoveryBlockParseWithBuffer, readBuffer), uint64(numBlocks), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blocks' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscovery"); closeErr != nil {

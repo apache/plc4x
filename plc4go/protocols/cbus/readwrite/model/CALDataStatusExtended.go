@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -274,58 +276,14 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	numberOfLevelInformation := uint8(_numberOfLevelInformation)
 	_ = numberOfLevelInformation
 
-	// Array field (statusBytes)
-	if pullErr := readBuffer.PullContext("statusBytes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusBytes")
-	}
-	// Count array
-	statusBytes := make([]StatusByte, max(numberOfStatusBytes, 0))
-	// This happens when the size is set conditional to 0
-	if len(statusBytes) == 0 {
-		statusBytes = nil
-	}
-	{
-		_numItems := uint16(max(numberOfStatusBytes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusByteParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'statusBytes' field of CALDataStatusExtended")
-			}
-			statusBytes[_curItem] = _item.(StatusByte)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("statusBytes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusBytes")
+	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(numberOfStatusBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusBytes' field"))
 	}
 
-	// Array field (levelInformation)
-	if pullErr := readBuffer.PullContext("levelInformation", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for levelInformation")
-	}
-	// Count array
-	levelInformation := make([]LevelInformation, max(numberOfLevelInformation, 0))
-	// This happens when the size is set conditional to 0
-	if len(levelInformation) == 0 {
-		levelInformation = nil
-	}
-	{
-		_numItems := uint16(max(numberOfLevelInformation, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := LevelInformationParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'levelInformation' field of CALDataStatusExtended")
-			}
-			levelInformation[_curItem] = _item.(LevelInformation)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("levelInformation", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for levelInformation")
+	levelInformation, err := ReadCountArrayField[LevelInformation](ctx, "levelInformation", ReadComplex[LevelInformation](LevelInformationParseWithBuffer, readBuffer), uint64(numberOfLevelInformation))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'levelInformation' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataStatusExtended"); closeErr != nil {

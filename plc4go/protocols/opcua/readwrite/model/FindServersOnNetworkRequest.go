@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -226,31 +228,9 @@ func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfServerCapabilityFilter := _noOfServerCapabilityFilter
 
-	// Array field (serverCapabilityFilter)
-	if pullErr := readBuffer.PullContext("serverCapabilityFilter", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCapabilityFilter")
-	}
-	// Count array
-	serverCapabilityFilter := make([]PascalString, max(noOfServerCapabilityFilter, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverCapabilityFilter) == 0 {
-		serverCapabilityFilter = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerCapabilityFilter, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverCapabilityFilter' field of FindServersOnNetworkRequest")
-			}
-			serverCapabilityFilter[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverCapabilityFilter", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCapabilityFilter")
+	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCapabilityFilter' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("FindServersOnNetworkRequest"); closeErr != nil {

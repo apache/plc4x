@@ -45,14 +45,18 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
 
+    private final Map<String, String> options;
+
     // TODO: we could condense it to one import set as these can be emitted per template and are not hardcoded anymore
 
     public final SortedSet<String> requiredImports = new TreeSet<>();
 
     public final SortedSet<String> requiredImportsForDataIo = new TreeSet<>();
 
-    public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types) {
+    public GoLanguageTemplateHelper(TypeDefinition thisType, String protocolName, String flavorName, Map<String, TypeDefinition> types,
+                                    Map<String, String> options) {
         super(thisType, protocolName, flavorName, types);
+        this.options = options;
     }
 
     public String fileName(String protocolName, String languageName, String languageFlavorName) {
@@ -334,13 +338,13 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     public String getReadBufferReadMethodCall(String logicalName, SimpleTypeReference simpleTypeReference, String valueString, TypedField field) {
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
-                return"/*TODO: migrate me*/" +  "readBuffer.ReadBit(\"" + logicalName + "\")";
+                return "/*TODO: migrate me*/" + "readBuffer.ReadBit(\"" + logicalName + "\")";
             case BYTE:
                 return "/*TODO: migrate me*/" + "readBuffer.ReadByte(\"" + logicalName + "\")";
             case UINT:
                 IntegerTypeReference unsignedIntegerTypeReference = (IntegerTypeReference) simpleTypeReference;
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 8) {
-                    return"/*TODO: migrate me*/" +  "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
+                    return "/*TODO: migrate me*/" + "readBuffer.ReadUint8(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
                 }
                 if (unsignedIntegerTypeReference.getSizeInBits() <= 16) {
                     return "/*TODO: migrate me*/" + "readBuffer.ReadUint16(\"" + logicalName + "\", " + unsignedIntegerTypeReference.getSizeInBits() + ")";
@@ -417,10 +421,12 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getDataReaderCall(TypeReference typeReference) {
+        emitDataReaderRequiredImports();
         return getDataReaderCall(typeReference, "enumForValue");
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
+        emitDataReaderRequiredImports();
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
@@ -435,14 +441,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             StringBuilder paramsString = new StringBuilder();
             ComplexTypeReference complexTypeReference = typeReference.asComplexTypeReference().orElseThrow(IllegalStateException::new);
             ComplexTypeDefinition typeDefinition = complexTypeReference.getTypeDefinition();
-            String parserCallString = getLanguageTypeNameForTypeReference(typeReference);
+            String typeName = getLanguageTypeNameForTypeReference(typeReference);
+            String parserCallString = typeName;
             // In case of DataIo we actually need to use the type name and not what above returns.
             // (In this case the mspec type name and the result type name differ)
             if (typeReference.isDataIoTypeReference()) {
                 parserCallString = typeReference.asDataIoTypeReference().orElseThrow().getName();
             }
             if (typeDefinition.isDiscriminatedChildTypeDefinition()) {
-                parserCallString = "(" + getLanguageTypeNameForTypeReference(typeReference) + ") " + typeDefinition.getParentType().orElseThrow().getName();
+                parserCallString = typeDefinition.getParentType().orElseThrow().getName();
             }
             List<Term> paramTerms = complexTypeReference.getParams().orElse(Collections.emptyList());
             for (int i = 0; i < paramTerms.size(); i++) {
@@ -455,13 +462,21 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "ReadComplex(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
+            String paramsStringString = paramsString.toString();
+            if (StringUtils.isNotBlank(paramsStringString) || typeDefinition.isDiscriminatedChildTypeDefinition()) { // In this case we need to spell the function out
+                return "ReadComplex[" + typeName + "](func(ctx context.Context, buffer utils.ReadBuffer) (" + typeName + ", error) " +
+                    "{v,err:= " + parserCallString + "ParseWithBuffer(ctx,readBuffer" + paramsString + ");" +
+                    "if err!=nil{return nil,err};return v.(" + typeName + "),nil}, readBuffer)";
+            } else {
+                return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBuffer, readBuffer)";
+            }
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }
     }
 
     public String getDataReaderCall(SimpleTypeReference simpleTypeReference) {
+        emitDataReaderRequiredImports();
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
@@ -469,10 +484,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case BYTE:
                 return "ReadByte(readBuffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 7) return "ReadUnsignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 15) return "ReadUnsignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 31) return "ReadUnsignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 63) return "ReadUnsignedLong(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "ReadUnsignedByte(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "ReadUnsignedShort(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "ReadUnsignedInt(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "ReadUnsignedLong(readBuffer, " + sizeInBits + ")";
                 return "ReadUnsignedBigInteger(readBuffer, " + sizeInBits + ")";
             case INT:
                 if (sizeInBits <= 8) return "ReadSignedByte(readBuffer, " + sizeInBits + ")";
@@ -501,6 +516,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getDataWriterCall(TypeReference typeReference, String fieldName) {
+        emitDataReaderRequiredImports();
         if (typeReference.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = typeReference.asSimpleTypeReference().orElseThrow(IllegalStateException::new);
             return getDataWriterCall(simpleTypeReference);
@@ -515,6 +531,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getEnumDataWriterCall(EnumTypeReference typeReference, String fieldName, String attributeName) {
+        emitDataReaderRequiredImports();
         if (!typeReference.isEnumTypeReference()) {
             throw new IllegalArgumentException("this method should only be called for enum types");
         }
@@ -529,6 +546,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {
+        emitDataReaderRequiredImports();
         final int sizeInBits = simpleTypeReference.getSizeInBits();
         switch (simpleTypeReference.getBaseType()) {
             case BIT:
@@ -1468,6 +1486,15 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return requiredImports;
     }
 
+    public void emitDataReaderRequiredImports() {
+        requiredImports.add(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"");
+        requiredImports.add(". \"github.com/apache/plc4x/plc4go/spi/codegen/io\"");
+    }
+
+    public void emitCodegenRequiredImports() {
+        requiredImports.add("\"github.com/apache/plc4x/plc4go/spi/codegen\"");
+    }
+
     public void emitDataIoRequiredImport(String requiredImport) {
         LOGGER.debug("emitting io import '\"{}\"'", requiredImport);
         requiredImportsForDataIo.add('"' + requiredImport + '"');
@@ -1793,6 +1820,62 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
         }
         return "";
+    }
+
+    public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
+        StringBuilder sb = new StringBuilder();
+        field.getEncoding().ifPresent(term -> {
+            emitCodegenRequiredImports();
+            final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
+            sb.append(", codegen.WithEncoding(").append(encoding).append(")");
+        });
+
+        field.getByteOrder().ifPresent(term -> {
+            emitCodegenRequiredImports();
+            emitRequiredImport("encoding/binary");
+            String byteOrder = "binary.BigEndian";
+            switch (term.stringRepresentation()) {
+                case "BIG_ENDIAN":
+                    byteOrder = "binary.BigEndian";
+                    break;
+                case "LITTLE_ENDIAN":
+                    byteOrder = "binary.LittleEndian";
+                    break;
+                default:
+                    throw new RuntimeException("unmapped bytes order " + term.stringRepresentation());
+            }
+            sb.append(", codegen.WithByteOrder(").append(byteOrder).append(")");
+        });
+
+        field.getAttribute("nullBytesHex").ifPresent(term -> {
+            emitCodegenRequiredImports();
+            final String nullBytesHex = toParseExpression(field, field.getType(), term, parserArguments);
+            sb.append(", codegen.WithNullBytesHex(\"").append(nullBytesHex).append("\")");
+        });
+        return sb.toString();
+    }
+
+    public boolean isBigIntegerSource(Term term) {
+        boolean isBigInteger = term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .flatMap(VariableLiteral::getChild)
+            .map(Term.class::cast)
+            .map(this::isBigIntegerSource)
+            .orElse(false);
+        return isBigInteger || term.asLiteral()
+            .flatMap(LiteralConversions::asVariableLiteral)
+            .map(VariableLiteral::getTypeReference)
+            .flatMap(TypeReferenceConversions::asIntegerTypeReference)
+            .map(integerTypeReference -> integerTypeReference.getSizeInBits() >= 64)
+            .orElse(false);
+    }
+
+    public boolean isGeneratePropertiesForParserArguments() {
+        return options.getOrDefault("generate-properties-for-parser-arguments", "false").equals("true");
+    }
+
+    public boolean isGeneratePropertiesForReservedFields() {
+        return options.getOrDefault("generate-properties-for-reserved-fields", "false").equals("true");
     }
 
 }

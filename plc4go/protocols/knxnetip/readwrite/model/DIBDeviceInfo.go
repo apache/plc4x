@@ -266,11 +266,10 @@ func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("projectInstallationIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for projectInstallationIdentifier")
 	}
-	// Byte Array field (knxNetIpDeviceSerialNumber)
-	numberOfBytesknxNetIpDeviceSerialNumber := int(uint16(6))
-	knxNetIpDeviceSerialNumber, _readArrayErr := readBuffer.ReadByteArray("knxNetIpDeviceSerialNumber", numberOfBytesknxNetIpDeviceSerialNumber)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'knxNetIpDeviceSerialNumber' field of DIBDeviceInfo")
+
+	knxNetIpDeviceSerialNumber, err := readBuffer.ReadByteArray("knxNetIpDeviceSerialNumber", int(int32(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxNetIpDeviceSerialNumber' field"))
 	}
 
 	// Simple Field (knxNetIpDeviceMulticastAddress)
@@ -298,11 +297,10 @@ func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("knxNetIpDeviceMacAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for knxNetIpDeviceMacAddress")
 	}
-	// Byte Array field (deviceFriendlyName)
-	numberOfBytesdeviceFriendlyName := int(uint16(30))
-	deviceFriendlyName, _readArrayErr := readBuffer.ReadByteArray("deviceFriendlyName", numberOfBytesdeviceFriendlyName)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'deviceFriendlyName' field of DIBDeviceInfo")
+
+	deviceFriendlyName, err := readBuffer.ReadByteArray("deviceFriendlyName", int(int32(30)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceFriendlyName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DIBDeviceInfo"); closeErr != nil {

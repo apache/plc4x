@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataTagsParseWithBuffer(ctx context.Context, readBuffer ut
 		}
 	}
 
-	// Array field (tags)
-	if pullErr := readBuffer.PullContext("tags", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tags")
-	}
-	// Terminated array
-	var tags []BACnetNameValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'tags' field of BACnetConstructedDataTags")
-			}
-			tags = append(tags, _item.(BACnetNameValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("tags", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tags")
+	tags, err := ReadTerminatedArrayField[BACnetNameValue](ctx, "tags", ReadComplex[BACnetNameValue](BACnetNameValueParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tags' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTags"); closeErr != nil {

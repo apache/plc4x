@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataExceptionScheduleParseWithBuffer(ctx context.Context, 
 		}
 	}
 
-	// Array field (exceptionSchedule)
-	if pullErr := readBuffer.PullContext("exceptionSchedule", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for exceptionSchedule")
-	}
-	// Terminated array
-	var exceptionSchedule []BACnetSpecialEvent
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetSpecialEventParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'exceptionSchedule' field of BACnetConstructedDataExceptionSchedule")
-			}
-			exceptionSchedule = append(exceptionSchedule, _item.(BACnetSpecialEvent))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("exceptionSchedule", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for exceptionSchedule")
+	exceptionSchedule, err := ReadTerminatedArrayField[BACnetSpecialEvent](ctx, "exceptionSchedule", ReadComplex[BACnetSpecialEvent](BACnetSpecialEventParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceptionSchedule' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExceptionSchedule"); closeErr != nil {

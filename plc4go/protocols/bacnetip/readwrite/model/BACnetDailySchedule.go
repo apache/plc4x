@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,23 +153,9 @@ func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (daySchedule)
-	if pullErr := readBuffer.PullContext("daySchedule", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for daySchedule")
-	}
-	// Terminated array
-	var daySchedule []BACnetTimeValue
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0)) {
-			_item, _err := BACnetTimeValueParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'daySchedule' field of BACnetDailySchedule")
-			}
-			daySchedule = append(daySchedule, _item.(BACnetTimeValue))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("daySchedule", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for daySchedule")
+	daySchedule, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "daySchedule", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daySchedule' field"))
 	}
 
 	// Simple Field (closingTag)

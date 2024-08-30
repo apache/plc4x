@@ -141,11 +141,10 @@ func SecurityDataOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of SecurityDataOn")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(commandTypeContainer.NumBytes())-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataOn"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,58 +148,20 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of Services")
 	}
 
-	// Array field (offsets)
-	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
-	}
-	// Count array
-	offsets := make([]uint16, max(serviceNb, 0))
-	// This happens when the size is set conditional to 0
-	if len(offsets) == 0 {
-		offsets = nil
-	}
-	{
-		_numItems := uint16(max(serviceNb, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of Services")
-			}
-			offsets[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for offsets")
+	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, 16), uint64(serviceNb))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offsets' field"))
 	}
 
-	// Array field (services)
-	if pullErr := readBuffer.PullContext("services", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for services")
-	}
-	// Count array
-	services := make([]CipService, max(serviceNb, 0))
-	// This happens when the size is set conditional to 0
-	if len(services) == 0 {
-		services = nil
-	}
-	{
-		_numItems := uint16(max(serviceNb, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := CipServiceParseWithBuffer(arrayCtx, readBuffer, bool(false), uint16(servicesLen)/uint16(serviceNb))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'services' field of Services")
-			}
-			services[_curItem] = _item.(CipService)
+	services, err := ReadCountArrayField[CipService](ctx, "services", ReadComplex[CipService](func(ctx context.Context, buffer utils.ReadBuffer) (CipService, error) {
+		v, err := CipServiceParseWithBuffer(ctx, readBuffer, (bool)(bool(false)), (uint16)(uint16(servicesLen)/uint16(serviceNb)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("services", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for services")
+		return v.(CipService), nil
+	}, readBuffer), uint64(serviceNb))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'services' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("Services"); closeErr != nil {

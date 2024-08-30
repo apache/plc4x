@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -201,31 +203,15 @@ func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 	noOfQueryDataSets := _noOfQueryDataSets
 
-	// Array field (queryDataSets)
-	if pullErr := readBuffer.PullContext("queryDataSets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for queryDataSets")
-	}
-	// Count array
-	queryDataSets := make([]ExtensionObjectDefinition, max(noOfQueryDataSets, 0))
-	// This happens when the size is set conditional to 0
-	if len(queryDataSets) == 0 {
-		queryDataSets = nil
-	}
-	{
-		_numItems := uint16(max(noOfQueryDataSets, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "579")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'queryDataSets' field of QueryNextResponse")
-			}
-			queryDataSets[_curItem] = _item.(ExtensionObjectDefinition)
+	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("579"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("queryDataSets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for queryDataSets")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfQueryDataSets))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
 
 	// Simple Field (revisedContinuationPoint)

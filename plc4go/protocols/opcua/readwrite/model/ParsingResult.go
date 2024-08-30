@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -219,31 +221,9 @@ func ParsingResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	noOfDataStatusCodes := _noOfDataStatusCodes
 
-	// Array field (dataStatusCodes)
-	if pullErr := readBuffer.PullContext("dataStatusCodes", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataStatusCodes")
-	}
-	// Count array
-	dataStatusCodes := make([]StatusCode, max(noOfDataStatusCodes, 0))
-	// This happens when the size is set conditional to 0
-	if len(dataStatusCodes) == 0 {
-		dataStatusCodes = nil
-	}
-	{
-		_numItems := uint16(max(noOfDataStatusCodes, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dataStatusCodes' field of ParsingResult")
-			}
-			dataStatusCodes[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("dataStatusCodes", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataStatusCodes")
+	dataStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "dataStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfDataStatusCodes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataStatusCodes' field"))
 	}
 
 	// Simple Field (noOfDataDiagnosticInfos)
@@ -253,31 +233,9 @@ func ParsingResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	noOfDataDiagnosticInfos := _noOfDataDiagnosticInfos
 
-	// Array field (dataDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("dataDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataDiagnosticInfos")
-	}
-	// Count array
-	dataDiagnosticInfos := make([]DiagnosticInfo, max(noOfDataDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(dataDiagnosticInfos) == 0 {
-		dataDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfDataDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'dataDiagnosticInfos' field of ParsingResult")
-			}
-			dataDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("dataDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataDiagnosticInfos")
+	dataDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "dataDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDataDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataDiagnosticInfos' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParsingResult"); closeErr != nil {

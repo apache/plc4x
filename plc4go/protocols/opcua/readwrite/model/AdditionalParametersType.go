@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -166,31 +168,15 @@ func AdditionalParametersTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 	noOfParameters := _noOfParameters
 
-	// Array field (parameters)
-	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
-	}
-	// Count array
-	parameters := make([]ExtensionObjectDefinition, max(noOfParameters, 0))
-	// This happens when the size is set conditional to 0
-	if len(parameters) == 0 {
-		parameters = nil
-	}
-	{
-		_numItems := uint16(max(noOfParameters, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of AdditionalParametersType")
-			}
-			parameters[_curItem] = _item.(ExtensionObjectDefinition)
+	parameters, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parameters", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameters")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfParameters))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdditionalParametersType"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, re
 	}
 	noOfBrowsePaths := _noOfBrowsePaths
 
-	// Array field (browsePaths)
-	if pullErr := readBuffer.PullContext("browsePaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browsePaths")
-	}
-	// Count array
-	browsePaths := make([]ExtensionObjectDefinition, max(noOfBrowsePaths, 0))
-	// This happens when the size is set conditional to 0
-	if len(browsePaths) == 0 {
-		browsePaths = nil
-	}
-	{
-		_numItems := uint16(max(noOfBrowsePaths, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "545")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'browsePaths' field of TranslateBrowsePathsToNodeIdsRequest")
-			}
-			browsePaths[_curItem] = _item.(ExtensionObjectDefinition)
+	browsePaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "browsePaths", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("545"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("browsePaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browsePaths")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfBrowsePaths))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browsePaths' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TranslateBrowsePathsToNodeIdsRequest"); closeErr != nil {

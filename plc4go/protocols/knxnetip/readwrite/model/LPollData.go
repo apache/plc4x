@@ -192,11 +192,10 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
 	}
-	// Byte Array field (targetAddress)
-	numberOfBytestargetAddress := int(uint16(2))
-	targetAddress, _readArrayErr := readBuffer.ReadByteArray("targetAddress", numberOfBytestargetAddress)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'targetAddress' field of LPollData")
+
+	targetAddress, err := readBuffer.ReadByteArray("targetAddress", int(int32(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAddress' field"))
 	}
 
 	var reservedField0 *uint8

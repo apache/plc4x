@@ -142,11 +142,10 @@ func IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx context.Context
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (values)
-	numberOfBytesvalues := int(numBytes)
-	values, _readArrayErr := readBuffer.ReadByteArray("values", numberOfBytesvalues)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'values' field of IdentifyReplyCommandGAVPhysicalAddresses")
+
+	values, err := readBuffer.ReadByteArray("values", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'values' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandGAVPhysicalAddresses"); closeErr != nil {

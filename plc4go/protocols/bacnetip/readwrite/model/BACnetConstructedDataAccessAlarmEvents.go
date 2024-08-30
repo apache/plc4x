@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataAccessAlarmEventsParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (accessAlarmEvents)
-	if pullErr := readBuffer.PullContext("accessAlarmEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessAlarmEvents")
-	}
-	// Terminated array
-	var accessAlarmEvents []BACnetAccessEventTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'accessAlarmEvents' field of BACnetConstructedDataAccessAlarmEvents")
-			}
-			accessAlarmEvents = append(accessAlarmEvents, _item.(BACnetAccessEventTagged))
+	accessAlarmEvents, err := ReadTerminatedArrayField[BACnetAccessEventTagged](ctx, "accessAlarmEvents", ReadComplex[BACnetAccessEventTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAccessEventTagged, error) {
+		v, err := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("accessAlarmEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessAlarmEvents")
+		return v.(BACnetAccessEventTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessAlarmEvents' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessAlarmEvents"); closeErr != nil {

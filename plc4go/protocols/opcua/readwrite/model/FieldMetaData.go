@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -344,31 +346,9 @@ func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	noOfArrayDimensions := _noOfArrayDimensions
 
-	// Array field (arrayDimensions)
-	if pullErr := readBuffer.PullContext("arrayDimensions", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for arrayDimensions")
-	}
-	// Count array
-	arrayDimensions := make([]uint32, max(noOfArrayDimensions, 0))
-	// This happens when the size is set conditional to 0
-	if len(arrayDimensions) == 0 {
-		arrayDimensions = nil
-	}
-	{
-		_numItems := uint16(max(noOfArrayDimensions, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'arrayDimensions' field of FieldMetaData")
-			}
-			arrayDimensions[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("arrayDimensions", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for arrayDimensions")
+	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, 32), uint64(noOfArrayDimensions))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
 
 	// Simple Field (maxStringLength)
@@ -398,31 +378,15 @@ func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	noOfProperties := _noOfProperties
 
-	// Array field (properties)
-	if pullErr := readBuffer.PullContext("properties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for properties")
-	}
-	// Count array
-	properties := make([]ExtensionObjectDefinition, max(noOfProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(properties) == 0 {
-		properties = nil
-	}
-	{
-		_numItems := uint16(max(noOfProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'properties' field of FieldMetaData")
-			}
-			properties[_curItem] = _item.(ExtensionObjectDefinition)
+	properties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "properties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("properties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for properties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'properties' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("FieldMetaData"); closeErr != nil {

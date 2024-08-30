@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -265,31 +267,15 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	noOfClientSoftwareCertificates := _noOfClientSoftwareCertificates
 
-	// Array field (clientSoftwareCertificates)
-	if pullErr := readBuffer.PullContext("clientSoftwareCertificates", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientSoftwareCertificates")
-	}
-	// Count array
-	clientSoftwareCertificates := make([]ExtensionObjectDefinition, max(noOfClientSoftwareCertificates, 0))
-	// This happens when the size is set conditional to 0
-	if len(clientSoftwareCertificates) == 0 {
-		clientSoftwareCertificates = nil
-	}
-	{
-		_numItems := uint16(max(noOfClientSoftwareCertificates, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "346")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'clientSoftwareCertificates' field of ActivateSessionRequest")
-			}
-			clientSoftwareCertificates[_curItem] = _item.(ExtensionObjectDefinition)
+	clientSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "clientSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("346"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("clientSoftwareCertificates", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientSoftwareCertificates")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfClientSoftwareCertificates))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientSoftwareCertificates' field"))
 	}
 
 	// Simple Field (noOfLocaleIds)
@@ -299,31 +285,9 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	noOfLocaleIds := _noOfLocaleIds
 
-	// Array field (localeIds)
-	if pullErr := readBuffer.PullContext("localeIds", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localeIds")
-	}
-	// Count array
-	localeIds := make([]PascalString, max(noOfLocaleIds, 0))
-	// This happens when the size is set conditional to 0
-	if len(localeIds) == 0 {
-		localeIds = nil
-	}
-	{
-		_numItems := uint16(max(noOfLocaleIds, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'localeIds' field of ActivateSessionRequest")
-			}
-			localeIds[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("localeIds", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localeIds")
+	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
 
 	// Simple Field (userIdentityToken)

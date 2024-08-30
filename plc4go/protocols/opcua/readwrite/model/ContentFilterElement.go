@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfFilterOperands := _noOfFilterOperands
 
-	// Array field (filterOperands)
-	if pullErr := readBuffer.PullContext("filterOperands", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterOperands")
-	}
-	// Count array
-	filterOperands := make([]ExtensionObject, max(noOfFilterOperands, 0))
-	// This happens when the size is set conditional to 0
-	if len(filterOperands) == 0 {
-		filterOperands = nil
-	}
-	{
-		_numItems := uint16(max(noOfFilterOperands, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectParseWithBuffer(arrayCtx, readBuffer, bool(true))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'filterOperands' field of ContentFilterElement")
-			}
-			filterOperands[_curItem] = _item.(ExtensionObject)
+	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
+		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("filterOperands", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterOperands")
+		return v.(ExtensionObject), nil
+	}, readBuffer), uint64(noOfFilterOperands))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperands' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ContentFilterElement"); closeErr != nil {

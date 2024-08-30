@@ -171,11 +171,10 @@ func ParameterValueApplicationAddress2ParseWithBuffer(ctx context.Context, readB
 	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for value")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(numBytes) - uint16(uint16(1)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ParameterValueApplicationAddress2")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueApplicationAddress2"); closeErr != nil {

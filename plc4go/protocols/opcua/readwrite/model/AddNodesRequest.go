@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func AddNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	noOfNodesToAdd := _noOfNodesToAdd
 
-	// Array field (nodesToAdd)
-	if pullErr := readBuffer.PullContext("nodesToAdd", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToAdd")
-	}
-	// Count array
-	nodesToAdd := make([]ExtensionObjectDefinition, max(noOfNodesToAdd, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToAdd) == 0 {
-		nodesToAdd = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToAdd, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "378")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToAdd' field of AddNodesRequest")
-			}
-			nodesToAdd[_curItem] = _item.(ExtensionObjectDefinition)
+	nodesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToAdd", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("378"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToAdd", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToAdd")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfNodesToAdd))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToAdd' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AddNodesRequest"); closeErr != nil {

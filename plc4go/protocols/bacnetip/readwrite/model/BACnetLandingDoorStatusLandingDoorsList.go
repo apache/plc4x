@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,9 @@ func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (landingDoors)
-	if pullErr := readBuffer.PullContext("landingDoors", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
-	}
-	// Terminated array
-	var landingDoors []BACnetLandingDoorStatusLandingDoorsListEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'landingDoors' field of BACnetLandingDoorStatusLandingDoorsList")
-			}
-			landingDoors = append(landingDoors, _item.(BACnetLandingDoorStatusLandingDoorsListEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("landingDoors", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for landingDoors")
+	landingDoors, err := ReadTerminatedArrayField[BACnetLandingDoorStatusLandingDoorsListEntry](ctx, "landingDoors", ReadComplex[BACnetLandingDoorStatusLandingDoorsListEntry](BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingDoors' field"))
 	}
 
 	// Simple Field (closingTag)

@@ -160,11 +160,10 @@ func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of NLMSecurityPayload")
 	}
 	payloadLength := _payloadLength
-	// Byte Array field (payload)
-	numberOfBytespayload := int(payloadLength)
-	payload, _readArrayErr := readBuffer.ReadByteArray("payload", numberOfBytespayload)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'payload' field of NLMSecurityPayload")
+
+	payload, err := readBuffer.ReadByteArray("payload", int(payloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMSecurityPayload"); closeErr != nil {

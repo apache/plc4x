@@ -166,11 +166,10 @@ func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer 
 	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
 	}
-	// Byte Array field (proprietaryMessage)
-	numberOfBytesproprietaryMessage := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(3)))) }, func() any { return uint16(uint16(0)) }).(uint16))
-	proprietaryMessage, _readArrayErr := readBuffer.ReadByteArray("proprietaryMessage", numberOfBytesproprietaryMessage)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'proprietaryMessage' field of NLMVendorProprietaryMessage")
+
+	proprietaryMessage, err := readBuffer.ReadByteArray("proprietaryMessage", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(int32(3)))) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryMessage' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMVendorProprietaryMessage"); closeErr != nil {

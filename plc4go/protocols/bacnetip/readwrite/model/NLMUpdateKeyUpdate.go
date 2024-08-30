@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -359,31 +361,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		}
 	}
 
-	// Array field (set1Keys)
-	if pullErr := readBuffer.PullContext("set1Keys", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for set1Keys")
-	}
-	// Count array
-	set1Keys := make([]NLMUpdateKeyUpdateKeyEntry, max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(set1Keys) == 0 {
-		set1Keys = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'set1Keys' field of NLMUpdateKeyUpdate")
-			}
-			set1Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("set1Keys", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for set1Keys")
+	set1Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set1Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1Keys' field"))
 	}
 
 	// Optional Field (set2KeyRevision) (Can be skipped, if a given expression evaluates to false)
@@ -450,31 +430,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		}
 	}
 
-	// Array field (set2Keys)
-	if pullErr := readBuffer.PullContext("set2Keys", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for set2Keys")
-	}
-	// Count array
-	set2Keys := make([]NLMUpdateKeyUpdateKeyEntry, max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(set2Keys) == 0 {
-		set2Keys = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return uint16((*set1KeyCount)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'set2Keys' field of NLMUpdateKeyUpdate")
-			}
-			set2Keys[_curItem] = _item.(NLMUpdateKeyUpdateKeyEntry)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("set2Keys", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for set2Keys")
+	set2Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set2Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2Keys' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyUpdate"); closeErr != nil {

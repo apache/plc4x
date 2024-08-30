@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataAccessTransactionEventsParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (accessTransactionEvents)
-	if pullErr := readBuffer.PullContext("accessTransactionEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessTransactionEvents")
-	}
-	// Terminated array
-	var accessTransactionEvents []BACnetAccessEventTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'accessTransactionEvents' field of BACnetConstructedDataAccessTransactionEvents")
-			}
-			accessTransactionEvents = append(accessTransactionEvents, _item.(BACnetAccessEventTagged))
+	accessTransactionEvents, err := ReadTerminatedArrayField[BACnetAccessEventTagged](ctx, "accessTransactionEvents", ReadComplex[BACnetAccessEventTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAccessEventTagged, error) {
+		v, err := BACnetAccessEventTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("accessTransactionEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessTransactionEvents")
+		return v.(BACnetAccessEventTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessTransactionEvents' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessTransactionEvents"); closeErr != nil {

@@ -142,11 +142,10 @@ func IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx context.Context, readB
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (minimumLevels)
-	numberOfBytesminimumLevels := int(numBytes)
-	minimumLevels, _readArrayErr := readBuffer.ReadByteArray("minimumLevels", numberOfBytesminimumLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'minimumLevels' field of IdentifyReplyCommandMinimumLevels")
+
+	minimumLevels, err := readBuffer.ReadByteArray("minimumLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumLevels' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMinimumLevels"); closeErr != nil {

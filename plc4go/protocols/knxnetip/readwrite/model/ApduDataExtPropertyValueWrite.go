@@ -214,11 +214,10 @@ func ApduDataExtPropertyValueWriteParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyValueWrite")
 	}
 	index := _index
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(length) - uint16(uint16(5)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ApduDataExtPropertyValueWrite")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(length)-int32(int32(5))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyValueWrite"); closeErr != nil {

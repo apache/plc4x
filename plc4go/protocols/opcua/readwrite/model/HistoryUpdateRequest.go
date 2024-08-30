@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfHistoryUpdateDetails := _noOfHistoryUpdateDetails
 
-	// Array field (historyUpdateDetails)
-	if pullErr := readBuffer.PullContext("historyUpdateDetails", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for historyUpdateDetails")
-	}
-	// Count array
-	historyUpdateDetails := make([]ExtensionObject, max(noOfHistoryUpdateDetails, 0))
-	// This happens when the size is set conditional to 0
-	if len(historyUpdateDetails) == 0 {
-		historyUpdateDetails = nil
-	}
-	{
-		_numItems := uint16(max(noOfHistoryUpdateDetails, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectParseWithBuffer(arrayCtx, readBuffer, bool(true))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'historyUpdateDetails' field of HistoryUpdateRequest")
-			}
-			historyUpdateDetails[_curItem] = _item.(ExtensionObject)
+	historyUpdateDetails, err := ReadCountArrayField[ExtensionObject](ctx, "historyUpdateDetails", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
+		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("historyUpdateDetails", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for historyUpdateDetails")
+		return v.(ExtensionObject), nil
+	}, readBuffer), uint64(noOfHistoryUpdateDetails))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateDetails' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("HistoryUpdateRequest"); closeErr != nil {

@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,25 +209,15 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	_child = _childTemp.(COTPPacketChildSerializeRequirement)
 
-	// Array field (parameters)
-	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
-	}
-	// Length array
-	var parameters []COTPParameter
-	{
-		_parametersLength := uint16((uint16(headerLength) + uint16(uint16(1)))) - uint16((positionAware.GetPos() - startPos))
-		_parametersEndPos := positionAware.GetPos() + uint16(_parametersLength)
-		for positionAware.GetPos() < _parametersEndPos {
-			_item, _err := COTPParameterParseWithBuffer(ctx, readBuffer, uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of COTPPacket")
-			}
-			parameters = append(parameters, _item.(COTPParameter))
+	parameters, err := ReadLengthArrayField[COTPParameter](ctx, "parameters", ReadComplex[COTPParameter](func(ctx context.Context, buffer utils.ReadBuffer) (COTPParameter, error) {
+		v, err := COTPParameterParseWithBuffer(ctx, readBuffer, (uint8)(uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos))))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameters")
+		return v.(COTPParameter), nil
+	}, readBuffer), int(int32((int32(headerLength)+int32(int32(1))))-int32((positionAware.GetPos()-startPos))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
 
 	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,25 +176,9 @@ func LDataConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	}
 	additionalInformationLength := _additionalInformationLength
 
-	// Array field (additionalInformation)
-	if pullErr := readBuffer.PullContext("additionalInformation", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for additionalInformation")
-	}
-	// Length array
-	var additionalInformation []CEMIAdditionalInformation
-	{
-		_additionalInformationLength := additionalInformationLength
-		_additionalInformationEndPos := positionAware.GetPos() + uint16(_additionalInformationLength)
-		for positionAware.GetPos() < _additionalInformationEndPos {
-			_item, _err := CEMIAdditionalInformationParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'additionalInformation' field of LDataCon")
-			}
-			additionalInformation = append(additionalInformation, _item.(CEMIAdditionalInformation))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("additionalInformation", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for additionalInformation")
+	additionalInformation, err := ReadLengthArrayField[CEMIAdditionalInformation](ctx, "additionalInformation", ReadComplex[CEMIAdditionalInformation](CEMIAdditionalInformationParseWithBuffer, readBuffer), int(additionalInformationLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInformation' field"))
 	}
 
 	// Simple Field (dataFrame)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -245,31 +247,9 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfLinksToAdd := _noOfLinksToAdd
 
-	// Array field (linksToAdd)
-	if pullErr := readBuffer.PullContext("linksToAdd", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linksToAdd")
-	}
-	// Count array
-	linksToAdd := make([]uint32, max(noOfLinksToAdd, 0))
-	// This happens when the size is set conditional to 0
-	if len(linksToAdd) == 0 {
-		linksToAdd = nil
-	}
-	{
-		_numItems := uint16(max(noOfLinksToAdd, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'linksToAdd' field of SetTriggeringRequest")
-			}
-			linksToAdd[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("linksToAdd", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linksToAdd")
+	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, 32), uint64(noOfLinksToAdd))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToAdd' field"))
 	}
 
 	// Simple Field (noOfLinksToRemove)
@@ -279,31 +259,9 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfLinksToRemove := _noOfLinksToRemove
 
-	// Array field (linksToRemove)
-	if pullErr := readBuffer.PullContext("linksToRemove", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linksToRemove")
-	}
-	// Count array
-	linksToRemove := make([]uint32, max(noOfLinksToRemove, 0))
-	// This happens when the size is set conditional to 0
-	if len(linksToRemove) == 0 {
-		linksToRemove = nil
-	}
-	{
-		_numItems := uint16(max(noOfLinksToRemove, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'linksToRemove' field of SetTriggeringRequest")
-			}
-			linksToRemove[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("linksToRemove", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linksToRemove")
+	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, 32), uint64(noOfLinksToRemove))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToRemove' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SetTriggeringRequest"); closeErr != nil {

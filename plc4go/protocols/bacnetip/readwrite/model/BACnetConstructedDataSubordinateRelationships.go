@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataSubordinateRelationshipsParseWithBuffer(ctx context.Co
 		}
 	}
 
-	// Array field (subordinateRelationships)
-	if pullErr := readBuffer.PullContext("subordinateRelationships", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subordinateRelationships")
-	}
-	// Terminated array
-	var subordinateRelationships []BACnetRelationshipTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetRelationshipTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subordinateRelationships' field of BACnetConstructedDataSubordinateRelationships")
-			}
-			subordinateRelationships = append(subordinateRelationships, _item.(BACnetRelationshipTagged))
+	subordinateRelationships, err := ReadTerminatedArrayField[BACnetRelationshipTagged](ctx, "subordinateRelationships", ReadComplex[BACnetRelationshipTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetRelationshipTagged, error) {
+		v, err := BACnetRelationshipTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("subordinateRelationships", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subordinateRelationships")
+		return v.(BACnetRelationshipTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subordinateRelationships' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSubordinateRelationships"); closeErr != nil {

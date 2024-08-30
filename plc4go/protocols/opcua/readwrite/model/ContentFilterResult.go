@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -195,31 +197,15 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfElementResults := _noOfElementResults
 
-	// Array field (elementResults)
-	if pullErr := readBuffer.PullContext("elementResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for elementResults")
-	}
-	// Count array
-	elementResults := make([]ExtensionObjectDefinition, max(noOfElementResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(elementResults) == 0 {
-		elementResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfElementResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "606")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'elementResults' field of ContentFilterResult")
-			}
-			elementResults[_curItem] = _item.(ExtensionObjectDefinition)
+	elementResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elementResults", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("606"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("elementResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for elementResults")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfElementResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementResults' field"))
 	}
 
 	// Simple Field (noOfElementDiagnosticInfos)
@@ -229,31 +215,9 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfElementDiagnosticInfos := _noOfElementDiagnosticInfos
 
-	// Array field (elementDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("elementDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for elementDiagnosticInfos")
-	}
-	// Count array
-	elementDiagnosticInfos := make([]DiagnosticInfo, max(noOfElementDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(elementDiagnosticInfos) == 0 {
-		elementDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfElementDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'elementDiagnosticInfos' field of ContentFilterResult")
-			}
-			elementDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("elementDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for elementDiagnosticInfos")
+	elementDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "elementDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfElementDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementDiagnosticInfos' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ContentFilterResult"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,9 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(ctx context.Cont
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (parameters)
-	if pullErr := readBuffer.PullContext("parameters", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameters")
-	}
-	// Terminated array
-	var parameters []BACnetFaultParameterFaultExtendedParametersEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'parameters' field of BACnetFaultParameterFaultExtendedParameters")
-			}
-			parameters = append(parameters, _item.(BACnetFaultParameterFaultExtendedParametersEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("parameters", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameters")
+	parameters, err := ReadTerminatedArrayField[BACnetFaultParameterFaultExtendedParametersEntry](ctx, "parameters", ReadComplex[BACnetFaultParameterFaultExtendedParametersEntry](BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
 
 	// Simple Field (closingTag)

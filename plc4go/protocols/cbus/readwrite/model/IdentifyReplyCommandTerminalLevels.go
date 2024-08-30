@@ -142,11 +142,10 @@ func IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx context.Context, read
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (terminalLevels)
-	numberOfBytesterminalLevels := int(numBytes)
-	terminalLevels, _readArrayErr := readBuffer.ReadByteArray("terminalLevels", numberOfBytesterminalLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'terminalLevels' field of IdentifyReplyCommandTerminalLevels")
+
+	terminalLevels, err := readBuffer.ReadByteArray("terminalLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminalLevels' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandTerminalLevels"); closeErr != nil {

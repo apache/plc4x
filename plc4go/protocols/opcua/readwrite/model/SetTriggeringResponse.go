@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -277,31 +279,9 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfAddResults := _noOfAddResults
 
-	// Array field (addResults)
-	if pullErr := readBuffer.PullContext("addResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addResults")
-	}
-	// Count array
-	addResults := make([]StatusCode, max(noOfAddResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(addResults) == 0 {
-		addResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfAddResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'addResults' field of SetTriggeringResponse")
-			}
-			addResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("addResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addResults")
+	addResults, err := ReadCountArrayField[StatusCode](ctx, "addResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfAddResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addResults' field"))
 	}
 
 	// Simple Field (noOfAddDiagnosticInfos)
@@ -311,31 +291,9 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfAddDiagnosticInfos := _noOfAddDiagnosticInfos
 
-	// Array field (addDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("addDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addDiagnosticInfos")
-	}
-	// Count array
-	addDiagnosticInfos := make([]DiagnosticInfo, max(noOfAddDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(addDiagnosticInfos) == 0 {
-		addDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfAddDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'addDiagnosticInfos' field of SetTriggeringResponse")
-			}
-			addDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("addDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addDiagnosticInfos")
+	addDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "addDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfAddDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addDiagnosticInfos' field"))
 	}
 
 	// Simple Field (noOfRemoveResults)
@@ -345,31 +303,9 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfRemoveResults := _noOfRemoveResults
 
-	// Array field (removeResults)
-	if pullErr := readBuffer.PullContext("removeResults", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for removeResults")
-	}
-	// Count array
-	removeResults := make([]StatusCode, max(noOfRemoveResults, 0))
-	// This happens when the size is set conditional to 0
-	if len(removeResults) == 0 {
-		removeResults = nil
-	}
-	{
-		_numItems := uint16(max(noOfRemoveResults, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := StatusCodeParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'removeResults' field of SetTriggeringResponse")
-			}
-			removeResults[_curItem] = _item.(StatusCode)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("removeResults", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for removeResults")
+	removeResults, err := ReadCountArrayField[StatusCode](ctx, "removeResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfRemoveResults))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeResults' field"))
 	}
 
 	// Simple Field (noOfRemoveDiagnosticInfos)
@@ -379,31 +315,9 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfRemoveDiagnosticInfos := _noOfRemoveDiagnosticInfos
 
-	// Array field (removeDiagnosticInfos)
-	if pullErr := readBuffer.PullContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for removeDiagnosticInfos")
-	}
-	// Count array
-	removeDiagnosticInfos := make([]DiagnosticInfo, max(noOfRemoveDiagnosticInfos, 0))
-	// This happens when the size is set conditional to 0
-	if len(removeDiagnosticInfos) == 0 {
-		removeDiagnosticInfos = nil
-	}
-	{
-		_numItems := uint16(max(noOfRemoveDiagnosticInfos, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := DiagnosticInfoParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'removeDiagnosticInfos' field of SetTriggeringResponse")
-			}
-			removeDiagnosticInfos[_curItem] = _item.(DiagnosticInfo)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for removeDiagnosticInfos")
+	removeDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "removeDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfRemoveDiagnosticInfos))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeDiagnosticInfos' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SetTriggeringResponse"); closeErr != nil {

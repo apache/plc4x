@@ -132,11 +132,10 @@ func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(_stringLengthErr, "Error parsing 'stringLength' field of PascalByteString")
 	}
 	stringLength := _stringLength
-	// Byte Array field (stringValue)
-	numberOfBytesstringValue := int(utils.InlineIf(bool((stringLength) == (-(1))), func() any { return uint16(uint16(0)) }, func() any { return uint16(stringLength) }).(uint16))
-	stringValue, _readArrayErr := readBuffer.ReadByteArray("stringValue", numberOfBytesstringValue)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'stringValue' field of PascalByteString")
+
+	stringValue, err := readBuffer.ReadByteArray("stringValue", int(utils.InlineIf(bool((stringLength) == (-(1))), func() any { return int32(int32(0)) }, func() any { return int32(stringLength) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PascalByteString"); closeErr != nil {

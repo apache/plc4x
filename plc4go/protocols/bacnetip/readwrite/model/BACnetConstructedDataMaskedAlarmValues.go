@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataMaskedAlarmValuesParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (maskedAlarmValues)
-	if pullErr := readBuffer.PullContext("maskedAlarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maskedAlarmValues")
-	}
-	// Terminated array
-	var maskedAlarmValues []BACnetDoorAlarmStateTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'maskedAlarmValues' field of BACnetConstructedDataMaskedAlarmValues")
-			}
-			maskedAlarmValues = append(maskedAlarmValues, _item.(BACnetDoorAlarmStateTagged))
+	maskedAlarmValues, err := ReadTerminatedArrayField[BACnetDoorAlarmStateTagged](ctx, "maskedAlarmValues", ReadComplex[BACnetDoorAlarmStateTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDoorAlarmStateTagged, error) {
+		v, err := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("maskedAlarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maskedAlarmValues")
+		return v.(BACnetDoorAlarmStateTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maskedAlarmValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaskedAlarmValues"); closeErr != nil {

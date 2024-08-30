@@ -115,11 +115,10 @@ func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (addr)
-	numberOfBytesaddr := int(uint16(6))
-	addr, _readArrayErr := readBuffer.ReadByteArray("addr", numberOfBytesaddr)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'addr' field of MACAddress")
+
+	addr, err := readBuffer.ReadByteArray("addr", int(int32(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addr' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MACAddress"); closeErr != nil {

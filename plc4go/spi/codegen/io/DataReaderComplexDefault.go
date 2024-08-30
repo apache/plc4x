@@ -29,13 +29,13 @@ import (
 )
 
 type DataReaderComplexDefault[T any] struct {
-	complexTypeSupplier ComplexTypeSupplier[T]
+	complexTypeSupplier func(context.Context, utils.ReadBuffer) (T, error)
 	readBuffer          utils.ReadBuffer
 }
 
 var _ DataReaderComplex[string] = (*DataReaderComplexDefault[string])(nil)
 
-func NewDataReaderComplexDefault[T any](complexTypeSupplier ComplexTypeSupplier[T], readBuffer utils.ReadBuffer) *DataReaderComplexDefault[T] {
+func NewDataReaderComplexDefault[T any](complexTypeSupplier func(context.Context, utils.ReadBuffer) (T, error), readBuffer utils.ReadBuffer) *DataReaderComplexDefault[T] {
 	return &DataReaderComplexDefault[T]{
 		complexTypeSupplier: complexTypeSupplier,
 		readBuffer:          readBuffer,
@@ -59,10 +59,10 @@ func (d *DataReaderComplexDefault[T]) SetByteOrder(byteOrder binary.ByteOrder) {
 }
 
 func (d *DataReaderComplexDefault[T]) Read(ctx context.Context, logicalName string, readerArgs ...utils.WithReaderArgs) (T, error) {
-	return d.ReadComplex(logicalName, d.complexTypeSupplier, readerArgs...)
+	return d.ReadComplex(ctx, logicalName, d.complexTypeSupplier, readerArgs...)
 }
 
-func (d *DataReaderComplexDefault[T]) ReadComplex(logicalName string, supplier ComplexTypeSupplier[T], readerArgs ...utils.WithReaderArgs) (T, error) {
+func (d *DataReaderComplexDefault[T]) ReadComplex(ctx context.Context, logicalName string, supplier func(context.Context, utils.ReadBuffer) (T, error), readerArgs ...utils.WithReaderArgs) (T, error) {
 	var zero T
 	// TODO: it might be even better if we default to value like in other places... on the other hand a complex type has always a proper logical name so this might be fine like that
 	if logicalName != "" {
@@ -71,7 +71,7 @@ func (d *DataReaderComplexDefault[T]) ReadComplex(logicalName string, supplier C
 			return zero, errors.Wrap(err, "error pulling context")
 		}
 	}
-	t, err := supplier.Get()
+	t, err := supplier(ctx, d.readBuffer)
 	if err != nil {
 		return zero, errors.Wrap(err, "error getting value")
 	}

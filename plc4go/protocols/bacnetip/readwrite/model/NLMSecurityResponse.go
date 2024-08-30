@@ -202,11 +202,10 @@ func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(_originalTimestampErr, "Error parsing 'originalTimestamp' field of NLMSecurityResponse")
 	}
 	originalTimestamp := _originalTimestamp
-	// Byte Array field (variableParameters)
-	numberOfBytesvariableParameters := int(uint16(apduLength) - uint16((uint16(uint16(uint16(uint16(1))+uint16(uint16(1)))+uint16(uint16(4))) + uint16(uint16(4)))))
-	variableParameters, _readArrayErr := readBuffer.ReadByteArray("variableParameters", numberOfBytesvariableParameters)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'variableParameters' field of NLMSecurityResponse")
+
+	variableParameters, err := readBuffer.ReadByteArray("variableParameters", int(int32(apduLength)-int32((int32(int32(int32(int32(1))+int32(int32(1)))+int32(int32(4)))+int32(int32(4))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'variableParameters' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMSecurityResponse"); closeErr != nil {

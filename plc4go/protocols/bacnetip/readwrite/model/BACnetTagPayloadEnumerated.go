@@ -137,11 +137,10 @@ func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (data)
-	numberOfBytesdata := int(actualLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of BACnetTagPayloadEnumerated")
+
+	data, err := readBuffer.ReadByteArray("data", int(actualLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	// Virtual field

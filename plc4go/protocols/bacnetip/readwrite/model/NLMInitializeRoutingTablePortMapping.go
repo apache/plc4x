@@ -166,11 +166,10 @@ func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(_portInfoLengthErr, "Error parsing 'portInfoLength' field of NLMInitializeRoutingTablePortMapping")
 	}
 	portInfoLength := _portInfoLength
-	// Byte Array field (portInfo)
-	numberOfBytesportInfo := int(portInfoLength)
-	portInfo, _readArrayErr := readBuffer.ReadByteArray("portInfo", numberOfBytesportInfo)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'portInfo' field of NLMInitializeRoutingTablePortMapping")
+
+	portInfo, err := readBuffer.ReadByteArray("portInfo", int(portInfoLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portInfo' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMInitializeRoutingTablePortMapping"); closeErr != nil {

@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataSupportedFormatsParseWithBuffer(ctx context.Context, r
 		}
 	}
 
-	// Array field (supportedFormats)
-	if pullErr := readBuffer.PullContext("supportedFormats", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for supportedFormats")
-	}
-	// Terminated array
-	var supportedFormats []BACnetAuthenticationFactorFormat
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAuthenticationFactorFormatParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'supportedFormats' field of BACnetConstructedDataSupportedFormats")
-			}
-			supportedFormats = append(supportedFormats, _item.(BACnetAuthenticationFactorFormat))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("supportedFormats", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for supportedFormats")
+	supportedFormats, err := ReadTerminatedArrayField[BACnetAuthenticationFactorFormat](ctx, "supportedFormats", ReadComplex[BACnetAuthenticationFactorFormat](BACnetAuthenticationFactorFormatParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'supportedFormats' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSupportedFormats"); closeErr != nil {

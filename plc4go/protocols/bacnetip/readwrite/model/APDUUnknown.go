@@ -160,11 +160,10 @@ func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(_unknownTypeRestErr, "Error parsing 'unknownTypeRest' field of APDUUnknown")
 	}
 	unknownTypeRest := _unknownTypeRest
-	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16(apduLength) }, func() any { return uint16(uint16(0)) }).(uint16))
-	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of APDUUnknown")
+
+	unknownBytes, err := readBuffer.ReadByteArray("unknownBytes", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32(apduLength) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownBytes' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUUnknown"); closeErr != nil {

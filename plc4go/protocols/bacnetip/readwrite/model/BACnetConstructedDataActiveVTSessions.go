@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataActiveVTSessionsParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (activeVTSession)
-	if pullErr := readBuffer.PullContext("activeVTSession", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activeVTSession")
-	}
-	// Terminated array
-	var activeVTSession []BACnetVTSession
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetVTSessionParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'activeVTSession' field of BACnetConstructedDataActiveVTSessions")
-			}
-			activeVTSession = append(activeVTSession, _item.(BACnetVTSession))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("activeVTSession", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activeVTSession")
+	activeVTSession, err := ReadTerminatedArrayField[BACnetVTSession](ctx, "activeVTSession", ReadComplex[BACnetVTSession](BACnetVTSessionParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeVTSession' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveVTSessions"); closeErr != nil {

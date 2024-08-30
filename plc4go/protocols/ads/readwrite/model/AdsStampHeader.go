@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -155,31 +157,9 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	samples := _samples
 
-	// Array field (adsNotificationSamples)
-	if pullErr := readBuffer.PullContext("adsNotificationSamples", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for adsNotificationSamples")
-	}
-	// Count array
-	adsNotificationSamples := make([]AdsNotificationSample, max(samples, 0))
-	// This happens when the size is set conditional to 0
-	if len(adsNotificationSamples) == 0 {
-		adsNotificationSamples = nil
-	}
-	{
-		_numItems := uint16(max(samples, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := AdsNotificationSampleParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'adsNotificationSamples' field of AdsStampHeader")
-			}
-			adsNotificationSamples[_curItem] = _item.(AdsNotificationSample)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("adsNotificationSamples", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for adsNotificationSamples")
+	adsNotificationSamples, err := ReadCountArrayField[AdsNotificationSample](ctx, "adsNotificationSamples", ReadComplex[AdsNotificationSample](AdsNotificationSampleParseWithBuffer, readBuffer), uint64(samples))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsNotificationSamples' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsStampHeader"); closeErr != nil {

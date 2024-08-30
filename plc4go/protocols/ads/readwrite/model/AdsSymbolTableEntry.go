@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -610,11 +611,10 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if commentTerminator != AdsSymbolTableEntry_COMMENTTERMINATOR {
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", AdsSymbolTableEntry_COMMENTTERMINATOR) + " but got " + fmt.Sprintf("%d", commentTerminator))
 	}
-	// Byte Array field (rest)
-	numberOfBytesrest := int(uint16(entryLength) - uint16((positionAware.GetPos() - startPos)))
-	rest, _readArrayErr := readBuffer.ReadByteArray("rest", numberOfBytesrest)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'rest' field of AdsSymbolTableEntry")
+
+	rest, err := readBuffer.ReadByteArray("rest", int(int32(entryLength)-int32((positionAware.GetPos()-startPos))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rest' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsSymbolTableEntry"); closeErr != nil {

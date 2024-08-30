@@ -244,11 +244,10 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
 	}
-	// Byte Array field (destinationAddress)
-	numberOfBytesdestinationAddress := int(uint16(2))
-	destinationAddress, _readArrayErr := readBuffer.ReadByteArray("destinationAddress", numberOfBytesdestinationAddress)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'destinationAddress' field of LDataExtended")
+
+	destinationAddress, err := readBuffer.ReadByteArray("destinationAddress", int(int32(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

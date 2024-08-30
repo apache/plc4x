@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -355,31 +357,15 @@ func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfServerEndpoints := _noOfServerEndpoints
 
-	// Array field (serverEndpoints)
-	if pullErr := readBuffer.PullContext("serverEndpoints", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverEndpoints")
-	}
-	// Count array
-	serverEndpoints := make([]ExtensionObjectDefinition, max(noOfServerEndpoints, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverEndpoints) == 0 {
-		serverEndpoints = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerEndpoints, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "314")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverEndpoints' field of CreateSessionResponse")
-			}
-			serverEndpoints[_curItem] = _item.(ExtensionObjectDefinition)
+	serverEndpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverEndpoints", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("314"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("serverEndpoints", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverEndpoints")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfServerEndpoints))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverEndpoints' field"))
 	}
 
 	// Simple Field (noOfServerSoftwareCertificates)
@@ -389,31 +375,15 @@ func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	noOfServerSoftwareCertificates := _noOfServerSoftwareCertificates
 
-	// Array field (serverSoftwareCertificates)
-	if pullErr := readBuffer.PullContext("serverSoftwareCertificates", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverSoftwareCertificates")
-	}
-	// Count array
-	serverSoftwareCertificates := make([]ExtensionObjectDefinition, max(noOfServerSoftwareCertificates, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverSoftwareCertificates) == 0 {
-		serverSoftwareCertificates = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerSoftwareCertificates, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "346")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverSoftwareCertificates' field of CreateSessionResponse")
-			}
-			serverSoftwareCertificates[_curItem] = _item.(ExtensionObjectDefinition)
+	serverSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("346"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("serverSoftwareCertificates", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverSoftwareCertificates")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfServerSoftwareCertificates))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverSoftwareCertificates' field"))
 	}
 
 	// Simple Field (serverSignature)

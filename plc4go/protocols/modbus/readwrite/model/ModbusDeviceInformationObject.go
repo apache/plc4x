@@ -142,11 +142,10 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	if _objectLengthErr != nil {
 		return nil, errors.Wrap(_objectLengthErr, "Error parsing 'objectLength' field of ModbusDeviceInformationObject")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(objectLength)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of ModbusDeviceInformationObject")
+
+	data, err := readBuffer.ReadByteArray("data", int(objectLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusDeviceInformationObject"); closeErr != nil {

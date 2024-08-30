@@ -206,11 +206,10 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of EipPacket")
 	}
 	status := _status
-	// Byte Array field (senderContext)
-	numberOfBytessenderContext := int(uint16(8))
-	senderContext, _readArrayErr := readBuffer.ReadByteArray("senderContext", numberOfBytessenderContext)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'senderContext' field of EipPacket")
+
+	senderContext, err := readBuffer.ReadByteArray("senderContext", int(int32(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
 
 	// Simple Field (options)

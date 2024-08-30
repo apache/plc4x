@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -369,31 +371,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		}
 	}
 
-	// Array field (destinationAddress)
-	if pullErr := readBuffer.PullContext("destinationAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddress")
-	}
-	// Count array
-	destinationAddress := make([]uint8, max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(destinationAddress) == 0 {
-		destinationAddress = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((*destinationLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field of NPDU")
-			}
-			destinationAddress[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("destinationAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destinationAddress")
+	destinationAddress, err := ReadCountArrayField[uint8](ctx, "destinationAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetDestinationSpecified(), func() any { return int32((*destinationLength)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 
 	// Virtual field
@@ -433,31 +413,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		}
 	}
 
-	// Array field (sourceAddress)
-	if pullErr := readBuffer.PullContext("sourceAddress", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
-	}
-	// Count array
-	sourceAddress := make([]uint8, max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-	// This happens when the size is set conditional to 0
-	if len(sourceAddress) == 0 {
-		sourceAddress = nil
-	}
-	{
-		_numItems := uint16(max(utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((*sourceLength)) }, func() any { return uint16(uint16(0)) }).(uint16), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field of NPDU")
-			}
-			sourceAddress[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("sourceAddress", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
+	sourceAddress, err := ReadCountArrayField[uint8](ctx, "sourceAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetSourceSpecified(), func() any { return int32((*sourceLength)) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
 
 	// Virtual field

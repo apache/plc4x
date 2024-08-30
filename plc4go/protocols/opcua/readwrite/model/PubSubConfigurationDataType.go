@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,31 +213,15 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfPublishedDataSets := _noOfPublishedDataSets
 
-	// Array field (publishedDataSets)
-	if pullErr := readBuffer.PullContext("publishedDataSets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publishedDataSets")
-	}
-	// Count array
-	publishedDataSets := make([]ExtensionObjectDefinition, max(noOfPublishedDataSets, 0))
-	// This happens when the size is set conditional to 0
-	if len(publishedDataSets) == 0 {
-		publishedDataSets = nil
-	}
-	{
-		_numItems := uint16(max(noOfPublishedDataSets, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15580")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'publishedDataSets' field of PubSubConfigurationDataType")
-			}
-			publishedDataSets[_curItem] = _item.(ExtensionObjectDefinition)
+	publishedDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "publishedDataSets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15580"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("publishedDataSets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publishedDataSets")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfPublishedDataSets))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedDataSets' field"))
 	}
 
 	// Simple Field (noOfConnections)
@@ -245,31 +231,15 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfConnections := _noOfConnections
 
-	// Array field (connections)
-	if pullErr := readBuffer.PullContext("connections", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connections")
-	}
-	// Count array
-	connections := make([]ExtensionObjectDefinition, max(noOfConnections, 0))
-	// This happens when the size is set conditional to 0
-	if len(connections) == 0 {
-		connections = nil
-	}
-	{
-		_numItems := uint16(max(noOfConnections, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15619")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'connections' field of PubSubConfigurationDataType")
-			}
-			connections[_curItem] = _item.(ExtensionObjectDefinition)
+	connections, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connections", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15619"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("connections", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connections")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfConnections))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connections' field"))
 	}
 
 	var reservedField0 *uint8

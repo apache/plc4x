@@ -149,11 +149,10 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(_keySizeErr, "Error parsing 'keySize' field of NLMUpdateKeyUpdateKeyEntry")
 	}
 	keySize := _keySize
-	// Byte Array field (key)
-	numberOfByteskey := int(keySize)
-	key, _readArrayErr := readBuffer.ReadByteArray("key", numberOfByteskey)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'key' field of NLMUpdateKeyUpdateKeyEntry")
+
+	key, err := readBuffer.ReadByteArray("key", int(keySize))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyUpdateKeyEntry"); closeErr != nil {

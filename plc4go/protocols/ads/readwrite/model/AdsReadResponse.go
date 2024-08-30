@@ -187,11 +187,10 @@ func AdsReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsReadResponse")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(length)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsReadResponse")
+
+	data, err := readBuffer.ReadByteArray("data", int(length))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadResponse"); closeErr != nil {

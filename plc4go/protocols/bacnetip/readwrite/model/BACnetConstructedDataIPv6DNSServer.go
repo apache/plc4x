@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataIPv6DNSServerParseWithBuffer(ctx context.Context, read
 		}
 	}
 
-	// Array field (ipv6DnsServer)
-	if pullErr := readBuffer.PullContext("ipv6DnsServer", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6DnsServer")
-	}
-	// Terminated array
-	var ipv6DnsServer []BACnetApplicationTagOctetString
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'ipv6DnsServer' field of BACnetConstructedDataIPv6DNSServer")
-			}
-			ipv6DnsServer = append(ipv6DnsServer, _item.(BACnetApplicationTagOctetString))
+	ipv6DnsServer, err := ReadTerminatedArrayField[BACnetApplicationTagOctetString](ctx, "ipv6DnsServer", ReadComplex[BACnetApplicationTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagOctetString, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("ipv6DnsServer", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6DnsServer")
+		return v.(BACnetApplicationTagOctetString), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6DnsServer' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DNSServer"); closeErr != nil {

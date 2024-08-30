@@ -152,11 +152,10 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer util
 	if _osDataLenErr != nil {
 		return nil, errors.Wrap(_osDataLenErr, "Error parsing 'osDataLen' field of AdsDiscoveryBlockOsData")
 	}
-	// Byte Array field (osData)
-	numberOfBytesosData := int(osDataLen)
-	osData, _readArrayErr := readBuffer.ReadByteArray("osData", numberOfBytesosData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'osData' field of AdsDiscoveryBlockOsData")
+
+	osData, err := readBuffer.ReadByteArray("osData", int(osDataLen))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockOsData"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -240,37 +242,14 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	serviceNb := _serviceNb
 
-	// Array field (offsets)
-	if pullErr := readBuffer.PullContext("offsets", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for offsets")
+	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, 16), uint64(serviceNb))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offsets' field"))
 	}
-	// Count array
-	offsets := make([]uint16, max(serviceNb, 0))
-	// This happens when the size is set conditional to 0
-	if len(offsets) == 0 {
-		offsets = nil
-	}
-	{
-		_numItems := uint16(max(serviceNb, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of MultipleServiceResponse")
-			}
-			offsets[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("offsets", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for offsets")
-	}
-	// Byte Array field (servicesData)
-	numberOfBytesservicesData := int(uint16(uint16(serviceLen)-uint16(uint16(6))) - uint16((uint16(uint16(2)) * uint16(serviceNb))))
-	servicesData, _readArrayErr := readBuffer.ReadByteArray("servicesData", numberOfBytesservicesData)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'servicesData' field of MultipleServiceResponse")
+
+	servicesData, err := readBuffer.ReadByteArray("servicesData", int(int32(int32(serviceLen)-int32(int32(6)))-int32((int32(int32(2))*int32(serviceNb)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servicesData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceResponse"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -371,31 +373,15 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 	noOfConnectionProperties := _noOfConnectionProperties
 
-	// Array field (connectionProperties)
-	if pullErr := readBuffer.PullContext("connectionProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connectionProperties")
-	}
-	// Count array
-	connectionProperties := make([]ExtensionObjectDefinition, max(noOfConnectionProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(connectionProperties) == 0 {
-		connectionProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfConnectionProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'connectionProperties' field of PubSubConnectionDataType")
-			}
-			connectionProperties[_curItem] = _item.(ExtensionObjectDefinition)
+	connectionProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connectionProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("connectionProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connectionProperties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfConnectionProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionProperties' field"))
 	}
 
 	// Simple Field (transportSettings)
@@ -418,31 +404,15 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 	noOfWriterGroups := _noOfWriterGroups
 
-	// Array field (writerGroups)
-	if pullErr := readBuffer.PullContext("writerGroups", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writerGroups")
-	}
-	// Count array
-	writerGroups := make([]PubSubGroupDataType, max(noOfWriterGroups, 0))
-	// This happens when the size is set conditional to 0
-	if len(writerGroups) == 0 {
-		writerGroups = nil
-	}
-	{
-		_numItems := uint16(max(noOfWriterGroups, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15609")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'writerGroups' field of PubSubConnectionDataType")
-			}
-			writerGroups[_curItem] = _item.(PubSubGroupDataType)
+	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](func(ctx context.Context, buffer utils.ReadBuffer) (PubSubGroupDataType, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15609"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("writerGroups", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writerGroups")
+		return v.(PubSubGroupDataType), nil
+	}, readBuffer), uint64(noOfWriterGroups))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writerGroups' field"))
 	}
 
 	// Simple Field (noOfReaderGroups)
@@ -452,31 +422,15 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 	noOfReaderGroups := _noOfReaderGroups
 
-	// Array field (readerGroups)
-	if pullErr := readBuffer.PullContext("readerGroups", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for readerGroups")
-	}
-	// Count array
-	readerGroups := make([]PubSubGroupDataType, max(noOfReaderGroups, 0))
-	// This happens when the size is set conditional to 0
-	if len(readerGroups) == 0 {
-		readerGroups = nil
-	}
-	{
-		_numItems := uint16(max(noOfReaderGroups, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "15609")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'readerGroups' field of PubSubConnectionDataType")
-			}
-			readerGroups[_curItem] = _item.(PubSubGroupDataType)
+	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](func(ctx context.Context, buffer utils.ReadBuffer) (PubSubGroupDataType, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15609"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("readerGroups", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for readerGroups")
+		return v.(PubSubGroupDataType), nil
+	}, readBuffer), uint64(noOfReaderGroups))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readerGroups' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PubSubConnectionDataType"); closeErr != nil {

@@ -178,17 +178,15 @@ func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return nil, errors.Wrap(_data3Err, "Error parsing 'data3' field of GuidValue")
 	}
 	data3 := _data3
-	// Byte Array field (data4)
-	numberOfBytesdata4 := int(uint16(2))
-	data4, _readArrayErr := readBuffer.ReadByteArray("data4", numberOfBytesdata4)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data4' field of GuidValue")
+
+	data4, err := readBuffer.ReadByteArray("data4", int(int32(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data4' field"))
 	}
-	// Byte Array field (data5)
-	numberOfBytesdata5 := int(uint16(6))
-	data5, _readArrayErr := readBuffer.ReadByteArray("data5", numberOfBytesdata5)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data5' field of GuidValue")
+
+	data5, err := readBuffer.ReadByteArray("data5", int(int32(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data5' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GuidValue"); closeErr != nil {

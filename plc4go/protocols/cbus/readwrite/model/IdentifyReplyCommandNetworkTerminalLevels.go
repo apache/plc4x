@@ -142,11 +142,10 @@ func IdentifyReplyCommandNetworkTerminalLevelsParseWithBuffer(ctx context.Contex
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (networkTerminalLevels)
-	numberOfBytesnetworkTerminalLevels := int(numBytes)
-	networkTerminalLevels, _readArrayErr := readBuffer.ReadByteArray("networkTerminalLevels", numberOfBytesnetworkTerminalLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'networkTerminalLevels' field of IdentifyReplyCommandNetworkTerminalLevels")
+
+	networkTerminalLevels, err := readBuffer.ReadByteArray("networkTerminalLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkTerminalLevels' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandNetworkTerminalLevels"); closeErr != nil {

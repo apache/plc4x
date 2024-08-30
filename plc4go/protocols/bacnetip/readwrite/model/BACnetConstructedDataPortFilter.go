@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataPortFilterParseWithBuffer(ctx context.Context, readBuf
 		}
 	}
 
-	// Array field (portFilter)
-	if pullErr := readBuffer.PullContext("portFilter", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for portFilter")
-	}
-	// Terminated array
-	var portFilter []BACnetPortPermission
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetPortPermissionParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'portFilter' field of BACnetConstructedDataPortFilter")
-			}
-			portFilter = append(portFilter, _item.(BACnetPortPermission))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("portFilter", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for portFilter")
+	portFilter, err := ReadTerminatedArrayField[BACnetPortPermission](ctx, "portFilter", ReadComplex[BACnetPortPermission](BACnetPortPermissionParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portFilter' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPortFilter"); closeErr != nil {

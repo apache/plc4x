@@ -145,11 +145,10 @@ func BACnetServiceAckAuthenticateParseWithBuffer(ctx context.Context, readBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (bytesOfRemovedService)
-	numberOfBytesbytesOfRemovedService := int(serviceAckPayloadLength)
-	bytesOfRemovedService, _readArrayErr := readBuffer.ReadByteArray("bytesOfRemovedService", numberOfBytesbytesOfRemovedService)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'bytesOfRemovedService' field of BACnetServiceAckAuthenticate")
+
+	bytesOfRemovedService, err := readBuffer.ReadByteArray("bytesOfRemovedService", int(serviceAckPayloadLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bytesOfRemovedService' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAuthenticate"); closeErr != nil {

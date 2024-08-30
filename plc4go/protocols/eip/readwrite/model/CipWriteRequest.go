@@ -195,11 +195,10 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipWriteRequest")
 	}
-	// Byte Array field (tag)
-	numberOfBytestag := int(uint16(requestPathSize) * uint16(uint16(2)))
-	tag, _readArrayErr := readBuffer.ReadByteArray("tag", numberOfBytestag)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'tag' field of CipWriteRequest")
+
+	tag, err := readBuffer.ReadByteArray("tag", int(int32(requestPathSize)*int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tag' field"))
 	}
 
 	// Simple Field (dataType)
@@ -221,11 +220,10 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field of CipWriteRequest")
 	}
 	elementNb := _elementNb
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(dataType.Size()) * uint16(elementNb))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CipWriteRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(dataType.Size())*int32(elementNb)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CipWriteRequest"); closeErr != nil {

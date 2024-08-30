@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -310,31 +312,9 @@ func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 	noOfMetaDataProperties := _noOfMetaDataProperties
 
-	// Array field (metaDataProperties)
-	if pullErr := readBuffer.PullContext("metaDataProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for metaDataProperties")
-	}
-	// Count array
-	metaDataProperties := make([]QualifiedName, max(noOfMetaDataProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(metaDataProperties) == 0 {
-		metaDataProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfMetaDataProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := QualifiedNameParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'metaDataProperties' field of PublishedVariableDataType")
-			}
-			metaDataProperties[_curItem] = _item.(QualifiedName)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("metaDataProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for metaDataProperties")
+	metaDataProperties, err := ReadCountArrayField[QualifiedName](ctx, "metaDataProperties", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), uint64(noOfMetaDataProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'metaDataProperties' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PublishedVariableDataType"); closeErr != nil {

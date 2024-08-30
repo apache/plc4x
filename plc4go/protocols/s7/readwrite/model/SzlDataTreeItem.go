@@ -162,11 +162,10 @@ func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field of SzlDataTreeItem")
 	}
 	itemIndex := _itemIndex
-	// Byte Array field (mlfb)
-	numberOfBytesmlfb := int(uint16(20))
-	mlfb, _readArrayErr := readBuffer.ReadByteArray("mlfb", numberOfBytesmlfb)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'mlfb' field of SzlDataTreeItem")
+
+	mlfb, err := readBuffer.ReadByteArray("mlfb", int(int32(20)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mlfb' field"))
 	}
 
 	// Simple Field (moduleTypeId)

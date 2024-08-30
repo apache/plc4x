@@ -141,11 +141,10 @@ func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for dataType")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(packetLength) - uint16(uint16(2)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of CIPData")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(packetLength)-int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPData"); closeErr != nil {

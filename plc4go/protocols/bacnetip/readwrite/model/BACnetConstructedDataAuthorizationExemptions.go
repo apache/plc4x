@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,15 @@ func BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (authorizationExemption)
-	if pullErr := readBuffer.PullContext("authorizationExemption", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authorizationExemption")
-	}
-	// Terminated array
-	var authorizationExemption []BACnetAuthorizationExemptionTagged
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx, readBuffer, uint8(0), TagClass_APPLICATION_TAGS)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'authorizationExemption' field of BACnetConstructedDataAuthorizationExemptions")
-			}
-			authorizationExemption = append(authorizationExemption, _item.(BACnetAuthorizationExemptionTagged))
+	authorizationExemption, err := ReadTerminatedArrayField[BACnetAuthorizationExemptionTagged](ctx, "authorizationExemption", ReadComplex[BACnetAuthorizationExemptionTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAuthorizationExemptionTagged, error) {
+		v, err := BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("authorizationExemption", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authorizationExemption")
+		return v.(BACnetAuthorizationExemptionTagged), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationExemption' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationExemptions"); closeErr != nil {

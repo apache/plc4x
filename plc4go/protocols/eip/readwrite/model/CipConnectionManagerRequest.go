@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -521,23 +523,9 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	connectionPathSize := _connectionPathSize
 
-	// Array field (connectionPaths)
-	if pullErr := readBuffer.PullContext("connectionPaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connectionPaths")
-	}
-	// Terminated array
-	var connectionPaths []PathSegment
-	{
-		for !bool(NoMorePathSegments(ctx, readBuffer)) {
-			_item, _err := PathSegmentParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'connectionPaths' field of CipConnectionManagerRequest")
-			}
-			connectionPaths = append(connectionPaths, _item.(PathSegment))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("connectionPaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connectionPaths")
+	connectionPaths, err := ReadTerminatedArrayField[PathSegment](ctx, "connectionPaths", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer), func() bool { return NoMorePathSegments(ctx, readBuffer) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionPaths' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CipConnectionManagerRequest"); closeErr != nil {

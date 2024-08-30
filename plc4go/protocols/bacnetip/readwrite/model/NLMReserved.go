@@ -142,11 +142,10 @@ func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (unknownBytes)
-	numberOfBytesunknownBytes := int(utils.InlineIf((bool((apduLength) > (0))), func() any { return uint16((uint16(apduLength) - uint16(uint16(1)))) }, func() any { return uint16(uint16(0)) }).(uint16))
-	unknownBytes, _readArrayErr := readBuffer.ReadByteArray("unknownBytes", numberOfBytesunknownBytes)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'unknownBytes' field of NLMReserved")
+
+	unknownBytes, err := readBuffer.ReadByteArray("unknownBytes", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(int32(1)))) }, func() any { return int32(int32(0)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownBytes' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMReserved"); closeErr != nil {

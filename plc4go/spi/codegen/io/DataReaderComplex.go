@@ -19,9 +19,13 @@
 
 package io
 
-import "github.com/apache/plc4x/plc4go/spi/utils"
+import (
+	"context"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
+)
 
 type DataReaderComplex[T any] interface {
 	DataReader[T]
-	ReadComplex(logicalName string, supplier ComplexTypeSupplier[T], readerArgs ...utils.WithReaderArgs) (T, error)
+	ReadComplex(ctx context.Context, logicalName string, supplier func(context.Context, utils.ReadBuffer) (T, error), readerArgs ...utils.WithReaderArgs) (T, error)
 }

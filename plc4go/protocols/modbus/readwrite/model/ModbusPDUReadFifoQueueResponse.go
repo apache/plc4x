@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -171,31 +173,9 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field of ModbusPDUReadFifoQueueResponse")
 	}
 
-	// Array field (fifoValue)
-	if pullErr := readBuffer.PullContext("fifoValue", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fifoValue")
-	}
-	// Count array
-	fifoValue := make([]uint16, max(fifoCount, 0))
-	// This happens when the size is set conditional to 0
-	if len(fifoValue) == 0 {
-		fifoValue = nil
-	}
-	{
-		_numItems := uint16(max(fifoCount, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field of ModbusPDUReadFifoQueueResponse")
-			}
-			fifoValue[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("fifoValue", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fifoValue")
+	fifoValue, err := ReadCountArrayField[uint16](ctx, "fifoValue", ReadUnsignedShort(readBuffer, 16), uint64(fifoCount))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFifoQueueResponse"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -206,31 +208,9 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	}
 	noOfNamespaceUris := _noOfNamespaceUris
 
-	// Array field (namespaceUris)
-	if pullErr := readBuffer.PullContext("namespaceUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUris")
-	}
-	// Count array
-	namespaceUris := make([]PascalString, max(noOfNamespaceUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(namespaceUris) == 0 {
-		namespaceUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfNamespaceUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'namespaceUris' field of SessionlessInvokeResponseType")
-			}
-			namespaceUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("namespaceUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaceUris")
+	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUris' field"))
 	}
 
 	// Simple Field (noOfServerUris)
@@ -240,31 +220,9 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	}
 	noOfServerUris := _noOfServerUris
 
-	// Array field (serverUris)
-	if pullErr := readBuffer.PullContext("serverUris", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUris")
-	}
-	// Count array
-	serverUris := make([]PascalString, max(noOfServerUris, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverUris) == 0 {
-		serverUris = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerUris, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverUris' field of SessionlessInvokeResponseType")
-			}
-			serverUris[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverUris", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUris")
+	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUris' field"))
 	}
 
 	// Simple Field (serviceId)

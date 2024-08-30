@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,23 +155,9 @@ func BACnetConstructedDataBBMDForeignDeviceTableParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Array field (bbmdForeignDeviceTable)
-	if pullErr := readBuffer.PullContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bbmdForeignDeviceTable")
-	}
-	// Terminated array
-	var bbmdForeignDeviceTable []BACnetBDTEntry
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetBDTEntryParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'bbmdForeignDeviceTable' field of BACnetConstructedDataBBMDForeignDeviceTable")
-			}
-			bbmdForeignDeviceTable = append(bbmdForeignDeviceTable, _item.(BACnetBDTEntry))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("bbmdForeignDeviceTable", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bbmdForeignDeviceTable")
+	bbmdForeignDeviceTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdForeignDeviceTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdForeignDeviceTable' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDForeignDeviceTable"); closeErr != nil {

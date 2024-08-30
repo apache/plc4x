@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataSubordinateTagsParseWithBuffer(ctx context.Context, re
 		}
 	}
 
-	// Array field (subordinateList)
-	if pullErr := readBuffer.PullContext("subordinateList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for subordinateList")
-	}
-	// Terminated array
-	var subordinateList []BACnetNameValueCollection
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetNameValueCollectionParseWithBuffer(ctx, readBuffer, uint8(0))
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'subordinateList' field of BACnetConstructedDataSubordinateTags")
-			}
-			subordinateList = append(subordinateList, _item.(BACnetNameValueCollection))
+	subordinateList, err := ReadTerminatedArrayField[BACnetNameValueCollection](ctx, "subordinateList", ReadComplex[BACnetNameValueCollection](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetNameValueCollection, error) {
+		v, err := BACnetNameValueCollectionParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("subordinateList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for subordinateList")
+		return v.(BACnetNameValueCollection), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subordinateList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSubordinateTags"); closeErr != nil {

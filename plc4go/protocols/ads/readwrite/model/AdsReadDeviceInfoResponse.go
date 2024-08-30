@@ -231,11 +231,10 @@ func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsReadDeviceInfoResponse")
 	}
 	version := _version
-	// Byte Array field (device)
-	numberOfBytesdevice := int(uint16(16))
-	device, _readArrayErr := readBuffer.ReadByteArray("device", numberOfBytesdevice)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'device' field of AdsReadDeviceInfoResponse")
+
+	device, err := readBuffer.ReadByteArray("device", int(int32(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'device' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsReadDeviceInfoResponse"); closeErr != nil {

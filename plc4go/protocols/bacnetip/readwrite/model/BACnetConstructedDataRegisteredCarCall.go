@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataRegisteredCarCallParseWithBuffer(ctx context.Context, 
 		}
 	}
 
-	// Array field (registeredCarCall)
-	if pullErr := readBuffer.PullContext("registeredCarCall", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for registeredCarCall")
-	}
-	// Terminated array
-	var registeredCarCall []BACnetLiftCarCallList
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetLiftCarCallListParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'registeredCarCall' field of BACnetConstructedDataRegisteredCarCall")
-			}
-			registeredCarCall = append(registeredCarCall, _item.(BACnetLiftCarCallList))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("registeredCarCall", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for registeredCarCall")
+	registeredCarCall, err := ReadTerminatedArrayField[BACnetLiftCarCallList](ctx, "registeredCarCall", ReadComplex[BACnetLiftCarCallList](BACnetLiftCarCallListParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registeredCarCall' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRegisteredCarCall"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -292,31 +294,9 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfServerNames := _noOfServerNames
 
-	// Array field (serverNames)
-	if pullErr := readBuffer.PullContext("serverNames", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverNames")
-	}
-	// Count array
-	serverNames := make([]LocalizedText, max(noOfServerNames, 0))
-	// This happens when the size is set conditional to 0
-	if len(serverNames) == 0 {
-		serverNames = nil
-	}
-	{
-		_numItems := uint16(max(noOfServerNames, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := LocalizedTextParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'serverNames' field of RegisteredServer")
-			}
-			serverNames[_curItem] = _item.(LocalizedText)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("serverNames", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverNames")
+	serverNames, err := ReadCountArrayField[LocalizedText](ctx, "serverNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfServerNames))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNames' field"))
 	}
 
 	// Simple Field (serverType)
@@ -352,31 +332,9 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	noOfDiscoveryUrls := _noOfDiscoveryUrls
 
-	// Array field (discoveryUrls)
-	if pullErr := readBuffer.PullContext("discoveryUrls", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discoveryUrls")
-	}
-	// Count array
-	discoveryUrls := make([]PascalString, max(noOfDiscoveryUrls, 0))
-	// This happens when the size is set conditional to 0
-	if len(discoveryUrls) == 0 {
-		discoveryUrls = nil
-	}
-	{
-		_numItems := uint16(max(noOfDiscoveryUrls, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'discoveryUrls' field of RegisteredServer")
-			}
-			discoveryUrls[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("discoveryUrls", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discoveryUrls")
+	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrls' field"))
 	}
 
 	// Simple Field (semaphoreFilePath)

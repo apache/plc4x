@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -166,31 +168,9 @@ func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	noOfEndpointUrlList := _noOfEndpointUrlList
 
-	// Array field (endpointUrlList)
-	if pullErr := readBuffer.PullContext("endpointUrlList", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrlList")
-	}
-	// Count array
-	endpointUrlList := make([]PascalString, max(noOfEndpointUrlList, 0))
-	// This happens when the size is set conditional to 0
-	if len(endpointUrlList) == 0 {
-		endpointUrlList = nil
-	}
-	{
-		_numItems := uint16(max(noOfEndpointUrlList, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'endpointUrlList' field of EndpointUrlListDataType")
-			}
-			endpointUrlList[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("endpointUrlList", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrlList")
+	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrlList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EndpointUrlListDataType"); closeErr != nil {

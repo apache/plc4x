@@ -142,11 +142,10 @@ func IdentifyReplyCommandMaximumLevelsParseWithBuffer(ctx context.Context, readB
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (maximumLevels)
-	numberOfBytesmaximumLevels := int(numBytes)
-	maximumLevels, _readArrayErr := readBuffer.ReadByteArray("maximumLevels", numberOfBytesmaximumLevels)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'maximumLevels' field of IdentifyReplyCommandMaximumLevels")
+
+	maximumLevels, err := readBuffer.ReadByteArray("maximumLevels", int(numBytes))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumLevels' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandMaximumLevels"); closeErr != nil {

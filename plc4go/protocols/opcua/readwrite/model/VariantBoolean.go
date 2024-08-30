@@ -177,11 +177,10 @@ func VariantBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			arrayLength = &_val
 		}
 	}
-	// Byte Array field (value)
-	numberOfBytesvalue := int(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return uint16(uint16(1)) }, func() any { return uint16((*arrayLength)) }).(uint16))
-	value, _readArrayErr := readBuffer.ReadByteArray("value", numberOfBytesvalue)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'value' field of VariantBoolean")
+
+	value, err := readBuffer.ReadByteArray("value", int(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("VariantBoolean"); closeErr != nil {

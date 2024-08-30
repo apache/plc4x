@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataCommandTimeArrayParseWithBuffer(ctx context.Context, r
 		}
 	}
 
-	// Array field (commandTimeArray)
-	if pullErr := readBuffer.PullContext("commandTimeArray", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTimeArray")
-	}
-	// Terminated array
-	var commandTimeArray []BACnetTimeStamp
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'commandTimeArray' field of BACnetConstructedDataCommandTimeArray")
-			}
-			commandTimeArray = append(commandTimeArray, _item.(BACnetTimeStamp))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("commandTimeArray", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTimeArray")
+	commandTimeArray, err := ReadTerminatedArrayField[BACnetTimeStamp](ctx, "commandTimeArray", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTimeArray' field"))
 	}
 
 	// Validation

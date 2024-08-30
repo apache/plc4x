@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -318,31 +320,15 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfSecurityKeyServices := _noOfSecurityKeyServices
 
-	// Array field (securityKeyServices)
-	if pullErr := readBuffer.PullContext("securityKeyServices", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityKeyServices")
-	}
-	// Count array
-	securityKeyServices := make([]ExtensionObjectDefinition, max(noOfSecurityKeyServices, 0))
-	// This happens when the size is set conditional to 0
-	if len(securityKeyServices) == 0 {
-		securityKeyServices = nil
-	}
-	{
-		_numItems := uint16(max(noOfSecurityKeyServices, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "314")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'securityKeyServices' field of PubSubGroupDataType")
-			}
-			securityKeyServices[_curItem] = _item.(ExtensionObjectDefinition)
+	securityKeyServices, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "securityKeyServices", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("314"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("securityKeyServices", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityKeyServices")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfSecurityKeyServices))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityKeyServices' field"))
 	}
 
 	// Simple Field (maxNetworkMessageSize)
@@ -359,31 +345,15 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	noOfGroupProperties := _noOfGroupProperties
 
-	// Array field (groupProperties)
-	if pullErr := readBuffer.PullContext("groupProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for groupProperties")
-	}
-	// Count array
-	groupProperties := make([]ExtensionObjectDefinition, max(noOfGroupProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(groupProperties) == 0 {
-		groupProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfGroupProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'groupProperties' field of PubSubGroupDataType")
-			}
-			groupProperties[_curItem] = _item.(ExtensionObjectDefinition)
+	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("groupProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for groupProperties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfGroupProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupProperties' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PubSubGroupDataType"); closeErr != nil {

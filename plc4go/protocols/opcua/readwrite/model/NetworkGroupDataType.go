@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,15 @@ func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	noOfNetworkPaths := _noOfNetworkPaths
 
-	// Array field (networkPaths)
-	if pullErr := readBuffer.PullContext("networkPaths", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPaths")
-	}
-	// Count array
-	networkPaths := make([]ExtensionObjectDefinition, max(noOfNetworkPaths, 0))
-	// This happens when the size is set conditional to 0
-	if len(networkPaths) == 0 {
-		networkPaths = nil
-	}
-	{
-		_numItems := uint16(max(noOfNetworkPaths, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "11945")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'networkPaths' field of NetworkGroupDataType")
-			}
-			networkPaths[_curItem] = _item.(ExtensionObjectDefinition)
+	networkPaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "networkPaths", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("11945"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("networkPaths", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPaths")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfNetworkPaths))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPaths' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NetworkGroupDataType"); closeErr != nil {

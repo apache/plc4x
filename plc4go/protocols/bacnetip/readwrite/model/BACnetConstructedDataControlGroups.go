@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,15 @@ func BACnetConstructedDataControlGroupsParseWithBuffer(ctx context.Context, read
 		}
 	}
 
-	// Array field (controlGroups)
-	if pullErr := readBuffer.PullContext("controlGroups", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for controlGroups")
-	}
-	// Terminated array
-	var controlGroups []BACnetApplicationTagUnsignedInteger
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'controlGroups' field of BACnetConstructedDataControlGroups")
-			}
-			controlGroups = append(controlGroups, _item.(BACnetApplicationTagUnsignedInteger))
+	controlGroups, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "controlGroups", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
+		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("controlGroups", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for controlGroups")
+		return v.(BACnetApplicationTagUnsignedInteger), nil
+	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlGroups' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataControlGroups"); closeErr != nil {

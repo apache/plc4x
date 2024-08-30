@@ -178,11 +178,10 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of S7VarPayloadDataItem")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(utils.InlineIf(transportSize.SizeInBits(), func() any { return uint16(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() any { return uint16(dataLength) }).(uint16))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of S7VarPayloadDataItem")
+
+	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf(transportSize.SizeInBits(), func() any { return int32(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() any { return int32(dataLength) }).(int32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	// Padding Field (padding)

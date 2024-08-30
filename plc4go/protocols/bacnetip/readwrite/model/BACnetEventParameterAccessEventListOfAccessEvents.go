@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,23 +156,9 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx contex
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Array field (listOfAccessEvents)
-	if pullErr := readBuffer.PullContext("listOfAccessEvents", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfAccessEvents")
-	}
-	// Terminated array
-	var listOfAccessEvents []BACnetDeviceObjectPropertyReference
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'listOfAccessEvents' field of BACnetEventParameterAccessEventListOfAccessEvents")
-			}
-			listOfAccessEvents = append(listOfAccessEvents, _item.(BACnetDeviceObjectPropertyReference))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("listOfAccessEvents", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfAccessEvents")
+	listOfAccessEvents, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "listOfAccessEvents", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfAccessEvents' field"))
 	}
 
 	// Simple Field (closingTag)

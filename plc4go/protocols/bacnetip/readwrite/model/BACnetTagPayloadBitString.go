@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -148,58 +150,14 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 	unusedBits := _unusedBits
 
-	// Array field (data)
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Count array
-	data := make([]bool, max(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits), 0))
-	// This happens when the size is set conditional to 0
-	if len(data) == 0 {
-		data = nil
-	}
-	{
-		_numItems := uint16(max(uint16((uint16((uint16(actualLength)-uint16(uint16(1))))*uint16(uint16(8))))-uint16(unusedBits), 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")
-			}
-			data[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+	data, err := ReadCountArrayField[bool](ctx, "data", ReadBoolean(readBuffer), uint64(int32((int32((int32(actualLength)-int32(int32(1))))*int32(int32(8))))-int32(unusedBits)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
-	// Array field (unused)
-	if pullErr := readBuffer.PullContext("unused", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unused")
-	}
-	// Count array
-	unused := make([]bool, max(unusedBits, 0))
-	// This happens when the size is set conditional to 0
-	if len(unused) == 0 {
-		unused = nil
-	}
-	{
-		_numItems := uint16(max(unusedBits, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'unused' field of BACnetTagPayloadBitString")
-			}
-			unused[_curItem] = _item
-		}
-	}
-	if closeErr := readBuffer.CloseContext("unused", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unused")
+	unused, err := ReadCountArrayField[bool](ctx, "unused", ReadBoolean(readBuffer), uint64(unusedBits))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unused' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBitString"); closeErr != nil {

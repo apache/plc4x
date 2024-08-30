@@ -179,11 +179,10 @@ func NodeIdGuidParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NodeIdGuid")
 	}
 	namespaceIndex := _namespaceIndex
-	// Byte Array field (id)
-	numberOfBytesid := int(uint16(16))
-	id, _readArrayErr := readBuffer.ReadByteArray("id", numberOfBytesid)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'id' field of NodeIdGuid")
+
+	id, err := readBuffer.ReadByteArray("id", int(int32(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
 
 	// Virtual field

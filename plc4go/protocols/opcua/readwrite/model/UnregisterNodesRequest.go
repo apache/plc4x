@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -190,31 +192,9 @@ func UnregisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	noOfNodesToUnregister := _noOfNodesToUnregister
 
-	// Array field (nodesToUnregister)
-	if pullErr := readBuffer.PullContext("nodesToUnregister", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodesToUnregister")
-	}
-	// Count array
-	nodesToUnregister := make([]NodeId, max(noOfNodesToUnregister, 0))
-	// This happens when the size is set conditional to 0
-	if len(nodesToUnregister) == 0 {
-		nodesToUnregister = nil
-	}
-	{
-		_numItems := uint16(max(noOfNodesToUnregister, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := NodeIdParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'nodesToUnregister' field of UnregisterNodesRequest")
-			}
-			nodesToUnregister[_curItem] = _item.(NodeId)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("nodesToUnregister", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodesToUnregister")
+	nodesToUnregister, err := ReadCountArrayField[NodeId](ctx, "nodesToUnregister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToUnregister))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToUnregister' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UnregisterNodesRequest"); closeErr != nil {

@@ -149,11 +149,10 @@ func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field of AdsNotificationSample")
 	}
 	sampleSize := _sampleSize
-	// Byte Array field (data)
-	numberOfBytesdata := int(sampleSize)
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AdsNotificationSample")
+
+	data, err := readBuffer.ReadByteArray("data", int(sampleSize))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsNotificationSample"); closeErr != nil {

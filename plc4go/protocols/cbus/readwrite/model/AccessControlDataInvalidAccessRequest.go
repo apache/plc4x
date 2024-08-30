@@ -166,11 +166,10 @@ func AccessControlDataInvalidAccessRequestParseWithBuffer(ctx context.Context, r
 	if closeErr := readBuffer.CloseContext("accessControlDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for accessControlDirection")
 	}
-	// Byte Array field (data)
-	numberOfBytesdata := int(uint16(commandTypeContainer.NumBytes()) - uint16(uint16(3)))
-	data, _readArrayErr := readBuffer.ReadByteArray("data", numberOfBytesdata)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'data' field of AccessControlDataInvalidAccessRequest")
+
+	data, err := readBuffer.ReadByteArray("data", int(int32(commandTypeContainer.NumBytes())-int32(int32(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AccessControlDataInvalidAccessRequest"); closeErr != nil {

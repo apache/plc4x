@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -215,23 +217,9 @@ func BACnetConstructedDataCharacterStringValueAlarmValuesParseWithBuffer(ctx con
 		}
 	}
 
-	// Array field (alarmValues)
-	if pullErr := readBuffer.PullContext("alarmValues", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmValues")
-	}
-	// Terminated array
-	var alarmValues []BACnetOptionalCharacterString
-	{
-		for !bool(IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber)) {
-			_item, _err := BACnetOptionalCharacterStringParseWithBuffer(ctx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'alarmValues' field of BACnetConstructedDataCharacterStringValueAlarmValues")
-			}
-			alarmValues = append(alarmValues, _item.(BACnetOptionalCharacterString))
-		}
-	}
-	if closeErr := readBuffer.CloseContext("alarmValues", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmValues")
+	alarmValues, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "alarmValues", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCharacterStringValueAlarmValues"); closeErr != nil {

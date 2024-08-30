@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -303,31 +305,9 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfPushTargetFolder := _noOfPushTargetFolder
 
-	// Array field (pushTargetFolder)
-	if pullErr := readBuffer.PullContext("pushTargetFolder", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetFolder")
-	}
-	// Count array
-	pushTargetFolder := make([]PascalString, max(noOfPushTargetFolder, 0))
-	// This happens when the size is set conditional to 0
-	if len(pushTargetFolder) == 0 {
-		pushTargetFolder = nil
-	}
-	{
-		_numItems := uint16(max(noOfPushTargetFolder, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'pushTargetFolder' field of PubSubKeyPushTargetDataType")
-			}
-			pushTargetFolder[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("pushTargetFolder", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pushTargetFolder")
+	pushTargetFolder, err := ReadCountArrayField[PascalString](ctx, "pushTargetFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfPushTargetFolder))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetFolder' field"))
 	}
 
 	// Simple Field (endpointUrl)
@@ -390,31 +370,15 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfPushTargetProperties := _noOfPushTargetProperties
 
-	// Array field (pushTargetProperties)
-	if pullErr := readBuffer.PullContext("pushTargetProperties", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pushTargetProperties")
-	}
-	// Count array
-	pushTargetProperties := make([]ExtensionObjectDefinition, max(noOfPushTargetProperties, 0))
-	// This happens when the size is set conditional to 0
-	if len(pushTargetProperties) == 0 {
-		pushTargetProperties = nil
-	}
-	{
-		_numItems := uint16(max(noOfPushTargetProperties, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := ExtensionObjectDefinitionParseWithBuffer(arrayCtx, readBuffer, "14535")
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'pushTargetProperties' field of PubSubKeyPushTargetDataType")
-			}
-			pushTargetProperties[_curItem] = _item.(ExtensionObjectDefinition)
+	pushTargetProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "pushTargetProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
+		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
+		if err != nil {
+			return nil, err
 		}
-	}
-	if closeErr := readBuffer.CloseContext("pushTargetProperties", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pushTargetProperties")
+		return v.(ExtensionObjectDefinition), nil
+	}, readBuffer), uint64(noOfPushTargetProperties))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetProperties' field"))
 	}
 
 	// Simple Field (noOfSecurityGroups)
@@ -424,31 +388,9 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	noOfSecurityGroups := _noOfSecurityGroups
 
-	// Array field (securityGroups)
-	if pullErr := readBuffer.PullContext("securityGroups", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityGroups")
-	}
-	// Count array
-	securityGroups := make([]PascalString, max(noOfSecurityGroups, 0))
-	// This happens when the size is set conditional to 0
-	if len(securityGroups) == 0 {
-		securityGroups = nil
-	}
-	{
-		_numItems := uint16(max(noOfSecurityGroups, 0))
-		for _curItem := uint16(0); _curItem < _numItems; _curItem++ {
-			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
-			_ = arrayCtx
-			_ = _curItem
-			_item, _err := PascalStringParseWithBuffer(arrayCtx, readBuffer)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'securityGroups' field of PubSubKeyPushTargetDataType")
-			}
-			securityGroups[_curItem] = _item.(PascalString)
-		}
-	}
-	if closeErr := readBuffer.CloseContext("securityGroups", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityGroups")
+	securityGroups, err := ReadCountArrayField[PascalString](ctx, "securityGroups", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroups))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroups' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PubSubKeyPushTargetDataType"); closeErr != nil {

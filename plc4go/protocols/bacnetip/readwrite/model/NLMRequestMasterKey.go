@@ -160,11 +160,10 @@ func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error parsing 'numberOfSupportedKeyAlgorithms' field of NLMRequestMasterKey")
 	}
 	numberOfSupportedKeyAlgorithms := _numberOfSupportedKeyAlgorithms
-	// Byte Array field (encryptionAndSignatureAlgorithms)
-	numberOfBytesencryptionAndSignatureAlgorithms := int(uint16(apduLength) - uint16(uint16(2)))
-	encryptionAndSignatureAlgorithms, _readArrayErr := readBuffer.ReadByteArray("encryptionAndSignatureAlgorithms", numberOfBytesencryptionAndSignatureAlgorithms)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'encryptionAndSignatureAlgorithms' field of NLMRequestMasterKey")
+
+	encryptionAndSignatureAlgorithms, err := readBuffer.ReadByteArray("encryptionAndSignatureAlgorithms", int(int32(apduLength)-int32(int32(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encryptionAndSignatureAlgorithms' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMRequestMasterKey"); closeErr != nil {

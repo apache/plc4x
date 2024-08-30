@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,11 +147,10 @@ func BVLCSecureBVLLParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	// Byte Array field (securityWrapper)
-	numberOfBytessecurityWrapper := int(bvlcPayloadLength)
-	securityWrapper, _readArrayErr := readBuffer.ReadByteArray("securityWrapper", numberOfBytessecurityWrapper)
-	if _readArrayErr != nil {
-		return nil, errors.Wrap(_readArrayErr, "Error parsing 'securityWrapper' field of BVLCSecureBVLL")
+
+	securityWrapper, err := readBuffer.ReadByteArray("securityWrapper", int(bvlcPayloadLength), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityWrapper' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCSecureBVLL"); closeErr != nil {
