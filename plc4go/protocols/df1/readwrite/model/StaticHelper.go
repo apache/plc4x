@@ -34,16 +34,18 @@ func init() {
 	table = crc.NewTable(&crc.Parameters{Width: 16, Polynomial: 0x8005, Init: 0x0000, ReflectIn: true, ReflectOut: true, FinalXor: 0x0000})
 }
 
-func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) (uint16, error) {
-	df1Crc := table.InitCrc()
-	df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
-	bytes, err := command.Serialize()
-	if err != nil {
-		return 0, err
+func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8, command DF1Command) func() (uint16, error) {
+	return func() (uint16, error) {
+		df1Crc := table.InitCrc()
+		df1Crc = table.UpdateCrc(df1Crc, []byte{destinationAddress, sourceAddress})
+		bytes, err := command.Serialize()
+		if err != nil {
+			return 0, err
+		}
+		df1Crc = table.UpdateCrc(df1Crc, bytes)
+		df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
+		return table.CRC16(df1Crc), nil
 	}
-	df1Crc = table.UpdateCrc(df1Crc, bytes)
-	df1Crc = table.UpdateCrc(df1Crc, []byte{0x03})
-	return table.CRC16(df1Crc), nil
 }
 
 func DataTerminate(ctx context.Context, io utils.ReadBuffer) bool {

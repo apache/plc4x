@@ -27,6 +27,8 @@ func AsciiLrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) func() (ui
 	}
 }
 
-func RtuCrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) (uint16, error) {
-	return 0, nil
+func RtuCrcCheck(ctx context.Context, address uint8, pdu ModbusPDU) func() (uint16, error) {
+	return func() (uint16, error) {
+		return 0, nil
+	}
 }
