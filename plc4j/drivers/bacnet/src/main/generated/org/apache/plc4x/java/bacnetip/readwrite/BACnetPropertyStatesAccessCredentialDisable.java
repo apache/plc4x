@@ -62,10 +62,7 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
     writeBuffer.pushContext("BACnetPropertyStatesAccessCredentialDisable");
 
     // Simple Field (accessCredentialDisable)
-    writeSimpleField(
-        "accessCredentialDisable",
-        accessCredentialDisable,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessCredentialDisable", accessCredentialDisable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesAccessCredentialDisable");
   }

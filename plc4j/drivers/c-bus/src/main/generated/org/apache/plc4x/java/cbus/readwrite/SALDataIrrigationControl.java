@@ -61,10 +61,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     writeBuffer.pushContext("SALDataIrrigationControl");
 
     // Simple Field (irrigationControlData)
-    writeSimpleField(
-        "irrigationControlData",
-        irrigationControlData,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("irrigationControlData", irrigationControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataIrrigationControl");
   }

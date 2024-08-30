@@ -74,7 +74,7 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("ViewDescription");
 
     // Simple Field (viewId)
-    writeSimpleField("viewId", viewId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("viewId", viewId, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
     writeSimpleField("timestamp", timestamp, writeSignedLong(writeBuffer, 64));

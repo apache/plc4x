@@ -141,13 +141,13 @@ public abstract class AmsPacket implements Message {
     writeBuffer.pushContext("AmsPacket");
 
     // Simple Field (targetAmsNetId)
-    writeSimpleField("targetAmsNetId", targetAmsNetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetAmsNetId", targetAmsNetId, writeComplex(writeBuffer));
 
     // Simple Field (targetAmsPort)
     writeSimpleField("targetAmsPort", targetAmsPort, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (sourceAmsNetId)
-    writeSimpleField("sourceAmsNetId", sourceAmsNetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAmsNetId", sourceAmsNetId, writeComplex(writeBuffer));
 
     // Simple Field (sourceAmsPort)
     writeSimpleField("sourceAmsPort", sourceAmsPort, writeUnsignedInt(writeBuffer, 16));

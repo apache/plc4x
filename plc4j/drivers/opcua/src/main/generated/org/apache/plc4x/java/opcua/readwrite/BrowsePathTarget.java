@@ -68,7 +68,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("BrowsePathTarget");
 
     // Simple Field (targetId)
-    writeSimpleField("targetId", targetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetId", targetId, writeComplex(writeBuffer));
 
     // Simple Field (remainingPathIndex)
     writeSimpleField("remainingPathIndex", remainingPathIndex, writeUnsignedLong(writeBuffer, 32));

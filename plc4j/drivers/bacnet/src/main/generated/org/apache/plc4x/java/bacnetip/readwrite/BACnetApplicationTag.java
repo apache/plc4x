@@ -68,7 +68,7 @@ public abstract class BACnetApplicationTag implements Message {
     writeBuffer.pushContext("BACnetApplicationTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short actualTagNumber = getActualTagNumber();

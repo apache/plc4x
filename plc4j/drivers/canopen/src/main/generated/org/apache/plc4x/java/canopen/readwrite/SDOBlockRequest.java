@@ -61,7 +61,7 @@ public class SDOBlockRequest extends SDORequest implements Message {
     writeBuffer.pushContext("SDOBlockRequest");
 
     // Simple Field (block)
-    writeSimpleField("block", block, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("block", block, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SDOBlockRequest");
   }

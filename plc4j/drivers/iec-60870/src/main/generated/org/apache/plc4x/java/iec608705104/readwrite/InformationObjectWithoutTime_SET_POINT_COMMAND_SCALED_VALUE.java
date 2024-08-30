@@ -71,17 +71,11 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_SCALED_VALUE
 
     // Simple Field (sva)
     writeSimpleField(
-        "sva",
-        sva,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "sva", sva, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (qos)
     writeSimpleField(
-        "qos",
-        qos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qos", qos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_SET_POINT_COMMAND_SCALED_VALUE");
   }

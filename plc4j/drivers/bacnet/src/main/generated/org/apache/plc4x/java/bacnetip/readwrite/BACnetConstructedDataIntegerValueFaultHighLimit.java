@@ -83,7 +83,7 @@ public class BACnetConstructedDataIntegerValueFaultHighLimit extends BACnetConst
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueFaultHighLimit");
 
     // Simple Field (faultHighLimit)
-    writeSimpleField("faultHighLimit", faultHighLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("faultHighLimit", faultHighLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();

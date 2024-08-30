@@ -61,7 +61,7 @@ public class PortSegment extends PathSegment implements Message {
     writeBuffer.pushContext("PortSegment");
 
     // Simple Field (segmentType)
-    writeSimpleField("segmentType", segmentType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("segmentType", segmentType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("PortSegment");
   }

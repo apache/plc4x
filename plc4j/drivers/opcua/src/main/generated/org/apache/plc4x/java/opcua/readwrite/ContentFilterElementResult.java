@@ -91,7 +91,7 @@ public class ContentFilterElementResult extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("ContentFilterElementResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfOperandStatusCodes)
     writeSimpleField(

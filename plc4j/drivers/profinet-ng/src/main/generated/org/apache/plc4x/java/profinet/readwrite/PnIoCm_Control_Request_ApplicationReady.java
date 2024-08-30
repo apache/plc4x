@@ -128,7 +128,7 @@ public class PnIoCm_Control_Request_ApplicationReady extends PnIoCm_Block implem
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionKey)

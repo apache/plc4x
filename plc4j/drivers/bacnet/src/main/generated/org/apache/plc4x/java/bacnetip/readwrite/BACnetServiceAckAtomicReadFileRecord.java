@@ -78,12 +78,10 @@ public class BACnetServiceAckAtomicReadFileRecord
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileRecord");
 
     // Simple Field (fileStartRecord)
-    writeSimpleField(
-        "fileStartRecord", fileStartRecord, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartRecord", fileStartRecord, writeComplex(writeBuffer));
 
     // Simple Field (returnedRecordCount)
-    writeSimpleField(
-        "returnedRecordCount", returnedRecordCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("returnedRecordCount", returnedRecordCount, writeComplex(writeBuffer));
 
     // Array Field (fileRecordData)
     writeComplexTypeArrayField("fileRecordData", fileRecordData, writeBuffer);

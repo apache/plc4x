@@ -60,10 +60,7 @@ public class BACnetChannelValueObjectidentifier extends BACnetChannelValue imple
     writeBuffer.pushContext("BACnetChannelValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
-    writeSimpleField(
-        "objectidentifierValue",
-        objectidentifierValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectidentifierValue", objectidentifierValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueObjectidentifier");
   }

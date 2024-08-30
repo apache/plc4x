@@ -83,10 +83,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataAccessEventCredential");
 
     // Simple Field (accessEventCredential)
-    writeSimpleField(
-        "accessEventCredential",
-        accessEventCredential,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventCredential", accessEventCredential, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();

@@ -62,12 +62,10 @@ public class BACnetVMACEntry implements Message {
     writeBuffer.pushContext("BACnetVMACEntry");
 
     // Optional Field (virtualMacAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "virtualMacAddress", virtualMacAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("virtualMacAddress", virtualMacAddress, writeComplex(writeBuffer));
 
     // Optional Field (nativeMacAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "nativeMacAddress", nativeMacAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("nativeMacAddress", nativeMacAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetVMACEntry");
   }

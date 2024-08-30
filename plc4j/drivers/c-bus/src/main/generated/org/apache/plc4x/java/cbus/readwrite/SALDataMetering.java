@@ -61,7 +61,7 @@ public class SALDataMetering extends SALData implements Message {
     writeBuffer.pushContext("SALDataMetering");
 
     // Simple Field (meteringData)
-    writeSimpleField("meteringData", meteringData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("meteringData", meteringData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataMetering");
   }

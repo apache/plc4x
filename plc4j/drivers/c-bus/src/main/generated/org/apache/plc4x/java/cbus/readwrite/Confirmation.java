@@ -71,10 +71,10 @@ public class Confirmation implements Message {
     writeBuffer.pushContext("Confirmation");
 
     // Simple Field (alpha)
-    writeSimpleField("alpha", alpha, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alpha", alpha, writeComplex(writeBuffer));
 
     // Optional Field (secondAlpha) (Can be skipped, if the value is null)
-    writeOptionalField("secondAlpha", secondAlpha, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("secondAlpha", secondAlpha, writeComplex(writeBuffer));
 
     // Simple Field (confirmationType)
     writeSimpleEnumField(

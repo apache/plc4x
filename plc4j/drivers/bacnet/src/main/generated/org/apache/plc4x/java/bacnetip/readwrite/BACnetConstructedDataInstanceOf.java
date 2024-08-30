@@ -82,7 +82,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataInstanceOf");
 
     // Simple Field (instanceOf)
-    writeSimpleField("instanceOf", instanceOf, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instanceOf", instanceOf, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

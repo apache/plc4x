@@ -105,10 +105,10 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("QueryFirstRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (view)
-    writeSimpleField("view", view, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("view", view, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodeTypes)
     writeSimpleField("noOfNodeTypes", noOfNodeTypes, writeSignedInt(writeBuffer, 32));
@@ -117,7 +117,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     writeComplexTypeArrayField("nodeTypes", nodeTypes, writeBuffer);
 
     // Simple Field (filter)
-    writeSimpleField("filter", filter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filter", filter, writeComplex(writeBuffer));
 
     // Simple Field (maxDataSetsToReturn)
     writeSimpleField(

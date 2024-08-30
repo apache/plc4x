@@ -84,9 +84,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
 
     // Simple Field (reliabilityEvaluationInhibit)
     writeSimpleField(
-        "reliabilityEvaluationInhibit",
-        reliabilityEvaluationInhibit,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "reliabilityEvaluationInhibit", reliabilityEvaluationInhibit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

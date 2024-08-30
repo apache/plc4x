@@ -55,7 +55,7 @@ public class BACnetLandingDoorStatus implements Message {
     writeBuffer.pushContext("BACnetLandingDoorStatus");
 
     // Simple Field (landingDoors)
-    writeSimpleField("landingDoors", landingDoors, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("landingDoors", landingDoors, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingDoorStatus");
   }

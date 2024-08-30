@@ -82,8 +82,7 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataLightingCommand");
 
     // Simple Field (lightingCommand)
-    writeSimpleField(
-        "lightingCommand", lightingCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightingCommand", lightingCommand, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLightingCommand actualValue = getActualValue();

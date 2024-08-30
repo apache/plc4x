@@ -82,7 +82,7 @@ public class BACnetConstructedDataAccessEvent extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataAccessEvent");
 
     // Simple Field (accessEvent)
-    writeSimpleField("accessEvent", accessEvent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEvent", accessEvent, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessEventTagged actualValue = getActualValue();

@@ -82,7 +82,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataFileRecordCount");
 
     // Simple Field (recordCount)
-    writeSimpleField("recordCount", recordCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recordCount", recordCount, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

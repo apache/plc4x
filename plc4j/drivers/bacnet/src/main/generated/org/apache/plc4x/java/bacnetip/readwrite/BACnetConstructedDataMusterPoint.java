@@ -82,7 +82,7 @@ public class BACnetConstructedDataMusterPoint extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataMusterPoint");
 
     // Simple Field (musterPoint)
-    writeSimpleField("musterPoint", musterPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("musterPoint", musterPoint, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

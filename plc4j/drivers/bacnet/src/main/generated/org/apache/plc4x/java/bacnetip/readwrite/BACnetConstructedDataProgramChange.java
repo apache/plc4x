@@ -82,7 +82,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataProgramChange");
 
     // Simple Field (programChange)
-    writeSimpleField("programChange", programChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("programChange", programChange, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetProgramRequestTagged actualValue = getActualValue();

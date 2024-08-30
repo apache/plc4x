@@ -83,7 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueResolution");
 
     // Simple Field (resolution)
-    writeSimpleField("resolution", resolution, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("resolution", resolution, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();

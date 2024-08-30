@@ -82,7 +82,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataPulseRate");
 
     // Simple Field (pulseRate)
-    writeSimpleField("pulseRate", pulseRate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pulseRate", pulseRate, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

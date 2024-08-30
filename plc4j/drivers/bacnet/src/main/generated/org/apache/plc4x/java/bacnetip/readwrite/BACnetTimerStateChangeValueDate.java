@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueDate extends BACnetTimerStateChangeValue
     writeBuffer.pushContext("BACnetTimerStateChangeValueDate");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueDate");
   }

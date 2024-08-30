@@ -60,7 +60,7 @@ public class BACnetOptionalUnsignedValue extends BACnetOptionalUnsigned implemen
     writeBuffer.pushContext("BACnetOptionalUnsignedValue");
 
     // Simple Field (unsignedValue)
-    writeSimpleField("unsignedValue", unsignedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unsignedValue", unsignedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetOptionalUnsignedValue");
   }

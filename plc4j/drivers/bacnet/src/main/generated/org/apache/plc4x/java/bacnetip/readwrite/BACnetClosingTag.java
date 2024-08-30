@@ -59,7 +59,7 @@ public class BACnetClosingTag implements Message {
     writeBuffer.pushContext("BACnetClosingTag");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetClosingTag");
   }

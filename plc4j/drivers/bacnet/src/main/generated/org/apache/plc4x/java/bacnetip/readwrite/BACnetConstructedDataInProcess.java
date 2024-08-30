@@ -82,7 +82,7 @@ public class BACnetConstructedDataInProcess extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataInProcess");
 
     // Simple Field (inProcess)
-    writeSimpleField("inProcess", inProcess, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("inProcess", inProcess, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

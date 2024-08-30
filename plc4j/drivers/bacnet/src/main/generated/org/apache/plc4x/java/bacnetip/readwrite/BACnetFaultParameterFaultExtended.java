@@ -89,20 +89,19 @@ public class BACnetFaultParameterFaultExtended extends BACnetFaultParameter impl
     writeBuffer.pushContext("BACnetFaultParameterFaultExtended");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (extendedFaultType)
-    writeSimpleField(
-        "extendedFaultType", extendedFaultType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedFaultType", extendedFaultType, writeComplex(writeBuffer));
 
     // Simple Field (parameters)
-    writeSimpleField("parameters", parameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameters", parameters, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtended");
   }

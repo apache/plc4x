@@ -62,7 +62,7 @@ public class CloseSessionResponse extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("CloseSessionResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CloseSessionResponse");
   }

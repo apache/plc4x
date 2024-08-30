@@ -92,7 +92,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
         writeByte(writeBuffer, 8));
 
     // Simple Field (salData)
-    writeSimpleField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToMultiPointCommandNormal");
   }

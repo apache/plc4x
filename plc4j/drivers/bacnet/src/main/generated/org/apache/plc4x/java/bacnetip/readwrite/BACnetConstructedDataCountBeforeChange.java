@@ -83,8 +83,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataCountBeforeChange");
 
     // Simple Field (countBeforeChange)
-    writeSimpleField(
-        "countBeforeChange", countBeforeChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("countBeforeChange", countBeforeChange, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

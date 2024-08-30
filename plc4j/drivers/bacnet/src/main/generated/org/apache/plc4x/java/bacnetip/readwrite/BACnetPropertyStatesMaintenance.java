@@ -60,7 +60,7 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesMaintenance");
 
     // Simple Field (maintenance)
-    writeSimpleField("maintenance", maintenance, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maintenance", maintenance, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesMaintenance");
   }

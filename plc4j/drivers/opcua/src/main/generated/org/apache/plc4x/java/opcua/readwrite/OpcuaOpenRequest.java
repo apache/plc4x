@@ -71,10 +71,10 @@ public class OpcuaOpenRequest extends MessagePDU implements Message {
     writeBuffer.pushContext("OpcuaOpenRequest");
 
     // Simple Field (openRequest)
-    writeSimpleField("openRequest", openRequest, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openRequest", openRequest, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaOpenRequest");
   }

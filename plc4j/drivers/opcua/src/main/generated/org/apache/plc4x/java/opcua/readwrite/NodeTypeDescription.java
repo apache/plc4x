@@ -84,8 +84,7 @@ public class NodeTypeDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("NodeTypeDescription");
 
     // Simple Field (typeDefinitionNode)
-    writeSimpleField(
-        "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinitionNode", typeDefinitionNode, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

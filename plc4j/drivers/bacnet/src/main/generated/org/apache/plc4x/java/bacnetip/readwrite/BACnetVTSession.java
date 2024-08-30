@@ -70,16 +70,13 @@ public class BACnetVTSession implements Message {
     writeBuffer.pushContext("BACnetVTSession");
 
     // Simple Field (localVtSessionId)
-    writeSimpleField(
-        "localVtSessionId", localVtSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localVtSessionId", localVtSessionId, writeComplex(writeBuffer));
 
     // Simple Field (removeVtSessionId)
-    writeSimpleField(
-        "removeVtSessionId", removeVtSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("removeVtSessionId", removeVtSessionId, writeComplex(writeBuffer));
 
     // Simple Field (remoteVtAddress)
-    writeSimpleField(
-        "remoteVtAddress", remoteVtAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("remoteVtAddress", remoteVtAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetVTSession");
   }

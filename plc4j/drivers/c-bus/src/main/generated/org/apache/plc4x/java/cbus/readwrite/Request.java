@@ -128,7 +128,7 @@ public abstract class Request implements Message {
     serializeRequestChild(writeBuffer);
 
     // Simple Field (termination)
-    writeSimpleField("termination", termination, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("termination", termination, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Request");
   }

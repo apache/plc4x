@@ -75,14 +75,13 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
     writeBuffer.pushContext("UserNameIdentityToken");
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (password)
-    writeSimpleField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("password", password, writeComplex(writeBuffer));
 
     // Simple Field (encryptionAlgorithm)
-    writeSimpleField(
-        "encryptionAlgorithm", encryptionAlgorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encryptionAlgorithm", encryptionAlgorithm, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserNameIdentityToken");
   }

@@ -61,7 +61,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     writeBuffer.pushContext("BACnetLandingCallStatusCommandDirection");
 
     // Simple Field (direction)
-    writeSimpleField("direction", direction, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("direction", direction, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingCallStatusCommandDirection");
   }

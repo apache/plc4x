@@ -76,10 +76,10 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
     writeBuffer.pushContext("ReplyOrConfirmationConfirmation");
 
     // Simple Field (confirmation)
-    writeSimpleField("confirmation", confirmation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("confirmation", confirmation, writeComplex(writeBuffer));
 
     // Optional Field (embeddedReply) (Can be skipped, if the value is null)
-    writeOptionalField("embeddedReply", embeddedReply, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("embeddedReply", embeddedReply, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReplyOrConfirmationConfirmation");
   }

@@ -75,13 +75,13 @@ public class BACnetTimeStampsEnclosed implements Message {
     writeBuffer.pushContext("BACnetTimeStampsEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (timestamps)
     writeComplexTypeArrayField("timestamps", timestamps, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeStampsEnclosed");
   }

@@ -62,7 +62,7 @@ public class AdsDiscoveryBlockHostName extends AdsDiscoveryBlock implements Mess
     writeBuffer.pushContext("AdsDiscoveryBlockHostName");
 
     // Simple Field (hostName)
-    writeSimpleField("hostName", hostName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hostName", hostName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AdsDiscoveryBlockHostName");
   }

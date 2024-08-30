@@ -60,7 +60,7 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
     writeBuffer.pushContext("BACnetPropertyStatesDoorValue");
 
     // Simple Field (doorValue)
-    writeSimpleField("doorValue", doorValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorValue", doorValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesDoorValue");
   }

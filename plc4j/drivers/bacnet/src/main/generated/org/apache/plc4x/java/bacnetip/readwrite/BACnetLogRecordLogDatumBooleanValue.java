@@ -69,7 +69,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
     writeBuffer.pushContext("BACnetLogRecordLogDatumBooleanValue");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumBooleanValue");
   }

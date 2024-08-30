@@ -55,7 +55,7 @@ public class Plc4xTagRequest implements Message {
     writeBuffer.pushContext("Plc4xTagRequest");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Plc4xTagRequest");
   }

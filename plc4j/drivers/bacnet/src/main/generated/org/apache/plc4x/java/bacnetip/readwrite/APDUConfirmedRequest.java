@@ -208,10 +208,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
 
     // Optional Field (serviceRequest) (Can be skipped, if the value is null)
     writeOptionalField(
-        "serviceRequest",
-        serviceRequest,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getSegmentedMessage()));
+        "serviceRequest", serviceRequest, writeComplex(writeBuffer), !(getSegmentedMessage()));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(

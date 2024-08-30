@@ -84,17 +84,17 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("OpenSecureChannelResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (serverProtocolVersion)
     writeSimpleField(
         "serverProtocolVersion", serverProtocolVersion, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (securityToken)
-    writeSimpleField("securityToken", securityToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityToken", securityToken, writeComplex(writeBuffer));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpenSecureChannelResponse");
   }

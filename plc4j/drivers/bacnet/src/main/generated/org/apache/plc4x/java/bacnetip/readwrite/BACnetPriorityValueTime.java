@@ -66,7 +66,7 @@ public class BACnetPriorityValueTime extends BACnetPriorityValue implements Mess
     writeBuffer.pushContext("BACnetPriorityValueTime");
 
     // Simple Field (timeValue)
-    writeSimpleField("timeValue", timeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeValue", timeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueTime");
   }

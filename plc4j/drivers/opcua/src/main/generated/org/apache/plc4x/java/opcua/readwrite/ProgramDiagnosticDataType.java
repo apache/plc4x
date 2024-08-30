@@ -140,12 +140,10 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("ProgramDiagnosticDataType");
 
     // Simple Field (createSessionId)
-    writeSimpleField(
-        "createSessionId", createSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("createSessionId", createSessionId, writeComplex(writeBuffer));
 
     // Simple Field (createClientName)
-    writeSimpleField(
-        "createClientName", createClientName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("createClientName", createClientName, writeComplex(writeBuffer));
 
     // Simple Field (invocationCreationTime)
     writeSimpleField(
@@ -155,11 +153,10 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     writeSimpleField("lastTransitionTime", lastTransitionTime, writeSignedLong(writeBuffer, 64));
 
     // Simple Field (lastMethodCall)
-    writeSimpleField("lastMethodCall", lastMethodCall, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastMethodCall", lastMethodCall, writeComplex(writeBuffer));
 
     // Simple Field (lastMethodSessionId)
-    writeSimpleField(
-        "lastMethodSessionId", lastMethodSessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastMethodSessionId", lastMethodSessionId, writeComplex(writeBuffer));
 
     // Simple Field (noOfLastMethodInputArguments)
     writeSimpleField(
@@ -183,10 +180,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     writeSimpleField("lastMethodCallTime", lastMethodCallTime, writeSignedLong(writeBuffer, 64));
 
     // Simple Field (lastMethodReturnStatus)
-    writeSimpleField(
-        "lastMethodReturnStatus",
-        lastMethodReturnStatus,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastMethodReturnStatus", lastMethodReturnStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ProgramDiagnosticDataType");
   }

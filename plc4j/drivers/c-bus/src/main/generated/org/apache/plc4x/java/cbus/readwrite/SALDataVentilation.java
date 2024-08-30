@@ -61,8 +61,7 @@ public class SALDataVentilation extends SALData implements Message {
     writeBuffer.pushContext("SALDataVentilation");
 
     // Simple Field (ventilationData)
-    writeSimpleField(
-        "ventilationData", ventilationData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ventilationData", ventilationData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataVentilation");
   }

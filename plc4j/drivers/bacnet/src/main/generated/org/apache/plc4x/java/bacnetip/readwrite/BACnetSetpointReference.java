@@ -55,8 +55,7 @@ public class BACnetSetpointReference implements Message {
     writeBuffer.pushContext("BACnetSetpointReference");
 
     // Optional Field (setPointReference) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "setPointReference", setPointReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("setPointReference", setPointReference, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSetpointReference");
   }

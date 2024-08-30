@@ -91,10 +91,10 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("BrowseRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (view)
-    writeSimpleField("view", view, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("view", view, writeComplex(writeBuffer));
 
     // Simple Field (requestedMaxReferencesPerNode)
     writeSimpleField(

@@ -78,7 +78,7 @@ public class BACnetAddress implements Message {
     writeBuffer.pushContext("BACnetAddress");
 
     // Simple Field (networkNumber)
-    writeSimpleField("networkNumber", networkNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger zero = getZero();
@@ -89,7 +89,7 @@ public class BACnetAddress implements Message {
     writeBuffer.writeVirtual("isLocalNetwork", isLocalNetwork);
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isBroadcast = getIsBroadcast();

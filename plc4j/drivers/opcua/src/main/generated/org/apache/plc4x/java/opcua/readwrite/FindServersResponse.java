@@ -77,7 +77,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("FindServersResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfServers)
     writeSimpleField("noOfServers", noOfServers, writeSignedInt(writeBuffer, 32));

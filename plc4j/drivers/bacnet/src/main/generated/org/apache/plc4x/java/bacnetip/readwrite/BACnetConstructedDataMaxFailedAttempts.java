@@ -83,8 +83,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataMaxFailedAttempts");
 
     // Simple Field (maxFailedAttempts)
-    writeSimpleField(
-        "maxFailedAttempts", maxFailedAttempts, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxFailedAttempts", maxFailedAttempts, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

@@ -75,7 +75,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("UserManagementDataType");
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     // Simple Field (userConfiguration)
     writeSimpleEnumField(
@@ -88,7 +88,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserManagementDataType");
   }

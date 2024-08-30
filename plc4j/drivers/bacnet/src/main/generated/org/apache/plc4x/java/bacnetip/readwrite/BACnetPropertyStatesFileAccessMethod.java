@@ -60,8 +60,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     writeBuffer.pushContext("BACnetPropertyStatesFileAccessMethod");
 
     // Simple Field (fileAccessMethod)
-    writeSimpleField(
-        "fileAccessMethod", fileAccessMethod, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileAccessMethod", fileAccessMethod, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesFileAccessMethod");
   }

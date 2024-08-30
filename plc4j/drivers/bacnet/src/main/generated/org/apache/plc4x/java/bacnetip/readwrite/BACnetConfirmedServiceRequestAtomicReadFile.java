@@ -76,10 +76,10 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFile");
 
     // Simple Field (fileIdentifier)
-    writeSimpleField("fileIdentifier", fileIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileIdentifier", fileIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (accessMethod)
-    writeSimpleField("accessMethod", accessMethod, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessMethod", accessMethod, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAtomicReadFile");
   }

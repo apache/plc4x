@@ -62,7 +62,7 @@ public class RegisterServerResponse extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("RegisterServerResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RegisterServerResponse");
   }

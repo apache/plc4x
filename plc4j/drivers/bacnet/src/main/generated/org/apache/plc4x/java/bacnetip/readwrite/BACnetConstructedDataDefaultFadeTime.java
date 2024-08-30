@@ -82,8 +82,7 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataDefaultFadeTime");
 
     // Simple Field (defaultFadeTime)
-    writeSimpleField(
-        "defaultFadeTime", defaultFadeTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("defaultFadeTime", defaultFadeTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

@@ -100,7 +100,7 @@ public class CANOpenFrame implements Message {
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Padding Field (padding)

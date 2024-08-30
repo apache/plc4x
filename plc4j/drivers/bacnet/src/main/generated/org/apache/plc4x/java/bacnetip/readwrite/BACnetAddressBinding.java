@@ -62,11 +62,10 @@ public class BACnetAddressBinding implements Message {
     writeBuffer.pushContext("BACnetAddressBinding");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (deviceAddress)
-    writeSimpleField("deviceAddress", deviceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceAddress", deviceAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAddressBinding");
   }

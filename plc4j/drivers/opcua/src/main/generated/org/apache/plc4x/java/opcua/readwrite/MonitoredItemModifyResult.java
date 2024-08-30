@@ -84,7 +84,7 @@ public class MonitoredItemModifyResult extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("MonitoredItemModifyResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (revisedSamplingInterval)
     writeSimpleField(
@@ -94,7 +94,7 @@ public class MonitoredItemModifyResult extends ExtensionObjectDefinition impleme
     writeSimpleField("revisedQueueSize", revisedQueueSize, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (filterResult)
-    writeSimpleField("filterResult", filterResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filterResult", filterResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemModifyResult");
   }

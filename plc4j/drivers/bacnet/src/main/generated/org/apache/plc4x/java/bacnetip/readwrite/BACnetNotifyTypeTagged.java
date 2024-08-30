@@ -68,7 +68,7 @@ public class BACnetNotifyTypeTagged implements Message {
     writeBuffer.pushContext("BACnetNotifyTypeTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

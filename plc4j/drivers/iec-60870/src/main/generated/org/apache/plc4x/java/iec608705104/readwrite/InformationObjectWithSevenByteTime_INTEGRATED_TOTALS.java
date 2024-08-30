@@ -71,16 +71,13 @@ public class InformationObjectWithSevenByteTime_INTEGRATED_TOTALS
 
     // Simple Field (bcr)
     writeSimpleField(
-        "bcr",
-        bcr,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bcr", bcr, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (cp56Time2a)
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithSevenByteTime_INTEGRATED_TOTALS");

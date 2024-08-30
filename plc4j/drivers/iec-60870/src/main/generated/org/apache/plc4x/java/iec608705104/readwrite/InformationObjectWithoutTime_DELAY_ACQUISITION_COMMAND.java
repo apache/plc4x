@@ -67,7 +67,7 @@ public class InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND
     writeSimpleField(
         "cp16Time2a",
         cp16Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_DELAY_ACQUISITION_COMMAND");

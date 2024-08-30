@@ -84,9 +84,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
 
     // Simple Field (transactionNotificationClass)
     writeSimpleField(
-        "transactionNotificationClass",
-        transactionNotificationClass,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "transactionNotificationClass", transactionNotificationClass, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

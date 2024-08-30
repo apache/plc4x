@@ -81,10 +81,10 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
     writeBuffer.pushContext("ReferenceDescriptionDataType");
 
     // Simple Field (sourceNode)
-    writeSimpleField("sourceNode", sourceNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceNode", sourceNode, writeComplex(writeBuffer));
 
     // Simple Field (referenceType)
-    writeSimpleField("referenceType", referenceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceType", referenceType, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -93,7 +93,7 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetNode)
-    writeSimpleField("targetNode", targetNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNode", targetNode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceDescriptionDataType");
   }

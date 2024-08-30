@@ -84,9 +84,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
 
     // Simple Field (bbmdAcceptFDRegistrations)
     writeSimpleField(
-        "bbmdAcceptFDRegistrations",
-        bbmdAcceptFDRegistrations,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "bbmdAcceptFDRegistrations", bbmdAcceptFDRegistrations, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

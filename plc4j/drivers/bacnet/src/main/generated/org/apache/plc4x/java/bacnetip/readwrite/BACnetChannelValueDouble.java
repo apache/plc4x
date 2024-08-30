@@ -60,7 +60,7 @@ public class BACnetChannelValueDouble extends BACnetChannelValue implements Mess
     writeBuffer.pushContext("BACnetChannelValueDouble");
 
     // Simple Field (doubleValue)
-    writeSimpleField("doubleValue", doubleValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueDouble");
   }

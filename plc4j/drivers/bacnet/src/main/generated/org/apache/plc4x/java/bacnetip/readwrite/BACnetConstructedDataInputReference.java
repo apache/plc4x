@@ -82,7 +82,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataInputReference");
 
     // Simple Field (inputReference)
-    writeSimpleField("inputReference", inputReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("inputReference", inputReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = getActualValue();

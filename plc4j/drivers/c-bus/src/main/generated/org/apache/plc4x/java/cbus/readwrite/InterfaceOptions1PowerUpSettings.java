@@ -55,8 +55,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     writeBuffer.pushContext("InterfaceOptions1PowerUpSettings");
 
     // Simple Field (interfaceOptions1)
-    writeSimpleField(
-        "interfaceOptions1", interfaceOptions1, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("interfaceOptions1", interfaceOptions1, writeComplex(writeBuffer));
 
     writeBuffer.popContext("InterfaceOptions1PowerUpSettings");
   }

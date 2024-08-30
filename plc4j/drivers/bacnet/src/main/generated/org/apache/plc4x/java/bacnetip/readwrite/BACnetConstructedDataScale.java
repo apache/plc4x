@@ -82,7 +82,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
     writeBuffer.pushContext("BACnetConstructedDataScale");
 
     // Simple Field (scale)
-    writeSimpleField("scale", scale, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("scale", scale, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetScale actualValue = getActualValue();

@@ -84,7 +84,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     writeBuffer.pushContext("FindServersOnNetworkResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (lastCounterResetTime)
     writeSimpleField(

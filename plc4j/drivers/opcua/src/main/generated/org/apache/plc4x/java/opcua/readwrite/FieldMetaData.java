@@ -140,10 +140,10 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("FieldMetaData");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (fieldFlags)
     writeSimpleEnumField(
@@ -159,7 +159,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("builtInType", builtInType, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (dataType)
-    writeSimpleField("dataType", dataType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataType", dataType, writeComplex(writeBuffer));
 
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
@@ -175,7 +175,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     writeSimpleField("maxStringLength", maxStringLength, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetFieldId)
-    writeSimpleField("dataSetFieldId", dataSetFieldId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetFieldId", dataSetFieldId, writeComplex(writeBuffer));
 
     // Simple Field (noOfProperties)
     writeSimpleField("noOfProperties", noOfProperties, writeSignedInt(writeBuffer, 32));

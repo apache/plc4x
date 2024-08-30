@@ -71,7 +71,7 @@ public class BACnetAuthenticationFactorTypeTagged implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactorTypeTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

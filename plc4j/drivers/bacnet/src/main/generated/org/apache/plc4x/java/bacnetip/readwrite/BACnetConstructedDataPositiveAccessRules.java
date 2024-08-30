@@ -100,7 +100,7 @@ public class BACnetConstructedDataPositiveAccessRules extends BACnetConstructedD
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (positiveAccessRules)

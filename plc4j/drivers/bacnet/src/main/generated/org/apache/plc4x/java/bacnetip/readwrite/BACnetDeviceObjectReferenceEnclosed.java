@@ -75,14 +75,13 @@ public class BACnetDeviceObjectReferenceEnclosed implements Message {
     writeBuffer.pushContext("BACnetDeviceObjectReferenceEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (objectReference)
-    writeSimpleField(
-        "objectReference", objectReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectReference", objectReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDeviceObjectReferenceEnclosed");
   }

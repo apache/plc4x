@@ -83,10 +83,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPGlobalAddress");
 
     // Simple Field (bacnetIpGlobalAddress)
-    writeSimpleField(
-        "bacnetIpGlobalAddress",
-        bacnetIpGlobalAddress,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetIpGlobalAddress", bacnetIpGlobalAddress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetHostNPort actualValue = getActualValue();

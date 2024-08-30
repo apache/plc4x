@@ -83,8 +83,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataLandingCallControl");
 
     // Simple Field (landingCallControl)
-    writeSimpleField(
-        "landingCallControl", landingCallControl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("landingCallControl", landingCallControl, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLandingCallStatus actualValue = getActualValue();

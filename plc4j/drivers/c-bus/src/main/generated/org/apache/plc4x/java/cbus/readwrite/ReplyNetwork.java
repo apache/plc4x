@@ -61,10 +61,10 @@ public class ReplyNetwork implements Message {
     writeBuffer.pushContext("ReplyNetwork");
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReplyNetwork");
   }

@@ -82,7 +82,7 @@ public class BACnetConstructedDataMaxInfoFrames extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataMaxInfoFrames");
 
     // Simple Field (maxInfoFrames)
-    writeSimpleField("maxInfoFrames", maxInfoFrames, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxInfoFrames", maxInfoFrames, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

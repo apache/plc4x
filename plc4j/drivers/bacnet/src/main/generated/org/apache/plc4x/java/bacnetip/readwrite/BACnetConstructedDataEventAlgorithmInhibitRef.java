@@ -84,9 +84,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
 
     // Simple Field (eventAlgorithmInhibitRef)
     writeSimpleField(
-        "eventAlgorithmInhibitRef",
-        eventAlgorithmInhibitRef,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "eventAlgorithmInhibitRef", eventAlgorithmInhibitRef, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = getActualValue();

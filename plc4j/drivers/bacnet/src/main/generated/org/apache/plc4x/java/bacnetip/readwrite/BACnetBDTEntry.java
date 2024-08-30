@@ -62,10 +62,10 @@ public class BACnetBDTEntry implements Message {
     writeBuffer.pushContext("BACnetBDTEntry");
 
     // Simple Field (bbmdAddress)
-    writeSimpleField("bbmdAddress", bbmdAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bbmdAddress", bbmdAddress, writeComplex(writeBuffer));
 
     // Optional Field (broadcastMask) (Can be skipped, if the value is null)
-    writeOptionalField("broadcastMask", broadcastMask, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("broadcastMask", broadcastMask, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetBDTEntry");
   }

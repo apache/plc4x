@@ -82,7 +82,7 @@ public class BACnetLiftCarDriveStatusTagged implements Message {
     writeBuffer.pushContext("BACnetLiftCarDriveStatusTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

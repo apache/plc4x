@@ -82,20 +82,17 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     writeBuffer.pushContext("BACnetEventParameterAccessEvent");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (listOfAccessEvents)
-    writeSimpleField(
-        "listOfAccessEvents", listOfAccessEvents, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfAccessEvents", listOfAccessEvents, writeComplex(writeBuffer));
 
     // Simple Field (accessEventTimeReference)
     writeSimpleField(
-        "accessEventTimeReference",
-        accessEventTimeReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "accessEventTimeReference", accessEventTimeReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterAccessEvent");
   }

@@ -82,7 +82,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataLoggingRecord");
 
     // Simple Field (loggingRecord)
-    writeSimpleField("loggingRecord", loggingRecord, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("loggingRecord", loggingRecord, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccumulatorRecord actualValue = getActualValue();

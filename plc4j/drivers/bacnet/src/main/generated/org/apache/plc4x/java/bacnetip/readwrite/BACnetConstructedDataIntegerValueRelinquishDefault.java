@@ -83,8 +83,7 @@ public class BACnetConstructedDataIntegerValueRelinquishDefault extends BACnetCo
     writeBuffer.pushContext("BACnetConstructedDataIntegerValueRelinquishDefault");
 
     // Simple Field (relinquishDefault)
-    writeSimpleField(
-        "relinquishDefault", relinquishDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relinquishDefault", relinquishDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagSignedInteger actualValue = getActualValue();

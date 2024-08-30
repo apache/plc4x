@@ -76,13 +76,11 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     writeBuffer.pushContext("BACnetConfirmedServiceRequestVTOpen");
 
     // Simple Field (vtClass)
-    writeSimpleField("vtClass", vtClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vtClass", vtClass, writeComplex(writeBuffer));
 
     // Simple Field (localVtSessionIdentifier)
     writeSimpleField(
-        "localVtSessionIdentifier",
-        localVtSessionIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "localVtSessionIdentifier", localVtSessionIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestVTOpen");
   }

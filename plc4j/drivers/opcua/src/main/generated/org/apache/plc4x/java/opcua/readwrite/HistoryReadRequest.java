@@ -98,11 +98,10 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("HistoryReadRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (historyReadDetails)
-    writeSimpleField(
-        "historyReadDetails", historyReadDetails, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("historyReadDetails", historyReadDetails, writeComplex(writeBuffer));
 
     // Simple Field (timestampsToReturn)
     writeSimpleEnumField(

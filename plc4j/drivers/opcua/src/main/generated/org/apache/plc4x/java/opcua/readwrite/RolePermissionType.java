@@ -68,7 +68,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("RolePermissionType");
 
     // Simple Field (roleId)
-    writeSimpleField("roleId", roleId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("roleId", roleId, writeComplex(writeBuffer));
 
     // Simple Field (permissions)
     writeSimpleEnumField(

@@ -62,10 +62,7 @@ public class RegulatingStepCommand implements Message {
 
     // Simple Field (qoc)
     writeSimpleField(
-        "qoc",
-        qoc,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qoc", qoc, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (rcs)
     writeSimpleField(

@@ -68,7 +68,7 @@ public class DeleteNodesItem extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("DeleteNodesItem");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

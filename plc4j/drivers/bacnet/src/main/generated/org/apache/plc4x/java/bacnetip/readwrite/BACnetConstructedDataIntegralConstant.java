@@ -83,8 +83,7 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataIntegralConstant");
 
     // Simple Field (integralConstant)
-    writeSimpleField(
-        "integralConstant", integralConstant, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integralConstant", integralConstant, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

@@ -75,13 +75,13 @@ public class BACnetFaultParameterFaultCharacterStringListOfFaultValues implement
     writeBuffer.pushContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfFaultValues)
     writeComplexTypeArrayField("listOfFaultValues", listOfFaultValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues");
   }

@@ -61,10 +61,10 @@ public class BACnetDateTime implements Message {
     writeBuffer.pushContext("BACnetDateTime");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     // Simple Field (timeValue)
-    writeSimpleField("timeValue", timeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeValue", timeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDateTime");
   }

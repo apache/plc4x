@@ -61,7 +61,7 @@ public class SDOAbortResponse extends SDOResponse implements Message {
     writeBuffer.pushContext("SDOAbortResponse");
 
     // Simple Field (abort)
-    writeSimpleField("abort", abort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("abort", abort, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SDOAbortResponse");
   }

@@ -83,7 +83,7 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
     writeSimpleField("value", value, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean actualValue = getActualValue();

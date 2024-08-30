@@ -82,7 +82,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataTraceFlag");
 
     // Simple Field (traceFlag)
-    writeSimpleField("traceFlag", traceFlag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("traceFlag", traceFlag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

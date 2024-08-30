@@ -98,7 +98,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("BrowseDescription");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (browseDirection)
     writeSimpleEnumField(
@@ -109,8 +109,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
             BrowseDirection::getValue, BrowseDirection::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

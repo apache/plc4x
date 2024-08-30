@@ -75,14 +75,13 @@ public class BACnetLightingCommandEnclosed implements Message {
     writeBuffer.pushContext("BACnetLightingCommandEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (lightingCommand)
-    writeSimpleField(
-        "lightingCommand", lightingCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightingCommand", lightingCommand, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLightingCommandEnclosed");
   }

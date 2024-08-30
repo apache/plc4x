@@ -82,7 +82,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataLockout");
 
     // Simple Field (lockout)
-    writeSimpleField("lockout", lockout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lockout", lockout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

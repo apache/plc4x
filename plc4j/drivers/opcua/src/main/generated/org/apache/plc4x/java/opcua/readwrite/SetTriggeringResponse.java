@@ -119,7 +119,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("SetTriggeringResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfAddResults)
     writeSimpleField("noOfAddResults", noOfAddResults, writeSignedInt(writeBuffer, 32));

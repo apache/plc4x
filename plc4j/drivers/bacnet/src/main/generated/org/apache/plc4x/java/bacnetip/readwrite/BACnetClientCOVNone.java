@@ -60,8 +60,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     writeBuffer.pushContext("BACnetClientCOVNone");
 
     // Simple Field (defaultIncrement)
-    writeSimpleField(
-        "defaultIncrement", defaultIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("defaultIncrement", defaultIncrement, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetClientCOVNone");
   }

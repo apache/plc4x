@@ -84,7 +84,7 @@ public class TransferSubscriptionsRequest extends ExtensionObjectDefinition impl
     writeBuffer.pushContext("TransferSubscriptionsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfSubscriptionIds)
     writeSimpleField("noOfSubscriptionIds", noOfSubscriptionIds, writeSignedInt(writeBuffer, 32));

@@ -68,10 +68,10 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("AddNodesResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (addedNodeId)
-    writeSimpleField("addedNodeId", addedNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("addedNodeId", addedNodeId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AddNodesResult");
   }

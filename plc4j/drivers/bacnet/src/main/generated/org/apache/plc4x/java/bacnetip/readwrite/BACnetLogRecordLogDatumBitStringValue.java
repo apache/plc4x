@@ -69,7 +69,7 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
     writeBuffer.pushContext("BACnetLogRecordLogDatumBitStringValue");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumBitStringValue");
   }

@@ -197,11 +197,10 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("classSegment", classSegment, writeComplex(writeBuffer));
 
     // Simple Field (instanceSegment)
-    writeSimpleField(
-        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instanceSegment", instanceSegment, writeComplex(writeBuffer));
 
     // Simple Field (priority)
     writeSimpleField("priority", priority, writeUnsignedByte(writeBuffer, 4));
@@ -239,22 +238,16 @@ public class CipConnectionManagerRequest extends CipService implements Message {
     writeSimpleField("otRpi", otRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (otConnectionParameters)
-    writeSimpleField(
-        "otConnectionParameters",
-        otConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("otConnectionParameters", otConnectionParameters, writeComplex(writeBuffer));
 
     // Simple Field (toRpi)
     writeSimpleField("toRpi", toRpi, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (toConnectionParameters)
-    writeSimpleField(
-        "toConnectionParameters",
-        toConnectionParameters,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toConnectionParameters", toConnectionParameters, writeComplex(writeBuffer));
 
     // Simple Field (transportType)
-    writeSimpleField("transportType", transportType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportType", transportType, writeComplex(writeBuffer));
 
     // Simple Field (connectionPathSize)
     writeSimpleField("connectionPathSize", connectionPathSize, writeUnsignedShort(writeBuffer, 8));

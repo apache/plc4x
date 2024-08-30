@@ -75,14 +75,13 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactorEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (authenticationFactor)
-    writeSimpleField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactorEnclosed");
   }

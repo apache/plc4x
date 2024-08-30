@@ -123,18 +123,11 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     writeBuffer.writeVirtual("isUnitAddress", isUnitAddress);
 
     // Optional Field (unitAddress) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "unitAddress",
-        unitAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsUnitAddress());
+    writeOptionalField("unitAddress", unitAddress, writeComplex(writeBuffer), getIsUnitAddress());
 
     // Optional Field (bridgeAddress) (Can be skipped, if the value is null)
     writeOptionalField(
-        "bridgeAddress",
-        bridgeAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getIsUnitAddress()));
+        "bridgeAddress", bridgeAddress, writeComplex(writeBuffer), !(getIsUnitAddress()));
 
     // Simple Field (application)
     writeSimpleEnumField(
@@ -151,13 +144,10 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
 
     // Optional Field (replyNetwork) (Can be skipped, if the value is null)
     writeOptionalField(
-        "replyNetwork",
-        replyNetwork,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getIsUnitAddress()));
+        "replyNetwork", replyNetwork, writeComplex(writeBuffer), !(getIsUnitAddress()));
 
     // Optional Field (salData) (Can be skipped, if the value is null)
-    writeOptionalField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredSALLongFormSmartMode");
   }

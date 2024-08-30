@@ -62,7 +62,7 @@ public class TlvOrgSpecificProfibus extends TlvOrganizationSpecificUnit implemen
     writeBuffer.pushContext("TlvOrgSpecificProfibus");
 
     // Simple Field (specificUnit)
-    writeSimpleField("specificUnit", specificUnit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("specificUnit", specificUnit, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvOrgSpecificProfibus");
   }

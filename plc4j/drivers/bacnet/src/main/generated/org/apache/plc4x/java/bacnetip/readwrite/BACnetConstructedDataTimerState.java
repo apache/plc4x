@@ -82,7 +82,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataTimerState");
 
     // Simple Field (timerState)
-    writeSimpleField("timerState", timerState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timerState", timerState, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimerStateTagged actualValue = getActualValue();

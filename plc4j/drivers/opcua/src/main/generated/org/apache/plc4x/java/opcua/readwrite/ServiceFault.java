@@ -62,7 +62,7 @@ public class ServiceFault extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ServiceFault");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ServiceFault");
   }

@@ -77,7 +77,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("DeleteNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToDelete)
     writeSimpleField("noOfNodesToDelete", noOfNodesToDelete, writeSignedInt(writeBuffer, 32));

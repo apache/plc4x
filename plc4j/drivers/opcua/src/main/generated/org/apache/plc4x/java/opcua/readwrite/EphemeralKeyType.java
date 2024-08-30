@@ -68,10 +68,10 @@ public class EphemeralKeyType extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("EphemeralKeyType");
 
     // Simple Field (publicKey)
-    writeSimpleField("publicKey", publicKey, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publicKey", publicKey, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EphemeralKeyType");
   }

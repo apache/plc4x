@@ -60,7 +60,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     writeBuffer.pushContext("BACnetPropertyStatesPolarity");
 
     // Simple Field (polarity)
-    writeSimpleField("polarity", polarity, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("polarity", polarity, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesPolarity");
   }

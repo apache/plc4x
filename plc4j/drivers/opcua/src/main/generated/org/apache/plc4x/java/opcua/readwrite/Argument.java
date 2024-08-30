@@ -98,10 +98,10 @@ public class Argument extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("Argument");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (dataType)
-    writeSimpleField("dataType", dataType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataType", dataType, writeComplex(writeBuffer));
 
     // Simple Field (valueRank)
     writeSimpleField("valueRank", valueRank, writeSignedInt(writeBuffer, 32));
@@ -114,7 +114,7 @@ public class Argument extends ExtensionObjectDefinition implements Message {
         "arrayDimensions", arrayDimensions, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Argument");
   }

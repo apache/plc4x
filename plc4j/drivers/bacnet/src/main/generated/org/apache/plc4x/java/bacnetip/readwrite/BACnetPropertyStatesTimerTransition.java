@@ -60,8 +60,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
     writeBuffer.pushContext("BACnetPropertyStatesTimerTransition");
 
     // Simple Field (timerTransition)
-    writeSimpleField(
-        "timerTransition", timerTransition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timerTransition", timerTransition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesTimerTransition");
   }

@@ -62,7 +62,7 @@ public class CANOpenTimeSynchronization extends CANOpenPayload implements Messag
     writeBuffer.pushContext("CANOpenTimeSynchronization");
 
     // Simple Field (timeOfDay)
-    writeSimpleField("timeOfDay", timeOfDay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfDay", timeOfDay, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenTimeSynchronization");
   }

@@ -158,7 +158,7 @@ public class IODWriteResponseHeader extends PnIoCm_Block implements Message {
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (api)

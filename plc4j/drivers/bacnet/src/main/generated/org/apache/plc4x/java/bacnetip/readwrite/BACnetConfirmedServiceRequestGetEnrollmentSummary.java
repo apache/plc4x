@@ -109,30 +109,23 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
 
     // Simple Field (acknowledgmentFilter)
-    writeSimpleField(
-        "acknowledgmentFilter", acknowledgmentFilter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("acknowledgmentFilter", acknowledgmentFilter, writeComplex(writeBuffer));
 
     // Optional Field (enrollmentFilter) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "enrollmentFilter", enrollmentFilter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("enrollmentFilter", enrollmentFilter, writeComplex(writeBuffer));
 
     // Optional Field (eventStateFilter) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "eventStateFilter", eventStateFilter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("eventStateFilter", eventStateFilter, writeComplex(writeBuffer));
 
     // Optional Field (eventTypeFilter) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "eventTypeFilter", eventTypeFilter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("eventTypeFilter", eventTypeFilter, writeComplex(writeBuffer));
 
     // Optional Field (priorityFilter) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "priorityFilter", priorityFilter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priorityFilter", priorityFilter, writeComplex(writeBuffer));
 
     // Optional Field (notificationClassFilter) (Can be skipped, if the value is null)
     writeOptionalField(
-        "notificationClassFilter",
-        notificationClassFilter,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "notificationClassFilter", notificationClassFilter, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestGetEnrollmentSummary");
   }

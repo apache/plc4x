@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_DOUBLE_POINT_INFORMATION
 
     // Simple Field (diq)
     writeSimpleField(
-        "diq",
-        diq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "diq", diq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_DOUBLE_POINT_INFORMATION");
   }

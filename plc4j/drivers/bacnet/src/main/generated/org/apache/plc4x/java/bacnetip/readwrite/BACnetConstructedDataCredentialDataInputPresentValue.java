@@ -83,7 +83,7 @@ public class BACnetConstructedDataCredentialDataInputPresentValue extends BACnet
     writeBuffer.pushContext("BACnetConstructedDataCredentialDataInputPresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAuthenticationFactor actualValue = getActualValue();

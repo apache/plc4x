@@ -65,7 +65,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiIDiscoveryEndpoint",
         hpaiIDiscoveryEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("SearchRequest");

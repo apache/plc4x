@@ -63,8 +63,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     writeBuffer.pushContext("ComObjectTableRealisationType6");
 
     // Simple Field (comObjectDescriptors)
-    writeSimpleField(
-        "comObjectDescriptors", comObjectDescriptors, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("comObjectDescriptors", comObjectDescriptors, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ComObjectTableRealisationType6");
   }

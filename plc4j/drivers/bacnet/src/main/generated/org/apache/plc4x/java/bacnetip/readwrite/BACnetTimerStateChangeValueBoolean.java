@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
     writeBuffer.pushContext("BACnetTimerStateChangeValueBoolean");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueBoolean");
   }

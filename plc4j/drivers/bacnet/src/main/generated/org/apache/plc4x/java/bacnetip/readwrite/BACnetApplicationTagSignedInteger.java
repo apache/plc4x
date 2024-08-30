@@ -67,7 +67,7 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
     writeBuffer.pushContext("BACnetApplicationTagSignedInteger");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BigInteger actualValue = getActualValue();

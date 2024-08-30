@@ -71,7 +71,7 @@ public class BACnetUnconfirmedServiceChoiceTagged implements Message {
     writeBuffer.pushContext("BACnetUnconfirmedServiceChoiceTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

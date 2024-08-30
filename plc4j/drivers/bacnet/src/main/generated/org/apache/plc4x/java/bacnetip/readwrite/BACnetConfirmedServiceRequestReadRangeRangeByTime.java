@@ -71,10 +71,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
 
     // Simple Field (referenceTime)
-    writeSimpleField("referenceTime", referenceTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTime", referenceTime, writeComplex(writeBuffer));
 
     // Simple Field (count)
-    writeSimpleField("count", count, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("count", count, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRangeByTime");
   }

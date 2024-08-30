@@ -62,11 +62,10 @@ public class BACnetAssignedAccessRights implements Message {
     writeBuffer.pushContext("BACnetAssignedAccessRights");
 
     // Simple Field (assignedAccessRights)
-    writeSimpleField(
-        "assignedAccessRights", assignedAccessRights, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("assignedAccessRights", assignedAccessRights, writeComplex(writeBuffer));
 
     // Simple Field (enable)
-    writeSimpleField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAssignedAccessRights");
   }

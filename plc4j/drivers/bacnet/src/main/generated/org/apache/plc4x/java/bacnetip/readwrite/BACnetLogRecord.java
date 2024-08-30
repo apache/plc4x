@@ -70,13 +70,13 @@ public class BACnetLogRecord implements Message {
     writeBuffer.pushContext("BACnetLogRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (logDatum)
-    writeSimpleField("logDatum", logDatum, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logDatum", logDatum, writeComplex(writeBuffer));
 
     // Optional Field (statusFlags) (Can be skipped, if the value is null)
-    writeOptionalField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecord");
   }

@@ -98,11 +98,10 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("AddReferencesItem");
 
     // Simple Field (sourceNodeId)
-    writeSimpleField("sourceNodeId", sourceNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceNodeId", sourceNodeId, writeComplex(writeBuffer));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -111,11 +110,10 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetServerUri)
-    writeSimpleField(
-        "targetServerUri", targetServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetServerUri", targetServerUri, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeId)
-    writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNodeId", targetNodeId, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeClass)
     writeSimpleEnumField(

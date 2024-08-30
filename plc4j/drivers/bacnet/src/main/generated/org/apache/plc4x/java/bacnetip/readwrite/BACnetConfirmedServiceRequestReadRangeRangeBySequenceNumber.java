@@ -71,13 +71,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
 
     // Simple Field (referenceSequenceNumber)
-    writeSimpleField(
-        "referenceSequenceNumber",
-        referenceSequenceNumber,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceSequenceNumber", referenceSequenceNumber, writeComplex(writeBuffer));
 
     // Simple Field (count)
-    writeSimpleField("count", count, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("count", count, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber");
   }

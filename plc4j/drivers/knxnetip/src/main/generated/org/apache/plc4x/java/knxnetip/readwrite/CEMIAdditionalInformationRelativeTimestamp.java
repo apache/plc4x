@@ -73,8 +73,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
     writeConstField("len", LEN, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (relativeTimestamp)
-    writeSimpleField(
-        "relativeTimestamp", relativeTimestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relativeTimestamp", relativeTimestamp, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CEMIAdditionalInformationRelativeTimestamp");
   }

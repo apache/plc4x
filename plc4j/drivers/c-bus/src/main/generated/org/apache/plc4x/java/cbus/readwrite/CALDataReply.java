@@ -81,7 +81,7 @@ public class CALDataReply extends CALData implements Message {
             Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (parameterValue)
-    writeSimpleField("parameterValue", parameterValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameterValue", parameterValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALDataReply");
   }

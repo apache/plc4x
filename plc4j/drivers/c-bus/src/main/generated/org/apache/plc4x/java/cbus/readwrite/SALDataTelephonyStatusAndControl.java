@@ -61,7 +61,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
     writeBuffer.pushContext("SALDataTelephonyStatusAndControl");
 
     // Simple Field (telephonyData)
-    writeSimpleField("telephonyData", telephonyData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("telephonyData", telephonyData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataTelephonyStatusAndControl");
   }

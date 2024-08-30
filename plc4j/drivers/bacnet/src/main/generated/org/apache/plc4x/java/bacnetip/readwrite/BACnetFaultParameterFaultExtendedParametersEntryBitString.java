@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBitString
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryBitString");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryBitString");
   }

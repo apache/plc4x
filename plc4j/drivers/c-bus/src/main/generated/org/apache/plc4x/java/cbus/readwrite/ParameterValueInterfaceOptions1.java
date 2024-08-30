@@ -72,7 +72,7 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
     writeBuffer.pushContext("ParameterValueInterfaceOptions1");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));

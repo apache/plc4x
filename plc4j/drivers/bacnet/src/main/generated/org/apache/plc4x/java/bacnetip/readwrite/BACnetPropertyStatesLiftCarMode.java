@@ -60,7 +60,7 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarMode");
 
     // Simple Field (liftCarMode)
-    writeSimpleField("liftCarMode", liftCarMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftCarMode", liftCarMode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftCarMode");
   }

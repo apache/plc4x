@@ -84,25 +84,21 @@ public class BACnetCOVSubscription implements Message {
     writeBuffer.pushContext("BACnetCOVSubscription");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Simple Field (monitoredPropertyReference)
     writeSimpleField(
-        "monitoredPropertyReference",
-        monitoredPropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredPropertyReference", monitoredPropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (issueConfirmedNotifications)
     writeSimpleField(
-        "issueConfirmedNotifications",
-        issueConfirmedNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "issueConfirmedNotifications", issueConfirmedNotifications, writeComplex(writeBuffer));
 
     // Simple Field (timeRemaining)
-    writeSimpleField("timeRemaining", timeRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRemaining", timeRemaining, writeComplex(writeBuffer));
 
     // Optional Field (covIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVSubscription");
   }

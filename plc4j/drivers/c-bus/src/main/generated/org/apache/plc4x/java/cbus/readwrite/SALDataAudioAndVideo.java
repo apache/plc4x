@@ -61,7 +61,7 @@ public class SALDataAudioAndVideo extends SALData implements Message {
     writeBuffer.pushContext("SALDataAudioAndVideo");
 
     // Simple Field (audioVideoData)
-    writeSimpleField("audioVideoData", audioVideoData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("audioVideoData", audioVideoData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataAudioAndVideo");
   }

@@ -83,8 +83,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataOccupancyLowerLimit");
 
     // Simple Field (occupancyLowerLimit)
-    writeSimpleField(
-        "occupancyLowerLimit", occupancyLowerLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("occupancyLowerLimit", occupancyLowerLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

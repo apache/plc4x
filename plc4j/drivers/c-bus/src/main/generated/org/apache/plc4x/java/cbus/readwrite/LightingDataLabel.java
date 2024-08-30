@@ -84,7 +84,7 @@ public class LightingDataLabel extends LightingData implements Message {
     writeSimpleField("group", group, writeByte(writeBuffer, 8));
 
     // Simple Field (labelOptions)
-    writeSimpleField("labelOptions", labelOptions, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("labelOptions", labelOptions, writeComplex(writeBuffer));
 
     // Optional Field (language) (Can be skipped, if the value is null)
     writeOptionalEnumField(

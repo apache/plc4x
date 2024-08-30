@@ -75,13 +75,13 @@ public class BACnetHostAddressEnclosed implements Message {
     writeBuffer.pushContext("BACnetHostAddressEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (hostAddress)
-    writeSimpleField("hostAddress", hostAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hostAddress", hostAddress, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostAddressEnclosed");
   }

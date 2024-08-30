@@ -83,8 +83,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataLastRestartReason");
 
     // Simple Field (lastRestartReason)
-    writeSimpleField(
-        "lastRestartReason", lastRestartReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastRestartReason", lastRestartReason, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetRestartReasonTagged actualValue = getActualValue();

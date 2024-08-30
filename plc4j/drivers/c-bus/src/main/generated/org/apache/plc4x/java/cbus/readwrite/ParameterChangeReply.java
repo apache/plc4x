@@ -68,8 +68,7 @@ public class ParameterChangeReply extends Reply implements Message {
     writeBuffer.pushContext("ParameterChangeReply");
 
     // Simple Field (parameterChange)
-    writeSimpleField(
-        "parameterChange", parameterChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameterChange", parameterChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterChangeReply");
   }

@@ -153,51 +153,44 @@ public class BACnetConfirmedServiceRequestConfirmedEventNotification
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
 
     // Simple Field (processIdentifier)
-    writeSimpleField(
-        "processIdentifier", processIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("processIdentifier", processIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (initiatingDeviceIdentifier)
     writeSimpleField(
-        "initiatingDeviceIdentifier",
-        initiatingDeviceIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "initiatingDeviceIdentifier", initiatingDeviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventObjectIdentifier)
-    writeSimpleField(
-        "eventObjectIdentifier",
-        eventObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventObjectIdentifier", eventObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (notificationClass)
-    writeSimpleField(
-        "notificationClass", notificationClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notificationClass", notificationClass, writeComplex(writeBuffer));
 
     // Simple Field (priority)
-    writeSimpleField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priority", priority, writeComplex(writeBuffer));
 
     // Simple Field (eventType)
-    writeSimpleField("eventType", eventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventType", eventType, writeComplex(writeBuffer));
 
     // Optional Field (messageText) (Can be skipped, if the value is null)
-    writeOptionalField("messageText", messageText, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("messageText", messageText, writeComplex(writeBuffer));
 
     // Simple Field (notifyType)
-    writeSimpleField("notifyType", notifyType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
     // Optional Field (ackRequired) (Can be skipped, if the value is null)
-    writeOptionalField("ackRequired", ackRequired, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("ackRequired", ackRequired, writeComplex(writeBuffer));
 
     // Optional Field (fromState) (Can be skipped, if the value is null)
-    writeOptionalField("fromState", fromState, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("fromState", fromState, writeComplex(writeBuffer));
 
     // Simple Field (toState)
-    writeSimpleField("toState", toState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toState", toState, writeComplex(writeBuffer));
 
     // Optional Field (eventValues) (Can be skipped, if the value is null)
-    writeOptionalField("eventValues", eventValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("eventValues", eventValues, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestConfirmedEventNotification");
   }

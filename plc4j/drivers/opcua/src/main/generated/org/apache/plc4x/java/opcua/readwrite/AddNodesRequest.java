@@ -77,7 +77,7 @@ public class AddNodesRequest extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("AddNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToAdd)
     writeSimpleField("noOfNodesToAdd", noOfNodesToAdd, writeSignedInt(writeBuffer, 32));

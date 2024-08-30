@@ -65,7 +65,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     writeSimpleField(
         "command",
         command,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("FirmataMessageCommand");

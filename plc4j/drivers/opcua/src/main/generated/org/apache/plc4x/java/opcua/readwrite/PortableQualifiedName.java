@@ -68,10 +68,10 @@ public class PortableQualifiedName extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("PortableQualifiedName");
 
     // Simple Field (namespaceUri)
-    writeSimpleField("namespaceUri", namespaceUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("namespaceUri", namespaceUri, writeComplex(writeBuffer));
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("PortableQualifiedName");
   }

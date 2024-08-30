@@ -61,8 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryOctetString
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
 
     // Simple Field (octetStringValue)
-    writeSimpleField(
-        "octetStringValue", octetStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryOctetString");
   }

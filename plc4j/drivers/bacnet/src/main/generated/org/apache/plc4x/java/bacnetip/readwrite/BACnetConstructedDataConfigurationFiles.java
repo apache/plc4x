@@ -100,7 +100,7 @@ public class BACnetConstructedDataConfigurationFiles extends BACnetConstructedDa
     writeOptionalField(
         "numberOfDataElements",
         numberOfDataElements,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((arrayIndexArgument) != (null)) && ((arrayIndexArgument.getActualValue()) == (getZero())));
 
     // Array Field (configurationFiles)

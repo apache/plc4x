@@ -91,7 +91,7 @@ public class ParsingResult extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("ParsingResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfDataStatusCodes)
     writeSimpleField("noOfDataStatusCodes", noOfDataStatusCodes, writeSignedInt(writeBuffer, 32));

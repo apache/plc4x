@@ -86,7 +86,7 @@ public abstract class COTPPacket implements Message {
     writeComplexTypeArrayField("parameters", parameters, writeBuffer);
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("COTPPacket");
   }

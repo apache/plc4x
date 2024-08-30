@@ -119,7 +119,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("PubSubGroupDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -138,8 +138,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityGroupId)
-    writeSimpleField(
-        "securityGroupId", securityGroupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
     // Simple Field (noOfSecurityKeyServices)
     writeSimpleField(

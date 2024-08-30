@@ -80,8 +80,7 @@ public class ErrorReportingSystemCategory implements Message {
             writeUnsignedByte(writeBuffer, 4)));
 
     // Simple Field (systemCategoryType)
-    writeSimpleField(
-        "systemCategoryType", systemCategoryType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("systemCategoryType", systemCategoryType, writeComplex(writeBuffer));
 
     // Simple Field (systemCategoryVariant)
     writeSimpleEnumField(

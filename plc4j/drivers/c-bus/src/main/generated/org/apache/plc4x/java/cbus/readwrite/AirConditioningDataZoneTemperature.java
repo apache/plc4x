@@ -85,10 +85,10 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (temperature)
-    writeSimpleField("temperature", temperature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("temperature", temperature, writeComplex(writeBuffer));
 
     // Simple Field (sensorStatus)
     writeSimpleEnumField(

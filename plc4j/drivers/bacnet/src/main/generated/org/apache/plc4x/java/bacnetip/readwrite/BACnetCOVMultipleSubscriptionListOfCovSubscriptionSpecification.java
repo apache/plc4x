@@ -78,7 +78,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     writeBuffer.pushContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfCovSubscriptionSpecificationEntry)
     writeComplexTypeArrayField(
@@ -87,7 +87,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
         writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");
   }

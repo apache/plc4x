@@ -82,7 +82,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataAverageValue");
 
     // Simple Field (averageValue)
-    writeSimpleField("averageValue", averageValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("averageValue", averageValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

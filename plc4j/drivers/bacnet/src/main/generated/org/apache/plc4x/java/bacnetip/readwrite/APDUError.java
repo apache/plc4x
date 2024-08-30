@@ -102,7 +102,7 @@ public class APDUError extends APDU implements Message {
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     writeBuffer.popContext("APDUError");
   }

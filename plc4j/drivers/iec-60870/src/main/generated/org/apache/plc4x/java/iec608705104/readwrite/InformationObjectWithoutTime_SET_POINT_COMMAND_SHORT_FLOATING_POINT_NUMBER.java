@@ -79,10 +79,7 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_SHORT_FLOATING_POINT
 
     // Simple Field (qos)
     writeSimpleField(
-        "qos",
-        qos,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qos", qos, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_SET_POINT_COMMAND_SHORT_FLOATING_POINT_NUMBER");

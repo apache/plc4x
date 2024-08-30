@@ -80,7 +80,7 @@ public class CBusPointToMultiPointCommandStatus extends CBusPointToMultiPointCom
         writeByte(writeBuffer, 8));
 
     // Simple Field (statusRequest)
-    writeSimpleField("statusRequest", statusRequest, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusRequest", statusRequest, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToMultiPointCommandStatus");
   }

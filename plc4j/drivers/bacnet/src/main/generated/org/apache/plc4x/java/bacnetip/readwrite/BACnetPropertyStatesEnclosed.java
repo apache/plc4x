@@ -75,13 +75,13 @@ public class BACnetPropertyStatesEnclosed implements Message {
     writeBuffer.pushContext("BACnetPropertyStatesEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (propertyState)
-    writeSimpleField("propertyState", propertyState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyState", propertyState, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesEnclosed");
   }

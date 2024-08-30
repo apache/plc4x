@@ -60,7 +60,7 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
     writeBuffer.pushContext("BACnetApplicationTagOctetString");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetApplicationTagOctetString");
   }

@@ -100,21 +100,19 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfReliability");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (reliability)
-    writeSimpleField("reliability", reliability, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reliability", reliability, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (propertyValues)
-    writeSimpleField("propertyValues", propertyValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValues", propertyValues, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfReliability");
   }

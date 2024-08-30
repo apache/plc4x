@@ -68,7 +68,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
     writeBuffer.pushContext("MonitoredSALReply");
 
     // Simple Field (monitoredSAL)
-    writeSimpleField("monitoredSAL", monitoredSAL, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("monitoredSAL", monitoredSAL, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredSALReply");
   }

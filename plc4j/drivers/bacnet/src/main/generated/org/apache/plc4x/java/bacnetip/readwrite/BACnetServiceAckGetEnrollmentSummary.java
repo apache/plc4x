@@ -96,21 +96,19 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     writeBuffer.pushContext("BACnetServiceAckGetEnrollmentSummary");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventType)
-    writeSimpleField("eventType", eventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventType", eventType, writeComplex(writeBuffer));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (priority)
-    writeSimpleField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priority", priority, writeComplex(writeBuffer));
 
     // Optional Field (notificationClass) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "notificationClass", notificationClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("notificationClass", notificationClass, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckGetEnrollmentSummary");
   }

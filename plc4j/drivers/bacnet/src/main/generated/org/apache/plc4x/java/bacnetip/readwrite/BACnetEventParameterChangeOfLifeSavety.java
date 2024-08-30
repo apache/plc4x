@@ -99,29 +99,23 @@ public class BACnetEventParameterChangeOfLifeSavety extends BACnetEventParameter
     writeBuffer.pushContext("BACnetEventParameterChangeOfLifeSavety");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (listOfLifeSavetyAlarmValues)
     writeSimpleField(
-        "listOfLifeSavetyAlarmValues",
-        listOfLifeSavetyAlarmValues,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "listOfLifeSavetyAlarmValues", listOfLifeSavetyAlarmValues, writeComplex(writeBuffer));
 
     // Simple Field (listOfAlarmValues)
-    writeSimpleField(
-        "listOfAlarmValues", listOfAlarmValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfAlarmValues", listOfAlarmValues, writeComplex(writeBuffer));
 
     // Simple Field (modePropertyReference)
-    writeSimpleField(
-        "modePropertyReference",
-        modePropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("modePropertyReference", modePropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfLifeSavety");
   }

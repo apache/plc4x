@@ -65,7 +65,7 @@ public class NLMSetMasterKey extends NLM implements Message {
     writeBuffer.pushContext("NLMSetMasterKey");
 
     // Simple Field (key)
-    writeSimpleField("key", key, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("key", key, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NLMSetMasterKey");
   }

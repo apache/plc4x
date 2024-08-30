@@ -67,7 +67,7 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTagDate");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetContextTagDate");
   }

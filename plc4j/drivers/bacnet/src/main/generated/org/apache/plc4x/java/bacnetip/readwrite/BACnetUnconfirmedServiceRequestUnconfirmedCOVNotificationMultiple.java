@@ -98,27 +98,20 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple
 
     // Simple Field (subscriberProcessIdentifier)
     writeSimpleField(
-        "subscriberProcessIdentifier",
-        subscriberProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "subscriberProcessIdentifier", subscriberProcessIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (initiatingDeviceIdentifier)
     writeSimpleField(
-        "initiatingDeviceIdentifier",
-        initiatingDeviceIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "initiatingDeviceIdentifier", initiatingDeviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (timeRemaining)
-    writeSimpleField("timeRemaining", timeRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRemaining", timeRemaining, writeComplex(writeBuffer));
 
     // Optional Field (timestamp) (Can be skipped, if the value is null)
-    writeOptionalField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovNotifications)
-    writeSimpleField(
-        "listOfCovNotifications",
-        listOfCovNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfCovNotifications", listOfCovNotifications, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestUnconfirmedCOVNotificationMultiple");
   }

@@ -61,7 +61,7 @@ public class SALDataSecurity extends SALData implements Message {
     writeBuffer.pushContext("SALDataSecurity");
 
     // Simple Field (securityData)
-    writeSimpleField("securityData", securityData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityData", securityData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataSecurity");
   }

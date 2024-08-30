@@ -59,7 +59,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     writeBuffer.pushContext("BACnetValueSourceAddress");
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetValueSourceAddress");
   }

@@ -91,7 +91,7 @@ public class CipConnectedResponse extends CipService implements Message {
         "additionalStatusWords", additionalStatusWords, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (data) (Can be skipped, if the value is null)
-    writeOptionalField("data", data, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("data", data, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CipConnectedResponse");
   }

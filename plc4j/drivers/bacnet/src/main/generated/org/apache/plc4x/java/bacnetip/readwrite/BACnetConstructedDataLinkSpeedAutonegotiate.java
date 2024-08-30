@@ -83,10 +83,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeedAutonegotiate");
 
     // Simple Field (linkSpeedAutonegotiate)
-    writeSimpleField(
-        "linkSpeedAutonegotiate",
-        linkSpeedAutonegotiate,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("linkSpeedAutonegotiate", linkSpeedAutonegotiate, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

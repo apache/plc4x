@@ -77,7 +77,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("TransferResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfAvailableSequenceNumbers)
     writeSimpleField(

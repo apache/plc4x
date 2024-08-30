@@ -60,8 +60,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     writeBuffer.pushContext("BACnetChannelValueLightingCommand");
 
     // Simple Field (ligthingCommandValue)
-    writeSimpleField(
-        "ligthingCommandValue", ligthingCommandValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ligthingCommandValue", ligthingCommandValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueLightingCommand");
   }

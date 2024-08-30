@@ -82,7 +82,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataMinimumOutput");
 
     // Simple Field (minimumOutput)
-    writeSimpleField("minimumOutput", minimumOutput, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minimumOutput", minimumOutput, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

@@ -60,7 +60,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorFault");
 
     // Simple Field (escalatorFault)
-    writeSimpleField("escalatorFault", escalatorFault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("escalatorFault", escalatorFault, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesEscalatorFault");
   }

@@ -68,7 +68,7 @@ public class BACnetNodeTypeTagged implements Message {
     writeBuffer.pushContext("BACnetNodeTypeTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

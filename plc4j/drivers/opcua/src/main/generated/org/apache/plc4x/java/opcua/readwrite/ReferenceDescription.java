@@ -105,8 +105,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("ReferenceDescription");
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -115,13 +114,13 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (browseName)
-    writeSimpleField("browseName", browseName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("browseName", browseName, writeComplex(writeBuffer));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (nodeClass)
     writeSimpleEnumField(
@@ -132,7 +131,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
             NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (typeDefinition)
-    writeSimpleField("typeDefinition", typeDefinition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinition", typeDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceDescription");
   }

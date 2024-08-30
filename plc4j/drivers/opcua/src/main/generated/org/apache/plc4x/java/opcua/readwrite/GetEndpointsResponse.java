@@ -77,7 +77,7 @@ public class GetEndpointsResponse extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("GetEndpointsResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfEndpoints)
     writeSimpleField("noOfEndpoints", noOfEndpoints, writeSignedInt(writeBuffer, 32));

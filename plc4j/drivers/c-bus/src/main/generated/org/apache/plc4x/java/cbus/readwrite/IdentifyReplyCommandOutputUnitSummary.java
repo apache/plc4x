@@ -89,7 +89,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     writeBuffer.pushContext("IdentifyReplyCommandOutputUnitSummary");
 
     // Simple Field (unitFlags)
-    writeSimpleField("unitFlags", unitFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitFlags", unitFlags, writeComplex(writeBuffer));
 
     // Optional Field (gavStoreEnabledByte1) (Can be skipped, if the value is null)
     writeOptionalField(

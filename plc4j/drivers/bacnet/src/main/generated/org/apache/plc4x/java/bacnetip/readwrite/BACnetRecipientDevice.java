@@ -60,7 +60,7 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
     writeBuffer.pushContext("BACnetRecipientDevice");
 
     // Simple Field (deviceValue)
-    writeSimpleField("deviceValue", deviceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceValue", deviceValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRecipientDevice");
   }

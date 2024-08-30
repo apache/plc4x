@@ -87,7 +87,7 @@ public class MultipleServiceRequest extends CipService implements Message {
     writeConstField("requestPath", REQUESTPATH, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (data)
-    writeSimpleField("data", data, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("data", data, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MultipleServiceRequest");
   }

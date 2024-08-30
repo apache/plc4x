@@ -61,8 +61,7 @@ public class SALDataAirConditioning extends SALData implements Message {
     writeBuffer.pushContext("SALDataAirConditioning");
 
     // Simple Field (airConditioningData)
-    writeSimpleField(
-        "airConditioningData", airConditioningData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("airConditioningData", airConditioningData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataAirConditioning");
   }

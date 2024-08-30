@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND
 
     // Simple Field (bsi)
     writeSimpleField(
-        "bsi",
-        bsi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bsi", bsi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND");
   }

@@ -67,7 +67,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
     writeImplicitField("itemLength", itemLength, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7VarRequestParameterItemAddress");
   }

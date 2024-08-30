@@ -63,7 +63,7 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
     writeBuffer.pushContext("CBusCommandPointToPoint");
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusCommandPointToPoint");
   }

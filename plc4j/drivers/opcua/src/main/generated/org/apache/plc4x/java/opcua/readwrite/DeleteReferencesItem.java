@@ -91,11 +91,10 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("DeleteReferencesItem");
 
     // Simple Field (sourceNodeId)
-    writeSimpleField("sourceNodeId", sourceNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceNodeId", sourceNodeId, writeComplex(writeBuffer));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -104,7 +103,7 @@ public class DeleteReferencesItem extends ExtensionObjectDefinition implements M
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetNodeId)
-    writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNodeId", targetNodeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

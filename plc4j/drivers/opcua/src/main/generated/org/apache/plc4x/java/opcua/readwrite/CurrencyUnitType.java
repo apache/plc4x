@@ -87,10 +87,10 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
     writeSimpleField("exponent", exponent, writeSignedByte(writeBuffer, 8));
 
     // Simple Field (alphabeticCode)
-    writeSimpleField("alphabeticCode", alphabeticCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alphabeticCode", alphabeticCode, writeComplex(writeBuffer));
 
     // Simple Field (currency)
-    writeSimpleField("currency", currency, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("currency", currency, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CurrencyUnitType");
   }

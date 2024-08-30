@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_INTERROGATION_COMMAND extends Informat
 
     // Simple Field (qoi)
     writeSimpleField(
-        "qoi",
-        qoi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qoi", qoi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_INTERROGATION_COMMAND");
   }

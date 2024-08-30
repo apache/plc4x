@@ -82,7 +82,7 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataAbsenteeLimit");
 
     // Simple Field (absenteeLimit)
-    writeSimpleField("absenteeLimit", absenteeLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("absenteeLimit", absenteeLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

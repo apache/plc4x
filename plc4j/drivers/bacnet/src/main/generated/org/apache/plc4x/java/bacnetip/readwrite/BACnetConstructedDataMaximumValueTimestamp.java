@@ -83,10 +83,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataMaximumValueTimestamp");
 
     // Simple Field (maximumValueTimestamp)
-    writeSimpleField(
-        "maximumValueTimestamp",
-        maximumValueTimestamp,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maximumValueTimestamp", maximumValueTimestamp, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

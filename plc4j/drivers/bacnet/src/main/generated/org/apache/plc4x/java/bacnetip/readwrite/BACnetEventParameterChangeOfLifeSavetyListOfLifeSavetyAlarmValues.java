@@ -75,14 +75,14 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     writeBuffer.pushContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfLifeSavetyAlarmValues)
     writeComplexTypeArrayField(
         "listOfLifeSavetyAlarmValues", listOfLifeSavetyAlarmValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");
   }

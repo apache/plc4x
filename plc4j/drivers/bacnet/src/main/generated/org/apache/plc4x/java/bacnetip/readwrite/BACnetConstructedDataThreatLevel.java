@@ -82,7 +82,7 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataThreatLevel");
 
     // Simple Field (threatLevel)
-    writeSimpleField("threatLevel", threatLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("threatLevel", threatLevel, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessThreatLevel actualValue = getActualValue();

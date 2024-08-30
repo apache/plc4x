@@ -140,24 +140,22 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("CreateSessionResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (sessionId)
-    writeSimpleField("sessionId", sessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionId", sessionId, writeComplex(writeBuffer));
 
     // Simple Field (authenticationToken)
-    writeSimpleField(
-        "authenticationToken", authenticationToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationToken", authenticationToken, writeComplex(writeBuffer));
 
     // Simple Field (revisedSessionTimeout)
     writeSimpleField("revisedSessionTimeout", revisedSessionTimeout, writeDouble(writeBuffer, 64));
 
     // Simple Field (serverNonce)
-    writeSimpleField("serverNonce", serverNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverNonce", serverNonce, writeComplex(writeBuffer));
 
     // Simple Field (serverCertificate)
-    writeSimpleField(
-        "serverCertificate", serverCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverCertificate", serverCertificate, writeComplex(writeBuffer));
 
     // Simple Field (noOfServerEndpoints)
     writeSimpleField("noOfServerEndpoints", noOfServerEndpoints, writeSignedInt(writeBuffer, 32));
@@ -176,8 +174,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
         "serverSoftwareCertificates", serverSoftwareCertificates, writeBuffer);
 
     // Simple Field (serverSignature)
-    writeSimpleField(
-        "serverSignature", serverSignature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverSignature", serverSignature, writeComplex(writeBuffer));
 
     // Simple Field (maxRequestMessageSize)
     writeSimpleField(

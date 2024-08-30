@@ -83,8 +83,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataPriorityForWriting");
 
     // Simple Field (priorityForWriting)
-    writeSimpleField(
-        "priorityForWriting", priorityForWriting, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priorityForWriting", priorityForWriting, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

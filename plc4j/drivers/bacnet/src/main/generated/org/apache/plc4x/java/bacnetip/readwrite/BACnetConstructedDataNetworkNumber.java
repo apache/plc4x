@@ -82,7 +82,7 @@ public class BACnetConstructedDataNetworkNumber extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataNetworkNumber");
 
     // Simple Field (networkNumber)
-    writeSimpleField("networkNumber", networkNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

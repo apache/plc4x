@@ -78,7 +78,7 @@ public class TranslateBrowsePathsToNodeIdsRequest extends ExtensionObjectDefinit
     writeBuffer.pushContext("TranslateBrowsePathsToNodeIdsRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfBrowsePaths)
     writeSimpleField("noOfBrowsePaths", noOfBrowsePaths, writeSignedInt(writeBuffer, 32));

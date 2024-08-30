@@ -70,13 +70,13 @@ public class BACnetAuthenticationFactor implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactor");
 
     // Simple Field (formatType)
-    writeSimpleField("formatType", formatType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatType", formatType, writeComplex(writeBuffer));
 
     // Simple Field (formatClass)
-    writeSimpleField("formatClass", formatClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatClass", formatClass, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactor");
   }

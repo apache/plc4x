@@ -84,9 +84,7 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
 
     // Simple Field (recordsSinceNotifications)
     writeSimpleField(
-        "recordsSinceNotifications",
-        recordsSinceNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "recordsSinceNotifications", recordsSinceNotifications, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

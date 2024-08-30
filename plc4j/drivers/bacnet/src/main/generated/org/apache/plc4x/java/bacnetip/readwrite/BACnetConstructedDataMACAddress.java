@@ -82,7 +82,7 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataMACAddress");
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();

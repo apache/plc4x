@@ -83,8 +83,7 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataSetpointReference");
 
     // Simple Field (setpointReference)
-    writeSimpleField(
-        "setpointReference", setpointReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("setpointReference", setpointReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetSetpointReference actualValue = getActualValue();

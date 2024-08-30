@@ -83,7 +83,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataClientCOVIncrement");
 
     // Simple Field (covIncrement)
-    writeSimpleField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetClientCOV actualValue = getActualValue();

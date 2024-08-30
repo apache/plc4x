@@ -83,8 +83,7 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataAutoSlaveDiscovery");
 
     // Simple Field (autoSlaveDiscovery)
-    writeSimpleField(
-        "autoSlaveDiscovery", autoSlaveDiscovery, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("autoSlaveDiscovery", autoSlaveDiscovery, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

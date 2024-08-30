@@ -119,14 +119,13 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("EndpointDescription");
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (server)
-    writeSimpleField("server", server, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("server", server, writeComplex(writeBuffer));
 
     // Simple Field (serverCertificate)
-    writeSimpleField(
-        "serverCertificate", serverCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverCertificate", serverCertificate, writeComplex(writeBuffer));
 
     // Simple Field (securityMode)
     writeSimpleEnumField(
@@ -139,8 +138,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfUserIdentityTokens)
     writeSimpleField(
@@ -150,8 +148,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     writeComplexTypeArrayField("userIdentityTokens", userIdentityTokens, writeBuffer);
 
     // Simple Field (transportProfileUri)
-    writeSimpleField(
-        "transportProfileUri", transportProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProfileUri", transportProfileUri, writeComplex(writeBuffer));
 
     // Simple Field (securityLevel)
     writeSimpleField("securityLevel", securityLevel, writeUnsignedShort(writeBuffer, 8));

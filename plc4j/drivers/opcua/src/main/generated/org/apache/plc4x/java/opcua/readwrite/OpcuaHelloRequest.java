@@ -81,10 +81,10 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
     writeSimpleField("version", version, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (limits)
-    writeSimpleField("limits", limits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limits", limits, writeComplex(writeBuffer));
 
     // Simple Field (endpoint)
-    writeSimpleField("endpoint", endpoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpoint", endpoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaHelloRequest");
   }

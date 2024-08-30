@@ -82,8 +82,7 @@ public class BACnetConstructedDataProgramLocation extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataProgramLocation");
 
     // Simple Field (programLocation)
-    writeSimpleField(
-        "programLocation", programLocation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("programLocation", programLocation, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

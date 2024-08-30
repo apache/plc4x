@@ -87,26 +87,23 @@ public class BACnetCOVMultipleSubscription implements Message {
     writeBuffer.pushContext("BACnetCOVMultipleSubscription");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Simple Field (issueConfirmedNotifications)
     writeSimpleField(
-        "issueConfirmedNotifications",
-        issueConfirmedNotifications,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "issueConfirmedNotifications", issueConfirmedNotifications, writeComplex(writeBuffer));
 
     // Simple Field (timeRemaining)
-    writeSimpleField("timeRemaining", timeRemaining, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRemaining", timeRemaining, writeComplex(writeBuffer));
 
     // Simple Field (maxNotificationDelay)
-    writeSimpleField(
-        "maxNotificationDelay", maxNotificationDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxNotificationDelay", maxNotificationDelay, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovSubscriptionSpecification)
     writeSimpleField(
         "listOfCovSubscriptionSpecification",
         listOfCovSubscriptionSpecification,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscription");
   }

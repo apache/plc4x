@@ -60,7 +60,7 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesRestartReason");
 
     // Simple Field (restartReason)
-    writeSimpleField("restartReason", restartReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("restartReason", restartReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesRestartReason");
   }

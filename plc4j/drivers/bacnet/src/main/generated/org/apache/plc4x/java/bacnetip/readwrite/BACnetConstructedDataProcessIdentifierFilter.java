@@ -83,10 +83,7 @@ public class BACnetConstructedDataProcessIdentifierFilter extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataProcessIdentifierFilter");
 
     // Simple Field (processIdentifierFilter)
-    writeSimpleField(
-        "processIdentifierFilter",
-        processIdentifierFilter,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("processIdentifierFilter", processIdentifierFilter, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetProcessIdSelection actualValue = getActualValue();

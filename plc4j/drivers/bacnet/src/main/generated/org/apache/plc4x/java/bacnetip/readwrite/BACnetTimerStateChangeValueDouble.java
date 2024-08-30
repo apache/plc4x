@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueDouble extends BACnetTimerStateChangeVal
     writeBuffer.pushContext("BACnetTimerStateChangeValueDouble");
 
     // Simple Field (doubleValue)
-    writeSimpleField("doubleValue", doubleValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueDouble");
   }

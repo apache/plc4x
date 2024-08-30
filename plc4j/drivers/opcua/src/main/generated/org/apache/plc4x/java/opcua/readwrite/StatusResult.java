@@ -68,10 +68,10 @@ public class StatusResult extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("StatusResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (diagnosticInfo)
-    writeSimpleField("diagnosticInfo", diagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("diagnosticInfo", diagnosticInfo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("StatusResult");
   }

@@ -73,10 +73,10 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
     writeImplicitField("notificationLength", notificationLength, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (status)
-    writeSimpleField("status", status, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("status", status, writeComplex(writeBuffer));
 
     // Simple Field (diagnosticInfo)
-    writeSimpleField("diagnosticInfo", diagnosticInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("diagnosticInfo", diagnosticInfo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("StatusChangeNotification");
   }

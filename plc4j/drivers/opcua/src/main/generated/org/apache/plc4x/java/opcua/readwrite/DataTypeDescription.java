@@ -68,10 +68,10 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("DataTypeDescription");
 
     // Simple Field (dataTypeId)
-    writeSimpleField("dataTypeId", dataTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataTypeId", dataTypeId, writeComplex(writeBuffer));
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataTypeDescription");
   }

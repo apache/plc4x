@@ -70,10 +70,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectiden
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
-    writeSimpleField(
-        "objectidentifierValue",
-        objectidentifierValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectidentifierValue", objectidentifierValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueObjectidentifier");

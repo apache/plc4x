@@ -76,10 +76,10 @@ public class ReplyOrConfirmationReply extends ReplyOrConfirmation implements Mes
     writeBuffer.pushContext("ReplyOrConfirmationReply");
 
     // Simple Field (reply)
-    writeSimpleField("reply", reply, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reply", reply, writeComplex(writeBuffer));
 
     // Simple Field (termination)
-    writeSimpleField("termination", termination, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("termination", termination, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReplyOrConfirmationReply");
   }

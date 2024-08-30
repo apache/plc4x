@@ -122,21 +122,14 @@ public class BACnetConstructedDataElement implements Message {
 
     // Optional Field (applicationTag) (Can be skipped, if the value is null)
     writeOptionalField(
-        "applicationTag",
-        applicationTag,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsApplicationTag());
+        "applicationTag", applicationTag, writeComplex(writeBuffer), getIsApplicationTag());
 
     // Optional Field (contextTag) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "contextTag", contextTag, new DataWriterComplexDefault<>(writeBuffer), getIsContextTag());
+    writeOptionalField("contextTag", contextTag, writeComplex(writeBuffer), getIsContextTag());
 
     // Optional Field (constructedData) (Can be skipped, if the value is null)
     writeOptionalField(
-        "constructedData",
-        constructedData,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getIsConstructedData());
+        "constructedData", constructedData, writeComplex(writeBuffer), getIsConstructedData());
 
     writeBuffer.popContext("BACnetConstructedDataElement");
   }

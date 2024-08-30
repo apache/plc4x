@@ -68,7 +68,7 @@ public class BACnetLogDataLogStatus extends BACnetLogData implements Message {
     writeBuffer.pushContext("BACnetLogDataLogStatus");
 
     // Simple Field (logStatus)
-    writeSimpleField("logStatus", logStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logStatus", logStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogStatus");
   }

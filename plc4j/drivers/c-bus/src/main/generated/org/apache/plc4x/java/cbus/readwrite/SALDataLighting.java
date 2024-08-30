@@ -61,7 +61,7 @@ public class SALDataLighting extends SALData implements Message {
     writeBuffer.pushContext("SALDataLighting");
 
     // Simple Field (lightingData)
-    writeSimpleField("lightingData", lightingData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightingData", lightingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataLighting");
   }

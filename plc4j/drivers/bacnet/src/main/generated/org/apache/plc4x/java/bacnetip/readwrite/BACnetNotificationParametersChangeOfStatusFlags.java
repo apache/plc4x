@@ -93,19 +93,16 @@ public class BACnetNotificationParametersChangeOfStatusFlags extends BACnetNotif
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfStatusFlags");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Simple Field (referencedFlags)
-    writeSimpleField(
-        "referencedFlags", referencedFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referencedFlags", referencedFlags, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfStatusFlags");
   }

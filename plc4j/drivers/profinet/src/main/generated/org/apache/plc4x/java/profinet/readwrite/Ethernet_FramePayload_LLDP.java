@@ -62,7 +62,7 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
     writeBuffer.pushContext("Ethernet_FramePayload_LLDP");
 
     // Simple Field (pdu)
-    writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pdu", pdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_LLDP");
   }

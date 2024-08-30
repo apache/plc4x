@@ -69,13 +69,10 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntr
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (listOfCovReferences)
-    writeSimpleField(
-        "listOfCovReferences", listOfCovReferences, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfCovReferences", listOfCovReferences, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry");
   }

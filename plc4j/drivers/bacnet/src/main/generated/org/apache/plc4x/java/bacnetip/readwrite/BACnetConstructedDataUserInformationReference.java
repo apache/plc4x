@@ -84,9 +84,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
 
     // Simple Field (userInformationReference)
     writeSimpleField(
-        "userInformationReference",
-        userInformationReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "userInformationReference", userInformationReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

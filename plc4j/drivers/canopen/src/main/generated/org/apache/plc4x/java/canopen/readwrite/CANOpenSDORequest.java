@@ -78,7 +78,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
             writeUnsignedByte(writeBuffer, 3)));
 
     // Simple Field (request)
-    writeSimpleField("request", request, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("request", request, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenSDORequest");
   }

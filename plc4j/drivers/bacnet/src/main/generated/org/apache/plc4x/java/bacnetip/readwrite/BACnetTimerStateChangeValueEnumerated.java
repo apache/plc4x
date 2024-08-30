@@ -67,8 +67,7 @@ public class BACnetTimerStateChangeValueEnumerated extends BACnetTimerStateChang
     writeBuffer.pushContext("BACnetTimerStateChangeValueEnumerated");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueEnumerated");
   }

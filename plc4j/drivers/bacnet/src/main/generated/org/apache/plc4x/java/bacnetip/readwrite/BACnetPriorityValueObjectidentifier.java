@@ -66,10 +66,7 @@ public class BACnetPriorityValueObjectidentifier extends BACnetPriorityValue imp
     writeBuffer.pushContext("BACnetPriorityValueObjectidentifier");
 
     // Simple Field (objectidentifierValue)
-    writeSimpleField(
-        "objectidentifierValue",
-        objectidentifierValue,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectidentifierValue", objectidentifierValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueObjectidentifier");
   }

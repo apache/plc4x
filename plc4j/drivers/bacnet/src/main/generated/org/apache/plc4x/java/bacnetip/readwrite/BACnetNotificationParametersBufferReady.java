@@ -100,23 +100,19 @@ public class BACnetNotificationParametersBufferReady extends BACnetNotificationP
     writeBuffer.pushContext("BACnetNotificationParametersBufferReady");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (bufferProperty)
-    writeSimpleField("bufferProperty", bufferProperty, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bufferProperty", bufferProperty, writeComplex(writeBuffer));
 
     // Simple Field (previousNotification)
-    writeSimpleField(
-        "previousNotification", previousNotification, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("previousNotification", previousNotification, writeComplex(writeBuffer));
 
     // Simple Field (currentNotification)
-    writeSimpleField(
-        "currentNotification", currentNotification, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("currentNotification", currentNotification, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersBufferReady");
   }

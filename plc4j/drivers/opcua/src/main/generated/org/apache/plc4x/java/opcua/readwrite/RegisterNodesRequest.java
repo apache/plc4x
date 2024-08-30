@@ -77,7 +77,7 @@ public class RegisterNodesRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("RegisterNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToRegister)
     writeSimpleField("noOfNodesToRegister", noOfNodesToRegister, writeSignedInt(writeBuffer, 32));

@@ -64,7 +64,7 @@ public class SDOInitiateDownloadResponse extends SDOResponse implements Message 
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 5));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (int) 0x00, writeSignedInt(writeBuffer, 32));

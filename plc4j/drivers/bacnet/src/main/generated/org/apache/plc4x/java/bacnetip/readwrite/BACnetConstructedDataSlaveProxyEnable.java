@@ -83,8 +83,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataSlaveProxyEnable");
 
     // Simple Field (slaveProxyEnable)
-    writeSimpleField(
-        "slaveProxyEnable", slaveProxyEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("slaveProxyEnable", slaveProxyEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

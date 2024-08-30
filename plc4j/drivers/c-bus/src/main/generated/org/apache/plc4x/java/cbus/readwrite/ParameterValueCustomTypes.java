@@ -66,7 +66,7 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     writeBuffer.pushContext("ParameterValueCustomTypes");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterValueCustomTypes");
   }

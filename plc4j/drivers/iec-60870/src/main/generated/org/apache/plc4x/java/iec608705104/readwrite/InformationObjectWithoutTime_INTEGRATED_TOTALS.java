@@ -64,10 +64,7 @@ public class InformationObjectWithoutTime_INTEGRATED_TOTALS extends InformationO
 
     // Simple Field (bcr)
     writeSimpleField(
-        "bcr",
-        bcr,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "bcr", bcr, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_INTEGRATED_TOTALS");
   }

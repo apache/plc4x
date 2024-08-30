@@ -83,8 +83,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataAuthenticationStatus");
 
     // Simple Field (authenticationStatus)
-    writeSimpleField(
-        "authenticationStatus", authenticationStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationStatus", authenticationStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAuthenticationStatusTagged actualValue = getActualValue();

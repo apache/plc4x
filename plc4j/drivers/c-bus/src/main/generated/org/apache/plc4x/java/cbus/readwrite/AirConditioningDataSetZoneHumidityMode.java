@@ -106,11 +106,10 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (humidityModeAndFlags)
-    writeSimpleField(
-        "humidityModeAndFlags", humidityModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidityModeAndFlags", humidityModeAndFlags, writeComplex(writeBuffer));
 
     // Simple Field (humidityType)
     writeSimpleEnumField(
@@ -124,23 +123,17 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
 
     // Optional Field (level) (Can be skipped, if the value is null)
     writeOptionalField(
-        "level",
-        level,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelHumidity());
+        "level", level, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelHumidity());
 
     // Optional Field (rawLevel) (Can be skipped, if the value is null)
     writeOptionalField(
-        "rawLevel",
-        rawLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
-        getHumidityModeAndFlags().getIsLevelRaw());
+        "rawLevel", rawLevel, writeComplex(writeBuffer), getHumidityModeAndFlags().getIsLevelRaw());
 
     // Optional Field (auxLevel) (Can be skipped, if the value is null)
     writeOptionalField(
         "auxLevel",
         auxLevel,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         getHumidityModeAndFlags().getIsAuxLevelUsed());
 
     writeBuffer.popContext("AirConditioningDataSetZoneHumidityMode");

@@ -68,10 +68,10 @@ public class KeyValuePair extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("KeyValuePair");
 
     // Simple Field (key)
-    writeSimpleField("key", key, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("key", key, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("KeyValuePair");
   }

@@ -61,8 +61,7 @@ public class SALDataAccessControl extends SALData implements Message {
     writeBuffer.pushContext("SALDataAccessControl");
 
     // Simple Field (accessControlData)
-    writeSimpleField(
-        "accessControlData", accessControlData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessControlData", accessControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataAccessControl");
   }

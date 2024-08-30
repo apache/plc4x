@@ -75,7 +75,7 @@ public class BrowsePathResult extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("BrowsePathResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfTargets)
     writeSimpleField("noOfTargets", noOfTargets, writeSignedInt(writeBuffer, 32));

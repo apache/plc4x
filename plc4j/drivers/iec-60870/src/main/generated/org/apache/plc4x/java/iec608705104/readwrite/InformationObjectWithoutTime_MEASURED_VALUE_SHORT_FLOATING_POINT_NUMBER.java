@@ -79,10 +79,7 @@ public class InformationObjectWithoutTime_MEASURED_VALUE_SHORT_FLOATING_POINT_NU
 
     // Simple Field (qds)
     writeSimpleField(
-        "qds",
-        qds,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qds", qds, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_MEASURED_VALUE_SHORT_FLOATING_POINT_NUMBER");

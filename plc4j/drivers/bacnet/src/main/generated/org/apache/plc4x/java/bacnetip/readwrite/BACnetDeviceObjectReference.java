@@ -63,12 +63,10 @@ public class BACnetDeviceObjectReference implements Message {
     writeBuffer.pushContext("BACnetDeviceObjectReference");
 
     // Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDeviceObjectReference");
   }

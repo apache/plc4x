@@ -82,8 +82,7 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataLastCommandTime");
 
     // Simple Field (lastCommandTime)
-    writeSimpleField(
-        "lastCommandTime", lastCommandTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastCommandTime", lastCommandTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimeStamp actualValue = getActualValue();

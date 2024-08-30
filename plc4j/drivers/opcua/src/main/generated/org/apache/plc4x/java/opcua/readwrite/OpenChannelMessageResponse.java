@@ -87,18 +87,14 @@ public class OpenChannelMessageResponse extends OpenChannelMessage implements Me
     writeSimpleField("secureChannelId", secureChannelId, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (senderCertificate)
-    writeSimpleField(
-        "senderCertificate", senderCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("senderCertificate", senderCertificate, writeComplex(writeBuffer));
 
     // Simple Field (receiverCertificateThumbprint)
     writeSimpleField(
-        "receiverCertificateThumbprint",
-        receiverCertificateThumbprint,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "receiverCertificateThumbprint", receiverCertificateThumbprint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpenChannelMessageResponse");
   }

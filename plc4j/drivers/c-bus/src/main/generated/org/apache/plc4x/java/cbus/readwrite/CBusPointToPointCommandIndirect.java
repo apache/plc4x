@@ -81,13 +81,13 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
     writeBuffer.pushContext("CBusPointToPointCommandIndirect");
 
     // Simple Field (bridgeAddress)
-    writeSimpleField("bridgeAddress", bridgeAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bridgeAddress", bridgeAddress, writeComplex(writeBuffer));
 
     // Simple Field (networkRoute)
-    writeSimpleField("networkRoute", networkRoute, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkRoute", networkRoute, writeComplex(writeBuffer));
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointCommandIndirect");
   }

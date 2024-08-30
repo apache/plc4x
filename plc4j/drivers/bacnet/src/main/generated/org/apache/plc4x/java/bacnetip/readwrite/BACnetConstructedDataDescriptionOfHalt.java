@@ -83,8 +83,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataDescriptionOfHalt");
 
     // Simple Field (descriptionForHalt)
-    writeSimpleField(
-        "descriptionForHalt", descriptionForHalt, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("descriptionForHalt", descriptionForHalt, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

@@ -70,8 +70,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterS
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");
 
     // Simple Field (characterStringValue)
-    writeSimpleField(
-        "characterStringValue", characterStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("characterStringValue", characterStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString");

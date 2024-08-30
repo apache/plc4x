@@ -83,16 +83,16 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     writeBuffer.pushContext("BACnetEventParameterChangeOfStatusFlags");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (selectedFlags)
-    writeSimpleField("selectedFlags", selectedFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("selectedFlags", selectedFlags, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfStatusFlags");
   }

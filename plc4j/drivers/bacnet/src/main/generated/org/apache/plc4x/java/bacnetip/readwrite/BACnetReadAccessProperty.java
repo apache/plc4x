@@ -75,14 +75,13 @@ public class BACnetReadAccessProperty implements Message {
     writeBuffer.pushContext("BACnetReadAccessProperty");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (readResult) (Can be skipped, if the value is null)
-    writeOptionalField("readResult", readResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("readResult", readResult, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessProperty");
   }

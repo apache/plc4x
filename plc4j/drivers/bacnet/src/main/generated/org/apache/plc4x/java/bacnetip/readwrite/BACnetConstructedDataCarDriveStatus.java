@@ -82,7 +82,7 @@ public class BACnetConstructedDataCarDriveStatus extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataCarDriveStatus");
 
     // Simple Field (carDriveStatus)
-    writeSimpleField("carDriveStatus", carDriveStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carDriveStatus", carDriveStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLiftCarDriveStatusTagged actualValue = getActualValue();

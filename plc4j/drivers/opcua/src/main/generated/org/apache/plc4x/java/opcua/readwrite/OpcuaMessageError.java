@@ -79,7 +79,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
             OpcuaStatusCode::getValue, OpcuaStatusCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (reason)
-    writeSimpleField("reason", reason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reason", reason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaMessageError");
   }

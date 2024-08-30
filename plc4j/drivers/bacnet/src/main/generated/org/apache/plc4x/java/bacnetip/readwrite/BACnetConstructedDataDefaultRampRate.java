@@ -82,8 +82,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataDefaultRampRate");
 
     // Simple Field (defaultRampRate)
-    writeSimpleField(
-        "defaultRampRate", defaultRampRate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("defaultRampRate", defaultRampRate, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

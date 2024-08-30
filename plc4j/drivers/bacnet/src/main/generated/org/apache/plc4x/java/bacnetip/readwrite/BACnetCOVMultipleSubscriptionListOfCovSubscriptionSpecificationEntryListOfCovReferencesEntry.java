@@ -74,14 +74,13 @@ class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOf
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry");
 
     // Simple Field (monitoredProperty)
-    writeSimpleField(
-        "monitoredProperty", monitoredProperty, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("monitoredProperty", monitoredProperty, writeComplex(writeBuffer));
 
     // Optional Field (covIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Simple Field (timestamped)
-    writeSimpleField("timestamped", timestamped, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamped", timestamped, writeComplex(writeBuffer));
 
     writeBuffer.popContext(
         "BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry");

@@ -82,7 +82,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataOutOfService");
 
     // Simple Field (outOfService)
-    writeSimpleField("outOfService", outOfService, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("outOfService", outOfService, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

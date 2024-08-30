@@ -75,13 +75,13 @@ public class BACnetAssignedLandingCallsLandingCallsList implements Message {
     writeBuffer.pushContext("BACnetAssignedLandingCallsLandingCallsList");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (landingCalls)
     writeComplexTypeArrayField("landingCalls", landingCalls, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAssignedLandingCallsLandingCallsList");
   }

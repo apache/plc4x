@@ -69,7 +69,7 @@ public class BACnetEventLogRecordLogDatumTimeChange extends BACnetEventLogRecord
     writeBuffer.pushContext("BACnetEventLogRecordLogDatumTimeChange");
 
     // Simple Field (timeChange)
-    writeSimpleField("timeChange", timeChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeChange", timeChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventLogRecordLogDatumTimeChange");
   }

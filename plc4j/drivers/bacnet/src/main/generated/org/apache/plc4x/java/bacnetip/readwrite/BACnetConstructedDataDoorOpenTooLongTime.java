@@ -83,8 +83,7 @@ public class BACnetConstructedDataDoorOpenTooLongTime extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataDoorOpenTooLongTime");
 
     // Simple Field (doorOpenTooLongTime)
-    writeSimpleField(
-        "doorOpenTooLongTime", doorOpenTooLongTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorOpenTooLongTime", doorOpenTooLongTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

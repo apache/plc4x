@@ -77,7 +77,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("DeleteReferencesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferencesToDelete)
     writeSimpleField(

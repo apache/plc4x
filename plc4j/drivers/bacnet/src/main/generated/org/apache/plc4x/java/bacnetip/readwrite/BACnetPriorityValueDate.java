@@ -66,7 +66,7 @@ public class BACnetPriorityValueDate extends BACnetPriorityValue implements Mess
     writeBuffer.pushContext("BACnetPriorityValueDate");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueDate");
   }

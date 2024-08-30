@@ -98,14 +98,13 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("AxisInformation");
 
     // Simple Field (engineeringUnits)
-    writeSimpleField(
-        "engineeringUnits", engineeringUnits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("engineeringUnits", engineeringUnits, writeComplex(writeBuffer));
 
     // Simple Field (eURange)
-    writeSimpleField("eURange", eURange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eURange", eURange, writeComplex(writeBuffer));
 
     // Simple Field (title)
-    writeSimpleField("title", title, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("title", title, writeComplex(writeBuffer));
 
     // Simple Field (axisScaleType)
     writeSimpleEnumField(

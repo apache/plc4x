@@ -61,8 +61,7 @@ public class SALDataEnableControl extends SALData implements Message {
     writeBuffer.pushContext("SALDataEnableControl");
 
     // Simple Field (enableControlData)
-    writeSimpleField(
-        "enableControlData", enableControlData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enableControlData", enableControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataEnableControl");
   }

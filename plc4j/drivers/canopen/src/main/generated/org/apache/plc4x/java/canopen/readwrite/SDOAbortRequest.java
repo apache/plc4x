@@ -61,7 +61,7 @@ public class SDOAbortRequest extends SDORequest implements Message {
     writeBuffer.pushContext("SDOAbortRequest");
 
     // Simple Field (abort)
-    writeSimpleField("abort", abort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("abort", abort, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SDOAbortRequest");
   }

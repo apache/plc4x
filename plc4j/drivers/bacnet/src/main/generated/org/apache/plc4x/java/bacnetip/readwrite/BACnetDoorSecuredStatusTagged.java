@@ -68,7 +68,7 @@ public class BACnetDoorSecuredStatusTagged implements Message {
     writeBuffer.pushContext("BACnetDoorSecuredStatusTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

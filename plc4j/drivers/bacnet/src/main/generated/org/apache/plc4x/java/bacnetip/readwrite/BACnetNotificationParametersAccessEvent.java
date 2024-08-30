@@ -121,33 +121,28 @@ public class BACnetNotificationParametersAccessEvent extends BACnetNotificationP
     writeBuffer.pushContext("BACnetNotificationParametersAccessEvent");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (accessEvent)
-    writeSimpleField("accessEvent", accessEvent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEvent", accessEvent, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (accessEventTag)
-    writeSimpleField("accessEventTag", accessEventTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventTag", accessEventTag, writeComplex(writeBuffer));
 
     // Simple Field (accessEventTime)
-    writeSimpleField(
-        "accessEventTime", accessEventTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEventTime", accessEventTime, writeComplex(writeBuffer));
 
     // Simple Field (accessCredential)
-    writeSimpleField(
-        "accessCredential", accessCredential, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessCredential", accessCredential, writeComplex(writeBuffer));
 
     // Optional Field (authenticationFactor) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersAccessEvent");
   }

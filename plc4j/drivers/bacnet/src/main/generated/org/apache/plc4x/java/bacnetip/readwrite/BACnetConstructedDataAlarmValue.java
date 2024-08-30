@@ -82,7 +82,7 @@ public class BACnetConstructedDataAlarmValue extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataAlarmValue");
 
     // Simple Field (binaryPv)
-    writeSimpleField("binaryPv", binaryPv, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("binaryPv", binaryPv, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetBinaryPVTagged actualValue = getActualValue();

@@ -60,8 +60,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDirection");
 
     // Simple Field (liftCarDirection)
-    writeSimpleField(
-        "liftCarDirection", liftCarDirection, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftCarDirection", liftCarDirection, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftCarDirection");
   }

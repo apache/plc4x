@@ -83,8 +83,7 @@ public class BACnetConstructedDataAccompanimentTime extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataAccompanimentTime");
 
     // Simple Field (accompanimentTime)
-    writeSimpleField(
-        "accompanimentTime", accompanimentTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accompanimentTime", accompanimentTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

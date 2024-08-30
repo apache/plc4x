@@ -82,7 +82,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataEnergyMeterRef");
 
     // Simple Field (energyMeterRef)
-    writeSimpleField("energyMeterRef", energyMeterRef, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("energyMeterRef", energyMeterRef, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();

@@ -77,7 +77,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("RegisterNodesResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfRegisteredNodeIds)
     writeSimpleField(

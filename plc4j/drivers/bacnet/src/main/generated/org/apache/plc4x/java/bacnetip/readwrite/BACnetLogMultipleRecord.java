@@ -61,10 +61,10 @@ public class BACnetLogMultipleRecord implements Message {
     writeBuffer.pushContext("BACnetLogMultipleRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (logData)
-    writeSimpleField("logData", logData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logData", logData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogMultipleRecord");
   }

@@ -112,14 +112,14 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
             ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (buildInfo)
-    writeSimpleField("buildInfo", buildInfo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("buildInfo", buildInfo, writeComplex(writeBuffer));
 
     // Simple Field (secondsTillShutdown)
     writeSimpleField(
         "secondsTillShutdown", secondsTillShutdown, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (shutdownReason)
-    writeSimpleField("shutdownReason", shutdownReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("shutdownReason", shutdownReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ServerStatusDataType");
   }

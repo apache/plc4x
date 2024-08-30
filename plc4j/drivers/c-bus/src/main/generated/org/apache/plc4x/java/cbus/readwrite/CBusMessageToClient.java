@@ -68,7 +68,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     writeBuffer.pushContext("CBusMessageToClient");
 
     // Simple Field (reply)
-    writeSimpleField("reply", reply, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reply", reply, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusMessageToClient");
   }

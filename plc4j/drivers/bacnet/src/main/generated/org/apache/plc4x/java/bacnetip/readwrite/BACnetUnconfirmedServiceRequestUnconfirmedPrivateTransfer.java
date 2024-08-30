@@ -83,14 +83,13 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer");
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (serviceNumber)
-    writeSimpleField("serviceNumber", serviceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceNumber", serviceNumber, writeComplex(writeBuffer));
 
     // Optional Field (serviceParameters) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "serviceParameters", serviceParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("serviceParameters", serviceParameters, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer");
   }

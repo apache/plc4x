@@ -83,7 +83,7 @@ public class BACnetConstructedDataAnalogInputInterfaceValue extends BACnetConstr
     writeBuffer.pushContext("BACnetConstructedDataAnalogInputInterfaceValue");
 
     // Simple Field (interfaceValue)
-    writeSimpleField("interfaceValue", interfaceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("interfaceValue", interfaceValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetOptionalREAL actualValue = getActualValue();

@@ -82,7 +82,7 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataMaximumOutput");
 
     // Simple Field (maximumOutput)
-    writeSimpleField("maximumOutput", maximumOutput, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maximumOutput", maximumOutput, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

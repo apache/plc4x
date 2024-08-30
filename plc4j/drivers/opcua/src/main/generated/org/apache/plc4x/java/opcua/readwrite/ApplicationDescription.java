@@ -112,14 +112,13 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("ApplicationDescription");
 
     // Simple Field (applicationUri)
-    writeSimpleField("applicationUri", applicationUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationUri", applicationUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (applicationName)
-    writeSimpleField(
-        "applicationName", applicationName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("applicationName", applicationName, writeComplex(writeBuffer));
 
     // Simple Field (applicationType)
     writeSimpleEnumField(
@@ -130,12 +129,10 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
     // Simple Field (discoveryProfileUri)
-    writeSimpleField(
-        "discoveryProfileUri", discoveryProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discoveryProfileUri", discoveryProfileUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfDiscoveryUrls)
     writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));

@@ -118,10 +118,10 @@ public class AlarmMessageAckObjectPushType implements Message {
     writeSimpleField("eventId", eventId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AlarmMessageAckObjectPushType");
   }

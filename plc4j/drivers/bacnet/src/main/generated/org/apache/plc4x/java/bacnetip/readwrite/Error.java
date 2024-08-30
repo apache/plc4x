@@ -61,10 +61,10 @@ public class Error implements Message {
     writeBuffer.pushContext("Error");
 
     // Simple Field (errorClass)
-    writeSimpleField("errorClass", errorClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorClass", errorClass, writeComplex(writeBuffer));
 
     // Simple Field (errorCode)
-    writeSimpleField("errorCode", errorCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorCode", errorCode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Error");
   }

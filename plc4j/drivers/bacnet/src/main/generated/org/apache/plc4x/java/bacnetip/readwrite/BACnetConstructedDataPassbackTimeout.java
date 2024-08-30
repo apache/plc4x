@@ -82,8 +82,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataPassbackTimeout");
 
     // Simple Field (passbackTimeout)
-    writeSimpleField(
-        "passbackTimeout", passbackTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("passbackTimeout", passbackTimeout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

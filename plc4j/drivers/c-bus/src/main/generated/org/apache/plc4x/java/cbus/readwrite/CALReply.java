@@ -76,7 +76,7 @@ public abstract class CALReply implements Message {
     serializeCALReplyChild(writeBuffer);
 
     // Simple Field (calData)
-    writeSimpleField("calData", calData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calData", calData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALReply");
   }

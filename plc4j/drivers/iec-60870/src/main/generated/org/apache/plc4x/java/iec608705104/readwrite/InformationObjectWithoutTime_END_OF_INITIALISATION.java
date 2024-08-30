@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_END_OF_INITIALISATION extends Informat
 
     // Simple Field (coi)
     writeSimpleField(
-        "coi",
-        coi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "coi", coi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_END_OF_INITIALISATION");
   }

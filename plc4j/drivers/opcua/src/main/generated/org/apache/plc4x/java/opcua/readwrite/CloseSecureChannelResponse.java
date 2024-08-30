@@ -62,7 +62,7 @@ public class CloseSecureChannelResponse extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("CloseSecureChannelResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CloseSecureChannelResponse");
   }

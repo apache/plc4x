@@ -55,7 +55,7 @@ public class BACnetLiftCarCallList implements Message {
     writeBuffer.pushContext("BACnetLiftCarCallList");
 
     // Simple Field (floorNumbers)
-    writeSimpleField("floorNumbers", floorNumbers, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumbers", floorNumbers, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLiftCarCallList");
   }

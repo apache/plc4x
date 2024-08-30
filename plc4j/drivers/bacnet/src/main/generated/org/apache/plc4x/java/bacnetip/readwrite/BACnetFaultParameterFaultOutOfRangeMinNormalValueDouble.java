@@ -69,7 +69,7 @@ public class BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble");
 
     // Simple Field (doubleValue)
-    writeSimpleField("doubleValue", doubleValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doubleValue", doubleValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble");
   }

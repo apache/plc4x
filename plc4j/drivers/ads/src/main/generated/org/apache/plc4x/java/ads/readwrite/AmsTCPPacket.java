@@ -74,7 +74,7 @@ public class AmsTCPPacket implements Message {
     writeSimpleField(
         "userdata",
         userdata,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("AmsTCPPacket");

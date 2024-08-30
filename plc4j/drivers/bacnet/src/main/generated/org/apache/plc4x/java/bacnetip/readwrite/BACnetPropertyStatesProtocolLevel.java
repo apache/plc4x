@@ -60,7 +60,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesProtocolLevel");
 
     // Simple Field (protocolLevel)
-    writeSimpleField("protocolLevel", protocolLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("protocolLevel", protocolLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesProtocolLevel");
   }

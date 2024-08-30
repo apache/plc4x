@@ -82,7 +82,7 @@ public class BACnetConstructedDataZoneFrom extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataZoneFrom");
 
     // Simple Field (zoneFrom)
-    writeSimpleField("zoneFrom", zoneFrom, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneFrom", zoneFrom, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();

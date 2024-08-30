@@ -126,7 +126,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("DataSetWriterDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -151,7 +151,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("keyFrameCount", keyFrameCount, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (dataSetName)
-    writeSimpleField("dataSetName", dataSetName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetName", dataSetName, writeComplex(writeBuffer));
 
     // Simple Field (noOfDataSetWriterProperties)
     writeSimpleField(
@@ -163,12 +163,10 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     writeComplexTypeArrayField("dataSetWriterProperties", dataSetWriterProperties, writeBuffer);
 
     // Simple Field (transportSettings)
-    writeSimpleField(
-        "transportSettings", transportSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
     // Simple Field (messageSettings)
-    writeSimpleField(
-        "messageSettings", messageSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("messageSettings", messageSettings, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataSetWriterDataType");
   }

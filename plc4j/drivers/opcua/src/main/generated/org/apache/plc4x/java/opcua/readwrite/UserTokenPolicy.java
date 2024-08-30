@@ -91,7 +91,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
     writeBuffer.pushContext("UserTokenPolicy");
 
     // Simple Field (policyId)
-    writeSimpleField("policyId", policyId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policyId", policyId, writeComplex(writeBuffer));
 
     // Simple Field (tokenType)
     writeSimpleEnumField(
@@ -102,16 +102,13 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
             UserTokenType::getValue, UserTokenType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (issuedTokenType)
-    writeSimpleField(
-        "issuedTokenType", issuedTokenType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("issuedTokenType", issuedTokenType, writeComplex(writeBuffer));
 
     // Simple Field (issuerEndpointUrl)
-    writeSimpleField(
-        "issuerEndpointUrl", issuerEndpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("issuerEndpointUrl", issuerEndpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserTokenPolicy");
   }

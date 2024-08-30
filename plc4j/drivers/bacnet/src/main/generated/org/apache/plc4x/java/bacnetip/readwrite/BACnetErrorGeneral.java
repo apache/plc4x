@@ -61,7 +61,7 @@ public class BACnetErrorGeneral extends BACnetError implements Message {
     writeBuffer.pushContext("BACnetErrorGeneral");
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetErrorGeneral");
   }

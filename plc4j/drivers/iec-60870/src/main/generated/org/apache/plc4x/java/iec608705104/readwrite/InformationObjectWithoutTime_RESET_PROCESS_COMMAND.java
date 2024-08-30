@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_RESET_PROCESS_COMMAND extends Informat
 
     // Simple Field (qrp)
     writeSimpleField(
-        "qrp",
-        qrp,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qrp", qrp, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_RESET_PROCESS_COMMAND");
   }

@@ -76,11 +76,10 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObject");
 
     // Simple Field (objectSpecifier)
-    writeSimpleField(
-        "objectSpecifier", objectSpecifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectSpecifier", objectSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (listOfValues) (Can be skipped, if the value is null)
-    writeOptionalField("listOfValues", listOfValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("listOfValues", listOfValues, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestCreateObject");
   }

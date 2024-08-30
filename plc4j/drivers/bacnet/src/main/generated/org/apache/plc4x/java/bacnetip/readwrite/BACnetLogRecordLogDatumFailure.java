@@ -68,7 +68,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     writeBuffer.pushContext("BACnetLogRecordLogDatumFailure");
 
     // Simple Field (failure)
-    writeSimpleField("failure", failure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("failure", failure, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogRecordLogDatumFailure");
   }

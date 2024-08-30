@@ -69,7 +69,7 @@ public class BACnetEventLogRecordLogDatumLogStatus extends BACnetEventLogRecordL
     writeBuffer.pushContext("BACnetEventLogRecordLogDatumLogStatus");
 
     // Simple Field (logStatus)
-    writeSimpleField("logStatus", logStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logStatus", logStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventLogRecordLogDatumLogStatus");
   }

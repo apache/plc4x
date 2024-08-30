@@ -85,7 +85,7 @@ public class LDataReq extends CEMI implements Message {
     writeComplexTypeArrayField("additionalInformation", additionalInformation, writeBuffer);
 
     // Simple Field (dataFrame)
-    writeSimpleField("dataFrame", dataFrame, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataFrame", dataFrame, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LDataReq");
   }

@@ -60,7 +60,7 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
     writeBuffer.pushContext("BACnetTimeStampSequence");
 
     // Simple Field (sequenceNumber)
-    writeSimpleField("sequenceNumber", sequenceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sequenceNumber", sequenceNumber, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimeStampSequence");
   }

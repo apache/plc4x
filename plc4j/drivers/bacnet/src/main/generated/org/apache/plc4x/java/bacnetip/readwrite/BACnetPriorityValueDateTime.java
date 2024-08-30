@@ -66,7 +66,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     writeBuffer.pushContext("BACnetPriorityValueDateTime");
 
     // Simple Field (dateTimeValue)
-    writeSimpleField("dateTimeValue", dateTimeValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateTimeValue", dateTimeValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueDateTime");
   }

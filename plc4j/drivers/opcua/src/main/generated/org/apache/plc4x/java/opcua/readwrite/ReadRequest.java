@@ -91,7 +91,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ReadRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (maxAge)
     writeSimpleField("maxAge", maxAge, writeDouble(writeBuffer, 64));

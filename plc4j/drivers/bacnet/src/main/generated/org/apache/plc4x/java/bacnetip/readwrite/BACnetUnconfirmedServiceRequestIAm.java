@@ -90,23 +90,19 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIAm");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (maximumApduLengthAcceptedLength)
     writeSimpleField(
         "maximumApduLengthAcceptedLength",
         maximumApduLengthAcceptedLength,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Simple Field (segmentationSupported)
-    writeSimpleField(
-        "segmentationSupported",
-        segmentationSupported,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("segmentationSupported", segmentationSupported, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestIAm");
   }

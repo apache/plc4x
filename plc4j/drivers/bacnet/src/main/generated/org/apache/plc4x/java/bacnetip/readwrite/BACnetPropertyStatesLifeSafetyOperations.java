@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
     writeBuffer.pushContext("BACnetPropertyStatesLifeSafetyOperations");
 
     // Simple Field (lifeSafetyOperations)
-    writeSimpleField(
-        "lifeSafetyOperations", lifeSafetyOperations, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lifeSafetyOperations", lifeSafetyOperations, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLifeSafetyOperations");
   }

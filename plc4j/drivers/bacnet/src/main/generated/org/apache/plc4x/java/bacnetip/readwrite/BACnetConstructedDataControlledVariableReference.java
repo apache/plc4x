@@ -84,9 +84,7 @@ public class BACnetConstructedDataControlledVariableReference extends BACnetCons
 
     // Simple Field (controlledVariableReference)
     writeSimpleField(
-        "controlledVariableReference",
-        controlledVariableReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "controlledVariableReference", controlledVariableReference, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectPropertyReference actualValue = getActualValue();

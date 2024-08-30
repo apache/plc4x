@@ -82,7 +82,7 @@ public class BACnetConstructedDataBACnetIPv6Mode extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPv6Mode");
 
     // Simple Field (bacnetIpv6Mode)
-    writeSimpleField("bacnetIpv6Mode", bacnetIpv6Mode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetIpv6Mode", bacnetIpv6Mode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetIPModeTagged actualValue = getActualValue();

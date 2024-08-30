@@ -83,8 +83,7 @@ public class BACnetConstructedDataOccupancyUpperLimit extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataOccupancyUpperLimit");
 
     // Simple Field (occupancyUpperLimit)
-    writeSimpleField(
-        "occupancyUpperLimit", occupancyUpperLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("occupancyUpperLimit", occupancyUpperLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

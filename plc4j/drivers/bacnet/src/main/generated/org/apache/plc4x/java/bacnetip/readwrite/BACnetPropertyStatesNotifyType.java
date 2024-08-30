@@ -60,7 +60,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     writeBuffer.pushContext("BACnetPropertyStatesNotifyType");
 
     // Simple Field (notifyType)
-    writeSimpleField("notifyType", notifyType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesNotifyType");
   }

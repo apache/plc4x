@@ -121,33 +121,28 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfTimer");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (newValue)
-    writeSimpleField("newValue", newValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newValue", newValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (updateTime)
-    writeSimpleField("updateTime", updateTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("updateTime", updateTime, writeComplex(writeBuffer));
 
     // Optional Field (lastStateChange) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "lastStateChange", lastStateChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("lastStateChange", lastStateChange, writeComplex(writeBuffer));
 
     // Optional Field (initialTimeout) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "initialTimeout", initialTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("initialTimeout", initialTimeout, writeComplex(writeBuffer));
 
     // Optional Field (expirationTime) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "expirationTime", expirationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("expirationTime", expirationTime, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfTimer");
   }

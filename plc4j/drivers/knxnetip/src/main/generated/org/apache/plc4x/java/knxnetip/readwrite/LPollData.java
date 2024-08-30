@@ -85,7 +85,7 @@ public class LPollData extends LDataFrame implements Message {
     writeBuffer.pushContext("LPollData");
 
     // Simple Field (sourceAddress)
-    writeSimpleField("sourceAddress", sourceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAddress", sourceAddress, writeComplex(writeBuffer));
 
     // Array Field (targetAddress)
     writeByteArrayField("targetAddress", targetAddress, writeByteArray(writeBuffer, 8));

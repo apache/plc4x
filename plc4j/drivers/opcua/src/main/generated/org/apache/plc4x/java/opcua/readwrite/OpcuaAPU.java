@@ -58,7 +58,7 @@ public class OpcuaAPU implements Message {
     writeSimpleField(
         "message",
         message,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("OpcuaAPU");

@@ -86,14 +86,13 @@ public class AirConditioningDataSetHvacLowerGuardLimit extends AirConditioningDa
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (limit)
-    writeSimpleField("limit", limit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limit", limit, writeComplex(writeBuffer));
 
     // Simple Field (hvacModeAndFlags)
-    writeSimpleField(
-        "hvacModeAndFlags", hvacModeAndFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacModeAndFlags", hvacModeAndFlags, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AirConditioningDataSetHvacLowerGuardLimit");
   }

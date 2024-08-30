@@ -82,7 +82,7 @@ public class BACnetAccessUserTypeTagged implements Message {
     writeBuffer.pushContext("BACnetAccessUserTypeTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

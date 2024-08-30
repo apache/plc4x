@@ -84,9 +84,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
 
     // Simple Field (protocolServicesSupported)
     writeSimpleField(
-        "protocolServicesSupported",
-        protocolServicesSupported,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "protocolServicesSupported", protocolServicesSupported, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetServicesSupportedTagged actualValue = getActualValue();

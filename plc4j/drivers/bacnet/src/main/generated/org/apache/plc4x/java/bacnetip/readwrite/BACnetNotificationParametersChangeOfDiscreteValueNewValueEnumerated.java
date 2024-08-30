@@ -69,8 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated");
 
     // Simple Field (enumeratedValue)
-    writeSimpleField(
-        "enumeratedValue", enumeratedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enumeratedValue", enumeratedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueEnumerated");
   }

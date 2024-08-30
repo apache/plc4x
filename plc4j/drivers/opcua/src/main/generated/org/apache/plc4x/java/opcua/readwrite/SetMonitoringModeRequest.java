@@ -91,7 +91,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("SetMonitoringModeRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (subscriptionId)
     writeSimpleField("subscriptionId", subscriptionId, writeUnsignedLong(writeBuffer, 32));

@@ -83,10 +83,7 @@ public class BACnetConstructedDataLogDeviceObjectProperty extends BACnetConstruc
     writeBuffer.pushContext("BACnetConstructedDataLogDeviceObjectProperty");
 
     // Simple Field (logDeviceObjectProperty)
-    writeSimpleField(
-        "logDeviceObjectProperty",
-        logDeviceObjectProperty,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("logDeviceObjectProperty", logDeviceObjectProperty, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectPropertyReference actualValue = getActualValue();

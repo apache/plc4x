@@ -82,7 +82,7 @@ public class BACnetConstructedDataMaxPresValue extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataMaxPresValue");
 
     // Simple Field (maxPresValue)
-    writeSimpleField("maxPresValue", maxPresValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPresValue", maxPresValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

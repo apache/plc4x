@@ -82,7 +82,7 @@ public class BACnetConstructedDataModelName extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataModelName");
 
     // Simple Field (modelName)
-    writeSimpleField("modelName", modelName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("modelName", modelName, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

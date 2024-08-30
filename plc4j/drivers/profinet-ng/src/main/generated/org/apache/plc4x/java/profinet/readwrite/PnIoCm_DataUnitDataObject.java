@@ -74,10 +74,7 @@ public class PnIoCm_DataUnitDataObject implements Message {
 
     // Simple Field (iops)
     writeSimpleField(
-        "iops",
-        iops,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "iops", iops, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PnIoCm_DataUnitDataObject");
   }

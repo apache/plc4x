@@ -97,7 +97,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     writeSimpleField("samplingInterval", samplingInterval, writeDouble(writeBuffer, 64));
 
     // Simple Field (filter)
-    writeSimpleField("filter", filter, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("filter", filter, writeComplex(writeBuffer));
 
     // Simple Field (queueSize)
     writeSimpleField("queueSize", queueSize, writeUnsignedLong(writeBuffer, 32));

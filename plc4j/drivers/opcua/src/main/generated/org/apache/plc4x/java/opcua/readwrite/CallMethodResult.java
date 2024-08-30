@@ -105,7 +105,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("CallMethodResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfInputArgumentResults)
     writeSimpleField(

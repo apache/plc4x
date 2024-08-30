@@ -77,7 +77,7 @@ public class PublishRequest extends ExtensionObjectDefinition implements Message
     writeBuffer.pushContext("PublishRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfSubscriptionAcknowledgements)
     writeSimpleField(

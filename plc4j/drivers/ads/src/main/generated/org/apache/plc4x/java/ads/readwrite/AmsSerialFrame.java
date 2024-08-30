@@ -113,7 +113,7 @@ public class AmsSerialFrame implements Message {
     writeSimpleField("length", length, writeSignedByte(writeBuffer, 8));
 
     // Simple Field (userdata)
-    writeSimpleField("userdata", userdata, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userdata", userdata, writeComplex(writeBuffer));
 
     // Simple Field (crc)
     writeSimpleField("crc", crc, writeUnsignedInt(writeBuffer, 16));

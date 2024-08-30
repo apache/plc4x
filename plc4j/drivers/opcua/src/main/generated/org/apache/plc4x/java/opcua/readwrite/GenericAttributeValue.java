@@ -71,7 +71,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("GenericAttributeValue");
   }

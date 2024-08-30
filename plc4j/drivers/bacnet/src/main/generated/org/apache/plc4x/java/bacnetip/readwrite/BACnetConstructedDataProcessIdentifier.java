@@ -83,8 +83,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataProcessIdentifier");
 
     // Simple Field (processIdentifier)
-    writeSimpleField(
-        "processIdentifier", processIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("processIdentifier", processIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

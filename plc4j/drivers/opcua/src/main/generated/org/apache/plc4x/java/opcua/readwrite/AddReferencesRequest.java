@@ -77,7 +77,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("AddReferencesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferencesToAdd)
     writeSimpleField("noOfReferencesToAdd", noOfReferencesToAdd, writeSignedInt(writeBuffer, 32));

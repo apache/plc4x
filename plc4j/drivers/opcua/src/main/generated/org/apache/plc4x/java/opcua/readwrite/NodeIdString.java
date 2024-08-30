@@ -75,7 +75,7 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (id)
-    writeSimpleField("id", id, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("id", id, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String identifier = getIdentifier();

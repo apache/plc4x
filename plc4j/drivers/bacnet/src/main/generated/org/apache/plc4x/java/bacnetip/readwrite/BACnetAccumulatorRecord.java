@@ -77,18 +77,16 @@ public class BACnetAccumulatorRecord implements Message {
     writeBuffer.pushContext("BACnetAccumulatorRecord");
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Simple Field (accumulatedValue)
-    writeSimpleField(
-        "accumulatedValue", accumulatedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accumulatedValue", accumulatedValue, writeComplex(writeBuffer));
 
     // Simple Field (accumulatorStatus)
-    writeSimpleField(
-        "accumulatorStatus", accumulatorStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accumulatorStatus", accumulatorStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAccumulatorRecord");
   }

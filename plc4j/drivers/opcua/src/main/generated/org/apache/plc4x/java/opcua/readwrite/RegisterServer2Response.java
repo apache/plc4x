@@ -91,7 +91,7 @@ public class RegisterServer2Response extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("RegisterServer2Response");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfConfigurationResults)
     writeSimpleField(

@@ -59,7 +59,7 @@ public class BACnetApplicationTagDate extends BACnetApplicationTag implements Me
     writeBuffer.pushContext("BACnetApplicationTagDate");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetApplicationTagDate");
   }

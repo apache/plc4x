@@ -75,7 +75,7 @@ public class AliasNameDataType extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("AliasNameDataType");
 
     // Simple Field (aliasName)
-    writeSimpleField("aliasName", aliasName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("aliasName", aliasName, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferencedNodes)
     writeSimpleField("noOfReferencedNodes", noOfReferencedNodes, writeSignedInt(writeBuffer, 32));

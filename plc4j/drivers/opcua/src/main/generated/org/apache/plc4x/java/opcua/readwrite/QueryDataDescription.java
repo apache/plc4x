@@ -75,13 +75,13 @@ public class QueryDataDescription extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("QueryDataDescription");
 
     // Simple Field (relativePath)
-    writeSimpleField("relativePath", relativePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relativePath", relativePath, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryDataDescription");
   }

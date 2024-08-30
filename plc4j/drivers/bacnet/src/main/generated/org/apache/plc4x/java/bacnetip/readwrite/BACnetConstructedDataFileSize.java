@@ -82,7 +82,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataFileSize");
 
     // Simple Field (fileSize)
-    writeSimpleField("fileSize", fileSize, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileSize", fileSize, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

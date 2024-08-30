@@ -106,10 +106,10 @@ public abstract class S7Message implements Message {
     serializeS7MessageChild(writeBuffer);
 
     // Optional Field (parameter) (Can be skipped, if the value is null)
-    writeOptionalField("parameter", parameter, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("parameter", parameter, writeComplex(writeBuffer));
 
     // Optional Field (payload) (Can be skipped, if the value is null)
-    writeOptionalField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7Message");
   }

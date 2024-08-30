@@ -76,12 +76,10 @@ public class BACnetUnconfirmedServiceRequestTimeSynchronization
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestTimeSynchronization");
 
     // Simple Field (synchronizedDate)
-    writeSimpleField(
-        "synchronizedDate", synchronizedDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("synchronizedDate", synchronizedDate, writeComplex(writeBuffer));
 
     // Simple Field (synchronizedTime)
-    writeSimpleField(
-        "synchronizedTime", synchronizedTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("synchronizedTime", synchronizedTime, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestTimeSynchronization");
   }

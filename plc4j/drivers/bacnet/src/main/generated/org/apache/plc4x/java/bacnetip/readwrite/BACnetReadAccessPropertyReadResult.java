@@ -90,16 +90,13 @@ public class BACnetReadAccessPropertyReadResult implements Message {
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
     writeOptionalField(
-        "propertyValue",
-        propertyValue,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getPeekedTagNumber()) == (4));
+        "propertyValue", propertyValue, writeComplex(writeBuffer), (getPeekedTagNumber()) == (4));
 
     // Optional Field (propertyAccessError) (Can be skipped, if the value is null)
     writeOptionalField(
         "propertyAccessError",
         propertyAccessError,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getPeekedTagNumber()) == (5));
 
     writeBuffer.popContext("BACnetReadAccessPropertyReadResult");

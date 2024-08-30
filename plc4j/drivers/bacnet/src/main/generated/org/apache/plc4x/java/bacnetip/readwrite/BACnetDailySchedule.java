@@ -68,13 +68,13 @@ public class BACnetDailySchedule implements Message {
     writeBuffer.pushContext("BACnetDailySchedule");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (daySchedule)
     writeComplexTypeArrayField("daySchedule", daySchedule, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDailySchedule");
   }

@@ -68,10 +68,10 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("OptionSet");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     // Simple Field (validBits)
-    writeSimpleField("validBits", validBits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("validBits", validBits, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OptionSet");
   }

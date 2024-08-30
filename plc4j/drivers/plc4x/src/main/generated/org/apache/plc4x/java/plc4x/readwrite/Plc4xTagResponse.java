@@ -61,7 +61,7 @@ public class Plc4xTagResponse implements Message {
     writeBuffer.pushContext("Plc4xTagResponse");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     // Simple Field (responseCode)
     writeSimpleEnumField(

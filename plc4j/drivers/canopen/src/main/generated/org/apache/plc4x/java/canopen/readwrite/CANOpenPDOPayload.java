@@ -62,7 +62,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     writeBuffer.pushContext("CANOpenPDOPayload");
 
     // Simple Field (pdo)
-    writeSimpleField("pdo", pdo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pdo", pdo, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenPDOPayload");
   }

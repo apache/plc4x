@@ -111,10 +111,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
 
     // Simple Field (pdu)
     writeSimpleField(
-        "pdu",
-        pdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "pdu", pdu, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ModbusTcpADU");
   }

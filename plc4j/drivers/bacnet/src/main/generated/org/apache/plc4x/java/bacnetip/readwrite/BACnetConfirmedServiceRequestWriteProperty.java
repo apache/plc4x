@@ -97,21 +97,19 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     writeBuffer.pushContext("BACnetConfirmedServiceRequestWriteProperty");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (propertyValue)
-    writeSimpleField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestWriteProperty");
   }

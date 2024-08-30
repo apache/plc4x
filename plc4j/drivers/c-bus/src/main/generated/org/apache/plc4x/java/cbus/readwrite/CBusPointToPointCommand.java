@@ -82,7 +82,7 @@ public abstract class CBusPointToPointCommand implements Message {
     serializeCBusPointToPointCommandChild(writeBuffer);
 
     // Simple Field (calData)
-    writeSimpleField("calData", calData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("calData", calData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusPointToPointCommand");
   }

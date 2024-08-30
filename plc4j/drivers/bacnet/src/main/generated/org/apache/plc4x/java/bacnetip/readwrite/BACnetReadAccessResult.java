@@ -63,11 +63,10 @@ public class BACnetReadAccessResult implements Message {
     writeBuffer.pushContext("BACnetReadAccessResult");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (listOfResults) (Can be skipped, if the value is null)
-    writeOptionalField("listOfResults", listOfResults, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("listOfResults", listOfResults, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetReadAccessResult");
   }

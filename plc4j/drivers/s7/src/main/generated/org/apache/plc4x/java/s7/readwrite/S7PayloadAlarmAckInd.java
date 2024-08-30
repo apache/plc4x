@@ -74,7 +74,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     writeBuffer.pushContext("S7PayloadAlarmAckInd");
 
     // Simple Field (alarmMessage)
-    writeSimpleField("alarmMessage", alarmMessage, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmMessage", alarmMessage, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadAlarmAckInd");
   }

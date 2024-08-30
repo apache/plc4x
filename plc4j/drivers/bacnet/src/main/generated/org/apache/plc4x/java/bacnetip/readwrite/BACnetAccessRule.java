@@ -84,29 +84,21 @@ public class BACnetAccessRule implements Message {
     writeBuffer.pushContext("BACnetAccessRule");
 
     // Simple Field (timeRangeSpecifier)
-    writeSimpleField(
-        "timeRangeSpecifier", timeRangeSpecifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeRangeSpecifier", timeRangeSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (timeRange) (Can be skipped, if the value is null)
     writeOptionalField(
-        "timeRange",
-        timeRange,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getTimeRangeSpecifier()) != (null));
+        "timeRange", timeRange, writeComplex(writeBuffer), (getTimeRangeSpecifier()) != (null));
 
     // Simple Field (locationSpecifier)
-    writeSimpleField(
-        "locationSpecifier", locationSpecifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("locationSpecifier", locationSpecifier, writeComplex(writeBuffer));
 
     // Optional Field (location) (Can be skipped, if the value is null)
     writeOptionalField(
-        "location",
-        location,
-        new DataWriterComplexDefault<>(writeBuffer),
-        (getLocationSpecifier()) != (null));
+        "location", location, writeComplex(writeBuffer), (getLocationSpecifier()) != (null));
 
     // Simple Field (enable)
-    writeSimpleField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAccessRule");
   }

@@ -62,7 +62,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
     writeBuffer.pushContext("AdsDiscoveryBlockRouteName");
 
     // Simple Field (routeName)
-    writeSimpleField("routeName", routeName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("routeName", routeName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AdsDiscoveryBlockRouteName");
   }

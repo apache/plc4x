@@ -65,7 +65,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiControlEndpoint",
         hpaiControlEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DescriptionRequest");

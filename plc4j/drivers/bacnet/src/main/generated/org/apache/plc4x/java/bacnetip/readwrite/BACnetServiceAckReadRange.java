@@ -110,29 +110,25 @@ public class BACnetServiceAckReadRange extends BACnetServiceAck implements Messa
     writeBuffer.pushContext("BACnetServiceAckReadRange");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyArrayIndex", propertyArrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyArrayIndex", propertyArrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (resultFlags)
-    writeSimpleField("resultFlags", resultFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("resultFlags", resultFlags, writeComplex(writeBuffer));
 
     // Simple Field (itemCount)
-    writeSimpleField("itemCount", itemCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("itemCount", itemCount, writeComplex(writeBuffer));
 
     // Optional Field (itemData) (Can be skipped, if the value is null)
-    writeOptionalField("itemData", itemData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("itemData", itemData, writeComplex(writeBuffer));
 
     // Optional Field (firstSequenceNumber) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "firstSequenceNumber", firstSequenceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("firstSequenceNumber", firstSequenceNumber, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckReadRange");
   }

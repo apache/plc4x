@@ -90,7 +90,7 @@ public class CipReadResponse extends CipService implements Message {
     writeSimpleField("extStatus", extStatus, writeUnsignedShort(writeBuffer, 8));
 
     // Optional Field (data) (Can be skipped, if the value is null)
-    writeOptionalField("data", data, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("data", data, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CipReadResponse");
   }

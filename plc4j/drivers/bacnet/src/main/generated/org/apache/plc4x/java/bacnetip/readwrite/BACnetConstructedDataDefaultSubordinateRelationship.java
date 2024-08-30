@@ -86,7 +86,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     writeSimpleField(
         "defaultSubordinateRelationship",
         defaultSubordinateRelationship,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetRelationshipTagged actualValue = getActualValue();

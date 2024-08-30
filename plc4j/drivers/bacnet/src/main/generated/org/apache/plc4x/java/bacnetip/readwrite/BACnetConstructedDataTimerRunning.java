@@ -82,7 +82,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataTimerRunning");
 
     // Simple Field (timerRunning)
-    writeSimpleField("timerRunning", timerRunning, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timerRunning", timerRunning, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

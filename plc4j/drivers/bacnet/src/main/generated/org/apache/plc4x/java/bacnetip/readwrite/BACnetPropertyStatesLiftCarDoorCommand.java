@@ -61,8 +61,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
     writeBuffer.pushContext("BACnetPropertyStatesLiftCarDoorCommand");
 
     // Simple Field (liftCarDoorCommand)
-    writeSimpleField(
-        "liftCarDoorCommand", liftCarDoorCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftCarDoorCommand", liftCarDoorCommand, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftCarDoorCommand");
   }

@@ -88,7 +88,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     writeSimpleField(
         "serviceType",
         serviceType,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (xid)

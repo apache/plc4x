@@ -82,7 +82,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataLinkSpeed");
 
     // Simple Field (linkSpeed)
-    writeSimpleField("linkSpeed", linkSpeed, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("linkSpeed", linkSpeed, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

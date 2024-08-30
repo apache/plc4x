@@ -82,20 +82,16 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     writeBuffer.pushContext("BACnetFaultParameterFaultLifeSafety");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (listOfFaultValues)
-    writeSimpleField(
-        "listOfFaultValues", listOfFaultValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfFaultValues", listOfFaultValues, writeComplex(writeBuffer));
 
     // Simple Field (modePropertyReference)
-    writeSimpleField(
-        "modePropertyReference",
-        modePropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("modePropertyReference", modePropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultLifeSafety");
   }

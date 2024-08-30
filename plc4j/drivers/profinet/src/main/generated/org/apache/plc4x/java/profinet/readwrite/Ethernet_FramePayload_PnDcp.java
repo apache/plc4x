@@ -62,7 +62,7 @@ public class Ethernet_FramePayload_PnDcp extends Ethernet_FramePayload implement
     writeBuffer.pushContext("Ethernet_FramePayload_PnDcp");
 
     // Simple Field (pdu)
-    writeSimpleField("pdu", pdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("pdu", pdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_PnDcp");
   }

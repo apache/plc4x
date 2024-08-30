@@ -66,7 +66,7 @@ public class BACnetPriorityValueReal extends BACnetPriorityValue implements Mess
     writeBuffer.pushContext("BACnetPriorityValueReal");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueReal");
   }

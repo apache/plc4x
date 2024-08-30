@@ -82,7 +82,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataReferencePort");
 
     // Simple Field (referencePort)
-    writeSimpleField("referencePort", referencePort, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referencePort", referencePort, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

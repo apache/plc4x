@@ -123,14 +123,14 @@ public class CheckPeers extends PnIoCm_Block implements Message {
     writeSimpleField(
         "peerPortId",
         peerPortId,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (peerChassisId)
     writeSimpleField(
         "peerChassisId",
         peerChassisId,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("CheckPeers");

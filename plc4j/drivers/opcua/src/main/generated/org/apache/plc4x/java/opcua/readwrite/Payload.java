@@ -61,7 +61,7 @@ public abstract class Payload implements Message {
     writeBuffer.pushContext("Payload");
 
     // Simple Field (sequenceHeader)
-    writeSimpleField("sequenceHeader", sequenceHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sequenceHeader", sequenceHeader, writeComplex(writeBuffer));
 
     // Switch field (Serialize the sub-type)
     serializePayloadChild(writeBuffer);

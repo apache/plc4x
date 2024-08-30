@@ -84,17 +84,16 @@ public class HistoryReadValueId extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("HistoryReadValueId");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (dataEncoding)
-    writeSimpleField("dataEncoding", dataEncoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataEncoding", dataEncoding, writeComplex(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("HistoryReadValueId");
   }

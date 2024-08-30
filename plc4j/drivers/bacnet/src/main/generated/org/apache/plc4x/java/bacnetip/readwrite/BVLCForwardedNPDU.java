@@ -92,10 +92,7 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
 
     // Simple Field (npdu)
     writeSimpleField(
-        "npdu",
-        npdu,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "npdu", npdu, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("BVLCForwardedNPDU");
   }

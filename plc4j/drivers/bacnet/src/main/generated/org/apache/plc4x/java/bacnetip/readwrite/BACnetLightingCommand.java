@@ -91,23 +91,22 @@ public class BACnetLightingCommand implements Message {
     writeBuffer.pushContext("BACnetLightingCommand");
 
     // Simple Field (lightningOperation)
-    writeSimpleField(
-        "lightningOperation", lightningOperation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lightningOperation", lightningOperation, writeComplex(writeBuffer));
 
     // Optional Field (targetLevel) (Can be skipped, if the value is null)
-    writeOptionalField("targetLevel", targetLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("targetLevel", targetLevel, writeComplex(writeBuffer));
 
     // Optional Field (rampRate) (Can be skipped, if the value is null)
-    writeOptionalField("rampRate", rampRate, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("rampRate", rampRate, writeComplex(writeBuffer));
 
     // Optional Field (stepIncrement) (Can be skipped, if the value is null)
-    writeOptionalField("stepIncrement", stepIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("stepIncrement", stepIncrement, writeComplex(writeBuffer));
 
     // Optional Field (fadeTime) (Can be skipped, if the value is null)
-    writeOptionalField("fadeTime", fadeTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("fadeTime", fadeTime, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLightingCommand");
   }

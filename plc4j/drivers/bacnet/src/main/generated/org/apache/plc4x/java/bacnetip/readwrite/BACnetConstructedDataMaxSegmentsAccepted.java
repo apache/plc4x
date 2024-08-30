@@ -83,8 +83,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataMaxSegmentsAccepted");
 
     // Simple Field (maxSegmentsAccepted)
-    writeSimpleField(
-        "maxSegmentsAccepted", maxSegmentsAccepted, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxSegmentsAccepted", maxSegmentsAccepted, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

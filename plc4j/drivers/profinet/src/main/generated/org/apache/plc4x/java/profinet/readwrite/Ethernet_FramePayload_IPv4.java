@@ -213,11 +213,10 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     writeImplicitField("headerChecksum", headerChecksum, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (sourceAddress)
-    writeSimpleField("sourceAddress", sourceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAddress", sourceAddress, writeComplex(writeBuffer));
 
     // Simple Field (destinationAddress)
-    writeSimpleField(
-        "destinationAddress", destinationAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("destinationAddress", destinationAddress, writeComplex(writeBuffer));
 
     // Simple Field (sourcePort)
     writeSimpleField("sourcePort", sourcePort, writeUnsignedInt(writeBuffer, 16));
@@ -244,7 +243,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
     writeImplicitField("bodyChecksum", bodyChecksum, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_IPv4");
   }

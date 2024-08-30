@@ -83,8 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueRelinquishDefault extends BACn
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueRelinquishDefault");
 
     // Simple Field (relinquishDefault)
-    writeSimpleField(
-        "relinquishDefault", relinquishDefault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("relinquishDefault", relinquishDefault, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();

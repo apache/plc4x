@@ -91,7 +91,7 @@ public class CALDataWrite extends CALData implements Message {
     writeSimpleField("code", code, writeByte(writeBuffer, 8));
 
     // Simple Field (parameterValue)
-    writeSimpleField("parameterValue", parameterValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameterValue", parameterValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALDataWrite");
   }

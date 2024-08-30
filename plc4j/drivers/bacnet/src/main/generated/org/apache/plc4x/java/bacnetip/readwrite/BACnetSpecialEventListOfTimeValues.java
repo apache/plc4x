@@ -75,13 +75,13 @@ public class BACnetSpecialEventListOfTimeValues implements Message {
     writeBuffer.pushContext("BACnetSpecialEventListOfTimeValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfTimeValues)
     writeComplexTypeArrayField("listOfTimeValues", listOfTimeValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEventListOfTimeValues");
   }

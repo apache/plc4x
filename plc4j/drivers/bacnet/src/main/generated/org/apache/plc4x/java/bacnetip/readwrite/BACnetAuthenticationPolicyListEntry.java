@@ -63,11 +63,10 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     writeBuffer.pushContext("BACnetAuthenticationPolicyListEntry");
 
     // Simple Field (credentialDataInput)
-    writeSimpleField(
-        "credentialDataInput", credentialDataInput, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("credentialDataInput", credentialDataInput, writeComplex(writeBuffer));
 
     // Simple Field (index)
-    writeSimpleField("index", index, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("index", index, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationPolicyListEntry");
   }

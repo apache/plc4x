@@ -82,7 +82,7 @@ public class BACnetConstructedDataDoorAlarmState extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataDoorAlarmState");
 
     // Simple Field (doorAlarmState)
-    writeSimpleField("doorAlarmState", doorAlarmState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorAlarmState", doorAlarmState, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDoorAlarmStateTagged actualValue = getActualValue();

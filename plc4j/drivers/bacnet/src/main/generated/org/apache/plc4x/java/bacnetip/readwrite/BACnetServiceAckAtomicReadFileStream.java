@@ -71,11 +71,10 @@ public class BACnetServiceAckAtomicReadFileStream
     writeBuffer.pushContext("BACnetServiceAckAtomicReadFileStream");
 
     // Simple Field (fileStartPosition)
-    writeSimpleField(
-        "fileStartPosition", fileStartPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartPosition", fileStartPosition, writeComplex(writeBuffer));
 
     // Simple Field (fileData)
-    writeSimpleField("fileData", fileData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileData", fileData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckAtomicReadFileStream");
   }

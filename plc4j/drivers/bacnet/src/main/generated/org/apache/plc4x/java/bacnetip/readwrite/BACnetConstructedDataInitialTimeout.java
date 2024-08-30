@@ -82,7 +82,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataInitialTimeout");
 
     // Simple Field (initialTimeout)
-    writeSimpleField("initialTimeout", initialTimeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("initialTimeout", initialTimeout, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

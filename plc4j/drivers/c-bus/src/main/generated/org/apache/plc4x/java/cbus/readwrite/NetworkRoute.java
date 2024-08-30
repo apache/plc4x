@@ -62,7 +62,7 @@ public class NetworkRoute implements Message {
     writeBuffer.pushContext("NetworkRoute");
 
     // Simple Field (networkPCI)
-    writeSimpleField("networkPCI", networkPCI, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkPCI", networkPCI, writeComplex(writeBuffer));
 
     // Array Field (additionalBridgeAddresses)
     writeComplexTypeArrayField("additionalBridgeAddresses", additionalBridgeAddresses, writeBuffer);

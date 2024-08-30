@@ -83,10 +83,10 @@ public class LocalizedText implements Message {
     writeSimpleField("localeSpecified", localeSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (locale) (Can be skipped, if the value is null)
-    writeOptionalField("locale", locale, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("locale", locale, writeComplex(writeBuffer));
 
     // Optional Field (text) (Can be skipped, if the value is null)
-    writeOptionalField("text", text, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("text", text, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LocalizedText");
   }

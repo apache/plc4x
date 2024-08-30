@@ -70,13 +70,13 @@ public class BACnetAuthenticationPolicy implements Message {
     writeBuffer.pushContext("BACnetAuthenticationPolicy");
 
     // Simple Field (policy)
-    writeSimpleField("policy", policy, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policy", policy, writeComplex(writeBuffer));
 
     // Simple Field (orderEnforced)
-    writeSimpleField("orderEnforced", orderEnforced, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("orderEnforced", orderEnforced, writeComplex(writeBuffer));
 
     // Simple Field (timeout)
-    writeSimpleField("timeout", timeout, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeout", timeout, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationPolicy");
   }

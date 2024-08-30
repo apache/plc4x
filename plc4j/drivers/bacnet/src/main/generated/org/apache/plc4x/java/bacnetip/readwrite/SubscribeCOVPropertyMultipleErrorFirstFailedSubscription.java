@@ -89,25 +89,21 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
     writeBuffer.pushContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (monitoredPropertyReference)
     writeSimpleField(
-        "monitoredPropertyReference",
-        monitoredPropertyReference,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredPropertyReference", monitoredPropertyReference, writeComplex(writeBuffer));
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription");
   }

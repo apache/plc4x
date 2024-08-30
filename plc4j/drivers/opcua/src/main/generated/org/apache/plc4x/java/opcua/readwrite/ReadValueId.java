@@ -81,16 +81,16 @@ public class ReadValueId extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("ReadValueId");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (indexRange)
-    writeSimpleField("indexRange", indexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("indexRange", indexRange, writeComplex(writeBuffer));
 
     // Simple Field (dataEncoding)
-    writeSimpleField("dataEncoding", dataEncoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataEncoding", dataEncoding, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReadValueId");
   }

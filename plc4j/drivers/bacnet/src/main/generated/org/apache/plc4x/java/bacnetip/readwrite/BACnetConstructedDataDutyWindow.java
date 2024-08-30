@@ -82,7 +82,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataDutyWindow");
 
     // Simple Field (dutyWindow)
-    writeSimpleField("dutyWindow", dutyWindow, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dutyWindow", dutyWindow, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

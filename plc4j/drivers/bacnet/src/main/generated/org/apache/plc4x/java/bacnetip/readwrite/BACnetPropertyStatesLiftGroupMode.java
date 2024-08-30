@@ -60,7 +60,7 @@ public class BACnetPropertyStatesLiftGroupMode extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesLiftGroupMode");
 
     // Simple Field (liftGroupMode)
-    writeSimpleField("liftGroupMode", liftGroupMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("liftGroupMode", liftGroupMode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLiftGroupMode");
   }

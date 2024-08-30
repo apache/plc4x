@@ -84,11 +84,10 @@ public class BrowseResult extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("BrowseResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (continuationPoint)
-    writeSimpleField(
-        "continuationPoint", continuationPoint, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("continuationPoint", continuationPoint, writeComplex(writeBuffer));
 
     // Simple Field (noOfReferences)
     writeSimpleField("noOfReferences", noOfReferences, writeSignedInt(writeBuffer, 32));

@@ -83,7 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueFaultHighLimit extends BACnetC
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueFaultHighLimit");
 
     // Simple Field (faultHighLimit)
-    writeSimpleField("faultHighLimit", faultHighLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("faultHighLimit", faultHighLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();

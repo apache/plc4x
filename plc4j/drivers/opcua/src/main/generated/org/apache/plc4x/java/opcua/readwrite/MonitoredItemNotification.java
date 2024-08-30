@@ -71,7 +71,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     writeSimpleField("clientHandle", clientHandle, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemNotification");
   }

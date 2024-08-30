@@ -59,7 +59,7 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
     writeBuffer.pushContext("BACnetApplicationTagBitString");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetApplicationTagBitString");
   }

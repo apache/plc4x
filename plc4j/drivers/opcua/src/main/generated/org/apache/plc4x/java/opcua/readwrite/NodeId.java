@@ -62,7 +62,7 @@ public class NodeId implements Message {
     writeReservedField("reserved", (byte) 0x00, writeSignedByte(writeBuffer, 2));
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     String id = getId();

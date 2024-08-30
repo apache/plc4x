@@ -105,21 +105,19 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("FieldTargetDataType");
 
     // Simple Field (dataSetFieldId)
-    writeSimpleField("dataSetFieldId", dataSetFieldId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dataSetFieldId", dataSetFieldId, writeComplex(writeBuffer));
 
     // Simple Field (receiverIndexRange)
-    writeSimpleField(
-        "receiverIndexRange", receiverIndexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("receiverIndexRange", receiverIndexRange, writeComplex(writeBuffer));
 
     // Simple Field (targetNodeId)
-    writeSimpleField("targetNodeId", targetNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNodeId", targetNodeId, writeComplex(writeBuffer));
 
     // Simple Field (attributeId)
     writeSimpleField("attributeId", attributeId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (writeIndexRange)
-    writeSimpleField(
-        "writeIndexRange", writeIndexRange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeIndexRange", writeIndexRange, writeComplex(writeBuffer));
 
     // Simple Field (overrideValueHandling)
     writeSimpleEnumField(
@@ -132,7 +130,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (overrideValue)
-    writeSimpleField("overrideValue", overrideValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("overrideValue", overrideValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("FieldTargetDataType");
   }

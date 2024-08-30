@@ -117,7 +117,7 @@ public class AdsDiscovery implements Message {
     writeSimpleField(
         "amsNetId",
         amsNetId,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (portNumber)

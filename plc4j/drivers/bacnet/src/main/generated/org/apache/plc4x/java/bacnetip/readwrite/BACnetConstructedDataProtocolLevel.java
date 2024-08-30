@@ -82,7 +82,7 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataProtocolLevel");
 
     // Simple Field (protocolLevel)
-    writeSimpleField("protocolLevel", protocolLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("protocolLevel", protocolLevel, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetProtocolLevelTagged actualValue = getActualValue();

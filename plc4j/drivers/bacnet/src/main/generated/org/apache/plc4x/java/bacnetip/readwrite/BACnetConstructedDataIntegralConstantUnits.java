@@ -83,7 +83,7 @@ public class BACnetConstructedDataIntegralConstantUnits extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataIntegralConstantUnits");
 
     // Simple Field (units)
-    writeSimpleField("units", units, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("units", units, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetEngineeringUnitsTagged actualValue = getActualValue();

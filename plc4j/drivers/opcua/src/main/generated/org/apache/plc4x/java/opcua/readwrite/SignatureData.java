@@ -68,10 +68,10 @@ public class SignatureData extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("SignatureData");
 
     // Simple Field (algorithm)
-    writeSimpleField("algorithm", algorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("algorithm", algorithm, writeComplex(writeBuffer));
 
     // Simple Field (signature)
-    writeSimpleField("signature", signature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("signature", signature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SignatureData");
   }

@@ -82,7 +82,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataTrigger");
 
     // Simple Field (trigger)
-    writeSimpleField("trigger", trigger, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("trigger", trigger, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

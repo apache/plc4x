@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     writeBuffer.pushContext("BACnetLogDataLogDataEntryNullValue");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryNullValue");
   }

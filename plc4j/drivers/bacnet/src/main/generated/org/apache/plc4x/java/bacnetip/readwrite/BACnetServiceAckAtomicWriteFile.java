@@ -67,8 +67,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     writeBuffer.pushContext("BACnetServiceAckAtomicWriteFile");
 
     // Simple Field (fileStartPosition)
-    writeSimpleField(
-        "fileStartPosition", fileStartPosition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartPosition", fileStartPosition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckAtomicWriteFile");
   }

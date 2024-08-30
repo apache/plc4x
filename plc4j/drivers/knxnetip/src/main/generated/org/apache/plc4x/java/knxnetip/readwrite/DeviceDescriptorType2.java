@@ -137,16 +137,16 @@ public class DeviceDescriptorType2 implements Message {
     writeSimpleField("logicalTagBase", logicalTagBase, writeUnsignedByte(writeBuffer, 6));
 
     // Simple Field (channelInfo1)
-    writeSimpleField("channelInfo1", channelInfo1, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channelInfo1", channelInfo1, writeComplex(writeBuffer));
 
     // Simple Field (channelInfo2)
-    writeSimpleField("channelInfo2", channelInfo2, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channelInfo2", channelInfo2, writeComplex(writeBuffer));
 
     // Simple Field (channelInfo3)
-    writeSimpleField("channelInfo3", channelInfo3, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channelInfo3", channelInfo3, writeComplex(writeBuffer));
 
     // Simple Field (channelInfo4)
-    writeSimpleField("channelInfo4", channelInfo4, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channelInfo4", channelInfo4, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DeviceDescriptorType2");
   }

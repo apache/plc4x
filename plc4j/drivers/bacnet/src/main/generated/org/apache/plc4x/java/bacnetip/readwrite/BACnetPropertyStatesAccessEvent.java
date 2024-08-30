@@ -60,7 +60,7 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
     writeBuffer.pushContext("BACnetPropertyStatesAccessEvent");
 
     // Simple Field (accessEvent)
-    writeSimpleField("accessEvent", accessEvent, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("accessEvent", accessEvent, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesAccessEvent");
   }

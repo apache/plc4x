@@ -383,7 +383,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     writeSimpleField(
         "ioCrMulticastMacAdr",
         ioCrMulticastMacAdr,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Implicit Field (numberOfApis) (Used for parsing, but its value is not stored as it's

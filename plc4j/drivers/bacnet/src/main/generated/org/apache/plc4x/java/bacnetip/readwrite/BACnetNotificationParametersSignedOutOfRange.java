@@ -107,24 +107,22 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     writeBuffer.pushContext("BACnetNotificationParametersSignedOutOfRange");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (exceedingValue)
-    writeSimpleField("exceedingValue", exceedingValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("exceedingValue", exceedingValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Simple Field (exceededLimit)
-    writeSimpleField("exceededLimit", exceededLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("exceededLimit", exceededLimit, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersSignedOutOfRange");
   }

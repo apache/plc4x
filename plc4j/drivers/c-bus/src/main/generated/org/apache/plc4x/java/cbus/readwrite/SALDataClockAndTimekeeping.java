@@ -62,10 +62,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     writeBuffer.pushContext("SALDataClockAndTimekeeping");
 
     // Simple Field (clockAndTimekeepingData)
-    writeSimpleField(
-        "clockAndTimekeepingData",
-        clockAndTimekeepingData,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clockAndTimekeepingData", clockAndTimekeepingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataClockAndTimekeeping");
   }

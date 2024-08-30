@@ -77,7 +77,7 @@ public class CallRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("CallRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfMethodsToCall)
     writeSimpleField("noOfMethodsToCall", noOfMethodsToCall, writeSignedInt(writeBuffer, 32));

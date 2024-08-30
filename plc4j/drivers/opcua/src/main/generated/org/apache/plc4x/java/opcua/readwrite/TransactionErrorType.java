@@ -74,13 +74,13 @@ public class TransactionErrorType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("TransactionErrorType");
 
     // Simple Field (targetId)
-    writeSimpleField("targetId", targetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetId", targetId, writeComplex(writeBuffer));
 
     // Simple Field (error)
-    writeSimpleField("error", error, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("error", error, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TransactionErrorType");
   }

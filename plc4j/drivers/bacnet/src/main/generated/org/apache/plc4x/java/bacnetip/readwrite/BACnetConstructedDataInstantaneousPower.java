@@ -83,8 +83,7 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataInstantaneousPower");
 
     // Simple Field (instantaneousPower)
-    writeSimpleField(
-        "instantaneousPower", instantaneousPower, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instantaneousPower", instantaneousPower, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

@@ -62,10 +62,10 @@ public class BACnetPrescale implements Message {
     writeBuffer.pushContext("BACnetPrescale");
 
     // Simple Field (multiplier)
-    writeSimpleField("multiplier", multiplier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("multiplier", multiplier, writeComplex(writeBuffer));
 
     // Simple Field (moduloDivide)
-    writeSimpleField("moduloDivide", moduloDivide, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("moduloDivide", moduloDivide, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPrescale");
   }

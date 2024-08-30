@@ -61,10 +61,10 @@ public class BACnetHostNPort implements Message {
     writeBuffer.pushContext("BACnetHostNPort");
 
     // Simple Field (host)
-    writeSimpleField("host", host, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("host", host, writeComplex(writeBuffer));
 
     // Simple Field (port)
-    writeSimpleField("port", port, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("port", port, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostNPort");
   }

@@ -61,7 +61,7 @@ public class ApduControlContainer extends Apdu implements Message {
     writeBuffer.pushContext("ApduControlContainer");
 
     // Simple Field (controlApdu)
-    writeSimpleField("controlApdu", controlApdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("controlApdu", controlApdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ApduControlContainer");
   }

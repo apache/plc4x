@@ -163,10 +163,7 @@ public class APDUComplexAck extends APDU implements Message {
 
     // Optional Field (serviceAck) (Can be skipped, if the value is null)
     writeOptionalField(
-        "serviceAck",
-        serviceAck,
-        new DataWriterComplexDefault<>(writeBuffer),
-        !(getSegmentedMessage()));
+        "serviceAck", serviceAck, writeComplex(writeBuffer), !(getSegmentedMessage()));
 
     // Optional Field (segmentServiceChoice) (Can be skipped, if the value is null)
     writeOptionalEnumField(

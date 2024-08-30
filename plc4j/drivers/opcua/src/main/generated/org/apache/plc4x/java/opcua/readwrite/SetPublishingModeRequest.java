@@ -84,7 +84,7 @@ public class SetPublishingModeRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("SetPublishingModeRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

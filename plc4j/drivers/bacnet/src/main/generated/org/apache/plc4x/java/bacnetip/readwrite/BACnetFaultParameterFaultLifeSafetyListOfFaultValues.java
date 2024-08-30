@@ -75,13 +75,13 @@ public class BACnetFaultParameterFaultLifeSafetyListOfFaultValues implements Mes
     writeBuffer.pushContext("BACnetFaultParameterFaultLifeSafetyListOfFaultValues");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listIfFaultValues)
     writeComplexTypeArrayField("listIfFaultValues", listIfFaultValues, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultLifeSafetyListOfFaultValues");
   }

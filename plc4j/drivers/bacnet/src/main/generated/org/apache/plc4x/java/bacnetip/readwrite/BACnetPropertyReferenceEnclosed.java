@@ -75,13 +75,13 @@ public class BACnetPropertyReferenceEnclosed implements Message {
     writeBuffer.pushContext("BACnetPropertyReferenceEnclosed");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (reference)
-    writeSimpleField("reference", reference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reference", reference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyReferenceEnclosed");
   }

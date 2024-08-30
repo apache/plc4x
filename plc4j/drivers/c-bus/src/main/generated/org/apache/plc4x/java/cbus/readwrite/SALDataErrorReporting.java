@@ -61,8 +61,7 @@ public class SALDataErrorReporting extends SALData implements Message {
     writeBuffer.pushContext("SALDataErrorReporting");
 
     // Simple Field (errorReportingData)
-    writeSimpleField(
-        "errorReportingData", errorReportingData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorReportingData", errorReportingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataErrorReporting");
   }

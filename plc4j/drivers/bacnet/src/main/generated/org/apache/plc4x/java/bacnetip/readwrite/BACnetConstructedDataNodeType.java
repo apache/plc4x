@@ -82,7 +82,7 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataNodeType");
 
     // Simple Field (nodeType)
-    writeSimpleField("nodeType", nodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeType", nodeType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetNodeTypeTagged actualValue = getActualValue();

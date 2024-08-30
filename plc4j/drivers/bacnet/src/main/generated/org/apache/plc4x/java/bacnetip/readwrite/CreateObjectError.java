@@ -68,13 +68,11 @@ public class CreateObjectError extends BACnetError implements Message {
     writeBuffer.pushContext("CreateObjectError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (firstFailedElementNumber)
     writeSimpleField(
-        "firstFailedElementNumber",
-        firstFailedElementNumber,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "firstFailedElementNumber", firstFailedElementNumber, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CreateObjectError");
   }

@@ -82,7 +82,7 @@ public class HPAIControlEndpoint implements Message {
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     // Simple Field (ipPort)
     writeSimpleField("ipPort", ipPort, writeUnsignedInt(writeBuffer, 16));

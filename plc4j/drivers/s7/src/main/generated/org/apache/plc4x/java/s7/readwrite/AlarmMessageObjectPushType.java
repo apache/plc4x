@@ -139,16 +139,16 @@ public class AlarmMessageObjectPushType implements Message {
     writeSimpleField("eventId", eventId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (localState)
-    writeSimpleField("localState", localState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localState", localState, writeComplex(writeBuffer));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     // Array Field (AssociatedValues)
     writeComplexTypeArrayField("AssociatedValues", AssociatedValues, writeBuffer);

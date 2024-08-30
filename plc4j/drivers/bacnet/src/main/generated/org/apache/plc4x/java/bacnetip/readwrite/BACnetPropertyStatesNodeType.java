@@ -60,7 +60,7 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
     writeBuffer.pushContext("BACnetPropertyStatesNodeType");
 
     // Simple Field (nodeType)
-    writeSimpleField("nodeType", nodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeType", nodeType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesNodeType");
   }

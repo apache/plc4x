@@ -121,25 +121,25 @@ public class AlarmMessageObjectQueryType implements Message {
     writeConstField("variableSpec", VARIABLESPEC, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (ackStateGoing)
-    writeSimpleField("ackStateGoing", ackStateGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateGoing", ackStateGoing, writeComplex(writeBuffer));
 
     // Simple Field (ackStateComing)
-    writeSimpleField("ackStateComing", ackStateComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ackStateComing", ackStateComing, writeComplex(writeBuffer));
 
     // Simple Field (timeComing)
-    writeSimpleField("timeComing", timeComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeComing", timeComing, writeComplex(writeBuffer));
 
     // Simple Field (valueComing)
-    writeSimpleField("valueComing", valueComing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueComing", valueComing, writeComplex(writeBuffer));
 
     // Simple Field (timeGoing)
-    writeSimpleField("timeGoing", timeGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeGoing", timeGoing, writeComplex(writeBuffer));
 
     // Simple Field (valueGoing)
-    writeSimpleField("valueGoing", valueGoing, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueGoing", valueGoing, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AlarmMessageObjectQueryType");
   }

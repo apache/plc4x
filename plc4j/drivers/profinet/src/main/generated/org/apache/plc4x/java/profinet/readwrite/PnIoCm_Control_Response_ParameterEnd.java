@@ -128,7 +128,7 @@ public class PnIoCm_Control_Response_ParameterEnd extends PnIoCm_Block implement
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (sessionKey)

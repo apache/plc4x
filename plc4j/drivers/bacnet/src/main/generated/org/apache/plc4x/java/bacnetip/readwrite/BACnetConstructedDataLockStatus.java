@@ -82,7 +82,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataLockStatus");
 
     // Simple Field (lockStatus)
-    writeSimpleField("lockStatus", lockStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lockStatus", lockStatus, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLockStatusTagged actualValue = getActualValue();

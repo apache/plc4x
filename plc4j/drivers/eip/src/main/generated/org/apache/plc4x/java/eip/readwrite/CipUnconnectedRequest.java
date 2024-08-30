@@ -113,11 +113,10 @@ public class CipUnconnectedRequest extends CipService implements Message {
     writeImplicitField("requestPathSize", requestPathSize, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (classSegment)
-    writeSimpleField("classSegment", classSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("classSegment", classSegment, writeComplex(writeBuffer));
 
     // Simple Field (instanceSegment)
-    writeSimpleField(
-        "instanceSegment", instanceSegment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("instanceSegment", instanceSegment, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (int) 0x9D05, writeUnsignedInt(writeBuffer, 16));
@@ -128,8 +127,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
     writeImplicitField("messageSize", messageSize, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (unconnectedService)
-    writeSimpleField(
-        "unconnectedService", unconnectedService, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unconnectedService", unconnectedService, writeComplex(writeBuffer));
 
     // Const Field (route)
     writeConstField("route", ROUTE, writeUnsignedInt(writeBuffer, 16));

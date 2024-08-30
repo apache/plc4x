@@ -61,8 +61,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     writeBuffer.pushContext("BACnetPropertyStatesNetworkNumberQuality");
 
     // Simple Field (networkNumberQuality)
-    writeSimpleField(
-        "networkNumberQuality", networkNumberQuality, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumberQuality", networkNumberQuality, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesNetworkNumberQuality");
   }

@@ -61,7 +61,7 @@ public class DataSegment extends PathSegment implements Message {
     writeBuffer.pushContext("DataSegment");
 
     // Simple Field (segmentType)
-    writeSimpleField("segmentType", segmentType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("segmentType", segmentType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("DataSegment");
   }

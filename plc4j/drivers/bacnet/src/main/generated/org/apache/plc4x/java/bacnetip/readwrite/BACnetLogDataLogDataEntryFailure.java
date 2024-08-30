@@ -59,7 +59,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     writeBuffer.pushContext("BACnetLogDataLogDataEntryFailure");
 
     // Simple Field (failure)
-    writeSimpleField("failure", failure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("failure", failure, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryFailure");
   }

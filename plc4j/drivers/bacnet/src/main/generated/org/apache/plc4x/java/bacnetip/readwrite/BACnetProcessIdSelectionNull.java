@@ -60,7 +60,7 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
     writeBuffer.pushContext("BACnetProcessIdSelectionNull");
 
     // Simple Field (nullValue)
-    writeSimpleField("nullValue", nullValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nullValue", nullValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetProcessIdSelectionNull");
   }

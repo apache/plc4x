@@ -82,7 +82,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataLastPriority");
 
     // Simple Field (lastPriority)
-    writeSimpleField("lastPriority", lastPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastPriority", lastPriority, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

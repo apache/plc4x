@@ -61,7 +61,7 @@ public class ExtensiblePayload extends Payload implements Message {
     writeBuffer.pushContext("ExtensiblePayload");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ExtensiblePayload");
   }

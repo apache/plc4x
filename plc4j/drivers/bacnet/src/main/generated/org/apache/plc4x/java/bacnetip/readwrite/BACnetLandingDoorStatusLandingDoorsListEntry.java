@@ -62,10 +62,10 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     writeBuffer.pushContext("BACnetLandingDoorStatusLandingDoorsListEntry");
 
     // Simple Field (floorNumber)
-    writeSimpleField("floorNumber", floorNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumber", floorNumber, writeComplex(writeBuffer));
 
     // Simple Field (doorStatus)
-    writeSimpleField("doorStatus", doorStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("doorStatus", doorStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingDoorStatusLandingDoorsListEntry");
   }

@@ -119,27 +119,25 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("CreateSessionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientDescription)
-    writeSimpleField(
-        "clientDescription", clientDescription, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientDescription", clientDescription, writeComplex(writeBuffer));
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (endpointUrl)
-    writeSimpleField("endpointUrl", endpointUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endpointUrl", endpointUrl, writeComplex(writeBuffer));
 
     // Simple Field (sessionName)
-    writeSimpleField("sessionName", sessionName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionName", sessionName, writeComplex(writeBuffer));
 
     // Simple Field (clientNonce)
-    writeSimpleField("clientNonce", clientNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientNonce", clientNonce, writeComplex(writeBuffer));
 
     // Simple Field (clientCertificate)
-    writeSimpleField(
-        "clientCertificate", clientCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientCertificate", clientCertificate, writeComplex(writeBuffer));
 
     // Simple Field (requestedSessionTimeout)
     writeSimpleField(

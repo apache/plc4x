@@ -105,8 +105,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("RequestHeader");
 
     // Simple Field (authenticationToken)
-    writeSimpleField(
-        "authenticationToken", authenticationToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationToken", authenticationToken, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
     writeSimpleField("timestamp", timestamp, writeSignedLong(writeBuffer, 64));
@@ -118,14 +117,13 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
     writeSimpleField("returnDiagnostics", returnDiagnostics, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (auditEntryId)
-    writeSimpleField("auditEntryId", auditEntryId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("auditEntryId", auditEntryId, writeComplex(writeBuffer));
 
     // Simple Field (timeoutHint)
     writeSimpleField("timeoutHint", timeoutHint, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (additionalHeader)
-    writeSimpleField(
-        "additionalHeader", additionalHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("additionalHeader", additionalHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RequestHeader");
   }

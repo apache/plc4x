@@ -63,9 +63,7 @@ public class SALDataTemperatureBroadcast extends SALData implements Message {
 
     // Simple Field (temperatureBroadcastData)
     writeSimpleField(
-        "temperatureBroadcastData",
-        temperatureBroadcastData,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "temperatureBroadcastData", temperatureBroadcastData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataTemperatureBroadcast");
   }

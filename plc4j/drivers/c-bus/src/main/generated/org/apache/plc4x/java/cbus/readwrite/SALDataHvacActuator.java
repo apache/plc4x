@@ -61,8 +61,7 @@ public class SALDataHvacActuator extends SALData implements Message {
     writeBuffer.pushContext("SALDataHvacActuator");
 
     // Simple Field (hvacActuatorData)
-    writeSimpleField(
-        "hvacActuatorData", hvacActuatorData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacActuatorData", hvacActuatorData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataHvacActuator");
   }

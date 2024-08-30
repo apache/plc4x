@@ -71,10 +71,10 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByPosition
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
 
     // Simple Field (referenceIndex)
-    writeSimpleField("referenceIndex", referenceIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceIndex", referenceIndex, writeComplex(writeBuffer));
 
     // Simple Field (count)
-    writeSimpleField("count", count, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("count", count, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition");
   }

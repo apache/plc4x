@@ -70,7 +70,7 @@ public class CANOpenMPDO implements Message {
     writeSimpleField("node", node, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Array Field (data)
     writeByteArrayField("data", data, writeByteArray(writeBuffer, 8));

@@ -62,10 +62,10 @@ public class BACnetNetworkSecurityPolicy implements Message {
     writeBuffer.pushContext("BACnetNetworkSecurityPolicy");
 
     // Simple Field (portId)
-    writeSimpleField("portId", portId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("portId", portId, writeComplex(writeBuffer));
 
     // Simple Field (securityLevel)
-    writeSimpleField("securityLevel", securityLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityLevel", securityLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNetworkSecurityPolicy");
   }

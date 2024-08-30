@@ -83,10 +83,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataCurrentCommandPriority");
 
     // Simple Field (currentCommandPriority)
-    writeSimpleField(
-        "currentCommandPriority",
-        currentCommandPriority,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("currentCommandPriority", currentCommandPriority, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetOptionalUnsigned actualValue = getActualValue();

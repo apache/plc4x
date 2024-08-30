@@ -63,9 +63,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
 
     // Simple Field (poolsSpaPondsFountainsData)
     writeSimpleField(
-        "poolsSpaPondsFountainsData",
-        poolsSpaPondsFountainsData,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "poolsSpaPondsFountainsData", poolsSpaPondsFountainsData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataPoolsSpasPondsFountainsControl");
   }

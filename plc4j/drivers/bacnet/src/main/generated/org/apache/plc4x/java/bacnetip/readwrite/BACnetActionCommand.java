@@ -112,35 +112,31 @@ public class BACnetActionCommand implements Message {
     writeBuffer.pushContext("BACnetActionCommand");
 
     // Optional Field (deviceIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
-    writeOptionalField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     // Optional Field (postDelay) (Can be skipped, if the value is null)
-    writeOptionalField("postDelay", postDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("postDelay", postDelay, writeComplex(writeBuffer));
 
     // Simple Field (quitOnFailure)
-    writeSimpleField("quitOnFailure", quitOnFailure, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("quitOnFailure", quitOnFailure, writeComplex(writeBuffer));
 
     // Simple Field (writeSuccessful)
-    writeSimpleField(
-        "writeSuccessful", writeSuccessful, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("writeSuccessful", writeSuccessful, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetActionCommand");
   }

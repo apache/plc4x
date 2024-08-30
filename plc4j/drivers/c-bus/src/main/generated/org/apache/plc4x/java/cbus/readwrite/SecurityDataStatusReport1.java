@@ -82,13 +82,13 @@ public class SecurityDataStatusReport1 extends SecurityData implements Message {
     writeBuffer.pushContext("SecurityDataStatusReport1");
 
     // Simple Field (armCodeType)
-    writeSimpleField("armCodeType", armCodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("armCodeType", armCodeType, writeComplex(writeBuffer));
 
     // Simple Field (tamperStatus)
-    writeSimpleField("tamperStatus", tamperStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tamperStatus", tamperStatus, writeComplex(writeBuffer));
 
     // Simple Field (panicStatus)
-    writeSimpleField("panicStatus", panicStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("panicStatus", panicStatus, writeComplex(writeBuffer));
 
     // Array Field (zoneStatus)
     writeComplexTypeArrayField("zoneStatus", zoneStatus, writeBuffer);

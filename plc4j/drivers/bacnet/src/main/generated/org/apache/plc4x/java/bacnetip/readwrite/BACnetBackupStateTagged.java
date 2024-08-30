@@ -68,7 +68,7 @@ public class BACnetBackupStateTagged implements Message {
     writeBuffer.pushContext("BACnetBackupStateTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

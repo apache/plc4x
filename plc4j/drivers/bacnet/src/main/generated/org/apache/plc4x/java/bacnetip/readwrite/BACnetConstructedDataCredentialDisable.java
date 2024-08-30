@@ -83,8 +83,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataCredentialDisable");
 
     // Simple Field (credentialDisable)
-    writeSimpleField(
-        "credentialDisable", credentialDisable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("credentialDisable", credentialDisable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessCredentialDisableTagged actualValue = getActualValue();

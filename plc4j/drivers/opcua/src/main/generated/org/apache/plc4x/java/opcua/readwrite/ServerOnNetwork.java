@@ -94,10 +94,10 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     writeSimpleField("recordId", recordId, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (serverName)
-    writeSimpleField("serverName", serverName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverName", serverName, writeComplex(writeBuffer));
 
     // Simple Field (discoveryUrl)
-    writeSimpleField("discoveryUrl", discoveryUrl, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discoveryUrl", discoveryUrl, writeComplex(writeBuffer));
 
     // Simple Field (noOfServerCapabilities)
     writeSimpleField(

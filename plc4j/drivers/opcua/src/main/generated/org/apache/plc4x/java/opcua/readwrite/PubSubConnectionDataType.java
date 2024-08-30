@@ -140,7 +140,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("PubSubConnectionDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -149,14 +149,13 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeSimpleField("enabled", enabled, writeBoolean(writeBuffer));
 
     // Simple Field (publisherId)
-    writeSimpleField("publisherId", publisherId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("publisherId", publisherId, writeComplex(writeBuffer));
 
     // Simple Field (transportProfileUri)
-    writeSimpleField(
-        "transportProfileUri", transportProfileUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProfileUri", transportProfileUri, writeComplex(writeBuffer));
 
     // Simple Field (address)
-    writeSimpleField("address", address, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("address", address, writeComplex(writeBuffer));
 
     // Simple Field (noOfConnectionProperties)
     writeSimpleField(
@@ -166,8 +165,7 @@ public class PubSubConnectionDataType extends ExtensionObjectDefinition implemen
     writeComplexTypeArrayField("connectionProperties", connectionProperties, writeBuffer);
 
     // Simple Field (transportSettings)
-    writeSimpleField(
-        "transportSettings", transportSettings, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportSettings", transportSettings, writeComplex(writeBuffer));
 
     // Simple Field (noOfWriterGroups)
     writeSimpleField("noOfWriterGroups", noOfWriterGroups, writeSignedInt(writeBuffer, 32));

@@ -107,25 +107,22 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfLifeSafety");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (newState)
-    writeSimpleField("newState", newState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newState", newState, writeComplex(writeBuffer));
 
     // Simple Field (newMode)
-    writeSimpleField("newMode", newMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("newMode", newMode, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (operationExpected)
-    writeSimpleField(
-        "operationExpected", operationExpected, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("operationExpected", operationExpected, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfLifeSafety");
   }

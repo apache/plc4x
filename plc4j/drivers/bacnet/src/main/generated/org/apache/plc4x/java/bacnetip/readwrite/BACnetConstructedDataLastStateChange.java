@@ -82,8 +82,7 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataLastStateChange");
 
     // Simple Field (lastStateChange)
-    writeSimpleField(
-        "lastStateChange", lastStateChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastStateChange", lastStateChange, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetTimerTransitionTagged actualValue = getActualValue();

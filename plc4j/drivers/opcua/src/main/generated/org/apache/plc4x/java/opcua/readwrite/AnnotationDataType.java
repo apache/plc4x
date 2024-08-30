@@ -74,13 +74,13 @@ public class AnnotationDataType extends ExtensionObjectDefinition implements Mes
     writeBuffer.pushContext("AnnotationDataType");
 
     // Simple Field (annotation)
-    writeSimpleField("annotation", annotation, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("annotation", annotation, writeComplex(writeBuffer));
 
     // Simple Field (discipline)
-    writeSimpleField("discipline", discipline, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("discipline", discipline, writeComplex(writeBuffer));
 
     // Simple Field (uri)
-    writeSimpleField("uri", uri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("uri", uri, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AnnotationDataType");
   }

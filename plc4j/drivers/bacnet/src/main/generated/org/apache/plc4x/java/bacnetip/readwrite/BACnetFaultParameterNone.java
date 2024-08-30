@@ -59,7 +59,7 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
     writeBuffer.pushContext("BACnetFaultParameterNone");
 
     // Simple Field (none)
-    writeSimpleField("none", none, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("none", none, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterNone");
   }

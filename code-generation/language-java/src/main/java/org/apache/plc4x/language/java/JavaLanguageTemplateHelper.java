@@ -457,7 +457,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataWriterCall(arrayTypeReference.getElementTypeReference(), fieldName);
         } else if (typeReference.isComplexTypeReference()) {
-            return "new DataWriterComplexDefault<>(writeBuffer)";
+            return "writeComplex(writeBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }

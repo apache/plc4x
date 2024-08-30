@@ -68,7 +68,7 @@ public class TlvProfibusSubTypeMrpPortStatus extends TlvOrgSpecificProfibusUnit 
     writeBuffer.pushContext("TlvProfibusSubTypeMrpPortStatus");
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Simple Field (Status)
     writeSimpleField("Status", Status, writeUnsignedInt(writeBuffer, 16));

@@ -64,10 +64,7 @@ public class InformationObjectWithoutTime_SINGLE_COMMAND extends InformationObje
 
     // Simple Field (sco)
     writeSimpleField(
-        "sco",
-        sco,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "sco", sco, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_SINGLE_COMMAND");
   }

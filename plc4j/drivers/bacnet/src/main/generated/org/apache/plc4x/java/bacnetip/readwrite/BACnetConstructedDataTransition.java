@@ -82,7 +82,7 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataTransition");
 
     // Simple Field (transition)
-    writeSimpleField("transition", transition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transition", transition, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLightingTransitionTagged actualValue = getActualValue();

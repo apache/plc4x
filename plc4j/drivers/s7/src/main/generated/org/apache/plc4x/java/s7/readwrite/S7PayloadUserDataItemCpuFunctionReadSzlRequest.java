@@ -82,7 +82,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     writeBuffer.pushContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest");
 
     // Simple Field (szlId)
-    writeSimpleField("szlId", szlId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("szlId", szlId, writeComplex(writeBuffer));
 
     // Simple Field (szlIndex)
     writeSimpleField("szlIndex", szlIndex, writeUnsignedInt(writeBuffer, 16));

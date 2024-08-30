@@ -62,11 +62,10 @@ public class BACnetRecipientProcess implements Message {
     writeBuffer.pushContext("BACnetRecipientProcess");
 
     // Simple Field (recipient)
-    writeSimpleField("recipient", recipient, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("recipient", recipient, writeComplex(writeBuffer));
 
     // Optional Field (processIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "processIdentifier", processIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("processIdentifier", processIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRecipientProcess");
   }

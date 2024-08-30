@@ -82,8 +82,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataThreatAuthority");
 
     // Simple Field (threatAuthority)
-    writeSimpleField(
-        "threatAuthority", threatAuthority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("threatAuthority", threatAuthority, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetAccessThreatLevel actualValue = getActualValue();

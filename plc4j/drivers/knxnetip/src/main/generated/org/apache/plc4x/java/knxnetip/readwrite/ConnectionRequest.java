@@ -80,21 +80,21 @@ public class ConnectionRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiDiscoveryEndpoint",
         hpaiDiscoveryEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (hpaiDataEndpoint)
     writeSimpleField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (connectionRequestInformation)
     writeSimpleField(
         "connectionRequestInformation",
         connectionRequestInformation,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionRequest");

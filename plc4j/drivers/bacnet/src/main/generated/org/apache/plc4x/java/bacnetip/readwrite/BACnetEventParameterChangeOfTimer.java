@@ -89,20 +89,19 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     writeBuffer.pushContext("BACnetEventParameterChangeOfTimer");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (alarmValues)
-    writeSimpleField("alarmValues", alarmValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmValues", alarmValues, writeComplex(writeBuffer));
 
     // Simple Field (updateTimeReference)
-    writeSimpleField(
-        "updateTimeReference", updateTimeReference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("updateTimeReference", updateTimeReference, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterChangeOfTimer");
   }

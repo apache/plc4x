@@ -86,7 +86,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
     writeSimpleField(
         "numberOfAuthenticationPolicies",
         numberOfAuthenticationPolicies,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

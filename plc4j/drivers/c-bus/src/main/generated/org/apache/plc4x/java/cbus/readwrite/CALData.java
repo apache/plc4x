@@ -103,8 +103,7 @@ public abstract class CALData implements Message {
     serializeCALDataChild(writeBuffer);
 
     // Optional Field (additionalData) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "additionalData", additionalData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("additionalData", additionalData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALData");
   }

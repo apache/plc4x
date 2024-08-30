@@ -83,7 +83,7 @@ public class APDUReject extends APDU implements Message {
     writeSimpleField("originalInvokeId", originalInvokeId, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (rejectReason)
-    writeSimpleField("rejectReason", rejectReason, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("rejectReason", rejectReason, writeComplex(writeBuffer));
 
     writeBuffer.popContext("APDUReject");
   }

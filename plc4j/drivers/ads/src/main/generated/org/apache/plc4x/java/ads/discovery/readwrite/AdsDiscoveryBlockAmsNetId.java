@@ -72,7 +72,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
     writeConstField("amsNetIdLength", AMSNETIDLENGTH, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (amsNetId)
-    writeSimpleField("amsNetId", amsNetId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("amsNetId", amsNetId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AdsDiscoveryBlockAmsNetId");
   }

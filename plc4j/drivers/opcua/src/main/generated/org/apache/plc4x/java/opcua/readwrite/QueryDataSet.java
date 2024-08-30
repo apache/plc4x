@@ -84,11 +84,10 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("QueryDataSet");
 
     // Simple Field (nodeId)
-    writeSimpleField("nodeId", nodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeId", nodeId, writeComplex(writeBuffer));
 
     // Simple Field (typeDefinitionNode)
-    writeSimpleField(
-        "typeDefinitionNode", typeDefinitionNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinitionNode", typeDefinitionNode, writeComplex(writeBuffer));
 
     // Simple Field (noOfValues)
     writeSimpleField("noOfValues", noOfValues, writeSignedInt(writeBuffer, 32));

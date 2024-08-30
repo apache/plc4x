@@ -84,9 +84,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
 
     // Simple Field (applicationSoftwareVersion)
     writeSimpleField(
-        "applicationSoftwareVersion",
-        applicationSoftwareVersion,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "applicationSoftwareVersion", applicationSoftwareVersion, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

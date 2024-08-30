@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryInteger
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
 
     // Simple Field (integerValue)
-    writeSimpleField("integerValue", integerValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("integerValue", integerValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryInteger");
   }

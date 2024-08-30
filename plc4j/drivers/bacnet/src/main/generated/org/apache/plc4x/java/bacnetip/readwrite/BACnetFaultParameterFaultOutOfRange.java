@@ -82,16 +82,16 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     writeBuffer.pushContext("BACnetFaultParameterFaultOutOfRange");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (minNormalValue)
-    writeSimpleField("minNormalValue", minNormalValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minNormalValue", minNormalValue, writeComplex(writeBuffer));
 
     // Simple Field (maxNormalValue)
-    writeSimpleField("maxNormalValue", maxNormalValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxNormalValue", maxNormalValue, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultOutOfRange");
   }

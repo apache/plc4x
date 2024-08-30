@@ -89,19 +89,19 @@ public class BACnetEventPriorities implements Message {
     writeBuffer.pushContext("BACnetEventPriorities");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (toOffnormal)
-    writeSimpleField("toOffnormal", toOffnormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toOffnormal", toOffnormal, writeComplex(writeBuffer));
 
     // Simple Field (toFault)
-    writeSimpleField("toFault", toFault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toFault", toFault, writeComplex(writeBuffer));
 
     // Simple Field (toNormal)
-    writeSimpleField("toNormal", toNormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toNormal", toNormal, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventPriorities");
   }

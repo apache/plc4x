@@ -91,23 +91,17 @@ public class BACnetConfirmedServiceRequestSubscribeCOV extends BACnetConfirmedSe
 
     // Simple Field (subscriberProcessIdentifier)
     writeSimpleField(
-        "subscriberProcessIdentifier",
-        subscriberProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "subscriberProcessIdentifier", subscriberProcessIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (monitoredObjectIdentifier)
     writeSimpleField(
-        "monitoredObjectIdentifier",
-        monitoredObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "monitoredObjectIdentifier", monitoredObjectIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (issueConfirmed) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "issueConfirmed", issueConfirmed, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("issueConfirmed", issueConfirmed, writeComplex(writeBuffer));
 
     // Optional Field (lifetimeInSeconds) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "lifetimeInSeconds", lifetimeInSeconds, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("lifetimeInSeconds", lifetimeInSeconds, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestSubscribeCOV");
   }

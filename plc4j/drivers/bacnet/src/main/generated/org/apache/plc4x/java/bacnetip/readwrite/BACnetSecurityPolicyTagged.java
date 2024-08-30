@@ -68,7 +68,7 @@ public class BACnetSecurityPolicyTagged implements Message {
     writeBuffer.pushContext("BACnetSecurityPolicyTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

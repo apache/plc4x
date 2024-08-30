@@ -82,7 +82,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataTrackingValue");
 
     // Simple Field (trackingValue)
-    writeSimpleField("trackingValue", trackingValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("trackingValue", trackingValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLifeSafetyStateTagged actualValue = getActualValue();

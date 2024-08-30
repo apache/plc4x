@@ -84,9 +84,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTimeRemaining extends BACnetConst
 
     // Simple Field (ipv6DhcpLeaseTimeRemaining)
     writeSimpleField(
-        "ipv6DhcpLeaseTimeRemaining",
-        ipv6DhcpLeaseTimeRemaining,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "ipv6DhcpLeaseTimeRemaining", ipv6DhcpLeaseTimeRemaining, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

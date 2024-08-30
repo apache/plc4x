@@ -97,7 +97,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     writeSimpleField("id", id, writeUnsignedShort(writeBuffer, 12));
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("Ethernet_FramePayload_VirtualLan");
   }

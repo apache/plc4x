@@ -358,7 +358,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "objectUuid",
         objectUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -368,7 +368,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "interfaceUuid",
         interfaceUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -378,7 +378,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "activityUuid",
         activityUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN
@@ -489,7 +489,7 @@ public class DceRpc_Packet implements Message {
     writeSimpleField(
         "payload",
         payload,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                 ? ByteOrder.BIG_ENDIAN

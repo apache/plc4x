@@ -59,7 +59,7 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
     writeBuffer.pushContext("BACnetPropertyStatesState");
 
     // Simple Field (state)
-    writeSimpleField("state", state, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("state", state, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesState");
   }

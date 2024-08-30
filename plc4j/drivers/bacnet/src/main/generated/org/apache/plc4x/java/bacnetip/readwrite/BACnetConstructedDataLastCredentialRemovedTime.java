@@ -84,9 +84,7 @@ public class BACnetConstructedDataLastCredentialRemovedTime extends BACnetConstr
 
     // Simple Field (lastCredentialRemovedTime)
     writeSimpleField(
-        "lastCredentialRemovedTime",
-        lastCredentialRemovedTime,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "lastCredentialRemovedTime", lastCredentialRemovedTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

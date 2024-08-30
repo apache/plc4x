@@ -82,7 +82,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataBelongsTo");
 
     // Simple Field (belongsTo)
-    writeSimpleField("belongsTo", belongsTo, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("belongsTo", belongsTo, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();

@@ -83,10 +83,7 @@ public class BACnetConstructedDataTimeOfStrikeCountReset extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataTimeOfStrikeCountReset");
 
     // Simple Field (timeOfStrikeCountReset)
-    writeSimpleField(
-        "timeOfStrikeCountReset",
-        timeOfStrikeCountReset,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfStrikeCountReset", timeOfStrikeCountReset, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

@@ -68,9 +68,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
 
     // Simple Field (remoteVtSessionIdentifier)
     writeSimpleField(
-        "remoteVtSessionIdentifier",
-        remoteVtSessionIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "remoteVtSessionIdentifier", remoteVtSessionIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetServiceAckVTOpen");
   }

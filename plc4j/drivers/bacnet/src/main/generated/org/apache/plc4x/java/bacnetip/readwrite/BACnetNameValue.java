@@ -61,10 +61,10 @@ public class BACnetNameValue implements Message {
     writeBuffer.pushContext("BACnetNameValue");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Optional Field (value) (Can be skipped, if the value is null)
-    writeOptionalField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNameValue");
   }

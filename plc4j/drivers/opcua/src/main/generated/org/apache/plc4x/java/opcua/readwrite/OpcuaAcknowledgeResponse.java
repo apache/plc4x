@@ -74,7 +74,7 @@ public class OpcuaAcknowledgeResponse extends MessagePDU implements Message {
     writeSimpleField("version", version, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (limits)
-    writeSimpleField("limits", limits, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("limits", limits, writeComplex(writeBuffer));
 
     writeBuffer.popContext("OpcuaAcknowledgeResponse");
   }

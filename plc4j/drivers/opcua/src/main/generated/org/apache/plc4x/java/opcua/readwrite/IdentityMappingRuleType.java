@@ -78,7 +78,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (criteria)
-    writeSimpleField("criteria", criteria, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("criteria", criteria, writeComplex(writeBuffer));
 
     writeBuffer.popContext("IdentityMappingRuleType");
   }

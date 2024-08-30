@@ -82,7 +82,7 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataLoggingType");
 
     // Simple Field (loggingType)
-    writeSimpleField("loggingType", loggingType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("loggingType", loggingType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLoggingTypeTagged actualValue = getActualValue();

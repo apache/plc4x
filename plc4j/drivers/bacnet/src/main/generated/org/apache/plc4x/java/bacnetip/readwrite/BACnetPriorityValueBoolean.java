@@ -66,7 +66,7 @@ public class BACnetPriorityValueBoolean extends BACnetPriorityValue implements M
     writeBuffer.pushContext("BACnetPriorityValueBoolean");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPriorityValueBoolean");
   }

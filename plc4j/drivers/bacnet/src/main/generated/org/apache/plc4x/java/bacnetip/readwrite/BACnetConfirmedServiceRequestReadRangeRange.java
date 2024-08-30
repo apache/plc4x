@@ -77,7 +77,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     writeBuffer.pushContext("BACnetConfirmedServiceRequestReadRangeRange");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -87,7 +87,7 @@ public abstract class BACnetConfirmedServiceRequestReadRangeRange implements Mes
     serializeBACnetConfirmedServiceRequestReadRangeRangeChild(writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestReadRangeRange");
   }

@@ -122,7 +122,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     writeBuffer.pushContext("ErrorReportingDataGeneric");
 
     // Simple Field (systemCategory)
-    writeSimpleField("systemCategory", systemCategory, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("systemCategory", systemCategory, writeComplex(writeBuffer));
 
     // Simple Field (mostRecent)
     writeSimpleField("mostRecent", mostRecent, writeBoolean(writeBuffer));

@@ -77,7 +77,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
     writeBuffer.pushContext("BACnetPropertyAccessResultAccessResultPropertyValue");
 
     // Simple Field (propertyValue)
-    writeSimpleField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyAccessResultAccessResultPropertyValue");
   }

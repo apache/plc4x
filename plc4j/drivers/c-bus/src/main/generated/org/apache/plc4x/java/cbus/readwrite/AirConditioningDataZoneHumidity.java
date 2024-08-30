@@ -85,10 +85,10 @@ public class AirConditioningDataZoneHumidity extends AirConditioningData impleme
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (humidity)
-    writeSimpleField("humidity", humidity, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidity", humidity, writeComplex(writeBuffer));
 
     // Simple Field (sensorStatus)
     writeSimpleEnumField(

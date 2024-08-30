@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
     writeBuffer.pushContext("BACnetLogDataLogDataEntryRealValue");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryRealValue");
   }

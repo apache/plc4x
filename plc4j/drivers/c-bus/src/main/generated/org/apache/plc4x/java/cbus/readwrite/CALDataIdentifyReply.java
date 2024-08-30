@@ -81,8 +81,7 @@ public class CALDataIdentifyReply extends CALData implements Message {
             Attribute::getValue, Attribute::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (identifyReplyCommand)
-    writeSimpleField(
-        "identifyReplyCommand", identifyReplyCommand, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifyReplyCommand", identifyReplyCommand, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CALDataIdentifyReply");
   }

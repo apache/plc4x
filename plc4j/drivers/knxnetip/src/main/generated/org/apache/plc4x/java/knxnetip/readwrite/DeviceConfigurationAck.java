@@ -65,7 +65,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "deviceConfigurationAckDataBlock",
         deviceConfigurationAckDataBlock,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DeviceConfigurationAck");

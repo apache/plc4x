@@ -82,7 +82,7 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
     writeBuffer.pushContext("BACnetConstructedDataReliability");
 
     // Simple Field (reliability)
-    writeSimpleField("reliability", reliability, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reliability", reliability, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetReliabilityTagged actualValue = getActualValue();

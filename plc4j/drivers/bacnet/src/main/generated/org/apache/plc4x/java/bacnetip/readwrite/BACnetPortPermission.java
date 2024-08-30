@@ -62,10 +62,10 @@ public class BACnetPortPermission implements Message {
     writeBuffer.pushContext("BACnetPortPermission");
 
     // Simple Field (port)
-    writeSimpleField("port", port, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("port", port, writeComplex(writeBuffer));
 
     // Optional Field (enable) (Can be skipped, if the value is null)
-    writeOptionalField("enable", enable, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("enable", enable, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPortPermission");
   }

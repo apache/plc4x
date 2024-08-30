@@ -100,7 +100,7 @@ public class PnIoCm_Block_ArServer extends PnIoCm_Block implements Message {
     writeSimpleField(
         "stationName",
         stationName,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Padding Field (padding)

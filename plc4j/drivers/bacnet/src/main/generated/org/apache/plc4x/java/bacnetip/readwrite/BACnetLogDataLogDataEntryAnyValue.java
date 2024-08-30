@@ -61,7 +61,7 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
     writeBuffer.pushContext("BACnetLogDataLogDataEntryAnyValue");
 
     // Optional Field (anyValue) (Can be skipped, if the value is null)
-    writeOptionalField("anyValue", anyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("anyValue", anyValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLogDataLogDataEntryAnyValue");
   }

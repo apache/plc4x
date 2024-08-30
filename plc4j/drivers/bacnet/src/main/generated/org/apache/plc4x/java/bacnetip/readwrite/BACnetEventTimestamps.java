@@ -68,13 +68,13 @@ public class BACnetEventTimestamps implements Message {
     writeBuffer.pushContext("BACnetEventTimestamps");
 
     // Simple Field (toOffnormal)
-    writeSimpleField("toOffnormal", toOffnormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toOffnormal", toOffnormal, writeComplex(writeBuffer));
 
     // Simple Field (toFault)
-    writeSimpleField("toFault", toFault, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toFault", toFault, writeComplex(writeBuffer));
 
     // Simple Field (toNormal)
-    writeSimpleField("toNormal", toNormal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("toNormal", toNormal, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventTimestamps");
   }

@@ -66,7 +66,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     writeBuffer.pushContext("ParameterValueCustomManufacturer");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterValueCustomManufacturer");
   }

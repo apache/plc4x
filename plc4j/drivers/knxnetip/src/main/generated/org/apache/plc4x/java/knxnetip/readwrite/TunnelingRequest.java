@@ -71,15 +71,12 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "tunnelingRequestDataBlock",
         tunnelingRequestDataBlock,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cemi)
     writeSimpleField(
-        "cemi",
-        cemi,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
+        "cemi", cemi, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("TunnelingRequest");
   }

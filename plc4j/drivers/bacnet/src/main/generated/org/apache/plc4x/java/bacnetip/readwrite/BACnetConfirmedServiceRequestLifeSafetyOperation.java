@@ -91,20 +91,16 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
 
     // Simple Field (requestingProcessIdentifier)
     writeSimpleField(
-        "requestingProcessIdentifier",
-        requestingProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "requestingProcessIdentifier", requestingProcessIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (requestingSource)
-    writeSimpleField(
-        "requestingSource", requestingSource, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestingSource", requestingSource, writeComplex(writeBuffer));
 
     // Simple Field (request)
-    writeSimpleField("request", request, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("request", request, writeComplex(writeBuffer));
 
     // Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestLifeSafetyOperation");
   }

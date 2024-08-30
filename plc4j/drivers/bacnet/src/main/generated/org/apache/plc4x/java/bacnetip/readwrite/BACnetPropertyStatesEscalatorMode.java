@@ -60,7 +60,7 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesEscalatorMode");
 
     // Simple Field (escalatorMode)
-    writeSimpleField("escalatorMode", escalatorMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("escalatorMode", escalatorMode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesEscalatorMode");
   }

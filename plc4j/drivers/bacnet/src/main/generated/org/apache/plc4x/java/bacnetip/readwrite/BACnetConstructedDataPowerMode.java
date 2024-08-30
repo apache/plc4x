@@ -82,7 +82,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataPowerMode");
 
     // Simple Field (powerMode)
-    writeSimpleField("powerMode", powerMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("powerMode", powerMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

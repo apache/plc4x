@@ -107,30 +107,22 @@ public class BACnetConfirmedServiceRequestAcknowledgeAlarm extends BACnetConfirm
     writeSimpleField(
         "acknowledgingProcessIdentifier",
         acknowledgingProcessIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        writeComplex(writeBuffer));
 
     // Simple Field (eventObjectIdentifier)
-    writeSimpleField(
-        "eventObjectIdentifier",
-        eventObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventObjectIdentifier", eventObjectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventStateAcknowledged)
-    writeSimpleField(
-        "eventStateAcknowledged",
-        eventStateAcknowledged,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventStateAcknowledged", eventStateAcknowledged, writeComplex(writeBuffer));
 
     // Simple Field (timestamp)
-    writeSimpleField("timestamp", timestamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timestamp", timestamp, writeComplex(writeBuffer));
 
     // Simple Field (acknowledgmentSource)
-    writeSimpleField(
-        "acknowledgmentSource", acknowledgmentSource, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("acknowledgmentSource", acknowledgmentSource, writeComplex(writeBuffer));
 
     // Simple Field (timeOfAcknowledgment)
-    writeSimpleField(
-        "timeOfAcknowledgment", timeOfAcknowledgment, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeOfAcknowledgment", timeOfAcknowledgment, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAcknowledgeAlarm");
   }

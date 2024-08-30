@@ -141,7 +141,7 @@ public class BACnetWeekNDayTagged implements Message {
     writeBuffer.pushContext("BACnetWeekNDayTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Simple Field (month)
     writeSimpleField("month", month, writeUnsignedShort(writeBuffer, 8));

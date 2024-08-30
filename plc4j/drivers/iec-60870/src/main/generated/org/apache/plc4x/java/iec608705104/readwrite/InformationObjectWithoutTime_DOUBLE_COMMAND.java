@@ -64,10 +64,7 @@ public class InformationObjectWithoutTime_DOUBLE_COMMAND extends InformationObje
 
     // Simple Field (dco)
     writeSimpleField(
-        "dco",
-        dco,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "dco", dco, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_DOUBLE_COMMAND");
   }

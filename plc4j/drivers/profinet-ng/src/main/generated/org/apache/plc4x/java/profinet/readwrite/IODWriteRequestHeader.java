@@ -169,7 +169,7 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
     writeSimpleField(
         "arUuid",
         arUuid,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (api)
@@ -226,7 +226,7 @@ public class IODWriteRequestHeader extends PnIoCm_Block implements Message {
     writeOptionalField(
         "userData",
         userData,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getIndex()) < (0x8000),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

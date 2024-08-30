@@ -63,9 +63,7 @@ public class TlvOrganizationSpecific extends LldpUnit implements Message {
 
     // Simple Field (organizationSpecificUnit)
     writeSimpleField(
-        "organizationSpecificUnit",
-        organizationSpecificUnit,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "organizationSpecificUnit", organizationSpecificUnit, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvOrganizationSpecific");
   }

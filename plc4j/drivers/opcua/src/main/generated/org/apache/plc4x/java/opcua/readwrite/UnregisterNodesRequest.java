@@ -77,7 +77,7 @@ public class UnregisterNodesRequest extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("UnregisterNodesRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToUnregister)
     writeSimpleField(

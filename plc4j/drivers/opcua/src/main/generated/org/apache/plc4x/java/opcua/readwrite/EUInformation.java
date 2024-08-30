@@ -81,16 +81,16 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
     writeBuffer.pushContext("EUInformation");
 
     // Simple Field (namespaceUri)
-    writeSimpleField("namespaceUri", namespaceUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("namespaceUri", namespaceUri, writeComplex(writeBuffer));
 
     // Simple Field (unitId)
     writeSimpleField("unitId", unitId, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EUInformation");
   }

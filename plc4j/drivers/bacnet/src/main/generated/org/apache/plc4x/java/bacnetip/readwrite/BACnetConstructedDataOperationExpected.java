@@ -83,8 +83,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     writeBuffer.pushContext("BACnetConstructedDataOperationExpected");
 
     // Simple Field (lifeSafetyOperations)
-    writeSimpleField(
-        "lifeSafetyOperations", lifeSafetyOperations, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lifeSafetyOperations", lifeSafetyOperations, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLifeSafetyOperationTagged actualValue = getActualValue();

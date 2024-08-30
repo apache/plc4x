@@ -137,7 +137,7 @@ public class NLMUpdateKeyUpdate extends NLM implements Message {
     writeBuffer.pushContext("NLMUpdateKeyUpdate");
 
     // Simple Field (controlFlags)
-    writeSimpleField("controlFlags", controlFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("controlFlags", controlFlags, writeComplex(writeBuffer));
 
     // Optional Field (set1KeyRevision) (Can be skipped, if the value is null)
     writeOptionalField(

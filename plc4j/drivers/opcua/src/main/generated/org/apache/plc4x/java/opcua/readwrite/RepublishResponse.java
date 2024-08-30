@@ -69,11 +69,10 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("RepublishResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (notificationMessage)
-    writeSimpleField(
-        "notificationMessage", notificationMessage, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notificationMessage", notificationMessage, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RepublishResponse");
   }

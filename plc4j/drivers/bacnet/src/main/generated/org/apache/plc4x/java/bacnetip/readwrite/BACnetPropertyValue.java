@@ -82,18 +82,16 @@ public class BACnetPropertyValue implements Message {
     writeBuffer.pushContext("BACnetPropertyValue");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (propertyArrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "propertyArrayIndex", propertyArrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyArrayIndex", propertyArrayIndex, writeComplex(writeBuffer));
 
     // Optional Field (propertyValue) (Can be skipped, if the value is null)
-    writeOptionalField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (priority) (Can be skipped, if the value is null)
-    writeOptionalField("priority", priority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("priority", priority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyValue");
   }

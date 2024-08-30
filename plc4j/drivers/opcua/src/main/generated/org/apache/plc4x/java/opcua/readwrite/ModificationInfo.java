@@ -88,7 +88,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (userName)
-    writeSimpleField("userName", userName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userName", userName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ModificationInfo");
   }

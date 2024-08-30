@@ -85,13 +85,13 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     writeBuffer.pushContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
 
     // Optional Field (timeDuration) (Can be skipped, if the value is null)
-    writeOptionalField("timeDuration", timeDuration, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timeDuration", timeDuration, writeComplex(writeBuffer));
 
     // Simple Field (enableDisable)
-    writeSimpleField("enableDisable", enableDisable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("enableDisable", enableDisable, writeComplex(writeBuffer));
 
     // Optional Field (password) (Can be skipped, if the value is null)
-    writeOptionalField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("password", password, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestDeviceCommunicationControl");
   }

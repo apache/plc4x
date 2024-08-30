@@ -82,7 +82,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataPolarity");
 
     // Simple Field (polarity)
-    writeSimpleField("polarity", polarity, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("polarity", polarity, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetPolarityTagged actualValue = getActualValue();

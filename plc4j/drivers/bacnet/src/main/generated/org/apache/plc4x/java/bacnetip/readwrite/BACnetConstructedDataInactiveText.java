@@ -82,7 +82,7 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataInactiveText");
 
     // Simple Field (inactiveText)
-    writeSimpleField("inactiveText", inactiveText, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("inactiveText", inactiveText, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagCharacterString actualValue = getActualValue();

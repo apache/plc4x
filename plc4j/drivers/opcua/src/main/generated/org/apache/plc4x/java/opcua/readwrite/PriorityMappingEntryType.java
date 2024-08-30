@@ -84,10 +84,10 @@ public class PriorityMappingEntryType extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("PriorityMappingEntryType");
 
     // Simple Field (mappingUri)
-    writeSimpleField("mappingUri", mappingUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("mappingUri", mappingUri, writeComplex(writeBuffer));
 
     // Simple Field (priorityLabel)
-    writeSimpleField("priorityLabel", priorityLabel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("priorityLabel", priorityLabel, writeComplex(writeBuffer));
 
     // Simple Field (priorityValue_PCP)
     writeSimpleField("priorityValue_PCP", priorityValue_PCP, writeUnsignedShort(writeBuffer, 8));

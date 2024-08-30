@@ -127,13 +127,10 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     writeBuffer.pushContext("SessionSecurityDiagnosticsDataType");
 
     // Simple Field (sessionId)
-    writeSimpleField("sessionId", sessionId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sessionId", sessionId, writeComplex(writeBuffer));
 
     // Simple Field (clientUserIdOfSession)
-    writeSimpleField(
-        "clientUserIdOfSession",
-        clientUserIdOfSession,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientUserIdOfSession", clientUserIdOfSession, writeComplex(writeBuffer));
 
     // Simple Field (noOfClientUserIdHistory)
     writeSimpleField(
@@ -143,17 +140,13 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     writeComplexTypeArrayField("clientUserIdHistory", clientUserIdHistory, writeBuffer);
 
     // Simple Field (authenticationMechanism)
-    writeSimpleField(
-        "authenticationMechanism",
-        authenticationMechanism,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationMechanism", authenticationMechanism, writeComplex(writeBuffer));
 
     // Simple Field (encoding)
-    writeSimpleField("encoding", encoding, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encoding", encoding, writeComplex(writeBuffer));
 
     // Simple Field (transportProtocol)
-    writeSimpleField(
-        "transportProtocol", transportProtocol, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("transportProtocol", transportProtocol, writeComplex(writeBuffer));
 
     // Simple Field (securityMode)
     writeSimpleEnumField(
@@ -166,12 +159,10 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (clientCertificate)
-    writeSimpleField(
-        "clientCertificate", clientCertificate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientCertificate", clientCertificate, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SessionSecurityDiagnosticsDataType");
   }

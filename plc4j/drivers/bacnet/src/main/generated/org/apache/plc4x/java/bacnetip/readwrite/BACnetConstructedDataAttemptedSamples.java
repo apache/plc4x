@@ -83,8 +83,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataAttemptedSamples");
 
     // Simple Field (attemptedSamples)
-    writeSimpleField(
-        "attemptedSamples", attemptedSamples, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("attemptedSamples", attemptedSamples, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

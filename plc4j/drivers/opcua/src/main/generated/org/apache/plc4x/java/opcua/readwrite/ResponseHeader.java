@@ -111,11 +111,10 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     writeSimpleField("requestHandle", requestHandle, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (serviceResult)
-    writeSimpleField("serviceResult", serviceResult, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceResult", serviceResult, writeComplex(writeBuffer));
 
     // Simple Field (serviceDiagnostics)
-    writeSimpleField(
-        "serviceDiagnostics", serviceDiagnostics, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceDiagnostics", serviceDiagnostics, writeComplex(writeBuffer));
 
     // Simple Field (noOfStringTable)
     writeSimpleField("noOfStringTable", noOfStringTable, writeSignedInt(writeBuffer, 32));
@@ -124,8 +123,7 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
     writeComplexTypeArrayField("stringTable", stringTable, writeBuffer);
 
     // Simple Field (additionalHeader)
-    writeSimpleField(
-        "additionalHeader", additionalHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("additionalHeader", additionalHeader, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ResponseHeader");
   }

@@ -94,7 +94,7 @@ public class S7PayloadUserDataItemClkFResponse extends S7PayloadUserDataItem imp
     writeSimpleField("year1", year1, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadUserDataItemClkFResponse");
   }

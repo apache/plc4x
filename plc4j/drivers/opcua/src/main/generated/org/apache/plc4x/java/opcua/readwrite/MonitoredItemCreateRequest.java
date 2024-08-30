@@ -77,7 +77,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("MonitoredItemCreateRequest");
 
     // Simple Field (itemToMonitor)
-    writeSimpleField("itemToMonitor", itemToMonitor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("itemToMonitor", itemToMonitor, writeComplex(writeBuffer));
 
     // Simple Field (monitoringMode)
     writeSimpleEnumField(
@@ -88,8 +88,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
             MonitoringMode::getValue, MonitoringMode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (requestedParameters)
-    writeSimpleField(
-        "requestedParameters", requestedParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestedParameters", requestedParameters, writeComplex(writeBuffer));
 
     writeBuffer.popContext("MonitoredItemCreateRequest");
   }

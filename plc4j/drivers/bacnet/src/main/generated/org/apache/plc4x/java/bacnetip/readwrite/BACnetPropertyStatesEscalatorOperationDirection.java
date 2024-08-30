@@ -63,9 +63,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
 
     // Simple Field (escalatorOperationDirection)
     writeSimpleField(
-        "escalatorOperationDirection",
-        escalatorOperationDirection,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "escalatorOperationDirection", escalatorOperationDirection, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesEscalatorOperationDirection");
   }

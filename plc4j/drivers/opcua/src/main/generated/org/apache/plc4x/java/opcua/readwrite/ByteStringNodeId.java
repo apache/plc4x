@@ -64,7 +64,7 @@ public class ByteStringNodeId implements Message {
     writeSimpleField("namespaceIndex", namespaceIndex, writeUnsignedInt(writeBuffer, 16));
 
     // Simple Field (identifier)
-    writeSimpleField("identifier", identifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("identifier", identifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ByteStringNodeId");
   }

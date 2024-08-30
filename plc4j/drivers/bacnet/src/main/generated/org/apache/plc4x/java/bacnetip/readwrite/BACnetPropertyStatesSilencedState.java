@@ -60,7 +60,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     writeBuffer.pushContext("BACnetPropertyStatesSilencedState");
 
     // Simple Field (silencedState)
-    writeSimpleField("silencedState", silencedState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("silencedState", silencedState, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesSilencedState");
   }

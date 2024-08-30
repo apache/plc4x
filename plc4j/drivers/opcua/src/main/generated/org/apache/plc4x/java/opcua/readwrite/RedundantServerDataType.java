@@ -75,7 +75,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
     writeBuffer.pushContext("RedundantServerDataType");
 
     // Simple Field (serverId)
-    writeSimpleField("serverId", serverId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverId", serverId, writeComplex(writeBuffer));
 
     // Simple Field (serviceLevel)
     writeSimpleField("serviceLevel", serviceLevel, writeUnsignedShort(writeBuffer, 8));

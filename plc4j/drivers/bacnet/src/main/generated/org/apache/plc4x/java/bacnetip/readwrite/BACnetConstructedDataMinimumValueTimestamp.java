@@ -83,10 +83,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
     writeBuffer.pushContext("BACnetConstructedDataMinimumValueTimestamp");
 
     // Simple Field (minimumValueTimestamp)
-    writeSimpleField(
-        "minimumValueTimestamp",
-        minimumValueTimestamp,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minimumValueTimestamp", minimumValueTimestamp, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

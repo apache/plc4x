@@ -75,7 +75,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
     writeBuffer.pushContext("ReferenceListEntryDataType");
 
     // Simple Field (referenceType)
-    writeSimpleField("referenceType", referenceType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceType", referenceType, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));
@@ -84,7 +84,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
     writeSimpleField("isForward", isForward, writeBoolean(writeBuffer));
 
     // Simple Field (targetNode)
-    writeSimpleField("targetNode", targetNode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetNode", targetNode, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ReferenceListEntryDataType");
   }

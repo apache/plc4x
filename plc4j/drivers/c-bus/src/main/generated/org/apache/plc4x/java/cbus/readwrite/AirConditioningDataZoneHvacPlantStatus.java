@@ -92,7 +92,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (hvacType)
     writeSimpleEnumField(
@@ -103,7 +103,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
             HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (hvacStatus)
-    writeSimpleField("hvacStatus", hvacStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("hvacStatus", hvacStatus, writeComplex(writeBuffer));
 
     // Simple Field (hvacErrorCode)
     writeSimpleEnumField(

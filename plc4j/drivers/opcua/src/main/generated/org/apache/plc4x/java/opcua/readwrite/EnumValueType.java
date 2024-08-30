@@ -77,10 +77,10 @@ public class EnumValueType extends ExtensionObjectDefinition implements Message 
     writeSimpleField("value", value, writeSignedLong(writeBuffer, 64));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     writeBuffer.popContext("EnumValueType");
   }

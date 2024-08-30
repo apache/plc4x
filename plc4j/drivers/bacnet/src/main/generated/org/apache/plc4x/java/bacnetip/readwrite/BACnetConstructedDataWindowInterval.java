@@ -82,7 +82,7 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataWindowInterval");
 
     // Simple Field (windowInterval)
-    writeSimpleField("windowInterval", windowInterval, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("windowInterval", windowInterval, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

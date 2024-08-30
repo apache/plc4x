@@ -62,8 +62,7 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
     writeBuffer.pushContext("X509IdentityToken");
 
     // Simple Field (certificateData)
-    writeSimpleField(
-        "certificateData", certificateData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("certificateData", certificateData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("X509IdentityToken");
   }

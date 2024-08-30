@@ -69,7 +69,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
     writeBuffer.pushContext("CBusPointToPointCommandDirect");
 
     // Simple Field (unitAddress)
-    writeSimpleField("unitAddress", unitAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("unitAddress", unitAddress, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField(

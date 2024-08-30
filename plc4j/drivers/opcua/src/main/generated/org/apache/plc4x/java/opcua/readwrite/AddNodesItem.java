@@ -105,18 +105,16 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("AddNodesItem");
 
     // Simple Field (parentNodeId)
-    writeSimpleField("parentNodeId", parentNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parentNodeId", parentNodeId, writeComplex(writeBuffer));
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Simple Field (requestedNewNodeId)
-    writeSimpleField(
-        "requestedNewNodeId", requestedNewNodeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestedNewNodeId", requestedNewNodeId, writeComplex(writeBuffer));
 
     // Simple Field (browseName)
-    writeSimpleField("browseName", browseName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("browseName", browseName, writeComplex(writeBuffer));
 
     // Simple Field (nodeClass)
     writeSimpleEnumField(
@@ -127,10 +125,10 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
             NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (nodeAttributes)
-    writeSimpleField("nodeAttributes", nodeAttributes, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("nodeAttributes", nodeAttributes, writeComplex(writeBuffer));
 
     // Simple Field (typeDefinition)
-    writeSimpleField("typeDefinition", typeDefinition, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("typeDefinition", typeDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AddNodesItem");
   }

@@ -93,7 +93,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     writeSimpleField("zoneGroup", zoneGroup, writeByte(writeBuffer, 8));
 
     // Simple Field (zoneList)
-    writeSimpleField("zoneList", zoneList, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("zoneList", zoneList, writeComplex(writeBuffer));
 
     // Simple Field (humidityType)
     writeSimpleEnumField(
@@ -106,7 +106,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (humidityStatus)
-    writeSimpleField("humidityStatus", humidityStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("humidityStatus", humidityStatus, writeComplex(writeBuffer));
 
     // Simple Field (humidityErrorCode)
     writeSimpleEnumField(

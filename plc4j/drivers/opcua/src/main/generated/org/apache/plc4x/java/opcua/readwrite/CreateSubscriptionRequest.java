@@ -105,7 +105,7 @@ public class CreateSubscriptionRequest extends ExtensionObjectDefinition impleme
     writeBuffer.pushContext("CreateSubscriptionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (requestedPublishingInterval)
     writeSimpleField(

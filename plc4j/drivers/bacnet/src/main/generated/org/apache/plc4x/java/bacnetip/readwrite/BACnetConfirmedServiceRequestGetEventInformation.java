@@ -69,9 +69,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
 
     // Optional Field (lastReceivedObjectIdentifier) (Can be skipped, if the value is null)
     writeOptionalField(
-        "lastReceivedObjectIdentifier",
-        lastReceivedObjectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "lastReceivedObjectIdentifier", lastReceivedObjectIdentifier, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestGetEventInformation");
   }

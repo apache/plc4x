@@ -100,22 +100,19 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     writeBuffer.pushContext("BACnetNotificationParametersExtended");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (extendedEventType)
-    writeSimpleField(
-        "extendedEventType", extendedEventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedEventType", extendedEventType, writeComplex(writeBuffer));
 
     // Simple Field (parameters)
-    writeSimpleField("parameters", parameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameters", parameters, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersExtended");
   }

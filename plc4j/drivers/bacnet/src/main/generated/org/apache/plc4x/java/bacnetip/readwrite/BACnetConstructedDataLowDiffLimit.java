@@ -82,7 +82,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataLowDiffLimit");
 
     // Simple Field (lowDiffLimit)
-    writeSimpleField("lowDiffLimit", lowDiffLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowDiffLimit", lowDiffLimit, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetOptionalREAL actualValue = getActualValue();

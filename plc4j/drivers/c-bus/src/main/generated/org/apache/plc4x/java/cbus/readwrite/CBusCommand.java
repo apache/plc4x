@@ -72,7 +72,7 @@ public abstract class CBusCommand implements Message {
     writeBuffer.pushContext("CBusCommand");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isDeviceManagement = getIsDeviceManagement();

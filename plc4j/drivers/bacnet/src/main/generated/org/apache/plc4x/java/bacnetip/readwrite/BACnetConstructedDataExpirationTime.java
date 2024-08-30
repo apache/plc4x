@@ -82,7 +82,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataExpirationTime");
 
     // Simple Field (expirationTime)
-    writeSimpleField("expirationTime", expirationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("expirationTime", expirationTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

@@ -77,7 +77,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("HistoryUpdateRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfHistoryUpdateDetails)
     writeSimpleField(

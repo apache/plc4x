@@ -89,20 +89,19 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     writeBuffer.pushContext("BACnetEventParameterExtended");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (extendedEventType)
-    writeSimpleField(
-        "extendedEventType", extendedEventType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedEventType", extendedEventType, writeComplex(writeBuffer));
 
     // Simple Field (parameters)
-    writeSimpleField("parameters", parameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("parameters", parameters, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterExtended");
   }

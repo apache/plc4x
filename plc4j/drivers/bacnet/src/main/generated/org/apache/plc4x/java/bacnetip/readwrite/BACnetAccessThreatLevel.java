@@ -55,7 +55,7 @@ public class BACnetAccessThreatLevel implements Message {
     writeBuffer.pushContext("BACnetAccessThreatLevel");
 
     // Simple Field (threatLevel)
-    writeSimpleField("threatLevel", threatLevel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("threatLevel", threatLevel, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAccessThreatLevel");
   }

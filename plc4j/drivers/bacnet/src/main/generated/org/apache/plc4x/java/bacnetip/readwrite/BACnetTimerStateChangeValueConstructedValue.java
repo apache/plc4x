@@ -67,8 +67,7 @@ public class BACnetTimerStateChangeValueConstructedValue extends BACnetTimerStat
     writeBuffer.pushContext("BACnetTimerStateChangeValueConstructedValue");
 
     // Simple Field (constructedValue)
-    writeSimpleField(
-        "constructedValue", constructedValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("constructedValue", constructedValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueConstructedValue");
   }

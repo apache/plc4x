@@ -61,7 +61,7 @@ public class SALDataHeating extends SALData implements Message {
     writeBuffer.pushContext("SALDataHeating");
 
     // Simple Field (heatingData)
-    writeSimpleField("heatingData", heatingData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("heatingData", heatingData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataHeating");
   }

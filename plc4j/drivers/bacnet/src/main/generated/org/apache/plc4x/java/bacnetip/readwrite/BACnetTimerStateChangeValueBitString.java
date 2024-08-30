@@ -67,7 +67,7 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
     writeBuffer.pushContext("BACnetTimerStateChangeValueBitString");
 
     // Simple Field (bitStringValue)
-    writeSimpleField("bitStringValue", bitStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bitStringValue", bitStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetTimerStateChangeValueBitString");
   }

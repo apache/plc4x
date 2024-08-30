@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBoolean
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean");
 
     // Simple Field (booleanValue)
-    writeSimpleField("booleanValue", booleanValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("booleanValue", booleanValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryBoolean");
   }

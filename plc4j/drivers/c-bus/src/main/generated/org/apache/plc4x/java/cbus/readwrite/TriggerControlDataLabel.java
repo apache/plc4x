@@ -83,10 +83,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     writeBuffer.pushContext("TriggerControlDataLabel");
 
     // Simple Field (triggerControlOptions)
-    writeSimpleField(
-        "triggerControlOptions",
-        triggerControlOptions,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("triggerControlOptions", triggerControlOptions, writeComplex(writeBuffer));
 
     // Simple Field (actionSelector)
     writeSimpleField("actionSelector", actionSelector, writeByte(writeBuffer, 8));

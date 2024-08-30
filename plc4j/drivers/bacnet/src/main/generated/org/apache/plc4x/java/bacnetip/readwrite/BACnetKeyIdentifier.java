@@ -62,10 +62,10 @@ public class BACnetKeyIdentifier implements Message {
     writeBuffer.pushContext("BACnetKeyIdentifier");
 
     // Simple Field (algorithm)
-    writeSimpleField("algorithm", algorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("algorithm", algorithm, writeComplex(writeBuffer));
 
     // Simple Field (keyId)
-    writeSimpleField("keyId", keyId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("keyId", keyId, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetKeyIdentifier");
   }

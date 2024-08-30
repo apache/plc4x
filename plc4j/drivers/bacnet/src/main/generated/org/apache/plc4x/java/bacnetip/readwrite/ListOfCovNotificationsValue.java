@@ -82,17 +82,16 @@ public class ListOfCovNotificationsValue implements Message {
     writeBuffer.pushContext("ListOfCovNotificationsValue");
 
     // Simple Field (propertyIdentifier)
-    writeSimpleField(
-        "propertyIdentifier", propertyIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyIdentifier", propertyIdentifier, writeComplex(writeBuffer));
 
     // Optional Field (arrayIndex) (Can be skipped, if the value is null)
-    writeOptionalField("arrayIndex", arrayIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("arrayIndex", arrayIndex, writeComplex(writeBuffer));
 
     // Simple Field (propertyValue)
-    writeSimpleField("propertyValue", propertyValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("propertyValue", propertyValue, writeComplex(writeBuffer));
 
     // Optional Field (timeOfChange) (Can be skipped, if the value is null)
-    writeOptionalField("timeOfChange", timeOfChange, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("timeOfChange", timeOfChange, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ListOfCovNotificationsValue");
   }

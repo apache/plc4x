@@ -126,10 +126,10 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     writeBuffer.pushContext("RegisteredServer");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (productUri)
-    writeSimpleField("productUri", productUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("productUri", productUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfServerNames)
     writeSimpleField("noOfServerNames", noOfServerNames, writeSignedInt(writeBuffer, 32));
@@ -146,8 +146,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)
-    writeSimpleField(
-        "gatewayServerUri", gatewayServerUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("gatewayServerUri", gatewayServerUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfDiscoveryUrls)
     writeSimpleField("noOfDiscoveryUrls", noOfDiscoveryUrls, writeSignedInt(writeBuffer, 32));
@@ -156,8 +155,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     writeComplexTypeArrayField("discoveryUrls", discoveryUrls, writeBuffer);
 
     // Simple Field (semaphoreFilePath)
-    writeSimpleField(
-        "semaphoreFilePath", semaphoreFilePath, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("semaphoreFilePath", semaphoreFilePath, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 7));

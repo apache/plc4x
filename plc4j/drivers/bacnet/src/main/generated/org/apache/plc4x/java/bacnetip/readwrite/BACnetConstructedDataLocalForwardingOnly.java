@@ -83,8 +83,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataLocalForwardingOnly");
 
     // Simple Field (localForwardingOnly)
-    writeSimpleField(
-        "localForwardingOnly", localForwardingOnly, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("localForwardingOnly", localForwardingOnly, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

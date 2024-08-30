@@ -68,13 +68,10 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
     writeBuffer.pushContext("WritePropertyMultipleError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (firstFailedWriteAttempt)
-    writeSimpleField(
-        "firstFailedWriteAttempt",
-        firstFailedWriteAttempt,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("firstFailedWriteAttempt", firstFailedWriteAttempt, writeComplex(writeBuffer));
 
     writeBuffer.popContext("WritePropertyMultipleError");
   }

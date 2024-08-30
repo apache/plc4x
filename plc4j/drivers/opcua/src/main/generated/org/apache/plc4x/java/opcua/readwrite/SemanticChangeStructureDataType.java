@@ -68,10 +68,10 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     writeBuffer.pushContext("SemanticChangeStructureDataType");
 
     // Simple Field (affected)
-    writeSimpleField("affected", affected, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("affected", affected, writeComplex(writeBuffer));
 
     // Simple Field (affectedType)
-    writeSimpleField("affectedType", affectedType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("affectedType", affectedType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SemanticChangeStructureDataType");
   }

@@ -70,13 +70,13 @@ public class BACnetAuthenticationFactorFormat implements Message {
     writeBuffer.pushContext("BACnetAuthenticationFactorFormat");
 
     // Simple Field (formatType)
-    writeSimpleField("formatType", formatType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("formatType", formatType, writeComplex(writeBuffer));
 
     // Optional Field (vendorId) (Can be skipped, if the value is null)
-    writeOptionalField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Optional Field (vendorFormat) (Can be skipped, if the value is null)
-    writeOptionalField("vendorFormat", vendorFormat, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("vendorFormat", vendorFormat, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetAuthenticationFactorFormat");
   }

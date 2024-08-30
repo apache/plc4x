@@ -96,10 +96,10 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     writeBuffer.pushContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Optional Field (rawObjectType) (Can be skipped, if the value is null)
-    writeOptionalField("rawObjectType", rawObjectType, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("rawObjectType", rawObjectType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isObjectType = getIsObjectType();
@@ -110,15 +110,14 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     writeBuffer.writeVirtual("objectType", objectType);
 
     // Optional Field (objectIdentifier) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isObjectIdentifier = getIsObjectIdentifier();
     writeBuffer.writeVirtual("isObjectIdentifier", isObjectIdentifier);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier");
   }

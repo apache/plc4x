@@ -69,8 +69,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetStrin
     writeBuffer.pushContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString");
 
     // Simple Field (octetStringValue)
-    writeSimpleField(
-        "octetStringValue", octetStringValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("octetStringValue", octetStringValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueOctetString");
   }

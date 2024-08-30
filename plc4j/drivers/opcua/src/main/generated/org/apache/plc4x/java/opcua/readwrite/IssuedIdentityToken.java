@@ -68,11 +68,10 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
     writeBuffer.pushContext("IssuedIdentityToken");
 
     // Simple Field (tokenData)
-    writeSimpleField("tokenData", tokenData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tokenData", tokenData, writeComplex(writeBuffer));
 
     // Simple Field (encryptionAlgorithm)
-    writeSimpleField(
-        "encryptionAlgorithm", encryptionAlgorithm, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("encryptionAlgorithm", encryptionAlgorithm, writeComplex(writeBuffer));
 
     writeBuffer.popContext("IssuedIdentityToken");
   }

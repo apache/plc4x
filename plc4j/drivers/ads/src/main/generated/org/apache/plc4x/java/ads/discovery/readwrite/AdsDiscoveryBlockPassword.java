@@ -62,7 +62,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
     writeBuffer.pushContext("AdsDiscoveryBlockPassword");
 
     // Simple Field (password)
-    writeSimpleField("password", password, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("password", password, writeComplex(writeBuffer));
 
     writeBuffer.popContext("AdsDiscoveryBlockPassword");
   }

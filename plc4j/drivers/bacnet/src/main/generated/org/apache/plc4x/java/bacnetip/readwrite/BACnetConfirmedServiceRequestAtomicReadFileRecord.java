@@ -71,12 +71,10 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
     writeBuffer.pushContext("BACnetConfirmedServiceRequestAtomicReadFileRecord");
 
     // Simple Field (fileStartRecord)
-    writeSimpleField(
-        "fileStartRecord", fileStartRecord, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("fileStartRecord", fileStartRecord, writeComplex(writeBuffer));
 
     // Simple Field (requestRecordCount)
-    writeSimpleField(
-        "requestRecordCount", requestRecordCount, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestRecordCount", requestRecordCount, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestAtomicReadFileRecord");
   }

@@ -77,16 +77,16 @@ public class BACnetSecurityKeySet implements Message {
     writeBuffer.pushContext("BACnetSecurityKeySet");
 
     // Simple Field (keyRevision)
-    writeSimpleField("keyRevision", keyRevision, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("keyRevision", keyRevision, writeComplex(writeBuffer));
 
     // Simple Field (activationTime)
-    writeSimpleField("activationTime", activationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("activationTime", activationTime, writeComplex(writeBuffer));
 
     // Simple Field (expirationTime)
-    writeSimpleField("expirationTime", expirationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("expirationTime", expirationTime, writeComplex(writeBuffer));
 
     // Simple Field (keyIds)
-    writeSimpleField("keyIds", keyIds, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("keyIds", keyIds, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSecurityKeySet");
   }

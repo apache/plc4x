@@ -82,7 +82,7 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataMachineRoomID");
 
     // Simple Field (machineRoomId)
-    writeSimpleField("machineRoomId", machineRoomId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("machineRoomId", machineRoomId, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagObjectIdentifier actualValue = getActualValue();

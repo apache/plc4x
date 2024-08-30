@@ -83,8 +83,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     writeBuffer.pushContext("BACnetConstructedDataExtendedTimeEnable");
 
     // Simple Field (extendedTimeEnable)
-    writeSimpleField(
-        "extendedTimeEnable", extendedTimeEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("extendedTimeEnable", extendedTimeEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

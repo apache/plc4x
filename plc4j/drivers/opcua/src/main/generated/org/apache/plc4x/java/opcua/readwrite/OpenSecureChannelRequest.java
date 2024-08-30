@@ -98,7 +98,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     writeBuffer.pushContext("OpenSecureChannelRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientProtocolVersion)
     writeSimpleField(
@@ -125,7 +125,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
             writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (clientNonce)
-    writeSimpleField("clientNonce", clientNonce, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientNonce", clientNonce, writeComplex(writeBuffer));
 
     // Simple Field (requestedLifetime)
     writeSimpleField("requestedLifetime", requestedLifetime, writeUnsignedLong(writeBuffer, 32));

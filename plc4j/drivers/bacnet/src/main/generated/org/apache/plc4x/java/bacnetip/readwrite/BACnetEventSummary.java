@@ -98,31 +98,25 @@ public class BACnetEventSummary implements Message {
     writeBuffer.pushContext("BACnetEventSummary");
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (eventState)
-    writeSimpleField("eventState", eventState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventState", eventState, writeComplex(writeBuffer));
 
     // Simple Field (acknowledgedTransitions)
-    writeSimpleField(
-        "acknowledgedTransitions",
-        acknowledgedTransitions,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("acknowledgedTransitions", acknowledgedTransitions, writeComplex(writeBuffer));
 
     // Simple Field (eventTimestamps)
-    writeSimpleField(
-        "eventTimestamps", eventTimestamps, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventTimestamps", eventTimestamps, writeComplex(writeBuffer));
 
     // Simple Field (notifyType)
-    writeSimpleField("notifyType", notifyType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("notifyType", notifyType, writeComplex(writeBuffer));
 
     // Simple Field (eventEnable)
-    writeSimpleField("eventEnable", eventEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventEnable", eventEnable, writeComplex(writeBuffer));
 
     // Simple Field (eventPriorities)
-    writeSimpleField(
-        "eventPriorities", eventPriorities, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventPriorities", eventPriorities, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventSummary");
   }

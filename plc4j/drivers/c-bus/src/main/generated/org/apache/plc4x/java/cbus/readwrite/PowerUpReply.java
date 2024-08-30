@@ -68,8 +68,7 @@ public class PowerUpReply extends Reply implements Message {
     writeBuffer.pushContext("PowerUpReply");
 
     // Simple Field (powerUpIndicator)
-    writeSimpleField(
-        "powerUpIndicator", powerUpIndicator, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("powerUpIndicator", powerUpIndicator, writeComplex(writeBuffer));
 
     writeBuffer.popContext("PowerUpReply");
   }

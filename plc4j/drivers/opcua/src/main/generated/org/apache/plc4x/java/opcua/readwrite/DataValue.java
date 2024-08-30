@@ -158,10 +158,10 @@ public class DataValue implements Message {
     writeSimpleField("valueSpecified", valueSpecified, writeBoolean(writeBuffer));
 
     // Optional Field (value) (Can be skipped, if the value is null)
-    writeOptionalField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("value", value, writeComplex(writeBuffer));
 
     // Optional Field (statusCode) (Can be skipped, if the value is null)
-    writeOptionalField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Optional Field (sourceTimestamp) (Can be skipped, if the value is null)
     writeOptionalField("sourceTimestamp", sourceTimestamp, writeSignedLong(writeBuffer, 64));

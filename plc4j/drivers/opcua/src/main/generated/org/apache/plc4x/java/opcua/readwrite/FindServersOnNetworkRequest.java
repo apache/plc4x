@@ -91,7 +91,7 @@ public class FindServersOnNetworkRequest extends ExtensionObjectDefinition imple
     writeBuffer.pushContext("FindServersOnNetworkRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (startingRecordId)
     writeSimpleField("startingRecordId", startingRecordId, writeUnsignedLong(writeBuffer, 32));

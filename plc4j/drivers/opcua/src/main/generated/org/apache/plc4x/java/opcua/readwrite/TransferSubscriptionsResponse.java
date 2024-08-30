@@ -91,7 +91,7 @@ public class TransferSubscriptionsResponse extends ExtensionObjectDefinition imp
     writeBuffer.pushContext("TransferSubscriptionsResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfResults)
     writeSimpleField("noOfResults", noOfResults, writeSignedInt(writeBuffer, 32));

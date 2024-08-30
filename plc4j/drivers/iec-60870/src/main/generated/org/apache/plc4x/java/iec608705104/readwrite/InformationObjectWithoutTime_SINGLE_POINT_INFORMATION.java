@@ -65,10 +65,7 @@ public class InformationObjectWithoutTime_SINGLE_POINT_INFORMATION
 
     // Simple Field (siq)
     writeSimpleField(
-        "siq",
-        siq,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "siq", siq, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_SINGLE_POINT_INFORMATION");
   }

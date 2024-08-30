@@ -82,7 +82,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
     writeBuffer.pushContext("BACnetConstructedDataValueSet");
 
     // Simple Field (valueSet)
-    writeSimpleField("valueSet", valueSet, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueSet", valueSet, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

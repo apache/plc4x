@@ -60,7 +60,7 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
     writeBuffer.pushContext("BACnetPropertyStatesLockStatus");
 
     // Simple Field (lockStatus)
-    writeSimpleField("lockStatus", lockStatus, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lockStatus", lockStatus, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesLockStatus");
   }

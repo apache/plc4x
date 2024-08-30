@@ -83,8 +83,7 @@ public class BACnetConstructedDataLastCredentialAdded extends BACnetConstructedD
     writeBuffer.pushContext("BACnetConstructedDataLastCredentialAdded");
 
     // Simple Field (lastCredentialAdded)
-    writeSimpleField(
-        "lastCredentialAdded", lastCredentialAdded, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lastCredentialAdded", lastCredentialAdded, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDeviceObjectReference actualValue = getActualValue();

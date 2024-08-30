@@ -103,14 +103,14 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
     writeOptionalField(
         "hpaiDataEndpoint",
         hpaiDataEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Optional Field (connectionResponseDataBlock) (Can be skipped, if the value is null)
     writeOptionalField(
         "connectionResponseDataBlock",
         connectionResponseDataBlock,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionResponse");

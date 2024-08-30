@@ -83,8 +83,7 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataBACnetIPNATTraversal");
 
     // Simple Field (bacnetIPNATTraversal)
-    writeSimpleField(
-        "bacnetIPNATTraversal", bacnetIPNATTraversal, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("bacnetIPNATTraversal", bacnetIPNATTraversal, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

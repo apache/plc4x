@@ -60,7 +60,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     writeBuffer.pushContext("BACnetPropertyStatesShedState");
 
     // Simple Field (shedState)
-    writeSimpleField("shedState", shedState, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("shedState", shedState, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetPropertyStatesShedState");
   }

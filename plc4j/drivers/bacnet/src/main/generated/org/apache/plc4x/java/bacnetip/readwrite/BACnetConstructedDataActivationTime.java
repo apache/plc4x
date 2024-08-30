@@ -82,7 +82,7 @@ public class BACnetConstructedDataActivationTime extends BACnetConstructedData i
     writeBuffer.pushContext("BACnetConstructedDataActivationTime");
 
     // Simple Field (activationTime)
-    writeSimpleField("activationTime", activationTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("activationTime", activationTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

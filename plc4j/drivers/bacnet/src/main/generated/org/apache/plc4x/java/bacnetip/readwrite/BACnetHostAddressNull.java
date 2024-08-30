@@ -59,7 +59,7 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
     writeBuffer.pushContext("BACnetHostAddressNull");
 
     // Simple Field (none)
-    writeSimpleField("none", none, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("none", none, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetHostAddressNull");
   }

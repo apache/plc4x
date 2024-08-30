@@ -70,14 +70,13 @@ public class BACnetSpecialEvent implements Message {
     writeBuffer.pushContext("BACnetSpecialEvent");
 
     // Simple Field (period)
-    writeSimpleField("period", period, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("period", period, writeComplex(writeBuffer));
 
     // Simple Field (listOfTimeValues)
-    writeSimpleField(
-        "listOfTimeValues", listOfTimeValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfTimeValues", listOfTimeValues, writeComplex(writeBuffer));
 
     // Simple Field (eventPriority)
-    writeSimpleField("eventPriority", eventPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventPriority", eventPriority, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetSpecialEvent");
   }

@@ -75,13 +75,13 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     writeBuffer.pushContext("BACnetEventParameterAccessEventListOfAccessEvents");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Array Field (listOfAccessEvents)
     writeComplexTypeArrayField("listOfAccessEvents", listOfAccessEvents, writeBuffer);
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterAccessEventListOfAccessEvents");
   }

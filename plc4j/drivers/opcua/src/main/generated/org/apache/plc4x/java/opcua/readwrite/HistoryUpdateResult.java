@@ -91,7 +91,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("HistoryUpdateResult");
 
     // Simple Field (statusCode)
-    writeSimpleField("statusCode", statusCode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusCode", statusCode, writeComplex(writeBuffer));
 
     // Simple Field (noOfOperationResults)
     writeSimpleField("noOfOperationResults", noOfOperationResults, writeSignedInt(writeBuffer, 32));

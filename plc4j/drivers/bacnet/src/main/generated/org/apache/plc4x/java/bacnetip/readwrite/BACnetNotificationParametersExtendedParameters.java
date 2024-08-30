@@ -185,7 +185,7 @@ public class BACnetNotificationParametersExtendedParameters implements Message {
     writeBuffer.pushContext("BACnetNotificationParametersExtendedParameters");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     short peekedTagNumber = getPeekedTagNumber();
@@ -203,102 +203,102 @@ public class BACnetNotificationParametersExtendedParameters implements Message {
     writeOptionalField(
         "nullValue",
         nullValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x0)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (realValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "realValue",
         realValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x4)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (unsignedValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "unsignedValue",
         unsignedValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x2)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (booleanValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "booleanValue",
         booleanValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x1)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (integerValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "integerValue",
         integerValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x3)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (doubleValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "doubleValue",
         doubleValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x5)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (octetStringValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "octetStringValue",
         octetStringValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x6)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (characterStringValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "characterStringValue",
         characterStringValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x7)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (bitStringValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "bitStringValue",
         bitStringValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x8)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (enumeratedValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "enumeratedValue",
         enumeratedValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0x9)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (dateValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "dateValue",
         dateValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0xA)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (timeValue) (Can be skipped, if the value is null)
     writeOptionalField(
         "timeValue",
         timeValue,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (((getPeekedTagNumber()) == (0xB)) && (!(getIsOpeningTag()))) && (!(getIsClosingTag())));
 
     // Optional Field (objectIdentifier) (Can be skipped, if the value is null)
     writeOptionalField(
         "objectIdentifier",
         objectIdentifier,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         ((getPeekedTagNumber()) == (0xC)) && (!(getIsOpeningTag())));
 
     // Optional Field (reference) (Can be skipped, if the value is null)
     writeOptionalField(
         "reference",
         reference,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         (getIsOpeningTag()) && (!(getIsClosingTag())));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersExtendedParameters");
   }

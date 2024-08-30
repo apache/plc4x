@@ -83,7 +83,7 @@ public class BACnetConstructedDataSchedulePresentValue extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataSchedulePresentValue");
 
     // Simple Field (presentValue)
-    writeSimpleField("presentValue", presentValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("presentValue", presentValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetConstructedDataElement actualValue = getActualValue();

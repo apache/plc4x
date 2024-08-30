@@ -84,9 +84,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
 
     // Simple Field (baseDeviceSecurityPolicy)
     writeSimpleField(
-        "baseDeviceSecurityPolicy",
-        baseDeviceSecurityPolicy,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "baseDeviceSecurityPolicy", baseDeviceSecurityPolicy, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetSecurityLevelTagged actualValue = getActualValue();

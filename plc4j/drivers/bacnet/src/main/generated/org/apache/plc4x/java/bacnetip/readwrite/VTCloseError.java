@@ -68,13 +68,11 @@ public class VTCloseError extends BACnetError implements Message {
     writeBuffer.pushContext("VTCloseError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if the value is null)
     writeOptionalField(
-        "listOfVtSessionIdentifiers",
-        listOfVtSessionIdentifiers,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "listOfVtSessionIdentifiers", listOfVtSessionIdentifiers, writeComplex(writeBuffer));
 
     writeBuffer.popContext("VTCloseError");
   }

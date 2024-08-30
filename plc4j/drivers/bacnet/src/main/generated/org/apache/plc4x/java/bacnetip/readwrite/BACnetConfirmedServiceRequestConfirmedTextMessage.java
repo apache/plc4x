@@ -92,20 +92,16 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessage extends BACnetCon
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
 
     // Simple Field (textMessageSourceDevice)
-    writeSimpleField(
-        "textMessageSourceDevice",
-        textMessageSourceDevice,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("textMessageSourceDevice", textMessageSourceDevice, writeComplex(writeBuffer));
 
     // Optional Field (messageClass) (Can be skipped, if the value is null)
-    writeOptionalField("messageClass", messageClass, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("messageClass", messageClass, writeComplex(writeBuffer));
 
     // Simple Field (messagePriority)
-    writeSimpleField(
-        "messagePriority", messagePriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("messagePriority", messagePriority, writeComplex(writeBuffer));
 
     // Simple Field (message)
-    writeSimpleField("message", message, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("message", message, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestConfirmedTextMessage");
   }

@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryReference");
 
     // Simple Field (reference)
-    writeSimpleField("reference", reference, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("reference", reference, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryReference");
   }

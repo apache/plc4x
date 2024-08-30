@@ -78,7 +78,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
             writeUnsignedByte(writeBuffer, 3)));
 
     // Simple Field (response)
-    writeSimpleField("response", response, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("response", response, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CANOpenSDOResponse");
   }

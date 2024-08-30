@@ -75,7 +75,7 @@ public class NetworkGroupDataType extends ExtensionObjectDefinition implements M
     writeBuffer.pushContext("NetworkGroupDataType");
 
     // Simple Field (serverUri)
-    writeSimpleField("serverUri", serverUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serverUri", serverUri, writeComplex(writeBuffer));
 
     // Simple Field (noOfNetworkPaths)
     writeSimpleField("noOfNetworkPaths", noOfNetworkPaths, writeSignedInt(writeBuffer, 32));

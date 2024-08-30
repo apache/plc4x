@@ -61,7 +61,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
     writeBuffer.pushContext("SecurityDataSystemArmedDisarmed");
 
     // Simple Field (armCodeType)
-    writeSimpleField("armCodeType", armCodeType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("armCodeType", armCodeType, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SecurityDataSystemArmedDisarmed");
   }

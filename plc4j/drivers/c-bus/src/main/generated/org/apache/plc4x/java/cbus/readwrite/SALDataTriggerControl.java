@@ -61,8 +61,7 @@ public class SALDataTriggerControl extends SALData implements Message {
     writeBuffer.pushContext("SALDataTriggerControl");
 
     // Simple Field (triggerControlData)
-    writeSimpleField(
-        "triggerControlData", triggerControlData, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("triggerControlData", triggerControlData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALDataTriggerControl");
   }

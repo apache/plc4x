@@ -67,7 +67,7 @@ public class BACnetContextTagTime extends BACnetContextTag implements Message {
     writeBuffer.pushContext("BACnetContextTagTime");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetContextTagTime");
   }

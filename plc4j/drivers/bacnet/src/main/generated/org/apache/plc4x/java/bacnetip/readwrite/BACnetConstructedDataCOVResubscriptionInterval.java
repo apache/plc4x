@@ -84,9 +84,7 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
 
     // Simple Field (covResubscriptionInterval)
     writeSimpleField(
-        "covResubscriptionInterval",
-        covResubscriptionInterval,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "covResubscriptionInterval", covResubscriptionInterval, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

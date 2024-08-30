@@ -82,7 +82,7 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
     writeBuffer.pushContext("BACnetConstructedDataCarMode");
 
     // Simple Field (carMode)
-    writeSimpleField("carMode", carMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("carMode", carMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLiftCarModeTagged actualValue = getActualValue();

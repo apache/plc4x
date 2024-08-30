@@ -63,11 +63,10 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     writeBuffer.pushContext("BACnetCredentialAuthenticationFactor");
 
     // Simple Field (disable)
-    writeSimpleField("disable", disable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("disable", disable, writeComplex(writeBuffer));
 
     // Simple Field (authenticationFactor)
-    writeSimpleField(
-        "authenticationFactor", authenticationFactor, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("authenticationFactor", authenticationFactor, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetCredentialAuthenticationFactor");
   }

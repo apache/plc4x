@@ -79,10 +79,7 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SHORT_FLO
 
     // Simple Field (qpm)
     writeSimpleField(
-        "qpm",
-        qpm,
-        new DataWriterComplexDefault<>(writeBuffer),
-        WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
+        "qpm", qpm, writeComplex(writeBuffer), WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext(
         "InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SHORT_FLOATING_POINT_NUMBER");

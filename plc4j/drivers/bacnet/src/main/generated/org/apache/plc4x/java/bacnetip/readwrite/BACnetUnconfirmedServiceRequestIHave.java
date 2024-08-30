@@ -83,15 +83,13 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     writeBuffer.pushContext("BACnetUnconfirmedServiceRequestIHave");
 
     // Simple Field (deviceIdentifier)
-    writeSimpleField(
-        "deviceIdentifier", deviceIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deviceIdentifier", deviceIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectIdentifier)
-    writeSimpleField(
-        "objectIdentifier", objectIdentifier, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectIdentifier", objectIdentifier, writeComplex(writeBuffer));
 
     // Simple Field (objectName)
-    writeSimpleField("objectName", objectName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectName", objectName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetUnconfirmedServiceRequestIHave");
   }

@@ -68,7 +68,7 @@ public class BACnetRouterEntryStatusTagged implements Message {
     writeBuffer.pushContext("BACnetRouterEntryStatusTagged");
 
     // Simple Field (header)
-    writeSimpleField("header", header, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("header", header, writeComplex(writeBuffer));
 
     // Manual Field (value)
     writeManualField(

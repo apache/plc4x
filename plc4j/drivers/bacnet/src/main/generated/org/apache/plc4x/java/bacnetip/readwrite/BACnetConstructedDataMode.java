@@ -82,7 +82,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
     writeBuffer.pushContext("BACnetConstructedDataMode");
 
     // Simple Field (mode)
-    writeSimpleField("mode", mode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("mode", mode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLifeSafetyModeTagged actualValue = getActualValue();

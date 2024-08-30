@@ -83,8 +83,7 @@ public class BACnetConstructedDataOccupancyCountEnable extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataOccupancyCountEnable");
 
     // Simple Field (occupancyCountEnable)
-    writeSimpleField(
-        "occupancyCountEnable", occupancyCountEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("occupancyCountEnable", occupancyCountEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

@@ -74,7 +74,7 @@ public class S7PayloadNotify extends S7PayloadUserDataItem implements Message {
     writeBuffer.pushContext("S7PayloadNotify");
 
     // Simple Field (alarmMessage)
-    writeSimpleField("alarmMessage", alarmMessage, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("alarmMessage", alarmMessage, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadNotify");
   }

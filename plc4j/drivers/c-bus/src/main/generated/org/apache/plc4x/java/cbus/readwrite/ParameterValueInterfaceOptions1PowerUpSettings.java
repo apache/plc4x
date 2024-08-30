@@ -68,7 +68,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     writeBuffer.pushContext("ParameterValueInterfaceOptions1PowerUpSettings");
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ParameterValueInterfaceOptions1PowerUpSettings");
   }

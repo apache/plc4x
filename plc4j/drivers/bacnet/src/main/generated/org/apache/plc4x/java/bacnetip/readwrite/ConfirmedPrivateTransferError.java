@@ -83,17 +83,16 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
     writeBuffer.pushContext("ConfirmedPrivateTransferError");
 
     // Simple Field (errorType)
-    writeSimpleField("errorType", errorType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorType", errorType, writeComplex(writeBuffer));
 
     // Simple Field (vendorId)
-    writeSimpleField("vendorId", vendorId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("vendorId", vendorId, writeComplex(writeBuffer));
 
     // Simple Field (serviceNumber)
-    writeSimpleField("serviceNumber", serviceNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("serviceNumber", serviceNumber, writeComplex(writeBuffer));
 
     // Optional Field (errorParameters) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "errorParameters", errorParameters, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("errorParameters", errorParameters, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ConfirmedPrivateTransferError");
   }

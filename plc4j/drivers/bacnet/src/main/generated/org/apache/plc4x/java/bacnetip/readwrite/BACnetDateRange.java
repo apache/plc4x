@@ -61,10 +61,10 @@ public class BACnetDateRange implements Message {
     writeBuffer.pushContext("BACnetDateRange");
 
     // Simple Field (startDate)
-    writeSimpleField("startDate", startDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startDate", startDate, writeComplex(writeBuffer));
 
     // Simple Field (endDate)
-    writeSimpleField("endDate", endDate, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("endDate", endDate, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetDateRange");
   }

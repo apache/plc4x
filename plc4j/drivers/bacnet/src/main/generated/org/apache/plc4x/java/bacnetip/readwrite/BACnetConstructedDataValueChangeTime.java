@@ -82,8 +82,7 @@ public class BACnetConstructedDataValueChangeTime extends BACnetConstructedData 
     writeBuffer.pushContext("BACnetConstructedDataValueChangeTime");
 
     // Simple Field (valueChangeTime)
-    writeSimpleField(
-        "valueChangeTime", valueChangeTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("valueChangeTime", valueChangeTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

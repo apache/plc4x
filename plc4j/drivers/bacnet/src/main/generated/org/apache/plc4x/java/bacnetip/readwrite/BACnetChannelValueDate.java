@@ -60,7 +60,7 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
     writeBuffer.pushContext("BACnetChannelValueDate");
 
     // Simple Field (dateValue)
-    writeSimpleField("dateValue", dateValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("dateValue", dateValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetChannelValueDate");
   }

@@ -82,7 +82,7 @@ public class BACnetConstructedDataStartTime extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataStartTime");
 
     // Simple Field (startTime)
-    writeSimpleField("startTime", startTime, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("startTime", startTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetDateTime actualValue = getActualValue();

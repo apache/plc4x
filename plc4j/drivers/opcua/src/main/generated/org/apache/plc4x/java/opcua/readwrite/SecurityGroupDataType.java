@@ -140,7 +140,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("SecurityGroupDataType");
 
     // Simple Field (name)
-    writeSimpleField("name", name, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("name", name, writeComplex(writeBuffer));
 
     // Simple Field (noOfSecurityGroupFolder)
     writeSimpleField(
@@ -153,8 +153,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("keyLifetime", keyLifetime, writeDouble(writeBuffer, 64));
 
     // Simple Field (securityPolicyUri)
-    writeSimpleField(
-        "securityPolicyUri", securityPolicyUri, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityPolicyUri", securityPolicyUri, writeComplex(writeBuffer));
 
     // Simple Field (maxFutureKeyCount)
     writeSimpleField("maxFutureKeyCount", maxFutureKeyCount, writeUnsignedLong(writeBuffer, 32));
@@ -163,8 +162,7 @@ public class SecurityGroupDataType extends ExtensionObjectDefinition implements 
     writeSimpleField("maxPastKeyCount", maxPastKeyCount, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (securityGroupId)
-    writeSimpleField(
-        "securityGroupId", securityGroupId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("securityGroupId", securityGroupId, writeComplex(writeBuffer));
 
     // Simple Field (noOfRolePermissions)
     writeSimpleField("noOfRolePermissions", noOfRolePermissions, writeSignedInt(writeBuffer, 32));

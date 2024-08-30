@@ -62,8 +62,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("NetworkAddressDataType");
 
     // Simple Field (networkInterface)
-    writeSimpleField(
-        "networkInterface", networkInterface, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkInterface", networkInterface, writeComplex(writeBuffer));
 
     writeBuffer.popContext("NetworkAddressDataType");
   }

@@ -64,7 +64,7 @@ public abstract class SALData implements Message {
     serializeSALDataChild(writeBuffer);
 
     // Optional Field (salData) (Can be skipped, if the value is null)
-    writeOptionalField("salData", salData, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("salData", salData, writeComplex(writeBuffer));
 
     writeBuffer.popContext("SALData");
   }

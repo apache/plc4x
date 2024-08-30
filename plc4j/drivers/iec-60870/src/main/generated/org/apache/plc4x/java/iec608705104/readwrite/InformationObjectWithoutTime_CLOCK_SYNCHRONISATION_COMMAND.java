@@ -67,7 +67,7 @@ public class InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND
     writeSimpleField(
         "cp56Time2a",
         cp56Time2a,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     writeBuffer.popContext("InformationObjectWithoutTime_CLOCK_SYNCHRONISATION_COMMAND");

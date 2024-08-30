@@ -67,7 +67,7 @@ public class Plc4xTagValueRequest implements Message {
     writeBuffer.pushContext("Plc4xTagValueRequest");
 
     // Simple Field (tag)
-    writeSimpleField("tag", tag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("tag", tag, writeComplex(writeBuffer));
 
     // Simple Field (valueType)
     writeSimpleEnumField(

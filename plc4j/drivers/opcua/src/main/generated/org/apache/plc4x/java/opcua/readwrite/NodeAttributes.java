@@ -95,10 +95,10 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
         "specifiedAttributes", specifiedAttributes, writeUnsignedLong(writeBuffer, 32));
 
     // Simple Field (displayName)
-    writeSimpleField("displayName", displayName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("displayName", displayName, writeComplex(writeBuffer));
 
     // Simple Field (description)
-    writeSimpleField("description", description, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("description", description, writeComplex(writeBuffer));
 
     // Simple Field (writeMask)
     writeSimpleField("writeMask", writeMask, writeUnsignedLong(writeBuffer, 32));

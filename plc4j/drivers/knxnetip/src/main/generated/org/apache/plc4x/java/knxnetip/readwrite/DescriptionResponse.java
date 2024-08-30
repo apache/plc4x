@@ -71,14 +71,14 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "dibDeviceInfo",
         dibDeviceInfo,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dibSuppSvcFamilies)
     writeSimpleField(
         "dibSuppSvcFamilies",
         dibSuppSvcFamilies,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("DescriptionResponse");

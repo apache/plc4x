@@ -84,8 +84,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     writeBuffer.pushContext("RelativePathElement");
 
     // Simple Field (referenceTypeId)
-    writeSimpleField(
-        "referenceTypeId", referenceTypeId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceTypeId", referenceTypeId, writeComplex(writeBuffer));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 6));
@@ -97,7 +96,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
     writeSimpleField("isInverse", isInverse, writeBoolean(writeBuffer));
 
     // Simple Field (targetName)
-    writeSimpleField("targetName", targetName, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("targetName", targetName, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RelativePathElement");
   }

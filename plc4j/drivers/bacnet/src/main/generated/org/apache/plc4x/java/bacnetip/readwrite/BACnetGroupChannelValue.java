@@ -70,14 +70,13 @@ public class BACnetGroupChannelValue implements Message {
     writeBuffer.pushContext("BACnetGroupChannelValue");
 
     // Simple Field (channel)
-    writeSimpleField("channel", channel, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("channel", channel, writeComplex(writeBuffer));
 
     // Optional Field (overridingPriority) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "overridingPriority", overridingPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("overridingPriority", overridingPriority, writeComplex(writeBuffer));
 
     // Simple Field (value)
-    writeSimpleField("value", value, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("value", value, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetGroupChannelValue");
   }

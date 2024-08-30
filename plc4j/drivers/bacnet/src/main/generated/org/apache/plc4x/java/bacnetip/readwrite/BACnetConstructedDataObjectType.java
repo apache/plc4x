@@ -82,7 +82,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
     writeBuffer.pushContext("BACnetConstructedDataObjectType");
 
     // Simple Field (objectType)
-    writeSimpleField("objectType", objectType, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectType", objectType, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetObjectTypeTagged actualValue = getActualValue();

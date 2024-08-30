@@ -61,7 +61,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReal
     writeBuffer.pushContext("BACnetFaultParameterFaultExtendedParametersEntryReal");
 
     // Simple Field (realValue)
-    writeSimpleField("realValue", realValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("realValue", realValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetFaultParameterFaultExtendedParametersEntryReal");
   }

@@ -82,7 +82,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
     writeBuffer.pushContext("BACnetConstructedDataWindowSamples");
 
     // Simple Field (windowSamples)
-    writeSimpleField("windowSamples", windowSamples, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("windowSamples", windowSamples, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

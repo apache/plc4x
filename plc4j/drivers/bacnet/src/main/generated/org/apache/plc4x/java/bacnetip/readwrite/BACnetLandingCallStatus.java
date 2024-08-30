@@ -70,13 +70,13 @@ public class BACnetLandingCallStatus implements Message {
     writeBuffer.pushContext("BACnetLandingCallStatus");
 
     // Simple Field (floorNumber)
-    writeSimpleField("floorNumber", floorNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("floorNumber", floorNumber, writeComplex(writeBuffer));
 
     // Simple Field (command)
-    writeSimpleField("command", command, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("command", command, writeComplex(writeBuffer));
 
     // Optional Field (floorText) (Can be skipped, if the value is null)
-    writeOptionalField("floorText", floorText, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("floorText", floorText, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetLandingCallStatus");
   }

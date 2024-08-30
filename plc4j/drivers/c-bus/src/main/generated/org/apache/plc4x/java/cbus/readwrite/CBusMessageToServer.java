@@ -68,7 +68,7 @@ public class CBusMessageToServer extends CBusMessage implements Message {
     writeBuffer.pushContext("CBusMessageToServer");
 
     // Simple Field (request)
-    writeSimpleField("request", request, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("request", request, writeComplex(writeBuffer));
 
     writeBuffer.popContext("CBusMessageToServer");
   }

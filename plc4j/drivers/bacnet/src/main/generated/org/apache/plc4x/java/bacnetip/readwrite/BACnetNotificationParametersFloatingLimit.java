@@ -107,24 +107,22 @@ public class BACnetNotificationParametersFloatingLimit extends BACnetNotificatio
     writeBuffer.pushContext("BACnetNotificationParametersFloatingLimit");
 
     // Simple Field (innerOpeningTag)
-    writeSimpleField(
-        "innerOpeningTag", innerOpeningTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerOpeningTag", innerOpeningTag, writeComplex(writeBuffer));
 
     // Simple Field (referenceValue)
-    writeSimpleField("referenceValue", referenceValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("referenceValue", referenceValue, writeComplex(writeBuffer));
 
     // Simple Field (statusFlags)
-    writeSimpleField("statusFlags", statusFlags, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("statusFlags", statusFlags, writeComplex(writeBuffer));
 
     // Simple Field (setPointValue)
-    writeSimpleField("setPointValue", setPointValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("setPointValue", setPointValue, writeComplex(writeBuffer));
 
     // Simple Field (errorLimit)
-    writeSimpleField("errorLimit", errorLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("errorLimit", errorLimit, writeComplex(writeBuffer));
 
     // Simple Field (innerClosingTag)
-    writeSimpleField(
-        "innerClosingTag", innerClosingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("innerClosingTag", innerClosingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersFloatingLimit");
   }

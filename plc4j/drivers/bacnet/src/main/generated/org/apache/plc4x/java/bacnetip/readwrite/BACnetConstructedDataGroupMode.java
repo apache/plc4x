@@ -82,7 +82,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
     writeBuffer.pushContext("BACnetConstructedDataGroupMode");
 
     // Simple Field (groupMode)
-    writeSimpleField("groupMode", groupMode, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("groupMode", groupMode, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetLiftGroupModeTagged actualValue = getActualValue();

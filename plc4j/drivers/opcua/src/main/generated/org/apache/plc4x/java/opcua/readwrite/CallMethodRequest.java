@@ -81,10 +81,10 @@ public class CallMethodRequest extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("CallMethodRequest");
 
     // Simple Field (objectId)
-    writeSimpleField("objectId", objectId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("objectId", objectId, writeComplex(writeBuffer));
 
     // Simple Field (methodId)
-    writeSimpleField("methodId", methodId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("methodId", methodId, writeComplex(writeBuffer));
 
     // Simple Field (noOfInputArguments)
     writeSimpleField("noOfInputArguments", noOfInputArguments, writeSignedInt(writeBuffer, 32));

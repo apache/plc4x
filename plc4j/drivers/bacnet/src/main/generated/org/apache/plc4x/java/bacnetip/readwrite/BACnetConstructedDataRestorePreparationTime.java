@@ -83,10 +83,7 @@ public class BACnetConstructedDataRestorePreparationTime extends BACnetConstruct
     writeBuffer.pushContext("BACnetConstructedDataRestorePreparationTime");
 
     // Simple Field (restorePreparationTime)
-    writeSimpleField(
-        "restorePreparationTime",
-        restorePreparationTime,
-        new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("restorePreparationTime", restorePreparationTime, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagUnsignedInteger actualValue = getActualValue();

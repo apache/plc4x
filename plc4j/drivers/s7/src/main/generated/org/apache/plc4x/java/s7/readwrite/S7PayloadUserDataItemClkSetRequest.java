@@ -80,7 +80,7 @@ public class S7PayloadUserDataItemClkSetRequest extends S7PayloadUserDataItem im
     writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (timeStamp)
-    writeSimpleField("timeStamp", timeStamp, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeStamp", timeStamp, writeComplex(writeBuffer));
 
     writeBuffer.popContext("S7PayloadUserDataItemClkSetRequest");
   }

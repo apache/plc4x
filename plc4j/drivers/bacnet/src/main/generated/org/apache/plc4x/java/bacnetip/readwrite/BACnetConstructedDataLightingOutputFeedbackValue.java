@@ -83,7 +83,7 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
     writeBuffer.pushContext("BACnetConstructedDataLightingOutputFeedbackValue");
 
     // Simple Field (feedbackValue)
-    writeSimpleField("feedbackValue", feedbackValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("feedbackValue", feedbackValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

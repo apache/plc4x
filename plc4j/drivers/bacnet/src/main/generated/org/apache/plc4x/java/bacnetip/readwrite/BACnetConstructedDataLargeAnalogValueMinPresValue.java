@@ -83,7 +83,7 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
     writeBuffer.pushContext("BACnetConstructedDataLargeAnalogValueMinPresValue");
 
     // Simple Field (minPresValue)
-    writeSimpleField("minPresValue", minPresValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minPresValue", minPresValue, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagDouble actualValue = getActualValue();

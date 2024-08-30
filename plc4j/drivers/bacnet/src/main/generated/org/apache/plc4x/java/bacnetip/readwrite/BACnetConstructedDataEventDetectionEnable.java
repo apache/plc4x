@@ -83,8 +83,7 @@ public class BACnetConstructedDataEventDetectionEnable extends BACnetConstructed
     writeBuffer.pushContext("BACnetConstructedDataEventDetectionEnable");
 
     // Simple Field (eventDetectionEnable)
-    writeSimpleField(
-        "eventDetectionEnable", eventDetectionEnable, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("eventDetectionEnable", eventDetectionEnable, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagBoolean actualValue = getActualValue();

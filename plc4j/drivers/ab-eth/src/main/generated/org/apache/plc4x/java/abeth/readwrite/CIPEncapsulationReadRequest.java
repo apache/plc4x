@@ -70,7 +70,7 @@ public class CIPEncapsulationReadRequest extends CIPEncapsulationPacket implemen
     writeSimpleField(
         "request",
         request,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("CIPEncapsulationReadRequest");

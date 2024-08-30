@@ -82,7 +82,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
     writeBuffer.pushContext("BACnetConstructedDataCOVIncrement");
 
     // Simple Field (covIncrement)
-    writeSimpleField("covIncrement", covIncrement, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("covIncrement", covIncrement, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagReal actualValue = getActualValue();

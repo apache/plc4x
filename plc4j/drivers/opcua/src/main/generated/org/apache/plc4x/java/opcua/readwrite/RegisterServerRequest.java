@@ -69,10 +69,10 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
     writeBuffer.pushContext("RegisterServerRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (server)
-    writeSimpleField("server", server, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("server", server, writeComplex(writeBuffer));
 
     writeBuffer.popContext("RegisterServerRequest");
   }

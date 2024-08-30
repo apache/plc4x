@@ -144,7 +144,7 @@ public class PDPortDataCheck extends PnIoCm_Block implements Message {
     writeSimpleField(
         "checkPeers",
         checkPeers,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("PDPortDataCheck");

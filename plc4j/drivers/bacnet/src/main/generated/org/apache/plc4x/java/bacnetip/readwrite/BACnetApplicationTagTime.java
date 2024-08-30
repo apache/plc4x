@@ -59,7 +59,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
     writeBuffer.pushContext("BACnetApplicationTagTime");
 
     // Simple Field (payload)
-    writeSimpleField("payload", payload, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("payload", payload, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetApplicationTagTime");
   }

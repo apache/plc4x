@@ -107,7 +107,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
             writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (ipAddress)
-    writeSimpleField("ipAddress", ipAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipAddress", ipAddress, writeComplex(writeBuffer));
 
     // Simple Field (interfaceSubType)
     writeSimpleField("interfaceSubType", interfaceSubType, writeUnsignedShort(writeBuffer, 8));

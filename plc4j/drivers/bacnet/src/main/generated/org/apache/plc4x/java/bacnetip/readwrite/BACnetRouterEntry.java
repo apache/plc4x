@@ -77,17 +77,16 @@ public class BACnetRouterEntry implements Message {
     writeBuffer.pushContext("BACnetRouterEntry");
 
     // Simple Field (networkNumber)
-    writeSimpleField("networkNumber", networkNumber, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("networkNumber", networkNumber, writeComplex(writeBuffer));
 
     // Simple Field (macAddress)
-    writeSimpleField("macAddress", macAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("macAddress", macAddress, writeComplex(writeBuffer));
 
     // Simple Field (status)
-    writeSimpleField("status", status, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("status", status, writeComplex(writeBuffer));
 
     // Optional Field (performanceIndex) (Can be skipped, if the value is null)
-    writeOptionalField(
-        "performanceIndex", performanceIndex, new DataWriterComplexDefault<>(writeBuffer));
+    writeOptionalField("performanceIndex", performanceIndex, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetRouterEntry");
   }

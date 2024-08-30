@@ -115,7 +115,7 @@ public class LDataExtended extends LDataFrame implements Message {
     writeSimpleField("extendedFrameFormat", extendedFrameFormat, writeUnsignedByte(writeBuffer, 4));
 
     // Simple Field (sourceAddress)
-    writeSimpleField("sourceAddress", sourceAddress, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("sourceAddress", sourceAddress, writeComplex(writeBuffer));
 
     // Array Field (destinationAddress)
     writeByteArrayField("destinationAddress", destinationAddress, writeByteArray(writeBuffer, 8));
@@ -126,7 +126,7 @@ public class LDataExtended extends LDataFrame implements Message {
     writeImplicitField("dataLength", dataLength, writeUnsignedShort(writeBuffer, 8));
 
     // Simple Field (apdu)
-    writeSimpleField("apdu", apdu, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("apdu", apdu, writeComplex(writeBuffer));
 
     writeBuffer.popContext("LDataExtended");
   }

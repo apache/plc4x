@@ -77,13 +77,11 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
     writeImplicitField("policyLength", policyLength, writeSignedInt(writeBuffer, 32));
 
     // Simple Field (policyId)
-    writeSimpleField("policyId", policyId, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("policyId", policyId, writeComplex(writeBuffer));
 
     // Simple Field (userIdentityTokenDefinition)
     writeSimpleField(
-        "userIdentityTokenDefinition",
-        userIdentityTokenDefinition,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "userIdentityTokenDefinition", userIdentityTokenDefinition, writeComplex(writeBuffer));
 
     writeBuffer.popContext("UserIdentityToken");
   }

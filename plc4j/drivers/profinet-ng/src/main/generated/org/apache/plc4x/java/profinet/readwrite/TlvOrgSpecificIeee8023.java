@@ -62,7 +62,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     writeBuffer.pushContext("TlvOrgSpecificIeee8023");
 
     // Simple Field (specificUnit)
-    writeSimpleField("specificUnit", specificUnit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("specificUnit", specificUnit, writeComplex(writeBuffer));
 
     writeBuffer.popContext("TlvOrgSpecificIeee8023");
   }

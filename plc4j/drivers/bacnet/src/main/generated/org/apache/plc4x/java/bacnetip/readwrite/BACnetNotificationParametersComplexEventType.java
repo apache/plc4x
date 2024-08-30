@@ -72,7 +72,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
     writeBuffer.pushContext("BACnetNotificationParametersComplexEventType");
 
     // Simple Field (listOfValues)
-    writeSimpleField("listOfValues", listOfValues, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("listOfValues", listOfValues, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetNotificationParametersComplexEventType");
   }

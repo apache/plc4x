@@ -82,16 +82,16 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     writeBuffer.pushContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (minPriority)
-    writeSimpleField("minPriority", minPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("minPriority", minPriority, writeComplex(writeBuffer));
 
     // Simple Field (maxPriority)
-    writeSimpleField("maxPriority", maxPriority, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("maxPriority", maxPriority, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");
   }

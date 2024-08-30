@@ -158,7 +158,7 @@ public class PcDcp_Pdu_DelayReq extends PnDcp_Pdu implements Message {
     writeSimpleField(
         "portMacAddress",
         portMacAddress,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Const Field (endType)

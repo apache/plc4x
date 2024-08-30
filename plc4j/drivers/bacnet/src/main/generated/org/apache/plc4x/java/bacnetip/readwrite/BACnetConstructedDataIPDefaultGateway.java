@@ -83,8 +83,7 @@ public class BACnetConstructedDataIPDefaultGateway extends BACnetConstructedData
     writeBuffer.pushContext("BACnetConstructedDataIPDefaultGateway");
 
     // Simple Field (ipDefaultGateway)
-    writeSimpleField(
-        "ipDefaultGateway", ipDefaultGateway, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("ipDefaultGateway", ipDefaultGateway, writeComplex(writeBuffer));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     BACnetApplicationTagOctetString actualValue = getActualValue();

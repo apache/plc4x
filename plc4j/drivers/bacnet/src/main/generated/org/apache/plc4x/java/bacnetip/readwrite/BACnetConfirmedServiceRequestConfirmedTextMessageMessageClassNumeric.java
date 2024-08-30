@@ -69,7 +69,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     writeBuffer.pushContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
 
     // Simple Field (numericValue)
-    writeSimpleField("numericValue", numericValue, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("numericValue", numericValue, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric");
   }

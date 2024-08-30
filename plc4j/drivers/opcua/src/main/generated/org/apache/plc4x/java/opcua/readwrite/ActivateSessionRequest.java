@@ -112,11 +112,10 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     writeBuffer.pushContext("ActivateSessionRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (clientSignature)
-    writeSimpleField(
-        "clientSignature", clientSignature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("clientSignature", clientSignature, writeComplex(writeBuffer));
 
     // Simple Field (noOfClientSoftwareCertificates)
     writeSimpleField(
@@ -135,12 +134,10 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     writeComplexTypeArrayField("localeIds", localeIds, writeBuffer);
 
     // Simple Field (userIdentityToken)
-    writeSimpleField(
-        "userIdentityToken", userIdentityToken, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userIdentityToken", userIdentityToken, writeComplex(writeBuffer));
 
     // Simple Field (userTokenSignature)
-    writeSimpleField(
-        "userTokenSignature", userTokenSignature, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("userTokenSignature", userTokenSignature, writeComplex(writeBuffer));
 
     writeBuffer.popContext("ActivateSessionRequest");
   }

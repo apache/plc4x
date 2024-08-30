@@ -80,21 +80,21 @@ public class SearchResponse extends KnxNetIpMessage implements Message {
     writeSimpleField(
         "hpaiControlEndpoint",
         hpaiControlEndpoint,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dibDeviceInfo)
     writeSimpleField(
         "dibDeviceInfo",
         dibDeviceInfo,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (dibSuppSvcFamilies)
     writeSimpleField(
         "dibSuppSvcFamilies",
         dibSuppSvcFamilies,
-        new DataWriterComplexDefault<>(writeBuffer),
+        writeComplex(writeBuffer),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("SearchResponse");

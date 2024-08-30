@@ -84,7 +84,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     writeBuffer.pushContext("QueryNextResponse");
 
     // Simple Field (responseHeader)
-    writeSimpleField("responseHeader", responseHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("responseHeader", responseHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfQueryDataSets)
     writeSimpleField("noOfQueryDataSets", noOfQueryDataSets, writeSignedInt(writeBuffer, 32));
@@ -94,9 +94,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
 
     // Simple Field (revisedContinuationPoint)
     writeSimpleField(
-        "revisedContinuationPoint",
-        revisedContinuationPoint,
-        new DataWriterComplexDefault<>(writeBuffer));
+        "revisedContinuationPoint", revisedContinuationPoint, writeComplex(writeBuffer));
 
     writeBuffer.popContext("QueryNextResponse");
   }

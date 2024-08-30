@@ -77,7 +77,7 @@ public class WriteRequest extends ExtensionObjectDefinition implements Message {
     writeBuffer.pushContext("WriteRequest");
 
     // Simple Field (requestHeader)
-    writeSimpleField("requestHeader", requestHeader, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("requestHeader", requestHeader, writeComplex(writeBuffer));
 
     // Simple Field (noOfNodesToWrite)
     writeSimpleField("noOfNodesToWrite", noOfNodesToWrite, writeSignedInt(writeBuffer, 32));

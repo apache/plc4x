@@ -96,22 +96,22 @@ public class BACnetEventParameterOutOfRange extends BACnetEventParameter impleme
     writeBuffer.pushContext("BACnetEventParameterOutOfRange");
 
     // Simple Field (openingTag)
-    writeSimpleField("openingTag", openingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("openingTag", openingTag, writeComplex(writeBuffer));
 
     // Simple Field (timeDelay)
-    writeSimpleField("timeDelay", timeDelay, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("timeDelay", timeDelay, writeComplex(writeBuffer));
 
     // Simple Field (lowDiffLimit)
-    writeSimpleField("lowDiffLimit", lowDiffLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("lowDiffLimit", lowDiffLimit, writeComplex(writeBuffer));
 
     // Simple Field (highDiffLimit)
-    writeSimpleField("highDiffLimit", highDiffLimit, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("highDiffLimit", highDiffLimit, writeComplex(writeBuffer));
 
     // Simple Field (deadband)
-    writeSimpleField("deadband", deadband, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("deadband", deadband, writeComplex(writeBuffer));
 
     // Simple Field (closingTag)
-    writeSimpleField("closingTag", closingTag, new DataWriterComplexDefault<>(writeBuffer));
+    writeSimpleField("closingTag", closingTag, writeComplex(writeBuffer));
 
     writeBuffer.popContext("BACnetEventParameterOutOfRange");
   }
