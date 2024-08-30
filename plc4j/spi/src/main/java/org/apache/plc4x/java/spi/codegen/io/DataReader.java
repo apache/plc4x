@@ -22,7 +22,7 @@ import org.apache.plc4x.java.spi.generation.ParseException;
 import org.apache.plc4x.java.spi.generation.ReadBuffer;
 import org.apache.plc4x.java.spi.generation.WithReaderArgs;
 
-public interface DataReader<T> extends ByteOrderAware, PositionAware, ContextReader {
+public interface DataReader<T> extends ByteOrderAware, PositionMover, ContextReader {
 
     T read(String logicalName, WithReaderArgs... readerArgs) throws ParseException;
 

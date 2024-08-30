@@ -19,7 +19,7 @@
 
 package org.apache.plc4x.java.spi.codegen.io;
 
-public interface PositionAware {
+public interface PositionMover  {
     int getPos();
 
     void setPos(int position);
