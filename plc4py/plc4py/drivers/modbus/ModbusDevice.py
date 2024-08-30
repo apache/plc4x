@@ -53,13 +53,15 @@ from plc4py.protocols.modbus.readwrite.ModbusTcpADU import ModbusTcpADU
 from plc4py.spi.generation.ReadBuffer import ReadBuffer, ReadBufferByteBased
 from plc4py.spi.generation.WriteBuffer import WriteBufferByteBased
 from plc4py.spi.messages.utils.ResponseItem import ResponseItem
-from plc4py.spi.values.PlcValues import PlcList, PlcNull
+from plc4py.spi.values.PlcValues import PlcList, PlcNull, PlcBOOL
 from plc4py.utils.GenericTypes import AtomicInteger, ByteOrder
 
-from protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import ModbusPDUWriteMultipleCoilsRequest
-from protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import \
-    ModbusPDUWriteMultipleHoldingRegistersRequest, ModbusPDUWriteMultipleHoldingRegistersRequestBuilder
-from protocols.modbus.readwrite.ModbusPDUWriteSingleCoilRequest import ModbusPDUWriteSingleCoilRequest
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import (
+    ModbusPDUWriteMultipleCoilsRequest,
+)
+from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import (
+    ModbusPDUWriteMultipleHoldingRegistersRequestBuilder,
+)
 
 
 @dataclass
@@ -137,16 +139,23 @@ class ModbusDevice:
             a.frombytes(bytearray(result.value))
             a.bytereverse()
             read_buffer = ReadBufferByteBased(bytearray(a), ByteOrder.BIG_ENDIAN)
+            quantity = request.tags[request.tag_names[0]].quantity
+            if quantity == 1:
+                returned_value = PlcBOOL(read_buffer.read_bit(""))
+            else:
+                returned_value = []
+                for _ in range(quantity):
+                    returned_value.append(PlcBOOL(read_buffer.read_bit("")))
         else:
             read_buffer = ReadBufferByteBased(
                 bytearray(result.value), ByteOrder.BIG_ENDIAN
             )
-        returned_value = DataItem.static_parse(
-            read_buffer,
-            request.tags[request.tag_names[0]].data_type,
-            request.tags[request.tag_names[0]].quantity,
-            True,
-        )
+            returned_value = DataItem.static_parse(
+                read_buffer,
+                request.tags[request.tag_names[0]].data_type,
+                request.tags[request.tag_names[0]].quantity,
+                True,
+            )
 
         response_item = ResponseItem(PlcResponseCode.OK, returned_value)
 
@@ -175,13 +184,21 @@ class ModbusDevice:
         message_future = loop.create_future()
 
         if isinstance(tag, ModbusTagCoil):
-            pdu = ModbusPDUWriteMultipleCoilsRequest(tag.address, tag.quantity, [v for k, v in request.values])
+            pdu = ModbusPDUWriteMultipleCoilsRequest(
+                tag.address, tag.quantity, [v for k, v in request.values]
+            )
         elif isinstance(tag, ModbusTagDiscreteInput):
-            raise PlcRuntimeException("Modbus doesn't support writing to discrete inputs")
+            raise PlcRuntimeException(
+                "Modbus doesn't support writing to discrete inputs"
+            )
         elif isinstance(tag, ModbusTagInputRegister):
-            raise PlcRuntimeException("Modbus doesn't support writing to input registers")
+            raise PlcRuntimeException(
+                "Modbus doesn't support writing to input registers"
+            )
         elif isinstance(tag, ModbusTagHoldingRegister):
-            pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(tag.address, tag.quantity, request.values).build()
+            pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
+                tag.address, tag.quantity, request.values
+            ).build()
         else:
             raise NotImplementedError(
                 "Modbus tag type not implemented " + str(tag.__class__)

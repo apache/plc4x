@@ -51,6 +51,9 @@ class PlcValue(Generic[T], ABC):
             return len(self.value)
         return 1
 
+    def __eq__(self, other):
+        return other == self.value
+
 
 class PlcResponseCode(Enum):
     OK = auto()
