@@ -124,7 +124,7 @@ public class BACnetConstructedDataMaxActualValue extends BACnetConstructedData i
     BACnetApplicationTagReal maxActualValue =
         readSimpleField(
             "maxActualValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

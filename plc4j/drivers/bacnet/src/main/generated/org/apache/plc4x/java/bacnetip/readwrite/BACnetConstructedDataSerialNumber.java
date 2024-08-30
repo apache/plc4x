@@ -124,7 +124,7 @@ public class BACnetConstructedDataSerialNumber extends BACnetConstructedData imp
     BACnetApplicationTagCharacterString serialNumber =
         readSimpleField(
             "serialNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

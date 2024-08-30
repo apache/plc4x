@@ -85,7 +85,7 @@ public class BACnetLandingDoorStatus implements Message {
     BACnetLandingDoorStatusLandingDoorsList landingDoors =
         readSimpleField(
             "landingDoors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLandingDoorStatusLandingDoorsList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

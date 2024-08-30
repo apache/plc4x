@@ -124,14 +124,14 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetPropertyReferenceEnclosed monitoredProperty =
         readSimpleField(
             "monitoredProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -141,7 +141,7 @@ class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscrip
     BACnetContextTagBoolean timestamped =
         readSimpleField(
             "timestamped",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

@@ -124,7 +124,7 @@ public class BACnetConstructedDataLoggingObject extends BACnetConstructedData im
     BACnetApplicationTagObjectIdentifier loggingObject =
         readSimpleField(
             "loggingObject",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -485,7 +485,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int sessionKey =
@@ -497,14 +497,13 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
     MacAddress cmInitiatorMacAddr =
         readSimpleField(
             "cmInitiatorMacAddr",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     DceRpc_ObjectUuid cmInitiatorObjectUuid =
         readSimpleField(
             "cmInitiatorObjectUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean pullModuleAlarmAllowed =

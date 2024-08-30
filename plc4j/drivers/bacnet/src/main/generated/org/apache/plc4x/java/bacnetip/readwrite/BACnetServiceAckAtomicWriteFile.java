@@ -99,7 +99,7 @@ public class BACnetServiceAckAtomicWriteFile extends BACnetServiceAck implements
     BACnetContextTagSignedInteger fileStartPosition =
         readSimpleField(
             "fileStartPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

@@ -104,13 +104,12 @@ public class BrowsePath extends ExtensionObjectDefinition implements Message {
 
     NodeId startingNode =
         readSimpleField(
-            "startingNode",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "startingNode", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectDefinition relativePath =
         readSimpleField(
             "relativePath",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("542")),
                 readBuffer));
 

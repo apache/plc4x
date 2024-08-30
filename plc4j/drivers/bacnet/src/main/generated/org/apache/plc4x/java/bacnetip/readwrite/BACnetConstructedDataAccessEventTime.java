@@ -125,8 +125,7 @@ public class BACnetConstructedDataAccessEventTime extends BACnetConstructedData 
     BACnetTimeStamp accessEventTime =
         readSimpleField(
             "accessEventTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, accessEventTime);
 

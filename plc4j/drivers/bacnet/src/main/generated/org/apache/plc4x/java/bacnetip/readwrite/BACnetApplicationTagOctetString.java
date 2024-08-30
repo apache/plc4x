@@ -91,7 +91,7 @@ public class BACnetApplicationTagOctetString extends BACnetApplicationTag implem
     BACnetTagPayloadOctetString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadOctetString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

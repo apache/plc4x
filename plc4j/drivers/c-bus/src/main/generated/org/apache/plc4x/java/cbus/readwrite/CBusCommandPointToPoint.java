@@ -94,7 +94,7 @@ public class CBusCommandPointToPoint extends CBusCommand implements Message {
     CBusPointToPointCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CBusPointToPointCommand.staticParse(readBuffer, (CBusOptions) (cBusOptions)),
                 readBuffer));
 

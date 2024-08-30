@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueResolution extends BACnetConst
     BACnetApplicationTagDouble resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

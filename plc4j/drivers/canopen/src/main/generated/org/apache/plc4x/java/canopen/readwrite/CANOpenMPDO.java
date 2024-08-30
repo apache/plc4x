@@ -112,8 +112,7 @@ public class CANOpenMPDO implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact(4));
 

@@ -128,7 +128,7 @@ public class BACnetConstructedDataAllowGroupDelayInhibit extends BACnetConstruct
     BACnetApplicationTagBoolean allowGroupDelayInhibit =
         readSimpleField(
             "allowGroupDelayInhibit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

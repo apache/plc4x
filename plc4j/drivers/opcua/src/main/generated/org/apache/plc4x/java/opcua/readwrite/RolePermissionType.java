@@ -108,9 +108,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId roleId =
-        readSimpleField(
-            "roleId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("roleId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PermissionType permissions =
         readEnumField(

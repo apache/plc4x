@@ -124,7 +124,7 @@ public class BACnetConstructedDataActiveText extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString activeText =
         readSimpleField(
             "activeText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

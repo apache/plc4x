@@ -252,14 +252,11 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     DataSetFieldFlags fieldFlags =
         readEnumField(
@@ -271,9 +268,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
     short builtInType = readSimpleField("builtInType", readUnsignedShort(readBuffer, 8));
 
     NodeId dataType =
-        readSimpleField(
-            "dataType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("dataType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 
@@ -287,15 +282,14 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
 
     GuidValue dataSetFieldId =
         readSimpleField(
-            "dataSetFieldId",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "dataSetFieldId", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     int noOfProperties = readSimpleField("noOfProperties", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> properties =
         readCountArrayField(
             "properties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfProperties);

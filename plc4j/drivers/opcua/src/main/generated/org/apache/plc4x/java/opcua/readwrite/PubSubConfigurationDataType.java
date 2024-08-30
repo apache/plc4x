@@ -168,7 +168,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     List<ExtensionObjectDefinition> publishedDataSets =
         readCountArrayField(
             "publishedDataSets",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15580")),
                 readBuffer),
             noOfPublishedDataSets);
@@ -178,7 +178,7 @@ public class PubSubConfigurationDataType extends ExtensionObjectDefinition imple
     List<ExtensionObjectDefinition> connections =
         readCountArrayField(
             "connections",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("15619")),
                 readBuffer),
             noOfConnections);

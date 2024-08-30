@@ -99,7 +99,7 @@ public class BACnetTimerStateChangeValueOctetString extends BACnetTimerStateChan
     BACnetApplicationTagOctetString octetStringValue =
         readSimpleField(
             "octetStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

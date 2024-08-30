@@ -152,26 +152,25 @@ public class InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LastSectionOrSegmentQualifier lsq =
         readSimpleField(
             "lsq",
-            new DataReaderComplexDefault<>(
-                () -> LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LastSectionOrSegmentQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     Checksum chs =
         readSimpleField(
             "chs",
-            new DataReaderComplexDefault<>(() -> Checksum.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Checksum.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_LAST_SECTION_LAST_SEGMENT");

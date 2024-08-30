@@ -97,8 +97,7 @@ public abstract class Payload implements Message {
     SequenceHeader sequenceHeader =
         readSimpleField(
             "sequenceHeader",
-            new DataReaderComplexDefault<>(
-                () -> SequenceHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> SequenceHeader.staticParse(readBuffer), readBuffer));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     PayloadBuilder builder = null;

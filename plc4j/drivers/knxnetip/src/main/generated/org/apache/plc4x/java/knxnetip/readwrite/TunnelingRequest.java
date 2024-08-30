@@ -113,14 +113,13 @@ public class TunnelingRequest extends KnxNetIpMessage implements Message {
     TunnelingRequestDataBlock tunnelingRequestDataBlock =
         readSimpleField(
             "tunnelingRequestDataBlock",
-            new DataReaderComplexDefault<>(
-                () -> TunnelingRequestDataBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TunnelingRequestDataBlock.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     CEMI cemi =
         readSimpleField(
             "cemi",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CEMI.staticParse(
                         readBuffer,

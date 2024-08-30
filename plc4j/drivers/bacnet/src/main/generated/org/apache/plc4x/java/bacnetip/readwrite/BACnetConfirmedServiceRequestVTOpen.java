@@ -117,7 +117,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     BACnetVTClassTagged vtClass =
         readSimpleField(
             "vtClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVTClassTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -126,7 +126,7 @@ public class BACnetConfirmedServiceRequestVTOpen extends BACnetConfirmedServiceR
     BACnetApplicationTagUnsignedInteger localVtSessionIdentifier =
         readSimpleField(
             "localVtSessionIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

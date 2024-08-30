@@ -122,13 +122,13 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetApplicationTagBitString> listOfBitstringValues =
         readTerminatedArrayField(
             "listOfBitstringValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             () ->
@@ -139,7 +139,7 @@ public class BACnetEventParameterChangeOfBitstringListOfBitstringValues implemen
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues");

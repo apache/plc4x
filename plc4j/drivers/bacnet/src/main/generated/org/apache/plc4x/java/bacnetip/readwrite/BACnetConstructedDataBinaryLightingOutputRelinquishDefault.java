@@ -126,7 +126,7 @@ public class BACnetConstructedDataBinaryLightingOutputRelinquishDefault
     BACnetBinaryLightingPVTagged relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

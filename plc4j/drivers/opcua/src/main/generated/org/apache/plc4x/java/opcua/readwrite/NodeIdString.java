@@ -115,9 +115,7 @@ public class NodeIdString extends NodeIdTypeDefinition implements Message {
     int namespaceIndex = readSimpleField("namespaceIndex", readUnsignedInt(readBuffer, 16));
 
     PascalString id =
-        readSimpleField(
-            "id",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+        readSimpleField("id", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, id.getStringValue());
 
     readBuffer.closeContext("NodeIdString");

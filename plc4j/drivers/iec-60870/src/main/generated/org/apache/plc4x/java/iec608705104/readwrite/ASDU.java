@@ -280,7 +280,7 @@ public class ASDU implements Message {
     List<InformationObject> informationObjects =
         readCountArrayField(
             "informationObjects",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     InformationObject.staticParse(
                         readBuffer,

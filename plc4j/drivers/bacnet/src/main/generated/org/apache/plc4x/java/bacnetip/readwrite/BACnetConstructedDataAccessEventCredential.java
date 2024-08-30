@@ -128,8 +128,7 @@ public class BACnetConstructedDataAccessEventCredential extends BACnetConstructe
     BACnetDeviceObjectReference accessEventCredential =
         readSimpleField(
             "accessEventCredential",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, accessEventCredential);
 

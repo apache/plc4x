@@ -124,7 +124,7 @@ public class BACnetConstructedDataCOVIncrement extends BACnetConstructedData imp
     BACnetApplicationTagReal covIncrement =
         readSimpleField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -124,7 +124,7 @@ public class BACnetConstructedDataBACnetIPMode extends BACnetConstructedData imp
     BACnetIPModeTagged bacnetIpMode =
         readSimpleField(
             "bacnetIpMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetIPModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

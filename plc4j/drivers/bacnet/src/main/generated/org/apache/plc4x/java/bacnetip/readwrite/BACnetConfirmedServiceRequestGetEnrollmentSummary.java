@@ -190,7 +190,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
         acknowledgmentFilter =
             readSimpleField(
                 "acknowledgmentFilter",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged
                             .staticParse(
@@ -202,14 +202,14 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     BACnetRecipientProcessEnclosed enrollmentFilter =
         readOptionalField(
             "enrollmentFilter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged eventStateFilter =
         readOptionalField(
             "eventStateFilter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
                         .staticParse(
@@ -219,7 +219,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     BACnetEventTypeTagged eventTypeFilter =
         readOptionalField(
             "eventTypeFilter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -228,7 +228,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter priorityFilter =
         readOptionalField(
             "priorityFilter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter.staticParse(
                         readBuffer, (short) (4)),
@@ -237,7 +237,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummary extends BACnetCon
     BACnetContextTagUnsignedInteger notificationClassFilter =
         readOptionalField(
             "notificationClassFilter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

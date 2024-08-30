@@ -145,13 +145,12 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (22)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (22)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -163,7 +162,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     BACnetEventParameterChangeOfTimerAlarmValue alarmValues =
         readSimpleField(
             "alarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventParameterChangeOfTimerAlarmValue.staticParse(
                         readBuffer, (short) (1)),
@@ -172,7 +171,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     BACnetDeviceObjectPropertyReferenceEnclosed updateTimeReference =
         readSimpleField(
             "updateTimeReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (2)),
@@ -181,8 +180,7 @@ public class BACnetEventParameterChangeOfTimer extends BACnetEventParameter impl
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (22)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (22)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfTimer");
     // Create the instance

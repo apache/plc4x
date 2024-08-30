@@ -103,14 +103,11 @@ public class SemanticChangeStructureDataType extends ExtensionObjectDefinition i
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId affected =
-        readSimpleField(
-            "affected",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("affected", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId affectedType =
         readSimpleField(
-            "affectedType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "affectedType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SemanticChangeStructureDataType");
     // Create the instance

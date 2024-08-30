@@ -152,7 +152,7 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataBitStringValueAlarmValues extends BACnetConstr
     List<BACnetApplicationTagBitString> alarmValues =
         readTerminatedArrayField(
             "alarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             () ->

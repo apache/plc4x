@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_DOUBLE_POINT_INFORMATION
     DoublePointInformation diq =
         readSimpleField(
             "diq",
-            new DataReaderComplexDefault<>(
-                () -> DoublePointInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DoublePointInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_DOUBLE_POINT_INFORMATION");

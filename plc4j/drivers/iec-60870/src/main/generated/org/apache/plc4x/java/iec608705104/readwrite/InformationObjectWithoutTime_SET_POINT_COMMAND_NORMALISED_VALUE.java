@@ -116,15 +116,13 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE
     NormalizedValue nva =
         readSimpleField(
             "nva",
-            new DataReaderComplexDefault<>(
-                () -> NormalizedValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NormalizedValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualifierOfSetPointCommand qos =
         readSimpleField(
             "qos",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_SET_POINT_COMMAND_NORMALISED_VALUE");

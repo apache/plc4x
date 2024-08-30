@@ -100,7 +100,7 @@ public class MonitoredSALReply extends EncodedReply implements Message {
     MonitoredSAL monitoredSAL =
         readSimpleField(
             "monitoredSAL",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> MonitoredSAL.staticParse(readBuffer, (CBusOptions) (cBusOptions)),
                 readBuffer));
 

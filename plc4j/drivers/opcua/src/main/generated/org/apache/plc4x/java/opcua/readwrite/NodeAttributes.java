@@ -149,15 +149,11 @@ public class NodeAttributes extends ExtensionObjectDefinition implements Message
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     long writeMask = readSimpleField("writeMask", readUnsignedLong(readBuffer, 32));
 

@@ -124,7 +124,7 @@ public class BACnetConstructedDataLastPriority extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger lastPriority =
         readSimpleField(
             "lastPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

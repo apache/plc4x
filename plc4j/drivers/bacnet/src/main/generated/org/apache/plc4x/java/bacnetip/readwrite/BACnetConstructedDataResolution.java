@@ -124,7 +124,7 @@ public class BACnetConstructedDataResolution extends BACnetConstructedData imple
     BACnetApplicationTagReal resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

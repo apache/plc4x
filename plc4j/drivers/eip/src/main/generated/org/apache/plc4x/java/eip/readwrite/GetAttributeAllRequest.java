@@ -125,13 +125,11 @@ public class GetAttributeAllRequest extends CipService implements Message {
 
     PathSegment classSegment =
         readSimpleField(
-            "classSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "classSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
-            "instanceSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "instanceSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GetAttributeAllRequest");
     // Create the instance

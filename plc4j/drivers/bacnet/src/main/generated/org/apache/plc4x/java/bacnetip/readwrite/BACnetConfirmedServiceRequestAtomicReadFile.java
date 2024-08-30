@@ -114,7 +114,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     BACnetApplicationTagObjectIdentifier fileIdentifier =
         readSimpleField(
             "fileIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -123,7 +123,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFile extends BACnetConfirmed
     BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord accessMethod =
         readSimpleField(
             "accessMethod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord.staticParse(
                         readBuffer),

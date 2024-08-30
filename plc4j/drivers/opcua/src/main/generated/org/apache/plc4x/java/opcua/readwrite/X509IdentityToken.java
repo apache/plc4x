@@ -94,8 +94,7 @@ public class X509IdentityToken extends UserIdentityTokenDefinition implements Me
     PascalByteString certificateData =
         readSimpleField(
             "certificateData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("X509IdentityToken");
     // Create the instance

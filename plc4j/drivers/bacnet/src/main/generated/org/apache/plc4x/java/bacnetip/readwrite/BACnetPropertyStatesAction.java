@@ -90,7 +90,7 @@ public class BACnetPropertyStatesAction extends BACnetPropertyStates implements 
     BACnetActionTagged action =
         readSimpleField(
             "action",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetActionTagged.staticParse(
                         readBuffer,

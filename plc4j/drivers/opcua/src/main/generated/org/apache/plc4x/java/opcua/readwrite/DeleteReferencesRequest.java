@@ -127,7 +127,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -137,7 +137,7 @@ public class DeleteReferencesRequest extends ExtensionObjectDefinition implement
     List<ExtensionObjectDefinition> referencesToDelete =
         readCountArrayField(
             "referencesToDelete",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("387")),
                 readBuffer),
             noOfReferencesToDelete);

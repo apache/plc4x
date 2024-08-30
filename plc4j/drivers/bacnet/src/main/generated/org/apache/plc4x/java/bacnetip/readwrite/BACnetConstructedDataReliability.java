@@ -124,7 +124,7 @@ public class BACnetConstructedDataReliability extends BACnetConstructedData impl
     BACnetReliabilityTagged reliability =
         readSimpleField(
             "reliability",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReliabilityTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

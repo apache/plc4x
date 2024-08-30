@@ -124,7 +124,7 @@ public class BACnetConstructedDataAbsenteeLimit extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger absenteeLimit =
         readSimpleField(
             "absenteeLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

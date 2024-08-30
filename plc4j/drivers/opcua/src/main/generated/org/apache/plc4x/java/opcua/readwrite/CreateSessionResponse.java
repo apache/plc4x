@@ -257,41 +257,35 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId authenticationToken =
         readSimpleField(
-            "authenticationToken",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "authenticationToken", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     double revisedSessionTimeout =
         readSimpleField("revisedSessionTimeout", readDouble(readBuffer, 64));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString serverCertificate =
         readSimpleField(
             "serverCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     int noOfServerEndpoints = readSimpleField("noOfServerEndpoints", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> serverEndpoints =
         readCountArrayField(
             "serverEndpoints",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
                 readBuffer),
             noOfServerEndpoints);
@@ -302,7 +296,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> serverSoftwareCertificates =
         readCountArrayField(
             "serverSoftwareCertificates",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("346")),
                 readBuffer),
             noOfServerSoftwareCertificates);
@@ -310,7 +304,7 @@ public class CreateSessionResponse extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition serverSignature =
         readSimpleField(
             "serverSignature",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
                 readBuffer));
 

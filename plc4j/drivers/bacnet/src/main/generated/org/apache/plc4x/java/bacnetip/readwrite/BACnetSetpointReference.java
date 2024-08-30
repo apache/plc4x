@@ -88,7 +88,7 @@ public class BACnetSetpointReference implements Message {
     BACnetObjectPropertyReferenceEnclosed setPointReference =
         readOptionalField(
             "setPointReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

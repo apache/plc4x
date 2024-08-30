@@ -126,8 +126,7 @@ public class BACnetConstructedDataExpectedShedLevel extends BACnetConstructedDat
     BACnetShedLevel expectedShedLevel =
         readSimpleField(
             "expectedShedLevel",
-            new DataReaderComplexDefault<>(
-                () -> BACnetShedLevel.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetShedLevel.staticParse(readBuffer), readBuffer));
     BACnetShedLevel actualValue =
         readVirtualField("actualValue", BACnetShedLevel.class, expectedShedLevel);
 

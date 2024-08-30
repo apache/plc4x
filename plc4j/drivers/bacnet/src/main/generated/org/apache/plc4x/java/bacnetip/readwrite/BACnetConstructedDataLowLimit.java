@@ -124,7 +124,7 @@ public class BACnetConstructedDataLowLimit extends BACnetConstructedData impleme
     BACnetApplicationTagReal lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

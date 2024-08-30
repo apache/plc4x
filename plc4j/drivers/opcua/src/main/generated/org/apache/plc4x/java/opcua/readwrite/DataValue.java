@@ -270,13 +270,13 @@ public class DataValue implements Message {
     Variant value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             valueSpecified);
 
     StatusCode statusCode =
         readOptionalField(
             "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             statusCodeSpecified);
 
     Long sourceTimestamp =

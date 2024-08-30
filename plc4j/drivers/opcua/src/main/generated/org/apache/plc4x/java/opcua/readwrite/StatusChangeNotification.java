@@ -114,14 +114,12 @@ public class StatusChangeNotification extends ExtensionObjectDefinition implemen
 
     StatusCode status =
         readSimpleField(
-            "status",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "status", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     DiagnosticInfo diagnosticInfo =
         readSimpleField(
             "diagnosticInfo",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("StatusChangeNotification");
     // Create the instance

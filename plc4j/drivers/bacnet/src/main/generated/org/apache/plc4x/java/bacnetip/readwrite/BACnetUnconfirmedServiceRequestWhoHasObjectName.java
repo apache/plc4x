@@ -93,7 +93,7 @@ public class BACnetUnconfirmedServiceRequestWhoHasObjectName
     BACnetContextTagCharacterString objectName =
         readSimpleField(
             "objectName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

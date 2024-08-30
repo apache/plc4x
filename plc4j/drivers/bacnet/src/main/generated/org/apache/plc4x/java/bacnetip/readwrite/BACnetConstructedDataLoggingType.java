@@ -124,7 +124,7 @@ public class BACnetConstructedDataLoggingType extends BACnetConstructedData impl
     BACnetLoggingTypeTagged loggingType =
         readSimpleField(
             "loggingType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLoggingTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

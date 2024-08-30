@@ -124,7 +124,7 @@ public class BACnetConstructedDataMACAddress extends BACnetConstructedData imple
     BACnetApplicationTagOctetString macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

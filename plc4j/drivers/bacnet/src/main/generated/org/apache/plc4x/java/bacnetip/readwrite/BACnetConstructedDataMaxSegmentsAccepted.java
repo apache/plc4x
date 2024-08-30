@@ -126,7 +126,7 @@ public class BACnetConstructedDataMaxSegmentsAccepted extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger maxSegmentsAccepted =
         readSimpleField(
             "maxSegmentsAccepted",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataMinimumOutput extends BACnetConstructedData im
     BACnetApplicationTagReal minimumOutput =
         readSimpleField(
             "minimumOutput",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

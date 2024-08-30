@@ -162,14 +162,14 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -178,7 +178,7 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     BACnetContextTagUnsignedInteger extendedEventType =
         readSimpleField(
             "extendedEventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -190,7 +190,7 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     BACnetNotificationParametersExtendedParameters parameters =
         readSimpleField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotificationParametersExtendedParameters.staticParse(
                         readBuffer, (short) (2)),
@@ -199,7 +199,7 @@ public class BACnetNotificationParametersExtended extends BACnetNotificationPara
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

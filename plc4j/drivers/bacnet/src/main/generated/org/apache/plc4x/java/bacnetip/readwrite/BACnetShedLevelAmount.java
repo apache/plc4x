@@ -90,7 +90,7 @@ public class BACnetShedLevelAmount extends BACnetShedLevel implements Message {
     BACnetContextTagReal amount =
         readSimpleField(
             "amount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

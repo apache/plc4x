@@ -124,7 +124,7 @@ public class BACnetConstructedDataStrikeCount extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger strikeCount =
         readSimpleField(
             "strikeCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

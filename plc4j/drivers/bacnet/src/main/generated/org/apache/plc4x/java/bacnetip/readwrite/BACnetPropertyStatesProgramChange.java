@@ -91,7 +91,7 @@ public class BACnetPropertyStatesProgramChange extends BACnetPropertyStates impl
     BACnetProgramStateTagged programState =
         readSimpleField(
             "programState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramStateTagged.staticParse(
                         readBuffer,

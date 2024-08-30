@@ -92,7 +92,7 @@ public class ExtensiblePayload extends Payload implements Message {
     ExtensionObject payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (false)), readBuffer));
 
     readBuffer.closeContext("ExtensiblePayload");

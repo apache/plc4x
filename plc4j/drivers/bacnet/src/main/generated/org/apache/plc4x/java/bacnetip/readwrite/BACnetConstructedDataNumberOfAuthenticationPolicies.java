@@ -128,7 +128,7 @@ public class BACnetConstructedDataNumberOfAuthenticationPolicies extends BACnetC
     BACnetApplicationTagUnsignedInteger numberOfAuthenticationPolicies =
         readSimpleField(
             "numberOfAuthenticationPolicies",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

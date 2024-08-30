@@ -124,7 +124,7 @@ public class BACnetConstructedDataFaultLowLimit extends BACnetConstructedData im
     BACnetApplicationTagReal faultLowLimit =
         readSimpleField(
             "faultLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

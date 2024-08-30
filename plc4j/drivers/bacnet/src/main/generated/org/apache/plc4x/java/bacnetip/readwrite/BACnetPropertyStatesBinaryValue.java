@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBinaryValue extends BACnetPropertyStates implem
     BACnetBinaryPVTagged binaryValue =
         readSimpleField(
             "binaryValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer,

@@ -108,13 +108,12 @@ public class WritePropertyMultipleError extends BACnetError implements Message {
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetObjectPropertyReferenceEnclosed firstFailedWriteAttempt =
         readSimpleField(
             "firstFailedWriteAttempt",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

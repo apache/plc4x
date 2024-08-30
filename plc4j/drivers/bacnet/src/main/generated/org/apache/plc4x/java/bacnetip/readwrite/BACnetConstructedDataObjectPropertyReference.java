@@ -126,7 +126,7 @@ public class BACnetConstructedDataObjectPropertyReference extends BACnetConstruc
     BACnetDeviceObjectPropertyReference propertyReference =
         readSimpleField(
             "propertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectPropertyReference actualValue =
         readVirtualField(

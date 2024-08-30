@@ -93,7 +93,7 @@ public class BACnetPropertyStatesNetworkNumberQuality extends BACnetPropertyStat
     BACnetNetworkNumberQualityTagged networkNumberQuality =
         readSimpleField(
             "networkNumberQuality",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkNumberQualityTagged.staticParse(
                         readBuffer,

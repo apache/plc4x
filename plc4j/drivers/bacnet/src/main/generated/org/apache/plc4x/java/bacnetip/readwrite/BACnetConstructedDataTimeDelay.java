@@ -124,7 +124,7 @@ public class BACnetConstructedDataTimeDelay extends BACnetConstructedData implem
     BACnetApplicationTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

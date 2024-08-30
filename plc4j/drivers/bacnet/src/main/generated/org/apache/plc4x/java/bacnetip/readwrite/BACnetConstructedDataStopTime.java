@@ -123,9 +123,7 @@ public class BACnetConstructedDataStopTime extends BACnetConstructedData impleme
 
     BACnetDateTime stopTime =
         readSimpleField(
-            "stopTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "stopTime", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue = readVirtualField("actualValue", BACnetDateTime.class, stopTime);
 
     readBuffer.closeContext("BACnetConstructedDataStopTime");

@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLiftCarDoorCommand extends BACnetPropertyStates
     BACnetLiftCarDoorCommandTagged liftCarDoorCommand =
         readSimpleField(
             "liftCarDoorCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDoorCommandTagged.staticParse(
                         readBuffer,

@@ -124,7 +124,7 @@ public class BACnetConstructedDataNumberOfStates extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger numberOfState =
         readSimpleField(
             "numberOfState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

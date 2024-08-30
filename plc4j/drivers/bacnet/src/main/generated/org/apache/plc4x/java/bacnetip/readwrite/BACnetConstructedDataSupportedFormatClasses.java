@@ -152,7 +152,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataSupportedFormatClasses extends BACnetConstruct
     List<BACnetApplicationTagUnsignedInteger> supportedFormats =
         readTerminatedArrayField(
             "supportedFormats",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

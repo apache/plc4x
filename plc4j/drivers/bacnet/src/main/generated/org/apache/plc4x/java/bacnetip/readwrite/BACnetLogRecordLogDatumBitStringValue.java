@@ -100,7 +100,7 @@ public class BACnetLogRecordLogDatumBitStringValue extends BACnetLogRecordLogDat
     BACnetContextTagBitString bitStringValue =
         readSimpleField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

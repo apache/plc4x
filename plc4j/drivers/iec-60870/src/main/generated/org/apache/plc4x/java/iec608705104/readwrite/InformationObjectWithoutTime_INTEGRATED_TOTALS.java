@@ -99,8 +99,7 @@ public class InformationObjectWithoutTime_INTEGRATED_TOTALS extends InformationO
     BinaryCounterReading bcr =
         readSimpleField(
             "bcr",
-            new DataReaderComplexDefault<>(
-                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_INTEGRATED_TOTALS");

@@ -143,8 +143,7 @@ public class LightingDataLabel extends LightingData implements Message {
     LightingLabelOptions labelOptions =
         readSimpleField(
             "labelOptions",
-            new DataReaderComplexDefault<>(
-                () -> LightingLabelOptions.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingLabelOptions.staticParse(readBuffer), readBuffer));
 
     Language language =
         readOptionalField(

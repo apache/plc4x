@@ -124,7 +124,7 @@ public class BACnetConstructedDataTransition extends BACnetConstructedData imple
     BACnetLightingTransitionTagged transition =
         readSimpleField(
             "transition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingTransitionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

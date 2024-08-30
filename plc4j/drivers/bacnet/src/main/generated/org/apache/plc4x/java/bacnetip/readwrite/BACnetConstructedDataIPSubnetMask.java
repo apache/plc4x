@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPSubnetMask extends BACnetConstructedData imp
     BACnetApplicationTagOctetString ipSubnetMask =
         readSimpleField(
             "ipSubnetMask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

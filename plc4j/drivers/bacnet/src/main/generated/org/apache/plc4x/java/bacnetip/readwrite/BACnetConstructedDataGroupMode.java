@@ -124,7 +124,7 @@ public class BACnetConstructedDataGroupMode extends BACnetConstructedData implem
     BACnetLiftGroupModeTagged groupMode =
         readSimpleField(
             "groupMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftGroupModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

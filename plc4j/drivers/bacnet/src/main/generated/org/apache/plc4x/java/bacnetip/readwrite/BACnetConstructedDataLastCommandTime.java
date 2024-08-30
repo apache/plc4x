@@ -125,8 +125,7 @@ public class BACnetConstructedDataLastCommandTime extends BACnetConstructedData 
     BACnetTimeStamp lastCommandTime =
         readSimpleField(
             "lastCommandTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, lastCommandTime);
 

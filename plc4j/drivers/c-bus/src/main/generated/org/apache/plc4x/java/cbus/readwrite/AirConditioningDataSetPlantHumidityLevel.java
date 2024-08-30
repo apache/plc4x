@@ -198,14 +198,12 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidityModeAndFlags humidityModeAndFlags =
         readSimpleField(
             "humidityModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
 
     HVACHumidityType humidityType =
         readEnumField(
@@ -217,20 +215,19 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
     HVACHumidity level =
         readOptionalField(
             "level",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelHumidity());
 
     HVACRawLevels rawLevel =
         readOptionalField(
             "rawLevel",
-            new DataReaderComplexDefault<>(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsLevelRaw());
 
     HVACAuxiliaryLevel auxLevel =
         readOptionalField(
             "auxLevel",
-            new DataReaderComplexDefault<>(
-                () -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACAuxiliaryLevel.staticParse(readBuffer), readBuffer),
             humidityModeAndFlags.getIsAuxLevelUsed());
 
     readBuffer.closeContext("AirConditioningDataSetPlantHumidityLevel");

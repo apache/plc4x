@@ -126,7 +126,7 @@ public class BACnetConstructedDataUpdateKeySetTimeout extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger updateKeySetTimeout =
         readSimpleField(
             "updateKeySetTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

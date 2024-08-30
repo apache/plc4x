@@ -91,7 +91,7 @@ public class BACnetPropertyStatesReasonForHalt extends BACnetPropertyStates impl
     BACnetProgramErrorTagged reasonForHalt =
         readSimpleField(
             "reasonForHalt",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramErrorTagged.staticParse(
                         readBuffer,

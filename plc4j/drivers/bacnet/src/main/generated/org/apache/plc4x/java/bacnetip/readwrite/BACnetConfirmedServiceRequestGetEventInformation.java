@@ -105,7 +105,7 @@ public class BACnetConfirmedServiceRequestGetEventInformation extends BACnetConf
     BACnetContextTagObjectIdentifier lastReceivedObjectIdentifier =
         readOptionalField(
             "lastReceivedObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

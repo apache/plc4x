@@ -91,9 +91,7 @@ public class SALDataTelephonyStatusAndControl extends SALData implements Message
 
     TelephonyData telephonyData =
         readSimpleField(
-            "telephonyData",
-            new DataReaderComplexDefault<>(
-                () -> TelephonyData.staticParse(readBuffer), readBuffer));
+            "telephonyData", readComplex(() -> TelephonyData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataTelephonyStatusAndControl");
     // Create the instance

@@ -138,7 +138,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetContextTagUnsignedInteger deviceInstanceRangeLowLimit =
         readOptionalField(
             "deviceInstanceRangeLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -150,7 +150,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetContextTagUnsignedInteger deviceInstanceRangeHighLimit =
         readOptionalField(
             "deviceInstanceRangeHighLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -163,7 +163,7 @@ public class BACnetUnconfirmedServiceRequestWhoHas extends BACnetUnconfirmedServ
     BACnetUnconfirmedServiceRequestWhoHasObject object =
         readSimpleField(
             "object",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetUnconfirmedServiceRequestWhoHasObject.staticParse(readBuffer),
                 readBuffer));
 

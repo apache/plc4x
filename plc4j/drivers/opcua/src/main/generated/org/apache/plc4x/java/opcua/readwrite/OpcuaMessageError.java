@@ -119,8 +119,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
 
     PascalString reason =
         readSimpleField(
-            "reason",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "reason", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaMessageError");
     // Create the instance

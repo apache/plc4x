@@ -124,14 +124,11 @@ public class Confirmation implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Alpha alpha =
-        readSimpleField(
-            "alpha",
-            new DataReaderComplexDefault<>(() -> Alpha.staticParse(readBuffer), readBuffer));
+        readSimpleField("alpha", readComplex(() -> Alpha.staticParse(readBuffer), readBuffer));
 
     Alpha secondAlpha =
         readOptionalField(
-            "secondAlpha",
-            new DataReaderComplexDefault<>(() -> Alpha.staticParse(readBuffer), readBuffer));
+            "secondAlpha", readComplex(() -> Alpha.staticParse(readBuffer), readBuffer));
 
     ConfirmationType confirmationType =
         readEnumField(

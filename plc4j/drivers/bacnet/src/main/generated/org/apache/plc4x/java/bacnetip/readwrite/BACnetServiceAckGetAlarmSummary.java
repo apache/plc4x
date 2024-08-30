@@ -129,7 +129,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -138,7 +138,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     BACnetEventStateTagged eventState =
         readSimpleField(
             "eventState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -147,7 +147,7 @@ public class BACnetServiceAckGetAlarmSummary extends BACnetServiceAck implements
     BACnetEventTransitionBitsTagged acknowledgedTransitions =
         readSimpleField(
             "acknowledgedTransitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

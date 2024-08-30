@@ -124,7 +124,7 @@ public class BACnetConstructedDataUserType extends BACnetConstructedData impleme
     BACnetAccessUserTypeTagged userType =
         readSimpleField(
             "userType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessUserTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

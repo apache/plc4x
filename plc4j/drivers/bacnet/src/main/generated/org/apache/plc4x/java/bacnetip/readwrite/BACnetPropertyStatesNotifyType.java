@@ -91,7 +91,7 @@ public class BACnetPropertyStatesNotifyType extends BACnetPropertyStates impleme
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer,

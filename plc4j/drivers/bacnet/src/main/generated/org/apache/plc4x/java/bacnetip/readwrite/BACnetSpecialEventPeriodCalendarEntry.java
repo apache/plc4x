@@ -92,7 +92,7 @@ public class BACnetSpecialEventPeriodCalendarEntry extends BACnetSpecialEventPer
     BACnetCalendarEntryEnclosed calendarEntry =
         readSimpleField(
             "calendarEntry",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetCalendarEntryEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

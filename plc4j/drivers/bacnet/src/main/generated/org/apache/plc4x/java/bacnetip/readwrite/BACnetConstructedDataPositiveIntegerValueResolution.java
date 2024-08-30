@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueResolution extends BACnetC
     BACnetApplicationTagUnsignedInteger resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLightningTransition extends BACnetPropertyState
     BACnetLightingTransitionTagged lightningTransition =
         readSimpleField(
             "lightningTransition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingTransitionTagged.staticParse(
                         readBuffer,

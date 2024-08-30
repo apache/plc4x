@@ -313,20 +313,19 @@ public class DiagnosticInfo implements Message {
     PascalString additionalInfo =
         readOptionalField(
             "additionalInfo",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             additionalInfoSpecified);
 
     StatusCode innerStatusCode =
         readOptionalField(
             "innerStatusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             innerStatusCodeSpecified);
 
     DiagnosticInfo innerDiagnosticInfo =
         readOptionalField(
             "innerDiagnosticInfo",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             innerDiagnosticInfoSpecified);
 
     readBuffer.closeContext("DiagnosticInfo");

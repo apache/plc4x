@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLiftGroupMode extends BACnetPropertyStates impl
     BACnetLiftGroupModeTagged liftGroupMode =
         readSimpleField(
             "liftGroupMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftGroupModeTagged.staticParse(
                         readBuffer,

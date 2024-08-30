@@ -92,8 +92,7 @@ public class AdsDiscoveryBlockHostName extends AdsDiscoveryBlock implements Mess
 
     AmsString hostName =
         readSimpleField(
-            "hostName",
-            new DataReaderComplexDefault<>(() -> AmsString.staticParse(readBuffer), readBuffer));
+            "hostName", readComplex(() -> AmsString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockHostName");
     // Create the instance

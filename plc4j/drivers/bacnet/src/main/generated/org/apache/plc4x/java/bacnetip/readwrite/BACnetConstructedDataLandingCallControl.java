@@ -126,8 +126,7 @@ public class BACnetConstructedDataLandingCallControl extends BACnetConstructedDa
     BACnetLandingCallStatus landingCallControl =
         readSimpleField(
             "landingCallControl",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLandingCallStatus.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLandingCallStatus.staticParse(readBuffer), readBuffer));
     BACnetLandingCallStatus actualValue =
         readVirtualField("actualValue", BACnetLandingCallStatus.class, landingCallControl);
 

@@ -125,13 +125,12 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetOpeningTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),
@@ -164,7 +163,7 @@ public abstract class BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetClosingTag.staticParse(
                         readBuffer, (short) (peekedTagHeader.getActualTagNumber())),

@@ -159,7 +159,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -177,7 +177,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
     List<ExtensionObjectDefinition> itemsToCreate =
         readCountArrayField(
             "itemsToCreate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("745")),
                 readBuffer),
             noOfItemsToCreate);

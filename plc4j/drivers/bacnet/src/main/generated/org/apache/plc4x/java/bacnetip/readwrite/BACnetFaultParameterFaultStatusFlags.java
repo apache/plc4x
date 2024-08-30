@@ -119,13 +119,12 @@ public class BACnetFaultParameterFaultStatusFlags extends BACnetFaultParameter i
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (5)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (5)), readBuffer));
 
     BACnetDeviceObjectPropertyReferenceEnclosed statusFlagsReference =
         readSimpleField(
             "statusFlagsReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -134,8 +133,7 @@ public class BACnetFaultParameterFaultStatusFlags extends BACnetFaultParameter i
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (5)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (5)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultStatusFlags");
     // Create the instance

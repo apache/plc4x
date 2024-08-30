@@ -124,7 +124,7 @@ public class BACnetConstructedDataAdjustValue extends BACnetConstructedData impl
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(
             "adjustValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -104,7 +104,7 @@ public class BACnetDeviceObjectReference implements Message {
     BACnetContextTagObjectIdentifier deviceIdentifier =
         readOptionalField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -116,7 +116,7 @@ public class BACnetDeviceObjectReference implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

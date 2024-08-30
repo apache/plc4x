@@ -92,7 +92,7 @@ public class ApduDataOther extends ApduData implements Message {
     ApduDataExt extendedApdu =
         readSimpleField(
             "extendedApdu",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ApduDataExt.staticParse(readBuffer, (short) (dataLength)), readBuffer));
 
     readBuffer.closeContext("ApduDataOther");

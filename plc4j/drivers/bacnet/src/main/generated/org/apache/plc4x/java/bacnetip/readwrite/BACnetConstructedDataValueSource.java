@@ -124,8 +124,7 @@ public class BACnetConstructedDataValueSource extends BACnetConstructedData impl
     BACnetValueSource valueSource =
         readSimpleField(
             "valueSource",
-            new DataReaderComplexDefault<>(
-                () -> BACnetValueSource.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetValueSource.staticParse(readBuffer), readBuffer));
     BACnetValueSource actualValue =
         readVirtualField("actualValue", BACnetValueSource.class, valueSource);
 

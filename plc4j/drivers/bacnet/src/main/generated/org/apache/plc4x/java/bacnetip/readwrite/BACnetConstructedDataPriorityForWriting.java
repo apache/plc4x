@@ -126,7 +126,7 @@ public class BACnetConstructedDataPriorityForWriting extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger priorityForWriting =
         readSimpleField(
             "priorityForWriting",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

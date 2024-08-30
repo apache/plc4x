@@ -124,7 +124,7 @@ public class BACnetConstructedDataLocalTime extends BACnetConstructedData implem
     BACnetApplicationTagTime localTime =
         readSimpleField(
             "localTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagTime actualValue =

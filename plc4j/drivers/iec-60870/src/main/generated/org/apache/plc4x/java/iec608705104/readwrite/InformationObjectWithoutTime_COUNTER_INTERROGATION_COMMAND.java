@@ -100,7 +100,7 @@ public class InformationObjectWithoutTime_COUNTER_INTERROGATION_COMMAND
     QualifierOfCounterInterrogationCommand qcc =
         readSimpleField(
             "qcc",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfCounterInterrogationCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

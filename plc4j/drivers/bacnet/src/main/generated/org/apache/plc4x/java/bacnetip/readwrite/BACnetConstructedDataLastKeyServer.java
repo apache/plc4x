@@ -124,8 +124,7 @@ public class BACnetConstructedDataLastKeyServer extends BACnetConstructedData im
     BACnetAddressBinding lastKeyServer =
         readSimpleField(
             "lastKeyServer",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddressBinding.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAddressBinding.staticParse(readBuffer), readBuffer));
     BACnetAddressBinding actualValue =
         readVirtualField("actualValue", BACnetAddressBinding.class, lastKeyServer);
 

@@ -124,7 +124,7 @@ public class BACnetConstructedDataDaysRemaining extends BACnetConstructedData im
     BACnetApplicationTagSignedInteger daysRemaining =
         readSimpleField(
             "daysRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

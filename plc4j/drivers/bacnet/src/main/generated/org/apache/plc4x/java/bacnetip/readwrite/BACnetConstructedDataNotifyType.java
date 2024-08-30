@@ -124,7 +124,7 @@ public class BACnetConstructedDataNotifyType extends BACnetConstructedData imple
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

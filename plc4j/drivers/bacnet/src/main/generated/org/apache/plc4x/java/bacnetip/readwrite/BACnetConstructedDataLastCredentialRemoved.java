@@ -128,8 +128,7 @@ public class BACnetConstructedDataLastCredentialRemoved extends BACnetConstructe
     BACnetDeviceObjectReference lastCredentialRemoved =
         readSimpleField(
             "lastCredentialRemoved",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, lastCredentialRemoved);
 

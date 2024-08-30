@@ -151,7 +151,7 @@ public class BACnetConstructedDataPriority extends BACnetConstructedData impleme
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataPriority extends BACnetConstructedData impleme
     List<BACnetApplicationTagUnsignedInteger> priority =
         readTerminatedArrayField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

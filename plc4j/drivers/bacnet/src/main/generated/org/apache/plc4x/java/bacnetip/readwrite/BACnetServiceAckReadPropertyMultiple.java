@@ -105,8 +105,7 @@ public class BACnetServiceAckReadPropertyMultiple extends BACnetServiceAck imple
     List<BACnetReadAccessResult> data =
         readLengthArrayField(
             "data",
-            new DataReaderComplexDefault<>(
-                () -> BACnetReadAccessResult.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetReadAccessResult.staticParse(readBuffer), readBuffer),
             serviceAckPayloadLength);
 
     readBuffer.closeContext("BACnetServiceAckReadPropertyMultiple");

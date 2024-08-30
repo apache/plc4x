@@ -187,13 +187,11 @@ public class AlarmMessageObjectAckType implements Message {
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AlarmMessageObjectAckType");
     // Create the instance

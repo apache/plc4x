@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryUnsignedValue extends BACnetLogDataLogData
     BACnetContextTagUnsignedInteger unsignedValue =
         readSimpleField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

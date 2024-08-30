@@ -124,7 +124,7 @@ public class BACnetConstructedDataDirectReading extends BACnetConstructedData im
     BACnetApplicationTagReal directReading =
         readSimpleField(
             "directReading",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

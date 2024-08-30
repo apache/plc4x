@@ -118,14 +118,12 @@ public class BACnetActionList implements Message {
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     List<BACnetActionCommand> action =
         readTerminatedArrayField(
             "action",
-            new DataReaderComplexDefault<>(
-                () -> BACnetActionCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetActionCommand.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -134,8 +132,7 @@ public class BACnetActionList implements Message {
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetActionList");
     // Create the instance

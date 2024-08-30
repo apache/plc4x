@@ -198,19 +198,16 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
 
     PascalString applicationUri =
         readSimpleField(
-            "applicationUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "applicationUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText applicationName =
         readSimpleField(
             "applicationName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     ApplicationType applicationType =
         readEnumField(
@@ -222,19 +219,19 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discoveryProfileUri =
         readSimpleField(
             "discoveryProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     readBuffer.closeContext("ApplicationDescription");

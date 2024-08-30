@@ -132,19 +132,19 @@ public class InformationObjectWithoutTime_ACK_FILE_ACK_SECTION extends Informati
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     AcknowledgeFileOrSectionQualifier afq =
         readSimpleField(
             "afq",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> AcknowledgeFileOrSectionQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

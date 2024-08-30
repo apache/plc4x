@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPAddress extends BACnetConstructedData implem
     BACnetApplicationTagOctetString ipAddress =
         readSimpleField(
             "ipAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

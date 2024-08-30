@@ -124,7 +124,7 @@ public class BACnetConstructedDataLoopAction extends BACnetConstructedData imple
     BACnetActionTagged action =
         readSimpleField(
             "action",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetActionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

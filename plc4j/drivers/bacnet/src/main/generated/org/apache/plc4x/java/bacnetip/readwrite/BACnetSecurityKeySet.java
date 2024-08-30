@@ -125,7 +125,7 @@ public class BACnetSecurityKeySet implements Message {
     BACnetContextTagUnsignedInteger keyRevision =
         readSimpleField(
             "keyRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -137,19 +137,19 @@ public class BACnetSecurityKeySet implements Message {
     BACnetDateTimeEnclosed activationTime =
         readSimpleField(
             "activationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     BACnetDateTimeEnclosed expirationTime =
         readSimpleField(
             "expirationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     BACnetSecurityKeySetKeyIds keyIds =
         readSimpleField(
             "keyIds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetSecurityKeySetKeyIds.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetSecurityKeySet");

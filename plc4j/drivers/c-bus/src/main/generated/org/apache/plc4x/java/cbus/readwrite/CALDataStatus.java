@@ -148,7 +148,7 @@ public class CALDataStatus extends CALData implements Message {
     List<StatusByte> statusBytes =
         readCountArrayField(
             "statusBytes",
-            new DataReaderComplexDefault<>(() -> StatusByte.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusByte.staticParse(readBuffer), readBuffer),
             (commandTypeContainer.getNumBytes()) - (2));
 
     readBuffer.closeContext("CALDataStatus");

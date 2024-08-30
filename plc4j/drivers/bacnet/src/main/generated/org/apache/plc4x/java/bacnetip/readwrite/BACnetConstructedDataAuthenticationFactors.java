@@ -152,7 +152,7 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataAuthenticationFactors extends BACnetConstructe
     List<BACnetCredentialAuthenticationFactor> authenticationFactors =
         readTerminatedArrayField(
             "authenticationFactors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetCredentialAuthenticationFactor.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)

@@ -180,14 +180,14 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObject historyReadDetails =
         readSimpleField(
             "historyReadDetails",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     TimestampsToReturn timestampsToReturn =
@@ -208,7 +208,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
     List<ExtensionObjectDefinition> nodesToRead =
         readCountArrayField(
             "nodesToRead",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("637")),
                 readBuffer),
             noOfNodesToRead);

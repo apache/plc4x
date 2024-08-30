@@ -98,13 +98,13 @@ public class BACnetEventLogRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetEventLogRecordLogDatum logDatum =
         readSimpleField(
             "logDatum",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventLogRecordLogDatum.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

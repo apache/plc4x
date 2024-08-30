@@ -139,23 +139,18 @@ public class QueryDataSet extends ExtensionObjectDefinition implements Message {
 
     ExpandedNodeId nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     ExpandedNodeId typeDefinitionNode =
         readSimpleField(
             "typeDefinitionNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     int noOfValues = readSimpleField("noOfValues", readSignedInt(readBuffer, 32));
 
     List<Variant> values =
         readCountArrayField(
-            "values",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
-            noOfValues);
+            "values", readComplex(() -> Variant.staticParse(readBuffer), readBuffer), noOfValues);
 
     readBuffer.closeContext("QueryDataSet");
     // Create the instance

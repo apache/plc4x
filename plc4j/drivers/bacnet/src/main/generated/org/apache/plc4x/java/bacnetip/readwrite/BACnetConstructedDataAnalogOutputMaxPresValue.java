@@ -125,7 +125,7 @@ public class BACnetConstructedDataAnalogOutputMaxPresValue extends BACnetConstru
     BACnetApplicationTagReal maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

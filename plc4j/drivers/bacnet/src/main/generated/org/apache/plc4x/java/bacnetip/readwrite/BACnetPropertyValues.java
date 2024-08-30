@@ -128,13 +128,13 @@ public class BACnetPropertyValues implements Message {
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetPropertyValue> data =
         readTerminatedArrayField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValue.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),
@@ -147,7 +147,7 @@ public class BACnetPropertyValues implements Message {
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyValues");

@@ -119,7 +119,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
     SDORequest request =
         readSimpleField(
             "request",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SDORequest.staticParse(readBuffer, (SDORequestCommand) (command)),
                 readBuffer));
 

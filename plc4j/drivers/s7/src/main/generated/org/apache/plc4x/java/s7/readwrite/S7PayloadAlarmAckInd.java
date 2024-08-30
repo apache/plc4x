@@ -106,8 +106,7 @@ public class S7PayloadAlarmAckInd extends S7PayloadUserDataItem implements Messa
     AlarmMessageAckPushType alarmMessage =
         readSimpleField(
             "alarmMessage",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageAckPushType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AlarmMessageAckPushType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadAlarmAckInd");
     // Create the instance

@@ -125,7 +125,7 @@ public class BACnetConstructedDataProtocolVersion extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger protocolVersion =
         readSimpleField(
             "protocolVersion",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

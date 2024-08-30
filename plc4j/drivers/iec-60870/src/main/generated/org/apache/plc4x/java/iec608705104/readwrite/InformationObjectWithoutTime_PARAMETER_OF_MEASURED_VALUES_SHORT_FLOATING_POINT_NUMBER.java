@@ -124,7 +124,7 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SHORT_FLO
     QualifierOfParameterOfMeasuredValues qpm =
         readSimpleField(
             "qpm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

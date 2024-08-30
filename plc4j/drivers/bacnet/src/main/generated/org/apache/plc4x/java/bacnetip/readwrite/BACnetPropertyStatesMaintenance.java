@@ -91,7 +91,7 @@ public class BACnetPropertyStatesMaintenance extends BACnetPropertyStates implem
     BACnetMaintenanceTagged maintenance =
         readSimpleField(
             "maintenance",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetMaintenanceTagged.staticParse(
                         readBuffer,

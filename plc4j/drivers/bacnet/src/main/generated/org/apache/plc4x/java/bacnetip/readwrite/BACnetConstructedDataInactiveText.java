@@ -124,7 +124,7 @@ public class BACnetConstructedDataInactiveText extends BACnetConstructedData imp
     BACnetApplicationTagCharacterString inactiveText =
         readSimpleField(
             "inactiveText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -125,7 +125,7 @@ public class BACnetConstructedDataTimePatternValuePresentValue extends BACnetCon
     BACnetApplicationTagTime presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagTime actualValue =

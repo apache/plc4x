@@ -123,9 +123,7 @@ public class BACnetConstructedDataStartTime extends BACnetConstructedData implem
 
     BACnetDateTime startTime =
         readSimpleField(
-            "startTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "startTime", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue = readVirtualField("actualValue", BACnetDateTime.class, startTime);
 
     readBuffer.closeContext("BACnetConstructedDataStartTime");

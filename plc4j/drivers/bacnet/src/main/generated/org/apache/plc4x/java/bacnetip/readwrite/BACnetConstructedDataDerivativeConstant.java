@@ -126,7 +126,7 @@ public class BACnetConstructedDataDerivativeConstant extends BACnetConstructedDa
     BACnetApplicationTagReal derivativeConstant =
         readSimpleField(
             "derivativeConstant",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

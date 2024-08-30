@@ -128,7 +128,7 @@ public class BACnetConstructedDataOccupancyLowerLimitEnforced extends BACnetCons
     BACnetApplicationTagBoolean occupancyLowerLimitEnforced =
         readSimpleField(
             "occupancyLowerLimitEnforced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

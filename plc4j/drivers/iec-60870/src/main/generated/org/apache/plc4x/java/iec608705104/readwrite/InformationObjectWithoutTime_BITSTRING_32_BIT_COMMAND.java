@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND
     BinaryStateInformation bsi =
         readSimpleField(
             "bsi",
-            new DataReaderComplexDefault<>(
-                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_BITSTRING_32_BIT_COMMAND");

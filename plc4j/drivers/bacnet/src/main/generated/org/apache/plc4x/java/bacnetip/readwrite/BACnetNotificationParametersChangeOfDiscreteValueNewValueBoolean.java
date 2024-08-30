@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueBoolean
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

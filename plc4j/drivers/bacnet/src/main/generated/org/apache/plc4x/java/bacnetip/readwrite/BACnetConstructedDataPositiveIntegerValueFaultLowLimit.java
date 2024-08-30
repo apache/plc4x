@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueFaultLowLimit extends BACn
     BACnetApplicationTagUnsignedInteger faultLowLimit =
         readSimpleField(
             "faultLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

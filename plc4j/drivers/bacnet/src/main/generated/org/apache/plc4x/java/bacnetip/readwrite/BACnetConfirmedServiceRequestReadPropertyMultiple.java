@@ -109,8 +109,7 @@ public class BACnetConfirmedServiceRequestReadPropertyMultiple extends BACnetCon
     List<BACnetReadAccessSpecification> data =
         readLengthArrayField(
             "data",
-            new DataReaderComplexDefault<>(
-                () -> BACnetReadAccessSpecification.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetReadAccessSpecification.staticParse(readBuffer), readBuffer),
             serviceRequestPayloadLength);
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestReadPropertyMultiple");

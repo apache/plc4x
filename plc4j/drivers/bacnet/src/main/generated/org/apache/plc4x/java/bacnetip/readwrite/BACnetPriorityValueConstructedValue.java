@@ -98,7 +98,7 @@ public class BACnetPriorityValueConstructedValue extends BACnetPriorityValue imp
     BACnetConstructedData constructedValue =
         readSimpleField(
             "constructedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

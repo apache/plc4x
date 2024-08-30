@@ -118,19 +118,16 @@ public class UserNameIdentityToken extends UserIdentityTokenDefinition implement
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString password =
         readSimpleField(
-            "password",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "password", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalString encryptionAlgorithm =
         readSimpleField(
             "encryptionAlgorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserNameIdentityToken");
     // Create the instance

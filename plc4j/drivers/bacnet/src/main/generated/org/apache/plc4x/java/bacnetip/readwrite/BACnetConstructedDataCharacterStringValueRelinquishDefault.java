@@ -126,7 +126,7 @@ public class BACnetConstructedDataCharacterStringValueRelinquishDefault
     BACnetApplicationTagCharacterString relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

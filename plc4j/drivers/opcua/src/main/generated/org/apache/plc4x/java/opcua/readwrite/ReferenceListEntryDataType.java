@@ -123,8 +123,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
 
     NodeId referenceType =
         readSimpleField(
-            "referenceType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -133,9 +132,7 @@ public class ReferenceListEntryDataType extends ExtensionObjectDefinition implem
 
     ExpandedNodeId targetNode =
         readSimpleField(
-            "targetNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNode", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceListEntryDataType");
     // Create the instance

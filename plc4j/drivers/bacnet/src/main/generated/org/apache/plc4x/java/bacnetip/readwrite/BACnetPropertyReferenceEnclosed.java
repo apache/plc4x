@@ -118,19 +118,18 @@ public class BACnetPropertyReferenceEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetPropertyReference reference =
         readSimpleField(
             "reference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetPropertyReference.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyReferenceEnclosed");

@@ -128,7 +128,7 @@ public class BACnetConstructedDataApplicationSoftwareVersion extends BACnetConst
     BACnetApplicationTagCharacterString applicationSoftwareVersion =
         readSimpleField(
             "applicationSoftwareVersion",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

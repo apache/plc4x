@@ -139,7 +139,7 @@ public class BACnetPropertyValue implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -148,7 +148,7 @@ public class BACnetPropertyValue implements Message {
     BACnetContextTagUnsignedInteger propertyArrayIndex =
         readOptionalField(
             "propertyArrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -160,7 +160,7 @@ public class BACnetPropertyValue implements Message {
     BACnetConstructedDataElement propertyValue =
         readOptionalField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,
@@ -175,7 +175,7 @@ public class BACnetPropertyValue implements Message {
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

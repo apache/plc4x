@@ -126,7 +126,7 @@ public class BACnetConstructedDataFailedAttemptsTime extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger failedAttemptsTime =
         readSimpleField(
             "failedAttemptsTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

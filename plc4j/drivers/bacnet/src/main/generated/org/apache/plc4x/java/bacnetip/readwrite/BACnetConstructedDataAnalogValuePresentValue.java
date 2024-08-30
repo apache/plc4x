@@ -125,7 +125,7 @@ public class BACnetConstructedDataAnalogValuePresentValue extends BACnetConstruc
     BACnetApplicationTagReal presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

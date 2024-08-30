@@ -124,7 +124,7 @@ public class BACnetConstructedDataLockStatus extends BACnetConstructedData imple
     BACnetLockStatusTagged lockStatus =
         readSimpleField(
             "lockStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLockStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

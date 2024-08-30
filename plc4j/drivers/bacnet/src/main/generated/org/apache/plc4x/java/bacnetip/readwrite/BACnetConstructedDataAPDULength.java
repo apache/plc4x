@@ -124,7 +124,7 @@ public class BACnetConstructedDataAPDULength extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger apduLength =
         readSimpleField(
             "apduLength",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

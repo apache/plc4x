@@ -106,14 +106,14 @@ public class RegisterServerRequest extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition server =
         readSimpleField(
             "server",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("434")),
                 readBuffer));
 

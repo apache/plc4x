@@ -122,13 +122,13 @@ public class BACnetFaultParameterFaultLifeSafetyListOfFaultValues implements Mes
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetLifeSafetyStateTagged> listIfFaultValues =
         readTerminatedArrayField(
             "listIfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -141,7 +141,7 @@ public class BACnetFaultParameterFaultLifeSafetyListOfFaultValues implements Mes
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultLifeSafetyListOfFaultValues");

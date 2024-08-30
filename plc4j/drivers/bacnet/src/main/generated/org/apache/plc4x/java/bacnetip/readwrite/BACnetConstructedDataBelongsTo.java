@@ -124,8 +124,7 @@ public class BACnetConstructedDataBelongsTo extends BACnetConstructedData implem
     BACnetDeviceObjectReference belongsTo =
         readSimpleField(
             "belongsTo",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, belongsTo);
 

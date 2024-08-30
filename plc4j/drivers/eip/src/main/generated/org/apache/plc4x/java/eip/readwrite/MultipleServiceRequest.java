@@ -134,7 +134,7 @@ public class MultipleServiceRequest extends CipService implements Message {
     Services data =
         readSimpleField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> Services.staticParse(readBuffer, (int) ((serviceLen) - (6))), readBuffer));
 
     readBuffer.closeContext("MultipleServiceRequest");

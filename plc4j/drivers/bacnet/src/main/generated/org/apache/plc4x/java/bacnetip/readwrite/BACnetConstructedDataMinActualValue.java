@@ -124,7 +124,7 @@ public class BACnetConstructedDataMinActualValue extends BACnetConstructedData i
     BACnetApplicationTagReal minActualValue =
         readSimpleField(
             "minActualValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

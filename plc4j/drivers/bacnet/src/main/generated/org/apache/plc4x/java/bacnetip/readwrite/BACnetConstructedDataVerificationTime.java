@@ -126,7 +126,7 @@ public class BACnetConstructedDataVerificationTime extends BACnetConstructedData
     BACnetApplicationTagSignedInteger verificationTime =
         readSimpleField(
             "verificationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataNetworkNumber extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger networkNumber =
         readSimpleField(
             "networkNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

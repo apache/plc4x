@@ -126,7 +126,7 @@ public class BACnetConstructedDataProportionalConstant extends BACnetConstructed
     BACnetApplicationTagReal proportionalConstant =
         readSimpleField(
             "proportionalConstant",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

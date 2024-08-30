@@ -91,7 +91,7 @@ public class BACnetPropertyStatesAccessEvent extends BACnetPropertyStates implem
     BACnetAccessEventTagged accessEvent =
         readSimpleField(
             "accessEvent",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessEventTagged.staticParse(
                         readBuffer,

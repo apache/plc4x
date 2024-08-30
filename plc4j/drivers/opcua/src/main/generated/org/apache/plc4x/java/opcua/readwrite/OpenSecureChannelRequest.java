@@ -174,7 +174,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -197,9 +197,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
 
     PascalByteString clientNonce =
         readSimpleField(
-            "clientNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "clientNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     long requestedLifetime = readSimpleField("requestedLifetime", readUnsignedLong(readBuffer, 32));
 

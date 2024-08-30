@@ -128,8 +128,7 @@ public class BACnetConstructedDataManipulatedVariableReference extends BACnetCon
     BACnetObjectPropertyReference manipulatedVariableReference =
         readSimpleField(
             "manipulatedVariableReference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetObjectPropertyReference actualValue =
         readVirtualField(
             "actualValue", BACnetObjectPropertyReference.class, manipulatedVariableReference);

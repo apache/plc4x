@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_RESET_PROCESS_COMMAND extends Informat
     QualifierOfResetProcessCommand qrp =
         readSimpleField(
             "qrp",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfResetProcessCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfResetProcessCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_RESET_PROCESS_COMMAND");

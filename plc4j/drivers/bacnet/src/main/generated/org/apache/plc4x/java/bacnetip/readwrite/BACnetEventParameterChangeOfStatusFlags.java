@@ -132,13 +132,12 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (18)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (18)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -150,7 +149,7 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     BACnetStatusFlagsTagged selectedFlags =
         readSimpleField(
             "selectedFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -159,8 +158,7 @@ public class BACnetEventParameterChangeOfStatusFlags extends BACnetEventParamete
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (18)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (18)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfStatusFlags");
     // Create the instance

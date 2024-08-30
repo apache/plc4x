@@ -113,9 +113,7 @@ public class CBusPointToPointToMultiPointCommandStatus extends CBusPointToPointT
 
     StatusRequest statusRequest =
         readSimpleField(
-            "statusRequest",
-            new DataReaderComplexDefault<>(
-                () -> StatusRequest.staticParse(readBuffer), readBuffer));
+            "statusRequest", readComplex(() -> StatusRequest.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointToMultiPointCommandStatus");
     // Create the instance

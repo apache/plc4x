@@ -128,7 +128,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     BACnetApplicationTagUnsignedInteger vtSessionIdentifier =
         readSimpleField(
             "vtSessionIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -137,7 +137,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     BACnetApplicationTagOctetString vtNewData =
         readSimpleField(
             "vtNewData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
@@ -145,7 +145,7 @@ public class BACnetConfirmedServiceRequestVTData extends BACnetConfirmedServiceR
     BACnetApplicationTagUnsignedInteger vtDataFlag =
         readSimpleField(
             "vtDataFlag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

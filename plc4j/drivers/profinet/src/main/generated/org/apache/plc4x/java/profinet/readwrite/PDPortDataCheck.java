@@ -231,7 +231,7 @@ public class PDPortDataCheck extends PnIoCm_Block implements Message {
     PnIoCm_Block checkPeers =
         readSimpleField(
             "checkPeers",
-            new DataReaderComplexDefault<>(() -> PnIoCm_Block.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_Block.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PDPortDataCheck");

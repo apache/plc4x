@@ -92,7 +92,7 @@ public class BACnetPropertyStatesZoneOccupanyState extends BACnetPropertyStates 
     BACnetAccessZoneOccupancyStateTagged zoneOccupanyState =
         readSimpleField(
             "zoneOccupanyState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessZoneOccupancyStateTagged.staticParse(
                         readBuffer,

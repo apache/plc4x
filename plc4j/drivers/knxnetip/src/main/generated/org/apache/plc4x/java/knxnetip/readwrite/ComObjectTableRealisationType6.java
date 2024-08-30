@@ -95,7 +95,7 @@ public class ComObjectTableRealisationType6 extends ComObjectTable implements Me
     GroupObjectDescriptorRealisationType6 comObjectDescriptors =
         readSimpleField(
             "comObjectDescriptors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> GroupObjectDescriptorRealisationType6.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ComObjectTableRealisationType6");

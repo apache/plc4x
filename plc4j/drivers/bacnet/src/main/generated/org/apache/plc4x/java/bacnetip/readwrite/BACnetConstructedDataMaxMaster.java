@@ -124,7 +124,7 @@ public class BACnetConstructedDataMaxMaster extends BACnetConstructedData implem
     BACnetApplicationTagUnsignedInteger maxMaster =
         readSimpleField(
             "maxMaster",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

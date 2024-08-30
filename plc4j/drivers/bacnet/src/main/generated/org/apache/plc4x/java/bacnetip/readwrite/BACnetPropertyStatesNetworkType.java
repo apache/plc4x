@@ -91,7 +91,7 @@ public class BACnetPropertyStatesNetworkType extends BACnetPropertyStates implem
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
             "networkType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkTypeTagged.staticParse(
                         readBuffer,

@@ -118,9 +118,7 @@ public class S7PayloadUserDataItemCpuFunctionReadSzlRequest extends S7PayloadUse
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     SzlId szlId =
-        readSimpleField(
-            "szlId",
-            new DataReaderComplexDefault<>(() -> SzlId.staticParse(readBuffer), readBuffer));
+        readSimpleField("szlId", readComplex(() -> SzlId.staticParse(readBuffer), readBuffer));
 
     int szlIndex = readSimpleField("szlIndex", readUnsignedInt(readBuffer, 16));
 

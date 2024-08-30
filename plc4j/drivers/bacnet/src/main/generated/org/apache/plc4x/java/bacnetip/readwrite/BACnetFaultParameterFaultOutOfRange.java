@@ -131,13 +131,12 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (6)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (6)), readBuffer));
 
     BACnetFaultParameterFaultOutOfRangeMinNormalValue minNormalValue =
         readSimpleField(
             "minNormalValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultOutOfRangeMinNormalValue.staticParse(
                         readBuffer, (short) (0)),
@@ -146,7 +145,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetFaultParameterFaultOutOfRangeMaxNormalValue maxNormalValue =
         readSimpleField(
             "maxNormalValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultOutOfRangeMaxNormalValue.staticParse(
                         readBuffer, (short) (0)),
@@ -155,8 +154,7 @@ public class BACnetFaultParameterFaultOutOfRange extends BACnetFaultParameter im
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (6)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (6)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultOutOfRange");
     // Create the instance

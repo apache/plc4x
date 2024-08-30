@@ -96,7 +96,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier
     BACnetApplicationTagObjectIdentifier objectidentifierValue =
         readSimpleField(
             "objectidentifierValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

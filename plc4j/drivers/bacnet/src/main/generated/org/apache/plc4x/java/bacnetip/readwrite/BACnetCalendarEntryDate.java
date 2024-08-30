@@ -90,7 +90,7 @@ public class BACnetCalendarEntryDate extends BACnetCalendarEntry implements Mess
     BACnetContextTagDate dateValue =
         readSimpleField(
             "dateValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDate)
                         BACnetContextTag.staticParse(

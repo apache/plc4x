@@ -161,14 +161,14 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetReliabilityTagged reliability =
         readSimpleField(
             "reliability",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReliabilityTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -177,7 +177,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -186,7 +186,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     BACnetPropertyValues propertyValues =
         readSimpleField(
             "propertyValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValues.staticParse(
                         readBuffer, (short) (2), (BACnetObjectType) (objectTypeArgument)),
@@ -195,7 +195,7 @@ public class BACnetNotificationParametersChangeOfReliability extends BACnetNotif
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

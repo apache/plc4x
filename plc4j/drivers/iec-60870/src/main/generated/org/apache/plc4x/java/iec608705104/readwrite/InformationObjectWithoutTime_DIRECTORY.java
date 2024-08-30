@@ -152,26 +152,25 @@ public class InformationObjectWithoutTime_DIRECTORY extends InformationObjectWit
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LengthOfFile lof =
         readSimpleField(
             "lof",
-            new DataReaderComplexDefault<>(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     StatusOfFile sof =
         readSimpleField(
             "sof",
-            new DataReaderComplexDefault<>(() -> StatusOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_DIRECTORY");

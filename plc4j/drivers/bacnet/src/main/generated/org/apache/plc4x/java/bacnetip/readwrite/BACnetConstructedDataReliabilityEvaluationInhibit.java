@@ -128,7 +128,7 @@ public class BACnetConstructedDataReliabilityEvaluationInhibit extends BACnetCon
     BACnetApplicationTagBoolean reliabilityEvaluationInhibit =
         readSimpleField(
             "reliabilityEvaluationInhibit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

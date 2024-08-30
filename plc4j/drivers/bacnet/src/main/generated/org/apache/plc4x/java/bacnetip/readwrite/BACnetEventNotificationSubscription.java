@@ -132,13 +132,13 @@ public class BACnetEventNotificationSubscription implements Message {
     BACnetRecipientEnclosed recipient =
         readSimpleField(
             "recipient",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -150,7 +150,7 @@ public class BACnetEventNotificationSubscription implements Message {
     BACnetContextTagBoolean issueConfirmedNotifications =
         readOptionalField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -160,7 +160,7 @@ public class BACnetEventNotificationSubscription implements Message {
     BACnetContextTagUnsignedInteger timeRemaining =
         readSimpleField(
             "timeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

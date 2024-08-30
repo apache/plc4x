@@ -148,8 +148,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
     Ethernet_FramePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer));
+            readComplex(() -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Ethernet_FramePayload_VirtualLan");
     // Create the instance

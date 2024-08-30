@@ -144,13 +144,12 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (11)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (11)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -162,7 +161,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     BACnetContextTagUnsignedInteger lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -174,7 +173,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     BACnetContextTagUnsignedInteger highLimit =
         readSimpleField(
             "highLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -186,8 +185,7 @@ public class BACnetEventParameterUnsignedRange extends BACnetEventParameter impl
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (11)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (11)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterUnsignedRange");
     // Create the instance

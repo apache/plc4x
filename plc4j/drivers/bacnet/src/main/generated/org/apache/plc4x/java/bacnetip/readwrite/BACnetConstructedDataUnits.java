@@ -124,7 +124,7 @@ public class BACnetConstructedDataUnits extends BACnetConstructedData implements
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
             "units",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEngineeringUnitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

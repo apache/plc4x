@@ -91,7 +91,7 @@ public class BACnetPropertyStatesWriteStatus extends BACnetPropertyStates implem
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(
             "writeStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWriteStatusTagged.staticParse(
                         readBuffer,

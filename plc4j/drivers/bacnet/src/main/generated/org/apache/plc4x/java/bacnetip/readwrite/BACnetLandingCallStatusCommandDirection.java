@@ -93,7 +93,7 @@ public class BACnetLandingCallStatusCommandDirection extends BACnetLandingCallSt
     BACnetLiftCarDirectionTagged direction =
         readSimpleField(
             "direction",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

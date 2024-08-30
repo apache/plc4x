@@ -114,9 +114,7 @@ public abstract class BACnetApplicationTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (TagClass.APPLICATION_TAGS))) {
       throw new ParseValidationException("should be a application tag");

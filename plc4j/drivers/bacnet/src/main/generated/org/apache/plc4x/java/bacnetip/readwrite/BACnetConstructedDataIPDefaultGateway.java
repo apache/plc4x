@@ -126,7 +126,7 @@ public class BACnetConstructedDataIPDefaultGateway extends BACnetConstructedData
     BACnetApplicationTagOctetString ipDefaultGateway =
         readSimpleField(
             "ipDefaultGateway",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

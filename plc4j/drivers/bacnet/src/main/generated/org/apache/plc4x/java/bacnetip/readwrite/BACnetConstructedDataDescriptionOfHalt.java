@@ -126,7 +126,7 @@ public class BACnetConstructedDataDescriptionOfHalt extends BACnetConstructedDat
     BACnetApplicationTagCharacterString descriptionForHalt =
         readSimpleField(
             "descriptionForHalt",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

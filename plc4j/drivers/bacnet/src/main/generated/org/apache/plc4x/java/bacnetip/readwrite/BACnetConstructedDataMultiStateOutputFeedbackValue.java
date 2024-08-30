@@ -125,7 +125,7 @@ public class BACnetConstructedDataMultiStateOutputFeedbackValue extends BACnetCo
     BACnetApplicationTagUnsignedInteger feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

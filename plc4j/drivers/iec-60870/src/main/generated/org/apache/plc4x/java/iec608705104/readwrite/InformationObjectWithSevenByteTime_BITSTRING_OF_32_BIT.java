@@ -136,22 +136,19 @@ public class InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT
     BinaryStateInformation bsi =
         readSimpleField(
             "bsi",
-            new DataReaderComplexDefault<>(
-                () -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryStateInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_BITSTRING_OF_32_BIT");

@@ -126,7 +126,7 @@ public class BACnetConstructedDataOccupancyLowerLimit extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger occupancyLowerLimit =
         readSimpleField(
             "occupancyLowerLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

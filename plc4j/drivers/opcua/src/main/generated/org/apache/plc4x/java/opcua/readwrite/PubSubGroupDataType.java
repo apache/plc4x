@@ -225,8 +225,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -242,8 +241,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
 
     PascalString securityGroupId =
         readSimpleField(
-            "securityGroupId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "securityGroupId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfSecurityKeyServices =
         readSimpleField("noOfSecurityKeyServices", readSignedInt(readBuffer, 32));
@@ -251,7 +249,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> securityKeyServices =
         readCountArrayField(
             "securityKeyServices",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("314")),
                 readBuffer),
             noOfSecurityKeyServices);
@@ -264,7 +262,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> groupProperties =
         readCountArrayField(
             "groupProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfGroupProperties);

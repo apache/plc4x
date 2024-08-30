@@ -712,38 +712,33 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PascalString sessionName =
         readSimpleField(
-            "sessionName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "sessionName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectDefinition clientDescription =
         readSimpleField(
             "clientDescription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
                 readBuffer));
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfLocaleIds = readSimpleField("noOfLocaleIds", readSignedInt(readBuffer, 32));
 
     List<PascalString> localeIds =
         readCountArrayField(
             "localeIds",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
     double actualSessionTimeout =
@@ -770,7 +765,7 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition totalRequestCount =
         readSimpleField(
             "totalRequestCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
@@ -780,196 +775,196 @@ public class SessionDiagnosticsDataType extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition readCount =
         readSimpleField(
             "readCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition historyReadCount =
         readSimpleField(
             "historyReadCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition writeCount =
         readSimpleField(
             "writeCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition historyUpdateCount =
         readSimpleField(
             "historyUpdateCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition callCount =
         readSimpleField(
             "callCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition createMonitoredItemsCount =
         readSimpleField(
             "createMonitoredItemsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition modifyMonitoredItemsCount =
         readSimpleField(
             "modifyMonitoredItemsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition setMonitoringModeCount =
         readSimpleField(
             "setMonitoringModeCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition setTriggeringCount =
         readSimpleField(
             "setTriggeringCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition deleteMonitoredItemsCount =
         readSimpleField(
             "deleteMonitoredItemsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition createSubscriptionCount =
         readSimpleField(
             "createSubscriptionCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition modifySubscriptionCount =
         readSimpleField(
             "modifySubscriptionCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition setPublishingModeCount =
         readSimpleField(
             "setPublishingModeCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition publishCount =
         readSimpleField(
             "publishCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition republishCount =
         readSimpleField(
             "republishCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition transferSubscriptionsCount =
         readSimpleField(
             "transferSubscriptionsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition deleteSubscriptionsCount =
         readSimpleField(
             "deleteSubscriptionsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition addNodesCount =
         readSimpleField(
             "addNodesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition addReferencesCount =
         readSimpleField(
             "addReferencesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition deleteNodesCount =
         readSimpleField(
             "deleteNodesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition deleteReferencesCount =
         readSimpleField(
             "deleteReferencesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition browseCount =
         readSimpleField(
             "browseCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition browseNextCount =
         readSimpleField(
             "browseNextCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition translateBrowsePathsToNodeIdsCount =
         readSimpleField(
             "translateBrowsePathsToNodeIdsCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition queryFirstCount =
         readSimpleField(
             "queryFirstCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition queryNextCount =
         readSimpleField(
             "queryNextCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition registerNodesCount =
         readSimpleField(
             "registerNodesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 
     ExtensionObjectDefinition unregisterNodesCount =
         readSimpleField(
             "unregisterNodesCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("873")),
                 readBuffer));
 

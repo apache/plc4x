@@ -150,13 +150,13 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -168,20 +168,19 @@ public class SubscribeCOVPropertyMultipleErrorFirstFailedSubscription implements
     BACnetPropertyReferenceEnclosed monitoredPropertyReference =
         readSimpleField(
             "monitoredPropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("SubscribeCOVPropertyMultipleErrorFirstFailedSubscription");

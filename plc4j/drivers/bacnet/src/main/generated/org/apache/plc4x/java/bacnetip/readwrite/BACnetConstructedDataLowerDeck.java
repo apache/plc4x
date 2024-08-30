@@ -124,7 +124,7 @@ public class BACnetConstructedDataLowerDeck extends BACnetConstructedData implem
     BACnetApplicationTagObjectIdentifier lowerDeck =
         readSimpleField(
             "lowerDeck",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBacnetIpMode extends BACnetPropertyStates imple
     BACnetIPModeTagged bacnetIpMode =
         readSimpleField(
             "bacnetIpMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetIPModeTagged.staticParse(
                         readBuffer,

@@ -124,7 +124,7 @@ public class BACnetConstructedDataIsUTC extends BACnetConstructedData implements
     BACnetApplicationTagBoolean isUtc =
         readSimpleField(
             "isUtc",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

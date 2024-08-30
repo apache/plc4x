@@ -124,7 +124,7 @@ public class BACnetConstructedDataPulseRate extends BACnetConstructedData implem
     BACnetApplicationTagUnsignedInteger pulseRate =
         readSimpleField(
             "pulseRate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

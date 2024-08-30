@@ -116,14 +116,13 @@ public class InformationObjectWithoutTime_MEASURED_VALUE_SCALED_VALUE
     ScaledValue sva =
         readSimpleField(
             "sva",
-            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ScaledValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_MEASURED_VALUE_SCALED_VALUE");

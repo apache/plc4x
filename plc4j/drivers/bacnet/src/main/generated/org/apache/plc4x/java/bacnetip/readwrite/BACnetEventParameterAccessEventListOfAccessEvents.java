@@ -122,13 +122,13 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetDeviceObjectPropertyReference> listOfAccessEvents =
         readTerminatedArrayField(
             "listOfAccessEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
@@ -138,7 +138,7 @@ public class BACnetEventParameterAccessEventListOfAccessEvents implements Messag
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterAccessEventListOfAccessEvents");

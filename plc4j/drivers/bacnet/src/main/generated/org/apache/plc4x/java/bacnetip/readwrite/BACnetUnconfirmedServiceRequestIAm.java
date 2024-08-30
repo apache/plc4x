@@ -147,7 +147,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -156,7 +156,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     BACnetApplicationTagUnsignedInteger maximumApduLengthAcceptedLength =
         readSimpleField(
             "maximumApduLengthAcceptedLength",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -165,7 +165,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     BACnetSegmentationTagged segmentationSupported =
         readSimpleField(
             "segmentationSupported",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSegmentationTagged.staticParse(
                         readBuffer, (short) (9), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -174,7 +174,7 @@ public class BACnetUnconfirmedServiceRequestIAm extends BACnetUnconfirmedService
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.APPLICATION_TAGS)),

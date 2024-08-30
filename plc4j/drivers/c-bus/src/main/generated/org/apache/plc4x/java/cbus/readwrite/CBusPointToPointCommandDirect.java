@@ -108,8 +108,7 @@ public class CBusPointToPointCommandDirect extends CBusPointToPointCommand imple
 
     UnitAddress unitAddress =
         readSimpleField(
-            "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer));
+            "unitAddress", readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);

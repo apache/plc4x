@@ -97,14 +97,14 @@ public class BACnetTimeValue implements Message {
     BACnetApplicationTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetConstructedDataElement value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,

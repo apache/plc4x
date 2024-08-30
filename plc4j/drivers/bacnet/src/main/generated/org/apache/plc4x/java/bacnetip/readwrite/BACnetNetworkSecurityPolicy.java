@@ -99,7 +99,7 @@ public class BACnetNetworkSecurityPolicy implements Message {
     BACnetContextTagUnsignedInteger portId =
         readSimpleField(
             "portId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -111,7 +111,7 @@ public class BACnetNetworkSecurityPolicy implements Message {
     BACnetSecurityPolicyTagged securityLevel =
         readSimpleField(
             "securityLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSecurityPolicyTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

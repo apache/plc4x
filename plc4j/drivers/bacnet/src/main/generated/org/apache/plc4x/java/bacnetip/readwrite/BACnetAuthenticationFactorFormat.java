@@ -117,7 +117,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetAuthenticationFactorTypeTagged formatType =
         readSimpleField(
             "formatType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationFactorTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -126,7 +126,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetVendorIdTagged vendorId =
         readOptionalField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -135,7 +135,7 @@ public class BACnetAuthenticationFactorFormat implements Message {
     BACnetContextTagUnsignedInteger vendorFormat =
         readOptionalField(
             "vendorFormat",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

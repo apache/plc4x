@@ -101,7 +101,7 @@ public class BACnetLogRecordLogDatumEnumeratedValue extends BACnetLogRecordLogDa
     BACnetContextTagEnumerated enumeratedValue =
         readSimpleField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagEnumerated)
                         BACnetContextTag.staticParse(

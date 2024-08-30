@@ -125,7 +125,7 @@ public class BACnetConstructedDataTimerMaxPresValue extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

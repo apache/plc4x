@@ -126,7 +126,7 @@ public class BACnetConstructedDataFirmwareRevision extends BACnetConstructedData
     BACnetApplicationTagCharacterString firmwareRevision =
         readSimpleField(
             "firmwareRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

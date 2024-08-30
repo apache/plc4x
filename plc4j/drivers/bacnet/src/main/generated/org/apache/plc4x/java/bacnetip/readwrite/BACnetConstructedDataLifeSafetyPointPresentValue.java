@@ -125,7 +125,7 @@ public class BACnetConstructedDataLifeSafetyPointPresentValue extends BACnetCons
     BACnetLifeSafetyStateTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

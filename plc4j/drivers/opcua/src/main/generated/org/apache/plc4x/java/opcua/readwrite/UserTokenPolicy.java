@@ -153,8 +153,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
 
     PascalString policyId =
         readSimpleField(
-            "policyId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "policyId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserTokenType tokenType =
         readEnumField(
@@ -165,18 +164,17 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
 
     PascalString issuedTokenType =
         readSimpleField(
-            "issuedTokenType",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "issuedTokenType", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString issuerEndpointUrl =
         readSimpleField(
             "issuerEndpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserTokenPolicy");
     // Create the instance

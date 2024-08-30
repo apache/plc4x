@@ -124,7 +124,7 @@ public class BACnetConstructedDataPassbackMode extends BACnetConstructedData imp
     BACnetAccessPassbackModeTagged passbackMode =
         readSimpleField(
             "passbackMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessPassbackModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

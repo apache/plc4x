@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_REGULATING_STEP_COMMAND
     RegulatingStepCommand rco =
         readSimpleField(
             "rco",
-            new DataReaderComplexDefault<>(
-                () -> RegulatingStepCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> RegulatingStepCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_REGULATING_STEP_COMMAND");

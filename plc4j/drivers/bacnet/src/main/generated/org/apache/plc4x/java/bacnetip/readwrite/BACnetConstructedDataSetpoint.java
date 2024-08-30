@@ -124,7 +124,7 @@ public class BACnetConstructedDataSetpoint extends BACnetConstructedData impleme
     BACnetApplicationTagReal setpoint =
         readSimpleField(
             "setpoint",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

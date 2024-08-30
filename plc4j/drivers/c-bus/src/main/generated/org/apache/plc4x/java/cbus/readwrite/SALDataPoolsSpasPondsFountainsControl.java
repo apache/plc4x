@@ -96,7 +96,7 @@ public class SALDataPoolsSpasPondsFountainsControl extends SALData implements Me
     LightingData poolsSpaPondsFountainsData =
         readSimpleField(
             "poolsSpaPondsFountainsData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataPoolsSpasPondsFountainsControl");
     // Create the instance

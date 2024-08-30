@@ -91,7 +91,7 @@ public class BACnetOptionalBinaryPVNull extends BACnetOptionalBinaryPV implement
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

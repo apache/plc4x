@@ -113,20 +113,19 @@ public class BACnetSpecialEvent implements Message {
     BACnetSpecialEventPeriod period =
         readSimpleField(
             "period",
-            new DataReaderComplexDefault<>(
-                () -> BACnetSpecialEventPeriod.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetSpecialEventPeriod.staticParse(readBuffer), readBuffer));
 
     BACnetSpecialEventListOfTimeValues listOfTimeValues =
         readSimpleField(
             "listOfTimeValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetSpecialEventListOfTimeValues.staticParse(readBuffer, (short) (2)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger eventPriority =
         readSimpleField(
             "eventPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

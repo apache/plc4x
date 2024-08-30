@@ -126,7 +126,7 @@ public class BACnetConstructedDataAllWritesSuccessful extends BACnetConstructedD
     BACnetApplicationTagBoolean allWritesSuccessful =
         readSimpleField(
             "allWritesSuccessful",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -151,7 +151,7 @@ public class BACnetConstructedDataExecutionDelay extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataExecutionDelay extends BACnetConstructedData i
     List<BACnetApplicationTagUnsignedInteger> executionDelay =
         readTerminatedArrayField(
             "executionDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

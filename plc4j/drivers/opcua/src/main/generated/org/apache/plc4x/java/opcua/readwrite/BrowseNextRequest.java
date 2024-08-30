@@ -147,7 +147,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -163,8 +163,7 @@ public class BrowseNextRequest extends ExtensionObjectDefinition implements Mess
     List<PascalByteString> continuationPoints =
         readCountArrayField(
             "continuationPoints",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer),
             noOfContinuationPoints);
 
     readBuffer.closeContext("BrowseNextRequest");

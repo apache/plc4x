@@ -126,7 +126,7 @@ public class BACnetConstructedDataSecurityTimeWindow extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger securityTimeWindow =
         readSimpleField(
             "securityTimeWindow",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

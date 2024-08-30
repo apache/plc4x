@@ -215,26 +215,22 @@ public class DeviceDescriptorType2 implements Message {
     ChannelInformation channelInfo1 =
         readSimpleField(
             "channelInfo1",
-            new DataReaderComplexDefault<>(
-                () -> ChannelInformation.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ChannelInformation.staticParse(readBuffer), readBuffer));
 
     ChannelInformation channelInfo2 =
         readSimpleField(
             "channelInfo2",
-            new DataReaderComplexDefault<>(
-                () -> ChannelInformation.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ChannelInformation.staticParse(readBuffer), readBuffer));
 
     ChannelInformation channelInfo3 =
         readSimpleField(
             "channelInfo3",
-            new DataReaderComplexDefault<>(
-                () -> ChannelInformation.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ChannelInformation.staticParse(readBuffer), readBuffer));
 
     ChannelInformation channelInfo4 =
         readSimpleField(
             "channelInfo4",
-            new DataReaderComplexDefault<>(
-                () -> ChannelInformation.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ChannelInformation.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DeviceDescriptorType2");
     // Create the instance

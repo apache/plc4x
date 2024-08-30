@@ -109,21 +109,15 @@ public class BACnetEventTimestamps implements Message {
 
     BACnetTimeStamp toOffnormal =
         readSimpleField(
-            "toOffnormal",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "toOffnormal", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
 
     BACnetTimeStamp toFault =
         readSimpleField(
-            "toFault",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "toFault", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
 
     BACnetTimeStamp toNormal =
         readSimpleField(
-            "toNormal",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "toNormal", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetEventTimestamps");
     // Create the instance

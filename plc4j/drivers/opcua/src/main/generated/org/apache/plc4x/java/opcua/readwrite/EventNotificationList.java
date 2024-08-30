@@ -123,7 +123,7 @@ public class EventNotificationList extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> events =
         readCountArrayField(
             "events",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("919")),
                 readBuffer),
             noOfEvents);

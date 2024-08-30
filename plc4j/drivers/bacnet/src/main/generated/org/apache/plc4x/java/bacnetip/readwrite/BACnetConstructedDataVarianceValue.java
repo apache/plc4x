@@ -124,7 +124,7 @@ public class BACnetConstructedDataVarianceValue extends BACnetConstructedData im
     BACnetApplicationTagReal varianceValue =
         readSimpleField(
             "varianceValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

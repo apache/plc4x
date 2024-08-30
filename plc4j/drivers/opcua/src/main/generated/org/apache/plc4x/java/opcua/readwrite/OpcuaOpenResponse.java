@@ -108,14 +108,14 @@ public class OpcuaOpenResponse extends MessagePDU implements Message {
     OpenChannelMessage openResponse =
         readSimpleField(
             "openResponse",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> OpenChannelMessage.staticParse(readBuffer, (boolean) (response)),
                 readBuffer));
 
     Payload message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     Payload.staticParse(
                         readBuffer,

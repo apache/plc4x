@@ -126,7 +126,7 @@ public class BACnetConstructedDataMaintenanceRequired extends BACnetConstructedD
     BACnetMaintenanceTagged maintenanceRequired =
         readSimpleField(
             "maintenanceRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetMaintenanceTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

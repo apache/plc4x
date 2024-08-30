@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueHighLimit extends BACnetCo
     BACnetApplicationTagUnsignedInteger highLimit =
         readSimpleField(
             "highLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

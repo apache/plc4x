@@ -98,9 +98,7 @@ public class BACnetContextTagDate extends BACnetContextTag implements Message {
 
     BACnetTagPayloadDate payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadDate.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> BACnetTagPayloadDate.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetContextTagDate");
     // Create the instance

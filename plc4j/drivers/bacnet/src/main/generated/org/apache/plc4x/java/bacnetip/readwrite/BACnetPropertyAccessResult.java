@@ -147,7 +147,7 @@ public class BACnetPropertyAccessResult implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -159,7 +159,7 @@ public class BACnetPropertyAccessResult implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -168,7 +168,7 @@ public class BACnetPropertyAccessResult implements Message {
     BACnetContextTagUnsignedInteger propertyArrayIndex =
         readOptionalField(
             "propertyArrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -180,7 +180,7 @@ public class BACnetPropertyAccessResult implements Message {
     BACnetContextTagObjectIdentifier deviceIdentifier =
         readOptionalField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -192,7 +192,7 @@ public class BACnetPropertyAccessResult implements Message {
     BACnetPropertyAccessResultAccessResult accessResult =
         readSimpleField(
             "accessResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyAccessResultAccessResult.staticParse(
                         readBuffer,

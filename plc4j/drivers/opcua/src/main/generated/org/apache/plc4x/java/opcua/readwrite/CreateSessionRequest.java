@@ -202,43 +202,37 @@ public class CreateSessionRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition clientDescription =
         readSimpleField(
             "clientDescription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
                 readBuffer));
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString sessionName =
         readSimpleField(
-            "sessionName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "sessionName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientNonce =
         readSimpleField(
-            "clientNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "clientNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientCertificate =
         readSimpleField(
             "clientCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     double requestedSessionTimeout =
         readSimpleField("requestedSessionTimeout", readDouble(readBuffer, 64));

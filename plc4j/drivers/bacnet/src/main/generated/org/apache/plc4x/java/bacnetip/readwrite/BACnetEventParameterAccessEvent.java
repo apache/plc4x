@@ -135,13 +135,12 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (13)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (13)), readBuffer));
 
     BACnetEventParameterAccessEventListOfAccessEvents listOfAccessEvents =
         readSimpleField(
             "listOfAccessEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventParameterAccessEventListOfAccessEvents.staticParse(
                         readBuffer, (short) (0)),
@@ -150,7 +149,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     BACnetDeviceObjectPropertyReferenceEnclosed accessEventTimeReference =
         readSimpleField(
             "accessEventTimeReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -159,8 +158,7 @@ public class BACnetEventParameterAccessEvent extends BACnetEventParameter implem
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (13)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (13)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterAccessEvent");
     // Create the instance

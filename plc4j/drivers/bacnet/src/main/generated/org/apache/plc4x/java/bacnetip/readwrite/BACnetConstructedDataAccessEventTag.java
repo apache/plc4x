@@ -124,7 +124,7 @@ public class BACnetConstructedDataAccessEventTag extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger accessEventTag =
         readSimpleField(
             "accessEventTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

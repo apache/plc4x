@@ -124,7 +124,7 @@ public class BACnetConstructedDataMachineRoomID extends BACnetConstructedData im
     BACnetApplicationTagObjectIdentifier machineRoomId =
         readSimpleField(
             "machineRoomId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

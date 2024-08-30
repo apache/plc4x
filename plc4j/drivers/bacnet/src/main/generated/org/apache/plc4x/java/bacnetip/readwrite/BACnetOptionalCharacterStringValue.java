@@ -93,7 +93,7 @@ public class BACnetOptionalCharacterStringValue extends BACnetOptionalCharacterS
     BACnetApplicationTagCharacterString characterstring =
         readSimpleField(
             "characterstring",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

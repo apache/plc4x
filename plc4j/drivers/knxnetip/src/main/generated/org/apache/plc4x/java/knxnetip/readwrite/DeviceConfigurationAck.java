@@ -97,8 +97,7 @@ public class DeviceConfigurationAck extends KnxNetIpMessage implements Message {
     DeviceConfigurationAckDataBlock deviceConfigurationAckDataBlock =
         readSimpleField(
             "deviceConfigurationAckDataBlock",
-            new DataReaderComplexDefault<>(
-                () -> DeviceConfigurationAckDataBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DeviceConfigurationAckDataBlock.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("DeviceConfigurationAck");

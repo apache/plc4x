@@ -125,8 +125,7 @@ public class BACnetConstructedDataFaultParameters extends BACnetConstructedData 
     BACnetFaultParameter faultParameters =
         readSimpleField(
             "faultParameters",
-            new DataReaderComplexDefault<>(
-                () -> BACnetFaultParameter.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetFaultParameter.staticParse(readBuffer), readBuffer));
     BACnetFaultParameter actualValue =
         readVirtualField("actualValue", BACnetFaultParameter.class, faultParameters);
 

@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLightningInProgress extends BACnetPropertyState
     BACnetLightingInProgressTagged lightningInProgress =
         readSimpleField(
             "lightningInProgress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingInProgressTagged.staticParse(
                         readBuffer,

@@ -151,7 +151,7 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataCarDoorCommand extends BACnetConstructedData i
     List<BACnetLiftCarDoorCommandTagged> carDoorCommand =
         readTerminatedArrayField(
             "carDoorCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDoorCommandTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

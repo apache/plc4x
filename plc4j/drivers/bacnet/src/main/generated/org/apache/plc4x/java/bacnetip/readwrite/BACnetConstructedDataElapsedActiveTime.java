@@ -126,7 +126,7 @@ public class BACnetConstructedDataElapsedActiveTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger elapsedActiveTime =
         readSimpleField(
             "elapsedActiveTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

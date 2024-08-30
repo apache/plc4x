@@ -305,8 +305,7 @@ public class NPDU implements Message {
 
     NPDUControl control =
         readSimpleField(
-            "control",
-            new DataReaderComplexDefault<>(() -> NPDUControl.staticParse(readBuffer), readBuffer));
+            "control", readComplex(() -> NPDUControl.staticParse(readBuffer), readBuffer));
 
     Integer destinationNetworkAddress =
         readOptionalField(
@@ -364,7 +363,7 @@ public class NPDU implements Message {
     NLM nlm =
         readOptionalField(
             "nlm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NLM.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))),
                 readBuffer),
             control.getMessageTypeFieldPresent());
@@ -372,7 +371,7 @@ public class NPDU implements Message {
     APDU apdu =
         readOptionalField(
             "apdu",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> APDU.staticParse(readBuffer, (int) ((npduLength) - (payloadSubtraction))),
                 readBuffer),
             !(control.getMessageTypeFieldPresent()));

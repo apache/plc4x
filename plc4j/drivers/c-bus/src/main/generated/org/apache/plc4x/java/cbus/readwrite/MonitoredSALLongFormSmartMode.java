@@ -224,13 +224,13 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     UnitAddress unitAddress =
         readOptionalField(
             "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer),
             isUnitAddress);
 
     BridgeAddress bridgeAddress =
         readOptionalField(
             "bridgeAddress",
-            new DataReaderComplexDefault<>(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     ApplicationIdContainer application =
@@ -249,13 +249,13 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
     ReplyNetwork replyNetwork =
         readOptionalField(
             "replyNetwork",
-            new DataReaderComplexDefault<>(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     SALData salData =
         readOptionalField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

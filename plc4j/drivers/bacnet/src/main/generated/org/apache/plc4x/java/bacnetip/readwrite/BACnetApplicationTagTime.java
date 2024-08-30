@@ -89,9 +89,7 @@ public class BACnetApplicationTagTime extends BACnetApplicationTag implements Me
 
     BACnetTagPayloadTime payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> BACnetTagPayloadTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetApplicationTagTime");
     // Create the instance

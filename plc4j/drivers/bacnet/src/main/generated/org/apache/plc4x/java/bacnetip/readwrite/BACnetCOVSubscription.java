@@ -146,21 +146,21 @@ public class BACnetCOVSubscription implements Message {
     BACnetRecipientProcessEnclosed recipient =
         readSimpleField(
             "recipient",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetRecipientProcessEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetObjectPropertyReferenceEnclosed monitoredPropertyReference =
         readSimpleField(
             "monitoredPropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetObjectPropertyReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 
     BACnetContextTagBoolean issueConfirmedNotifications =
         readSimpleField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -170,7 +170,7 @@ public class BACnetCOVSubscription implements Message {
     BACnetContextTagUnsignedInteger timeRemaining =
         readSimpleField(
             "timeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -182,7 +182,7 @@ public class BACnetCOVSubscription implements Message {
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

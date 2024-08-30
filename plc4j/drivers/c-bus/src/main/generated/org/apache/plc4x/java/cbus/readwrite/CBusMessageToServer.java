@@ -103,7 +103,7 @@ public class CBusMessageToServer extends CBusMessage implements Message {
     Request request =
         readSimpleField(
             "request",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> Request.staticParse(readBuffer, (CBusOptions) (cBusOptions)), readBuffer));
 
     readBuffer.closeContext("CBusMessageToServer");

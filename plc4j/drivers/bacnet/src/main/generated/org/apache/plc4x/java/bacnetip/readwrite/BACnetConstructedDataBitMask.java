@@ -124,7 +124,7 @@ public class BACnetConstructedDataBitMask extends BACnetConstructedData implemen
     BACnetApplicationTagBitString bitString =
         readSimpleField(
             "bitString",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBitString actualValue =

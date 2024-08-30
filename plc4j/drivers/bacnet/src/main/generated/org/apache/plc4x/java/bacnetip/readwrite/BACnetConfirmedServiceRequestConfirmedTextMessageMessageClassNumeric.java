@@ -101,7 +101,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeri
     BACnetContextTagUnsignedInteger numericValue =
         readSimpleField(
             "numericValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

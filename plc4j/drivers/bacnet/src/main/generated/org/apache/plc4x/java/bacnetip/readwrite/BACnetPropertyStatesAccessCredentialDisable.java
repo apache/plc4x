@@ -96,7 +96,7 @@ public class BACnetPropertyStatesAccessCredentialDisable extends BACnetPropertyS
     BACnetAccessCredentialDisableTagged accessCredentialDisable =
         readSimpleField(
             "accessCredentialDisable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessCredentialDisableTagged.staticParse(
                         readBuffer,

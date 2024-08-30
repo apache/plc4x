@@ -126,7 +126,7 @@ public class BACnetConstructedDataAccessDoorRelinquishDefault extends BACnetCons
     BACnetDoorValueTagged relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorValueTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

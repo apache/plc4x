@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryNullValue extends BACnetLogDataLogDataEntr
     BACnetContextTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

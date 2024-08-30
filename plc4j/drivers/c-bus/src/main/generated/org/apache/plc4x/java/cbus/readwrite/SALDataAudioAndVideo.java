@@ -91,8 +91,7 @@ public class SALDataAudioAndVideo extends SALData implements Message {
 
     LightingData audioVideoData =
         readSimpleField(
-            "audioVideoData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            "audioVideoData", readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataAudioAndVideo");
     // Create the instance

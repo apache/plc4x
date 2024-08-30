@@ -144,13 +144,13 @@ public class BACnetEventPriorities implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetApplicationTagUnsignedInteger toOffnormal =
         readSimpleField(
             "toOffnormal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -159,7 +159,7 @@ public class BACnetEventPriorities implements Message {
     BACnetApplicationTagUnsignedInteger toFault =
         readSimpleField(
             "toFault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -168,7 +168,7 @@ public class BACnetEventPriorities implements Message {
     BACnetApplicationTagUnsignedInteger toNormal =
         readSimpleField(
             "toNormal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -177,7 +177,7 @@ public class BACnetEventPriorities implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventPriorities");

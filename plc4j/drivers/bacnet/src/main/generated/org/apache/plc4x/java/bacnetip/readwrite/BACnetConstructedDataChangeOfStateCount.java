@@ -126,7 +126,7 @@ public class BACnetConstructedDataChangeOfStateCount extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger changeIfStateCount =
         readSimpleField(
             "changeIfStateCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

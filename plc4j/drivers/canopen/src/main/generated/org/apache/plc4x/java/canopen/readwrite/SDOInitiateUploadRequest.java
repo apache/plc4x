@@ -106,8 +106,7 @@ public class SDOInitiateUploadRequest extends SDORequest implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     Integer reservedField1 =
         readReservedField("reserved", readSignedInt(readBuffer, 32), (int) 0x00);

@@ -126,7 +126,7 @@ public class BACnetConstructedDataNetworkInterfaceName extends BACnetConstructed
     BACnetApplicationTagCharacterString networkInterfaceName =
         readSimpleField(
             "networkInterfaceName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

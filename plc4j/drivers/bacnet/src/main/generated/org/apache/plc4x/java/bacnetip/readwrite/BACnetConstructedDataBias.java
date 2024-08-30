@@ -124,7 +124,7 @@ public class BACnetConstructedDataBias extends BACnetConstructedData implements 
     BACnetApplicationTagReal bias =
         readSimpleField(
             "bias",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

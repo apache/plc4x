@@ -154,13 +154,11 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
 
     PascalString serverName =
         readSimpleField(
-            "serverName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discoveryUrl =
         readSimpleField(
-            "discoveryUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "discoveryUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfServerCapabilities =
         readSimpleField("noOfServerCapabilities", readSignedInt(readBuffer, 32));
@@ -168,7 +166,7 @@ public class ServerOnNetwork extends ExtensionObjectDefinition implements Messag
     List<PascalString> serverCapabilities =
         readCountArrayField(
             "serverCapabilities",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfServerCapabilities);
 
     readBuffer.closeContext("ServerOnNetwork");

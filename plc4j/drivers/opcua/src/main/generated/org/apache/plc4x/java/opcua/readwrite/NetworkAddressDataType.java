@@ -94,7 +94,7 @@ public class NetworkAddressDataType extends ExtensionObjectDefinition implements
     PascalString networkInterface =
         readSimpleField(
             "networkInterface",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NetworkAddressDataType");
     // Create the instance

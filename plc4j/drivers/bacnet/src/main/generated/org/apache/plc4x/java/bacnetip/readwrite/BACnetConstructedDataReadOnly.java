@@ -124,7 +124,7 @@ public class BACnetConstructedDataReadOnly extends BACnetConstructedData impleme
     BACnetApplicationTagBoolean readOnly =
         readSimpleField(
             "readOnly",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -124,7 +124,7 @@ public class BACnetConstructedDataSystemStatus extends BACnetConstructedData imp
     BACnetDeviceStatusTagged systemStatus =
         readSimpleField(
             "systemStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

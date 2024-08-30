@@ -124,7 +124,7 @@ public class BACnetConstructedDataTrackingValue extends BACnetConstructedData im
     BACnetLifeSafetyStateTagged trackingValue =
         readSimpleField(
             "trackingValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

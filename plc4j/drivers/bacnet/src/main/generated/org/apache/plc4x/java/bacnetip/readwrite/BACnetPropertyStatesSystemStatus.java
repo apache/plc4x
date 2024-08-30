@@ -91,7 +91,7 @@ public class BACnetPropertyStatesSystemStatus extends BACnetPropertyStates imple
     BACnetDeviceStatusTagged systemStatus =
         readSimpleField(
             "systemStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceStatusTagged.staticParse(
                         readBuffer,

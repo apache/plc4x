@@ -125,7 +125,7 @@ public class BACnetConstructedDataLightingOutputTrackingValue extends BACnetCons
     BACnetApplicationTagReal trackingValue =
         readSimpleField(
             "trackingValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

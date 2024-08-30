@@ -113,7 +113,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyValue
     BACnetConstructedData propertyValue =
         readSimpleField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

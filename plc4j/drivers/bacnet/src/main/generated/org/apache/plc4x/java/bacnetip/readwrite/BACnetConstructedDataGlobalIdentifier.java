@@ -126,7 +126,7 @@ public class BACnetConstructedDataGlobalIdentifier extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger globalIdentifier =
         readSimpleField(
             "globalIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -124,8 +124,7 @@ public class BACnetConstructedDataEventParameters extends BACnetConstructedData 
     BACnetEventParameter eventParameter =
         readSimpleField(
             "eventParameter",
-            new DataReaderComplexDefault<>(
-                () -> BACnetEventParameter.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetEventParameter.staticParse(readBuffer), readBuffer));
     BACnetEventParameter actualValue =
         readVirtualField("actualValue", BACnetEventParameter.class, eventParameter);
 

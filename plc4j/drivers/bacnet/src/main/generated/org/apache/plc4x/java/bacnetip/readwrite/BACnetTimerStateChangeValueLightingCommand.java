@@ -99,7 +99,7 @@ public class BACnetTimerStateChangeValueLightingCommand extends BACnetTimerState
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(
             "ligthingCommandValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLightingCommandEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer));
 

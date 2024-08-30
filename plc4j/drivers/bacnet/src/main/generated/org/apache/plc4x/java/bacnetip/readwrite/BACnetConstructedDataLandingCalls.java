@@ -118,8 +118,7 @@ public class BACnetConstructedDataLandingCalls extends BACnetConstructedData imp
     List<BACnetLandingCallStatus> landingCallStatus =
         readTerminatedArrayField(
             "landingCallStatus",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLandingCallStatus.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetLandingCallStatus.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -125,7 +125,7 @@ public class BACnetConstructedDataBinaryLightingOutputPresentValue extends BACne
     BACnetBinaryLightingPVTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

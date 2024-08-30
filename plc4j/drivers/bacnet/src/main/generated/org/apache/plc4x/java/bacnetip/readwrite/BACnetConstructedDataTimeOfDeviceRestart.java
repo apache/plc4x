@@ -126,8 +126,7 @@ public class BACnetConstructedDataTimeOfDeviceRestart extends BACnetConstructedD
     BACnetTimeStamp timeOfDeviceRestart =
         readSimpleField(
             "timeOfDeviceRestart",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, timeOfDeviceRestart);
 

@@ -156,7 +156,7 @@ public class PnIoCm_RealIdentificationApi_Slot implements Message {
     List<PnIoCm_RealIdentificationApi_Subslot> subslots =
         readCountArrayField(
             "subslots",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_RealIdentificationApi_Subslot.staticParse(readBuffer), readBuffer),
             numSubslots,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

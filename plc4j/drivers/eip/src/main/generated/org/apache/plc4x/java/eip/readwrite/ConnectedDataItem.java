@@ -116,7 +116,7 @@ public class ConnectedDataItem extends TypeId implements Message {
     CipService service =
         readSimpleField(
             "service",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CipService.staticParse(
                         readBuffer, (boolean) (true), (int) ((packetSize) - (2))),

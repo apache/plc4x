@@ -97,14 +97,13 @@ public class BACnetLogMultipleRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetLogData logData =
         readSimpleField(
             "logData",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLogData.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetLogData.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetLogMultipleRecord");
     // Create the instance

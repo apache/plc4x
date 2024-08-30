@@ -153,7 +153,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -163,8 +163,7 @@ public class BACnetConstructedDataNetworkAccessSecurityPolicies extends BACnetCo
     List<BACnetNetworkSecurityPolicy> networkAccessSecurityPolicies =
         readTerminatedArrayField(
             "networkAccessSecurityPolicies",
-            new DataReaderComplexDefault<>(
-                () -> BACnetNetworkSecurityPolicy.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetNetworkSecurityPolicy.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -93,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryBoolean
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

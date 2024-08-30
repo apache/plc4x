@@ -96,8 +96,7 @@ public class SALDataClockAndTimekeeping extends SALData implements Message {
     ClockAndTimekeepingData clockAndTimekeepingData =
         readSimpleField(
             "clockAndTimekeepingData",
-            new DataReaderComplexDefault<>(
-                () -> ClockAndTimekeepingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ClockAndTimekeepingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataClockAndTimekeeping");
     // Create the instance

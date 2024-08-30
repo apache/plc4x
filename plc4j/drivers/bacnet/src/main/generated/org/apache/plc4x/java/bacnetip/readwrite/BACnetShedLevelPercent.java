@@ -91,7 +91,7 @@ public class BACnetShedLevelPercent extends BACnetShedLevel implements Message {
     BACnetContextTagUnsignedInteger percent =
         readSimpleField(
             "percent",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

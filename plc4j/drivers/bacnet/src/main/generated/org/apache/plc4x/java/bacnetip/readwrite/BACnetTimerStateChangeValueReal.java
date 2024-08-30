@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueReal extends BACnetTimerStateChangeValue
     BACnetApplicationTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

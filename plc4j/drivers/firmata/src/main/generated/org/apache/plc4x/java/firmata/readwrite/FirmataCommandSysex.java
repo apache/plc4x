@@ -99,7 +99,7 @@ public class FirmataCommandSysex extends FirmataCommand implements Message {
     SysexCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SysexCommand.staticParse(readBuffer, (boolean) (response)), readBuffer));
 
     Short reservedField0 =

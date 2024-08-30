@@ -93,7 +93,7 @@ public class BACnetPropertyStatesAuthenticationStatus extends BACnetPropertyStat
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(
             "authenticationStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationStatusTagged.staticParse(
                         readBuffer,

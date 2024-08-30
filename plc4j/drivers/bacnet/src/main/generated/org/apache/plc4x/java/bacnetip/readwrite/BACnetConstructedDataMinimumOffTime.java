@@ -124,7 +124,7 @@ public class BACnetConstructedDataMinimumOffTime extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger minimumOffTime =
         readSimpleField(
             "minimumOffTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

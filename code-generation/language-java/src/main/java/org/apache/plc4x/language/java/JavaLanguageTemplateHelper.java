@@ -404,7 +404,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                     .append(toParseExpression(null, argumentType, paramTerm, null))
                     .append(")");
             }
-            return "new DataReaderComplexDefault<>(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
+            return "readComplex(() -> " + parserCallString + ".staticParse(readBuffer" + paramsString + "), readBuffer)";
         } else {
             throw new IllegalStateException("What is this type? " + typeReference);
         }

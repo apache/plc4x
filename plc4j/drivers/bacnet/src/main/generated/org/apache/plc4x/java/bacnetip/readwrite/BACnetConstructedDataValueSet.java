@@ -124,7 +124,7 @@ public class BACnetConstructedDataValueSet extends BACnetConstructedData impleme
     BACnetApplicationTagUnsignedInteger valueSet =
         readSimpleField(
             "valueSet",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

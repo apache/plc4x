@@ -126,7 +126,7 @@ public class BACnetConstructedDataOperationExpected extends BACnetConstructedDat
     BACnetLifeSafetyOperationTagged lifeSafetyOperations =
         readSimpleField(
             "lifeSafetyOperations",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyOperationTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

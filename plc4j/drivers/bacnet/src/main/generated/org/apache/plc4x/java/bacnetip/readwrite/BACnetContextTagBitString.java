@@ -102,7 +102,7 @@ public class BACnetContextTagBitString extends BACnetContextTag implements Messa
     BACnetTagPayloadBitString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBitString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

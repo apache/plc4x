@@ -209,14 +209,14 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetTimerStateTagged newValue =
         readSimpleField(
             "newValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -225,7 +225,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -234,13 +234,13 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     BACnetDateTimeEnclosed updateTime =
         readSimpleField(
             "updateTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     BACnetTimerTransitionTagged lastStateChange =
         readOptionalField(
             "lastStateChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerTransitionTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -249,7 +249,7 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     BACnetContextTagUnsignedInteger initialTimeout =
         readOptionalField(
             "initialTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -261,13 +261,13 @@ public class BACnetNotificationParametersChangeOfTimer extends BACnetNotificatio
     BACnetDateTimeEnclosed expirationTime =
         readOptionalField(
             "expirationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
 
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

@@ -90,8 +90,7 @@ public class BACnetLogDataLogDataEntryFailure extends BACnetLogDataLogDataEntry 
     ErrorEnclosed failure =
         readSimpleField(
             "failure",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (7)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (7)), readBuffer));
 
     readBuffer.closeContext("BACnetLogDataLogDataEntryFailure");
     // Create the instance

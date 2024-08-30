@@ -133,14 +133,11 @@ public class CurrencyUnitType extends ExtensionObjectDefinition implements Messa
 
     PascalString alphabeticCode =
         readSimpleField(
-            "alphabeticCode",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "alphabeticCode", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText currency =
         readSimpleField(
-            "currency",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "currency", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CurrencyUnitType");
     // Create the instance

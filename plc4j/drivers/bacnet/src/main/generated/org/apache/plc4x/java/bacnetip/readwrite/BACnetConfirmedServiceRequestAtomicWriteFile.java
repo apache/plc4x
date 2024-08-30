@@ -159,7 +159,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -168,13 +168,12 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetOpeningTag openingTag =
         readOptionalField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetApplicationTagSignedInteger fileStartPosition =
         readSimpleField(
             "fileStartPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -183,7 +182,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetApplicationTagOctetString fileData =
         readSimpleField(
             "fileData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
@@ -191,8 +190,7 @@ public class BACnetConfirmedServiceRequestAtomicWriteFile extends BACnetConfirme
     BACnetClosingTag closingTag =
         readOptionalField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestAtomicWriteFile");
     // Create the instance

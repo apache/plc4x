@@ -113,14 +113,13 @@ public class DescriptionResponse extends KnxNetIpMessage implements Message {
     DIBDeviceInfo dibDeviceInfo =
         readSimpleField(
             "dibDeviceInfo",
-            new DataReaderComplexDefault<>(() -> DIBDeviceInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DIBDeviceInfo.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     DIBSuppSvcFamilies dibSuppSvcFamilies =
         readSimpleField(
             "dibSuppSvcFamilies",
-            new DataReaderComplexDefault<>(
-                () -> DIBSuppSvcFamilies.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DIBSuppSvcFamilies.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("DescriptionResponse");

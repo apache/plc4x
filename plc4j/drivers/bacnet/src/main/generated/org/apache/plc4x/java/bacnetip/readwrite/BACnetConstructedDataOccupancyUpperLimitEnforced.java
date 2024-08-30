@@ -128,7 +128,7 @@ public class BACnetConstructedDataOccupancyUpperLimitEnforced extends BACnetCons
     BACnetApplicationTagBoolean occupancyUpperLimitEnforced =
         readSimpleField(
             "occupancyUpperLimitEnforced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

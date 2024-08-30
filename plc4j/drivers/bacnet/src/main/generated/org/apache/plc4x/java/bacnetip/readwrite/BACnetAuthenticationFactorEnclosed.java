@@ -119,19 +119,18 @@ public class BACnetAuthenticationFactorEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetAuthenticationFactor authenticationFactor =
         readSimpleField(
             "authenticationFactor",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetAuthenticationFactorEnclosed");

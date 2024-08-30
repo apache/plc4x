@@ -126,7 +126,7 @@ public class BACnetConstructedDataStateDescription extends BACnetConstructedData
     BACnetApplicationTagCharacterString stateDescription =
         readSimpleField(
             "stateDescription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

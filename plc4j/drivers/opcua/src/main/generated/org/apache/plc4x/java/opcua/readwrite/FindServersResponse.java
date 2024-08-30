@@ -126,7 +126,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class FindServersResponse extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> servers =
         readCountArrayField(
             "servers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
                 readBuffer),
             noOfServers);

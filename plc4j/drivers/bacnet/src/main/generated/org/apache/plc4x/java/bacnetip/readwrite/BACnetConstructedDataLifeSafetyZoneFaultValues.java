@@ -119,7 +119,7 @@ public class BACnetConstructedDataLifeSafetyZoneFaultValues extends BACnetConstr
     List<BACnetLifeSafetyStateTagged> faultValues =
         readTerminatedArrayField(
             "faultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

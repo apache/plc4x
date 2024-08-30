@@ -126,13 +126,13 @@ public class BACnetReadAccessResultListOfResults implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetReadAccessProperty> listOfReadAccessProperty =
         readTerminatedArrayField(
             "listOfReadAccessProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessProperty.staticParse(
                         readBuffer, (BACnetObjectType) (objectTypeArgument)),
@@ -145,7 +145,7 @@ public class BACnetReadAccessResultListOfResults implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetReadAccessResultListOfResults");

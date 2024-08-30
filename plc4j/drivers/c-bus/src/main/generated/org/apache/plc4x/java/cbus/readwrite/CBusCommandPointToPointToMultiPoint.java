@@ -94,7 +94,7 @@ public class CBusCommandPointToPointToMultiPoint extends CBusCommand implements 
     CBusPointToPointToMultiPointCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CBusPointToPointToMultiPointCommand.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions)),

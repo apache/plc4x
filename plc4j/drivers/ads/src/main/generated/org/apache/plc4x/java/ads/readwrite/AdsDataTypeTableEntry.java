@@ -556,16 +556,14 @@ public class AdsDataTypeTableEntry implements Message {
     List<AdsDataTypeArrayInfo> arrayInfo =
         readCountArrayField(
             "arrayInfo",
-            new DataReaderComplexDefault<>(
-                () -> AdsDataTypeArrayInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDataTypeArrayInfo.staticParse(readBuffer), readBuffer),
             arrayDimensions,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     List<AdsDataTypeTableChildEntry> children =
         readCountArrayField(
             "children",
-            new DataReaderComplexDefault<>(
-                () -> AdsDataTypeTableChildEntry.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDataTypeTableChildEntry.staticParse(readBuffer), readBuffer),
             numChildren,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

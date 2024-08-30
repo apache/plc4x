@@ -128,8 +128,7 @@ public class BACnetConstructedDataMaximumValueTimestamp extends BACnetConstructe
     BACnetDateTime maximumValueTimestamp =
         readSimpleField(
             "maximumValueTimestamp",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, maximumValueTimestamp);
 

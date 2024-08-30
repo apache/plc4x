@@ -168,13 +168,13 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetContextTagEnumerated rawObjectType =
         readOptionalField(
             "rawObjectType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagEnumerated)
                         BACnetContextTag.staticParse(
@@ -192,7 +192,7 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     BACnetContextTagObjectIdentifier objectIdentifier =
         readOptionalField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -210,7 +210,7 @@ public class BACnetConfirmedServiceRequestCreateObjectObjectSpecifier implements
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestCreateObjectObjectSpecifier");

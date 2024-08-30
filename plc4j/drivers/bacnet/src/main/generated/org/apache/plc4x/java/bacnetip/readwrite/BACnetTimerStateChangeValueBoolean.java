@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueBoolean extends BACnetTimerStateChangeVa
     BACnetApplicationTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

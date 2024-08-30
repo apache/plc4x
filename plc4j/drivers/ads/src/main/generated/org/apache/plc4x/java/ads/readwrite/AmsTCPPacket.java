@@ -124,7 +124,7 @@ public class AmsTCPPacket implements Message {
     AmsPacket userdata =
         readSimpleField(
             "userdata",
-            new DataReaderComplexDefault<>(() -> AmsPacket.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AmsPacket.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("AmsTCPPacket");

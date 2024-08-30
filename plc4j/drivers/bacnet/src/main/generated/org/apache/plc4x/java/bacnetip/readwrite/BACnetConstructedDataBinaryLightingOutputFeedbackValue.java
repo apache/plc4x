@@ -125,7 +125,7 @@ public class BACnetConstructedDataBinaryLightingOutputFeedbackValue extends BACn
     BACnetBinaryLightingPVTagged feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

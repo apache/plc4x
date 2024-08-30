@@ -126,7 +126,7 @@ public class BACnetConstructedDataFileAccessMethod extends BACnetConstructedData
     BACnetFileAccessMethodTagged fileAccessMethod =
         readSimpleField(
             "fileAccessMethod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFileAccessMethodTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

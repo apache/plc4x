@@ -128,7 +128,7 @@ public class BACnetConstructedDataLockoutRelinquishTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger lockoutRelinquishTime =
         readSimpleField(
             "lockoutRelinquishTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

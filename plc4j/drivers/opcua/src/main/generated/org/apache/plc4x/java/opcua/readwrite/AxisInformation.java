@@ -169,22 +169,20 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
     ExtensionObjectDefinition engineeringUnits =
         readSimpleField(
             "engineeringUnits",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("889")),
                 readBuffer));
 
     ExtensionObjectDefinition eURange =
         readSimpleField(
             "eURange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("886")),
                 readBuffer));
 
     LocalizedText title =
         readSimpleField(
-            "title",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "title", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     AxisScaleEnumeration axisScaleType =
         readEnumField(

@@ -128,7 +128,7 @@ public class BACnetConstructedDataRecordsSinceNotification extends BACnetConstru
     BACnetApplicationTagUnsignedInteger recordsSinceNotifications =
         readSimpleField(
             "recordsSinceNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

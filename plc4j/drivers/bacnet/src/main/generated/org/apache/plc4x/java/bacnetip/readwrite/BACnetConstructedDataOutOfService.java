@@ -124,7 +124,7 @@ public class BACnetConstructedDataOutOfService extends BACnetConstructedData imp
     BACnetApplicationTagBoolean outOfService =
         readSimpleField(
             "outOfService",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

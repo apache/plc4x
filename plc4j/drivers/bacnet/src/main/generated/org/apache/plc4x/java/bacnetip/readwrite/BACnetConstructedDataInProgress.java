@@ -124,7 +124,7 @@ public class BACnetConstructedDataInProgress extends BACnetConstructedData imple
     BACnetLightingInProgressTagged inProgress =
         readSimpleField(
             "inProgress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingInProgressTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

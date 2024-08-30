@@ -164,7 +164,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -176,7 +176,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     BACnetContextTagObjectIdentifier initiatingDeviceIdentifier =
         readSimpleField(
             "initiatingDeviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -188,7 +188,7 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     BACnetContextTagUnsignedInteger timeRemaining =
         readSimpleField(
             "timeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -200,13 +200,13 @@ public class BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple
     BACnetTimeStampEnclosed timestamp =
         readOptionalField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer));
 
     ListOfCovNotificationsList listOfCovNotifications =
         readSimpleField(
             "listOfCovNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ListOfCovNotificationsList.staticParse(readBuffer, (short) (4)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestConfirmedCOVNotificationMultiple");

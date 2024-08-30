@@ -123,9 +123,7 @@ public class BACnetConstructedDataLastUseTime extends BACnetConstructedData impl
 
     BACnetDateTime lastUseTime =
         readSimpleField(
-            "lastUseTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "lastUseTime", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue = readVirtualField("actualValue", BACnetDateTime.class, lastUseTime);
 
     readBuffer.closeContext("BACnetConstructedDataLastUseTime");

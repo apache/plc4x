@@ -108,13 +108,12 @@ public class OpcuaMessageRequest extends MessagePDU implements Message {
     SecurityHeader securityHeader =
         readSimpleField(
             "securityHeader",
-            new DataReaderComplexDefault<>(
-                () -> SecurityHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> SecurityHeader.staticParse(readBuffer), readBuffer));
 
     Payload message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     Payload.staticParse(
                         readBuffer,

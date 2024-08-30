@@ -128,7 +128,7 @@ public class BACnetConstructedDataDefaultSubordinateRelationship extends BACnetC
     BACnetRelationshipTagged defaultSubordinateRelationship =
         readSimpleField(
             "defaultSubordinateRelationship",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetRelationshipTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

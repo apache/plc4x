@@ -116,9 +116,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFil
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (tagClass))) {
       throw new ParseValidationException("tag class doesn't match");

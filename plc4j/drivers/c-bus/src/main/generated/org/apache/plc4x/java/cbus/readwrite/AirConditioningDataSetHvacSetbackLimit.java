@@ -133,20 +133,16 @@ public class AirConditioningDataSetHvacSetbackLimit extends AirConditioningData 
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACTemperature limit =
         readSimpleField(
-            "limit",
-            new DataReaderComplexDefault<>(
-                () -> HVACTemperature.staticParse(readBuffer), readBuffer));
+            "limit", readComplex(() -> HVACTemperature.staticParse(readBuffer), readBuffer));
 
     HVACModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AirConditioningDataSetHvacSetbackLimit");
     // Create the instance

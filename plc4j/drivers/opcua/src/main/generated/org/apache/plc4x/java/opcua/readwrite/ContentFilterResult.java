@@ -148,7 +148,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> elementResults =
         readCountArrayField(
             "elementResults",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("606")),
                 readBuffer),
             noOfElementResults);
@@ -159,8 +159,7 @@ public class ContentFilterResult extends ExtensionObjectDefinition implements Me
     List<DiagnosticInfo> elementDiagnosticInfos =
         readCountArrayField(
             "elementDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfElementDiagnosticInfos);
 
     readBuffer.closeContext("ContentFilterResult");

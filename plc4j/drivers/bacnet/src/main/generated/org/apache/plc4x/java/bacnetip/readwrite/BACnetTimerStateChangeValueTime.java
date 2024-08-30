@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueTime extends BACnetTimerStateChangeValue
     BACnetApplicationTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

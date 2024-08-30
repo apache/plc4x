@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryRealValue extends BACnetLogDataLogDataEntr
     BACnetContextTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

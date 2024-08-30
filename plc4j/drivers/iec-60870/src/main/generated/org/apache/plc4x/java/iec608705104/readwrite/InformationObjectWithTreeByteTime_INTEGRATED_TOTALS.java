@@ -117,15 +117,13 @@ public class InformationObjectWithTreeByteTime_INTEGRATED_TOTALS
     BinaryCounterReading bcr =
         readSimpleField(
             "bcr",
-            new DataReaderComplexDefault<>(
-                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithTreeByteTime_INTEGRATED_TOTALS");

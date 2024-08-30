@@ -97,7 +97,7 @@ public class Error implements Message {
     ErrorClassTagged errorClass =
         readSimpleField(
             "errorClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorClassTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -106,7 +106,7 @@ public class Error implements Message {
     ErrorCodeTagged errorCode =
         readSimpleField(
             "errorCode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorCodeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

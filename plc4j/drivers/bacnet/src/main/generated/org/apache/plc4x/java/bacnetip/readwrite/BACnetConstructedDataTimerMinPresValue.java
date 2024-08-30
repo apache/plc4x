@@ -125,7 +125,7 @@ public class BACnetConstructedDataTimerMinPresValue extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger minPresValue =
         readSimpleField(
             "minPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

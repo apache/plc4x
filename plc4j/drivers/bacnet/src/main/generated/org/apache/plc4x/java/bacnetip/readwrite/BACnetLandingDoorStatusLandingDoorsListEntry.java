@@ -99,7 +99,7 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -111,7 +111,7 @@ public class BACnetLandingDoorStatusLandingDoorsListEntry implements Message {
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
             "doorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

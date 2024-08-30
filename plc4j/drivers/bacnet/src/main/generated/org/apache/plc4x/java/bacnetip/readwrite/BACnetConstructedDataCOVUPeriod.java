@@ -124,7 +124,7 @@ public class BACnetConstructedDataCOVUPeriod extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger covuPeriod =
         readSimpleField(
             "covuPeriod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

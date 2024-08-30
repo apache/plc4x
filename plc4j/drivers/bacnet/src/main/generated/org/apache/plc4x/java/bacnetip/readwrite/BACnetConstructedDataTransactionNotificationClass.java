@@ -128,7 +128,7 @@ public class BACnetConstructedDataTransactionNotificationClass extends BACnetCon
     BACnetApplicationTagUnsignedInteger transactionNotificationClass =
         readSimpleField(
             "transactionNotificationClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

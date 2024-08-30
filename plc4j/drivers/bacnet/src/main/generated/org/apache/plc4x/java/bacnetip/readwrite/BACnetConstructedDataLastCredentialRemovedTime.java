@@ -128,8 +128,7 @@ public class BACnetConstructedDataLastCredentialRemovedTime extends BACnetConstr
     BACnetDateTime lastCredentialRemovedTime =
         readSimpleField(
             "lastCredentialRemovedTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, lastCredentialRemovedTime);
 

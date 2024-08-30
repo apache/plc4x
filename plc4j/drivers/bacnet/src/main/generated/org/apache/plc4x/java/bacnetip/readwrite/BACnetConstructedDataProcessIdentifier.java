@@ -126,7 +126,7 @@ public class BACnetConstructedDataProcessIdentifier extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

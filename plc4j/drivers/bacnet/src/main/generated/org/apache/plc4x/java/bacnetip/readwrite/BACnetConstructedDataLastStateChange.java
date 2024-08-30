@@ -125,7 +125,7 @@ public class BACnetConstructedDataLastStateChange extends BACnetConstructedData 
     BACnetTimerTransitionTagged lastStateChange =
         readSimpleField(
             "lastStateChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerTransitionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

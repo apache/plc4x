@@ -121,20 +121,19 @@ public class Ethernet_Frame implements Message {
     MacAddress destination =
         readSimpleField(
             "destination",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     MacAddress source =
         readSimpleField(
             "source",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Ethernet_FramePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Ethernet_FramePayload.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("Ethernet_Frame");

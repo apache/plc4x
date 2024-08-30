@@ -127,7 +127,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -136,7 +136,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetContextTagUnsignedInteger serviceNumber =
         readSimpleField(
             "serviceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -148,7 +148,7 @@ public class BACnetServiceAckConfirmedPrivateTransfer extends BACnetServiceAck i
     BACnetConstructedData resultBlock =
         readOptionalField(
             "resultBlock",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

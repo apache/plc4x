@@ -124,7 +124,7 @@ public class BACnetConstructedDataSecuredStatus extends BACnetConstructedData im
     BACnetDoorSecuredStatusTagged securedStatus =
         readSimpleField(
             "securedStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorSecuredStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

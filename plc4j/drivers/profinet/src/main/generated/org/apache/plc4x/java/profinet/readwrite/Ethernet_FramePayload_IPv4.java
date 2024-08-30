@@ -378,13 +378,11 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     IpAddress sourceAddress =
         readSimpleField(
-            "sourceAddress",
-            new DataReaderComplexDefault<>(() -> IpAddress.staticParse(readBuffer), readBuffer));
+            "sourceAddress", readComplex(() -> IpAddress.staticParse(readBuffer), readBuffer));
 
     IpAddress destinationAddress =
         readSimpleField(
-            "destinationAddress",
-            new DataReaderComplexDefault<>(() -> IpAddress.staticParse(readBuffer), readBuffer));
+            "destinationAddress", readComplex(() -> IpAddress.staticParse(readBuffer), readBuffer));
 
     int sourcePort = readSimpleField("sourcePort", readUnsignedInt(readBuffer, 16));
 
@@ -396,9 +394,7 @@ public class Ethernet_FramePayload_IPv4 extends Ethernet_FramePayload implements
 
     DceRpc_Packet payload =
         readSimpleField(
-            "payload",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_Packet.staticParse(readBuffer), readBuffer));
+            "payload", readComplex(() -> DceRpc_Packet.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Ethernet_FramePayload_IPv4");
     // Create the instance

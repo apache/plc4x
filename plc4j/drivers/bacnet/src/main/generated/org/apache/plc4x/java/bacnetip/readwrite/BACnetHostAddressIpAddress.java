@@ -91,7 +91,7 @@ public class BACnetHostAddressIpAddress extends BACnetHostAddress implements Mes
     BACnetContextTagOctetString ipAddress =
         readSimpleField(
             "ipAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

@@ -140,19 +140,17 @@ public class OpenChannelMessageResponse extends OpenChannelMessage implements Me
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString senderCertificate =
         readSimpleField(
             "senderCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString receiverCertificateThumbprint =
         readSimpleField(
             "receiverCertificateThumbprint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpenChannelMessageResponse");
     // Create the instance

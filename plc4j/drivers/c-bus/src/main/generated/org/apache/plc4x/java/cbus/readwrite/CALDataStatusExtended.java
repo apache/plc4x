@@ -235,14 +235,13 @@ public class CALDataStatusExtended extends CALData implements Message {
     List<StatusByte> statusBytes =
         readCountArrayField(
             "statusBytes",
-            new DataReaderComplexDefault<>(() -> StatusByte.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusByte.staticParse(readBuffer), readBuffer),
             numberOfStatusBytes);
 
     List<LevelInformation> levelInformation =
         readCountArrayField(
             "levelInformation",
-            new DataReaderComplexDefault<>(
-                () -> LevelInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LevelInformation.staticParse(readBuffer), readBuffer),
             numberOfLevelInformation);
 
     readBuffer.closeContext("CALDataStatusExtended");

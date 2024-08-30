@@ -156,15 +156,13 @@ public class ExpandedNodeId implements Message {
 
     NodeIdTypeDefinition nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, nodeId.getIdentifier());
 
     PascalString namespaceURI =
         readOptionalField(
             "namespaceURI",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             namespaceURISpecified);
 
     Long serverIndex =

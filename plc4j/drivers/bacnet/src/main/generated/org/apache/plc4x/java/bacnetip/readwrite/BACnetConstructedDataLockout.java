@@ -124,7 +124,7 @@ public class BACnetConstructedDataLockout extends BACnetConstructedData implemen
     BACnetApplicationTagBoolean lockout =
         readSimpleField(
             "lockout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -125,8 +125,7 @@ public class BACnetConstructedDataBinaryInputInterfaceValue extends BACnetConstr
     BACnetOptionalBinaryPV interfaceValue =
         readSimpleField(
             "interfaceValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalBinaryPV.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetOptionalBinaryPV.staticParse(readBuffer), readBuffer));
     BACnetOptionalBinaryPV actualValue =
         readVirtualField("actualValue", BACnetOptionalBinaryPV.class, interfaceValue);
 

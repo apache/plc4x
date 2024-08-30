@@ -135,13 +135,11 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
 
     NodeId sourceNode =
         readSimpleField(
-            "sourceNode",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "sourceNode", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceType =
         readSimpleField(
-            "referenceType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -150,9 +148,7 @@ public class ReferenceDescriptionDataType extends ExtensionObjectDefinition impl
 
     ExpandedNodeId targetNode =
         readSimpleField(
-            "targetNode",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNode", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceDescriptionDataType");
     // Create the instance

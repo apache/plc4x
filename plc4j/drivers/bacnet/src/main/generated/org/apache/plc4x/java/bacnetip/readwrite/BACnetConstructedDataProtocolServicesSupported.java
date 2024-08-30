@@ -128,7 +128,7 @@ public class BACnetConstructedDataProtocolServicesSupported extends BACnetConstr
     BACnetServicesSupportedTagged protocolServicesSupported =
         readSimpleField(
             "protocolServicesSupported",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetServicesSupportedTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

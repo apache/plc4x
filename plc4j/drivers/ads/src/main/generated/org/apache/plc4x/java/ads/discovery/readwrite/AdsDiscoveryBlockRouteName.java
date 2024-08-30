@@ -92,8 +92,7 @@ public class AdsDiscoveryBlockRouteName extends AdsDiscoveryBlock implements Mes
 
     AmsString routeName =
         readSimpleField(
-            "routeName",
-            new DataReaderComplexDefault<>(() -> AmsString.staticParse(readBuffer), readBuffer));
+            "routeName", readComplex(() -> AmsString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockRouteName");
     // Create the instance

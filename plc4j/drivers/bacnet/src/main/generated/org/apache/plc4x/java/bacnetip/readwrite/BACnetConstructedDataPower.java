@@ -124,7 +124,7 @@ public class BACnetConstructedDataPower extends BACnetConstructedData implements
     BACnetApplicationTagReal power =
         readSimpleField(
             "power",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

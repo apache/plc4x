@@ -128,7 +128,7 @@ public class BACnetConstructedDataFDSubscriptionLifetime extends BACnetConstruct
     BACnetApplicationTagUnsignedInteger fdSubscriptionLifetime =
         readSimpleField(
             "fdSubscriptionLifetime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

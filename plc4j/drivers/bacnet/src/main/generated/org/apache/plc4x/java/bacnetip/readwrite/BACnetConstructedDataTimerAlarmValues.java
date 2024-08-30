@@ -119,7 +119,7 @@ public class BACnetConstructedDataTimerAlarmValues extends BACnetConstructedData
     List<BACnetTimerStateTagged> alarmValues =
         readTerminatedArrayField(
             "alarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

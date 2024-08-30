@@ -147,7 +147,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -159,7 +159,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -168,7 +168,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetContextTagUnsignedInteger propertyArrayIndex =
         readOptionalField(
             "propertyArrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -180,7 +180,7 @@ public class BACnetConfirmedServiceRequestReadRange extends BACnetConfirmedServi
     BACnetConfirmedServiceRequestReadRangeRange readRange =
         readOptionalField(
             "readRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetConfirmedServiceRequestReadRangeRange.staticParse(readBuffer),
                 readBuffer));
 

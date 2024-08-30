@@ -126,7 +126,7 @@ public class BACnetConstructedDataSecurityPDUTimeout extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger securityPduTimeout =
         readSimpleField(
             "securityPduTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

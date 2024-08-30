@@ -256,8 +256,7 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
 
     PascalString applicationUri =
         readSimpleField(
-            "applicationUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "applicationUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfPushTargetFolder =
         readSimpleField("noOfPushTargetFolder", readSignedInt(readBuffer, 32));
@@ -265,23 +264,22 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     List<PascalString> pushTargetFolder =
         readCountArrayField(
             "pushTargetFolder",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfPushTargetFolder);
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectDefinition userTokenType =
         readSimpleField(
             "userTokenType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("306")),
                 readBuffer));
 
@@ -295,7 +293,7 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     List<ExtensionObjectDefinition> pushTargetProperties =
         readCountArrayField(
             "pushTargetProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfPushTargetProperties);
@@ -305,7 +303,7 @@ public class PubSubKeyPushTargetDataType extends ExtensionObjectDefinition imple
     List<PascalString> securityGroups =
         readCountArrayField(
             "securityGroups",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfSecurityGroups);
 
     readBuffer.closeContext("PubSubKeyPushTargetDataType");

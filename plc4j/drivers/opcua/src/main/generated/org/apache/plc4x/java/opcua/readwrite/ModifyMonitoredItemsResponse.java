@@ -158,7 +158,7 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -167,7 +167,7 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
     List<ExtensionObjectDefinition> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("760")),
                 readBuffer),
             noOfResults);
@@ -177,8 +177,7 @@ public class ModifyMonitoredItemsResponse extends ExtensionObjectDefinition impl
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("ModifyMonitoredItemsResponse");

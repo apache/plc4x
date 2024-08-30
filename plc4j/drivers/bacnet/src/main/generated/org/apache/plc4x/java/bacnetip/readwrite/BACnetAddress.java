@@ -132,7 +132,7 @@ public class BACnetAddress implements Message {
     BACnetApplicationTagUnsignedInteger networkNumber =
         readSimpleField(
             "networkNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -145,7 +145,7 @@ public class BACnetAddress implements Message {
     BACnetApplicationTagOctetString macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

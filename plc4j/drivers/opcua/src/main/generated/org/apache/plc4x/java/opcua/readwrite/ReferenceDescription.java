@@ -183,8 +183,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -193,21 +192,15 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
 
     ExpandedNodeId nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName browseName =
         readSimpleField(
-            "browseName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "browseName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     NodeClass nodeClass =
         readEnumField(
@@ -218,8 +211,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
     ExpandedNodeId typeDefinition =
         readSimpleField(
             "typeDefinition",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ReferenceDescription");
     // Create the instance

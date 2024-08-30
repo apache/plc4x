@@ -245,13 +245,11 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
 
     PathSegment classSegment =
         readSimpleField(
-            "classSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "classSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
-            "instanceSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "instanceSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     byte priority = readSimpleField("priority", readUnsignedByte(readBuffer, 4));
 
@@ -275,7 +273,7 @@ public class CipConnectionManagerCloseRequest extends CipService implements Mess
     List<PathSegment> connectionPaths =
         readTerminatedArrayField(
             "connectionPaths",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.eip.readwrite.utils.StaticHelper.noMorePathSegments(

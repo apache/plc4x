@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueDeadband extends BACnetConstru
     BACnetApplicationTagDouble deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

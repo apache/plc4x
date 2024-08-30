@@ -116,9 +116,7 @@ public class NodeIdByteString extends NodeIdTypeDefinition implements Message {
 
     PascalByteString id =
         readSimpleField(
-            "id",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "id", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
     String identifier = readVirtualField("identifier", String.class, id.getStringValue());
 
     readBuffer.closeContext("NodeIdByteString");

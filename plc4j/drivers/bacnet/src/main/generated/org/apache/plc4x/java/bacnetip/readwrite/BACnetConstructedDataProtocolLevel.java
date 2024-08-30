@@ -124,7 +124,7 @@ public class BACnetConstructedDataProtocolLevel extends BACnetConstructedData im
     BACnetProtocolLevelTagged protocolLevel =
         readSimpleField(
             "protocolLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProtocolLevelTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

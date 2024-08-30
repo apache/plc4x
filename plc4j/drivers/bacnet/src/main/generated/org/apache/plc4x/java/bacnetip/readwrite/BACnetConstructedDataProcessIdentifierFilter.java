@@ -128,8 +128,7 @@ public class BACnetConstructedDataProcessIdentifierFilter extends BACnetConstruc
     BACnetProcessIdSelection processIdentifierFilter =
         readSimpleField(
             "processIdentifierFilter",
-            new DataReaderComplexDefault<>(
-                () -> BACnetProcessIdSelection.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetProcessIdSelection.staticParse(readBuffer), readBuffer));
     BACnetProcessIdSelection actualValue =
         readVirtualField("actualValue", BACnetProcessIdSelection.class, processIdentifierFilter);
 

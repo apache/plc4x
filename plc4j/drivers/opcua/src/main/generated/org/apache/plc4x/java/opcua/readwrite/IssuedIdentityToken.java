@@ -105,14 +105,12 @@ public class IssuedIdentityToken extends UserIdentityTokenDefinition implements 
 
     PascalByteString tokenData =
         readSimpleField(
-            "tokenData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "tokenData", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalString encryptionAlgorithm =
         readSimpleField(
             "encryptionAlgorithm",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("IssuedIdentityToken");
     // Create the instance

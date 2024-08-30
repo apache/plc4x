@@ -102,7 +102,7 @@ public class UnConnectedDataItem extends TypeId implements Message {
     CipService service =
         readSimpleField(
             "service",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CipService.staticParse(readBuffer, (boolean) (false), (int) (packetSize)),
                 readBuffer));
 

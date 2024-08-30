@@ -124,7 +124,7 @@ public class BACnetConstructedDataDeviceType extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString deviceType =
         readSimpleField(
             "deviceType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

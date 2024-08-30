@@ -104,13 +104,11 @@ public class PortableQualifiedName extends ExtensionObjectDefinition implements 
 
     PascalString namespaceUri =
         readSimpleField(
-            "namespaceUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "namespaceUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("PortableQualifiedName");
     // Create the instance

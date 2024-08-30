@@ -112,7 +112,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     BACnetApplicationTagUnsignedInteger referenceSequenceNumber =
         readSimpleField(
             "referenceSequenceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -121,7 +121,7 @@ public class BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumber
     BACnetApplicationTagSignedInteger count =
         readSimpleField(
             "count",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

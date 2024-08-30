@@ -161,7 +161,7 @@ public abstract class SALData implements Message {
     SALData salData =
         readOptionalField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SALData.staticParse(readBuffer, (ApplicationId) (applicationId)),
                 readBuffer));
 

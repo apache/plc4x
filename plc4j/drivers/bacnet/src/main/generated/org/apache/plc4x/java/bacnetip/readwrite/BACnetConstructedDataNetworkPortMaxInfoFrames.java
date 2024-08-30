@@ -125,7 +125,7 @@ public class BACnetConstructedDataNetworkPortMaxInfoFrames extends BACnetConstru
     BACnetApplicationTagUnsignedInteger maxInfoFrames =
         readSimpleField(
             "maxInfoFrames",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

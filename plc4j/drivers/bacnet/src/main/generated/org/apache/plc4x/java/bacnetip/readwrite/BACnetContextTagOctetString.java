@@ -102,7 +102,7 @@ public class BACnetContextTagOctetString extends BACnetContextTag implements Mes
     BACnetTagPayloadOctetString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadOctetString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

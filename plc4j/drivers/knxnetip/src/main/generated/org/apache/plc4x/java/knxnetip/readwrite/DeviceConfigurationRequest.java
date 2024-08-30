@@ -114,14 +114,14 @@ public class DeviceConfigurationRequest extends KnxNetIpMessage implements Messa
     DeviceConfigurationRequestDataBlock deviceConfigurationRequestDataBlock =
         readSimpleField(
             "deviceConfigurationRequestDataBlock",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> DeviceConfigurationRequestDataBlock.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     CEMI cemi =
         readSimpleField(
             "cemi",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CEMI.staticParse(
                         readBuffer,

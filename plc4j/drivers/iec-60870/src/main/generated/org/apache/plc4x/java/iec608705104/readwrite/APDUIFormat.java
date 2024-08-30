@@ -114,7 +114,7 @@ public class APDUIFormat extends APDU implements Message {
     ASDU asdu =
         readSimpleField(
             "asdu",
-            new DataReaderComplexDefault<>(() -> ASDU.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ASDU.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("APDUIFormat");

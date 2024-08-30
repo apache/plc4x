@@ -651,7 +651,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     MacAddress ioCrMulticastMacAdr =
         readSimpleField(
             "ioCrMulticastMacAdr",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int numberOfApis =
@@ -663,8 +663,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
     List<PnIoCm_IoCrBlockReqApi> apis =
         readCountArrayField(
             "apis",
-            new DataReaderComplexDefault<>(
-                () -> PnIoCm_IoCrBlockReqApi.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnIoCm_IoCrBlockReqApi.staticParse(readBuffer), readBuffer),
             numberOfApis,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

@@ -99,7 +99,7 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -111,7 +111,7 @@ public class BACnetAssignedLandingCallsLandingCallsListEntry implements Message 
     BACnetLiftCarDirectionTagged direction =
         readSimpleField(
             "direction",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

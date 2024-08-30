@@ -217,7 +217,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -226,7 +226,7 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     List<ExtensionObjectDefinition> queryDataSets =
         readCountArrayField(
             "queryDataSets",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("579")),
                 readBuffer),
             noOfQueryDataSets);
@@ -234,15 +234,14 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     PascalByteString continuationPoint =
         readSimpleField(
             "continuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     int noOfParsingResults = readSimpleField("noOfParsingResults", readSignedInt(readBuffer, 32));
 
     List<ExtensionObjectDefinition> parsingResults =
         readCountArrayField(
             "parsingResults",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("612")),
                 readBuffer),
             noOfParsingResults);
@@ -252,14 +251,13 @@ public class QueryFirstResponse extends ExtensionObjectDefinition implements Mes
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     ExtensionObjectDefinition filterResult =
         readSimpleField(
             "filterResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("609")),
                 readBuffer));
 

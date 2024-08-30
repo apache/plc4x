@@ -89,7 +89,7 @@ public class BACnetScaleFloatScale extends BACnetScale implements Message {
     BACnetContextTagReal floatScale =
         readSimpleField(
             "floatScale",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

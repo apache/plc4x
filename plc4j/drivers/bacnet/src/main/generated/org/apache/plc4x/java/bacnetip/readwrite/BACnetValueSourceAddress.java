@@ -90,7 +90,7 @@ public class BACnetValueSourceAddress extends BACnetValueSource implements Messa
     BACnetAddressEnclosed address =
         readSimpleField(
             "address",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAddressEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetValueSourceAddress");

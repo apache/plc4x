@@ -125,8 +125,7 @@ public class BACnetConstructedDataLastRestoreTime extends BACnetConstructedData 
     BACnetTimeStamp lastRestoreTime =
         readSimpleField(
             "lastRestoreTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, lastRestoreTime);
 

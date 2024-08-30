@@ -173,8 +173,7 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
 
     NodeId authenticationToken =
         readSimpleField(
-            "authenticationToken",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "authenticationToken", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 
@@ -184,15 +183,14 @@ public class RequestHeader extends ExtensionObjectDefinition implements Message 
 
     PascalString auditEntryId =
         readSimpleField(
-            "auditEntryId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "auditEntryId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long timeoutHint = readSimpleField("timeoutHint", readUnsignedLong(readBuffer, 32));
 
     ExtensionObject additionalHeader =
         readSimpleField(
             "additionalHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("RequestHeader");

@@ -124,7 +124,7 @@ public class BACnetConstructedDataFaultHighLimit extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger faultHighLimit =
         readSimpleField(
             "faultHighLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

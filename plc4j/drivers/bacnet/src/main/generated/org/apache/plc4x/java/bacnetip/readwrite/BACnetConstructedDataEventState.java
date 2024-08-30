@@ -124,7 +124,7 @@ public class BACnetConstructedDataEventState extends BACnetConstructedData imple
     BACnetEventStateTagged eventState =
         readSimpleField(
             "eventState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

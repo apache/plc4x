@@ -183,27 +183,25 @@ public class ResponseHeader extends ExtensionObjectDefinition implements Message
 
     StatusCode serviceResult =
         readSimpleField(
-            "serviceResult",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "serviceResult", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     DiagnosticInfo serviceDiagnostics =
         readSimpleField(
             "serviceDiagnostics",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer));
 
     int noOfStringTable = readSimpleField("noOfStringTable", readSignedInt(readBuffer, 32));
 
     List<PascalString> stringTable =
         readCountArrayField(
             "stringTable",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfStringTable);
 
     ExtensionObject additionalHeader =
         readSimpleField(
             "additionalHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("ResponseHeader");

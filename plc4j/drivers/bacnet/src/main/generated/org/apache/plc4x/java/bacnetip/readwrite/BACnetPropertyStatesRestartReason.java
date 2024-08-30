@@ -91,7 +91,7 @@ public class BACnetPropertyStatesRestartReason extends BACnetPropertyStates impl
     BACnetRestartReasonTagged restartReason =
         readSimpleField(
             "restartReason",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetRestartReasonTagged.staticParse(
                         readBuffer,

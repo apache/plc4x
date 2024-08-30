@@ -123,9 +123,7 @@ public class BACnetConstructedDataUpdateTime extends BACnetConstructedData imple
 
     BACnetDateTime updateTime =
         readSimpleField(
-            "updateTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "updateTime", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue = readVirtualField("actualValue", BACnetDateTime.class, updateTime);
 
     readBuffer.closeContext("BACnetConstructedDataUpdateTime");

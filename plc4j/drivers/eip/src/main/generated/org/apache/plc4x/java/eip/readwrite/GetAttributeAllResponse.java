@@ -139,7 +139,7 @@ public class GetAttributeAllResponse extends CipService implements Message {
     CIPAttributes attributes =
         readOptionalField(
             "attributes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CIPAttributes.staticParse(readBuffer, (int) ((serviceLen) - (4))),
                 readBuffer),
             (((serviceLen) - (4))) > (0));

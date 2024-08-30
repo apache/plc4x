@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime");

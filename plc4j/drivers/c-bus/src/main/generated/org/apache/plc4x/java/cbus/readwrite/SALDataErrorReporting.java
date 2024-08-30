@@ -93,8 +93,7 @@ public class SALDataErrorReporting extends SALData implements Message {
     ErrorReportingData errorReportingData =
         readSimpleField(
             "errorReportingData",
-            new DataReaderComplexDefault<>(
-                () -> ErrorReportingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ErrorReportingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataErrorReporting");
     // Create the instance

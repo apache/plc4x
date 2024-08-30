@@ -126,7 +126,7 @@ public class BACnetConstructedDataNetworkNumberQuality extends BACnetConstructed
     BACnetNetworkNumberQualityTagged networkNumberQuality =
         readSimpleField(
             "networkNumberQuality",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkNumberQualityTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

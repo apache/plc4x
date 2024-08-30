@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueMinPresValue extends BACne
     BACnetApplicationTagUnsignedInteger minPresValue =
         readSimpleField(
             "minPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

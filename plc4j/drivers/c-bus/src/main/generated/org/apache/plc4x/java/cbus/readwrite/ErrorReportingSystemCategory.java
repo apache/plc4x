@@ -135,7 +135,7 @@ public class ErrorReportingSystemCategory implements Message {
     ErrorReportingSystemCategoryType systemCategoryType =
         readSimpleField(
             "systemCategoryType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ErrorReportingSystemCategoryType.staticParse(
                         readBuffer, (ErrorReportingSystemCategoryClass) (systemCategoryClass)),

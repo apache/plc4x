@@ -125,7 +125,7 @@ public class BACnetConstructedDataLoadControlPresentValue extends BACnetConstruc
     BACnetShedStateTagged presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetShedStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

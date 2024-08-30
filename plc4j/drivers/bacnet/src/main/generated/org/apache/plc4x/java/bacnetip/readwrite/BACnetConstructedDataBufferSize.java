@@ -124,7 +124,7 @@ public class BACnetConstructedDataBufferSize extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger bufferSize =
         readSimpleField(
             "bufferSize",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -96,7 +96,7 @@ public class BACnetPropertyStatesEscalatorOperationDirection extends BACnetPrope
     BACnetEscalatorOperationDirectionTagged escalatorOperationDirection =
         readSimpleField(
             "escalatorOperationDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorOperationDirectionTagged.staticParse(
                         readBuffer,

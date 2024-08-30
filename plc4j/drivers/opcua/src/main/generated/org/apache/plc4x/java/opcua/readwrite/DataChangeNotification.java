@@ -157,7 +157,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     List<ExtensionObjectDefinition> monitoredItems =
         readCountArrayField(
             "monitoredItems",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("808")),
                 readBuffer),
             noOfMonitoredItems);
@@ -167,8 +167,7 @@ public class DataChangeNotification extends ExtensionObjectDefinition implements
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("DataChangeNotification");

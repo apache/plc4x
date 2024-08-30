@@ -117,7 +117,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     BACnetConfirmedServiceRequestCreateObjectObjectSpecifier objectSpecifier =
         readSimpleField(
             "objectSpecifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestCreateObjectObjectSpecifier.staticParse(
                         readBuffer, (short) (0)),
@@ -126,7 +126,7 @@ public class BACnetConfirmedServiceRequestCreateObject extends BACnetConfirmedSe
     BACnetPropertyValues listOfValues =
         readOptionalField(
             "listOfValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValues.staticParse(
                         readBuffer,

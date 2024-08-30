@@ -124,7 +124,7 @@ public abstract class CALReply implements Message {
     CALData calData =
         readSimpleField(
             "calData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (requestContext)),
                 readBuffer));
 

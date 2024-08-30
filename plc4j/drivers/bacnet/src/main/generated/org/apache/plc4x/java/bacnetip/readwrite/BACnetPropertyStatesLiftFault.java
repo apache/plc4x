@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLiftFault extends BACnetPropertyStates implemen
     BACnetLiftFaultTagged liftFault =
         readSimpleField(
             "liftFault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftFaultTagged.staticParse(
                         readBuffer,

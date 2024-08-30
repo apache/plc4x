@@ -183,8 +183,7 @@ public class LDataExtended extends LDataFrame implements Message {
 
     KnxAddress sourceAddress =
         readSimpleField(
-            "sourceAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "sourceAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     byte[] destinationAddress = readBuffer.readByteArray("destinationAddress", Math.toIntExact(2));
 
@@ -193,8 +192,7 @@ public class LDataExtended extends LDataFrame implements Message {
     Apdu apdu =
         readSimpleField(
             "apdu",
-            new DataReaderComplexDefault<>(
-                () -> Apdu.staticParse(readBuffer, (short) (dataLength)), readBuffer));
+            readComplex(() -> Apdu.staticParse(readBuffer, (short) (dataLength)), readBuffer));
 
     readBuffer.closeContext("LDataExtended");
     // Create the instance

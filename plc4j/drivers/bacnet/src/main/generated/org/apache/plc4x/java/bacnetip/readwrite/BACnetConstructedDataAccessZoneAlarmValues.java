@@ -119,7 +119,7 @@ public class BACnetConstructedDataAccessZoneAlarmValues extends BACnetConstructe
     List<BACnetAccessZoneOccupancyStateTagged> alarmValues =
         readTerminatedArrayField(
             "alarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessZoneOccupancyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

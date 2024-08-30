@@ -126,7 +126,7 @@ public class BACnetConstructedDataCarMovingDirection extends BACnetConstructedDa
     BACnetLiftCarDirectionTagged carMovingDirection =
         readSimpleField(
             "carMovingDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

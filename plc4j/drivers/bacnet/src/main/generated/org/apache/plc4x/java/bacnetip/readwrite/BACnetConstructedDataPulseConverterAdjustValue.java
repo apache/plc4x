@@ -125,7 +125,7 @@ public class BACnetConstructedDataPulseConverterAdjustValue extends BACnetConstr
     BACnetApplicationTagReal adjustValue =
         readSimpleField(
             "adjustValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

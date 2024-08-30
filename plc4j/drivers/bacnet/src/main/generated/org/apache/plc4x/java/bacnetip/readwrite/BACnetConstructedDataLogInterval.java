@@ -124,7 +124,7 @@ public class BACnetConstructedDataLogInterval extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger logInterval =
         readSimpleField(
             "logInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

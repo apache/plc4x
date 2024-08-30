@@ -105,9 +105,7 @@ public class MonitoredItemNotification extends ExtensionObjectDefinition impleme
     long clientHandle = readSimpleField("clientHandle", readUnsignedLong(readBuffer, 32));
 
     DataValue value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> DataValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("MonitoredItemNotification");
     // Create the instance

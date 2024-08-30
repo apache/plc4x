@@ -99,8 +99,7 @@ public class BACnetLogRecordLogDatumFailure extends BACnetLogRecordLogDatum impl
     ErrorEnclosed failure =
         readSimpleField(
             "failure",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (8)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (8)), readBuffer));
 
     readBuffer.closeContext("BACnetLogRecordLogDatumFailure");
     // Create the instance

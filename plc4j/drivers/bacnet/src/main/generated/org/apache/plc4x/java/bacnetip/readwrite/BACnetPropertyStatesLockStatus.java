@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLockStatus extends BACnetPropertyStates impleme
     BACnetLockStatusTagged lockStatus =
         readSimpleField(
             "lockStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLockStatusTagged.staticParse(
                         readBuffer,

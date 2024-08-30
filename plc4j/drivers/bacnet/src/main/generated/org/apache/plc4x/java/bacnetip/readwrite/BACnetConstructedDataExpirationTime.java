@@ -124,8 +124,7 @@ public class BACnetConstructedDataExpirationTime extends BACnetConstructedData i
     BACnetDateTime expirationTime =
         readSimpleField(
             "expirationTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, expirationTime);
 

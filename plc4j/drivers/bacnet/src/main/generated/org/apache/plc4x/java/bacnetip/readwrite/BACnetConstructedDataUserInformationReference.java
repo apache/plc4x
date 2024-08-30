@@ -128,7 +128,7 @@ public class BACnetConstructedDataUserInformationReference extends BACnetConstru
     BACnetApplicationTagCharacterString userInformationReference =
         readSimpleField(
             "userInformationReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

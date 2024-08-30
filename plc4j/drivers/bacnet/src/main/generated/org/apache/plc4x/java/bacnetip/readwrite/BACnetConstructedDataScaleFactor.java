@@ -124,7 +124,7 @@ public class BACnetConstructedDataScaleFactor extends BACnetConstructedData impl
     BACnetApplicationTagReal scaleFactor =
         readSimpleField(
             "scaleFactor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

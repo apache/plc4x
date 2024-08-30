@@ -161,14 +161,14 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger sequenceNumber =
         readSimpleField(
             "sequenceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -180,7 +180,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -189,7 +189,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     BACnetContextTagUnsignedInteger exceededLimit =
         readSimpleField(
             "exceededLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -201,7 +201,7 @@ public class BACnetNotificationParametersUnsignedRange extends BACnetNotificatio
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

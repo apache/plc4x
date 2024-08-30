@@ -133,7 +133,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetContextTagUnsignedInteger timeDuration =
         readOptionalField(
             "timeDuration",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -145,7 +145,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged enableDisable =
         readSimpleField(
             "enableDisable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged
                         .staticParse(
@@ -155,7 +155,7 @@ public class BACnetConfirmedServiceRequestDeviceCommunicationControl
     BACnetContextTagCharacterString password =
         readOptionalField(
             "password",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

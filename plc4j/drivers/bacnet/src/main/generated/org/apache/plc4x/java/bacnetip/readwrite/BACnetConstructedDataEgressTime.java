@@ -124,7 +124,7 @@ public class BACnetConstructedDataEgressTime extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger egressTime =
         readSimpleField(
             "egressTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

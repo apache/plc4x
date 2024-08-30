@@ -116,18 +116,14 @@ public class AnnotationDataType extends ExtensionObjectDefinition implements Mes
 
     PascalString annotation =
         readSimpleField(
-            "annotation",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "annotation", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString discipline =
         readSimpleField(
-            "discipline",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "discipline", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString uri =
-        readSimpleField(
-            "uri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+        readSimpleField("uri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AnnotationDataType");
     // Create the instance

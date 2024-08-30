@@ -128,7 +128,7 @@ public class BACnetConstructedDataMaxAPDULengthAccepted extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger maxApduLengthAccepted =
         readSimpleField(
             "maxApduLengthAccepted",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

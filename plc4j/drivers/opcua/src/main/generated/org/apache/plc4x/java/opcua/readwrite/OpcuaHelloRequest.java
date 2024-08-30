@@ -122,14 +122,11 @@ public class OpcuaHelloRequest extends MessagePDU implements Message {
 
     OpcuaProtocolLimits limits =
         readSimpleField(
-            "limits",
-            new DataReaderComplexDefault<>(
-                () -> OpcuaProtocolLimits.staticParse(readBuffer), readBuffer));
+            "limits", readComplex(() -> OpcuaProtocolLimits.staticParse(readBuffer), readBuffer));
 
     PascalString endpoint =
         readSimpleField(
-            "endpoint",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpoint", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpcuaHelloRequest");
     // Create the instance

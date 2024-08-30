@@ -126,7 +126,7 @@ public class BACnetConstructedDataLastRestartReason extends BACnetConstructedDat
     BACnetRestartReasonTagged lastRestartReason =
         readSimpleField(
             "lastRestartReason",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetRestartReasonTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

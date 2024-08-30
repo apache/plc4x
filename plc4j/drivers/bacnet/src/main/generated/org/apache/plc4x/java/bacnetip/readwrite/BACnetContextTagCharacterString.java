@@ -112,7 +112,7 @@ public class BACnetContextTagCharacterString extends BACnetContextTag implements
     BACnetTagPayloadCharacterString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadCharacterString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

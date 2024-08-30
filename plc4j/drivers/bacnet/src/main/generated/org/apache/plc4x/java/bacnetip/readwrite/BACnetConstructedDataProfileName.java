@@ -124,7 +124,7 @@ public class BACnetConstructedDataProfileName extends BACnetConstructedData impl
     BACnetApplicationTagCharacterString profileName =
         readSimpleField(
             "profileName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

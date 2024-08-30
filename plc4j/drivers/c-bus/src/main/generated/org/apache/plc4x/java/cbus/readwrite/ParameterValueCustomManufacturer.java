@@ -97,7 +97,7 @@ public class ParameterValueCustomManufacturer extends ParameterValue implements 
     CustomManufacturer value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CustomManufacturer.staticParse(readBuffer, (short) (numBytes)), readBuffer));
 
     readBuffer.closeContext("ParameterValueCustomManufacturer");

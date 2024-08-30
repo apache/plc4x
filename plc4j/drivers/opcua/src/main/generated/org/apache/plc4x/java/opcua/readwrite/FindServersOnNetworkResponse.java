@@ -140,7 +140,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -152,7 +152,7 @@ public class FindServersOnNetworkResponse extends ExtensionObjectDefinition impl
     List<ExtensionObjectDefinition> servers =
         readCountArrayField(
             "servers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("12191")),
                 readBuffer),
             noOfServers);

@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLightningOperation extends BACnetPropertyStates
     BACnetLightingOperationTagged lightningOperation =
         readSimpleField(
             "lightningOperation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingOperationTagged.staticParse(
                         readBuffer,

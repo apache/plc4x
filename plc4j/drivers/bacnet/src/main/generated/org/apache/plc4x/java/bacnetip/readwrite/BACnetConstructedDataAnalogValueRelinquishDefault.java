@@ -126,7 +126,7 @@ public class BACnetConstructedDataAnalogValueRelinquishDefault extends BACnetCon
     BACnetApplicationTagReal relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

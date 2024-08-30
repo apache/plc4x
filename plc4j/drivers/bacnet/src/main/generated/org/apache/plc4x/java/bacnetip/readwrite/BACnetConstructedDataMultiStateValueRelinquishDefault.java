@@ -126,7 +126,7 @@ public class BACnetConstructedDataMultiStateValueRelinquishDefault extends BACne
     BACnetApplicationTagUnsignedInteger relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

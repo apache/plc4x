@@ -93,8 +93,7 @@ public class TlvOrgSpecificIeee8023 extends TlvOrganizationSpecificUnit implemen
     TlvOrgSpecificIeee8023Unit specificUnit =
         readSimpleField(
             "specificUnit",
-            new DataReaderComplexDefault<>(
-                () -> TlvOrgSpecificIeee8023Unit.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TlvOrgSpecificIeee8023Unit.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvOrgSpecificIeee8023");
     // Create the instance

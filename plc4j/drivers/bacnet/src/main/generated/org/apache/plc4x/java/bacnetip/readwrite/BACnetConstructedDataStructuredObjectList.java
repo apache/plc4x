@@ -152,7 +152,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataStructuredObjectList extends BACnetConstructed
     List<BACnetApplicationTagObjectIdentifier> structuredObjectList =
         readTerminatedArrayField(
             "structuredObjectList",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

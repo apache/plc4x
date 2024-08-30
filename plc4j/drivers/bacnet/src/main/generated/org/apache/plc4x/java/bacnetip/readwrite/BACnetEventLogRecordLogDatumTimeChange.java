@@ -100,7 +100,7 @@ public class BACnetEventLogRecordLogDatumTimeChange extends BACnetEventLogRecord
     BACnetContextTagReal timeChange =
         readSimpleField(
             "timeChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

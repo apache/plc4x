@@ -93,7 +93,7 @@ public class BACnetLandingCallStatusCommandDestination extends BACnetLandingCall
     BACnetContextTagUnsignedInteger destination =
         readSimpleField(
             "destination",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

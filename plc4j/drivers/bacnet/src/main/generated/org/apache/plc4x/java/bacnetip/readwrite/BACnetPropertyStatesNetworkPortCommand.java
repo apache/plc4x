@@ -93,7 +93,7 @@ public class BACnetPropertyStatesNetworkPortCommand extends BACnetPropertyStates
     BACnetNetworkPortCommandTagged networkPortCommand =
         readSimpleField(
             "networkPortCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkPortCommandTagged.staticParse(
                         readBuffer,

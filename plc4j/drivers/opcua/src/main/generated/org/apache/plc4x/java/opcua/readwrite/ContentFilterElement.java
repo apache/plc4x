@@ -138,7 +138,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
     List<ExtensionObject> filterOperands =
         readCountArrayField(
             "filterOperands",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfFilterOperands);
 

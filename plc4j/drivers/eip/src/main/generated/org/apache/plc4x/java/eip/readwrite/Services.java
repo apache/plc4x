@@ -119,7 +119,7 @@ public class Services implements Message {
     List<CipService> services =
         readCountArrayField(
             "services",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CipService.staticParse(
                         readBuffer, (boolean) (false), (int) ((servicesLen) / (serviceNb))),

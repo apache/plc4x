@@ -187,7 +187,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
     List<PnIoCm_ModuleDiffBlockApi_Submodule> submodules =
         readCountArrayField(
             "submodules",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_ModuleDiffBlockApi_Submodule.staticParse(readBuffer), readBuffer),
             numSubmodules,
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));

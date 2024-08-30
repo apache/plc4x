@@ -104,13 +104,11 @@ public class AddNodesResult extends ExtensionObjectDefinition implements Message
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     NodeId addedNodeId =
         readSimpleField(
-            "addedNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "addedNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AddNodesResult");
     // Create the instance

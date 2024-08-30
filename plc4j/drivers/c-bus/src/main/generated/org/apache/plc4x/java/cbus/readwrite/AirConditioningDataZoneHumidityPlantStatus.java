@@ -160,8 +160,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidityType humidityType =
         readEnumField(
@@ -173,8 +172,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
     HVACHumidityStatusFlags humidityStatus =
         readSimpleField(
             "humidityStatus",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityStatusFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityStatusFlags.staticParse(readBuffer), readBuffer));
 
     HVACHumidityError humidityErrorCode =
         readEnumField(

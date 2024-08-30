@@ -91,7 +91,7 @@ public class BACnetShedLevelLevel extends BACnetShedLevel implements Message {
     BACnetContextTagUnsignedInteger level =
         readSimpleField(
             "level",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

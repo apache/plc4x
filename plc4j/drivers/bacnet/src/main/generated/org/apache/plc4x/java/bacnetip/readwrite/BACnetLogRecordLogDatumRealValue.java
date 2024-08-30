@@ -99,7 +99,7 @@ public class BACnetLogRecordLogDatumRealValue extends BACnetLogRecordLogDatum im
     BACnetContextTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

@@ -124,9 +124,7 @@ public class BACnetConstructedDataDateTimePatternValuePresentValue extends BACne
 
     BACnetDateTime presentValue =
         readSimpleField(
-            "presentValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "presentValue", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, presentValue);
 

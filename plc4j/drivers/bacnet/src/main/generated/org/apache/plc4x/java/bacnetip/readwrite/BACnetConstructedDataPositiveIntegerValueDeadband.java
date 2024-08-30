@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueDeadband extends BACnetCon
     BACnetApplicationTagUnsignedInteger deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

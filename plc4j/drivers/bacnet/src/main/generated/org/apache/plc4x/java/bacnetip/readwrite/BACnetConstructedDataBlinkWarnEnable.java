@@ -125,7 +125,7 @@ public class BACnetConstructedDataBlinkWarnEnable extends BACnetConstructedData 
     BACnetApplicationTagBoolean blinkWarnEnable =
         readSimpleField(
             "blinkWarnEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -116,13 +116,11 @@ public class Annotation extends ExtensionObjectDefinition implements Message {
 
     PascalString message =
         readSimpleField(
-            "message",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "message", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long annotationTime = readSimpleField("annotationTime", readSignedLong(readBuffer, 64));
 

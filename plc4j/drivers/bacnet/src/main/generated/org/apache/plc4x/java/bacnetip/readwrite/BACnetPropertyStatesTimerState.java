@@ -91,7 +91,7 @@ public class BACnetPropertyStatesTimerState extends BACnetPropertyStates impleme
     BACnetTimerStateTagged timerState =
         readSimpleField(
             "timerState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateTagged.staticParse(
                         readBuffer,

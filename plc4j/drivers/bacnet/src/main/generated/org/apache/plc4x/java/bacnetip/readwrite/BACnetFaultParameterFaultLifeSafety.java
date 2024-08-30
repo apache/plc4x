@@ -135,13 +135,12 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetFaultParameterFaultLifeSafetyListOfFaultValues listOfFaultValues =
         readSimpleField(
             "listOfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultLifeSafetyListOfFaultValues.staticParse(
                         readBuffer, (short) (0)),
@@ -150,7 +149,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetDeviceObjectPropertyReferenceEnclosed modePropertyReference =
         readSimpleField(
             "modePropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -159,8 +158,7 @@ public class BACnetFaultParameterFaultLifeSafety extends BACnetFaultParameter im
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultLifeSafety");
     // Create the instance

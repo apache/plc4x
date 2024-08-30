@@ -147,7 +147,7 @@ public class BVLCForwardedNPDU extends BVLC implements Message {
     NPDU npdu =
         readSimpleField(
             "npdu",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NPDU.staticParse(readBuffer, (int) ((bvlcPayloadLength) - (6))), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

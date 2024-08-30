@@ -128,7 +128,7 @@ public class BACnetConstructedDataNotificationThreshold extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger notificationThreshold =
         readSimpleField(
             "notificationThreshold",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

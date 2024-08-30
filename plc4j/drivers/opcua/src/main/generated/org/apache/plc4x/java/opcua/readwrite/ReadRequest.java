@@ -159,7 +159,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -177,7 +177,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
     List<ExtensionObjectDefinition> nodesToRead =
         readCountArrayField(
             "nodesToRead",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("628")),
                 readBuffer),
             noOfNodesToRead);

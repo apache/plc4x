@@ -127,13 +127,13 @@ public class BACnetAccumulatorRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagSignedInteger presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -145,7 +145,7 @@ public class BACnetAccumulatorRecord implements Message {
     BACnetContextTagSignedInteger accumulatedValue =
         readSimpleField(
             "accumulatedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -157,7 +157,7 @@ public class BACnetAccumulatorRecord implements Message {
     BACnetAccumulatorRecordAccumulatorStatusTagged accumulatorStatus =
         readSimpleField(
             "accumulatorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccumulatorRecordAccumulatorStatusTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

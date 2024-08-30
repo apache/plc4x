@@ -155,7 +155,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -164,7 +164,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -173,7 +173,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     BACnetEventStateTagged eventState =
         readSimpleField(
             "eventState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -182,7 +182,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     BACnetApplicationTagUnsignedInteger priority =
         readSimpleField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -191,7 +191,7 @@ public class BACnetServiceAckGetEnrollmentSummary extends BACnetServiceAck imple
     BACnetApplicationTagUnsignedInteger notificationClass =
         readOptionalField(
             "notificationClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

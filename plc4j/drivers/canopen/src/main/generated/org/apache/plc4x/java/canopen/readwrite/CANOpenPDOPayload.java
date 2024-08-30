@@ -91,9 +91,7 @@ public class CANOpenPDOPayload extends CANOpenPayload implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     CANOpenPDO pdo =
-        readSimpleField(
-            "pdo",
-            new DataReaderComplexDefault<>(() -> CANOpenPDO.staticParse(readBuffer), readBuffer));
+        readSimpleField("pdo", readComplex(() -> CANOpenPDO.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CANOpenPDOPayload");
     // Create the instance

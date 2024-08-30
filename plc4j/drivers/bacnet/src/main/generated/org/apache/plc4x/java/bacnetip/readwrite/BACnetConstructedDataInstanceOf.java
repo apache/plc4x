@@ -124,7 +124,7 @@ public class BACnetConstructedDataInstanceOf extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString instanceOf =
         readSimpleField(
             "instanceOf",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

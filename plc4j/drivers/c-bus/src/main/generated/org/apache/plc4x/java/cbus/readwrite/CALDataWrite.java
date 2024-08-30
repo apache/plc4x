@@ -139,7 +139,7 @@ public class CALDataWrite extends CALData implements Message {
     ParameterValue parameterValue =
         readSimpleField(
             "parameterValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ParameterValue.staticParse(
                         readBuffer,

@@ -90,7 +90,7 @@ public class BACnetTimeStampTime extends BACnetTimeStamp implements Message {
     BACnetContextTagTime timeValue =
         readSimpleField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagTime)
                         BACnetContextTag.staticParse(

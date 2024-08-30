@@ -91,7 +91,7 @@ public class BACnetOptionalREALValue extends BACnetOptionalREAL implements Messa
     BACnetApplicationTagReal realValue =
         readSimpleField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

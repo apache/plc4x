@@ -139,13 +139,13 @@ public class LocalizedText implements Message {
     PascalString locale =
         readOptionalField(
             "locale",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             localeSpecified);
 
     PascalString text =
         readOptionalField(
             "text",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             textSpecified);
 
     readBuffer.closeContext("LocalizedText");

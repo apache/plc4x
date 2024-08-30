@@ -124,7 +124,7 @@ public class BACnetConstructedDataObjectName extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString objectName =
         readSimpleField(
             "objectName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

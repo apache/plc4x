@@ -105,9 +105,7 @@ public class GenericAttributeValue extends ExtensionObjectDefinition implements 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     Variant value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GenericAttributeValue");
     // Create the instance

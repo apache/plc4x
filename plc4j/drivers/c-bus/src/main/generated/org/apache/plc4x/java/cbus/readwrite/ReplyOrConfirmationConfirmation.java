@@ -115,13 +115,12 @@ public class ReplyOrConfirmationConfirmation extends ReplyOrConfirmation impleme
 
     Confirmation confirmation =
         readSimpleField(
-            "confirmation",
-            new DataReaderComplexDefault<>(() -> Confirmation.staticParse(readBuffer), readBuffer));
+            "confirmation", readComplex(() -> Confirmation.staticParse(readBuffer), readBuffer));
 
     ReplyOrConfirmation embeddedReply =
         readOptionalField(
             "embeddedReply",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ReplyOrConfirmation.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions), (RequestContext) (requestContext)),

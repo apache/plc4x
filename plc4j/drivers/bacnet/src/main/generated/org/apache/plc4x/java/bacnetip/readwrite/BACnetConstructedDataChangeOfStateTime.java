@@ -126,8 +126,7 @@ public class BACnetConstructedDataChangeOfStateTime extends BACnetConstructedDat
     BACnetDateTime changeOfStateTime =
         readSimpleField(
             "changeOfStateTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, changeOfStateTime);
 

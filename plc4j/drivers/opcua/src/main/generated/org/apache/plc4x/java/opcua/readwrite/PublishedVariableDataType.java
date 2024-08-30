@@ -206,8 +206,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
 
     NodeId publishedVariable =
         readSimpleField(
-            "publishedVariable",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "publishedVariable", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
@@ -220,13 +219,11 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Variant substituteValue =
         readSimpleField(
-            "substituteValue",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+            "substituteValue", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     int noOfMetaDataProperties =
         readSimpleField("noOfMetaDataProperties", readSignedInt(readBuffer, 32));
@@ -234,7 +231,7 @@ public class PublishedVariableDataType extends ExtensionObjectDefinition impleme
     List<QualifiedName> metaDataProperties =
         readCountArrayField(
             "metaDataProperties",
-            new DataReaderComplexDefault<>(() -> QualifiedName.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer),
             noOfMetaDataProperties);
 
     readBuffer.closeContext("PublishedVariableDataType");

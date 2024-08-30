@@ -91,9 +91,7 @@ public class SecurityDataSystemArmedDisarmed extends SecurityData implements Mes
 
     SecurityArmCode armCodeType =
         readSimpleField(
-            "armCodeType",
-            new DataReaderComplexDefault<>(
-                () -> SecurityArmCode.staticParse(readBuffer), readBuffer));
+            "armCodeType", readComplex(() -> SecurityArmCode.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SecurityDataSystemArmedDisarmed");
     // Create the instance

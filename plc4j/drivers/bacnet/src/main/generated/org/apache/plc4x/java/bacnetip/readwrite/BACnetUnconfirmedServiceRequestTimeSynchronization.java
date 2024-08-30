@@ -116,14 +116,14 @@ public class BACnetUnconfirmedServiceRequestTimeSynchronization
     BACnetApplicationTagDate synchronizedDate =
         readSimpleField(
             "synchronizedDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetApplicationTagTime synchronizedTime =
         readSimpleField(
             "synchronizedTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

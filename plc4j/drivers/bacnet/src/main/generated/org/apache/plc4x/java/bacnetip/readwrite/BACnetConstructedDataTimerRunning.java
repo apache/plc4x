@@ -124,7 +124,7 @@ public class BACnetConstructedDataTimerRunning extends BACnetConstructedData imp
     BACnetApplicationTagBoolean timerRunning =
         readSimpleField(
             "timerRunning",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

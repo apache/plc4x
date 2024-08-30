@@ -125,8 +125,7 @@ public class BACnetConstructedDataLightingCommand extends BACnetConstructedData 
     BACnetLightingCommand lightingCommand =
         readSimpleField(
             "lightingCommand",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
     BACnetLightingCommand actualValue =
         readVirtualField("actualValue", BACnetLightingCommand.class, lightingCommand);
 

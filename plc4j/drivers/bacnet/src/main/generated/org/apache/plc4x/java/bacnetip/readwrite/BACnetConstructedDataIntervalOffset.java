@@ -124,7 +124,7 @@ public class BACnetConstructedDataIntervalOffset extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger intervalOffset =
         readSimpleField(
             "intervalOffset",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

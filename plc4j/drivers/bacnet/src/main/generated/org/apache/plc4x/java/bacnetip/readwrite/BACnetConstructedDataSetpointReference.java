@@ -126,8 +126,7 @@ public class BACnetConstructedDataSetpointReference extends BACnetConstructedDat
     BACnetSetpointReference setpointReference =
         readSimpleField(
             "setpointReference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetSetpointReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetSetpointReference.staticParse(readBuffer), readBuffer));
     BACnetSetpointReference actualValue =
         readVirtualField("actualValue", BACnetSetpointReference.class, setpointReference);
 

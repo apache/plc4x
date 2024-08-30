@@ -104,7 +104,7 @@ public class BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharac
     BACnetContextTagCharacterString characterValue =
         readSimpleField(
             "characterValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

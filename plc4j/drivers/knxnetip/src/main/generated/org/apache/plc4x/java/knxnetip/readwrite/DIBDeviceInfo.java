@@ -226,19 +226,16 @@ public class DIBDeviceInfo implements Message {
 
     DeviceStatus deviceStatus =
         readSimpleField(
-            "deviceStatus",
-            new DataReaderComplexDefault<>(() -> DeviceStatus.staticParse(readBuffer), readBuffer));
+            "deviceStatus", readComplex(() -> DeviceStatus.staticParse(readBuffer), readBuffer));
 
     KnxAddress knxAddress =
         readSimpleField(
-            "knxAddress",
-            new DataReaderComplexDefault<>(() -> KnxAddress.staticParse(readBuffer), readBuffer));
+            "knxAddress", readComplex(() -> KnxAddress.staticParse(readBuffer), readBuffer));
 
     ProjectInstallationIdentifier projectInstallationIdentifier =
         readSimpleField(
             "projectInstallationIdentifier",
-            new DataReaderComplexDefault<>(
-                () -> ProjectInstallationIdentifier.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ProjectInstallationIdentifier.staticParse(readBuffer), readBuffer));
 
     byte[] knxNetIpDeviceSerialNumber =
         readBuffer.readByteArray("knxNetIpDeviceSerialNumber", Math.toIntExact(6));
@@ -246,12 +243,12 @@ public class DIBDeviceInfo implements Message {
     IPAddress knxNetIpDeviceMulticastAddress =
         readSimpleField(
             "knxNetIpDeviceMulticastAddress",
-            new DataReaderComplexDefault<>(() -> IPAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> IPAddress.staticParse(readBuffer), readBuffer));
 
     MACAddress knxNetIpDeviceMacAddress =
         readSimpleField(
             "knxNetIpDeviceMacAddress",
-            new DataReaderComplexDefault<>(() -> MACAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> MACAddress.staticParse(readBuffer), readBuffer));
 
     byte[] deviceFriendlyName = readBuffer.readByteArray("deviceFriendlyName", Math.toIntExact(30));
 

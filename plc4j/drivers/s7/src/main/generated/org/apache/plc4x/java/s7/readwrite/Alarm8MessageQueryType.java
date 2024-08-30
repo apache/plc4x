@@ -191,8 +191,7 @@ public class Alarm8MessageQueryType implements Message {
     List<AlarmMessageObjectQueryType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
             (byteCount) / (12));
 
     readBuffer.closeContext("Alarm8MessageQueryType");

@@ -113,14 +113,14 @@ public class BACnetAuthenticationPolicy implements Message {
     BACnetAuthenticationPolicyList policy =
         readSimpleField(
             "policy",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAuthenticationPolicyList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagBoolean orderEnforced =
         readSimpleField(
             "orderEnforced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -130,7 +130,7 @@ public class BACnetAuthenticationPolicy implements Message {
     BACnetContextTagUnsignedInteger timeout =
         readSimpleField(
             "timeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

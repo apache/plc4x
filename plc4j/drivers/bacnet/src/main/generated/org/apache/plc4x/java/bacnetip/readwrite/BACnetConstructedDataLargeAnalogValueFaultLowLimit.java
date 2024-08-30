@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueFaultLowLimit extends BACnetCo
     BACnetApplicationTagDouble faultLowLimit =
         readSimpleField(
             "faultLowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

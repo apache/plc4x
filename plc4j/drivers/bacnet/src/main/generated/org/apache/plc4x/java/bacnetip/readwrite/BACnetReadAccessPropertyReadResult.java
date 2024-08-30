@@ -144,15 +144,14 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
 
     BACnetConstructedData propertyValue =
         readOptionalField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -171,8 +170,7 @@ public class BACnetReadAccessPropertyReadResult implements Message {
     ErrorEnclosed propertyAccessError =
         readOptionalField(
             "propertyAccessError",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer),
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer),
             (peekedTagNumber) == (5));
     // Validation
     if (!(((((peekedTagNumber) == (5)) && ((propertyAccessError) != (null))))

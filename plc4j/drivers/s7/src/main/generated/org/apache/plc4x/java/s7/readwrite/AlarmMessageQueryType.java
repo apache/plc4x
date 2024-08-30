@@ -193,8 +193,7 @@ public class AlarmMessageQueryType implements Message {
     List<AlarmMessageObjectQueryType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectQueryType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessageQueryType");

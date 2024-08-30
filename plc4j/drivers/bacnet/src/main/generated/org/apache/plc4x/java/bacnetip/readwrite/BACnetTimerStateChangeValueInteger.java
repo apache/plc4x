@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueInteger extends BACnetTimerStateChangeVa
     BACnetApplicationTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

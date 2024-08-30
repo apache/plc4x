@@ -91,8 +91,7 @@ public class ApduControlContainer extends Apdu implements Message {
 
     ApduControl controlApdu =
         readSimpleField(
-            "controlApdu",
-            new DataReaderComplexDefault<>(() -> ApduControl.staticParse(readBuffer), readBuffer));
+            "controlApdu", readComplex(() -> ApduControl.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ApduControlContainer");
     // Create the instance

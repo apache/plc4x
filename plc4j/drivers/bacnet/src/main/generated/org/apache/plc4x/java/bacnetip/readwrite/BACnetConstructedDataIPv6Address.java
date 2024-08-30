@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPv6Address extends BACnetConstructedData impl
     BACnetApplicationTagOctetString ipv6Address =
         readSimpleField(
             "ipv6Address",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

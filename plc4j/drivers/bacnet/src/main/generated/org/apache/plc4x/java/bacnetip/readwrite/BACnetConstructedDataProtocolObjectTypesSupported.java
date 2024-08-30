@@ -128,7 +128,7 @@ public class BACnetConstructedDataProtocolObjectTypesSupported extends BACnetCon
     BACnetObjectTypesSupportedTagged protocolObjectTypesSupported =
         readSimpleField(
             "protocolObjectTypesSupported",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetObjectTypesSupportedTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -212,7 +212,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     List<PascalString> namespaces =
         readCountArrayField(
             "namespaces",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfNamespaces);
 
     int noOfStructureDataTypes =
@@ -221,7 +221,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     List<DataTypeDescription> structureDataTypes =
         readCountArrayField(
             "structureDataTypes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (DataTypeDescription)
                         ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14525")),
@@ -233,7 +233,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     List<DataTypeDescription> enumDataTypes =
         readCountArrayField(
             "enumDataTypes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (DataTypeDescription)
                         ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14525")),
@@ -245,7 +245,7 @@ public class DataTypeSchemaHeader extends ExtensionObjectDefinition implements M
     List<DataTypeDescription> simpleDataTypes =
         readCountArrayField(
             "simpleDataTypes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (DataTypeDescription)
                         ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14525")),

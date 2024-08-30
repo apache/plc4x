@@ -112,7 +112,7 @@ public class BACnetContextTagEnumerated extends BACnetContextTag implements Mess
     BACnetTagPayloadEnumerated payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadEnumerated.staticParse(
                         readBuffer, (long) (header.getActualLength())),

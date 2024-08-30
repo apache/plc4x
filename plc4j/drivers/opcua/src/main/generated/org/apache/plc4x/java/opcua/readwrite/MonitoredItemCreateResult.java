@@ -146,8 +146,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     long monitoredItemId = readSimpleField("monitoredItemId", readUnsignedLong(readBuffer, 32));
 
@@ -159,7 +158,7 @@ public class MonitoredItemCreateResult extends ExtensionObjectDefinition impleme
     ExtensionObject filterResult =
         readSimpleField(
             "filterResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("MonitoredItemCreateResult");

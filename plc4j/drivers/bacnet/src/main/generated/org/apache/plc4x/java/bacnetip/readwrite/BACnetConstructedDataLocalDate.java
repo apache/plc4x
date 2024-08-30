@@ -124,7 +124,7 @@ public class BACnetConstructedDataLocalDate extends BACnetConstructedData implem
     BACnetApplicationTagDate localDate =
         readSimpleField(
             "localDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDate actualValue =

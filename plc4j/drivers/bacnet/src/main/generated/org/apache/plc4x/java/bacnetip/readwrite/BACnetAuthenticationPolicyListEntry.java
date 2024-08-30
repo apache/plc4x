@@ -101,14 +101,14 @@ public class BACnetAuthenticationPolicyListEntry implements Message {
     BACnetDeviceObjectReferenceEnclosed credentialDataInput =
         readSimpleField(
             "credentialDataInput",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagUnsignedInteger index =
         readSimpleField(
             "index",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

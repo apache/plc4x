@@ -124,7 +124,7 @@ public class BACnetConstructedDataAlignIntervals extends BACnetConstructedData i
     BACnetApplicationTagBoolean alignIntervals =
         readSimpleField(
             "alignIntervals",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

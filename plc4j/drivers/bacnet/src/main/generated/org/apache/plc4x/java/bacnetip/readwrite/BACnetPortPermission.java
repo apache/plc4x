@@ -100,7 +100,7 @@ public class BACnetPortPermission implements Message {
     BACnetContextTagUnsignedInteger port =
         readSimpleField(
             "port",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -112,7 +112,7 @@ public class BACnetPortPermission implements Message {
     BACnetContextTagBoolean enable =
         readOptionalField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

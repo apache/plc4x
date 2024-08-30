@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueMinPresValue extends BACnetCon
     BACnetApplicationTagDouble minPresValue =
         readSimpleField(
             "minPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

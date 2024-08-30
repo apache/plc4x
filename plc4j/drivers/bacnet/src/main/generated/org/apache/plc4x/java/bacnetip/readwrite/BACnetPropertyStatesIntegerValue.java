@@ -91,7 +91,7 @@ public class BACnetPropertyStatesIntegerValue extends BACnetPropertyStates imple
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

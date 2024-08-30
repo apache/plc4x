@@ -284,15 +284,13 @@ public abstract class AmsPacket implements Message {
 
     AmsNetId targetAmsNetId =
         readSimpleField(
-            "targetAmsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer));
+            "targetAmsNetId", readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer));
 
     int targetAmsPort = readSimpleField("targetAmsPort", readUnsignedInt(readBuffer, 16));
 
     AmsNetId sourceAmsNetId =
         readSimpleField(
-            "sourceAmsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer));
+            "sourceAmsNetId", readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer));
 
     int sourceAmsPort = readSimpleField("sourceAmsPort", readUnsignedInt(readBuffer, 16));
 

@@ -99,7 +99,7 @@ public class BACnetTimerStateChangeValueCharacterString extends BACnetTimerState
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

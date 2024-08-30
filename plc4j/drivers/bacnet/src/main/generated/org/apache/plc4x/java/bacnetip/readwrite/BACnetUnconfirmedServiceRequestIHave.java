@@ -129,7 +129,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -138,7 +138,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -147,7 +147,7 @@ public class BACnetUnconfirmedServiceRequestIHave extends BACnetUnconfirmedServi
     BACnetApplicationTagCharacterString objectName =
         readSimpleField(
             "objectName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

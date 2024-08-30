@@ -91,7 +91,7 @@ public class BACnetPropertyStatesNodeType extends BACnetPropertyStates implement
     BACnetNodeTypeTagged nodeType =
         readSimpleField(
             "nodeType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNodeTypeTagged.staticParse(
                         readBuffer,

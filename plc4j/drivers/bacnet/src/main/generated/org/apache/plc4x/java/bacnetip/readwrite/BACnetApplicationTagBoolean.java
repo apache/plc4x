@@ -100,7 +100,7 @@ public class BACnetApplicationTagBoolean extends BACnetApplicationTag implements
     BACnetTagPayloadBoolean payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBoolean.staticParse(
                         readBuffer, (long) (header.getActualLength())),

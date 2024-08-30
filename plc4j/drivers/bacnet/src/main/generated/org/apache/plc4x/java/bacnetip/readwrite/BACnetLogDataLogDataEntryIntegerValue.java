@@ -92,7 +92,7 @@ public class BACnetLogDataLogDataEntryIntegerValue extends BACnetLogDataLogDataE
     BACnetContextTagSignedInteger integerValue =
         readSimpleField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

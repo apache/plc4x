@@ -90,7 +90,7 @@ public class BACnetHostAddressNull extends BACnetHostAddress implements Message 
     BACnetContextTagNull none =
         readSimpleField(
             "none",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

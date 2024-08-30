@@ -159,7 +159,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -171,7 +171,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -180,7 +180,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -192,7 +192,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     BACnetConstructedData propertyValue =
         readSimpleField(
             "propertyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,
@@ -206,7 +206,7 @@ public class BACnetConfirmedServiceRequestWriteProperty extends BACnetConfirmedS
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

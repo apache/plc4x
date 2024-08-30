@@ -124,7 +124,7 @@ public class BACnetConstructedDataVendorName extends BACnetConstructedData imple
     BACnetApplicationTagCharacterString vendorName =
         readSimpleField(
             "vendorName",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

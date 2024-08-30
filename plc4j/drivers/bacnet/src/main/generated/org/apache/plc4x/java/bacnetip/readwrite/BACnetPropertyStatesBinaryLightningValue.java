@@ -93,7 +93,7 @@ public class BACnetPropertyStatesBinaryLightningValue extends BACnetPropertyStat
     BACnetBinaryLightingPVTagged binaryLightningValue =
         readSimpleField(
             "binaryLightningValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryLightingPVTagged.staticParse(
                         readBuffer,

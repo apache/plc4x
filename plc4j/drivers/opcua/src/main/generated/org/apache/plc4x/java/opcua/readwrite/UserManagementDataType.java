@@ -124,8 +124,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserConfigurationMask userConfiguration =
         readEnumField(
@@ -136,8 +135,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
 
     PascalString description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("UserManagementDataType");
     // Create the instance

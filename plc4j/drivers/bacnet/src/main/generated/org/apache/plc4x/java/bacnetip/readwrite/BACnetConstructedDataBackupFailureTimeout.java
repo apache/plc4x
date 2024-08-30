@@ -126,7 +126,7 @@ public class BACnetConstructedDataBackupFailureTimeout extends BACnetConstructed
     BACnetApplicationTagUnsignedInteger backupFailureTimeout =
         readSimpleField(
             "backupFailureTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

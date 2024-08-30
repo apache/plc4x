@@ -83,9 +83,7 @@ public class Plc4xTagRequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
-        readSimpleField(
-            "tag",
-            new DataReaderComplexDefault<>(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
+        readSimpleField("tag", readComplex(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Plc4xTagRequest");
     // Create the instance

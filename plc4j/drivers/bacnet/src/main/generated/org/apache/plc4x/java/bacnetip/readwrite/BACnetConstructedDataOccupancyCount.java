@@ -124,7 +124,7 @@ public class BACnetConstructedDataOccupancyCount extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger occupancyCount =
         readSimpleField(
             "occupancyCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -202,13 +202,13 @@ public class CheckPeers extends PnIoCm_Block implements Message {
     PascalString peerPortId =
         readSimpleField(
             "peerPortId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PascalString peerChassisId =
         readSimpleField(
             "peerChassisId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("CheckPeers");

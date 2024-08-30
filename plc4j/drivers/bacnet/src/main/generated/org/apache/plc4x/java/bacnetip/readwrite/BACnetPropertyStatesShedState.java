@@ -91,7 +91,7 @@ public class BACnetPropertyStatesShedState extends BACnetPropertyStates implemen
     BACnetShedStateTagged shedState =
         readSimpleField(
             "shedState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetShedStateTagged.staticParse(
                         readBuffer,

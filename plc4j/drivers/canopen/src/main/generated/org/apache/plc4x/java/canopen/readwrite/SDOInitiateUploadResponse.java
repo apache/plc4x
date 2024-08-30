@@ -157,13 +157,12 @@ public class SDOInitiateUploadResponse extends SDOResponse implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     SDOInitiateUploadResponsePayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SDOInitiateUploadResponsePayload.staticParse(
                         readBuffer, (boolean) (expedited), (boolean) (indicated), (byte) (size)),

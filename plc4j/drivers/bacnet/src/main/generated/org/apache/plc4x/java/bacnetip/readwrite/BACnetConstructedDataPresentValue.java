@@ -124,7 +124,7 @@ public class BACnetConstructedDataPresentValue extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -92,8 +92,7 @@ public class AdsDiscoveryBlockUserName extends AdsDiscoveryBlock implements Mess
 
     AmsString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> AmsString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> AmsString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockUserName");
     // Create the instance

@@ -99,7 +99,7 @@ public class BACnetLogRecordLogDatumTimeChange extends BACnetLogRecordLogDatum i
     BACnetContextTagReal timeChange =
         readSimpleField(
             "timeChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

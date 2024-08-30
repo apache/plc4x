@@ -91,7 +91,7 @@ public class BACnetCalendarEntryWeekNDay extends BACnetCalendarEntry implements 
     BACnetWeekNDayTagged weekNDay =
         readSimpleField(
             "weekNDay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWeekNDayTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

@@ -125,8 +125,7 @@ public class BACnetConstructedDataLastAccessPoint extends BACnetConstructedData 
     BACnetDeviceObjectReference lastAccessPoint =
         readSimpleField(
             "lastAccessPoint",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, lastAccessPoint);
 

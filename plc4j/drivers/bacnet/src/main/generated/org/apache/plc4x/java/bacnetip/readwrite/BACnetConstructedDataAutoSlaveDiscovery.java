@@ -126,7 +126,7 @@ public class BACnetConstructedDataAutoSlaveDiscovery extends BACnetConstructedDa
     BACnetApplicationTagBoolean autoSlaveDiscovery =
         readSimpleField(
             "autoSlaveDiscovery",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

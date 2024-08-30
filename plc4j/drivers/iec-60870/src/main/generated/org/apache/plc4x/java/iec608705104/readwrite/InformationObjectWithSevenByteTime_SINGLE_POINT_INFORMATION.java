@@ -117,15 +117,13 @@ public class InformationObjectWithSevenByteTime_SINGLE_POINT_INFORMATION
     SinglePointInformation siq =
         readSimpleField(
             "siq",
-            new DataReaderComplexDefault<>(
-                () -> SinglePointInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SinglePointInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_SINGLE_POINT_INFORMATION");

@@ -123,19 +123,15 @@ public class CBusPointToPointCommandIndirect extends CBusPointToPointCommand imp
 
     BridgeAddress bridgeAddress =
         readSimpleField(
-            "bridgeAddress",
-            new DataReaderComplexDefault<>(
-                () -> BridgeAddress.staticParse(readBuffer), readBuffer));
+            "bridgeAddress", readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer));
 
     NetworkRoute networkRoute =
         readSimpleField(
-            "networkRoute",
-            new DataReaderComplexDefault<>(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
+            "networkRoute", readComplex(() -> NetworkRoute.staticParse(readBuffer), readBuffer));
 
     UnitAddress unitAddress =
         readSimpleField(
-            "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer));
+            "unitAddress", readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CBusPointToPointCommandIndirect");
     // Create the instance

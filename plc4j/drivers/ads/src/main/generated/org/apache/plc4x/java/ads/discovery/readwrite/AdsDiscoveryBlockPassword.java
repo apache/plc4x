@@ -92,8 +92,7 @@ public class AdsDiscoveryBlockPassword extends AdsDiscoveryBlock implements Mess
 
     AmsString password =
         readSimpleField(
-            "password",
-            new DataReaderComplexDefault<>(() -> AmsString.staticParse(readBuffer), readBuffer));
+            "password", readComplex(() -> AmsString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockPassword");
     // Create the instance

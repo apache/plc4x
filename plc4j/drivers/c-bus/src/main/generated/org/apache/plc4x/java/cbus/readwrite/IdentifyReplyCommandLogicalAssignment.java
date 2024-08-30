@@ -104,8 +104,7 @@ public class IdentifyReplyCommandLogicalAssignment extends IdentifyReplyCommand 
     List<LogicAssignment> logicAssigment =
         readCountArrayField(
             "logicAssigment",
-            new DataReaderComplexDefault<>(
-                () -> LogicAssignment.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LogicAssignment.staticParse(readBuffer), readBuffer),
             numBytes);
 
     readBuffer.closeContext("IdentifyReplyCommandLogicalAssignment");

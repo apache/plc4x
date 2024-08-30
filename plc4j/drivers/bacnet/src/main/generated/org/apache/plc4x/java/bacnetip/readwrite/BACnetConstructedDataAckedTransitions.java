@@ -126,7 +126,7 @@ public class BACnetConstructedDataAckedTransitions extends BACnetConstructedData
     BACnetEventTransitionBitsTagged ackedTransitions =
         readSimpleField(
             "ackedTransitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

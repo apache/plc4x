@@ -124,7 +124,7 @@ public class BACnetConstructedDataMinimumValue extends BACnetConstructedData imp
     BACnetApplicationTagReal minimumValue =
         readSimpleField(
             "minimumValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -124,7 +124,7 @@ public class BACnetConstructedDataTrigger extends BACnetConstructedData implemen
     BACnetApplicationTagBoolean trigger =
         readSimpleField(
             "trigger",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

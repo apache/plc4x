@@ -118,7 +118,7 @@ public class BACnetConstructedDataAcceptedModes extends BACnetConstructedData im
     List<BACnetLifeSafetyModeTagged> acceptedModes =
         readTerminatedArrayField(
             "acceptedModes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

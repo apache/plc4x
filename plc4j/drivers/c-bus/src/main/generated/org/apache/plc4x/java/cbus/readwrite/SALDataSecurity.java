@@ -91,8 +91,7 @@ public class SALDataSecurity extends SALData implements Message {
 
     SecurityData securityData =
         readSimpleField(
-            "securityData",
-            new DataReaderComplexDefault<>(() -> SecurityData.staticParse(readBuffer), readBuffer));
+            "securityData", readComplex(() -> SecurityData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataSecurity");
     // Create the instance

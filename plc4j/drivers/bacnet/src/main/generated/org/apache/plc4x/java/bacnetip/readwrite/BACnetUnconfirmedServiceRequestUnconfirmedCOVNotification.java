@@ -163,7 +163,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -175,7 +175,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagObjectIdentifier initiatingDeviceIdentifier =
         readSimpleField(
             "initiatingDeviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -187,7 +187,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -199,7 +199,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetContextTagUnsignedInteger lifetimeInSeconds =
         readSimpleField(
             "lifetimeInSeconds",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -211,7 +211,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedCOVNotification
     BACnetPropertyValues listOfValues =
         readSimpleField(
             "listOfValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValues.staticParse(
                         readBuffer,

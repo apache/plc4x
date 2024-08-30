@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueNull extends BACnetTimerStateChangeValue
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

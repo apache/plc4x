@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccumulatorLowLimit extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

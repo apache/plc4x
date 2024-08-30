@@ -133,8 +133,7 @@ public class MonitoredItemModifyResult extends ExtensionObjectDefinition impleme
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     double revisedSamplingInterval =
         readSimpleField("revisedSamplingInterval", readDouble(readBuffer, 64));
@@ -144,7 +143,7 @@ public class MonitoredItemModifyResult extends ExtensionObjectDefinition impleme
     ExtensionObject filterResult =
         readSimpleField(
             "filterResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("MonitoredItemModifyResult");

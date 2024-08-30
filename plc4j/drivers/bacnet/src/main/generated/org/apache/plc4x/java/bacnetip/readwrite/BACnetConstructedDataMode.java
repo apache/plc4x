@@ -124,7 +124,7 @@ public class BACnetConstructedDataMode extends BACnetConstructedData implements 
     BACnetLifeSafetyModeTagged mode =
         readSimpleField(
             "mode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

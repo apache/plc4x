@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueBitString extends BACnetTimerStateChange
     BACnetApplicationTagBitString bitStringValue =
         readSimpleField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

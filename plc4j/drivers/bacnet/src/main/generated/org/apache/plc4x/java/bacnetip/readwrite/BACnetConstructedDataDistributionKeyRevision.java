@@ -128,7 +128,7 @@ public class BACnetConstructedDataDistributionKeyRevision extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger distributionKeyRevision =
         readSimpleField(
             "distributionKeyRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

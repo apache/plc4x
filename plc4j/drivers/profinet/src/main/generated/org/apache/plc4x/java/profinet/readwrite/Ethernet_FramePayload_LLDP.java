@@ -91,9 +91,7 @@ public class Ethernet_FramePayload_LLDP extends Ethernet_FramePayload implements
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Lldp_Pdu pdu =
-        readSimpleField(
-            "pdu",
-            new DataReaderComplexDefault<>(() -> Lldp_Pdu.staticParse(readBuffer), readBuffer));
+        readSimpleField("pdu", readComplex(() -> Lldp_Pdu.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Ethernet_FramePayload_LLDP");
     // Create the instance

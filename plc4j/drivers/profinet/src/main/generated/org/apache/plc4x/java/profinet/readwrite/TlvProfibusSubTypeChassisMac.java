@@ -92,8 +92,7 @@ public class TlvProfibusSubTypeChassisMac extends TlvOrgSpecificProfibusUnit imp
 
     MacAddress macAddress =
         readSimpleField(
-            "macAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer));
+            "macAddress", readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("TlvProfibusSubTypeChassisMac");
     // Create the instance

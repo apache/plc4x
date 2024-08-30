@@ -152,7 +152,7 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataCharacterStringValueFaultValues extends BACnet
     List<BACnetOptionalCharacterString> faultValues =
         readTerminatedArrayField(
             "faultValues",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalCharacterString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetOptionalCharacterString.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

@@ -138,7 +138,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
     SALData salData =
         readSimpleField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

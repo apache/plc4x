@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValuePresentValue extends BACnetCon
     BACnetApplicationTagDouble presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

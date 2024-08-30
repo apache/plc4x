@@ -126,7 +126,7 @@ public class BACnetConstructedDataLifeSafetyZoneMaintenanceRequired extends BACn
     BACnetApplicationTagBoolean maintenanceRequired =
         readSimpleField(
             "maintenanceRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -126,7 +126,7 @@ public class BACnetConstructedDataExtendedTimeEnable extends BACnetConstructedDa
     BACnetApplicationTagBoolean extendedTimeEnable =
         readSimpleField(
             "extendedTimeEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

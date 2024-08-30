@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLiftCarDriveStatus extends BACnetPropertyStates
     BACnetLiftCarDriveStatusTagged liftCarDriveStatus =
         readSimpleField(
             "liftCarDriveStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDriveStatusTagged.staticParse(
                         readBuffer,

@@ -85,7 +85,7 @@ public class BACnetAccessThreatLevel implements Message {
     BACnetApplicationTagUnsignedInteger threatLevel =
         readSimpleField(
             "threatLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

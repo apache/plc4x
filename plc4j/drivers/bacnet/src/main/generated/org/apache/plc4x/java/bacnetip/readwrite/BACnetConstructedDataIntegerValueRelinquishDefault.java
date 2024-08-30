@@ -126,7 +126,7 @@ public class BACnetConstructedDataIntegerValueRelinquishDefault extends BACnetCo
     BACnetApplicationTagSignedInteger relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

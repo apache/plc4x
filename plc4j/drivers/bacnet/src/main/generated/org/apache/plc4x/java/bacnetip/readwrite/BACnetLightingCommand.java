@@ -162,7 +162,7 @@ public class BACnetLightingCommand implements Message {
     BACnetLightingOperationTagged lightningOperation =
         readSimpleField(
             "lightningOperation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLightingOperationTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -171,7 +171,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal targetLevel =
         readOptionalField(
             "targetLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -181,7 +181,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal rampRate =
         readOptionalField(
             "rampRate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -191,7 +191,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagReal stepIncrement =
         readOptionalField(
             "stepIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -201,7 +201,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagUnsignedInteger fadeTime =
         readOptionalField(
             "fadeTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -213,7 +213,7 @@ public class BACnetLightingCommand implements Message {
     BACnetContextTagUnsignedInteger priority =
         readOptionalField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

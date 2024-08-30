@@ -92,7 +92,7 @@ public class BACnetPropertyStatesLiftCarDirection extends BACnetPropertyStates i
     BACnetLiftCarDirectionTagged liftCarDirection =
         readSimpleField(
             "liftCarDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarDirectionTagged.staticParse(
                         readBuffer,

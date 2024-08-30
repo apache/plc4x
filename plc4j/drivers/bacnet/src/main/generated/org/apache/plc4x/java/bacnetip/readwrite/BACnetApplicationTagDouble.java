@@ -100,8 +100,7 @@ public class BACnetApplicationTagDouble extends BACnetApplicationTag implements 
     BACnetTagPayloadDouble payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
     double actualValue = readVirtualField("actualValue", double.class, payload.getValue());
 
     readBuffer.closeContext("BACnetApplicationTagDouble");

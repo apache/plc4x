@@ -124,8 +124,7 @@ public class BACnetConstructedDataThreatLevel extends BACnetConstructedData impl
     BACnetAccessThreatLevel threatLevel =
         readSimpleField(
             "threatLevel",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAccessThreatLevel.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAccessThreatLevel.staticParse(readBuffer), readBuffer));
     BACnetAccessThreatLevel actualValue =
         readVirtualField("actualValue", BACnetAccessThreatLevel.class, threatLevel);
 

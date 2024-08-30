@@ -97,8 +97,7 @@ public class DescriptionRequest extends KnxNetIpMessage implements Message {
     HPAIControlEndpoint hpaiControlEndpoint =
         readSimpleField(
             "hpaiControlEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIControlEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("DescriptionRequest");

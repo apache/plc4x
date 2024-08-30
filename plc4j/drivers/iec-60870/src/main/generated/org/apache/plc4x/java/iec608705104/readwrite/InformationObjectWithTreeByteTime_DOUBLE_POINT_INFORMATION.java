@@ -117,15 +117,13 @@ public class InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION
     DoublePointInformation diq =
         readSimpleField(
             "diq",
-            new DataReaderComplexDefault<>(
-                () -> DoublePointInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DoublePointInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithTreeByteTime_DOUBLE_POINT_INFORMATION");

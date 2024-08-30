@@ -128,7 +128,7 @@ public class BACnetConstructedDataDaylightSavingsStatus extends BACnetConstructe
     BACnetApplicationTagBoolean daylightSavingsStatus =
         readSimpleField(
             "daylightSavingsStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -92,8 +92,7 @@ public class ApduDataContainer extends Apdu implements Message {
     ApduData dataApdu =
         readSimpleField(
             "dataApdu",
-            new DataReaderComplexDefault<>(
-                () -> ApduData.staticParse(readBuffer, (short) (dataLength)), readBuffer));
+            readComplex(() -> ApduData.staticParse(readBuffer, (short) (dataLength)), readBuffer));
 
     readBuffer.closeContext("ApduDataContainer");
     // Create the instance

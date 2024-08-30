@@ -192,7 +192,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
     SALData salData =
         readOptionalField(
             "salData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SALData.staticParse(
                         readBuffer, (ApplicationId) (application.getApplicationId())),

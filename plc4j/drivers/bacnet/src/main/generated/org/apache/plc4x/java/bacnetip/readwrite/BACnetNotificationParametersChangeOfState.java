@@ -148,21 +148,21 @@ public class BACnetNotificationParametersChangeOfState extends BACnetNotificatio
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetPropertyStatesEnclosed changeOfState =
         readSimpleField(
             "changeOfState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyStatesEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -171,7 +171,7 @@ public class BACnetNotificationParametersChangeOfState extends BACnetNotificatio
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

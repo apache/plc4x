@@ -93,8 +93,7 @@ public class SALDataTriggerControl extends SALData implements Message {
     TriggerControlData triggerControlData =
         readSimpleField(
             "triggerControlData",
-            new DataReaderComplexDefault<>(
-                () -> TriggerControlData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TriggerControlData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataTriggerControl");
     // Create the instance

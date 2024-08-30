@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccessZoneAdjustValue extends BACnetConstructe
     BACnetApplicationTagSignedInteger adjustValue =
         readSimpleField(
             "adjustValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

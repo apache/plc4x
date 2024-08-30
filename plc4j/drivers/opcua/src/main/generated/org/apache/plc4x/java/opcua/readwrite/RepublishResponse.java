@@ -107,14 +107,14 @@ public class RepublishResponse extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
     ExtensionObjectDefinition notificationMessage =
         readSimpleField(
             "notificationMessage",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("805")),
                 readBuffer));
 

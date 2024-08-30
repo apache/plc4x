@@ -124,7 +124,7 @@ public class BACnetConstructedDataInitialTimeout extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger initialTimeout =
         readSimpleField(
             "initialTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

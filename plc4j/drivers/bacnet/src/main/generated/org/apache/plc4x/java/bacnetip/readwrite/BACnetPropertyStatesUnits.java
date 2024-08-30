@@ -91,7 +91,7 @@ public class BACnetPropertyStatesUnits extends BACnetPropertyStates implements M
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
             "units",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEngineeringUnitsTagged.staticParse(
                         readBuffer,

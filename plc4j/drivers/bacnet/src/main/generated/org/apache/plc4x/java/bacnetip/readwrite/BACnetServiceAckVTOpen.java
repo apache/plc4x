@@ -101,7 +101,7 @@ public class BACnetServiceAckVTOpen extends BACnetServiceAck implements Message 
     BACnetApplicationTagUnsignedInteger remoteVtSessionIdentifier =
         readSimpleField(
             "remoteVtSessionIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

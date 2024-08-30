@@ -128,7 +128,7 @@ public class BACnetConstructedDataBBMDAcceptFDRegistrations extends BACnetConstr
     BACnetApplicationTagBoolean bbmdAcceptFDRegistrations =
         readSimpleField(
             "bbmdAcceptFDRegistrations",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

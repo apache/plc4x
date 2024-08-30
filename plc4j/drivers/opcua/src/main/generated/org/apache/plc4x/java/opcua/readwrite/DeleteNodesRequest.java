@@ -126,7 +126,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class DeleteNodesRequest extends ExtensionObjectDefinition implements Mes
     List<ExtensionObjectDefinition> nodesToDelete =
         readCountArrayField(
             "nodesToDelete",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("384")),
                 readBuffer),
             noOfNodesToDelete);

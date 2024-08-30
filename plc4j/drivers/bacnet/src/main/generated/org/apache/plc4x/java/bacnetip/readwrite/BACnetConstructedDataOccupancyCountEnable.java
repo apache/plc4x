@@ -126,7 +126,7 @@ public class BACnetConstructedDataOccupancyCountEnable extends BACnetConstructed
     BACnetApplicationTagBoolean occupancyCountEnable =
         readSimpleField(
             "occupancyCountEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

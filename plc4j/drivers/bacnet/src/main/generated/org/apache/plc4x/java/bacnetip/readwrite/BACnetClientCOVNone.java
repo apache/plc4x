@@ -92,7 +92,7 @@ public class BACnetClientCOVNone extends BACnetClientCOV implements Message {
     BACnetApplicationTagNull defaultIncrement =
         readSimpleField(
             "defaultIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

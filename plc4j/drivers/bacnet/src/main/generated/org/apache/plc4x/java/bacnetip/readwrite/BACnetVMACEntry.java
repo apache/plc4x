@@ -104,7 +104,7 @@ public class BACnetVMACEntry implements Message {
     BACnetContextTagOctetString virtualMacAddress =
         readOptionalField(
             "virtualMacAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(
@@ -116,7 +116,7 @@ public class BACnetVMACEntry implements Message {
     BACnetContextTagOctetString nativeMacAddress =
         readOptionalField(
             "nativeMacAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

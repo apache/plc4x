@@ -195,8 +195,7 @@ public class S7PayloadDiagnosticMessage extends S7PayloadUserDataItem implements
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7PayloadDiagnosticMessage");
     // Create the instance

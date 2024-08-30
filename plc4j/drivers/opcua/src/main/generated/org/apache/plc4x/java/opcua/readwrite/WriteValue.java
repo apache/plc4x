@@ -127,21 +127,16 @@ public class WriteValue extends ExtensionObjectDefinition implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId nodeId =
-        readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("nodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     PascalString indexRange =
         readSimpleField(
-            "indexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "indexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     DataValue value =
-        readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer));
+        readSimpleField("value", readComplex(() -> DataValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("WriteValue");
     // Create the instance

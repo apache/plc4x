@@ -160,28 +160,24 @@ public class BuildInfo extends ExtensionObjectDefinition implements Message {
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString manufacturerName =
         readSimpleField(
             "manufacturerName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productName =
         readSimpleField(
-            "productName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString softwareVersion =
         readSimpleField(
-            "softwareVersion",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "softwareVersion", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString buildNumber =
         readSimpleField(
-            "buildNumber",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "buildNumber", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long buildDate = readSimpleField("buildDate", readSignedLong(readBuffer, 64));
 

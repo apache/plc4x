@@ -126,7 +126,7 @@ public class BACnetConstructedDataAuthenticationStatus extends BACnetConstructed
     BACnetAuthenticationStatusTagged authenticationStatus =
         readSimpleField(
             "authenticationStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthenticationStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

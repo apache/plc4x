@@ -128,7 +128,7 @@ public class BACnetConstructedDataIPDHCPLeaseTimeRemaining extends BACnetConstru
     BACnetApplicationTagUnsignedInteger ipDhcpLeaseTimeRemaining =
         readSimpleField(
             "ipDhcpLeaseTimeRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

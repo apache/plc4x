@@ -124,7 +124,7 @@ public class BACnetConstructedDataObjectType extends BACnetConstructedData imple
     BACnetObjectTypeTagged objectType =
         readSimpleField(
             "objectType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetObjectTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

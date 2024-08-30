@@ -124,7 +124,7 @@ public class BACnetConstructedDataDoorStatus extends BACnetConstructedData imple
     BACnetDoorStatusTagged doorStatus =
         readSimpleField(
             "doorStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -91,8 +91,7 @@ public class SALDataMetering extends SALData implements Message {
 
     MeteringData meteringData =
         readSimpleField(
-            "meteringData",
-            new DataReaderComplexDefault<>(() -> MeteringData.staticParse(readBuffer), readBuffer));
+            "meteringData", readComplex(() -> MeteringData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataMetering");
     // Create the instance

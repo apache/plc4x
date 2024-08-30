@@ -159,7 +159,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -177,7 +177,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
     List<ExtensionObjectDefinition> itemsToModify =
         readCountArrayField(
             "itemsToModify",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("757")),
                 readBuffer),
             noOfItemsToModify);

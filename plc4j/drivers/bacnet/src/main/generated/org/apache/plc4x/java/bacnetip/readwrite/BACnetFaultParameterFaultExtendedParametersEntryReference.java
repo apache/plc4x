@@ -93,7 +93,7 @@ public class BACnetFaultParameterFaultExtendedParametersEntryReference
     BACnetDeviceObjectPropertyReferenceEnclosed reference =
         readSimpleField(
             "reference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (0)),

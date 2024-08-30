@@ -147,7 +147,7 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -159,7 +159,7 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -168,7 +168,7 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -180,7 +180,7 @@ public class BACnetConfirmedServiceRequestAddListElement extends BACnetConfirmed
     BACnetConstructedData listOfElements =
         readOptionalField(
             "listOfElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

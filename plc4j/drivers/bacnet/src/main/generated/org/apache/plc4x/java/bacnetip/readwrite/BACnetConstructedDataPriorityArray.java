@@ -124,7 +124,7 @@ public class BACnetConstructedDataPriorityArray extends BACnetConstructedData im
     BACnetPriorityArray priorityArray =
         readSimpleField(
             "priorityArray",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPriorityArray.staticParse(
                         readBuffer,

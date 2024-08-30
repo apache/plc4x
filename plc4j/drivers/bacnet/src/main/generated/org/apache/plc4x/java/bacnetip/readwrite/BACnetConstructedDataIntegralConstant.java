@@ -126,7 +126,7 @@ public class BACnetConstructedDataIntegralConstant extends BACnetConstructedData
     BACnetApplicationTagReal integralConstant =
         readSimpleField(
             "integralConstant",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

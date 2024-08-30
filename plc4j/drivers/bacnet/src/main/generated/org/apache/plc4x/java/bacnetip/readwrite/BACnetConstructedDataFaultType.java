@@ -124,7 +124,7 @@ public class BACnetConstructedDataFaultType extends BACnetConstructedData implem
     BACnetFaultTypeTagged faultType =
         readSimpleField(
             "faultType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

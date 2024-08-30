@@ -127,7 +127,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -137,7 +137,7 @@ public class RegisterNodesResponse extends ExtensionObjectDefinition implements 
     List<NodeId> registeredNodeIds =
         readCountArrayField(
             "registeredNodeIds",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NodeId.staticParse(readBuffer), readBuffer),
             noOfRegisteredNodeIds);
 
     readBuffer.closeContext("RegisterNodesResponse");

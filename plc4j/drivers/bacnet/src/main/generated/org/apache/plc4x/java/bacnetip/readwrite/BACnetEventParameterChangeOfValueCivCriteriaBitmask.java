@@ -101,7 +101,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaBitmask
     BACnetContextTagBitString bitmask =
         readSimpleField(
             "bitmask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

@@ -128,7 +128,7 @@ public class BACnetConstructedDataActiveAuthenticationPolicy extends BACnetConst
     BACnetApplicationTagUnsignedInteger activeAuthenticationPolicy =
         readSimpleField(
             "activeAuthenticationPolicy",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

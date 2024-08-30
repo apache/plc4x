@@ -107,7 +107,7 @@ public class BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncre
     BACnetContextTagReal referencedPropertyIncrement =
         readSimpleField(
             "referencedPropertyIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

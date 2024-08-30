@@ -259,7 +259,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -271,7 +271,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagObjectIdentifier initiatingDeviceIdentifier =
         readSimpleField(
             "initiatingDeviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -283,7 +283,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagObjectIdentifier eventObjectIdentifier =
         readSimpleField(
             "eventObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -295,13 +295,13 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetTimeStampEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTimeStampEnclosed.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetContextTagUnsignedInteger notificationClass =
         readSimpleField(
             "notificationClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -313,7 +313,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagUnsignedInteger priority =
         readSimpleField(
             "priority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -325,7 +325,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer, (short) (6), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -334,7 +334,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagCharacterString messageText =
         readOptionalField(
             "messageText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -346,7 +346,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer, (short) (8), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -355,7 +355,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetContextTagBoolean ackRequired =
         readOptionalField(
             "ackRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -365,7 +365,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetEventStateTagged fromState =
         readOptionalField(
             "fromState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (10), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -374,7 +374,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetEventStateTagged toState =
         readSimpleField(
             "toState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (11), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -383,7 +383,7 @@ public class ConfirmedEventNotificationRequest implements Message {
     BACnetNotificationParameters eventValues =
         readOptionalField(
             "eventValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotificationParameters.staticParse(
                         readBuffer,

@@ -115,9 +115,7 @@ public class ViewDescription extends ExtensionObjectDefinition implements Messag
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId viewId =
-        readSimpleField(
-            "viewId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("viewId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long timestamp = readSimpleField("timestamp", readSignedLong(readBuffer, 64));
 

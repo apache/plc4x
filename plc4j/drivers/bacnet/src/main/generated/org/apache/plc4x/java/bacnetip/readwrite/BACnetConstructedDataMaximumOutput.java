@@ -124,7 +124,7 @@ public class BACnetConstructedDataMaximumOutput extends BACnetConstructedData im
     BACnetApplicationTagReal maximumOutput =
         readSimpleField(
             "maximumOutput",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

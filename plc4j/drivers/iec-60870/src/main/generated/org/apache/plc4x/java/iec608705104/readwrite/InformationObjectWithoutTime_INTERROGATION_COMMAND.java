@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_INTERROGATION_COMMAND extends Informat
     QualifierOfInterrogation qoi =
         readSimpleField(
             "qoi",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfInterrogation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfInterrogation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_INTERROGATION_COMMAND");

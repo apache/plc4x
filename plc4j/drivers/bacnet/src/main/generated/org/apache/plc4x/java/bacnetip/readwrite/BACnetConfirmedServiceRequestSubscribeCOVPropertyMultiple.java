@@ -174,7 +174,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -186,7 +186,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagBoolean issueConfirmedNotifications =
         readOptionalField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -196,7 +196,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger lifetime =
         readOptionalField(
             "lifetime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -208,7 +208,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
     BACnetContextTagUnsignedInteger maxNotificationDelay =
         readOptionalField(
             "maxNotificationDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -221,7 +221,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple
         listOfCovSubscriptionSpecifications =
             readSimpleField(
                 "listOfCovSubscriptionSpecifications",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsList
                             .staticParse(readBuffer, (short) (4)),

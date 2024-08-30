@@ -125,7 +125,7 @@ public class BACnetConstructedDataDefaultFadeTime extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger defaultFadeTime =
         readSimpleField(
             "defaultFadeTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

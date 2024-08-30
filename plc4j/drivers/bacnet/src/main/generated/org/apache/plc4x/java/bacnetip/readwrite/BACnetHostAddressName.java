@@ -91,7 +91,7 @@ public class BACnetHostAddressName extends BACnetHostAddress implements Message 
     BACnetContextTagCharacterString name =
         readSimpleField(
             "name",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

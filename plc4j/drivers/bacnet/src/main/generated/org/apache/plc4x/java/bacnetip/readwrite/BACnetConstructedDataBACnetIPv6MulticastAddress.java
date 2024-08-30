@@ -126,7 +126,7 @@ public class BACnetConstructedDataBACnetIPv6MulticastAddress extends BACnetConst
     BACnetApplicationTagOctetString ipv6MulticastAddress =
         readSimpleField(
             "ipv6MulticastAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

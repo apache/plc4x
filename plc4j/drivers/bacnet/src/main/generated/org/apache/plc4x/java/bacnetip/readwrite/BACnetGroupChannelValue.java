@@ -115,7 +115,7 @@ public class BACnetGroupChannelValue implements Message {
     BACnetContextTagUnsignedInteger channel =
         readSimpleField(
             "channel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -127,7 +127,7 @@ public class BACnetGroupChannelValue implements Message {
     BACnetContextTagUnsignedInteger overridingPriority =
         readOptionalField(
             "overridingPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -138,9 +138,7 @@ public class BACnetGroupChannelValue implements Message {
 
     BACnetChannelValue value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetGroupChannelValue");
     // Create the instance

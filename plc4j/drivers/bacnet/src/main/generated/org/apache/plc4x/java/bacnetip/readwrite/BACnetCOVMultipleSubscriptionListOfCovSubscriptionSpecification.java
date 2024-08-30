@@ -128,14 +128,14 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry>
         listOfCovSubscriptionSpecificationEntry =
             readTerminatedArrayField(
                 "listOfCovSubscriptionSpecificationEntry",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry
                             .staticParse(readBuffer),
@@ -148,7 +148,7 @@ public class BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification");

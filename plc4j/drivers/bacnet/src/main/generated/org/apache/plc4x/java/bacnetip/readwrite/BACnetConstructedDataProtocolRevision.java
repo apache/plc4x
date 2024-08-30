@@ -126,7 +126,7 @@ public class BACnetConstructedDataProtocolRevision extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger protocolRevision =
         readSimpleField(
             "protocolRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

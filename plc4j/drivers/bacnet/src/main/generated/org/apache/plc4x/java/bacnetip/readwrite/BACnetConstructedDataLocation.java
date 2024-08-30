@@ -124,7 +124,7 @@ public class BACnetConstructedDataLocation extends BACnetConstructedData impleme
     BACnetApplicationTagCharacterString location =
         readSimpleField(
             "location",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

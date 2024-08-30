@@ -114,9 +114,7 @@ public class ParameterValueInterfaceOptions1 extends ParameterValue implements M
 
     InterfaceOptions1 value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (1)));
 

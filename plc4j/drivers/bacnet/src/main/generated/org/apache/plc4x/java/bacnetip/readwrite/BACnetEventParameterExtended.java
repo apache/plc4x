@@ -145,13 +145,12 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (9)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (9)), readBuffer));
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -160,7 +159,7 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     BACnetContextTagUnsignedInteger extendedEventType =
         readSimpleField(
             "extendedEventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -172,15 +171,14 @@ public class BACnetEventParameterExtended extends BACnetEventParameter implement
     BACnetEventParameterExtendedParameters parameters =
         readSimpleField(
             "parameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventParameterExtendedParameters.staticParse(readBuffer, (short) (2)),
                 readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (9)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (9)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterExtended");
     // Create the instance

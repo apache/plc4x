@@ -86,7 +86,7 @@ public class BACnetAssignedLandingCalls implements Message {
     BACnetAssignedLandingCallsLandingCallsList landingCalls =
         readSimpleField(
             "landingCalls",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAssignedLandingCallsLandingCallsList.staticParse(readBuffer, (short) (0)),
                 readBuffer));

@@ -126,7 +126,7 @@ public class BACnetConstructedDataDoorOpenTooLongTime extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger doorOpenTooLongTime =
         readSimpleField(
             "doorOpenTooLongTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

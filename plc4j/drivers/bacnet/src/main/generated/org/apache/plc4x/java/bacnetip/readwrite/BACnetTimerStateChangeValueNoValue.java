@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueNoValue extends BACnetTimerStateChangeVa
     BACnetContextTagNull noValue =
         readSimpleField(
             "noValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

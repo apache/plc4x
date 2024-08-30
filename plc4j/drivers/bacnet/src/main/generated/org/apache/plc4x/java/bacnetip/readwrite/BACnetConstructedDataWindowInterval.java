@@ -124,7 +124,7 @@ public class BACnetConstructedDataWindowInterval extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger windowInterval =
         readSimpleField(
             "windowInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

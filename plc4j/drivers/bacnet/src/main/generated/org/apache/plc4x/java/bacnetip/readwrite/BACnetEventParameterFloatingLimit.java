@@ -171,13 +171,12 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -189,7 +188,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetDeviceObjectPropertyReferenceEnclosed setpointReference =
         readSimpleField(
             "setpointReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -198,7 +197,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetContextTagReal lowDiffLimit =
         readSimpleField(
             "lowDiffLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -208,7 +207,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetContextTagReal highDiffLimit =
         readSimpleField(
             "highDiffLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -218,7 +217,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetContextTagReal deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(
@@ -228,8 +227,7 @@ public class BACnetEventParameterFloatingLimit extends BACnetEventParameter impl
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterFloatingLimit");
     // Create the instance

@@ -124,8 +124,7 @@ public class BACnetConstructedDataEnergyMeterRef extends BACnetConstructedData i
     BACnetDeviceObjectReference energyMeterRef =
         readSimpleField(
             "energyMeterRef",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, energyMeterRef);
 

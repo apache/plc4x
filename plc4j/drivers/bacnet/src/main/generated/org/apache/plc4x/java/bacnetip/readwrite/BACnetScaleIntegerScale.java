@@ -90,7 +90,7 @@ public class BACnetScaleIntegerScale extends BACnetScale implements Message {
     BACnetContextTagSignedInteger integerScale =
         readSimpleField(
             "integerScale",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(

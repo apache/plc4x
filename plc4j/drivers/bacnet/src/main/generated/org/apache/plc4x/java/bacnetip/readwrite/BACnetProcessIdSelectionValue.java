@@ -92,7 +92,7 @@ public class BACnetProcessIdSelectionValue extends BACnetProcessIdSelection impl
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

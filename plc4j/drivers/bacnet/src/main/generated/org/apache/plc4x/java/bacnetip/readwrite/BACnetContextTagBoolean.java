@@ -133,7 +133,7 @@ public class BACnetContextTagBoolean extends BACnetContextTag implements Message
     BACnetTagPayloadBoolean payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTagPayloadBoolean.staticParse(readBuffer, (long) (value)), readBuffer));
     boolean actualValue = readVirtualField("actualValue", boolean.class, payload.getValue());
 

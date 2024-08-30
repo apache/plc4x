@@ -91,7 +91,7 @@ public class BACnetPropertyStatesPolarity extends BACnetPropertyStates implement
     BACnetPolarityTagged polarity =
         readSimpleField(
             "polarity",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPolarityTagged.staticParse(
                         readBuffer,

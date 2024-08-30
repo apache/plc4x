@@ -124,7 +124,7 @@ public class BACnetConstructedDataDutyWindow extends BACnetConstructedData imple
     BACnetApplicationTagUnsignedInteger dutyWindow =
         readSimpleField(
             "dutyWindow",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

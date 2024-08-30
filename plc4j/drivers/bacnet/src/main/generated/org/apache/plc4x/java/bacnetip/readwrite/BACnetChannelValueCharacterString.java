@@ -92,7 +92,7 @@ public class BACnetChannelValueCharacterString extends BACnetChannelValue implem
     BACnetApplicationTagCharacterString characterStringValue =
         readSimpleField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

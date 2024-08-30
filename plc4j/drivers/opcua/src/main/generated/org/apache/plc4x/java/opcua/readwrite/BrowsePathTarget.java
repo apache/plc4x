@@ -104,9 +104,7 @@ public class BrowsePathTarget extends ExtensionObjectDefinition implements Messa
 
     ExpandedNodeId targetId =
         readSimpleField(
-            "targetId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     long remainingPathIndex =
         readSimpleField("remainingPathIndex", readUnsignedLong(readBuffer, 32));

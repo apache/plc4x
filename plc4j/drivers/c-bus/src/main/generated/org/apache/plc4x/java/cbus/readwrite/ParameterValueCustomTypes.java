@@ -97,8 +97,7 @@ public class ParameterValueCustomTypes extends ParameterValue implements Message
     CustomTypes value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
-                () -> CustomTypes.staticParse(readBuffer, (short) (numBytes)), readBuffer));
+            readComplex(() -> CustomTypes.staticParse(readBuffer, (short) (numBytes)), readBuffer));
 
     readBuffer.closeContext("ParameterValueCustomTypes");
     // Create the instance

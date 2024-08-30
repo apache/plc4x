@@ -124,7 +124,7 @@ public class BACnetConstructedDataNetworkType extends BACnetConstructedData impl
     BACnetNetworkTypeTagged networkType =
         readSimpleField(
             "networkType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

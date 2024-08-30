@@ -91,7 +91,7 @@ public class BACnetPropertyStatesExtendedValue extends BACnetPropertyStates impl
     BACnetContextTagUnsignedInteger extendedValue =
         readSimpleField(
             "extendedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

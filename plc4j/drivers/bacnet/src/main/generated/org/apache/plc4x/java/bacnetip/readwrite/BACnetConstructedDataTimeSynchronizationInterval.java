@@ -126,7 +126,7 @@ public class BACnetConstructedDataTimeSynchronizationInterval extends BACnetCons
     BACnetApplicationTagUnsignedInteger timeSynchronization =
         readSimpleField(
             "timeSynchronization",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

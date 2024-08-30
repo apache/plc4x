@@ -126,7 +126,7 @@ public class BACnetConstructedDataSlaveProxyEnable extends BACnetConstructedData
     BACnetApplicationTagBoolean slaveProxyEnable =
         readSimpleField(
             "slaveProxyEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -173,8 +173,7 @@ public class AmsSerialFrame implements Message {
 
     AmsPacket userdata =
         readSimpleField(
-            "userdata",
-            new DataReaderComplexDefault<>(() -> AmsPacket.staticParse(readBuffer), readBuffer));
+            "userdata", readComplex(() -> AmsPacket.staticParse(readBuffer), readBuffer));
 
     int crc = readSimpleField("crc", readUnsignedInt(readBuffer, 16));
 

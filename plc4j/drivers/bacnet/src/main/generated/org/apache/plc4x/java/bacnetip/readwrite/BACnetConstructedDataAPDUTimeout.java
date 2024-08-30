@@ -124,7 +124,7 @@ public class BACnetConstructedDataAPDUTimeout extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger apduTimeout =
         readSimpleField(
             "apduTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

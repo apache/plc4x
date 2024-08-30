@@ -126,7 +126,7 @@ public class BACnetConstructedDataAuthorizationMode extends BACnetConstructedDat
     BACnetAuthorizationModeTagged authorizationMode =
         readSimpleField(
             "authorizationMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAuthorizationModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -193,19 +193,14 @@ public class StructureField extends ExtensionObjectDefinition implements Message
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     NodeId dataType =
-        readSimpleField(
-            "dataType",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("dataType", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int valueRank = readSimpleField("valueRank", readSignedInt(readBuffer, 32));
 

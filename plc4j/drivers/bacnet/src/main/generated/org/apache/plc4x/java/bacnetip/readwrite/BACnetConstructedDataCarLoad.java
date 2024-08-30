@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarLoad extends BACnetConstructedData implemen
     BACnetApplicationTagReal carLoad =
         readSimpleField(
             "carLoad",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

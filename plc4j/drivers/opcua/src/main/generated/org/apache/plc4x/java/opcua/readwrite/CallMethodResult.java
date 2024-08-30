@@ -194,8 +194,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfInputArgumentResults =
         readSimpleField("noOfInputArgumentResults", readSignedInt(readBuffer, 32));
@@ -203,7 +202,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     List<StatusCode> inputArgumentResults =
         readCountArrayField(
             "inputArgumentResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfInputArgumentResults);
 
     int noOfInputArgumentDiagnosticInfos =
@@ -212,8 +211,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     List<DiagnosticInfo> inputArgumentDiagnosticInfos =
         readCountArrayField(
             "inputArgumentDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfInputArgumentDiagnosticInfos);
 
     int noOfOutputArguments = readSimpleField("noOfOutputArguments", readSignedInt(readBuffer, 32));
@@ -221,7 +219,7 @@ public class CallMethodResult extends ExtensionObjectDefinition implements Messa
     List<Variant> outputArguments =
         readCountArrayField(
             "outputArguments",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Variant.staticParse(readBuffer), readBuffer),
             noOfOutputArguments);
 
     readBuffer.closeContext("CallMethodResult");

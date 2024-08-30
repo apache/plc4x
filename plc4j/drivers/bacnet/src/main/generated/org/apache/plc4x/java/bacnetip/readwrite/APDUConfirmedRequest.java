@@ -340,7 +340,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
     BACnetConfirmedServiceRequest serviceRequest =
         readOptionalField(
             "serviceRequest",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequest.staticParse(
                         readBuffer, (long) ((apduLength) - (apduHeaderReduction))),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataTimerState extends BACnetConstructedData imple
     BACnetTimerStateTagged timerState =
         readSimpleField(
             "timerState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

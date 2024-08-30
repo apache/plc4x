@@ -125,8 +125,7 @@ public class BACnetConstructedDataThreatAuthority extends BACnetConstructedData 
     BACnetAccessThreatLevel threatAuthority =
         readSimpleField(
             "threatAuthority",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAccessThreatLevel.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAccessThreatLevel.staticParse(readBuffer), readBuffer));
     BACnetAccessThreatLevel actualValue =
         readVirtualField("actualValue", BACnetAccessThreatLevel.class, threatAuthority);
 

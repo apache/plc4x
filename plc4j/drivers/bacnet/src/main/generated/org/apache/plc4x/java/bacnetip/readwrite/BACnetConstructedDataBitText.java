@@ -151,7 +151,7 @@ public class BACnetConstructedDataBitText extends BACnetConstructedData implemen
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataBitText extends BACnetConstructedData implemen
     List<BACnetApplicationTagCharacterString> bitText =
         readTerminatedArrayField(
             "bitText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

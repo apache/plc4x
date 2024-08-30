@@ -126,7 +126,7 @@ public class BACnetConstructedDataAccompanimentTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger accompanimentTime =
         readSimpleField(
             "accompanimentTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

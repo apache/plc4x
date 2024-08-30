@@ -152,7 +152,7 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataRegisteredCarCall extends BACnetConstructedDat
     List<BACnetLiftCarCallList> registeredCarCall =
         readTerminatedArrayField(
             "registeredCarCall",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLiftCarCallList.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetLiftCarCallList.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

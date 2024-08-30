@@ -102,7 +102,7 @@ public class CIPEncapsulationReadResponse extends CIPEncapsulationPacket impleme
     DF1ResponseMessage response =
         readSimpleField(
             "response",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> DF1ResponseMessage.staticParse(readBuffer, (int) (packetLen)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

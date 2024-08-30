@@ -93,8 +93,7 @@ public class SALDataEnableControl extends SALData implements Message {
     EnableControlData enableControlData =
         readSimpleField(
             "enableControlData",
-            new DataReaderComplexDefault<>(
-                () -> EnableControlData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> EnableControlData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataEnableControl");
     // Create the instance

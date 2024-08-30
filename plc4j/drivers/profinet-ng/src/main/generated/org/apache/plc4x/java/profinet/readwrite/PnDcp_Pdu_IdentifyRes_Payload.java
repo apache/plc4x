@@ -168,8 +168,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
     PnDcp_ServiceType serviceType =
         readSimpleField(
             "serviceType",
-            new DataReaderComplexDefault<>(
-                () -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PnDcp_ServiceType.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long xid =

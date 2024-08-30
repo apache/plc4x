@@ -90,7 +90,7 @@ public class BACnetFaultParameterNone extends BACnetFaultParameter implements Me
     BACnetContextTagNull none =
         readSimpleField(
             "none",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

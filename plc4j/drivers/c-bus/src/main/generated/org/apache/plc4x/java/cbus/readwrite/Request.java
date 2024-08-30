@@ -234,8 +234,7 @@ public abstract class Request implements Message {
     RequestTermination termination =
         readSimpleField(
             "termination",
-            new DataReaderComplexDefault<>(
-                () -> RequestTermination.staticParse(readBuffer), readBuffer));
+            readComplex(() -> RequestTermination.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("Request");
     // Create the instance

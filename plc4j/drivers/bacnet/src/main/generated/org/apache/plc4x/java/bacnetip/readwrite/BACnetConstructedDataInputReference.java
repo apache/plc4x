@@ -124,8 +124,7 @@ public class BACnetConstructedDataInputReference extends BACnetConstructedData i
     BACnetObjectPropertyReference inputReference =
         readSimpleField(
             "inputReference",
-            new DataReaderComplexDefault<>(
-                () -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetObjectPropertyReference actualValue =
         readVirtualField("actualValue", BACnetObjectPropertyReference.class, inputReference);
 

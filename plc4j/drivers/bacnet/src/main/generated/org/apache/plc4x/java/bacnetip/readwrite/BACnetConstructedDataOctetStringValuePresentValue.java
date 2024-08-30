@@ -125,7 +125,7 @@ public class BACnetConstructedDataOctetStringValuePresentValue extends BACnetCon
     BACnetApplicationTagOctetString presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

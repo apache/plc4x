@@ -128,7 +128,7 @@ public class BACnetConstructedDataBackupAndRestoreState extends BACnetConstructe
     BACnetBackupStateTagged backupAndRestoreState =
         readSimpleField(
             "backupAndRestoreState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBackupStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

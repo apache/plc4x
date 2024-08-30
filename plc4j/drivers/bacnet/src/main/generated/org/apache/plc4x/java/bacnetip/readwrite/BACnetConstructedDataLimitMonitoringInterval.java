@@ -128,7 +128,7 @@ public class BACnetConstructedDataLimitMonitoringInterval extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger limitMonitoringInterval =
         readSimpleField(
             "limitMonitoringInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

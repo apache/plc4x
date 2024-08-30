@@ -122,8 +122,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
 
     PascalString serverId =
         readSimpleField(
-            "serverId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     short serviceLevel = readSimpleField("serviceLevel", readUnsignedShort(readBuffer, 8));
 

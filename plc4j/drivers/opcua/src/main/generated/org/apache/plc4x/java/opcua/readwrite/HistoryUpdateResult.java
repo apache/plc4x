@@ -157,8 +157,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfOperationResults =
         readSimpleField("noOfOperationResults", readSignedInt(readBuffer, 32));
@@ -166,7 +165,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     List<StatusCode> operationResults =
         readCountArrayField(
             "operationResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfOperationResults);
 
     int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
@@ -174,8 +173,7 @@ public class HistoryUpdateResult extends ExtensionObjectDefinition implements Me
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("HistoryUpdateResult");

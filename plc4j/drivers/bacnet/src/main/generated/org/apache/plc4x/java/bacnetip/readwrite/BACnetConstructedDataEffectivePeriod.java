@@ -123,9 +123,7 @@ public class BACnetConstructedDataEffectivePeriod extends BACnetConstructedData 
 
     BACnetDateRange dateRange =
         readSimpleField(
-            "dateRange",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateRange.staticParse(readBuffer), readBuffer));
+            "dateRange", readComplex(() -> BACnetDateRange.staticParse(readBuffer), readBuffer));
     BACnetDateRange actualValue = readVirtualField("actualValue", BACnetDateRange.class, dateRange);
 
     readBuffer.closeContext("BACnetConstructedDataEffectivePeriod");

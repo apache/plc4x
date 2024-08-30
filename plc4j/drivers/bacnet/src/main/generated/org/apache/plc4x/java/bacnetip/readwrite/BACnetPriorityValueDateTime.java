@@ -97,7 +97,7 @@ public class BACnetPriorityValueDateTime extends BACnetPriorityValue implements 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetPriorityValueDateTime");

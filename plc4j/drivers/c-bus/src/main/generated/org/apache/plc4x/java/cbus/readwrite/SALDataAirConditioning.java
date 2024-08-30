@@ -93,8 +93,7 @@ public class SALDataAirConditioning extends SALData implements Message {
     AirConditioningData airConditioningData =
         readSimpleField(
             "airConditioningData",
-            new DataReaderComplexDefault<>(
-                () -> AirConditioningData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AirConditioningData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataAirConditioning");
     // Create the instance

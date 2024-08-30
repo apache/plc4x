@@ -126,7 +126,7 @@ public class BACnetConstructedDataPacketReorderTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger packetReorderTime =
         readSimpleField(
             "packetReorderTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

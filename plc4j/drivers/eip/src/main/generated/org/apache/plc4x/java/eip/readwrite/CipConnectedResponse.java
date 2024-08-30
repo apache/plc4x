@@ -141,8 +141,7 @@ public class CipConnectedResponse extends CipService implements Message {
     CIPDataConnected data =
         readOptionalField(
             "data",
-            new DataReaderComplexDefault<>(
-                () -> CIPDataConnected.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CIPDataConnected.staticParse(readBuffer), readBuffer),
             (((serviceLen) - (4))) > (0));
 
     readBuffer.closeContext("CipConnectedResponse");

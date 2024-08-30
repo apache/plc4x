@@ -120,8 +120,7 @@ public class BACnetConstructedDataActiveCOVMultipleSubscriptions extends BACnetC
     List<BACnetCOVMultipleSubscription> activeCOVMultipleSubscriptions =
         readTerminatedArrayField(
             "activeCOVMultipleSubscriptions",
-            new DataReaderComplexDefault<>(
-                () -> BACnetCOVMultipleSubscription.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetCOVMultipleSubscription.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

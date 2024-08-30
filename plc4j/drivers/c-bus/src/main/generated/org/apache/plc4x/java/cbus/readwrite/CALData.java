@@ -209,7 +209,7 @@ public abstract class CALData implements Message {
     CALData additionalData =
         readOptionalField(
             "additionalData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CALData.staticParse(readBuffer, (RequestContext) (null)), readBuffer));
 
     readBuffer.closeContext("CALData");

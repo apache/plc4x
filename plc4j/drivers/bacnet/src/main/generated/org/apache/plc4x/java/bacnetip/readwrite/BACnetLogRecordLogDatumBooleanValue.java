@@ -100,7 +100,7 @@ public class BACnetLogRecordLogDatumBooleanValue extends BACnetLogRecordLogDatum
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

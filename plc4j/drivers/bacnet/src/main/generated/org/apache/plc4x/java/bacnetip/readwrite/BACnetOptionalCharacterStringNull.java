@@ -92,7 +92,7 @@ public class BACnetOptionalCharacterStringNull extends BACnetOptionalCharacterSt
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -125,7 +125,7 @@ public class BACnetConstructedDataCredentialStatus extends BACnetConstructedData
     BACnetBinaryPVTagged binaryPv =
         readSimpleField(
             "binaryPv",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBinaryPVTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

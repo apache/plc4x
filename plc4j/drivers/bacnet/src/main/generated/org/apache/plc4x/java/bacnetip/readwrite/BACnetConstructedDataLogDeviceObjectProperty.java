@@ -128,7 +128,7 @@ public class BACnetConstructedDataLogDeviceObjectProperty extends BACnetConstruc
     BACnetDeviceObjectPropertyReference logDeviceObjectProperty =
         readSimpleField(
             "logDeviceObjectProperty",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectPropertyReference actualValue =
         readVirtualField(

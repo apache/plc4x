@@ -128,7 +128,7 @@ public class BACnetConstructedDataEventAlgorithmInhibit extends BACnetConstructe
     BACnetApplicationTagBoolean eventAlgorithmInhibit =
         readSimpleField(
             "eventAlgorithmInhibit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -124,7 +124,7 @@ public class BACnetConstructedDataEventType extends BACnetConstructedData implem
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -148,26 +148,25 @@ public class InformationObjectWithoutTime_SECTION_READY extends InformationObjec
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     LengthOfFile lof =
         readSimpleField(
             "lof",
-            new DataReaderComplexDefault<>(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LengthOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SectionReadyQualifier srq =
         readSimpleField(
             "srq",
-            new DataReaderComplexDefault<>(
-                () -> SectionReadyQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SectionReadyQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_SECTION_READY");

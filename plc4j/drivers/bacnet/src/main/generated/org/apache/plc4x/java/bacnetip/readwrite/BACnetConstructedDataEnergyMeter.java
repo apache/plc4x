@@ -124,7 +124,7 @@ public class BACnetConstructedDataEnergyMeter extends BACnetConstructedData impl
     BACnetApplicationTagReal energyMeter =
         readSimpleField(
             "energyMeter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

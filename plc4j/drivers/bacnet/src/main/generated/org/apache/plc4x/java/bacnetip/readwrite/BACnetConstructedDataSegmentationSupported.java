@@ -128,7 +128,7 @@ public class BACnetConstructedDataSegmentationSupported extends BACnetConstructe
     BACnetSegmentationTagged segmentationSupported =
         readSimpleField(
             "segmentationSupported",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSegmentationTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

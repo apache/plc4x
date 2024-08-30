@@ -140,14 +140,14 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition server =
         readSimpleField(
             "server",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("434")),
                 readBuffer));
 
@@ -157,7 +157,7 @@ public class RegisterServer2Request extends ExtensionObjectDefinition implements
     List<ExtensionObject> discoveryConfiguration =
         readCountArrayField(
             "discoveryConfiguration",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfDiscoveryConfiguration);
 

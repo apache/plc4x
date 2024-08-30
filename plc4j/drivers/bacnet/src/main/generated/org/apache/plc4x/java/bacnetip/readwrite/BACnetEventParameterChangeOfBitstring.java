@@ -147,13 +147,12 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -165,7 +164,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     BACnetContextTagBitString bitmask =
         readSimpleField(
             "bitmask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(
@@ -175,7 +174,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     BACnetEventParameterChangeOfBitstringListOfBitstringValues listOfBitstringValues =
         readSimpleField(
             "listOfBitstringValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventParameterChangeOfBitstringListOfBitstringValues.staticParse(
                         readBuffer, (short) (2)),
@@ -184,8 +183,7 @@ public class BACnetEventParameterChangeOfBitstring extends BACnetEventParameter 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfBitstring");
     // Create the instance

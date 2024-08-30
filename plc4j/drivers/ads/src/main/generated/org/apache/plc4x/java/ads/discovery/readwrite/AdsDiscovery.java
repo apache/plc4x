@@ -214,7 +214,7 @@ public class AdsDiscovery implements Message {
     AmsNetId amsNetId =
         readSimpleField(
             "amsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     AdsPortNumbers portNumber =
@@ -234,8 +234,7 @@ public class AdsDiscovery implements Message {
     List<AdsDiscoveryBlock> blocks =
         readCountArrayField(
             "blocks",
-            new DataReaderComplexDefault<>(
-                () -> AdsDiscoveryBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsDiscoveryBlock.staticParse(readBuffer), readBuffer),
             numBlocks,
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

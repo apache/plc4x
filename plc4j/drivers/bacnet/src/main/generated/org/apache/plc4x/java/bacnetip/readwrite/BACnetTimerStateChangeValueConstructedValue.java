@@ -99,7 +99,7 @@ public class BACnetTimerStateChangeValueConstructedValue extends BACnetTimerStat
     BACnetConstructedData constructedValue =
         readSimpleField(
             "constructedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

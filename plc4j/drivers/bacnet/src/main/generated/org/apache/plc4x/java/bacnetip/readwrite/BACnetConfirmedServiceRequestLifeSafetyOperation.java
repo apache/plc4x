@@ -147,7 +147,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     BACnetContextTagUnsignedInteger requestingProcessIdentifier =
         readSimpleField(
             "requestingProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -159,7 +159,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     BACnetContextTagCharacterString requestingSource =
         readSimpleField(
             "requestingSource",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -171,7 +171,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     BACnetLifeSafetyOperationTagged request =
         readSimpleField(
             "request",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyOperationTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -180,7 +180,7 @@ public class BACnetConfirmedServiceRequestLifeSafetyOperation extends BACnetConf
     BACnetContextTagObjectIdentifier objectIdentifier =
         readOptionalField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

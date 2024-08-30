@@ -91,8 +91,7 @@ public class SALDataHeating extends SALData implements Message {
 
     LightingData heatingData =
         readSimpleField(
-            "heatingData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            "heatingData", readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataHeating");
     // Create the instance

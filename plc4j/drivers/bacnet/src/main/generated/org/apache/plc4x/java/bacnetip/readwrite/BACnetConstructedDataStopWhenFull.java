@@ -124,7 +124,7 @@ public class BACnetConstructedDataStopWhenFull extends BACnetConstructedData imp
     BACnetApplicationTagBoolean stopWhenFull =
         readSimpleField(
             "stopWhenFull",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

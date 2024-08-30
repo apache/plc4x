@@ -109,7 +109,7 @@ public class MonitoredItemModifyRequest extends ExtensionObjectDefinition implem
     ExtensionObjectDefinition requestedParameters =
         readSimpleField(
             "requestedParameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("742")),
                 readBuffer));
 

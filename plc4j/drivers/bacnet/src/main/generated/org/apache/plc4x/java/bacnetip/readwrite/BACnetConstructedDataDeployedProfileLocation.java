@@ -128,7 +128,7 @@ public class BACnetConstructedDataDeployedProfileLocation extends BACnetConstruc
     BACnetApplicationTagCharacterString deployedProfileLocation =
         readSimpleField(
             "deployedProfileLocation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

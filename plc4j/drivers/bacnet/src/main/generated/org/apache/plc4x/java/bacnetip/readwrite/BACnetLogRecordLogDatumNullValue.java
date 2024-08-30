@@ -99,7 +99,7 @@ public class BACnetLogRecordLogDatumNullValue extends BACnetLogRecordLogDatum im
     BACnetContextTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

@@ -128,8 +128,7 @@ public class BACnetConstructedDataAccessEventAuthenticationFactor extends BACnet
     BACnetAuthenticationFactor accessEventAuthenticationFactor =
         readSimpleField(
             "accessEventAuthenticationFactor",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAuthenticationFactor.staticParse(readBuffer), readBuffer));
     BACnetAuthenticationFactor actualValue =
         readVirtualField(
             "actualValue", BACnetAuthenticationFactor.class, accessEventAuthenticationFactor);

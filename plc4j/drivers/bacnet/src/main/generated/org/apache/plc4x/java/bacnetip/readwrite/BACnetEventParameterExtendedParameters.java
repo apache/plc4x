@@ -408,14 +408,13 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetTagHeader peekedTagHeader =
         readPeekField(
             "peekedTagHeader",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     short peekedTagNumber =
         readVirtualField("peekedTagNumber", short.class, peekedTagHeader.getActualTagNumber());
     boolean isOpeningTag =
@@ -428,7 +427,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagNull nullValue =
         readOptionalField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x0)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -436,7 +435,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagReal realValue =
         readOptionalField(
             "realValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x4)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -444,7 +443,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagUnsignedInteger unsignedValue =
         readOptionalField(
             "unsignedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -454,7 +453,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagBoolean booleanValue =
         readOptionalField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x1)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -462,7 +461,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagSignedInteger integerValue =
         readOptionalField(
             "integerValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -472,7 +471,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagDouble doubleValue =
         readOptionalField(
             "doubleValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x5)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -480,7 +479,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagOctetString octetStringValue =
         readOptionalField(
             "octetStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
@@ -489,7 +488,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagCharacterString characterStringValue =
         readOptionalField(
             "characterStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -499,7 +498,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagBitString bitStringValue =
         readOptionalField(
             "bitStringValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x8)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -507,7 +506,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagEnumerated enumeratedValue =
         readOptionalField(
             "enumeratedValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagEnumerated) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0x9)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -515,7 +514,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagDate dateValue =
         readOptionalField(
             "dateValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0xA)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -523,7 +522,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagTime timeValue =
         readOptionalField(
             "timeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),
             (((peekedTagNumber) == (0xB)) && (!(isOpeningTag))) && (!(isClosingTag)));
@@ -531,7 +530,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetApplicationTagObjectIdentifier objectIdentifier =
         readOptionalField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -541,7 +540,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetDeviceObjectPropertyReferenceEnclosed reference =
         readOptionalField(
             "reference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (0)),
@@ -551,7 +550,7 @@ public class BACnetEventParameterExtendedParameters implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterExtendedParameters");

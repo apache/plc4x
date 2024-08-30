@@ -129,22 +129,17 @@ public class EUInformation extends ExtensionObjectDefinition implements Message 
 
     PascalString namespaceUri =
         readSimpleField(
-            "namespaceUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "namespaceUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int unitId = readSimpleField("unitId", readSignedInt(readBuffer, 32));
 
     LocalizedText displayName =
         readSimpleField(
-            "displayName",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "displayName", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     LocalizedText description =
         readSimpleField(
-            "description",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "description", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("EUInformation");
     // Create the instance

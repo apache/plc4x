@@ -92,8 +92,7 @@ public class SALDataVentilation extends SALData implements Message {
 
     LightingData ventilationData =
         readSimpleField(
-            "ventilationData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            "ventilationData", readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataVentilation");
     // Create the instance

@@ -124,7 +124,7 @@ public class BACnetConstructedDataElevatorGroup extends BACnetConstructedData im
     BACnetApplicationTagObjectIdentifier elevatorGroup =
         readSimpleField(
             "elevatorGroup",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

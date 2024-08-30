@@ -200,14 +200,14 @@ public abstract class S7Message implements Message {
     S7Parameter parameter =
         readOptionalField(
             "parameter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> S7Parameter.staticParse(readBuffer, (short) (messageType)), readBuffer),
             (parameterLength) > (0));
 
     S7Payload payload =
         readOptionalField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     S7Payload.staticParse(
                         readBuffer, (short) (messageType), (S7Parameter) (parameter)),

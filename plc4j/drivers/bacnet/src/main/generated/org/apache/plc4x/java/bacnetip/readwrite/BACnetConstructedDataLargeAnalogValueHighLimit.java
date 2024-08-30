@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueHighLimit extends BACnetConstr
     BACnetApplicationTagDouble highLimit =
         readSimpleField(
             "highLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

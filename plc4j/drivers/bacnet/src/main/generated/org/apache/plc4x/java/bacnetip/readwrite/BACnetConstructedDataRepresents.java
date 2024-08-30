@@ -124,8 +124,7 @@ public class BACnetConstructedDataRepresents extends BACnetConstructedData imple
     BACnetDeviceObjectReference represents =
         readSimpleField(
             "represents",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, represents);
 

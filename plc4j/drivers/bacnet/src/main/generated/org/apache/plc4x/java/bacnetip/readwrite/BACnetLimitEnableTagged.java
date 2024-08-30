@@ -129,9 +129,7 @@ public class BACnetLimitEnableTagged implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getTagClass()) == (tagClass))) {
       throw new ParseValidationException("tag class doesn't match");
@@ -145,7 +143,7 @@ public class BACnetLimitEnableTagged implements Message {
     BACnetTagPayloadBitString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBitString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

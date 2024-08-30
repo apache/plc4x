@@ -123,13 +123,13 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetLifeSafetyStateTagged> listOfLifeSavetyAlarmValues =
         readTerminatedArrayField(
             "listOfLifeSavetyAlarmValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -142,7 +142,7 @@ public class BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues i
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterChangeOfLifeSavetyListOfLifeSavetyAlarmValues");

@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPDHCPEnable extends BACnetConstructedData imp
     BACnetApplicationTagBoolean ipDhcpEnable =
         readSimpleField(
             "ipDhcpEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

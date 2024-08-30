@@ -98,7 +98,7 @@ public class BACnetKeyIdentifier implements Message {
     BACnetContextTagUnsignedInteger algorithm =
         readSimpleField(
             "algorithm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -110,7 +110,7 @@ public class BACnetKeyIdentifier implements Message {
     BACnetContextTagUnsignedInteger keyId =
         readSimpleField(
             "keyId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

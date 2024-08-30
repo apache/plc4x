@@ -89,9 +89,7 @@ public class BACnetOpeningTag implements Message {
 
     BACnetTagHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> BACnetTagHeader.staticParse(readBuffer), readBuffer));
     // Validation
     if (!((header.getActualTagNumber()) == (tagNumberArgument))) {
       throw new ParseAssertException("tagnumber doesn't match");

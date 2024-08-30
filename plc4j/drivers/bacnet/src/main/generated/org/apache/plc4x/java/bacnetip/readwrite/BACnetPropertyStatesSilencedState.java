@@ -91,7 +91,7 @@ public class BACnetPropertyStatesSilencedState extends BACnetPropertyStates impl
     BACnetSilencedStateTagged silencedState =
         readSimpleField(
             "silencedState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSilencedStateTagged.staticParse(
                         readBuffer,

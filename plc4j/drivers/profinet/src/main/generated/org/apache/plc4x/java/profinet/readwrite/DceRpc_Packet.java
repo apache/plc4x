@@ -741,8 +741,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_ObjectUuid objectUuid =
         readSimpleField(
             "objectUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ObjectUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -751,8 +750,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_InterfaceUuid interfaceUuid =
         readSimpleField(
             "interfaceUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_InterfaceUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_InterfaceUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -761,8 +759,7 @@ public class DceRpc_Packet implements Message {
     DceRpc_ActivityUuid activityUuid =
         readSimpleField(
             "activityUuid",
-            new DataReaderComplexDefault<>(
-                () -> DceRpc_ActivityUuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DceRpc_ActivityUuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN
@@ -865,7 +862,7 @@ public class DceRpc_Packet implements Message {
     PnIoCm_Packet payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> PnIoCm_Packet.staticParse(readBuffer, (DceRpc_PacketType) (packetType)),
                 readBuffer),
             WithOption.WithByteOrder(

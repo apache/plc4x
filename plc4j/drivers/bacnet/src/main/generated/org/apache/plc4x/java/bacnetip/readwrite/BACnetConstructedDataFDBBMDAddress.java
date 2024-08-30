@@ -124,8 +124,7 @@ public class BACnetConstructedDataFDBBMDAddress extends BACnetConstructedData im
     BACnetHostNPort fDBBMDAddress =
         readSimpleField(
             "fDBBMDAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
     BACnetHostNPort actualValue =
         readVirtualField("actualValue", BACnetHostNPort.class, fDBBMDAddress);
 

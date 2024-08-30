@@ -114,14 +114,12 @@ public class BACnetDailySchedule implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     List<BACnetTimeValue> daySchedule =
         readTerminatedArrayField(
             "daySchedule",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetTimeValue.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -130,8 +128,7 @@ public class BACnetDailySchedule implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (0)), readBuffer));
 
     readBuffer.closeContext("BACnetDailySchedule");
     // Create the instance

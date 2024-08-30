@@ -134,7 +134,7 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -144,15 +144,13 @@ public class OpenSecureChannelResponse extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition securityToken =
         readSimpleField(
             "securityToken",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("443")),
                 readBuffer));
 
     PascalByteString serverNonce =
         readSimpleField(
-            "serverNonce",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "serverNonce", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpenSecureChannelResponse");
     // Create the instance

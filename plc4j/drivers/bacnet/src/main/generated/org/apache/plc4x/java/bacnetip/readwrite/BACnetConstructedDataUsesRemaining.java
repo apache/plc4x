@@ -124,7 +124,7 @@ public class BACnetConstructedDataUsesRemaining extends BACnetConstructedData im
     BACnetApplicationTagSignedInteger usesRemaining =
         readSimpleField(
             "usesRemaining",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

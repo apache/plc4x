@@ -126,7 +126,7 @@ public class BACnetConstructedDataDatabaseRevision extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger databaseRevision =
         readSimpleField(
             "databaseRevision",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

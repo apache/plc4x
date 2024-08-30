@@ -92,7 +92,7 @@ public class BACnetChannelValueLightingCommand extends BACnetChannelValue implem
     BACnetLightingCommandEnclosed ligthingCommandValue =
         readSimpleField(
             "ligthingCommandValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLightingCommandEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

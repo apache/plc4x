@@ -114,9 +114,7 @@ public class ParameterValueApplicationAddress2 extends ParameterValue implements
 
     ApplicationAddress2 value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> ApplicationAddress2.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> ApplicationAddress2.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (1)));
 

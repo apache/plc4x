@@ -128,8 +128,7 @@ public class BACnetConstructedDataEventAlgorithmInhibitRef extends BACnetConstru
     BACnetObjectPropertyReference eventAlgorithmInhibitRef =
         readSimpleField(
             "eventAlgorithmInhibitRef",
-            new DataReaderComplexDefault<>(
-                () -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetObjectPropertyReference.staticParse(readBuffer), readBuffer));
     BACnetObjectPropertyReference actualValue =
         readVirtualField(
             "actualValue", BACnetObjectPropertyReference.class, eventAlgorithmInhibitRef);

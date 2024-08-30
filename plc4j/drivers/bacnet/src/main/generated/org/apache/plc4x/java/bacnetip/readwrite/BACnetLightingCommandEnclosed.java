@@ -119,19 +119,18 @@ public class BACnetLightingCommandEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetLightingCommand lightingCommand =
         readSimpleField(
             "lightingCommand",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLightingCommand.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetLightingCommandEnclosed");

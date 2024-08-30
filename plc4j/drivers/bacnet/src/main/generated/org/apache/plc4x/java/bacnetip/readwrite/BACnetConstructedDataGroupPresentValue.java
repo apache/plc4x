@@ -119,8 +119,7 @@ public class BACnetConstructedDataGroupPresentValue extends BACnetConstructedDat
     List<BACnetReadAccessResult> presentValue =
         readTerminatedArrayField(
             "presentValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetReadAccessResult.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetReadAccessResult.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

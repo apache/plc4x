@@ -97,13 +97,13 @@ public class BACnetHostNPort implements Message {
     BACnetHostAddressEnclosed host =
         readSimpleField(
             "host",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetHostAddressEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagUnsignedInteger port =
         readSimpleField(
             "port",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

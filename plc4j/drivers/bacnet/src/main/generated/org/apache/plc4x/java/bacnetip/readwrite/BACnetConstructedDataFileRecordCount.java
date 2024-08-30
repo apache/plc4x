@@ -124,7 +124,7 @@ public class BACnetConstructedDataFileRecordCount extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger recordCount =
         readSimpleField(
             "recordCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

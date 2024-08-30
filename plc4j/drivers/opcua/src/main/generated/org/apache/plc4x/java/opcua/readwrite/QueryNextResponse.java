@@ -142,7 +142,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -151,7 +151,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     List<ExtensionObjectDefinition> queryDataSets =
         readCountArrayField(
             "queryDataSets",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("579")),
                 readBuffer),
             noOfQueryDataSets);
@@ -159,8 +159,7 @@ public class QueryNextResponse extends ExtensionObjectDefinition implements Mess
     PascalByteString revisedContinuationPoint =
         readSimpleField(
             "revisedContinuationPoint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("QueryNextResponse");
     // Create the instance

@@ -124,7 +124,7 @@ public class BACnetConstructedDataNodeType extends BACnetConstructedData impleme
     BACnetNodeTypeTagged nodeType =
         readSimpleField(
             "nodeType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNodeTypeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

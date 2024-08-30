@@ -124,7 +124,7 @@ public class BACnetConstructedDataAckRequired extends BACnetConstructedData impl
     BACnetEventTransitionBitsTagged ackRequired =
         readSimpleField(
             "ackRequired",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

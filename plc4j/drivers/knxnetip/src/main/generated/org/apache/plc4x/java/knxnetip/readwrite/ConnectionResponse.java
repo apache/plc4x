@@ -168,16 +168,14 @@ public class ConnectionResponse extends KnxNetIpMessage implements Message {
     HPAIDataEndpoint hpaiDataEndpoint =
         readOptionalField(
             "hpaiDataEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIDataEndpoint.staticParse(readBuffer), readBuffer),
             (status) == (Status.NO_ERROR),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     ConnectionResponseDataBlock connectionResponseDataBlock =
         readOptionalField(
             "connectionResponseDataBlock",
-            new DataReaderComplexDefault<>(
-                () -> ConnectionResponseDataBlock.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ConnectionResponseDataBlock.staticParse(readBuffer), readBuffer),
             (status) == (Status.NO_ERROR),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

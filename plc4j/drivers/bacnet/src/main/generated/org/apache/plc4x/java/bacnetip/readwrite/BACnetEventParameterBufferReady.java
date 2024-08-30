@@ -137,13 +137,12 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (10)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (10)), readBuffer));
 
     BACnetContextTagUnsignedInteger notificationThreshold =
         readSimpleField(
             "notificationThreshold",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -155,7 +154,7 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
     BACnetContextTagUnsignedInteger previousNotificationCount =
         readSimpleField(
             "previousNotificationCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -167,8 +166,7 @@ public class BACnetEventParameterBufferReady extends BACnetEventParameter implem
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (10)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (10)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterBufferReady");
     // Create the instance

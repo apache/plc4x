@@ -184,7 +184,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     BACnetContextTagUnsignedInteger subscriberProcessIdentifier =
         readSimpleField(
             "subscriberProcessIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -196,7 +196,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     BACnetContextTagObjectIdentifier monitoredObjectIdentifier =
         readSimpleField(
             "monitoredObjectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -208,7 +208,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     BACnetContextTagBoolean issueConfirmedNotifications =
         readOptionalField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(
@@ -218,7 +218,7 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     BACnetContextTagUnsignedInteger lifetime =
         readOptionalField(
             "lifetime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -230,14 +230,14 @@ public class BACnetConfirmedServiceRequestSubscribeCOVProperty extends BACnetCon
     BACnetPropertyReferenceEnclosed monitoredPropertyIdentifier =
         readSimpleField(
             "monitoredPropertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetPropertyReferenceEnclosed.staticParse(readBuffer, (short) (4)),
                 readBuffer));
 
     BACnetContextTagReal covIncrement =
         readOptionalField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagReal)
                         BACnetContextTag.staticParse(

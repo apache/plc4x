@@ -119,9 +119,7 @@ public class Plc4xTagValueRequest implements Message {
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     Plc4xTag tag =
-        readSimpleField(
-            "tag",
-            new DataReaderComplexDefault<>(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
+        readSimpleField("tag", readComplex(() -> Plc4xTag.staticParse(readBuffer), readBuffer));
 
     Plc4xValueType valueType =
         readEnumField(
@@ -133,7 +131,7 @@ public class Plc4xTagValueRequest implements Message {
     PlcValue value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> Plc4xValue.staticParse(readBuffer, (Plc4xValueType) (valueType)), readBuffer),
             (valueType) != (Plc4xValueType.NULL));
 

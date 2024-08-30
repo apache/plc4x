@@ -119,7 +119,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
     SDOResponse response =
         readSimpleField(
             "response",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> SDOResponse.staticParse(readBuffer, (SDOResponseCommand) (command)),
                 readBuffer));
 

@@ -125,7 +125,7 @@ public class BACnetConstructedDataLightingOutputFeedbackValue extends BACnetCons
     BACnetApplicationTagReal feedbackValue =
         readSimpleField(
             "feedbackValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

@@ -124,9 +124,7 @@ public class BACnetConstructedDataCredentialDataInputUpdateTime extends BACnetCo
 
     BACnetTimeStamp updateTime =
         readSimpleField(
-            "updateTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
+            "updateTime", readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer));
     BACnetTimeStamp actualValue =
         readVirtualField("actualValue", BACnetTimeStamp.class, updateTime);
 

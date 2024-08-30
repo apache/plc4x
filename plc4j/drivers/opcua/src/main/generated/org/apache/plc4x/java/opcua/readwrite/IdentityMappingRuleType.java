@@ -118,8 +118,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
 
     PascalString criteria =
         readSimpleField(
-            "criteria",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "criteria", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("IdentityMappingRuleType");
     // Create the instance

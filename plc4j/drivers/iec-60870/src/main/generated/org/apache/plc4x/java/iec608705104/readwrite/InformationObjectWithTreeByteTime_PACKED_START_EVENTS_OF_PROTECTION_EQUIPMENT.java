@@ -156,14 +156,13 @@ public class InformationObjectWithTreeByteTime_PACKED_START_EVENTS_OF_PROTECTION
     SingleEventOfProtectionEquipment sep =
         readSimpleField(
             "sep",
-            new DataReaderComplexDefault<>(
-                () -> SingleEventOfProtectionEquipment.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SingleEventOfProtectionEquipment.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptorForPointsOfProtectionEquipment qdp =
         readSimpleField(
             "qdp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualityDescriptorForPointsOfProtectionEquipment.staticParse(readBuffer),
                 readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
@@ -171,15 +170,13 @@ public class InformationObjectWithTreeByteTime_PACKED_START_EVENTS_OF_PROTECTION
     TwoOctetBinaryTime cp16Time2a =
         readSimpleField(
             "cp16Time2a",
-            new DataReaderComplexDefault<>(
-                () -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> TwoOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     ThreeOctetBinaryTime cp24Time2a =
         readSimpleField(
             "cp24Time2a",
-            new DataReaderComplexDefault<>(
-                () -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ThreeOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

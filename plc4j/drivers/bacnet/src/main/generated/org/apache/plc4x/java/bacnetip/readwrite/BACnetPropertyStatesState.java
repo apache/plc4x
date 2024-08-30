@@ -90,7 +90,7 @@ public class BACnetPropertyStatesState extends BACnetPropertyStates implements M
     BACnetEventStateTagged state =
         readSimpleField(
             "state",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer,

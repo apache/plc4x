@@ -94,7 +94,7 @@ public class BACnetLogDataLogDataEntryAnyValue extends BACnetLogDataLogDataEntry
     BACnetConstructedData anyValue =
         readOptionalField(
             "anyValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

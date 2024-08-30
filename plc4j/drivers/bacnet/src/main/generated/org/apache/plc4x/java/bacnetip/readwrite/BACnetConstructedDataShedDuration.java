@@ -124,7 +124,7 @@ public class BACnetConstructedDataShedDuration extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger shedDuration =
         readSimpleField(
             "shedDuration",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -156,7 +156,7 @@ public class MonitoringParameters extends ExtensionObjectDefinition implements M
     ExtensionObject filter =
         readSimpleField(
             "filter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     long queueSize = readSimpleField("queueSize", readUnsignedLong(readBuffer, 32));

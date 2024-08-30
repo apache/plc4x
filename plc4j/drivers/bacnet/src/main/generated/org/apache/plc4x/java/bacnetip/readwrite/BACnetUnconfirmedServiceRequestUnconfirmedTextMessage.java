@@ -148,7 +148,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     BACnetContextTagObjectIdentifier textMessageSourceDevice =
         readSimpleField(
             "textMessageSourceDevice",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -160,7 +160,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass messageClass =
         readOptionalField(
             "messageClass",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass.staticParse(
                         readBuffer, (short) (1)),
@@ -169,7 +169,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged messagePriority =
         readSimpleField(
             "messagePriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged
                         .staticParse(
@@ -179,7 +179,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedTextMessage
     BACnetContextTagCharacterString message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

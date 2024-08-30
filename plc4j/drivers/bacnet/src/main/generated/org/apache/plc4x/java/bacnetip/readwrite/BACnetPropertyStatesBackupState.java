@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBackupState extends BACnetPropertyStates implem
     BACnetBackupStateTagged backupState =
         readSimpleField(
             "backupState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetBackupStateTagged.staticParse(
                         readBuffer,

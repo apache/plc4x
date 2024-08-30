@@ -182,8 +182,7 @@ public class ModbusTcpADU extends ModbusADU implements Message {
     ModbusPDU pdu =
         readSimpleField(
             "pdu",
-            new DataReaderComplexDefault<>(
-                () -> ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
+            readComplex(() -> ModbusPDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("ModbusTcpADU");

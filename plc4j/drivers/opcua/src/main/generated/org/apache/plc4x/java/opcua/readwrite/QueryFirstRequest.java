@@ -180,14 +180,14 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition view =
         readSimpleField(
             "view",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("513")),
                 readBuffer));
 
@@ -196,7 +196,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     List<ExtensionObjectDefinition> nodeTypes =
         readCountArrayField(
             "nodeTypes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("575")),
                 readBuffer),
             noOfNodeTypes);
@@ -204,7 +204,7 @@ public class QueryFirstRequest extends ExtensionObjectDefinition implements Mess
     ExtensionObjectDefinition filter =
         readSimpleField(
             "filter",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("588")),
                 readBuffer));
 

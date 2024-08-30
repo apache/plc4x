@@ -210,20 +210,19 @@ public class CALReplyLong extends CALReply implements Message {
     UnitAddress unitAddress =
         readOptionalField(
             "unitAddress",
-            new DataReaderComplexDefault<>(() -> UnitAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> UnitAddress.staticParse(readBuffer), readBuffer),
             isUnitAddress);
 
     BridgeAddress bridgeAddress =
         readOptionalField(
             "bridgeAddress",
-            new DataReaderComplexDefault<>(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     SerialInterfaceAddress serialInterfaceAddress =
         readSimpleField(
             "serialInterfaceAddress",
-            new DataReaderComplexDefault<>(
-                () -> SerialInterfaceAddress.staticParse(readBuffer), readBuffer));
+            readComplex(() -> SerialInterfaceAddress.staticParse(readBuffer), readBuffer));
 
     Byte reservedByte = readOptionalField("reservedByte", readByte(readBuffer, 8), isUnitAddress);
     // Validation
@@ -234,7 +233,7 @@ public class CALReplyLong extends CALReply implements Message {
     ReplyNetwork replyNetwork =
         readOptionalField(
             "replyNetwork",
-            new DataReaderComplexDefault<>(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ReplyNetwork.staticParse(readBuffer), readBuffer),
             !(isUnitAddress));
 
     readBuffer.closeContext("CALReplyLong");

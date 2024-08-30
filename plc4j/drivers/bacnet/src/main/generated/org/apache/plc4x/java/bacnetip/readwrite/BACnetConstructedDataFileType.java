@@ -124,7 +124,7 @@ public class BACnetConstructedDataFileType extends BACnetConstructedData impleme
     BACnetApplicationTagCharacterString fileType =
         readSimpleField(
             "fileType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

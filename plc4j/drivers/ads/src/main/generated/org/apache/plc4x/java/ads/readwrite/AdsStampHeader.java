@@ -121,8 +121,7 @@ public class AdsStampHeader implements Message {
     List<AdsNotificationSample> adsNotificationSamples =
         readCountArrayField(
             "adsNotificationSamples",
-            new DataReaderComplexDefault<>(
-                () -> AdsNotificationSample.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AdsNotificationSample.staticParse(readBuffer), readBuffer),
             samples);
 
     readBuffer.closeContext("AdsStampHeader");

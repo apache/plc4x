@@ -152,7 +152,7 @@ public class BACnetAccessRule implements Message {
     BACnetAccessRuleTimeRangeSpecifierTagged timeRangeSpecifier =
         readSimpleField(
             "timeRangeSpecifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessRuleTimeRangeSpecifierTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -161,7 +161,7 @@ public class BACnetAccessRule implements Message {
     BACnetDeviceObjectPropertyReferenceEnclosed timeRange =
         readOptionalField(
             "timeRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -171,7 +171,7 @@ public class BACnetAccessRule implements Message {
     BACnetAccessRuleLocationSpecifierTagged locationSpecifier =
         readSimpleField(
             "locationSpecifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessRuleLocationSpecifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -180,7 +180,7 @@ public class BACnetAccessRule implements Message {
     BACnetDeviceObjectReferenceEnclosed location =
         readOptionalField(
             "location",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer),
             (locationSpecifier) != (null));
@@ -188,7 +188,7 @@ public class BACnetAccessRule implements Message {
     BACnetContextTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

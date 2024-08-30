@@ -122,14 +122,13 @@ public class BACnetEventSummariesList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetEventSummary> listOfEventSummaries =
         readTerminatedArrayField(
             "listOfEventSummaries",
-            new DataReaderComplexDefault<>(
-                () -> BACnetEventSummary.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetEventSummary.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper
@@ -138,7 +137,7 @@ public class BACnetEventSummariesList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventSummariesList");

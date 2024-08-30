@@ -124,7 +124,7 @@ public class BACnetConstructedDataProgramChange extends BACnetConstructedData im
     BACnetProgramRequestTagged programChange =
         readSimpleField(
             "programChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramRequestTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

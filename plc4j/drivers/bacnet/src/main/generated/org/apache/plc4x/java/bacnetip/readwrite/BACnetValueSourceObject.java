@@ -91,7 +91,7 @@ public class BACnetValueSourceObject extends BACnetValueSource implements Messag
     BACnetDeviceObjectReferenceEnclosed object =
         readSimpleField(
             "object",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

@@ -127,7 +127,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -137,7 +137,7 @@ public class HistoryUpdateRequest extends ExtensionObjectDefinition implements M
     List<ExtensionObject> historyUpdateDetails =
         readCountArrayField(
             "historyUpdateDetails",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfHistoryUpdateDetails);
 

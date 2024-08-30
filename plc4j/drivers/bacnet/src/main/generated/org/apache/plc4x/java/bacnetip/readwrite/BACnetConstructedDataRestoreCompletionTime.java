@@ -125,7 +125,7 @@ public class BACnetConstructedDataRestoreCompletionTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger completionTime =
         readSimpleField(
             "completionTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarLoadUnits extends BACnetConstructedData imp
     BACnetEngineeringUnitsTagged units =
         readSimpleField(
             "units",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEngineeringUnitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

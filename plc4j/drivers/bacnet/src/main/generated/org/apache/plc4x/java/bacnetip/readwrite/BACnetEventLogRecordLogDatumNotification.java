@@ -128,19 +128,18 @@ public class BACnetEventLogRecordLogDatumNotification extends BACnetEventLogReco
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (1)), readBuffer));
 
     ConfirmedEventNotificationRequest notification =
         readSimpleField(
             "notification",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ConfirmedEventNotificationRequest.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventLogRecordLogDatumNotification");

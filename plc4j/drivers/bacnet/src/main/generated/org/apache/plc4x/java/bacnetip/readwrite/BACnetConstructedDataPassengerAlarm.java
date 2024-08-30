@@ -124,7 +124,7 @@ public class BACnetConstructedDataPassengerAlarm extends BACnetConstructedData i
     BACnetApplicationTagBoolean passengerAlarm =
         readSimpleField(
             "passengerAlarm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

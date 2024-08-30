@@ -125,7 +125,7 @@ public class BACnetConstructedDataScheduleDefault extends BACnetConstructedData 
     BACnetConstructedDataElement scheduleDefault =
         readSimpleField(
             "scheduleDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,

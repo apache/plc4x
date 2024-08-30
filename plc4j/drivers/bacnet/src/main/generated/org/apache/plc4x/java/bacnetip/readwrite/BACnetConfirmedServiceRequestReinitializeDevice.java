@@ -123,7 +123,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
         reinitializedStateOfDevice =
             readSimpleField(
                 "reinitializedStateOfDevice",
-                new DataReaderComplexDefault<>(
+                readComplex(
                     () ->
                         BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged
                             .staticParse(
@@ -135,7 +135,7 @@ public class BACnetConfirmedServiceRequestReinitializeDevice extends BACnetConfi
     BACnetContextTagCharacterString password =
         readOptionalField(
             "password",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

@@ -126,7 +126,7 @@ public class BACnetConstructedDataFullDutyBaseline extends BACnetConstructedData
     BACnetApplicationTagReal fullDutyBaseLine =
         readSimpleField(
             "fullDutyBaseLine",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

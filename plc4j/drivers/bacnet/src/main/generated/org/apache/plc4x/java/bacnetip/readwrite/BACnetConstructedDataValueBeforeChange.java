@@ -126,7 +126,7 @@ public class BACnetConstructedDataValueBeforeChange extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger valuesBeforeChange =
         readSimpleField(
             "valuesBeforeChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

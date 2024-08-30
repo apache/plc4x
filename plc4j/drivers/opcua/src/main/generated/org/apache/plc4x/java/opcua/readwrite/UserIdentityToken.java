@@ -121,13 +121,12 @@ public class UserIdentityToken extends ExtensionObjectDefinition implements Mess
 
     PascalString policyId =
         readSimpleField(
-            "policyId",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "policyId", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     UserIdentityTokenDefinition userIdentityTokenDefinition =
         readSimpleField(
             "userIdentityTokenDefinition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     UserIdentityTokenDefinition.staticParse(
                         readBuffer, (String) (policyId.getStringValue())),

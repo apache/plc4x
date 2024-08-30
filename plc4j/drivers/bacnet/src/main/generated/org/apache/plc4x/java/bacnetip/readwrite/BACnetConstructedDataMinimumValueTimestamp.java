@@ -128,8 +128,7 @@ public class BACnetConstructedDataMinimumValueTimestamp extends BACnetConstructe
     BACnetDateTime minimumValueTimestamp =
         readSimpleField(
             "minimumValueTimestamp",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, minimumValueTimestamp);
 

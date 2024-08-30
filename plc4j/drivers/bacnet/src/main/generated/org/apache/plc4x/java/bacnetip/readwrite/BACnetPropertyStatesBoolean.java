@@ -91,7 +91,7 @@ public class BACnetPropertyStatesBoolean extends BACnetPropertyStates implements
     BACnetContextTagBoolean booleanValue =
         readSimpleField(
             "booleanValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

@@ -119,13 +119,12 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (7)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (7)), readBuffer));
 
     BACnetDeviceObjectPropertyReferenceEnclosed faultListReference =
         readSimpleField(
             "faultListReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (0)),
@@ -134,8 +133,7 @@ public class BACnetFaultParameterFaultListed extends BACnetFaultParameter implem
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (7)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (7)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultListed");
     // Create the instance

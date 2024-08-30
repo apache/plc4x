@@ -111,7 +111,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
     BACnetApplicationTagSignedInteger fileStartRecord =
         readSimpleField(
             "fileStartRecord",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -120,7 +120,7 @@ public class BACnetConfirmedServiceRequestAtomicReadFileRecord
     BACnetApplicationTagUnsignedInteger requestRecordCount =
         readSimpleField(
             "requestRecordCount",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

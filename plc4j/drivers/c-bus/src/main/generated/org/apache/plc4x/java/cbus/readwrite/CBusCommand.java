@@ -119,8 +119,7 @@ public abstract class CBusCommand implements Message {
 
     CBusHeader header =
         readSimpleField(
-            "header",
-            new DataReaderComplexDefault<>(() -> CBusHeader.staticParse(readBuffer), readBuffer));
+            "header", readComplex(() -> CBusHeader.staticParse(readBuffer), readBuffer));
     boolean isDeviceManagement =
         readVirtualField("isDeviceManagement", boolean.class, header.getDp());
     DestinationAddressType destinationAddressType =

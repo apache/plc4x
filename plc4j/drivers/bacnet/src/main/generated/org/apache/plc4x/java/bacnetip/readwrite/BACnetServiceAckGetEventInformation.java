@@ -113,13 +113,13 @@ public class BACnetServiceAckGetEventInformation extends BACnetServiceAck implem
     BACnetEventSummariesList listOfEventSummaries =
         readSimpleField(
             "listOfEventSummaries",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventSummariesList.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagBoolean moreEvents =
         readSimpleField(
             "moreEvents",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

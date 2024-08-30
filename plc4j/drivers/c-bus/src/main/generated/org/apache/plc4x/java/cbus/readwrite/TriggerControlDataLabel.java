@@ -146,8 +146,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     TriggerControlLabelOptions triggerControlOptions =
         readSimpleField(
             "triggerControlOptions",
-            new DataReaderComplexDefault<>(
-                () -> TriggerControlLabelOptions.staticParse(readBuffer), readBuffer));
+            readComplex(() -> TriggerControlLabelOptions.staticParse(readBuffer), readBuffer));
 
     byte actionSelector = readSimpleField("actionSelector", readByte(readBuffer, 8));
 

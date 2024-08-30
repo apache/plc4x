@@ -214,21 +214,19 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
 
     PascalString endpointUrl =
         readSimpleField(
-            "endpointUrl",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpointUrl", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectDefinition server =
         readSimpleField(
             "server",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("310")),
                 readBuffer));
 
     PascalByteString serverCertificate =
         readSimpleField(
             "serverCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     MessageSecurityMode securityMode =
         readEnumField(
@@ -240,7 +238,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfUserIdentityTokens =
         readSimpleField("noOfUserIdentityTokens", readSignedInt(readBuffer, 32));
@@ -248,7 +246,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     List<ExtensionObjectDefinition> userIdentityTokens =
         readCountArrayField(
             "userIdentityTokens",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("306")),
                 readBuffer),
             noOfUserIdentityTokens);
@@ -256,7 +254,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
     PascalString transportProfileUri =
         readSimpleField(
             "transportProfileUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     short securityLevel = readSimpleField("securityLevel", readUnsignedShort(readBuffer, 8));
 

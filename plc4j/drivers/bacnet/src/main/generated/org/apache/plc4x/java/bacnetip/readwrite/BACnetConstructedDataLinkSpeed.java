@@ -124,7 +124,7 @@ public class BACnetConstructedDataLinkSpeed extends BACnetConstructedData implem
     BACnetApplicationTagReal linkSpeed =
         readSimpleField(
             "linkSpeed",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

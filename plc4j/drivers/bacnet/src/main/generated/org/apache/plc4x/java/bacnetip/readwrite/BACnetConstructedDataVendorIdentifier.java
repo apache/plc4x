@@ -126,7 +126,7 @@ public class BACnetConstructedDataVendorIdentifier extends BACnetConstructedData
     BACnetVendorIdTagged vendorIdentifier =
         readSimpleField(
             "vendorIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

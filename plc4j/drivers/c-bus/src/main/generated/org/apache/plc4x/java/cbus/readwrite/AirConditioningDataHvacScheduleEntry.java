@@ -197,8 +197,7 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     short entry = readSimpleField("entry", readUnsignedShort(readBuffer, 8));
 
@@ -207,26 +206,22 @@ public class AirConditioningDataHvacScheduleEntry extends AirConditioningData im
     HVACModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACModeAndFlags.staticParse(readBuffer), readBuffer));
 
     HVACStartTime startTime =
         readSimpleField(
-            "startTime",
-            new DataReaderComplexDefault<>(
-                () -> HVACStartTime.staticParse(readBuffer), readBuffer));
+            "startTime", readComplex(() -> HVACStartTime.staticParse(readBuffer), readBuffer));
 
     HVACTemperature level =
         readOptionalField(
             "level",
-            new DataReaderComplexDefault<>(
-                () -> HVACTemperature.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACTemperature.staticParse(readBuffer), readBuffer),
             hvacModeAndFlags.getIsLevelTemperature());
 
     HVACRawLevels rawLevel =
         readOptionalField(
             "rawLevel",
-            new DataReaderComplexDefault<>(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HVACRawLevels.staticParse(readBuffer), readBuffer),
             hvacModeAndFlags.getIsLevelRaw());
 
     readBuffer.closeContext("AirConditioningDataHvacScheduleEntry");

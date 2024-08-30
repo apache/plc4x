@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPv6ZoneIndex extends BACnetConstructedData im
     BACnetApplicationTagCharacterString ipv6ZoneIndex =
         readSimpleField(
             "ipv6ZoneIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

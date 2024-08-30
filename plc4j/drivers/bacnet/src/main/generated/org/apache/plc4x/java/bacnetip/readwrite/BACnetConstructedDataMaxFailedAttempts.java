@@ -126,7 +126,7 @@ public class BACnetConstructedDataMaxFailedAttempts extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger maxFailedAttempts =
         readSimpleField(
             "maxFailedAttempts",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

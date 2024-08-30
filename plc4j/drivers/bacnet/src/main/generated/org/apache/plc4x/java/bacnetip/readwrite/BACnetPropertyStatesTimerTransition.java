@@ -92,7 +92,7 @@ public class BACnetPropertyStatesTimerTransition extends BACnetPropertyStates im
     BACnetTimerTransitionTagged timerTransition =
         readSimpleField(
             "timerTransition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTimerTransitionTagged.staticParse(
                         readBuffer,

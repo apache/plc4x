@@ -123,7 +123,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetPropertyIdentifierTagged propertyIdentifier =
         readSimpleField(
             "propertyIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyIdentifierTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -132,7 +132,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetContextTagUnsignedInteger arrayIndex =
         readOptionalField(
             "arrayIndex",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -144,7 +144,7 @@ public class BACnetReadAccessProperty implements Message {
     BACnetReadAccessPropertyReadResult readResult =
         readOptionalField(
             "readResult",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessPropertyReadResult.staticParse(
                         readBuffer,

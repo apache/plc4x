@@ -175,7 +175,7 @@ public class CANOpenFrame implements Message {
     CANOpenPayload payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CANOpenPayload.staticParse(readBuffer, (CANOpenService) (service)),
                 readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));

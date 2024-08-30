@@ -124,8 +124,7 @@ public class BACnetConstructedDataLowDiffLimit extends BACnetConstructedData imp
     BACnetOptionalREAL lowDiffLimit =
         readSimpleField(
             "lowDiffLimit",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalREAL.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetOptionalREAL.staticParse(readBuffer), readBuffer));
     BACnetOptionalREAL actualValue =
         readVirtualField("actualValue", BACnetOptionalREAL.class, lowDiffLimit);
 

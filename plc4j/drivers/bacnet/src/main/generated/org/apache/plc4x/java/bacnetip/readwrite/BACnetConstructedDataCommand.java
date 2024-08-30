@@ -124,7 +124,7 @@ public class BACnetConstructedDataCommand extends BACnetConstructedData implemen
     BACnetNetworkPortCommandTagged command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNetworkPortCommandTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -114,8 +114,7 @@ public class ParameterValueSerialNumber extends ParameterValue implements Messag
 
     SerialNumber value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(() -> SerialNumber.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> SerialNumber.staticParse(readBuffer), readBuffer));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (4)));
 

@@ -114,19 +114,19 @@ public class BACnetLogRecord implements Message {
     BACnetDateTimeEnclosed timestamp =
         readSimpleField(
             "timestamp",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetLogRecordLogDatum logDatum =
         readSimpleField(
             "logDatum",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLogRecordLogDatum.staticParse(readBuffer, (short) (1)), readBuffer));
 
     BACnetStatusFlagsTagged statusFlags =
         readOptionalField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),

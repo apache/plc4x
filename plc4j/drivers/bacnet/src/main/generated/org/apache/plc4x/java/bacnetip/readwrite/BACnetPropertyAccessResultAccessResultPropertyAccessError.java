@@ -114,8 +114,7 @@ public class BACnetPropertyAccessResultAccessResultPropertyAccessError
     ErrorEnclosed propertyAccessError =
         readSimpleField(
             "propertyAccessError",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (5)), readBuffer));
 
     readBuffer.closeContext("BACnetPropertyAccessResultAccessResultPropertyAccessError");
     // Create the instance

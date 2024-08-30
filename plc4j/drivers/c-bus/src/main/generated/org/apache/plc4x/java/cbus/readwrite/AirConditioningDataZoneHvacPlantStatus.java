@@ -155,8 +155,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACType hvacType =
         readEnumField(
@@ -166,9 +165,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
 
     HVACStatusFlags hvacStatus =
         readSimpleField(
-            "hvacStatus",
-            new DataReaderComplexDefault<>(
-                () -> HVACStatusFlags.staticParse(readBuffer), readBuffer));
+            "hvacStatus", readComplex(() -> HVACStatusFlags.staticParse(readBuffer), readBuffer));
 
     HVACError hvacErrorCode =
         readEnumField(

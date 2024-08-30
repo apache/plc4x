@@ -125,7 +125,7 @@ public class BACnetConstructedDataPositiveIntegerValueMaxPresValue extends BACne
     BACnetApplicationTagUnsignedInteger maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

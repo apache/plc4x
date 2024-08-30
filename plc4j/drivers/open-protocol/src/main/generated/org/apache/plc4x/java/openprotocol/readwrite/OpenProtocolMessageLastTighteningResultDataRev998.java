@@ -2585,7 +2585,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev998
     List<StageResult> stageResults =
         readCountArrayField(
             "stageResults",
-            new DataReaderComplexDefault<>(() -> StageResult.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StageResult.staticParse(readBuffer), readBuffer),
             numberOfStageResults,
             WithOption.WithEncoding("ASCII"));
 

@@ -122,13 +122,13 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     List<BACnetLandingDoorStatusLandingDoorsListEntry> landingDoors =
         readTerminatedArrayField(
             "landingDoors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLandingDoorStatusLandingDoorsListEntry.staticParse(readBuffer),
                 readBuffer),
             () ->
@@ -139,7 +139,7 @@ public class BACnetLandingDoorStatusLandingDoorsList implements Message {
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetLandingDoorStatusLandingDoorsList");

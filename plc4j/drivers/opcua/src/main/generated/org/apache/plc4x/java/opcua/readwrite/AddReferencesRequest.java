@@ -126,7 +126,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
@@ -135,7 +135,7 @@ public class AddReferencesRequest extends ExtensionObjectDefinition implements M
     List<ExtensionObjectDefinition> referencesToAdd =
         readCountArrayField(
             "referencesToAdd",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("381")),
                 readBuffer),
             noOfReferencesToAdd);

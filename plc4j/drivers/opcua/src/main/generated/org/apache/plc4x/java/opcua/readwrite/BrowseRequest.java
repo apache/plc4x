@@ -155,14 +155,14 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition view =
         readSimpleField(
             "view",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("513")),
                 readBuffer));
 
@@ -174,7 +174,7 @@ public class BrowseRequest extends ExtensionObjectDefinition implements Message 
     List<ExtensionObjectDefinition> nodesToBrowse =
         readCountArrayField(
             "nodesToBrowse",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("516")),
                 readBuffer),
             noOfNodesToBrowse);

@@ -144,14 +144,12 @@ public class LBusmonInd extends CEMI implements Message {
     List<CEMIAdditionalInformation> additionalInformation =
         readLengthArrayField(
             "additionalInformation",
-            new DataReaderComplexDefault<>(
-                () -> CEMIAdditionalInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CEMIAdditionalInformation.staticParse(readBuffer), readBuffer),
             additionalInformationLength);
 
     LDataFrame dataFrame =
         readSimpleField(
-            "dataFrame",
-            new DataReaderComplexDefault<>(() -> LDataFrame.staticParse(readBuffer), readBuffer));
+            "dataFrame", readComplex(() -> LDataFrame.staticParse(readBuffer), readBuffer));
 
     Short crc =
         readOptionalField("crc", readUnsignedShort(readBuffer, 8), dataFrame.getNotAckFrame());

@@ -152,7 +152,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,8 +162,7 @@ public class BACnetConstructedDataCommandTimeArray extends BACnetConstructedData
     List<BACnetTimeStamp> commandTimeArray =
         readTerminatedArrayField(
             "commandTimeArray",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTimeStamp.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BACnetTimeStamp.staticParse(readBuffer), readBuffer),
             () ->
                 ((boolean)
                     (org.apache.plc4x.java.bacnetip.readwrite.utils.StaticHelper

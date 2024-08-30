@@ -152,7 +152,7 @@ public class BACnetConstructedDataAuthenticationPolicyNames extends BACnetConstr
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -162,7 +162,7 @@ public class BACnetConstructedDataAuthenticationPolicyNames extends BACnetConstr
     List<BACnetApplicationTagCharacterString> authenticationPolicyNames =
         readTerminatedArrayField(
             "authenticationPolicyNames",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

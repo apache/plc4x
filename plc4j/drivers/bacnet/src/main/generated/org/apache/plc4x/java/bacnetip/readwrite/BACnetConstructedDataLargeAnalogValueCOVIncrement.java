@@ -125,7 +125,7 @@ public class BACnetConstructedDataLargeAnalogValueCOVIncrement extends BACnetCon
     BACnetApplicationTagDouble covIncrement =
         readSimpleField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDouble) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagDouble actualValue =

@@ -120,7 +120,7 @@ public class BACnetConstructedDataSupportedSecurityAlgorithms extends BACnetCons
     List<BACnetApplicationTagUnsignedInteger> supportedSecurityAlgorithms =
         readTerminatedArrayField(
             "supportedSecurityAlgorithms",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

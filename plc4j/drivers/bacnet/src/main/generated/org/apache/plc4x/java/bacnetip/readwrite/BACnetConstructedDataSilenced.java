@@ -124,7 +124,7 @@ public class BACnetConstructedDataSilenced extends BACnetConstructedData impleme
     BACnetSilencedStateTagged silenced =
         readSimpleField(
             "silenced",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSilencedStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

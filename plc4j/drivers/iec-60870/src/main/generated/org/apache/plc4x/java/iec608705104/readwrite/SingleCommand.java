@@ -115,8 +115,7 @@ public class SingleCommand implements Message {
     QualifierOfCommand qoc =
         readSimpleField(
             "qoc",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     Byte reservedField0 =

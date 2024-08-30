@@ -91,7 +91,7 @@ public class BACnetPropertyStatesProtocolLevel extends BACnetPropertyStates impl
     BACnetProtocolLevelTagged protocolLevel =
         readSimpleField(
             "protocolLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProtocolLevelTagged.staticParse(
                         readBuffer,

@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarMode extends BACnetConstructedData implemen
     BACnetLiftCarModeTagged carMode =
         readSimpleField(
             "carMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

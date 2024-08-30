@@ -124,7 +124,7 @@ public class BACnetConstructedDataArchive extends BACnetConstructedData implemen
     BACnetApplicationTagBoolean archive =
         readSimpleField(
             "archive",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

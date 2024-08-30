@@ -124,7 +124,7 @@ public class BACnetConstructedDataPolarity extends BACnetConstructedData impleme
     BACnetPolarityTagged polarity =
         readSimpleField(
             "polarity",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPolarityTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

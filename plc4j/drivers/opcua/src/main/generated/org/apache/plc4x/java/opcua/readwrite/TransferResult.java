@@ -125,8 +125,7 @@ public class TransferResult extends ExtensionObjectDefinition implements Message
 
     StatusCode statusCode =
         readSimpleField(
-            "statusCode",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer));
+            "statusCode", readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer));
 
     int noOfAvailableSequenceNumbers =
         readSimpleField("noOfAvailableSequenceNumbers", readSignedInt(readBuffer, 32));

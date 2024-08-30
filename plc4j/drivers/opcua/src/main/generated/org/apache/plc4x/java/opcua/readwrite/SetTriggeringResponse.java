@@ -224,7 +224,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -233,7 +233,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     List<StatusCode> addResults =
         readCountArrayField(
             "addResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfAddResults);
 
     int noOfAddDiagnosticInfos =
@@ -242,8 +242,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     List<DiagnosticInfo> addDiagnosticInfos =
         readCountArrayField(
             "addDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfAddDiagnosticInfos);
 
     int noOfRemoveResults = readSimpleField("noOfRemoveResults", readSignedInt(readBuffer, 32));
@@ -251,7 +250,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     List<StatusCode> removeResults =
         readCountArrayField(
             "removeResults",
-            new DataReaderComplexDefault<>(() -> StatusCode.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusCode.staticParse(readBuffer), readBuffer),
             noOfRemoveResults);
 
     int noOfRemoveDiagnosticInfos =
@@ -260,8 +259,7 @@ public class SetTriggeringResponse extends ExtensionObjectDefinition implements 
     List<DiagnosticInfo> removeDiagnosticInfos =
         readCountArrayField(
             "removeDiagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfRemoveDiagnosticInfos);
 
     readBuffer.closeContext("SetTriggeringResponse");

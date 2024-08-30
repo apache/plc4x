@@ -124,7 +124,7 @@ public class BACnetConstructedDataValidSamples extends BACnetConstructedData imp
     BACnetApplicationTagUnsignedInteger validSamples =
         readSimpleField(
             "validSamples",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

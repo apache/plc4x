@@ -126,7 +126,7 @@ public class BACnetConstructedDataTimePatternValueRelinquishDefault extends BACn
     BACnetApplicationTagTime relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagTime actualValue =

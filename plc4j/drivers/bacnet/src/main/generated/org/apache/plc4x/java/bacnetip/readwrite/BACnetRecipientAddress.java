@@ -91,7 +91,7 @@ public class BACnetRecipientAddress extends BACnetRecipient implements Message {
     BACnetAddressEnclosed addressValue =
         readSimpleField(
             "addressValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAddressEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetRecipientAddress");

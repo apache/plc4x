@@ -123,8 +123,7 @@ public class BACnetConstructedDataScale extends BACnetConstructedData implements
 
     BACnetScale scale =
         readSimpleField(
-            "scale",
-            new DataReaderComplexDefault<>(() -> BACnetScale.staticParse(readBuffer), readBuffer));
+            "scale", readComplex(() -> BACnetScale.staticParse(readBuffer), readBuffer));
     BACnetScale actualValue = readVirtualField("actualValue", BACnetScale.class, scale);
 
     readBuffer.closeContext("BACnetConstructedDataScale");

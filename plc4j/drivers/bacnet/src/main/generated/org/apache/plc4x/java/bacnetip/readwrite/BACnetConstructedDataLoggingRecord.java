@@ -124,8 +124,7 @@ public class BACnetConstructedDataLoggingRecord extends BACnetConstructedData im
     BACnetAccumulatorRecord loggingRecord =
         readSimpleField(
             "loggingRecord",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAccumulatorRecord.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetAccumulatorRecord.staticParse(readBuffer), readBuffer));
     BACnetAccumulatorRecord actualValue =
         readVirtualField("actualValue", BACnetAccumulatorRecord.class, loggingRecord);
 

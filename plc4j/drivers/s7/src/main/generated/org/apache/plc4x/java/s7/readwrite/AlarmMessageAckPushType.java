@@ -130,8 +130,7 @@ public class AlarmMessageAckPushType implements Message {
 
     DateAndTime timeStamp =
         readSimpleField(
-            "timeStamp",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeStamp", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     short functionId = readSimpleField("functionId", readUnsignedShort(readBuffer, 8));
 
@@ -140,8 +139,7 @@ public class AlarmMessageAckPushType implements Message {
     List<AlarmMessageAckObjectPushType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageAckObjectPushType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("AlarmMessageAckPushType");

@@ -134,13 +134,12 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -152,7 +151,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetDeviceObjectPropertyReferenceEnclosed feedbackPropertyReference =
         readSimpleField(
             "feedbackPropertyReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDeviceObjectPropertyReferenceEnclosed.staticParse(
                         readBuffer, (short) (1)),
@@ -161,8 +160,7 @@ public class BACnetEventParameterCommandFailure extends BACnetEventParameter imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (3)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterCommandFailure");
     // Create the instance

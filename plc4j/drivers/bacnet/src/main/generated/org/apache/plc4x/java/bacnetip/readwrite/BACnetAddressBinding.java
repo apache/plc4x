@@ -99,7 +99,7 @@ public class BACnetAddressBinding implements Message {
     BACnetApplicationTagObjectIdentifier deviceIdentifier =
         readSimpleField(
             "deviceIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -107,9 +107,7 @@ public class BACnetAddressBinding implements Message {
 
     BACnetAddress deviceAddress =
         readSimpleField(
-            "deviceAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddress.staticParse(readBuffer), readBuffer));
+            "deviceAddress", readComplex(() -> BACnetAddress.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("BACnetAddressBinding");
     // Create the instance

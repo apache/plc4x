@@ -133,8 +133,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
 
     PascalString userName =
         readSimpleField(
-            "userName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "userName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ModificationInfo");
     // Create the instance

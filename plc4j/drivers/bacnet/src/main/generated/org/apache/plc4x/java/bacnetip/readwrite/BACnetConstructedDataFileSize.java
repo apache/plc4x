@@ -124,7 +124,7 @@ public class BACnetConstructedDataFileSize extends BACnetConstructedData impleme
     BACnetApplicationTagUnsignedInteger fileSize =
         readSimpleField(
             "fileSize",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

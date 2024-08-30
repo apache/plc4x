@@ -235,20 +235,18 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
 
     PascalString serverUri =
         readSimpleField(
-            "serverUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "serverUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString productUri =
         readSimpleField(
-            "productUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "productUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfServerNames = readSimpleField("noOfServerNames", readSignedInt(readBuffer, 32));
 
     List<LocalizedText> serverNames =
         readCountArrayField(
             "serverNames",
-            new DataReaderComplexDefault<>(() -> LocalizedText.staticParse(readBuffer), readBuffer),
+            readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer),
             noOfServerNames);
 
     ApplicationType serverType =
@@ -261,20 +259,20 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
     PascalString gatewayServerUri =
         readSimpleField(
             "gatewayServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDiscoveryUrls = readSimpleField("noOfDiscoveryUrls", readSignedInt(readBuffer, 32));
 
     List<PascalString> discoveryUrls =
         readCountArrayField(
             "discoveryUrls",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfDiscoveryUrls);
 
     PascalString semaphoreFilePath =
         readSimpleField(
             "semaphoreFilePath",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

@@ -91,7 +91,7 @@ public class BACnetPropertyStatesDoorValue extends BACnetPropertyStates implemen
     BACnetDoorValueTagged doorValue =
         readSimpleField(
             "doorValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDoorValueTagged.staticParse(
                         readBuffer,

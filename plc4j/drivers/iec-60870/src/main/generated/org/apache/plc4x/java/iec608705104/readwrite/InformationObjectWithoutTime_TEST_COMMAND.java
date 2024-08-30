@@ -99,8 +99,7 @@ public class InformationObjectWithoutTime_TEST_COMMAND extends InformationObject
     FixedTestBitPatternTwoOctet fbp =
         readSimpleField(
             "fbp",
-            new DataReaderComplexDefault<>(
-                () -> FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer),
+            readComplex(() -> FixedTestBitPatternTwoOctet.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_TEST_COMMAND");

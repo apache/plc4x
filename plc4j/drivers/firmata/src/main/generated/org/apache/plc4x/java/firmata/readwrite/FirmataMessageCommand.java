@@ -97,7 +97,7 @@ public class FirmataMessageCommand extends FirmataMessage implements Message {
     FirmataCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> FirmataCommand.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

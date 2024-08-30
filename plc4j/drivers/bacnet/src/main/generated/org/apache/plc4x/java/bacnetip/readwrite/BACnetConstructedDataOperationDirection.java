@@ -126,7 +126,7 @@ public class BACnetConstructedDataOperationDirection extends BACnetConstructedDa
     BACnetEscalatorOperationDirectionTagged operationDirection =
         readSimpleField(
             "operationDirection",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorOperationDirectionTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

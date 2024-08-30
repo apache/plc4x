@@ -125,7 +125,7 @@ public class BACnetConstructedDataCharacterStringValuePresentValue extends BACne
     BACnetApplicationTagCharacterString presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

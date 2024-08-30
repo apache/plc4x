@@ -124,7 +124,7 @@ public class BACnetConstructedDataLimitEnable extends BACnetConstructedData impl
     BACnetLimitEnableTagged limitEnable =
         readSimpleField(
             "limitEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLimitEnableTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

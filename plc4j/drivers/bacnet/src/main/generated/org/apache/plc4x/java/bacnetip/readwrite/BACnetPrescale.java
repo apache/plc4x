@@ -98,7 +98,7 @@ public class BACnetPrescale implements Message {
     BACnetContextTagUnsignedInteger multiplier =
         readSimpleField(
             "multiplier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -110,7 +110,7 @@ public class BACnetPrescale implements Message {
     BACnetContextTagUnsignedInteger moduloDivide =
         readSimpleField(
             "moduloDivide",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

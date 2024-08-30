@@ -124,7 +124,7 @@ public class BACnetConstructedDataAverageValue extends BACnetConstructedData imp
     BACnetApplicationTagReal averageValue =
         readSimpleField(
             "averageValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

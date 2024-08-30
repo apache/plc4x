@@ -90,8 +90,7 @@ public class OpcuaAPU implements Message {
     MessagePDU message =
         readSimpleField(
             "message",
-            new DataReaderComplexDefault<>(
-                () -> MessagePDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
+            readComplex(() -> MessagePDU.staticParse(readBuffer, (boolean) (response)), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("OpcuaAPU");

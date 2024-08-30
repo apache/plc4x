@@ -232,30 +232,23 @@ public class AlarmMessageObjectPushType implements Message {
     long eventId = readSimpleField("eventId", readUnsignedLong(readBuffer, 32));
 
     State eventState =
-        readSimpleField(
-            "eventState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("eventState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State localState =
-        readSimpleField(
-            "localState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("localState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     List<AssociatedValueType> AssociatedValues =
         readCountArrayField(
             "AssociatedValues",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer),
             numberOfValues);
 
     readBuffer.closeContext("AlarmMessageObjectPushType");

@@ -125,7 +125,7 @@ public class BACnetConstructedDataAlertEnrollmentPresentValue extends BACnetCons
     BACnetApplicationTagObjectIdentifier presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagObjectIdentifier)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -92,7 +92,7 @@ public class BACnetPropertyStatesFileAccessMethod extends BACnetPropertyStates i
     BACnetFileAccessMethodTagged fileAccessMethod =
         readSimpleField(
             "fileAccessMethod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFileAccessMethodTagged.staticParse(
                         readBuffer,

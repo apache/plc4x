@@ -91,7 +91,7 @@ public class BACnetClientCOVObject extends BACnetClientCOV implements Message {
     BACnetApplicationTagReal realIncrement =
         readSimpleField(
             "realIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

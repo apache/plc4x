@@ -125,7 +125,7 @@ public class BACnetConstructedDataCalendarPresentValue extends BACnetConstructed
     BACnetApplicationTagBoolean presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

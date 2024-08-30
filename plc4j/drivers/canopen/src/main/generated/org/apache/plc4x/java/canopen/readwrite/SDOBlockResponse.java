@@ -91,8 +91,7 @@ public class SDOBlockResponse extends SDOResponse implements Message {
 
     SDOBlockData block =
         readSimpleField(
-            "block",
-            new DataReaderComplexDefault<>(() -> SDOBlockData.staticParse(readBuffer), readBuffer));
+            "block", readComplex(() -> SDOBlockData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SDOBlockResponse");
     // Create the instance

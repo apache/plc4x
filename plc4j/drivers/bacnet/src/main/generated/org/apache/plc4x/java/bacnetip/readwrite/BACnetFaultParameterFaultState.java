@@ -119,13 +119,12 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     BACnetFaultParameterFaultStateListOfFaultValues listOfFaultValues =
         readSimpleField(
             "listOfFaultValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetFaultParameterFaultStateListOfFaultValues.staticParse(
                         readBuffer, (short) (0)),
@@ -134,8 +133,7 @@ public class BACnetFaultParameterFaultState extends BACnetFaultParameter impleme
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (4)), readBuffer));
 
     readBuffer.closeContext("BACnetFaultParameterFaultState");
     // Create the instance

@@ -126,7 +126,7 @@ public class BACnetConstructedDataBitStringValueRelinquishDefault extends BACnet
     BACnetApplicationTagBitString relinquishDefault =
         readSimpleField(
             "relinquishDefault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBitString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBitString actualValue =

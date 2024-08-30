@@ -110,13 +110,12 @@ public class VTCloseError extends BACnetError implements Message {
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     VTCloseErrorListOfVTSessionIdentifiers listOfVtSessionIdentifiers =
         readOptionalField(
             "listOfVtSessionIdentifiers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> VTCloseErrorListOfVTSessionIdentifiers.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

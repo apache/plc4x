@@ -261,13 +261,12 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
 
     NodeId createSessionId =
         readSimpleField(
-            "createSessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "createSessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PascalString createClientName =
         readSimpleField(
             "createClientName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     long invocationCreationTime =
         readSimpleField("invocationCreationTime", readSignedLong(readBuffer, 64));
@@ -276,13 +275,11 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
 
     PascalString lastMethodCall =
         readSimpleField(
-            "lastMethodCall",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "lastMethodCall", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     NodeId lastMethodSessionId =
         readSimpleField(
-            "lastMethodSessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "lastMethodSessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     int noOfLastMethodInputArguments =
         readSimpleField("noOfLastMethodInputArguments", readSignedInt(readBuffer, 32));
@@ -290,7 +287,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     List<ExtensionObjectDefinition> lastMethodInputArguments =
         readCountArrayField(
             "lastMethodInputArguments",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("298")),
                 readBuffer),
             noOfLastMethodInputArguments);
@@ -301,7 +298,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     List<ExtensionObjectDefinition> lastMethodOutputArguments =
         readCountArrayField(
             "lastMethodOutputArguments",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("298")),
                 readBuffer),
             noOfLastMethodOutputArguments);
@@ -311,7 +308,7 @@ public class ProgramDiagnosticDataType extends ExtensionObjectDefinition impleme
     ExtensionObjectDefinition lastMethodReturnStatus =
         readSimpleField(
             "lastMethodReturnStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("301")),
                 readBuffer));
 

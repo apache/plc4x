@@ -128,7 +128,7 @@ public class BACnetConstructedDataControlledVariableValue extends BACnetConstruc
     BACnetApplicationTagReal controlledVariableValue =
         readSimpleField(
             "controlledVariableValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

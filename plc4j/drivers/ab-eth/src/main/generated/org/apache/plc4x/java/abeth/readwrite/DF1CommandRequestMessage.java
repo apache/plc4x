@@ -97,9 +97,7 @@ public class DF1CommandRequestMessage extends DF1RequestMessage implements Messa
 
     DF1RequestCommand command =
         readSimpleField(
-            "command",
-            new DataReaderComplexDefault<>(
-                () -> DF1RequestCommand.staticParse(readBuffer), readBuffer));
+            "command", readComplex(() -> DF1RequestCommand.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DF1CommandRequestMessage");
     // Create the instance

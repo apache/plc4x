@@ -124,7 +124,7 @@ public class BACnetConstructedDataReferencePort extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger referencePort =
         readSimpleField(
             "referencePort",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -125,8 +125,7 @@ public class BACnetConstructedDataCountChangeTime extends BACnetConstructedData 
     BACnetDateTime countChangeTime =
         readSimpleField(
             "countChangeTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, countChangeTime);
 

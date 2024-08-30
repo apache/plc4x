@@ -91,7 +91,7 @@ public class BACnetPropertyStatesReliability extends BACnetPropertyStates implem
     BACnetReliabilityTagged reliability =
         readSimpleField(
             "reliability",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReliabilityTagged.staticParse(
                         readBuffer,

@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_END_OF_INITIALISATION extends Informat
     CauseOfInitialization coi =
         readSimpleField(
             "coi",
-            new DataReaderComplexDefault<>(
-                () -> CauseOfInitialization.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CauseOfInitialization.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_END_OF_INITIALISATION");

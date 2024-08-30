@@ -171,13 +171,11 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     NodeId sourceNodeId =
         readSimpleField(
-            "sourceNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "sourceNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -186,14 +184,11 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
 
     PascalString targetServerUri =
         readSimpleField(
-            "targetServerUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "targetServerUri", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     ExpandedNodeId targetNodeId =
         readSimpleField(
-            "targetNodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "targetNodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     NodeClass targetNodeClass =
         readEnumField(

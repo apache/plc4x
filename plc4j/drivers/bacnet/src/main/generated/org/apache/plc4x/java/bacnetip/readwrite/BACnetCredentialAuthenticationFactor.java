@@ -101,7 +101,7 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     BACnetAccessAuthenticationFactorDisableTagged disable =
         readSimpleField(
             "disable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessAuthenticationFactorDisableTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -110,7 +110,7 @@ public class BACnetCredentialAuthenticationFactor implements Message {
     BACnetAuthenticationFactorEnclosed authenticationFactor =
         readSimpleField(
             "authenticationFactor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetAuthenticationFactorEnclosed.staticParse(readBuffer, (short) (1)),
                 readBuffer));
 

@@ -123,8 +123,7 @@ public class InformationObjectWithoutTime_SET_POINT_COMMAND_SHORT_FLOATING_POINT
     QualifierOfSetPointCommand qos =
         readSimpleField(
             "qos",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfSetPointCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

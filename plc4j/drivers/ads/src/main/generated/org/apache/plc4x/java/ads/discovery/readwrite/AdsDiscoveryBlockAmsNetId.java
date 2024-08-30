@@ -111,8 +111,7 @@ public class AdsDiscoveryBlockAmsNetId extends AdsDiscoveryBlock implements Mess
 
     AmsNetId amsNetId =
         readSimpleField(
-            "amsNetId",
-            new DataReaderComplexDefault<>(() -> AmsNetId.staticParse(readBuffer), readBuffer));
+            "amsNetId", readComplex(() -> AmsNetId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AdsDiscoveryBlockAmsNetId");
     // Create the instance

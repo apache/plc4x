@@ -115,18 +115,16 @@ public class ErrorEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     Error error =
-        readSimpleField(
-            "error",
-            new DataReaderComplexDefault<>(() -> Error.staticParse(readBuffer), readBuffer));
+        readSimpleField("error", readComplex(() -> Error.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("ErrorEnclosed");

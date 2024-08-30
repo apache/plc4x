@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_PARAMETER_ACTIVATION extends Informati
     QualifierOfParameterActivation qpa =
         readSimpleField(
             "qpa",
-            new DataReaderComplexDefault<>(
-                () -> QualifierOfParameterActivation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualifierOfParameterActivation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_PARAMETER_ACTIVATION");

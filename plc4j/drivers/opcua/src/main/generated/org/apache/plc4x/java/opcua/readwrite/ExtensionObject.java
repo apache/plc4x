@@ -124,22 +124,19 @@ public class ExtensionObject implements Message {
 
     ExpandedNodeId typeId =
         readSimpleField(
-            "typeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "typeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     ExtensionObjectEncodingMask encodingMask =
         readOptionalField(
             "encodingMask",
-            new DataReaderComplexDefault<>(
-                () -> ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ExtensionObjectEncodingMask.staticParse(readBuffer), readBuffer),
             includeEncodingMask);
     String identifier = readVirtualField("identifier", String.class, typeId.getIdentifier());
 
     ExtensionObjectDefinition body =
         readSimpleField(
             "body",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) (identifier)),
                 readBuffer));
 

@@ -119,7 +119,7 @@ public class BACnetContextTagObjectIdentifier extends BACnetContextTag implement
     BACnetTagPayloadObjectIdentifier payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetTagPayloadObjectIdentifier.staticParse(readBuffer), readBuffer));
     BACnetObjectType objectType =
         readVirtualField("objectType", BACnetObjectType.class, payload.getObjectType());

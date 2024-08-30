@@ -125,7 +125,7 @@ public class BACnetConstructedDataAccumulatorMaxPresValue extends BACnetConstruc
     BACnetApplicationTagUnsignedInteger maxPresValue =
         readSimpleField(
             "maxPresValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

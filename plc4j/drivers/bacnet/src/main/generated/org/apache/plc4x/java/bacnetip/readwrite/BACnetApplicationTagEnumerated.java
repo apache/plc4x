@@ -101,7 +101,7 @@ public class BACnetApplicationTagEnumerated extends BACnetApplicationTag impleme
     BACnetTagPayloadEnumerated payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadEnumerated.staticParse(
                         readBuffer, (long) (header.getActualLength())),

@@ -98,7 +98,7 @@ public class BACnetTimerStateChangeValueDateTime extends BACnetTimerStateChangeV
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetTimerStateChangeValueDateTime");

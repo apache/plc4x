@@ -107,7 +107,7 @@ public class BACnetNotificationParametersComplexEventType extends BACnetNotifica
     BACnetPropertyValues listOfValues =
         readSimpleField(
             "listOfValues",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetPropertyValues.staticParse(
                         readBuffer,

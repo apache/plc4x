@@ -116,15 +116,14 @@ public class InformationObjectWithoutTime_STEP_POSITION_INFORMATION
     ValueWithTransientStateIndication vti =
         readSimpleField(
             "vti",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ValueWithTransientStateIndication.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_STEP_POSITION_INFORMATION");

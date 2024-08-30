@@ -126,7 +126,7 @@ public class BACnetConstructedDataCountBeforeChange extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger countBeforeChange =
         readSimpleField(
             "countBeforeChange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

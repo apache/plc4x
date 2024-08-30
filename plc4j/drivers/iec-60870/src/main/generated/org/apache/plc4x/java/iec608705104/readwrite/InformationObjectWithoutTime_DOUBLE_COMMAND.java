@@ -99,7 +99,7 @@ public class InformationObjectWithoutTime_DOUBLE_COMMAND extends InformationObje
     DoubleCommand dco =
         readSimpleField(
             "dco",
-            new DataReaderComplexDefault<>(() -> DoubleCommand.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DoubleCommand.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_DOUBLE_COMMAND");

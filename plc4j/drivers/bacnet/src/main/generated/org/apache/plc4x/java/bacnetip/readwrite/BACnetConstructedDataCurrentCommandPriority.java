@@ -128,8 +128,7 @@ public class BACnetConstructedDataCurrentCommandPriority extends BACnetConstruct
     BACnetOptionalUnsigned currentCommandPriority =
         readSimpleField(
             "currentCommandPriority",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalUnsigned.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetOptionalUnsigned.staticParse(readBuffer), readBuffer));
     BACnetOptionalUnsigned actualValue =
         readVirtualField("actualValue", BACnetOptionalUnsigned.class, currentCommandPriority);
 

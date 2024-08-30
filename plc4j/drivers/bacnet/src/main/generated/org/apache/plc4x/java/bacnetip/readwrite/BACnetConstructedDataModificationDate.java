@@ -126,8 +126,7 @@ public class BACnetConstructedDataModificationDate extends BACnetConstructedData
     BACnetDateTime modificationDate =
         readSimpleField(
             "modificationDate",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
     BACnetDateTime actualValue =
         readVirtualField("actualValue", BACnetDateTime.class, modificationDate);
 

@@ -126,7 +126,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagUnsignedInteger vtSessionIdentifier =
         readSimpleField(
             "vtSessionIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -135,7 +135,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagOctetString vtNewData =
         readSimpleField(
             "vtNewData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
@@ -143,7 +143,7 @@ public class BACnetServiceAckVTData extends BACnetServiceAck implements Message 
     BACnetApplicationTagUnsignedInteger vtDataFlag =
         readSimpleField(
             "vtDataFlag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

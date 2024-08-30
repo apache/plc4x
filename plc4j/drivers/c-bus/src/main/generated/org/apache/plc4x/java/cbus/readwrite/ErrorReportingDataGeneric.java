@@ -220,8 +220,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
     ErrorReportingSystemCategory systemCategory =
         readSimpleField(
             "systemCategory",
-            new DataReaderComplexDefault<>(
-                () -> ErrorReportingSystemCategory.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ErrorReportingSystemCategory.staticParse(readBuffer), readBuffer));
 
     boolean mostRecent = readSimpleField("mostRecent", readBoolean(readBuffer));
 

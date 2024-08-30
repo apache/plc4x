@@ -108,14 +108,12 @@ public class BACnetConfirmedServiceRequestReadRangeRangeByTime
 
     BACnetDateTime referenceTime =
         readSimpleField(
-            "referenceTime",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDateTime.staticParse(readBuffer), readBuffer));
+            "referenceTime", readComplex(() -> BACnetDateTime.staticParse(readBuffer), readBuffer));
 
     BACnetApplicationTagSignedInteger count =
         readSimpleField(
             "count",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

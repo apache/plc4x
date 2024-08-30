@@ -171,8 +171,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
 
     IpAddress ipAddress =
         readSimpleField(
-            "ipAddress",
-            new DataReaderComplexDefault<>(() -> IpAddress.staticParse(readBuffer), readBuffer));
+            "ipAddress", readComplex(() -> IpAddress.staticParse(readBuffer), readBuffer));
 
     short interfaceSubType = readSimpleField("interfaceSubType", readUnsignedShort(readBuffer, 8));
 

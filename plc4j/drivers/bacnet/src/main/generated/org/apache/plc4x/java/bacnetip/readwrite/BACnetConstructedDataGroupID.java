@@ -124,7 +124,7 @@ public class BACnetConstructedDataGroupID extends BACnetConstructedData implemen
     BACnetApplicationTagUnsignedInteger groupId =
         readSimpleField(
             "groupId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

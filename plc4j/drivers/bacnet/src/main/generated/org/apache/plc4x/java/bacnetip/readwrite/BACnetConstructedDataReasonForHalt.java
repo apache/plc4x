@@ -124,7 +124,7 @@ public class BACnetConstructedDataReasonForHalt extends BACnetConstructedData im
     BACnetProgramErrorTagged programError =
         readSimpleField(
             "programError",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramErrorTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

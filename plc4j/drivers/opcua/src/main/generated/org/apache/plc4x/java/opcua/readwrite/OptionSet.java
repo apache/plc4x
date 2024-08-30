@@ -104,15 +104,11 @@ public class OptionSet extends ExtensionObjectDefinition implements Message {
 
     PascalByteString value =
         readSimpleField(
-            "value",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "value", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString validBits =
         readSimpleField(
-            "validBits",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "validBits", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OptionSet");
     // Create the instance

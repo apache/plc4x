@@ -124,7 +124,7 @@ public class BACnetConstructedDataEgressActive extends BACnetConstructedData imp
     BACnetApplicationTagBoolean egressActive =
         readSimpleField(
             "egressActive",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

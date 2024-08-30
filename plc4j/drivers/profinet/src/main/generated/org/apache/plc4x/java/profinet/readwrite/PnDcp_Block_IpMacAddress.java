@@ -120,7 +120,7 @@ public class PnDcp_Block_IpMacAddress extends PnDcp_Block implements Message {
     MacAddress macAddress =
         readSimpleField(
             "macAddress",
-            new DataReaderComplexDefault<>(() -> MacAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> MacAddress.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("PnDcp_Block_IpMacAddress");

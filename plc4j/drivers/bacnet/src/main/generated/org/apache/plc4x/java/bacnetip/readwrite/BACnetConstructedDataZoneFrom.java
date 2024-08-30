@@ -124,8 +124,7 @@ public class BACnetConstructedDataZoneFrom extends BACnetConstructedData impleme
     BACnetDeviceObjectReference zoneFrom =
         readSimpleField(
             "zoneFrom",
-            new DataReaderComplexDefault<>(
-                () -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetDeviceObjectReference.staticParse(readBuffer), readBuffer));
     BACnetDeviceObjectReference actualValue =
         readVirtualField("actualValue", BACnetDeviceObjectReference.class, zoneFrom);
 

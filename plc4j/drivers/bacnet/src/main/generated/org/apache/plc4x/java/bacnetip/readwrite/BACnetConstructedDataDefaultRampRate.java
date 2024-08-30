@@ -125,7 +125,7 @@ public class BACnetConstructedDataDefaultRampRate extends BACnetConstructedData 
     BACnetApplicationTagReal defaultRampRate =
         readSimpleField(
             "defaultRampRate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

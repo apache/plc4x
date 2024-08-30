@@ -128,8 +128,7 @@ public class BACnetConstructedDataBACnetIPGlobalAddress extends BACnetConstructe
     BACnetHostNPort bacnetIpGlobalAddress =
         readSimpleField(
             "bacnetIpGlobalAddress",
-            new DataReaderComplexDefault<>(
-                () -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetHostNPort.staticParse(readBuffer), readBuffer));
     BACnetHostNPort actualValue =
         readVirtualField("actualValue", BACnetHostNPort.class, bacnetIpGlobalAddress);
 

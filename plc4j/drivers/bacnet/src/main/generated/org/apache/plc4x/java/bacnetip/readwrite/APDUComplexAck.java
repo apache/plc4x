@@ -269,7 +269,7 @@ public class APDUComplexAck extends APDU implements Message {
     BACnetServiceAck serviceAck =
         readOptionalField(
             "serviceAck",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetServiceAck.staticParse(
                         readBuffer, (long) ((apduLength) - (apduHeaderReduction))),

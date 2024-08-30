@@ -104,7 +104,7 @@ public class BACnetApplicationTagUnsignedInteger extends BACnetApplicationTag im
     BACnetTagPayloadUnsignedInteger payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadUnsignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),

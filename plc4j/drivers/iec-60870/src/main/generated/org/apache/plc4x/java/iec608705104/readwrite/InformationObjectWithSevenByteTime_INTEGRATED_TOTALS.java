@@ -117,15 +117,13 @@ public class InformationObjectWithSevenByteTime_INTEGRATED_TOTALS
     BinaryCounterReading bcr =
         readSimpleField(
             "bcr",
-            new DataReaderComplexDefault<>(
-                () -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BinaryCounterReading.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SevenOctetBinaryTime cp56Time2a =
         readSimpleField(
             "cp56Time2a",
-            new DataReaderComplexDefault<>(
-                () -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SevenOctetBinaryTime.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithSevenByteTime_INTEGRATED_TOTALS");

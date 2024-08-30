@@ -249,8 +249,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
     List<ModbusDeviceInformationObject> objects =
         readCountArrayField(
             "objects",
-            new DataReaderComplexDefault<>(
-                () -> ModbusDeviceInformationObject.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ModbusDeviceInformationObject.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("ModbusPDUReadDeviceIdentificationResponse");

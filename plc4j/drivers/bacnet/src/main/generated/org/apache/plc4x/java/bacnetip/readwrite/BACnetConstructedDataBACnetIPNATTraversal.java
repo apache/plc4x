@@ -126,7 +126,7 @@ public class BACnetConstructedDataBACnetIPNATTraversal extends BACnetConstructed
     BACnetApplicationTagBoolean bacnetIPNATTraversal =
         readSimpleField(
             "bacnetIPNATTraversal",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

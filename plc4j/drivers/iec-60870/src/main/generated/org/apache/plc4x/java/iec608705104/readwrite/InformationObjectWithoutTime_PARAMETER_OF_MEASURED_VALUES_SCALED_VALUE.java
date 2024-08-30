@@ -119,13 +119,13 @@ public class InformationObjectWithoutTime_PARAMETER_OF_MEASURED_VALUES_SCALED_VA
     ScaledValue sva =
         readSimpleField(
             "sva",
-            new DataReaderComplexDefault<>(() -> ScaledValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> ScaledValue.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualifierOfParameterOfMeasuredValues qpm =
         readSimpleField(
             "qpm",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> QualifierOfParameterOfMeasuredValues.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

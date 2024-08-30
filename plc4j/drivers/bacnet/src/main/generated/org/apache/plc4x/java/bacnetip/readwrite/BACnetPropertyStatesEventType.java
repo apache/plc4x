@@ -91,7 +91,7 @@ public class BACnetPropertyStatesEventType extends BACnetPropertyStates implemen
     BACnetEventTypeTagged eventType =
         readSimpleField(
             "eventType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTypeTagged.staticParse(
                         readBuffer,

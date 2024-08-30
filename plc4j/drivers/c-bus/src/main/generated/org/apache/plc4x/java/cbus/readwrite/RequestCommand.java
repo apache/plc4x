@@ -192,9 +192,7 @@ public class RequestCommand extends Request implements Message {
     Checksum chksumDecoded = readVirtualField("chksumDecoded", Checksum.class, chksum);
 
     Alpha alpha =
-        readOptionalField(
-            "alpha",
-            new DataReaderComplexDefault<>(() -> Alpha.staticParse(readBuffer), readBuffer));
+        readOptionalField("alpha", readComplex(() -> Alpha.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("RequestCommand");
     // Create the instance

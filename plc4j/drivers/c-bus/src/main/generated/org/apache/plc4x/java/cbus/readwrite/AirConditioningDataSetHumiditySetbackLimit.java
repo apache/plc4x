@@ -134,19 +134,16 @@ public class AirConditioningDataSetHumiditySetbackLimit extends AirConditioningD
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACHumidity limit =
         readSimpleField(
-            "limit",
-            new DataReaderComplexDefault<>(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
+            "limit", readComplex(() -> HVACHumidity.staticParse(readBuffer), readBuffer));
 
     HVACHumidityModeAndFlags hvacModeAndFlags =
         readSimpleField(
             "hvacModeAndFlags",
-            new DataReaderComplexDefault<>(
-                () -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
+            readComplex(() -> HVACHumidityModeAndFlags.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AirConditioningDataSetHumiditySetbackLimit");
     // Create the instance

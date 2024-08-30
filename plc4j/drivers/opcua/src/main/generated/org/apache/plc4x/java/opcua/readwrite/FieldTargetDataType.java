@@ -180,25 +180,22 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
 
     GuidValue dataSetFieldId =
         readSimpleField(
-            "dataSetFieldId",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "dataSetFieldId", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     PascalString receiverIndexRange =
         readSimpleField(
             "receiverIndexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     NodeId targetNodeId =
         readSimpleField(
-            "targetNodeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "targetNodeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     long attributeId = readSimpleField("attributeId", readUnsignedLong(readBuffer, 32));
 
     PascalString writeIndexRange =
         readSimpleField(
-            "writeIndexRange",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "writeIndexRange", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     OverrideValueHandling overrideValueHandling =
         readEnumField(
@@ -209,8 +206,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
 
     Variant overrideValue =
         readSimpleField(
-            "overrideValue",
-            new DataReaderComplexDefault<>(() -> Variant.staticParse(readBuffer), readBuffer));
+            "overrideValue", readComplex(() -> Variant.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("FieldTargetDataType");
     // Create the instance

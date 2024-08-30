@@ -175,14 +175,14 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetLifeSafetyStateTagged newState =
         readSimpleField(
             "newState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -191,7 +191,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetLifeSafetyModeTagged newMode =
         readSimpleField(
             "newMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyModeTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -200,7 +200,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -209,7 +209,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetLifeSafetyOperationTagged operationExpected =
         readSimpleField(
             "operationExpected",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyOperationTagged.staticParse(
                         readBuffer, (short) (3), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -218,7 +218,7 @@ public class BACnetNotificationParametersChangeOfLifeSafety extends BACnetNotifi
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

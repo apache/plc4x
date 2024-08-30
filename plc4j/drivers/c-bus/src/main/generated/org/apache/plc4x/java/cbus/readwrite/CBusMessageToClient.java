@@ -103,7 +103,7 @@ public class CBusMessageToClient extends CBusMessage implements Message {
     ReplyOrConfirmation reply =
         readSimpleField(
             "reply",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     ReplyOrConfirmation.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions), (RequestContext) (requestContext)),

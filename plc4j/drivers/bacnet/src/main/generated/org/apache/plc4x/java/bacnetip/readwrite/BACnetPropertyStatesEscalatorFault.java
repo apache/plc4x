@@ -91,7 +91,7 @@ public class BACnetPropertyStatesEscalatorFault extends BACnetPropertyStates imp
     BACnetEscalatorFaultTagged escalatorFault =
         readSimpleField(
             "escalatorFault",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorFaultTagged.staticParse(
                         readBuffer,

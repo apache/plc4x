@@ -90,7 +90,7 @@ public class BACnetApplicationTagBitString extends BACnetApplicationTag implemen
     BACnetTagPayloadBitString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadBitString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

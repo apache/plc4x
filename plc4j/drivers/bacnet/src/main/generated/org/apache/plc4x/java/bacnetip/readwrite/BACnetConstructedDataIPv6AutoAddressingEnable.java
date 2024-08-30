@@ -126,7 +126,7 @@ public class BACnetConstructedDataIPv6AutoAddressingEnable extends BACnetConstru
     BACnetApplicationTagBoolean autoAddressingEnable =
         readSimpleField(
             "autoAddressingEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

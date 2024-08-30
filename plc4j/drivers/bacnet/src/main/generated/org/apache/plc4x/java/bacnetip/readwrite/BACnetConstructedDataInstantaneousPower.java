@@ -126,7 +126,7 @@ public class BACnetConstructedDataInstantaneousPower extends BACnetConstructedDa
     BACnetApplicationTagReal instantaneousPower =
         readSimpleField(
             "instantaneousPower",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

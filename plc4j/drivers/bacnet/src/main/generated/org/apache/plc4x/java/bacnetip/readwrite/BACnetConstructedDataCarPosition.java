@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarPosition extends BACnetConstructedData impl
     BACnetApplicationTagUnsignedInteger carPosition =
         readSimpleField(
             "carPosition",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

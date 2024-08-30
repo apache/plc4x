@@ -95,7 +95,7 @@ public class SALDataIrrigationControl extends SALData implements Message {
     LightingData irrigationControlData =
         readSimpleField(
             "irrigationControlData",
-            new DataReaderComplexDefault<>(() -> LightingData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> LightingData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataIrrigationControl");
     // Create the instance

@@ -124,7 +124,7 @@ public class BACnetConstructedDataEventEnable extends BACnetConstructedData impl
     BACnetEventTransitionBitsTagged eventEnable =
         readSimpleField(
             "eventEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataInstallationID extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger installationId =
         readSimpleField(
             "installationId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

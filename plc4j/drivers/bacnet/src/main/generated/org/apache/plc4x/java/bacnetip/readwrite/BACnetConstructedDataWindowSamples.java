@@ -124,7 +124,7 @@ public class BACnetConstructedDataWindowSamples extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger windowSamples =
         readSimpleField(
             "windowSamples",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

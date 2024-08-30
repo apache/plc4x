@@ -128,8 +128,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeResponse extends S7Payl
     List<AssociatedValueType> items =
         readCountArrayField(
             "items",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesSubscribeResponse");

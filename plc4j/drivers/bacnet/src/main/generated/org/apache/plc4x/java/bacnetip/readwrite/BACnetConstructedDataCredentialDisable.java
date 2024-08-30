@@ -126,7 +126,7 @@ public class BACnetConstructedDataCredentialDisable extends BACnetConstructedDat
     BACnetAccessCredentialDisableTagged credentialDisable =
         readSimpleField(
             "credentialDisable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetAccessCredentialDisableTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

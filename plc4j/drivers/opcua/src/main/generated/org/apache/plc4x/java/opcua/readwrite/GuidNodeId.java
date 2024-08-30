@@ -98,8 +98,7 @@ public class GuidNodeId implements Message {
 
     GuidValue identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(() -> GuidValue.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> GuidValue.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("GuidNodeId");
     // Create the instance

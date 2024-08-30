@@ -124,7 +124,7 @@ public class BACnetConstructedDataPowerMode extends BACnetConstructedData implem
     BACnetApplicationTagBoolean powerMode =
         readSimpleField(
             "powerMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

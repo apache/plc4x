@@ -194,13 +194,11 @@ public class CipUnconnectedRequest extends CipService implements Message {
 
     PathSegment classSegment =
         readSimpleField(
-            "classSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "classSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     PathSegment instanceSegment =
         readSimpleField(
-            "instanceSegment",
-            new DataReaderComplexDefault<>(() -> PathSegment.staticParse(readBuffer), readBuffer));
+            "instanceSegment", readComplex(() -> PathSegment.staticParse(readBuffer), readBuffer));
 
     Integer reservedField0 =
         readReservedField("reserved", readUnsignedInt(readBuffer, 16), (int) 0x9D05);
@@ -210,7 +208,7 @@ public class CipUnconnectedRequest extends CipService implements Message {
     CipService unconnectedService =
         readSimpleField(
             "unconnectedService",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CipService.staticParse(readBuffer, (boolean) (false), (int) (messageSize)),
                 readBuffer));
 

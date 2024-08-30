@@ -167,8 +167,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
     List<CycServiceItemType> item =
         readCountArrayField(
             "item",
-            new DataReaderComplexDefault<>(
-                () -> CycServiceItemType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> CycServiceItemType.staticParse(readBuffer), readBuffer),
             itemsCount);
 
     readBuffer.closeContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest");

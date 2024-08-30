@@ -101,7 +101,7 @@ public class BACnetNotificationParametersChangeOfValueNewValueChangedBits
     BACnetContextTagBitString changedBits =
         readSimpleField(
             "changedBits",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBitString)
                         BACnetContextTag.staticParse(

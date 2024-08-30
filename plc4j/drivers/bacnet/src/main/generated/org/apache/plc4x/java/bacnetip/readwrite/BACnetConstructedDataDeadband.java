@@ -124,7 +124,7 @@ public class BACnetConstructedDataDeadband extends BACnetConstructedData impleme
     BACnetApplicationTagReal deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

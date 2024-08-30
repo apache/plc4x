@@ -176,7 +176,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
     ExtensionObjectDefinition buildInfo =
         readSimpleField(
             "buildInfo",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("340")),
                 readBuffer));
 
@@ -185,9 +185,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
 
     LocalizedText shutdownReason =
         readSimpleField(
-            "shutdownReason",
-            new DataReaderComplexDefault<>(
-                () -> LocalizedText.staticParse(readBuffer), readBuffer));
+            "shutdownReason", readComplex(() -> LocalizedText.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ServerStatusDataType");
     // Create the instance

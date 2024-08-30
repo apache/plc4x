@@ -124,7 +124,7 @@ public class BACnetConstructedDataProgramState extends BACnetConstructedData imp
     BACnetProgramStateTagged programState =
         readSimpleField(
             "programState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetProgramStateTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

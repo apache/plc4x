@@ -126,7 +126,7 @@ public class BACnetConstructedDataLocalForwardingOnly extends BACnetConstructedD
     BACnetApplicationTagBoolean localForwardingOnly =
         readSimpleField(
             "localForwardingOnly",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

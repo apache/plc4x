@@ -178,26 +178,20 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
 
     ExpandedNodeId parentNodeId =
         readSimpleField(
-            "parentNodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            "parentNodeId", readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     ExpandedNodeId requestedNewNodeId =
         readSimpleField(
             "requestedNewNodeId",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName browseName =
         readSimpleField(
-            "browseName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "browseName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     NodeClass nodeClass =
         readEnumField(
@@ -208,14 +202,13 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
     ExtensionObject nodeAttributes =
         readSimpleField(
             "nodeAttributes",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExpandedNodeId typeDefinition =
         readSimpleField(
             "typeDefinition",
-            new DataReaderComplexDefault<>(
-                () -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ExpandedNodeId.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AddNodesItem");
     // Create the instance

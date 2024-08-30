@@ -91,7 +91,7 @@ public class BACnetPropertyStatesSecurityLevel extends BACnetPropertyStates impl
     BACnetSecurityLevelTagged securityLevel =
         readSimpleField(
             "securityLevel",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSecurityLevelTagged.staticParse(
                         readBuffer,

@@ -119,19 +119,18 @@ public class BACnetEventTimestampsEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetEventTimestamps eventTimestamps =
         readSimpleField(
             "eventTimestamps",
-            new DataReaderComplexDefault<>(
-                () -> BACnetEventTimestamps.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetEventTimestamps.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetEventTimestampsEnclosed");

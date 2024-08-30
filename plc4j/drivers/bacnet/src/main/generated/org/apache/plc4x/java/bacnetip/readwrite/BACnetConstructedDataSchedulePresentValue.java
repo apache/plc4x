@@ -125,7 +125,7 @@ public class BACnetConstructedDataSchedulePresentValue extends BACnetConstructed
     BACnetConstructedDataElement presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedDataElement.staticParse(
                         readBuffer,

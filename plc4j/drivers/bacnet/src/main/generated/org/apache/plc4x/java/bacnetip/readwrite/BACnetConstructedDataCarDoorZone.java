@@ -124,7 +124,7 @@ public class BACnetConstructedDataCarDoorZone extends BACnetConstructedData impl
     BACnetApplicationTagBoolean carDoorZone =
         readSimpleField(
             "carDoorZone",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -124,9 +124,7 @@ public class BACnetConstructedDataClientCOVIncrement extends BACnetConstructedDa
 
     BACnetClientCOV covIncrement =
         readSimpleField(
-            "covIncrement",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClientCOV.staticParse(readBuffer), readBuffer));
+            "covIncrement", readComplex(() -> BACnetClientCOV.staticParse(readBuffer), readBuffer));
     BACnetClientCOV actualValue =
         readVirtualField("actualValue", BACnetClientCOV.class, covIncrement);
 

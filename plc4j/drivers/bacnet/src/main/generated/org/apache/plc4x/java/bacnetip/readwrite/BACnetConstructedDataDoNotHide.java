@@ -124,7 +124,7 @@ public class BACnetConstructedDataDoNotHide extends BACnetConstructedData implem
     BACnetApplicationTagBoolean doNotHide =
         readSimpleField(
             "doNotHide",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

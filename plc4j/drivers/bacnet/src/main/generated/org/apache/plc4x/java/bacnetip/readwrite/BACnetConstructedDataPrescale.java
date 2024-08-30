@@ -123,9 +123,7 @@ public class BACnetConstructedDataPrescale extends BACnetConstructedData impleme
 
     BACnetPrescale prescale =
         readSimpleField(
-            "prescale",
-            new DataReaderComplexDefault<>(
-                () -> BACnetPrescale.staticParse(readBuffer), readBuffer));
+            "prescale", readComplex(() -> BACnetPrescale.staticParse(readBuffer), readBuffer));
     BACnetPrescale actualValue = readVirtualField("actualValue", BACnetPrescale.class, prescale);
 
     readBuffer.closeContext("BACnetConstructedDataPrescale");

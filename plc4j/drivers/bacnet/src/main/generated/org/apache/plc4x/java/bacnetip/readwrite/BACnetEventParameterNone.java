@@ -90,7 +90,7 @@ public class BACnetEventParameterNone extends BACnetEventParameter implements Me
     BACnetContextTagNull none =
         readSimpleField(
             "none",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagNull)
                         BACnetContextTag.staticParse(

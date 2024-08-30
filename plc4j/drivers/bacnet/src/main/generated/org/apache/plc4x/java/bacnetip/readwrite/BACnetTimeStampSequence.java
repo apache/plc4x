@@ -91,7 +91,7 @@ public class BACnetTimeStampSequence extends BACnetTimeStamp implements Message 
     BACnetContextTagUnsignedInteger sequenceNumber =
         readSimpleField(
             "sequenceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(

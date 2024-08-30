@@ -125,7 +125,7 @@ public class CALDataIdentifyReply extends CALData implements Message {
     IdentifyReplyCommand identifyReplyCommand =
         readSimpleField(
             "identifyReplyCommand",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     IdentifyReplyCommand.staticParse(
                         readBuffer,

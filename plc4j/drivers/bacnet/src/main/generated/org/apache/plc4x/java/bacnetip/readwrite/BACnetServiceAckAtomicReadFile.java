@@ -112,14 +112,14 @@ public class BACnetServiceAckAtomicReadFile extends BACnetServiceAck implements 
     BACnetApplicationTagBoolean endOfFile =
         readSimpleField(
             "endOfFile",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetServiceAckAtomicReadFileStreamOrRecord accessMethod =
         readSimpleField(
             "accessMethod",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetServiceAckAtomicReadFileStreamOrRecord.staticParse(readBuffer),
                 readBuffer));
 

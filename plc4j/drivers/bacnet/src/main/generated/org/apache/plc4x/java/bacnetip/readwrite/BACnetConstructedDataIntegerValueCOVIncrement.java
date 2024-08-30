@@ -125,7 +125,7 @@ public class BACnetConstructedDataIntegerValueCOVIncrement extends BACnetConstru
     BACnetApplicationTagUnsignedInteger covIncrement =
         readSimpleField(
             "covIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

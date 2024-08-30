@@ -114,8 +114,7 @@ public class CEMIAdditionalInformationRelativeTimestamp extends CEMIAdditionalIn
     RelativeTimestamp relativeTimestamp =
         readSimpleField(
             "relativeTimestamp",
-            new DataReaderComplexDefault<>(
-                () -> RelativeTimestamp.staticParse(readBuffer), readBuffer));
+            readComplex(() -> RelativeTimestamp.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("CEMIAdditionalInformationRelativeTimestamp");
     // Create the instance

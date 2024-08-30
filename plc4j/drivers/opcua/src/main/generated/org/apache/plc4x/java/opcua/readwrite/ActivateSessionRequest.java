@@ -204,14 +204,14 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     ExtensionObjectDefinition requestHeader =
         readSimpleField(
             "requestHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("391")),
                 readBuffer));
 
     ExtensionObjectDefinition clientSignature =
         readSimpleField(
             "clientSignature",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
                 readBuffer));
 
@@ -221,7 +221,7 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     List<ExtensionObjectDefinition> clientSoftwareCertificates =
         readCountArrayField(
             "clientSoftwareCertificates",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("346")),
                 readBuffer),
             noOfClientSoftwareCertificates);
@@ -231,19 +231,19 @@ public class ActivateSessionRequest extends ExtensionObjectDefinition implements
     List<PascalString> localeIds =
         readCountArrayField(
             "localeIds",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfLocaleIds);
 
     ExtensionObject userIdentityToken =
         readSimpleField(
             "userIdentityToken",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExtensionObjectDefinition userTokenSignature =
         readSimpleField(
             "userTokenSignature",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("458")),
                 readBuffer));
 

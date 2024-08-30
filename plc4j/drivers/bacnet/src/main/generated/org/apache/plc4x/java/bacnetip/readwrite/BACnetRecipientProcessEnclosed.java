@@ -119,19 +119,18 @@ public class BACnetRecipientProcessEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetRecipientProcess recipientProcess =
         readSimpleField(
             "recipientProcess",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipientProcess.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetRecipientProcess.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetRecipientProcessEnclosed");

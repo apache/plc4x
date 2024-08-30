@@ -158,7 +158,7 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
     ExtensionObjectDefinition responseHeader =
         readSimpleField(
             "responseHeader",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("394")),
                 readBuffer));
 
@@ -167,7 +167,7 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
     List<DataValue> results =
         readCountArrayField(
             "results",
-            new DataReaderComplexDefault<>(() -> DataValue.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DataValue.staticParse(readBuffer), readBuffer),
             noOfResults);
 
     int noOfDiagnosticInfos = readSimpleField("noOfDiagnosticInfos", readSignedInt(readBuffer, 32));
@@ -175,8 +175,7 @@ public class ReadResponse extends ExtensionObjectDefinition implements Message {
     List<DiagnosticInfo> diagnosticInfos =
         readCountArrayField(
             "diagnosticInfos",
-            new DataReaderComplexDefault<>(
-                () -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
+            readComplex(() -> DiagnosticInfo.staticParse(readBuffer), readBuffer),
             noOfDiagnosticInfos);
 
     readBuffer.closeContext("ReadResponse");

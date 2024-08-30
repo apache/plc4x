@@ -234,8 +234,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
 
     PascalString name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);
@@ -255,8 +254,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
 
     PascalString dataSetName =
         readSimpleField(
-            "dataSetName",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "dataSetName", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfDataSetWriterProperties =
         readSimpleField("noOfDataSetWriterProperties", readSignedInt(readBuffer, 32));
@@ -264,7 +262,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     List<ExtensionObjectDefinition> dataSetWriterProperties =
         readCountArrayField(
             "dataSetWriterProperties",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObjectDefinition.staticParse(readBuffer, (String) ("14535")),
                 readBuffer),
             noOfDataSetWriterProperties);
@@ -272,13 +270,13 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
     ExtensionObject transportSettings =
         readSimpleField(
             "transportSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     ExtensionObject messageSettings =
         readSimpleField(
             "messageSettings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer));
 
     readBuffer.closeContext("DataSetWriterDataType");

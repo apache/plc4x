@@ -324,7 +324,7 @@ public class IODReadRequestHeader extends PnIoCm_Block implements Message {
     Uuid arUuid =
         readSimpleField(
             "arUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     long api =
@@ -367,7 +367,7 @@ public class IODReadRequestHeader extends PnIoCm_Block implements Message {
     Uuid targetArUuid =
         readOptionalField(
             "targetArUuid",
-            new DataReaderComplexDefault<>(() -> Uuid.staticParse(readBuffer), readBuffer),
+            readComplex(() -> Uuid.staticParse(readBuffer), readBuffer),
             org.apache.plc4x.java.profinet.readwrite.utils.StaticHelper.isNullUuid(arUuid),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

@@ -233,14 +233,12 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     boolean _lastItem = ThreadLocalHelper.lastItemThreadLocal.get();
 
     NodeId sessionId =
-        readSimpleField(
-            "sessionId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+        readSimpleField("sessionId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     PascalString clientUserIdOfSession =
         readSimpleField(
             "clientUserIdOfSession",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     int noOfClientUserIdHistory =
         readSimpleField("noOfClientUserIdHistory", readSignedInt(readBuffer, 32));
@@ -248,23 +246,22 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     List<PascalString> clientUserIdHistory =
         readCountArrayField(
             "clientUserIdHistory",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer),
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer),
             noOfClientUserIdHistory);
 
     PascalString authenticationMechanism =
         readSimpleField(
             "authenticationMechanism",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString encoding =
         readSimpleField(
-            "encoding",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "encoding", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalString transportProtocol =
         readSimpleField(
             "transportProtocol",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     MessageSecurityMode securityMode =
         readEnumField(
@@ -276,13 +273,12 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
     PascalString securityPolicyUri =
         readSimpleField(
             "securityPolicyUri",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString clientCertificate =
         readSimpleField(
             "clientCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SessionSecurityDiagnosticsDataType");
     // Create the instance

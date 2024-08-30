@@ -124,7 +124,7 @@ public class BACnetConstructedDataEscalatorMode extends BACnetConstructedData im
     BACnetEscalatorModeTagged escalatorMode =
         readSimpleField(
             "escalatorMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorModeTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

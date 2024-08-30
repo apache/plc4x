@@ -100,14 +100,14 @@ public class BACnetAssignedAccessRights implements Message {
     BACnetDeviceObjectReferenceEnclosed assignedAccessRights =
         readSimpleField(
             "assignedAccessRights",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDeviceObjectReferenceEnclosed.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 
     BACnetContextTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagBoolean)
                         BACnetContextTag.staticParse(

@@ -124,7 +124,7 @@ public class BACnetConstructedDataUpdateInterval extends BACnetConstructedData i
     BACnetApplicationTagUnsignedInteger updateInterval =
         readSimpleField(
             "updateInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

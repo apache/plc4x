@@ -103,7 +103,7 @@ public class ParameterValueInterfaceOptions1PowerUpSettings extends ParameterVal
     InterfaceOptions1PowerUpSettings value =
         readSimpleField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> InterfaceOptions1PowerUpSettings.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ParameterValueInterfaceOptions1PowerUpSettings");

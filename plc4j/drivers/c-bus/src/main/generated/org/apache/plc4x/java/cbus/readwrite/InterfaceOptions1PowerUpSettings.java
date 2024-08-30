@@ -87,8 +87,7 @@ public class InterfaceOptions1PowerUpSettings implements Message {
     InterfaceOptions1 interfaceOptions1 =
         readSimpleField(
             "interfaceOptions1",
-            new DataReaderComplexDefault<>(
-                () -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
+            readComplex(() -> InterfaceOptions1.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("InterfaceOptions1PowerUpSettings");
     // Create the instance

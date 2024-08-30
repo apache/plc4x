@@ -91,7 +91,7 @@ public class BACnetProcessIdSelectionNull extends BACnetProcessIdSelection imple
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

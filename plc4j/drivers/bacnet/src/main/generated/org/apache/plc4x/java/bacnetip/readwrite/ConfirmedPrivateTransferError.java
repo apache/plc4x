@@ -135,13 +135,12 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -150,7 +149,7 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
     BACnetContextTagUnsignedInteger serviceNumber =
         readSimpleField(
             "serviceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -162,7 +161,7 @@ public class ConfirmedPrivateTransferError extends BACnetError implements Messag
     BACnetConstructedData errorParameters =
         readOptionalField(
             "errorParameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

@@ -139,8 +139,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
 
     NodeId referenceTypeId =
         readSimpleField(
-            "referenceTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "referenceTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 6), (byte) 0x00);
@@ -151,9 +150,7 @@ public class RelativePathElement extends ExtensionObjectDefinition implements Me
 
     QualifiedName targetName =
         readSimpleField(
-            "targetName",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "targetName", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("RelativePathElement");
     // Create the instance

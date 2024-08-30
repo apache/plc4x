@@ -125,7 +125,7 @@ public class BACnetConstructedDataPassbackTimeout extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger passbackTimeout =
         readSimpleField(
             "passbackTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

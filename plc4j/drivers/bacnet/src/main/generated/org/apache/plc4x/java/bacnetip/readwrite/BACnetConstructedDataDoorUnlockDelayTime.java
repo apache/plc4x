@@ -126,7 +126,7 @@ public class BACnetConstructedDataDoorUnlockDelayTime extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger doorUnlockDelayTime =
         readSimpleField(
             "doorUnlockDelayTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

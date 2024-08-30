@@ -91,7 +91,7 @@ public class BACnetTimeStampDateTime extends BACnetTimeStamp implements Message 
     BACnetDateTimeEnclosed dateTimeValue =
         readSimpleField(
             "dateTimeValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateTimeEnclosed.staticParse(readBuffer, (short) (2)), readBuffer));
 
     readBuffer.closeContext("BACnetTimeStampDateTime");

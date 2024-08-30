@@ -96,8 +96,7 @@ public class SALDataMediaTransport extends SALData implements Message {
     MediaTransportControlData mediaTransportControlData =
         readSimpleField(
             "mediaTransportControlData",
-            new DataReaderComplexDefault<>(
-                () -> MediaTransportControlData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> MediaTransportControlData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataMediaTransport");
     // Create the instance

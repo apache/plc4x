@@ -126,7 +126,7 @@ public class BACnetConstructedDataNumberOfAPDURetries extends BACnetConstructedD
     BACnetApplicationTagUnsignedInteger numberOfApduRetries =
         readSimpleField(
             "numberOfApduRetries",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -124,7 +124,7 @@ public class BACnetConstructedDataWriteStatus extends BACnetConstructedData impl
     BACnetWriteStatusTagged writeStatus =
         readSimpleField(
             "writeStatus",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetWriteStatusTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

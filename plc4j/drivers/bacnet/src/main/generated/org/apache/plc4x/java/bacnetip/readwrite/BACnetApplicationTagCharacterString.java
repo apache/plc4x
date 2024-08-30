@@ -101,7 +101,7 @@ public class BACnetApplicationTagCharacterString extends BACnetApplicationTag im
     BACnetTagPayloadCharacterString payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadCharacterString.staticParse(
                         readBuffer, (long) (header.getActualLength())),

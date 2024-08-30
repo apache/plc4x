@@ -135,20 +135,19 @@ public class InformationObjectWithoutTime_CALL_DIRECTORY_SELECT_FILE_CALL_FILE_C
     NameOfFile nof =
         readSimpleField(
             "nof",
-            new DataReaderComplexDefault<>(() -> NameOfFile.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfFile.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     NameOfSection nos =
         readSimpleField(
             "nos",
-            new DataReaderComplexDefault<>(() -> NameOfSection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> NameOfSection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     SelectAndCallQualifier scq =
         readSimpleField(
             "scq",
-            new DataReaderComplexDefault<>(
-                () -> SelectAndCallQualifier.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SelectAndCallQualifier.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

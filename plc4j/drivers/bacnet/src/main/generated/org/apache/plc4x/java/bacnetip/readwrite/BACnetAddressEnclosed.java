@@ -118,19 +118,17 @@ public class BACnetAddressEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(
-                () -> BACnetAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> BACnetAddress.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetAddressEnclosed");

@@ -154,7 +154,7 @@ public class APDUError extends APDU implements Message {
     BACnetError error =
         readSimpleField(
             "error",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetError.staticParse(
                         readBuffer, (BACnetConfirmedServiceChoice) (errorChoice)),

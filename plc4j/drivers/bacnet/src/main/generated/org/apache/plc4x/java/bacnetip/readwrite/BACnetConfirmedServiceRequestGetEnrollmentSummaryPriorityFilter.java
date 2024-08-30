@@ -131,13 +131,13 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetContextTagUnsignedInteger minPriority =
         readSimpleField(
             "minPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -149,7 +149,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetContextTagUnsignedInteger maxPriority =
         readSimpleField(
             "maxPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -161,7 +161,7 @@ public class BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter imp
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter");

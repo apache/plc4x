@@ -124,7 +124,7 @@ public class BACnetConstructedDataIPv6DHCPServer extends BACnetConstructedData i
     BACnetApplicationTagOctetString dhcpServer =
         readSimpleField(
             "dhcpServer",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));

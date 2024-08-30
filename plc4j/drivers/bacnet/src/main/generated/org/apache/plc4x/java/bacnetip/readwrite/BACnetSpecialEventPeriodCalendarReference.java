@@ -93,7 +93,7 @@ public class BACnetSpecialEventPeriodCalendarReference extends BACnetSpecialEven
     BACnetContextTagObjectIdentifier calendarReference =
         readSimpleField(
             "calendarReference",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

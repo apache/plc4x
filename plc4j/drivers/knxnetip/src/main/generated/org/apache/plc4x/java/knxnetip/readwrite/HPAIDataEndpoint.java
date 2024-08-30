@@ -132,8 +132,7 @@ public class HPAIDataEndpoint implements Message {
 
     IPAddress ipAddress =
         readSimpleField(
-            "ipAddress",
-            new DataReaderComplexDefault<>(() -> IPAddress.staticParse(readBuffer), readBuffer));
+            "ipAddress", readComplex(() -> IPAddress.staticParse(readBuffer), readBuffer));
 
     int ipPort = readSimpleField("ipPort", readUnsignedInt(readBuffer, 16));
 

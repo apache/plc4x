@@ -126,7 +126,7 @@ public class BACnetConstructedDataNextStoppingFloor extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger nextStoppingFloor =
         readSimpleField(
             "nextStoppingFloor",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

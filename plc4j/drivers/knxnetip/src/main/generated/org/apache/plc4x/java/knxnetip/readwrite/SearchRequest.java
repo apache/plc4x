@@ -97,8 +97,7 @@ public class SearchRequest extends KnxNetIpMessage implements Message {
     HPAIDiscoveryEndpoint hpaiIDiscoveryEndpoint =
         readSimpleField(
             "hpaiIDiscoveryEndpoint",
-            new DataReaderComplexDefault<>(
-                () -> HPAIDiscoveryEndpoint.staticParse(readBuffer), readBuffer),
+            readComplex(() -> HPAIDiscoveryEndpoint.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("SearchRequest");

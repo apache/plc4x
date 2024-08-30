@@ -139,7 +139,7 @@ public class CipReadResponse extends CipService implements Message {
     CIPData data =
         readOptionalField(
             "data",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> CIPData.staticParse(readBuffer, (int) ((serviceLen) - (4))), readBuffer),
             (((serviceLen) - (4))) > (0));
 

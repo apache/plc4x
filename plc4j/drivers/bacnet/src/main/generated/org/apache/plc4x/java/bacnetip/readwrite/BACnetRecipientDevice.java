@@ -91,7 +91,7 @@ public class BACnetRecipientDevice extends BACnetRecipient implements Message {
     BACnetContextTagObjectIdentifier deviceValue =
         readSimpleField(
             "deviceValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(

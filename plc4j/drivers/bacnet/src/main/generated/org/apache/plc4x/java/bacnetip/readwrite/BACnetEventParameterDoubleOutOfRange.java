@@ -157,13 +157,12 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOpeningTag.staticParse(readBuffer, (short) (14)), readBuffer));
+            readComplex(() -> BACnetOpeningTag.staticParse(readBuffer, (short) (14)), readBuffer));
 
     BACnetContextTagUnsignedInteger timeDelay =
         readSimpleField(
             "timeDelay",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -175,7 +174,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     BACnetContextTagDouble lowLimit =
         readSimpleField(
             "lowLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -185,7 +184,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     BACnetContextTagDouble highLimit =
         readSimpleField(
             "highLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -195,7 +194,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     BACnetContextTagDouble deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagDouble)
                         BACnetContextTag.staticParse(
@@ -205,8 +204,7 @@ public class BACnetEventParameterDoubleOutOfRange extends BACnetEventParameter i
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
-                () -> BACnetClosingTag.staticParse(readBuffer, (short) (14)), readBuffer));
+            readComplex(() -> BACnetClosingTag.staticParse(readBuffer, (short) (14)), readBuffer));
 
     readBuffer.closeContext("BACnetEventParameterDoubleOutOfRange");
     // Create the instance

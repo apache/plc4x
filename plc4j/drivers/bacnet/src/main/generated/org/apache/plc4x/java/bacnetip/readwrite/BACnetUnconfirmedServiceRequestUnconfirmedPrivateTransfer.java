@@ -130,7 +130,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
     BACnetVendorIdTagged vendorId =
         readSimpleField(
             "vendorId",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetVendorIdTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -139,7 +139,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
     BACnetContextTagUnsignedInteger serviceNumber =
         readSimpleField(
             "serviceNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -151,7 +151,7 @@ public class BACnetUnconfirmedServiceRequestUnconfirmedPrivateTransfer
     BACnetConstructedData serviceParameters =
         readOptionalField(
             "serviceParameters",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

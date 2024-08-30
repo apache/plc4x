@@ -126,7 +126,7 @@ public class BACnetConstructedDataIPv6PrefixLength extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger ipv6PrefixLength =
         readSimpleField(
             "ipv6PrefixLength",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

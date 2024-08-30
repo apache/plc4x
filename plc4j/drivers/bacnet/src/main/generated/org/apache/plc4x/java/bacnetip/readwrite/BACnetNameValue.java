@@ -99,7 +99,7 @@ public class BACnetNameValue implements Message {
     BACnetContextTagCharacterString name =
         readSimpleField(
             "name",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(
@@ -111,7 +111,7 @@ public class BACnetNameValue implements Message {
     BACnetConstructedData value =
         readOptionalField(
             "value",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetConstructedData.staticParse(
                         readBuffer,

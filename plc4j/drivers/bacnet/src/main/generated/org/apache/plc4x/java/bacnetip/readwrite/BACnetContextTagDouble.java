@@ -109,8 +109,7 @@ public class BACnetContextTagDouble extends BACnetContextTag implements Message 
     BACnetTagPayloadDouble payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
-                () -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetTagPayloadDouble.staticParse(readBuffer), readBuffer));
     double actualValue = readVirtualField("actualValue", double.class, payload.getValue());
 
     readBuffer.closeContext("BACnetContextTagDouble");

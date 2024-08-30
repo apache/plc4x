@@ -91,7 +91,7 @@ public class BACnetPropertyStateActionUnknown extends BACnetPropertyStates imple
     BACnetContextTagUnknown unknownValue =
         readSimpleField(
             "unknownValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnknown)
                         BACnetContextTag.staticParse(

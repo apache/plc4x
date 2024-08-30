@@ -91,7 +91,7 @@ public class BACnetOptionalUnsignedNull extends BACnetOptionalUnsigned implement
     BACnetApplicationTagNull nullValue =
         readSimpleField(
             "nullValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagNull) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

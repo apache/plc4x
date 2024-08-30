@@ -170,7 +170,7 @@ public class BACnetEventSummary implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -182,7 +182,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventStateTagged eventState =
         readSimpleField(
             "eventState",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventStateTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -191,7 +191,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventTransitionBitsTagged acknowledgedTransitions =
         readSimpleField(
             "acknowledgedTransitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (2), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -200,14 +200,14 @@ public class BACnetEventSummary implements Message {
     BACnetEventTimestampsEnclosed eventTimestamps =
         readSimpleField(
             "eventTimestamps",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventTimestampsEnclosed.staticParse(readBuffer, (short) (3)),
                 readBuffer));
 
     BACnetNotifyTypeTagged notifyType =
         readSimpleField(
             "notifyType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetNotifyTypeTagged.staticParse(
                         readBuffer, (short) (4), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -216,7 +216,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventTransitionBitsTagged eventEnable =
         readSimpleField(
             "eventEnable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (5), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -225,7 +225,7 @@ public class BACnetEventSummary implements Message {
     BACnetEventPriorities eventPriorities =
         readSimpleField(
             "eventPriorities",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetEventPriorities.staticParse(readBuffer, (short) (6)), readBuffer));
 
     readBuffer.closeContext("BACnetEventSummary");

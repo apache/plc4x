@@ -102,9 +102,7 @@ public class NodeId implements Message {
 
     NodeIdTypeDefinition nodeId =
         readSimpleField(
-            "nodeId",
-            new DataReaderComplexDefault<>(
-                () -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
+            "nodeId", readComplex(() -> NodeIdTypeDefinition.staticParse(readBuffer), readBuffer));
     String id = readVirtualField("id", String.class, nodeId.getIdentifier());
 
     readBuffer.closeContext("NodeId");

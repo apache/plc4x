@@ -126,7 +126,7 @@ public class BACnetConstructedDataLastNotifyRecord extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger lastNotifyRecord =
         readSimpleField(
             "lastNotifyRecord",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

@@ -91,7 +91,7 @@ public class BACnetPropertyStatesLiftCarMode extends BACnetPropertyStates implem
     BACnetLiftCarModeTagged liftCarMode =
         readSimpleField(
             "liftCarMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLiftCarModeTagged.staticParse(
                         readBuffer,

@@ -124,7 +124,7 @@ public class BACnetConstructedDataTimerResolution extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger resolution =
         readSimpleField(
             "resolution",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

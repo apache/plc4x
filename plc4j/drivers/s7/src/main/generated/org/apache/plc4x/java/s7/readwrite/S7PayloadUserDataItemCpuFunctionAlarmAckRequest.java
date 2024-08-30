@@ -142,8 +142,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmAckRequest extends S7PayloadUs
     List<AlarmMessageObjectAckType> messageObjects =
         readCountArrayField(
             "messageObjects",
-            new DataReaderComplexDefault<>(
-                () -> AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer),
+            readComplex(() -> AlarmMessageObjectAckType.staticParse(readBuffer), readBuffer),
             numberOfObjects);
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmAckRequest");

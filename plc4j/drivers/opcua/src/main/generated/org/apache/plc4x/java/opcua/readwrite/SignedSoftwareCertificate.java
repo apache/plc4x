@@ -106,14 +106,11 @@ public class SignedSoftwareCertificate extends ExtensionObjectDefinition impleme
     PascalByteString certificateData =
         readSimpleField(
             "certificateData",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString signature =
         readSimpleField(
-            "signature",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "signature", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SignedSoftwareCertificate");
     // Create the instance

@@ -98,9 +98,7 @@ public class ByteStringNodeId implements Message {
 
     PascalByteString identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ByteStringNodeId");
     // Create the instance

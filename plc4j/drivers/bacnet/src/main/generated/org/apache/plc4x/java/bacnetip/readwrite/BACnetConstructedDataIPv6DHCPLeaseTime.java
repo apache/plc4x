@@ -126,7 +126,7 @@ public class BACnetConstructedDataIPv6DHCPLeaseTime extends BACnetConstructedDat
     BACnetApplicationTagUnsignedInteger ipv6DhcpLeaseTime =
         readSimpleField(
             "ipv6DhcpLeaseTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

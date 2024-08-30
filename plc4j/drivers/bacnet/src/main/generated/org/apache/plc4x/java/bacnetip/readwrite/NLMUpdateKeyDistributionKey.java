@@ -111,8 +111,7 @@ public class NLMUpdateKeyDistributionKey extends NLM implements Message {
     NLMUpdateKeyUpdateKeyEntry key =
         readSimpleField(
             "key",
-            new DataReaderComplexDefault<>(
-                () -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer));
+            readComplex(() -> NLMUpdateKeyUpdateKeyEntry.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("NLMUpdateKeyDistributionKey");
     // Create the instance

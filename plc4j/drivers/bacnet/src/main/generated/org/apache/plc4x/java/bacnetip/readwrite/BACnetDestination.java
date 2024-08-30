@@ -168,7 +168,7 @@ public class BACnetDestination implements Message {
     BACnetDaysOfWeekTagged validDays =
         readSimpleField(
             "validDays",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetDaysOfWeekTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),
@@ -177,27 +177,25 @@ public class BACnetDestination implements Message {
     BACnetApplicationTagTime fromTime =
         readSimpleField(
             "fromTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetApplicationTagTime toTime =
         readSimpleField(
             "toTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagTime) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetRecipient recipient =
         readSimpleField(
-            "recipient",
-            new DataReaderComplexDefault<>(
-                () -> BACnetRecipient.staticParse(readBuffer), readBuffer));
+            "recipient", readComplex(() -> BACnetRecipient.staticParse(readBuffer), readBuffer));
 
     BACnetApplicationTagUnsignedInteger processIdentifier =
         readSimpleField(
             "processIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -206,14 +204,14 @@ public class BACnetDestination implements Message {
     BACnetApplicationTagBoolean issueConfirmedNotifications =
         readSimpleField(
             "issueConfirmedNotifications",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetEventTransitionBitsTagged transitions =
         readSimpleField(
             "transitions",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEventTransitionBitsTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

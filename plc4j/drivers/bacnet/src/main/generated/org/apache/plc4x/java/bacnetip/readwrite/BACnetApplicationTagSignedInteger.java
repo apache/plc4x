@@ -104,7 +104,7 @@ public class BACnetApplicationTagSignedInteger extends BACnetApplicationTag impl
     BACnetTagPayloadSignedInteger payload =
         readSimpleField(
             "payload",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetTagPayloadSignedInteger.staticParse(
                         readBuffer, (long) (header.getActualLength())),

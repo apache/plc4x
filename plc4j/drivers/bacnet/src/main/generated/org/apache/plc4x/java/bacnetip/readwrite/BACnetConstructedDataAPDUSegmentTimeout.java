@@ -126,7 +126,7 @@ public class BACnetConstructedDataAPDUSegmentTimeout extends BACnetConstructedDa
     BACnetApplicationTagUnsignedInteger apduSegmentTimeout =
         readSimpleField(
             "apduSegmentTimeout",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

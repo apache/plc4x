@@ -93,7 +93,7 @@ public class BACnetPropertyStatesLifeSafetyOperations extends BACnetPropertyStat
     BACnetLifeSafetyOperationTagged lifeSafetyOperations =
         readSimpleField(
             "lifeSafetyOperations",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetLifeSafetyOperationTagged.staticParse(
                         readBuffer,

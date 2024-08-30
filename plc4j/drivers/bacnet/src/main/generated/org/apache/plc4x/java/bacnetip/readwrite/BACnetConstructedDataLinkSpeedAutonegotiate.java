@@ -128,7 +128,7 @@ public class BACnetConstructedDataLinkSpeedAutonegotiate extends BACnetConstruct
     BACnetApplicationTagBoolean linkSpeedAutonegotiate =
         readSimpleField(
             "linkSpeedAutonegotiate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

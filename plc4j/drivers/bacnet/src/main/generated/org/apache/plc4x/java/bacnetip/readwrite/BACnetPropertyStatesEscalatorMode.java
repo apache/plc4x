@@ -91,7 +91,7 @@ public class BACnetPropertyStatesEscalatorMode extends BACnetPropertyStates impl
     BACnetEscalatorModeTagged escalatorMode =
         readSimpleField(
             "escalatorMode",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetEscalatorModeTagged.staticParse(
                         readBuffer,

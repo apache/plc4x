@@ -109,13 +109,12 @@ public class SubscribeCOVPropertyMultipleError extends BACnetError implements Me
     ErrorEnclosed errorType =
         readSimpleField(
             "errorType",
-            new DataReaderComplexDefault<>(
-                () -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
+            readComplex(() -> ErrorEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     SubscribeCOVPropertyMultipleErrorFirstFailedSubscription firstFailedSubscription =
         readSimpleField(
             "firstFailedSubscription",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     SubscribeCOVPropertyMultipleErrorFirstFailedSubscription.staticParse(
                         readBuffer, (short) (1)),

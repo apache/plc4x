@@ -126,7 +126,7 @@ public class BACnetConstructedDataDefaultStepIncrement extends BACnetConstructed
     BACnetApplicationTagReal defaultStepIncrement =
         readSimpleField(
             "defaultStepIncrement",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

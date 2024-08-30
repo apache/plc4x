@@ -125,7 +125,7 @@ public class BACnetConstructedDataProgramLocation extends BACnetConstructedData 
     BACnetApplicationTagCharacterString programLocation =
         readSimpleField(
             "programLocation",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

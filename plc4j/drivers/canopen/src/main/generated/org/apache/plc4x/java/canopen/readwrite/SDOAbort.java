@@ -105,8 +105,7 @@ public class SDOAbort implements Message {
 
     IndexAddress address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> IndexAddress.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> IndexAddress.staticParse(readBuffer), readBuffer));
 
     long code = readSimpleField("code", readUnsignedLong(readBuffer, 32));
 

@@ -119,7 +119,7 @@ public class NLMInitializeRoutingTableAck extends NLM implements Message {
     List<NLMInitializeRoutingTablePortMapping> portMappings =
         readCountArrayField(
             "portMappings",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NLMInitializeRoutingTablePortMapping.staticParse(readBuffer), readBuffer),
             numberOfPorts);
 

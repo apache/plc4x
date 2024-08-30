@@ -124,7 +124,7 @@ public class BACnetConstructedDataNodeSubtype extends BACnetConstructedData impl
     BACnetApplicationTagCharacterString nodeSubType =
         readSimpleField(
             "nodeSubType",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

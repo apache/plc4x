@@ -128,7 +128,7 @@ public class BACnetConstructedDataBackupPreparationTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger backupPreparationTime =
         readSimpleField(
             "backupPreparationTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

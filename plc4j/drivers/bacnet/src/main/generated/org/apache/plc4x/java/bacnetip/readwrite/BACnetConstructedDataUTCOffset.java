@@ -124,7 +124,7 @@ public class BACnetConstructedDataUTCOffset extends BACnetConstructedData implem
     BACnetApplicationTagSignedInteger utcOffset =
         readSimpleField(
             "utcOffset",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagSignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

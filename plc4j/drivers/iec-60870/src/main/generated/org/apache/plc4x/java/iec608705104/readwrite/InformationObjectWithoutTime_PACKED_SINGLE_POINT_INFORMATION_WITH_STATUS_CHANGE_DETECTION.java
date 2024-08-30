@@ -121,15 +121,13 @@ class InformationObjectWithoutTime_PACKED_SINGLE_POINT_INFORMATION_WITH_STATUS_C
     StatusChangeDetection scd =
         readSimpleField(
             "scd",
-            new DataReaderComplexDefault<>(
-                () -> StatusChangeDetection.staticParse(readBuffer), readBuffer),
+            readComplex(() -> StatusChangeDetection.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     QualityDescriptor qds =
         readSimpleField(
             "qds",
-            new DataReaderComplexDefault<>(
-                () -> QualityDescriptor.staticParse(readBuffer), readBuffer),
+            readComplex(() -> QualityDescriptor.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext(

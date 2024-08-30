@@ -102,7 +102,7 @@ public class BACnetReadAccessResult implements Message {
     BACnetContextTagObjectIdentifier objectIdentifier =
         readSimpleField(
             "objectIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagObjectIdentifier)
                         BACnetContextTag.staticParse(
@@ -114,7 +114,7 @@ public class BACnetReadAccessResult implements Message {
     BACnetReadAccessResultListOfResults listOfResults =
         readOptionalField(
             "listOfResults",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetReadAccessResultListOfResults.staticParse(
                         readBuffer,

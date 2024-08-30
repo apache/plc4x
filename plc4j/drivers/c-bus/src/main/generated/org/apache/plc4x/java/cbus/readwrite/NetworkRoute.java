@@ -104,13 +104,13 @@ public class NetworkRoute implements Message {
     NetworkProtocolControlInformation networkPCI =
         readSimpleField(
             "networkPCI",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> NetworkProtocolControlInformation.staticParse(readBuffer), readBuffer));
 
     List<BridgeAddress> additionalBridgeAddresses =
         readCountArrayField(
             "additionalBridgeAddresses",
-            new DataReaderComplexDefault<>(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
+            readComplex(() -> BridgeAddress.staticParse(readBuffer), readBuffer),
             (networkPCI.getStackDepth()) - (1));
 
     readBuffer.closeContext("NetworkRoute");

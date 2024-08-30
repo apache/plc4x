@@ -151,7 +151,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataSubordinateTags extends BACnetConstructedData 
     List<BACnetNameValueCollection> subordinateList =
         readTerminatedArrayField(
             "subordinateList",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetNameValueCollection.staticParse(readBuffer, (short) (0)), readBuffer),
             () ->
                 ((boolean)

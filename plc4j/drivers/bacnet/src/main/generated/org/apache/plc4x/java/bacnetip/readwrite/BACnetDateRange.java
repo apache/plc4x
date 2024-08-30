@@ -97,14 +97,14 @@ public class BACnetDateRange implements Message {
     BACnetApplicationTagDate startDate =
         readSimpleField(
             "startDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 
     BACnetApplicationTagDate endDate =
         readSimpleField(
             "endDate",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

@@ -128,7 +128,7 @@ public class BACnetConstructedDataLightingCommandDefaultPriority extends BACnetC
     BACnetApplicationTagUnsignedInteger lightingCommandDefaultPriority =
         readSimpleField(
             "lightingCommandDefaultPriority",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

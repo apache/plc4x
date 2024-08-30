@@ -125,8 +125,7 @@ public class BACnetConstructedDataChannelPresentValue extends BACnetConstructedD
     BACnetChannelValue presentValue =
         readSimpleField(
             "presentValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetChannelValue.staticParse(readBuffer), readBuffer));
     BACnetChannelValue actualValue =
         readVirtualField("actualValue", BACnetChannelValue.class, presentValue);
 

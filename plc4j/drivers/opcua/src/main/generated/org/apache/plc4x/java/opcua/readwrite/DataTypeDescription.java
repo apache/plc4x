@@ -104,14 +104,11 @@ public class DataTypeDescription extends ExtensionObjectDefinition implements Me
 
     NodeId dataTypeId =
         readSimpleField(
-            "dataTypeId",
-            new DataReaderComplexDefault<>(() -> NodeId.staticParse(readBuffer), readBuffer));
+            "dataTypeId", readComplex(() -> NodeId.staticParse(readBuffer), readBuffer));
 
     QualifiedName name =
         readSimpleField(
-            "name",
-            new DataReaderComplexDefault<>(
-                () -> QualifiedName.staticParse(readBuffer), readBuffer));
+            "name", readComplex(() -> QualifiedName.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("DataTypeDescription");
     // Create the instance

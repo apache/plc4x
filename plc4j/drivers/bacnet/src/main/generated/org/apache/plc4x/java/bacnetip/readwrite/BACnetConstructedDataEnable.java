@@ -124,7 +124,7 @@ public class BACnetConstructedDataEnable extends BACnetConstructedData implement
     BACnetApplicationTagBoolean enable =
         readSimpleField(
             "enable",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

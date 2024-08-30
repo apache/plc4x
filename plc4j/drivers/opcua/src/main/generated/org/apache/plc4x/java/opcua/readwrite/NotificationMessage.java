@@ -146,7 +146,7 @@ public class NotificationMessage extends ExtensionObjectDefinition implements Me
     List<ExtensionObject> notificationData =
         readCountArrayField(
             "notificationData",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> ExtensionObject.staticParse(readBuffer, (boolean) (true)), readBuffer),
             noOfNotificationData);
 

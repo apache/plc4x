@@ -85,7 +85,7 @@ public class BACnetLiftCarCallList implements Message {
     BACnetLiftCarCallListFloorList floorNumbers =
         readSimpleField(
             "floorNumbers",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetLiftCarCallListFloorList.staticParse(readBuffer, (short) (0)),
                 readBuffer));
 

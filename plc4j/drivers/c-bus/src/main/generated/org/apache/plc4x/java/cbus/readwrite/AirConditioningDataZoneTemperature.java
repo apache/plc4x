@@ -139,14 +139,11 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
 
     HVACZoneList zoneList =
         readSimpleField(
-            "zoneList",
-            new DataReaderComplexDefault<>(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
+            "zoneList", readComplex(() -> HVACZoneList.staticParse(readBuffer), readBuffer));
 
     HVACTemperature temperature =
         readSimpleField(
-            "temperature",
-            new DataReaderComplexDefault<>(
-                () -> HVACTemperature.staticParse(readBuffer), readBuffer));
+            "temperature", readComplex(() -> HVACTemperature.staticParse(readBuffer), readBuffer));
 
     HVACSensorStatus sensorStatus =
         readEnumField(

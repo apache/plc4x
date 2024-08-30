@@ -101,8 +101,7 @@ public class ParameterChangeReply extends Reply implements Message {
     ParameterChange parameterChange =
         readSimpleField(
             "parameterChange",
-            new DataReaderComplexDefault<>(
-                () -> ParameterChange.staticParse(readBuffer), readBuffer));
+            readComplex(() -> ParameterChange.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("ParameterChangeReply");
     // Create the instance

@@ -128,7 +128,7 @@ public class BACnetConstructedDataDoorExtendedPulseTime extends BACnetConstructe
     BACnetApplicationTagUnsignedInteger doorExtendedPulseTime =
         readSimpleField(
             "doorExtendedPulseTime",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

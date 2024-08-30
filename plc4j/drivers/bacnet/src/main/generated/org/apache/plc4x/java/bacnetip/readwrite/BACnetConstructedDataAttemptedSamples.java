@@ -126,7 +126,7 @@ public class BACnetConstructedDataAttemptedSamples extends BACnetConstructedData
     BACnetApplicationTagUnsignedInteger attemptedSamples =
         readSimpleField(
             "attemptedSamples",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

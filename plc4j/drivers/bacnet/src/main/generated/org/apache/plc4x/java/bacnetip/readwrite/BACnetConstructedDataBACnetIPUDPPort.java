@@ -124,7 +124,7 @@ public class BACnetConstructedDataBACnetIPUDPPort extends BACnetConstructedData 
     BACnetApplicationTagUnsignedInteger ipUdpPort =
         readSimpleField(
             "ipUdpPort",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

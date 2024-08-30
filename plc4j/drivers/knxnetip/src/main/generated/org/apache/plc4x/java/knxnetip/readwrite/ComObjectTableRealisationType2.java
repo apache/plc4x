@@ -132,7 +132,7 @@ public class ComObjectTableRealisationType2 extends ComObjectTable implements Me
     List<GroupObjectDescriptorRealisationType2> comObjectDescriptors =
         readCountArrayField(
             "comObjectDescriptors",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> GroupObjectDescriptorRealisationType2.staticParse(readBuffer), readBuffer),
             numEntries);
 

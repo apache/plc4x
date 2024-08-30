@@ -91,7 +91,7 @@ public class BACnetCalendarEntryDateRange extends BACnetCalendarEntry implements
     BACnetDateRangeEnclosed dateRange =
         readSimpleField(
             "dateRange",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetDateRangeEnclosed.staticParse(readBuffer, (short) (1)), readBuffer));
 
     readBuffer.closeContext("BACnetCalendarEntryDateRange");

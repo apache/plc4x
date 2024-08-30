@@ -118,19 +118,18 @@ public class BACnetCalendarEntryEnclosed implements Message {
     BACnetOpeningTag openingTag =
         readSimpleField(
             "openingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     BACnetCalendarEntry calendarEntry =
         readSimpleField(
             "calendarEntry",
-            new DataReaderComplexDefault<>(
-                () -> BACnetCalendarEntry.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetCalendarEntry.staticParse(readBuffer), readBuffer));
 
     BACnetClosingTag closingTag =
         readSimpleField(
             "closingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (tagNumber)), readBuffer));
 
     readBuffer.closeContext("BACnetCalendarEntryEnclosed");

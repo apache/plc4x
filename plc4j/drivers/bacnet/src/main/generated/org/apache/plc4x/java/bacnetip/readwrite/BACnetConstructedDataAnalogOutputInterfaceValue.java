@@ -125,8 +125,7 @@ public class BACnetConstructedDataAnalogOutputInterfaceValue extends BACnetConst
     BACnetOptionalREAL interfaceValue =
         readSimpleField(
             "interfaceValue",
-            new DataReaderComplexDefault<>(
-                () -> BACnetOptionalREAL.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetOptionalREAL.staticParse(readBuffer), readBuffer));
     BACnetOptionalREAL actualValue =
         readVirtualField("actualValue", BACnetOptionalREAL.class, interfaceValue);
 

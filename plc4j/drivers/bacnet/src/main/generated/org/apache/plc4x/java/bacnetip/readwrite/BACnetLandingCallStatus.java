@@ -114,7 +114,7 @@ public class BACnetLandingCallStatus implements Message {
     BACnetContextTagUnsignedInteger floorNumber =
         readSimpleField(
             "floorNumber",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -126,13 +126,12 @@ public class BACnetLandingCallStatus implements Message {
     BACnetLandingCallStatusCommand command =
         readSimpleField(
             "command",
-            new DataReaderComplexDefault<>(
-                () -> BACnetLandingCallStatusCommand.staticParse(readBuffer), readBuffer));
+            readComplex(() -> BACnetLandingCallStatusCommand.staticParse(readBuffer), readBuffer));
 
     BACnetContextTagCharacterString floorText =
         readOptionalField(
             "floorText",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagCharacterString)
                         BACnetContextTag.staticParse(

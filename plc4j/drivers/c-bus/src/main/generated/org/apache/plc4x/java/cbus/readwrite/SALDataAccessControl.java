@@ -93,8 +93,7 @@ public class SALDataAccessControl extends SALData implements Message {
     AccessControlData accessControlData =
         readSimpleField(
             "accessControlData",
-            new DataReaderComplexDefault<>(
-                () -> AccessControlData.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AccessControlData.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("SALDataAccessControl");
     // Create the instance

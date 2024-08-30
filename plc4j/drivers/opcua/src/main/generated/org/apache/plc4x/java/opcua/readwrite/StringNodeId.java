@@ -98,8 +98,7 @@ public class StringNodeId implements Message {
 
     PascalString identifier =
         readSimpleField(
-            "identifier",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "identifier", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("StringNodeId");
     // Create the instance

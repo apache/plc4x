@@ -138,20 +138,17 @@ public class OpenChannelMessageRequest extends OpenChannelMessage implements Mes
 
     PascalString endpoint =
         readSimpleField(
-            "endpoint",
-            new DataReaderComplexDefault<>(() -> PascalString.staticParse(readBuffer), readBuffer));
+            "endpoint", readComplex(() -> PascalString.staticParse(readBuffer), readBuffer));
 
     PascalByteString senderCertificate =
         readSimpleField(
             "senderCertificate",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     PascalByteString receiverCertificateThumbprint =
         readSimpleField(
             "receiverCertificateThumbprint",
-            new DataReaderComplexDefault<>(
-                () -> PascalByteString.staticParse(readBuffer), readBuffer));
+            readComplex(() -> PascalByteString.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("OpenChannelMessageRequest");
     // Create the instance

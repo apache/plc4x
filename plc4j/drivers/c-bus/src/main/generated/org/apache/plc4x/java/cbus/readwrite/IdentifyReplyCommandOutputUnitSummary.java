@@ -147,8 +147,7 @@ public class IdentifyReplyCommandOutputUnitSummary extends IdentifyReplyCommand 
     IdentifyReplyCommandUnitSummary unitFlags =
         readSimpleField(
             "unitFlags",
-            new DataReaderComplexDefault<>(
-                () -> IdentifyReplyCommandUnitSummary.staticParse(readBuffer), readBuffer));
+            readComplex(() -> IdentifyReplyCommandUnitSummary.staticParse(readBuffer), readBuffer));
 
     Byte gavStoreEnabledByte1 =
         readOptionalField("gavStoreEnabledByte1", readByte(readBuffer, 8), (numBytes) > (1));

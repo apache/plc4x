@@ -100,8 +100,7 @@ public class InformationObjectWithoutTime_SINGLE_POINT_INFORMATION
     SinglePointInformation siq =
         readSimpleField(
             "siq",
-            new DataReaderComplexDefault<>(
-                () -> SinglePointInformation.staticParse(readBuffer), readBuffer),
+            readComplex(() -> SinglePointInformation.staticParse(readBuffer), readBuffer),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     readBuffer.closeContext("InformationObjectWithoutTime_SINGLE_POINT_INFORMATION");

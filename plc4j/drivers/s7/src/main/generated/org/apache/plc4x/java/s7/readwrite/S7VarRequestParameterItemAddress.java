@@ -102,8 +102,7 @@ public class S7VarRequestParameterItemAddress extends S7VarRequestParameterItem 
 
     S7Address address =
         readSimpleField(
-            "address",
-            new DataReaderComplexDefault<>(() -> S7Address.staticParse(readBuffer), readBuffer));
+            "address", readComplex(() -> S7Address.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("S7VarRequestParameterItemAddress");
     // Create the instance

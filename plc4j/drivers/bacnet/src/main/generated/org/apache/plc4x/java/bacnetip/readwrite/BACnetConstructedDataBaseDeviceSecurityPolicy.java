@@ -128,7 +128,7 @@ public class BACnetConstructedDataBaseDeviceSecurityPolicy extends BACnetConstru
     BACnetSecurityLevelTagged baseDeviceSecurityPolicy =
         readSimpleField(
             "baseDeviceSecurityPolicy",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetSecurityLevelTagged.staticParse(
                         readBuffer, (short) (0), (TagClass) (TagClass.APPLICATION_TAGS)),

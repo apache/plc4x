@@ -100,13 +100,13 @@ public class BACnetBDTEntry implements Message {
     BACnetHostNPortEnclosed bbmdAddress =
         readSimpleField(
             "bbmdAddress",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetHostNPortEnclosed.staticParse(readBuffer, (short) (0)), readBuffer));
 
     BACnetContextTagOctetString broadcastMask =
         readOptionalField(
             "broadcastMask",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagOctetString)
                         BACnetContextTag.staticParse(

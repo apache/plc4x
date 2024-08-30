@@ -110,7 +110,7 @@ public class APDUUnconfirmedRequest extends APDU implements Message {
     BACnetUnconfirmedServiceRequest serviceRequest =
         readSimpleField(
             "serviceRequest",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetUnconfirmedServiceRequest.staticParse(
                         readBuffer, (int) ((apduLength) - (1))),

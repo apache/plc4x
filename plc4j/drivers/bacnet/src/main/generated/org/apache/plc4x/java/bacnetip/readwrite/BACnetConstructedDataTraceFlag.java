@@ -124,7 +124,7 @@ public class BACnetConstructedDataTraceFlag extends BACnetConstructedData implem
     BACnetApplicationTagBoolean traceFlag =
         readSimpleField(
             "traceFlag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =

@@ -128,7 +128,7 @@ public class BACnetConstructedDataCOVResubscriptionInterval extends BACnetConstr
     BACnetApplicationTagUnsignedInteger covResubscriptionInterval =
         readSimpleField(
             "covResubscriptionInterval",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),

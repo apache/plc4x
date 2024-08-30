@@ -124,7 +124,7 @@ public class BACnetConstructedDataErrorLimit extends BACnetConstructedData imple
     BACnetApplicationTagReal errorLimit =
         readSimpleField(
             "errorLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagReal) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagReal actualValue =

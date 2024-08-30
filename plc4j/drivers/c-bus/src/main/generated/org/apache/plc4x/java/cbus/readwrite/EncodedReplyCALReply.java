@@ -97,7 +97,7 @@ public class EncodedReplyCALReply extends EncodedReply implements Message {
     CALReply calReply =
         readSimpleField(
             "calReply",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     CALReply.staticParse(
                         readBuffer, (CBusOptions) (cBusOptions), (RequestContext) (requestContext)),

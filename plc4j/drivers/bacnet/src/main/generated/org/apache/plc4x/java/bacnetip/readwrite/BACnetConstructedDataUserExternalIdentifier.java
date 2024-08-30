@@ -128,7 +128,7 @@ public class BACnetConstructedDataUserExternalIdentifier extends BACnetConstruct
     BACnetApplicationTagCharacterString userExternalIdentifier =
         readSimpleField(
             "userExternalIdentifier",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagCharacterString)
                         BACnetApplicationTag.staticParse(readBuffer),

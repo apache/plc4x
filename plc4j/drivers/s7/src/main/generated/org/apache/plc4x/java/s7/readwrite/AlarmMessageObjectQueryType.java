@@ -206,41 +206,33 @@ public class AlarmMessageObjectQueryType implements Message {
             AlarmMessageObjectQueryType.VARIABLESPEC);
 
     State eventState =
-        readSimpleField(
-            "eventState",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+        readSimpleField("eventState", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateGoing =
         readSimpleField(
-            "ackStateGoing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateGoing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     State ackStateComing =
         readSimpleField(
-            "ackStateComing",
-            new DataReaderComplexDefault<>(() -> State.staticParse(readBuffer), readBuffer));
+            "ackStateComing", readComplex(() -> State.staticParse(readBuffer), readBuffer));
 
     DateAndTime timeComing =
         readSimpleField(
-            "timeComing",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeComing", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     AssociatedValueType valueComing =
         readSimpleField(
             "valueComing",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer));
 
     DateAndTime timeGoing =
         readSimpleField(
-            "timeGoing",
-            new DataReaderComplexDefault<>(() -> DateAndTime.staticParse(readBuffer), readBuffer));
+            "timeGoing", readComplex(() -> DateAndTime.staticParse(readBuffer), readBuffer));
 
     AssociatedValueType valueGoing =
         readSimpleField(
             "valueGoing",
-            new DataReaderComplexDefault<>(
-                () -> AssociatedValueType.staticParse(readBuffer), readBuffer));
+            readComplex(() -> AssociatedValueType.staticParse(readBuffer), readBuffer));
 
     readBuffer.closeContext("AlarmMessageObjectQueryType");
     // Create the instance

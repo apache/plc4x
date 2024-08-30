@@ -174,14 +174,14 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     BACnetOpeningTag innerOpeningTag =
         readSimpleField(
             "innerOpeningTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetOpeningTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 
     BACnetContextTagSignedInteger exceedingValue =
         readSimpleField(
             "exceedingValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -193,7 +193,7 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     BACnetStatusFlagsTagged statusFlags =
         readSimpleField(
             "statusFlags",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     BACnetStatusFlagsTagged.staticParse(
                         readBuffer, (short) (1), (TagClass) (TagClass.CONTEXT_SPECIFIC_TAGS)),
@@ -202,7 +202,7 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     BACnetContextTagUnsignedInteger deadband =
         readSimpleField(
             "deadband",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagUnsignedInteger)
                         BACnetContextTag.staticParse(
@@ -214,7 +214,7 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     BACnetContextTagSignedInteger exceededLimit =
         readSimpleField(
             "exceededLimit",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetContextTagSignedInteger)
                         BACnetContextTag.staticParse(
@@ -226,7 +226,7 @@ public class BACnetNotificationParametersSignedOutOfRange extends BACnetNotifica
     BACnetClosingTag innerClosingTag =
         readSimpleField(
             "innerClosingTag",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> BACnetClosingTag.staticParse(readBuffer, (short) (peekedTagNumber)),
                 readBuffer));
 

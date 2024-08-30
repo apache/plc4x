@@ -151,7 +151,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     BACnetApplicationTagUnsignedInteger numberOfDataElements =
         readOptionalField(
             "numberOfDataElements",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagUnsignedInteger)
                         BACnetApplicationTag.staticParse(readBuffer),
@@ -161,7 +161,7 @@ public class BACnetConstructedDataIPv6DNSServer extends BACnetConstructedData im
     List<BACnetApplicationTagOctetString> ipv6DnsServer =
         readTerminatedArrayField(
             "ipv6DnsServer",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () ->
                     (BACnetApplicationTagOctetString) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer),

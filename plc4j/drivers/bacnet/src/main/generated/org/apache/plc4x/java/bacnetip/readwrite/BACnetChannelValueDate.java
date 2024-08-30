@@ -91,7 +91,7 @@ public class BACnetChannelValueDate extends BACnetChannelValue implements Messag
     BACnetApplicationTagDate dateValue =
         readSimpleField(
             "dateValue",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagDate) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
 

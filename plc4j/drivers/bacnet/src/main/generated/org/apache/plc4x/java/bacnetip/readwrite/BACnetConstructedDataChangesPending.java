@@ -124,7 +124,7 @@ public class BACnetConstructedDataChangesPending extends BACnetConstructedData i
     BACnetApplicationTagBoolean changesPending =
         readSimpleField(
             "changesPending",
-            new DataReaderComplexDefault<>(
+            readComplex(
                 () -> (BACnetApplicationTagBoolean) BACnetApplicationTag.staticParse(readBuffer),
                 readBuffer));
     BACnetApplicationTagBoolean actualValue =
