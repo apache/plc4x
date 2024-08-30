@@ -22,8 +22,6 @@ package io
 import (
 	"context"
 
-	"github.com/pkg/errors"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -40,8 +38,5 @@ func NewDataReaderSimpleUnsignedByte(readBuffer utils.ReadBuffer, bitLength uint
 }
 
 func (d *DataReaderSimpleUnsignedByte) Read(ctx context.Context, logicalName string, readerArgs ...utils.WithReaderArgs) (uint8, error) {
-	if d.bitLength != 8 {
-		return 0, errors.New("bit length must be 8 UnsignedBytes")
-	}
 	return d.readBuffer.ReadUint8(logicalName, uint8(d.bitLength), readerArgs...)
 }
