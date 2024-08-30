@@ -896,70 +896,21 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
+	_ = ${namedField.name}
 				<#break>
-			<#case "manualArray">
+			<#case "manualArray">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
 				<#assign manualArrayField = field.asManualArrayField().orElseThrow()>
-            	<#assign arrayElementType = manualArrayField.type.elementTypeReference>
-	if pullErr := readBuffer.PullContext("${manualArrayField.name}", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	// Manual Array Field (${manualArrayField.name})
-			<#-- If this is a count array, we can directly initialize an array with the given size -->
-				<#if field.isCountArrayField()>
-	// Count array
-	_${manualArrayField.name}Count := ${helper.toParseExpression(manualArrayField, helper.intTypeReference, manualArrayField.loopExpression, parserArguments)}
-	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, _${manualArrayField.name}Count)
-	// This happens when the size is set conditional to 0
-	if len(${manualArrayField.name}) == 0 {
-		${manualArrayField.name} = nil
-	}
-	for i := 0; i < _${manualArrayField.name}Count; i++ {
-		${manualArrayField.name}[i] = (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})
-	}
-				<#-- In all other cases do we have to work with a list, that is later converted to an array -->
-				<#else>
-				<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
-					<#if field.isLengthArrayField()>
-	// Length array
-	_${manualArrayField.name}Length := ${helper.toIntegerParseExpression(manualArrayField, 16, manualArrayField.loopExpression, parserArguments)}
-	var _${manualArrayField.name}List ${helper.getLanguageTypeNameForField(manualArrayField)}
-	${manualArrayField.name}EndPos := positionAware.GetPos() + _${manualArrayField.name}Length
-	for ;positionAware.GetPos() < ${manualArrayField.name}EndPos; {
-		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
-	}
-					<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
-					<#elseif field.isTerminatedArrayField()>
-	// Terminated array
-	var _${manualArrayField.name}List ${helper.getLanguageTypeNameForField(manualArrayField)}
-	{
-		_values := &_${manualArrayField.name}List
-		_ = _values
-		for ;!((bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments, true)})); {
-		_${manualArrayField.name}List = append(_${manualArrayField.name}List, ((${helper.getLanguageTypeNameForTypeReference(arrayElementType)}) (${helper.toParseExpression(manualArrayField, arrayElementType, manualArrayField.parseExpression, parserArguments)})))
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
+				<#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
-		}
-	}
-					</#if>
-				<#--
-					Convert the list into an array. However if the array is of a primitive
-					type we have to iterate over it's elements and explicitly cast them.
-					Otherwise a simple toArray call is fine.
-				-->
-					<#if manualArrayField.type.isSimpleTypeReference()>
-	${manualArrayField.name} := make(${helper.getLanguageTypeNameForField(field)}, len(_${manualArrayField.name}List))
-	// This happens when the size is set conditional to 0
-	if len(${manualArrayField.name}) == 0 {
-		${manualArrayField.name} = nil
-	}
-	for i := 0; i < len(_${manualArrayField.name}List); i++ {
-		${manualArrayField.name}[i] = ${helper.getLanguageTypeNameForField(field)}(_${manualArrayField.name}List[i])
-	}
-					<#else>
-	${manualArrayField.name} := _${manualArrayField.name}List
-					</#if>
+				<#if arrayElementTypeReference.isByteBased()>
+	${namedField.name},err  := ReadManualByteArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, func(_values []byte) bool {return (bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)})}, func(ctx context.Context)(byte,error){return ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)});
+				<#else>
+	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, func(_values ${helper.getLanguageTypeNameForField(manualArrayField)}) bool {return (bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)})}, func() ${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)} { (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})}${helper.getFieldOptions(typedField, parserArguments)});
 				</#if>
-	if closeErr := readBuffer.CloseContext("${manualArrayField.name}", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${manualArrayField.name}")<@emitImport import="github.com/pkg/errors" />
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "manual">

@@ -105,9 +105,9 @@ func ReadOptionalField[T any](ctx context.Context, logicalName string, dataReade
 	return NewFieldReaderOptional[T](log).ReadOptionalField(ctx, logicalName, dataReader, condition, readerArgs...)
 }
 
-func ReadManualByteArrayField(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, termination func([]byte) bool, parse func(context.Context) ([]byte, error), readerArgs ...utils.WithReaderArgs) ([]byte, error) {
+func ReadManualByteArrayField(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, termination func([]byte) bool, parse func(context.Context) (byte, error), readerArgs ...utils.WithReaderArgs) ([]byte, error) {
 	log := *zerolog.Ctx(ctx)
-	return NewFieldReaderManualArray[[]byte](log).ReadManualByteArrayField(ctx, logicalName, readBuffer, termination, parse, readerArgs...)
+	return NewFieldReaderManualArray[byte](log).ReadManualByteArrayField(ctx, logicalName, readBuffer, termination, parse, readerArgs...)
 }
 
 func ReadManualArrayField[T any](ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, termination func([]T) bool, parse func(context.Context) (T, error), readerArgs ...utils.WithReaderArgs) ([]T, error) {

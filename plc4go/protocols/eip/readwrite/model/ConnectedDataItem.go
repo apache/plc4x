@@ -161,6 +161,7 @@ func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
 	}
+	_ = packetSize
 
 	// Simple Field (sequenceCount)
 	_sequenceCount, _sequenceCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sequenceCount", 16)

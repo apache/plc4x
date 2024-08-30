@@ -41,7 +41,7 @@ func NewFieldReaderManualArray[T any](log zerolog.Logger) *FieldReaderManualArra
 	}
 }
 
-func (f *FieldReaderManualArray[T]) ReadManualByteArrayField(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, termination func([]byte) bool, parse func(context.Context) (T, error), readerArgs ...utils.WithReaderArgs) ([]byte, error) {
+func (f *FieldReaderManualArray[T]) ReadManualByteArrayField(ctx context.Context, logicalName string, readBuffer utils.ReadBuffer, termination func([]byte) bool, parse func(context.Context) (byte, error), readerArgs ...utils.WithReaderArgs) ([]byte, error) {
 	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
 	// Ensure we have the render as list argument present
 	readerArgs = append(readerArgs, utils.WithRenderAsList(true))

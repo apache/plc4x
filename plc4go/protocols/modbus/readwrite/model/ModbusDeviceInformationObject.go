@@ -142,6 +142,7 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectLength' field"))
 	}
+	_ = objectLength
 
 	data, err := readBuffer.ReadByteArray("data", int(objectLength))
 	if err != nil {

@@ -220,6 +220,7 @@ func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
+	_ = itemLength
 
 	// Simple Field (method)
 	_method, _methodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("method", 8)

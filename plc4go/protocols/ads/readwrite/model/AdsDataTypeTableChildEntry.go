@@ -390,16 +390,19 @@ func AdsDataTypeTableChildEntryParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyNameLength' field"))
 	}
+	_ = propertyNameLength
 
 	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameLength' field"))
 	}
+	_ = dataTypeNameLength
 
 	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
+	_ = commentLength
 
 	// Simple Field (arrayDimensions)
 	_arrayDimensions, _arrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("arrayDimensions", 16)

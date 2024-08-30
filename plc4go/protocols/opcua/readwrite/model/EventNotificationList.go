@@ -168,6 +168,7 @@ func EventNotificationListParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
+	_ = notificationLength
 
 	// Simple Field (noOfEvents)
 	_noOfEvents, _noOfEventsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEvents", 32)

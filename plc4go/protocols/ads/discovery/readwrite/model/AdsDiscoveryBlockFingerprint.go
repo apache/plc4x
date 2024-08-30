@@ -152,6 +152,7 @@ func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLen' field"))
 	}
+	_ = dataLen
 
 	data, err := readBuffer.ReadByteArray("data", int(dataLen))
 	if err != nil {

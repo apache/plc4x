@@ -128,6 +128,7 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'strLen' field"))
 	}
+	_ = strLen
 
 	// Simple Field (text)
 	_text, _textErr := /*TODO: migrate me*/ readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), utils.WithEncoding("UTF-8"))

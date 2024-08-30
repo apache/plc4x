@@ -1472,6 +1472,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         return new ArrayList<>(switchCases.values());
     }
 
+    public void emitRequiredImportRaw(String requiredImport) {
+        LOGGER.debug("emitting import '{}'", requiredImport);
+        requiredImports.add(requiredImport);
+    }
+
     public void emitRequiredImport(String requiredImport) {
         LOGGER.debug("emitting import '\"{}\"'", requiredImport);
         requiredImports.add('"' + requiredImport + '"');

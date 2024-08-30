@@ -170,6 +170,7 @@ func ListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}
+	_ = typeIdCount
 
 	typeIds, err := ReadCountArrayField[TypeId](ctx, "typeIds", ReadComplex[TypeId](TypeIdParseWithBuffer, readBuffer), uint64(typeIdCount))
 	if err != nil {

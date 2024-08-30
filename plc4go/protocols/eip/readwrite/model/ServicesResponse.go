@@ -194,6 +194,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceLen' field"))
 	}
+	_ = serviceLen
 
 	// Simple Field (encapsulationProtocol)
 	_encapsulationProtocol, _encapsulationProtocolErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocol", 16)

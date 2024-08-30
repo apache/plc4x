@@ -243,6 +243,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBlocks' field"))
 	}
+	_ = numBlocks
 
 	blocks, err := ReadCountArrayField[AdsDiscoveryBlock](ctx, "blocks", ReadComplex[AdsDiscoveryBlock](AdsDiscoveryBlockParseWithBuffer, readBuffer), uint64(numBlocks), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {

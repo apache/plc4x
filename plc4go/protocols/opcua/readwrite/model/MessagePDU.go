@@ -169,6 +169,7 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
+	_ = totalLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MessagePDUChildSerializeRequirement interface {

@@ -150,6 +150,7 @@ func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
+	_ = itemLength
 
 	// Simple Field (address)
 	if pullErr := readBuffer.PullContext("address"); pullErr != nil {

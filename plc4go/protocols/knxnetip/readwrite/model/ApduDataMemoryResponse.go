@@ -163,6 +163,7 @@ func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBytes' field"))
 	}
+	_ = numBytes
 
 	// Simple Field (address)
 	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)

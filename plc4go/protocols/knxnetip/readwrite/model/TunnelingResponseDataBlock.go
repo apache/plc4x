@@ -143,6 +143,7 @@ func TunnelingResponseDataBlockParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
 	// Simple Field (communicationChannelId)
 	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)

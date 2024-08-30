@@ -160,6 +160,7 @@ func ModbusPDUReportServerIdResponseParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
+	_ = byteCount
 
 	value, err := readBuffer.ReadByteArray("value", int(byteCount))
 	if err != nil {

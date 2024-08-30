@@ -180,6 +180,7 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcLength' field"))
 	}
+	_ = bvlcLength
 
 	// Virtual field
 	_bvlcPayloadLength := uint16(bvlcLength) - uint16(uint16(4))

@@ -163,11 +163,13 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
+	_ = byteCount
 
 	fifoCount, err := ReadImplicitField[uint16](ctx, "fifoCount", ReadUnsignedShort(readBuffer, 16))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoCount' field"))
 	}
+	_ = fifoCount
 
 	fifoValue, err := ReadCountArrayField[uint16](ctx, "fifoValue", ReadUnsignedShort(readBuffer, 16), uint64(fifoCount))
 	if err != nil {

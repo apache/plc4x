@@ -199,6 +199,7 @@ func AdsWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
+	_ = length
 
 	data, err := readBuffer.ReadByteArray("data", int(length))
 	if err != nil {

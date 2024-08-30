@@ -136,6 +136,7 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}
+	_ = parameterLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type COTPParameterChildSerializeRequirement interface {

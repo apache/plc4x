@@ -549,16 +549,19 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nameLength' field"))
 	}
+	_ = nameLength
 
 	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameLength' field"))
 	}
+	_ = dataTypeNameLength
 
 	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
+	_ = commentLength
 
 	// Simple Field (name)
 	_name, _nameErr := /*TODO: migrate me*/ readBuffer.ReadString("name", uint32((nameLength)*(8)), utils.WithEncoding("UTF-8"))

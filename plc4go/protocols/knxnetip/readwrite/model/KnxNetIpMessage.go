@@ -153,6 +153,7 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
+	_ = headerLength
 
 	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, 8), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
@@ -169,6 +170,7 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
+	_ = totalLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type KnxNetIpMessageChildSerializeRequirement interface {

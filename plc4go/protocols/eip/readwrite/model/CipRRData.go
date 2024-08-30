@@ -206,6 +206,7 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}
+	_ = typeIdCount
 
 	typeIds, err := ReadCountArrayField[TypeId](ctx, "typeIds", ReadComplex[TypeId](TypeIdParseWithBuffer, readBuffer), uint64(typeIdCount))
 	if err != nil {

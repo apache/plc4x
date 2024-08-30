@@ -135,6 +135,7 @@ func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
+	_ = dataLength
 
 	// Simple Field (referenceType)
 	_referenceType, _referenceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("referenceType", 8)

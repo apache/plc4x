@@ -194,6 +194,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx context.
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
+	_ = numberOfObjects
 
 	messageObjects, err := ReadCountArrayField[AlarmMessageObjectAckType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectAckType](AlarmMessageObjectAckTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))
 	if err != nil {

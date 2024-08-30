@@ -207,6 +207,7 @@ func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
 	// Simple Field (descriptionType)
 	_descriptionType, _descriptionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("descriptionType", 8)

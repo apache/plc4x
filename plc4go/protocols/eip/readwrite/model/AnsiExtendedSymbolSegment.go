@@ -164,6 +164,7 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSize' field"))
 	}
+	_ = dataSize
 
 	// Simple Field (symbol)
 	_symbol, _symbolErr := /*TODO: migrate me*/ readBuffer.ReadString("symbol", uint32((dataSize)*(8)), utils.WithEncoding("UTF-8"))

@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,23 +144,10 @@ func DF1UnprotectedReadResponseParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	currentPos := positionAware.GetPos()
 	_ = currentPos
-	if pullErr := readBuffer.PullContext("data", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	// Manual Array Field (data)
-	// Terminated array
-	var _dataList []byte
-	{
-		_values := &_dataList
-		_ = _values
-		for !((bool)(DataTerminate(ctx, readBuffer))) {
-			_dataList = append(_dataList, ((byte)(ReadData(ctx, readBuffer))))
 
-		}
-	}
-	data := _dataList
-	if closeErr := readBuffer.CloseContext("data", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+	data, err := ReadManualByteArrayField[byte](ctx, "data", readBuffer, func(_values []byte) bool { return (bool)(DataTerminate(ctx, readBuffer)) }, func(ctx context.Context) (byte, error) { return ReadData(ctx, readBuffer) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DF1UnprotectedReadResponse"); closeErr != nil {

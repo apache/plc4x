@@ -256,6 +256,7 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
+	_ = dataLength
 
 	// Simple Field (apdu)
 	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {

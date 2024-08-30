@@ -314,6 +314,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
+	_ = itemLength
 
 	// Simple Field (encapsulationProtocolVersion)
 	_encapsulationProtocolVersion, _encapsulationProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocolVersion", 16)
@@ -406,6 +407,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productNameLength' field"))
 	}
+	_ = productNameLength
 
 	// Simple Field (productName)
 	_productName, _productNameErr := /*TODO: migrate me*/ readBuffer.ReadString("productName", uint32((productNameLength)*(8)), utils.WithEncoding("UTF-8"))

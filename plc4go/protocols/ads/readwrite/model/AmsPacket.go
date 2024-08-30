@@ -399,6 +399,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
+	_ = length
 
 	// Simple Field (errorCode)
 	_errorCode, _errorCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("errorCode", 32)

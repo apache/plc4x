@@ -152,6 +152,7 @@ func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
+	_ = itemLength
 
 	todoImplement, err := ReadCountArrayField[uint8](ctx, "todoImplement", ReadUnsignedByte(readBuffer, 8), uint64(itemLength))
 	if err != nil {

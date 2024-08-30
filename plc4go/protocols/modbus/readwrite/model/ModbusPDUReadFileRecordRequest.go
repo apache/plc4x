@@ -162,6 +162,7 @@ func ModbusPDUReadFileRecordRequestParseWithBuffer(ctx context.Context, readBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
+	_ = byteCount
 
 	items, err := ReadLengthArrayField[ModbusPDUReadFileRecordRequestItem](ctx, "items", ReadComplex[ModbusPDUReadFileRecordRequestItem](ModbusPDUReadFileRecordRequestItemParseWithBuffer, readBuffer), int(byteCount))
 	if err != nil {

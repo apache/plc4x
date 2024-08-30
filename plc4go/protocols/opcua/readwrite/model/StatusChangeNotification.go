@@ -161,6 +161,7 @@ func StatusChangeNotificationParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
+	_ = notificationLength
 
 	// Simple Field (status)
 	if pullErr := readBuffer.PullContext("status"); pullErr != nil {

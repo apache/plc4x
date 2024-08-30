@@ -170,6 +170,7 @@ func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemCount' field"))
 	}
+	_ = itemCount
 
 	items, err := ReadCountArrayField[CommandSpecificDataItem](ctx, "items", ReadComplex[CommandSpecificDataItem](CommandSpecificDataItemParseWithBuffer, readBuffer), uint64(itemCount))
 	if err != nil {

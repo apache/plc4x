@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,23 +181,10 @@ func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of SysexCommandReportFirmwareResponse")
 	}
 	minorVersion := _minorVersion
-	if pullErr := readBuffer.PullContext("fileName", utils.WithRenderAsList(true)); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileName")
-	}
-	// Manual Array Field (fileName)
-	// Terminated array
-	var _fileNameList []byte
-	{
-		_values := &_fileNameList
-		_ = _values
-		for !((bool)(IsSysexEnd(ctx, readBuffer))) {
-			_fileNameList = append(_fileNameList, ((byte)(ParseSysexString(ctx, readBuffer))))
 
-		}
-	}
-	fileName := _fileNameList
-	if closeErr := readBuffer.CloseContext("fileName", utils.WithRenderAsList(true)); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileName")
+	fileName, err := ReadManualByteArrayField[byte](ctx, "fileName", readBuffer, func(_values []byte) bool { return (bool)(IsSysexEnd(ctx, readBuffer)) }, func(ctx context.Context) (byte, error) { return ParseSysexString(ctx, readBuffer) })
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SysexCommandReportFirmwareResponse"); closeErr != nil {

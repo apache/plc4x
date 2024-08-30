@@ -235,6 +235,7 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeLength' field"))
 	}
+	_ = writeLength
 
 	items, err := ReadCountArrayField[AdsMultiRequestItem](ctx, "items", ReadComplex[AdsMultiRequestItem](func(ctx context.Context, buffer utils.ReadBuffer) (AdsMultiRequestItem, error) {
 		v, err := AdsMultiRequestItemParseWithBuffer(ctx, readBuffer, (uint32)(indexGroup))

@@ -178,6 +178,7 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
+	_ = dataLength
 
 	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf(transportSize.SizeInBits(), func() any { return int32(math.Ceil(float64(dataLength) / float64(float64(8.0)))) }, func() any { return int32(dataLength) }).(int32)))
 	if err != nil {

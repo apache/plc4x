@@ -152,6 +152,7 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osDataLen' field"))
 	}
+	_ = osDataLen
 
 	osData, err := readBuffer.ReadByteArray("osData", int(osDataLen))
 	if err != nil {

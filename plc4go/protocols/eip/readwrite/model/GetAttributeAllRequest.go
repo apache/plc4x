@@ -169,6 +169,7 @@ func GetAttributeAllRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
+	_ = requestPathSize
 
 	// Simple Field (classSegment)
 	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {

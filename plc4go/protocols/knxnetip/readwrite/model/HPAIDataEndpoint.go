@@ -143,6 +143,7 @@ func HPAIDataEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
 	// Simple Field (hostProtocolCode)
 	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {

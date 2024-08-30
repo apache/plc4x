@@ -170,6 +170,7 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
+	_ = headerLength
 
 	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, 8))
 	if err != nil {

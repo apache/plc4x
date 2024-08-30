@@ -161,6 +161,7 @@ func S7ParameterUserDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
 	}
+	_ = numItems
 
 	items, err := ReadCountArrayField[S7ParameterUserDataItem](ctx, "items", ReadComplex[S7ParameterUserDataItem](S7ParameterUserDataItemParseWithBuffer, readBuffer), uint64(numItems))
 	if err != nil {

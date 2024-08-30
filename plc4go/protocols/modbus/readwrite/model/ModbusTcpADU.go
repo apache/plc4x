@@ -206,6 +206,7 @@ func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
+	_ = length
 
 	// Simple Field (unitIdentifier)
 	_unitIdentifier, _unitIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unitIdentifier", 8)

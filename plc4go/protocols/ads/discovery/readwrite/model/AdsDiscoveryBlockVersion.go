@@ -152,6 +152,7 @@ func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'versionDataLen' field"))
 	}
+	_ = versionDataLen
 
 	versionData, err := readBuffer.ReadByteArray("versionData", int(versionDataLen))
 	if err != nil {

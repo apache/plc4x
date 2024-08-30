@@ -192,6 +192,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLen' field"))
 	}
+	_ = packetLen
 
 	// Simple Field (sessionHandle)
 	_sessionHandle, _sessionHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionHandle", 32)

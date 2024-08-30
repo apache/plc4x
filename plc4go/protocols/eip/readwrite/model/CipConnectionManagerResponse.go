@@ -299,6 +299,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'replySize' field"))
 	}
+	_ = replySize
 
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)

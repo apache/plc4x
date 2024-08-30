@@ -235,11 +235,13 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}
+	_ = parameterLength
 
 	payloadLength, err := ReadImplicitField[uint16](ctx, "payloadLength", ReadUnsignedShort(readBuffer, 16))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadLength' field"))
 	}
+	_ = payloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type S7MessageChildSerializeRequirement interface {

@@ -298,6 +298,7 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
+	_ = numberOfObjects
 
 	objects, err := ReadCountArrayField[ModbusDeviceInformationObject](ctx, "objects", ReadComplex[ModbusDeviceInformationObject](ModbusDeviceInformationObjectParseWithBuffer, readBuffer), uint64(numberOfObjects))
 	if err != nil {

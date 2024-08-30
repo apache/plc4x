@@ -161,6 +161,7 @@ func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyLength' field"))
 	}
+	_ = policyLength
 
 	// Simple Field (policyId)
 	if pullErr := readBuffer.PullContext("policyId"); pullErr != nil {

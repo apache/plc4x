@@ -128,6 +128,7 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
+	_ = structureLength
 
 	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, 8))
 	if err != nil {

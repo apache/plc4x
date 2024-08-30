@@ -150,6 +150,7 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
 	}
+	_ = packetSize
 
 	// Simple Field (service)
 	if pullErr := readBuffer.PullContext("service"); pullErr != nil {

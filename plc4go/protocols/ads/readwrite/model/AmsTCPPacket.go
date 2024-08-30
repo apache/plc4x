@@ -147,6 +147,7 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
+	_ = length
 
 	// Simple Field (userdata)
 	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {

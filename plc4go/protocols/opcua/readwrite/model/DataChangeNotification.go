@@ -197,6 +197,7 @@ func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
+	_ = notificationLength
 
 	// Simple Field (noOfMonitoredItems)
 	_noOfMonitoredItems, _noOfMonitoredItemsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMonitoredItems", 32)

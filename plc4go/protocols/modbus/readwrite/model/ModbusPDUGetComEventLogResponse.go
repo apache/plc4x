@@ -193,6 +193,7 @@ func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
+	_ = byteCount
 
 	// Simple Field (status)
 	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)

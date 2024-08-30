@@ -142,6 +142,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sLength' field"))
 	}
+	_ = sLength
 
 	// Virtual field
 	_stringLength := PascalLengthToUtf8Length(ctx, sLength)

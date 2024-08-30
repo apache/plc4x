@@ -165,6 +165,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfClasses' field"))
 	}
+	_ = numberOfClasses
 
 	classId, err := ReadCountArrayField[uint16](ctx, "classId", ReadUnsignedShort(readBuffer, 16), uint64(numberOfClasses))
 	if err != nil {
