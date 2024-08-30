@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,20 +179,8 @@ func ModbusAsciiADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(closeErr, "Error closing for pdu")
 	}
 
-	// Checksum Field (checksum)
-	{
-		checksumRef, _checksumRefErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("checksum", 8)
-		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusAsciiADU")
-		}
-		checksum, _checksumErr := AsciiLrcCheck(ctx, address, pdu)
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
-		}
-		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)
-		}
-	}
+	crc := ReadChecksumField("crc", ReadUnsignedByte(readBuffer, 8), (uint8)(AsciiLrcCheck(ctx, address, pdu)), codegen.WithByteOrder(binary.BigEndian))
+	_ = crc
 
 	if closeErr := readBuffer.CloseContext("ModbusAsciiADU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusAsciiADU")

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -239,20 +242,8 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.New("Expected constant value " + fmt.Sprintf("%d", DF1SymbolMessageFrame_ENDTRANSACTION) + " but got " + fmt.Sprintf("%d", endTransaction))
 	}
 
-	// Checksum Field (checksum)
-	{
-		checksumRef, _checksumRefErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("checksum", 16)
-		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of DF1SymbolMessageFrame")
-		}
-		checksum, _checksumErr := CrcCheck(ctx, destinationAddress, sourceAddress, command)
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
-		}
-		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)
-		}
-	}
+	crc := ReadChecksumField("crc", ReadUnsignedShort(readBuffer, 16), (uint16)(CrcCheck(ctx, destinationAddress, sourceAddress, command)), codegen.WithByteOrder(binary.BigEndian))
+	_ = crc
 
 	if closeErr := readBuffer.CloseContext("DF1SymbolMessageFrame"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1SymbolMessageFrame")

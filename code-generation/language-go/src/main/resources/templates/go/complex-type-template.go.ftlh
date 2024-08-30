@@ -838,23 +838,12 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field.asChecksumField().orElseThrow()>
-				<#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Checksum Field (checksum)
-	{
-		checksumRef, _checksumRefErr := ${helper.getReadBufferReadMethodCall("checksum", simpleTypeReference, checksumField)}
-		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-		checksum, _checksumErr:= ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
-		}
-		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)<@emitImport import="github.com/pkg/errors" />
-		}
-	}
-				<#break>
+	${namedField.name} := Read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	_ = ${namedField.name}
+			<#break>
 			<#case "const">
 				<#assign constField = field.asConstField().orElseThrow()>
 

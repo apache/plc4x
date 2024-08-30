@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -176,20 +179,8 @@ func ModbusRtuADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for pdu")
 	}
 
-	// Checksum Field (checksum)
-	{
-		checksumRef, _checksumRefErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("checksum", 16)
-		if _checksumRefErr != nil {
-			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusRtuADU")
-		}
-		checksum, _checksumErr := RtuCrcCheck(ctx, address, pdu)
-		if _checksumErr != nil {
-			return nil, errors.Wrap(_checksumErr, "Checksum verification failed")
-		}
-		if checksum != checksumRef {
-			return nil, errors.Errorf("Checksum verification failed. Expected %x but got %x", checksumRef, checksum)
-		}
-	}
+	crc := ReadChecksumField("crc", ReadUnsignedShort(readBuffer, 16), (uint16)(RtuCrcCheck(ctx, address, pdu)), codegen.WithByteOrder(binary.BigEndian))
+	_ = crc
 
 	if closeErr := readBuffer.CloseContext("ModbusRtuADU"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusRtuADU")
