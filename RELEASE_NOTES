@@ -22,6 +22,11 @@ New Features
 Incompatible changes
 --------------------
 
+- When reading byte arrays with the s7 driver, now the more
+  efficient PlcRawByteArray type is used, that gives users
+  direct access to the bytes returned from the PLC instead of
+  a list of PlcValues.
+
 Bug Fixes
 ---------
 

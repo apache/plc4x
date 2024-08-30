@@ -40,6 +40,7 @@ import org.apache.plc4x.java.spi.messages.utils.ResponseItem;
 import org.apache.plc4x.java.spi.messages.utils.TagValueItem;
 import org.apache.plc4x.java.spi.optimizer.BaseOptimizer;
 import org.apache.plc4x.java.spi.utils.Serializable;
+import org.apache.plc4x.java.spi.values.PlcRawByteArray;
 import org.apache.plc4x.java.spi.values.PlcValueAdapter;
 
 import java.util.ArrayList;
@@ -184,19 +185,37 @@ public class S7Optimizer extends BaseOptimizer {
                     S7Tag globalS7Tag = (S7Tag) readRequest.getTag(tagName);
                     S7Tag currentS7Tag = (S7Tag) curRequest.getTag(tagName);
                     if(currentS7Tag.getNumberOfElements() != globalS7Tag.getNumberOfElements()) {
-                        List<PlcValue> existingItems;
-                        if(tagValues.containsKey(tagName)) {
-                            ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
-                            existingItems = (List<PlcValue>) existingTagItem.getValue().getList();
-                        } else {
-                            existingItems = new ArrayList<>(Arrays.asList(new PlcValue[globalS7Tag.getNumberOfElements()]));
-                            PlcListModifiable mergedValue = new PlcListModifiable(existingItems);
-                            tagValues.put(tagName, new ResponseItem<>(responseCode, mergedValue));
+                        // We have to merge byte-array data differently.
+                        if(globalS7Tag.getDataType() == TransportSize.BYTE) {
+                            PlcRawByteArray existingItem;
+                            if (tagValues.containsKey(tagName)) {
+                                ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
+                                existingItem = (PlcRawByteArray) existingTagItem.getValue();
+                            } else {
+                                existingItem = new PlcRawByteArray(new byte[globalS7Tag.getNumberOfElements()]);
+                                tagValues.put(tagName, new ResponseItem<>(responseCode, existingItem));
+                            }
+                            byte[] currentItemByteArray = value.getRaw();
+                            int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
+                            byte[] existingByteArray = existingItem.getRaw();
+                            System.arraycopy(currentItemByteArray, 0, existingByteArray, elementOffset, currentItemByteArray.length);
                         }
-                        List<? extends PlcValue> currentItems = value.getList();
-                        int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
-                        for(int i = 0; i < currentS7Tag.getNumberOfElements(); i++) {
-                            existingItems.set(i + elementOffset, currentItems.get(i));
+                        // Merge typical list-type responses.
+                        else {
+                            List<PlcValue> existingItems;
+                            if (tagValues.containsKey(tagName)) {
+                                ResponseItem<PlcValue> existingTagItem = tagValues.get(tagName);
+                                existingItems = (List<PlcValue>) existingTagItem.getValue().getList();
+                            } else {
+                                existingItems = new ArrayList<>(Arrays.asList(new PlcValue[globalS7Tag.getNumberOfElements()]));
+                                PlcListModifiable mergedValue = new PlcListModifiable(existingItems);
+                                tagValues.put(tagName, new ResponseItem<>(responseCode, mergedValue));
+                            }
+                            List<? extends PlcValue> currentItems = value.getList();
+                            int elementOffset = (currentS7Tag.getByteOffset() - globalS7Tag.getByteOffset()) / globalS7Tag.getDataType().getSizeInBytes();
+                            for (int i = 0; i < currentS7Tag.getNumberOfElements(); i++) {
+                                existingItems.set(i + elementOffset, currentItems.get(i));
+                            }
                         }
                     } else {
                         tagValues.put(tagName, new ResponseItem<>(responseCode, value));
