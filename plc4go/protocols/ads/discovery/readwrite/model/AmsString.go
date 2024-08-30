@@ -130,7 +130,7 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (text)
-	_text, _textErr := readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), "UTF-8")
+	_text, _textErr := readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), utils.WithEncoding("UTF-8"))
 	if _textErr != nil {
 		return nil, errors.Wrap(_textErr, "Error parsing 'text' field of AmsString")
 	}
@@ -190,7 +190,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Simple Field (text)
 	text := string(m.GetText())
-	_textErr := writeBuffer.WriteString("text", uint32((8)*((uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-(1))), "UTF-8", (text))
+	_textErr := writeBuffer.WriteString("text", uint32((8)*((uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-(1))), (text), utils.WithEncoding("UTF-8)"))
 	if _textErr != nil {
 		return errors.Wrap(_textErr, "Error serializing 'text' field")
 	}

@@ -142,7 +142,7 @@ func IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Simple Field (firmwareVersion)
-	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(64), "UTF-8")
+	_firmwareVersion, _firmwareVersionErr := readBuffer.ReadString("firmwareVersion", uint32(64), utils.WithEncoding("UTF-8"))
 	if _firmwareVersionErr != nil {
 		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field of IdentifyReplyCommandFirmwareVersion")
 	}
@@ -183,7 +183,7 @@ func (m *_IdentifyReplyCommandFirmwareVersion) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (firmwareVersion)
 		firmwareVersion := string(m.GetFirmwareVersion())
-		_firmwareVersionErr := writeBuffer.WriteString("firmwareVersion", uint32(64), "UTF-8", (firmwareVersion))
+		_firmwareVersionErr := writeBuffer.WriteString("firmwareVersion", uint32(64), (firmwareVersion), utils.WithEncoding("UTF-8)"))
 		if _firmwareVersionErr != nil {
 			return errors.Wrap(_firmwareVersionErr, "Error serializing 'firmwareVersion' field")
 		}

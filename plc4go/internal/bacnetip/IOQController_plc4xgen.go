@@ -48,26 +48,26 @@ func (d *IOQController) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	{
 		_value := fmt.Sprintf("%v", d.state)
 
-		if err := writeBuffer.WriteString("state", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("state", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.activeIOCB)
 
-		if err := writeBuffer.WriteString("activeIOCB", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("activeIOCB", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.ioQueue)
 
-		if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteString("waitTime", uint32(len(d.waitTime.String())*8), "UTF-8", d.waitTime.String()); err != nil {
+	if err := writeBuffer.WriteString("waitTime", uint32(len(d.waitTime.String())*8), d.waitTime.String()); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("IOQController"); err != nil {

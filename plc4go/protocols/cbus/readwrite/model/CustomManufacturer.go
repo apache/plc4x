@@ -118,7 +118,7 @@ func CustomManufacturerParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Simple Field (customString)
-	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), "UTF-8")
+	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), utils.WithEncoding("UTF-8"))
 	if _customStringErr != nil {
 		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomManufacturer")
 	}
@@ -154,7 +154,7 @@ func (m *_CustomManufacturer) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Simple Field (customString)
 	customString := string(m.GetCustomString())
-	_customStringErr := writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), "UTF-8", (customString))
+	_customStringErr := writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), (customString), utils.WithEncoding("UTF-8)"))
 	if _customStringErr != nil {
 		return errors.Wrap(_customStringErr, "Error serializing 'customString' field")
 	}

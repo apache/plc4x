@@ -770,7 +770,6 @@ func Test_jsonWriteBuffer_WriteString(t *testing.T) {
 	type args struct {
 		logicalName string
 		bitLength   uint32
-		encoding    string
 		value       string
 		writerArgs  []WithWriterArgs
 	}
@@ -796,7 +795,7 @@ func Test_jsonWriteBuffer_WriteString(t *testing.T) {
 				doRenderAttr:  tt.fields.doRenderAttr,
 				pos:           tt.fields.pos,
 			}
-			tt.wantErr(t, j.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.encoding, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.encoding, tt.args.value, tt.args.writerArgs))
+			tt.wantErr(t, j.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs))
 		})
 	}
 }

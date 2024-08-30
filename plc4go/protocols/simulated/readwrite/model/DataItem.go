@@ -373,7 +373,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -384,7 +384,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadString("value", uint32(8), "UTF-8")
+			_item, _itemErr := readBuffer.ReadString("value", uint32(8), utils.WithEncoding("UTF-8"))
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -395,7 +395,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -406,7 +406,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(numberOfValues); i++ {
-			_item, _itemErr := readBuffer.ReadString("value", uint32(16), "UTF-16")
+			_item, _itemErr := readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16"))
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -417,7 +417,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcList(value), nil
 	case dataType == "STRING": // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(255), "UTF-8")
+		value, _valueErr := readBuffer.ReadString("value", uint32(255), utils.WithEncoding("UTF-8"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -426,7 +426,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 		return values.NewPlcSTRING(value), nil
 	case dataType == "WSTRING": // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(255), "UTF-16")
+		value, _valueErr := readBuffer.ReadString("value", uint32(255), utils.WithEncoding("UTF-16"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -656,38 +656,38 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case dataType == "CHAR" && numberOfValues == uint16(1): // CHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(8), "UTF-8", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "CHAR": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteString("", uint32(8), "UTF-8", value.GetIndex(i).GetString())
+			_itemErr := writeBuffer.WriteString("", uint32(8), value.GetIndex(i).GetString(), utils.WithEncoding("UTF-8)"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "WCHAR" && numberOfValues == uint16(1): // WCHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WCHAR": // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.NumberOfValues); i++ {
-			_itemErr := writeBuffer.WriteString("", uint32(16), "UTF-16", value.GetIndex(i).GetString())
+			_itemErr := writeBuffer.WriteString("", uint32(16), value.GetIndex(i).GetString(), utils.WithEncoding("UTF-16)"))
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case dataType == "STRING": // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-8", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF-8)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case dataType == "WSTRING": // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(255), "UTF-16", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(255), value.GetString(), utils.WithEncoding("UTF-16)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default:

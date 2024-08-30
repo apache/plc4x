@@ -43,7 +43,7 @@ func (d *DefaultPlcSubscriptionHandle) SerializeWithWriteBuffer(ctx context.Cont
 		return err
 	}
 
-	if err := writeBuffer.WriteString("uuid", uint32(len(d.uuid.String())*8), "UTF-8", d.uuid.String()); err != nil {
+	if err := writeBuffer.WriteString("uuid", uint32(len(d.uuid.String())*8), d.uuid.String()); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("PlcSubscriptionHandle"); err != nil {

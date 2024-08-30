@@ -60,7 +60,7 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.lastReceived.Load())
-			if err := writeBuffer.WriteString("lastReceived", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("lastReceived", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -79,7 +79,7 @@ func (d *worker) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 	}
 
 	_interrupter_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.interrupter))
-	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), "UTF-8", _interrupter_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), _interrupter_plx4gen_description); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("worker"); err != nil {

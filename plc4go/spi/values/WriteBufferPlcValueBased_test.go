@@ -758,7 +758,6 @@ func Test_writeBufferPlcValueBased_WriteString(t *testing.T) {
 	type args struct {
 		logicalName string
 		bitLength   uint32
-		in2         string
 		value       string
 		in4         []utils.WithWriterArgs
 	}
@@ -781,7 +780,7 @@ func Test_writeBufferPlcValueBased_WriteString(t *testing.T) {
 				rootNode:      tt.fields.rootNode,
 				pos:           tt.fields.pos,
 			}
-			tt.wantErr(t, p.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.in4...), fmt.Sprintf("WriteString(%v, %v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.in4))
+			tt.wantErr(t, p.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.in4...), fmt.Sprintf("WriteString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.in4))
 		})
 	}
 }

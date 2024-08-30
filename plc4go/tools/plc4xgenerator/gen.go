@@ -436,7 +436,7 @@ func (g *Generator) generate(typeName string) {
 				g.Printf("\t\t\t}\n")
 				g.Printf("\t\t} else {\n")
 				g.Printf("\t\t\telemAsString := fmt.Sprintf(\"%%v\", elem)\n")
-				g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), \"UTF-8\", elemAsString); err != nil {\n")
+				g.Printf("\t\t\tif err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {\n")
 				g.Printf("\t\t\t\treturn err\n")
 				g.Printf("\t\t\t}\n")
 				g.Printf("\t\t}\n")
@@ -639,7 +639,7 @@ var serializableFieldTemplate = `
 			}
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[1]s)
-			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString(%[2]s, uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -661,7 +661,7 @@ var atomicPointerFieldTemplate = `
 			}
 		} else {
 			stringValue := fmt.Sprintf("%%v", %[2]s)
-			if err := writeBuffer.WriteString(%[3]s, uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString(%[3]s, uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -705,7 +705,7 @@ var boolFieldSerialize = `
 `
 
 var stringFieldSerialize = `
-	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), "UTF-8", %[1]s); err != nil {
+	if err := writeBuffer.WriteString(%[2]s, uint32(len(%[1]s)*8), %[1]s); err != nil {
 		return err
 	}
 `
@@ -713,7 +713,7 @@ var stringFieldSerialize = `
 var errorFieldSerialize = `
 	if %[1]s != nil {
 		_errString := %[1]s.Error()
-		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
+		if err := writeBuffer.WriteString(%[2]s, uint32(len(_errString)*8), _errString); err != nil {
 			return err
 		}
 	}
@@ -721,7 +721,7 @@ var errorFieldSerialize = `
 
 var chanFieldSerialize = `
 	_%[3]s_plx4gen_description := fmt.Sprintf("%%d element(s)", len(%[1]s))
-    if err := writeBuffer.WriteString(%[2]s, uint32(len(_%[3]s_plx4gen_description)*8), "UTF-8", _%[3]s_plx4gen_description); err != nil {
+    if err := writeBuffer.WriteString(%[2]s, uint32(len(_%[3]s_plx4gen_description)*8), _%[3]s_plx4gen_description); err != nil {
 		return err
 	}
 `

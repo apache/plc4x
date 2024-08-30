@@ -61,7 +61,7 @@ func (d *SecureChannelTransactionManager) SerializeWithWriteBuffer(ctx context.C
 		name := fmt.Sprintf("%v", _name)
 		_value := fmt.Sprintf("%v", elem)
 
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}

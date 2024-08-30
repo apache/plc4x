@@ -59,7 +59,7 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.requestContext)
-			if err := writeBuffer.WriteString("requestContext", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("requestContext", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -78,19 +78,19 @@ func (d *MessageCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.cbusOptions)
-			if err := writeBuffer.WriteString("cbusOptions", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("cbusOptions", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
 	}
 
 	_monitoredMMIs_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.monitoredMMIs))
-	if err := writeBuffer.WriteString("monitoredMMIs", uint32(len(_monitoredMMIs_plx4gen_description)*8), "UTF-8", _monitoredMMIs_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("monitoredMMIs", uint32(len(_monitoredMMIs_plx4gen_description)*8), _monitoredMMIs_plx4gen_description); err != nil {
 		return err
 	}
 
 	_monitoredSALs_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.monitoredSALs))
-	if err := writeBuffer.WriteString("monitoredSALs", uint32(len(_monitoredSALs_plx4gen_description)*8), "UTF-8", _monitoredSALs_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("monitoredSALs", uint32(len(_monitoredSALs_plx4gen_description)*8), _monitoredSALs_plx4gen_description); err != nil {
 		return err
 	}
 

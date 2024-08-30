@@ -163,7 +163,7 @@ func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), "UTF-8")
+	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
 	if _numberErr != nil {
 		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRinging")
 	}
@@ -219,7 +219,7 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (number)
 		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), "UTF-8", (number))
+		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
 		if _numberErr != nil {
 			return errors.Wrap(_numberErr, "Error serializing 'number' field")
 		}

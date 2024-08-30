@@ -694,7 +694,7 @@ func (s salTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), "UTF-8", s.salCommand); err != nil {
+	if err := writeBuffer.WriteString("salCommand", uint32(len(s.salCommand)*8), s.salCommand); err != nil {
 		return err
 	}
 

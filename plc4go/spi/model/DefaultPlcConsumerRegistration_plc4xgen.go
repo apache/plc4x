@@ -65,7 +65,7 @@ func (d *DefaultPlcConsumerRegistration) SerializeWithWriteBuffer(ctx context.Co
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}

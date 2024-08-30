@@ -202,7 +202,7 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = paddingByte
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), "UTF-8")
+	_address, _addressErr := readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), utils.WithEncoding("UTF-8"))
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of PortSegmentExtended")
 	}
@@ -263,7 +263,7 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (address)
 		address := string(m.GetAddress())
-		_addressErr := writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), "UTF-8", (address))
+		_addressErr := writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), (address), utils.WithEncoding("UTF-8)"))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

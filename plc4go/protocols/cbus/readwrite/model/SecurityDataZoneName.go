@@ -159,7 +159,7 @@ func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.R
 	zoneNumber := _zoneNumber
 
 	// Simple Field (zoneName)
-	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88), "UTF-8")
+	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88), utils.WithEncoding("UTF-8"))
 	if _zoneNameErr != nil {
 		return nil, errors.Wrap(_zoneNameErr, "Error parsing 'zoneName' field of SecurityDataZoneName")
 	}
@@ -206,7 +206,7 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (zoneName)
 		zoneName := string(m.GetZoneName())
-		_zoneNameErr := writeBuffer.WriteString("zoneName", uint32(88), "UTF-8", (zoneName))
+		_zoneNameErr := writeBuffer.WriteString("zoneName", uint32(88), (zoneName), utils.WithEncoding("UTF-8)"))
 		if _zoneNameErr != nil {
 			return errors.Wrap(_zoneNameErr, "Error serializing 'zoneName' field")
 		}

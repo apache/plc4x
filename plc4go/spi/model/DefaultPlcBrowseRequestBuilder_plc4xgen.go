@@ -46,7 +46,7 @@ func (d *DefaultPlcBrowseRequestBuilder) SerializeWithWriteBuffer(ctx context.Co
 		return err
 	}
 	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}
@@ -59,7 +59,7 @@ func (d *DefaultPlcBrowseRequestBuilder) SerializeWithWriteBuffer(ctx context.Co
 	for _name, elem := range d.queryStrings {
 		name := _name
 
-		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}

@@ -221,7 +221,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	}
 
 	// Simple Field (magicKey)
-	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), "UTF-8")
+	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), utils.WithEncoding("UTF-8"))
 	if _magicKeyErr != nil {
 		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
@@ -325,7 +325,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 
 		// Simple Field (magicKey)
 		magicKey := string(m.GetMagicKey())
-		_magicKeyErr := writeBuffer.WriteString("magicKey", uint32(64), "UTF-8", (magicKey))
+		_magicKeyErr := writeBuffer.WriteString("magicKey", uint32(64), (magicKey), utils.WithEncoding("UTF-8)"))
 		if _magicKeyErr != nil {
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}

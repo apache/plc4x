@@ -64,7 +64,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -91,7 +91,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -113,7 +113,7 @@ func (d *DefaultPlcSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Con
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.subscriber)
-			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("subscriber", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}

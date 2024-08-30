@@ -56,17 +56,17 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.Tag)
-			if err := writeBuffer.WriteString("tag", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("tag", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
 	}
 
-	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), "UTF-8", d.Name); err != nil {
+	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), d.Name); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("dataTypeName", uint32(len(d.DataTypeName)*8), "UTF-8", d.DataTypeName); err != nil {
+	if err := writeBuffer.WriteString("dataTypeName", uint32(len(d.DataTypeName)*8), d.DataTypeName); err != nil {
 		return err
 	}
 
@@ -100,7 +100,7 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -127,7 +127,7 @@ func (d *DefaultPlcBrowseItem) SerializeWithWriteBuffer(ctx context.Context, wri
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}

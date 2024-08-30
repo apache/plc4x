@@ -149,7 +149,7 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadString("", uint32(8), "UTF-8")
+			_item, _err := readBuffer.ReadString("", uint32(8), utils.WithEncoding("UTF-8"))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'value' field of XmlElement")
 			}
@@ -201,7 +201,7 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 	for _curItem, _element := range m.GetValue() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteString("", uint32(8), "UTF-8", _element)
+		_elementErr := writeBuffer.WriteString("", uint32(8), _element, utils.WithEncoding("UTF-8)"))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'value' field")
 		}

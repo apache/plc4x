@@ -43,32 +43,32 @@ func (d *ConnectionMetadata) SerializeWithWriteBuffer(ctx context.Context, write
 		return err
 	}
 
-	if err := writeBuffer.WriteString("knxMedium", uint32(len(d.KnxMedium.String())*8), "UTF-8", d.KnxMedium.String()); err != nil {
+	if err := writeBuffer.WriteString("knxMedium", uint32(len(d.KnxMedium.String())*8), d.KnxMedium.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("gatewayName", uint32(len(d.GatewayName)*8), "UTF-8", d.GatewayName); err != nil {
+	if err := writeBuffer.WriteString("gatewayName", uint32(len(d.GatewayName)*8), d.GatewayName); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("gatewayKnxAddress", uint32(len(d.GatewayKnxAddress)*8), "UTF-8", d.GatewayKnxAddress); err != nil {
+	if err := writeBuffer.WriteString("gatewayKnxAddress", uint32(len(d.GatewayKnxAddress)*8), d.GatewayKnxAddress); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("clientKnxAddress", uint32(len(d.ClientKnxAddress)*8), "UTF-8", d.ClientKnxAddress); err != nil {
+	if err := writeBuffer.WriteString("clientKnxAddress", uint32(len(d.ClientKnxAddress)*8), d.ClientKnxAddress); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.ProjectNumber)
 
-		if err := writeBuffer.WriteString("projectNumber", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("projectNumber", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.InstallationNumber)
 
-		if err := writeBuffer.WriteString("installationNumber", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("installationNumber", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -85,7 +85,7 @@ func (d *ConnectionMetadata) SerializeWithWriteBuffer(ctx context.Context, write
 		return err
 	}
 	for _, elem := range d.SupportedServices {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}

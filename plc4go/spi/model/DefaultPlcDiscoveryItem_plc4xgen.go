@@ -43,11 +43,11 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 
-	if err := writeBuffer.WriteString("protocolCode", uint32(len(d.ProtocolCode)*8), "UTF-8", d.ProtocolCode); err != nil {
+	if err := writeBuffer.WriteString("protocolCode", uint32(len(d.ProtocolCode)*8), d.ProtocolCode); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("transportCode", uint32(len(d.TransportCode)*8), "UTF-8", d.TransportCode); err != nil {
+	if err := writeBuffer.WriteString("transportCode", uint32(len(d.TransportCode)*8), d.TransportCode); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("options", utils.WithRenderAsList(true)); err != nil {
@@ -57,7 +57,7 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 		name := _name
 		_value := fmt.Sprintf("%v", elem)
 
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -65,7 +65,7 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 
-	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), "UTF-8", d.Name); err != nil {
+	if err := writeBuffer.WriteString("name", uint32(len(d.Name)*8), d.Name); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("attributes", utils.WithRenderAsList(true)); err != nil {
@@ -87,7 +87,7 @@ func (d *DefaultPlcDiscoveryItem) SerializeWithWriteBuffer(ctx context.Context, 
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}

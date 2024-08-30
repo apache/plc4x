@@ -43,13 +43,13 @@ func (d *IOController) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), "UTF-8", d.name); err != nil {
+	if err := writeBuffer.WriteString("name", uint32(len(d.name)*8), d.name); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.requirements)
 
-		if err := writeBuffer.WriteString("requirements", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("requirements", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}

@@ -45,14 +45,14 @@ func (d *plcConnectionConnectResult) SerializeWithWriteBuffer(ctx context.Contex
 	{
 		_value := fmt.Sprintf("%v", d.connection)
 
-		if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("connection", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 
 	if d.err != nil {
 		_errString := d.err.Error()
-		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), _errString); err != nil {
 			return err
 		}
 	}

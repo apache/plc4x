@@ -419,7 +419,7 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	numChildren := _numChildren
 
 	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), "UTF-8")
+	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _dataTypeNameErr != nil {
 		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsDataTypeTableEntry")
 	}
@@ -435,7 +435,7 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (simpleTypeName)
-	_simpleTypeName, _simpleTypeNameErr := readBuffer.ReadString("simpleTypeName", uint32((simpleTypeNameLength)*(8)), "UTF-8")
+	_simpleTypeName, _simpleTypeNameErr := readBuffer.ReadString("simpleTypeName", uint32((simpleTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _simpleTypeNameErr != nil {
 		return nil, errors.Wrap(_simpleTypeNameErr, "Error parsing 'simpleTypeName' field of AdsDataTypeTableEntry")
 	}
@@ -451,7 +451,7 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (comment)
-	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), "UTF-8")
+	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _commentErr != nil {
 		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsDataTypeTableEntry")
 	}
@@ -661,7 +661,7 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (dataTypeName)
 	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), "UTF-8", (dataTypeName))
+	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
 	if _dataTypeNameErr != nil {
 		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
@@ -674,7 +674,7 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (simpleTypeName)
 	simpleTypeName := string(m.GetSimpleTypeName())
-	_simpleTypeNameErr := writeBuffer.WriteString("simpleTypeName", uint32((uint16(len(m.GetSimpleTypeName())))*(8)), "UTF-8", (simpleTypeName))
+	_simpleTypeNameErr := writeBuffer.WriteString("simpleTypeName", uint32((uint16(len(m.GetSimpleTypeName())))*(8)), (simpleTypeName), utils.WithEncoding("UTF-8)"))
 	if _simpleTypeNameErr != nil {
 		return errors.Wrap(_simpleTypeNameErr, "Error serializing 'simpleTypeName' field")
 	}
@@ -687,7 +687,7 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (comment)
 	comment := string(m.GetComment())
-	_commentErr := writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), "UTF-8", (comment))
+	_commentErr := writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
 	if _commentErr != nil {
 		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
 	}

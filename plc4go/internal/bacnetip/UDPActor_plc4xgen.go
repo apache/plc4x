@@ -45,7 +45,7 @@ func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	{
 		_value := fmt.Sprintf("%v", d.director)
 
-		if err := writeBuffer.WriteString("director", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("director", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -56,12 +56,12 @@ func (d *UDPActor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	{
 		_value := fmt.Sprintf("%v", d.timer)
 
-		if err := writeBuffer.WriteString("timer", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("timer", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 
-	if err := writeBuffer.WriteString("peer", uint32(len(d.peer)*8), "UTF-8", d.peer); err != nil {
+	if err := writeBuffer.WriteString("peer", uint32(len(d.peer)*8), d.peer); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("UDPActor"); err != nil {

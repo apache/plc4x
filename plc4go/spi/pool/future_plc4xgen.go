@@ -72,7 +72,7 @@ func (d *future) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.err.Load())
-			if err := writeBuffer.WriteString("err", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("err", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}

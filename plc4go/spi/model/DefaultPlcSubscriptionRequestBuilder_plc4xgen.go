@@ -46,7 +46,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 		return err
 	}
 	for _, elem := range d.tagNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}
@@ -59,7 +59,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 	for _name, elem := range d.tagAddresses {
 		name := _name
 
-		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}
@@ -85,7 +85,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -112,7 +112,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -139,7 +139,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}
@@ -154,7 +154,7 @@ func (d *DefaultPlcSubscriptionRequestBuilder) SerializeWithWriteBuffer(ctx cont
 		name := _name
 		_value := fmt.Sprintf("%v", elem)
 
-		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString(name, uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}

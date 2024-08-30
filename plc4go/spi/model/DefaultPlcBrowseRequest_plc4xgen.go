@@ -56,7 +56,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.browser)
-			if err := writeBuffer.WriteString("browser", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("browser", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -65,7 +65,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		return err
 	}
 	for _, elem := range d.queryNames {
-		if err := writeBuffer.WriteString("", uint32(len(elem)*8), "UTF-8", elem); err != nil {
+		if err := writeBuffer.WriteString("", uint32(len(elem)*8), elem); err != nil {
 			return err
 		}
 	}
@@ -91,7 +91,7 @@ func (d *DefaultPlcBrowseRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}

@@ -180,7 +180,7 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	_ = currentPos
 
 	// Simple Field (volts)
-	_volts, _voltsErr := readBuffer.ReadString("volts", uint32(16), "UTF-8")
+	_volts, _voltsErr := readBuffer.ReadString("volts", uint32(16), utils.WithEncoding("UTF-8"))
 	if _voltsErr != nil {
 		return nil, errors.Wrap(_voltsErr, "Error parsing 'volts' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -196,7 +196,7 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	}
 
 	// Simple Field (voltsDecimalPlace)
-	_voltsDecimalPlace, _voltsDecimalPlaceErr := readBuffer.ReadString("voltsDecimalPlace", uint32(16), "UTF-8")
+	_voltsDecimalPlace, _voltsDecimalPlaceErr := readBuffer.ReadString("voltsDecimalPlace", uint32(16), utils.WithEncoding("UTF-8"))
 	if _voltsDecimalPlaceErr != nil {
 		return nil, errors.Wrap(_voltsDecimalPlaceErr, "Error parsing 'voltsDecimalPlace' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -247,7 +247,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (volts)
 		volts := string(m.GetVolts())
-		_voltsErr := writeBuffer.WriteString("volts", uint32(16), "UTF-8", (volts))
+		_voltsErr := writeBuffer.WriteString("volts", uint32(16), (volts), utils.WithEncoding("UTF-8)"))
 		if _voltsErr != nil {
 			return errors.Wrap(_voltsErr, "Error serializing 'volts' field")
 		}
@@ -260,7 +260,7 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (voltsDecimalPlace)
 		voltsDecimalPlace := string(m.GetVoltsDecimalPlace())
-		_voltsDecimalPlaceErr := writeBuffer.WriteString("voltsDecimalPlace", uint32(16), "UTF-8", (voltsDecimalPlace))
+		_voltsDecimalPlaceErr := writeBuffer.WriteString("voltsDecimalPlace", uint32(16), (voltsDecimalPlace), utils.WithEncoding("UTF-8)"))
 		if _voltsDecimalPlaceErr != nil {
 			return errors.Wrap(_voltsDecimalPlaceErr, "Error serializing 'voltsDecimalPlace' field")
 		}

@@ -438,7 +438,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (productName)
-	_productName, _productNameErr := readBuffer.ReadString("productName", uint32((productNameLength)*(8)), "UTF-8")
+	_productName, _productNameErr := readBuffer.ReadString("productName", uint32((productNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _productNameErr != nil {
 		return nil, errors.Wrap(_productNameErr, "Error parsing 'productName' field of CipIdentity")
 	}
@@ -607,7 +607,7 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (productName)
 		productName := string(m.GetProductName())
-		_productNameErr := writeBuffer.WriteString("productName", uint32((uint8(len(m.GetProductName())))*(8)), "UTF-8", (productName))
+		_productNameErr := writeBuffer.WriteString("productName", uint32((uint8(len(m.GetProductName())))*(8)), (productName), utils.WithEncoding("UTF-8)"))
 		if _productNameErr != nil {
 			return errors.Wrap(_productNameErr, "Error serializing 'productName' field")
 		}

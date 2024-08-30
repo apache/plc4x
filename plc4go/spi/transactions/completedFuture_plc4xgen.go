@@ -45,7 +45,7 @@ func (d *completedFuture) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	if d.err != nil {
 		_errString := d.err.Error()
-		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), _errString); err != nil {
 			return err
 		}
 	}

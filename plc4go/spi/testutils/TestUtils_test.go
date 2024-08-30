@@ -54,7 +54,7 @@ func (A *ASerializable) Serialize() ([]byte, error) {
 }
 
 func (A *ASerializable) SerializeWithWriteBuffer(_ context.Context, writeBuffer utils.WriteBuffer) error {
-	_ = writeBuffer.WriteString("a", 8, "UTF-8", A.a)
+	_ = writeBuffer.WriteString("a", 8, A.a)
 	_ = writeBuffer.WriteInt64("b", 64, int64(A.b))
 	_ = writeBuffer.WriteFloat32("c", 32, A.c)
 	return nil

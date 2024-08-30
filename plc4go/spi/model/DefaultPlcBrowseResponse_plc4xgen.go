@@ -56,13 +56,13 @@ func (d *DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context,
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.request)
-			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("request", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
 	}
 
-	if err := writeBuffer.WriteString("responseCode", uint32(len(d.responseCode.String())*8), "UTF-8", d.responseCode.String()); err != nil {
+	if err := writeBuffer.WriteString("responseCode", uint32(len(d.responseCode.String())*8), d.responseCode.String()); err != nil {
 		return err
 	}
 	if err := writeBuffer.PushContext("results", utils.WithRenderAsList(true)); err != nil {
@@ -84,7 +84,7 @@ func (d *DefaultPlcBrowseResponse) SerializeWithWriteBuffer(ctx context.Context,
 			}
 		} else {
 			elemAsString := fmt.Sprintf("%v", elem)
-			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), "UTF-8", elemAsString); err != nil {
+			if err := writeBuffer.WriteString(name, uint32(len(elemAsString)*8), elemAsString); err != nil {
 				return err
 			}
 		}

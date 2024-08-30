@@ -26,6 +26,7 @@ import (
 
 type WriteBuffer interface {
 	PositionAware
+	ByteOrderAware
 	// PushContext signals opening context with the supplied logical name
 	PushContext(logicalName string, writerArgs ...WithWriterArgs) error
 	WriteBit(logicalName string, value bool, writerArgs ...WithWriterArgs) error
@@ -43,7 +44,7 @@ type WriteBuffer interface {
 	WriteFloat32(logicalName string, bitLength uint8, value float32, writerArgs ...WithWriterArgs) error
 	WriteFloat64(logicalName string, bitLength uint8, value float64, writerArgs ...WithWriterArgs) error
 	WriteBigFloat(logicalName string, bitLength uint8, value *big.Float, writerArgs ...WithWriterArgs) error
-	WriteString(logicalName string, bitLength uint32, encoding string, value string, writerArgs ...WithWriterArgs) error
+	WriteString(logicalName string, bitLength uint32, value string, writerArgs ...WithWriterArgs) error
 	WriteVirtual(ctx context.Context, logicalName string, value any, writerArgs ...WithWriterArgs) error
 	WriteSerializable(ctx context.Context, serializable Serializable) error
 	// PopContext signals work done with the context with the supplied logical name

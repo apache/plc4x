@@ -56,7 +56,7 @@ func (d *DeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.DeviceIdentifier)
-			if err := writeBuffer.WriteString("deviceIdentifier", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("deviceIdentifier", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -64,34 +64,34 @@ func (d *DeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	{
 		_value := fmt.Sprintf("%v", d.Address)
 
-		if err := writeBuffer.WriteString("address", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("address", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	if d.MaximumApduLengthAccepted != nil {
-		if err := writeBuffer.WriteString("maximumApduLengthAccepted", uint32(len(d.MaximumApduLengthAccepted.String())*8), "UTF-8", d.MaximumApduLengthAccepted.String()); err != nil {
+		if err := writeBuffer.WriteString("maximumApduLengthAccepted", uint32(len(d.MaximumApduLengthAccepted.String())*8), d.MaximumApduLengthAccepted.String()); err != nil {
 			return err
 		}
 	}
 	if d.SegmentationSupported != nil {
-		if err := writeBuffer.WriteString("segmentationSupported", uint32(len(d.SegmentationSupported.String())*8), "UTF-8", d.SegmentationSupported.String()); err != nil {
+		if err := writeBuffer.WriteString("segmentationSupported", uint32(len(d.SegmentationSupported.String())*8), d.SegmentationSupported.String()); err != nil {
 			return err
 		}
 	}
 	if d.MaxSegmentsAccepted != nil {
-		if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(d.MaxSegmentsAccepted.String())*8), "UTF-8", d.MaxSegmentsAccepted.String()); err != nil {
+		if err := writeBuffer.WriteString("maxSegmentsAccepted", uint32(len(d.MaxSegmentsAccepted.String())*8), d.MaxSegmentsAccepted.String()); err != nil {
 			return err
 		}
 	}
 	if d.VendorId != nil {
-		if err := writeBuffer.WriteString("vendorId", uint32(len(d.VendorId.String())*8), "UTF-8", d.VendorId.String()); err != nil {
+		if err := writeBuffer.WriteString("vendorId", uint32(len(d.VendorId.String())*8), d.VendorId.String()); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.MaximumNpduLength)
 
-		if err := writeBuffer.WriteString("maximumNpduLength", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("maximumNpduLength", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -102,7 +102,7 @@ func (d *DeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	{
 		_value := fmt.Sprintf("%v", d._cacheKey)
 
-		if err := writeBuffer.WriteString("_cacheKey", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("_cacheKey", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}

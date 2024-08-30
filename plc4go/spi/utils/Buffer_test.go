@@ -182,7 +182,7 @@ func Test_readerWriterArg_isWriterArgs(t *testing.T) {
 				WithReaderArgs: tt.fields.readerArg,
 				WithWriterArgs: tt.fields.writerArg,
 			}
-			assert.Equalf(t, tt.want, re.isWriterArgs(), "isWriterArgs()")
+			assert.Equalf(t, tt.want, re.isWriterArgs(), "IsWriterArgs()")
 		})
 	}
 }

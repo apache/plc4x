@@ -166,7 +166,7 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (symbol)
-	_symbol, _symbolErr := readBuffer.ReadString("symbol", uint32((dataSize)*(8)), "UTF-8")
+	_symbol, _symbolErr := readBuffer.ReadString("symbol", uint32((dataSize)*(8)), utils.WithEncoding("UTF-8"))
 	if _symbolErr != nil {
 		return nil, errors.Wrap(_symbolErr, "Error parsing 'symbol' field of AnsiExtendedSymbolSegment")
 	}
@@ -229,7 +229,7 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (symbol)
 		symbol := string(m.GetSymbol())
-		_symbolErr := writeBuffer.WriteString("symbol", uint32((uint8(len(m.GetSymbol())))*(8)), "UTF-8", (symbol))
+		_symbolErr := writeBuffer.WriteString("symbol", uint32((uint8(len(m.GetSymbol())))*(8)), (symbol), utils.WithEncoding("UTF-8)"))
 		if _symbolErr != nil {
 			return errors.Wrap(_symbolErr, "Error serializing 'symbol' field")
 		}

@@ -93,12 +93,12 @@ func (m plcTag) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		return err
 	}
 
-	if err := writeBuffer.WriteString("node", uint32(len([]rune(m.Tag))*8), "UTF-8", m.Tag); err != nil {
+	if err := writeBuffer.WriteString("node", uint32(len([]rune(m.Tag))*8), m.Tag); err != nil {
 		return err
 	}
 
 	if m.Type != 0 {
-		if err := writeBuffer.WriteString("type", uint32(len([]rune(m.Type.String()))*8), "UTF-8", m.Type.String()); err != nil {
+		if err := writeBuffer.WriteString("type", uint32(len([]rune(m.Type.String()))*8), m.Type.String()); err != nil {
 			return err
 		}
 	}

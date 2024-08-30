@@ -22,7 +22,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.commons.text.CaseUtils;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.definitions.DefaultArgument;
-import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.*;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultBooleanTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultByteOrderTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultFloatTypeReference;
+import org.apache.plc4x.plugins.codegenerator.language.mspec.model.references.DefaultIntegerTypeReference;
 import org.apache.plc4x.plugins.codegenerator.language.mspec.model.terms.DefaultStringLiteral;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.BaseFreemarkerLanguageTemplateHelper;
 import org.apache.plc4x.plugins.codegenerator.protocol.freemarker.FreemarkerException;
@@ -379,7 +382,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), \"" + encoding + "\")";
+                return "readBuffer.ReadString(\"" + logicalName + "\", uint32(" + length + "), utils.WithEncoding(\"" + encoding + "\"))";
             }
             case VSTRING: {
                 String encoding = "UTF-8";
@@ -397,7 +400,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 } else {
                     lengthExpression = "uint32(" + lengthExpression + ")";
                 }
-                return "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", \"" + encoding + "\")";
+                return "readBuffer.ReadString(\"" + logicalName + "\", " + lengthExpression + ", utils.WithEncoding(\"" + encoding + "\"))";
             }
             case TIME:
             case DATE:
@@ -493,8 +496,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                         .orElseThrow(() -> new FreemarkerException("Encoding must be a quoted string value")).getValue();
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteString(\"" + logicalName + "\", uint32(" + length + "), " + fieldName + writerArgsString + ", utils.WithEncoding(\"" + encoding + ")\"))";
             }
             case VSTRING: {
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
@@ -513,8 +515,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                     lengthExpression = "uint32(" + lengthExpression + ")";
                 }
                 String length = Integer.toString(simpleTypeReference.getSizeInBits());
-                return "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", \"" +
-                    encoding + "\", " + fieldName + writerArgsString + ")";
+                return "writeBuffer.WriteString(\"" + logicalName + "\", " + lengthExpression + ", " + fieldName + writerArgsString +  ", utils.WithEncoding(\"" + encoding + ")\"))";
             }
             case DATE:
             case TIME:

@@ -149,7 +149,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = stringLength
 
 	// Simple Field (stringValue)
-	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), "UTF-8")
+	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _stringValueErr != nil {
 		return nil, errors.Wrap(_stringValueErr, "Error parsing 'stringValue' field of PascalString")
 	}
@@ -197,7 +197,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (stringValue)
 	stringValue := string(m.GetStringValue())
-	_stringValueErr := writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), "UTF-8", (stringValue))
+	_stringValueErr := writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), (stringValue), utils.WithEncoding("UTF-8)"))
 	if _stringValueErr != nil {
 		return errors.Wrap(_stringValueErr, "Error serializing 'stringValue' field")
 	}

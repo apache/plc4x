@@ -48,7 +48,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	{
 		_value := fmt.Sprintf("%v", d.messageCodec)
 
-		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -71,7 +71,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}
@@ -81,40 +81,40 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("configuration", uint32(len(d.configuration.String())*8), "UTF-8", d.configuration.String()); err != nil {
+	if err := writeBuffer.WriteString("configuration", uint32(len(d.configuration.String())*8), d.configuration.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("driverContext", uint32(len(d.driverContext.String())*8), "UTF-8", d.driverContext.String()); err != nil {
+	if err := writeBuffer.WriteString("driverContext", uint32(len(d.driverContext.String())*8), d.driverContext.String()); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.channel)
 
-		if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("channel", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 
 	_connectEvent_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.connectEvent))
-	if err := writeBuffer.WriteString("connectEvent", uint32(len(_connectEvent_plx4gen_description)*8), "UTF-8", _connectEvent_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("connectEvent", uint32(len(_connectEvent_plx4gen_description)*8), _connectEvent_plx4gen_description); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("connectTimeout", uint32(len(d.connectTimeout.String())*8), "UTF-8", d.connectTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("connectTimeout", uint32(len(d.connectTimeout.String())*8), d.connectTimeout.String()); err != nil {
 		return err
 	}
 
 	_disconnectEvent_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.disconnectEvent))
-	if err := writeBuffer.WriteString("disconnectEvent", uint32(len(_disconnectEvent_plx4gen_description)*8), "UTF-8", _disconnectEvent_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("disconnectEvent", uint32(len(_disconnectEvent_plx4gen_description)*8), _disconnectEvent_plx4gen_description); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(d.disconnectTimeout.String())*8), "UTF-8", d.disconnectTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("disconnectTimeout", uint32(len(d.disconnectTimeout.String())*8), d.disconnectTimeout.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("connectionId", uint32(len(d.connectionId)*8), "UTF-8", d.connectionId); err != nil {
+	if err := writeBuffer.WriteString("connectionId", uint32(len(d.connectionId)*8), d.connectionId); err != nil {
 		return err
 	}
 
@@ -131,7 +131,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.tracer)
-			if err := writeBuffer.WriteString("tracer", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("tracer", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}

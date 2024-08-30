@@ -141,7 +141,7 @@ func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), "UTF-8")
+	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
 	if _numberErr != nil {
 		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataDivert")
 	}
@@ -180,7 +180,7 @@ func (m *_TelephonyDataDivert) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (number)
 		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), "UTF-8", (number))
+		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (number), utils.WithEncoding("UTF-8)"))
 		if _numberErr != nil {
 			return errors.Wrap(_numberErr, "Error serializing 'number' field")
 		}

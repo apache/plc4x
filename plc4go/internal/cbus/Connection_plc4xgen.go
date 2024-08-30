@@ -46,13 +46,13 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return err
 	}
 
-	if err := writeBuffer.WriteString("alphaGenerator", uint32(len(d.alphaGenerator.String())*8), "UTF-8", d.alphaGenerator.String()); err != nil {
+	if err := writeBuffer.WriteString("alphaGenerator", uint32(len(d.alphaGenerator.String())*8), d.alphaGenerator.String()); err != nil {
 		return err
 	}
 	{
 		_value := fmt.Sprintf("%v", d.messageCodec)
 
-		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("messageCodec", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -75,7 +75,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}
@@ -98,21 +98,21 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.tm)
-			if err := writeBuffer.WriteString("tm", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("tm", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
 	}
 
-	if err := writeBuffer.WriteString("configuration", uint32(len(d.configuration.String())*8), "UTF-8", d.configuration.String()); err != nil {
+	if err := writeBuffer.WriteString("configuration", uint32(len(d.configuration.String())*8), d.configuration.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("driverContext", uint32(len(d.driverContext.String())*8), "UTF-8", d.driverContext.String()); err != nil {
+	if err := writeBuffer.WriteString("driverContext", uint32(len(d.driverContext.String())*8), d.driverContext.String()); err != nil {
 		return err
 	}
 
-	if err := writeBuffer.WriteString("connectionId", uint32(len(d.connectionId)*8), "UTF-8", d.connectionId); err != nil {
+	if err := writeBuffer.WriteString("connectionId", uint32(len(d.connectionId)*8), d.connectionId); err != nil {
 		return err
 	}
 
@@ -129,7 +129,7 @@ func (d *Connection) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.tracer)
-			if err := writeBuffer.WriteString("tracer", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("tracer", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}

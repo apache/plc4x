@@ -61,7 +61,7 @@ func (d *requestTransaction) SerializeWithWriteBuffer(ctx context.Context, write
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", completionFuture)
-			if err := writeBuffer.WriteString("completionFuture", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("completionFuture", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}

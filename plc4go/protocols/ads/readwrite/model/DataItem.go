@@ -183,7 +183,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcLREAL(value), nil
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(8), "Windows-1252")
+		value, _valueErr := readBuffer.ReadString("value", uint32(8), utils.WithEncoding("Windows-1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -192,7 +192,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcCHAR(value), nil
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(16), "UTF-16LE")
+		value, _valueErr := readBuffer.ReadString("value", uint32(16), utils.WithEncoding("UTF-16LE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -201,7 +201,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcWCHAR(value), nil
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)), "Windows-1252")
+		value, _valueErr := readBuffer.ReadString("value", uint32((stringLength)*(8)), utils.WithEncoding("Windows-1252"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -215,7 +215,7 @@ func DataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, p
 		return values.NewPlcSTRING(value), nil
 	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadString("value", uint32(((stringLength)*(8))*(2)), "UTF-16LE")
+		value, _valueErr := readBuffer.ReadString("value", uint32(((stringLength)*(8))*(2)), utils.WithEncoding("UTF-16LE"))
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -407,17 +407,17 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == PlcValueType_CHAR: // CHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(8), "Windows-1252", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(8), value.GetString(), utils.WithEncoding("Windows-1252)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_WCHAR: // WCHAR
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(16), "UTF-16LE", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(16), value.GetString(), utils.WithEncoding("UTF-16LE)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case plcValueType == PlcValueType_STRING: // STRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), "Windows-1252", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32((stringLength)*(8)), value.GetString(), utils.WithEncoding("Windows-1252)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 
@@ -427,7 +427,7 @@ func DataItemSerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.Wri
 		}
 	case plcValueType == PlcValueType_WSTRING: // WSTRING
 		// Simple Field (value)
-		if _err := writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), "UTF-16LE", value.GetString()); _err != nil {
+		if _err := writeBuffer.WriteString("value", uint32(((stringLength)*(8))*(2)), value.GetString(), utils.WithEncoding("UTF-16LE)")); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 

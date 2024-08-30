@@ -55,7 +55,7 @@ func (d *dynamicExecutor) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	}
 
 	_interrupter_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.interrupter))
-	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), "UTF-8", _interrupter_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("interrupter", uint32(len(_interrupter_plx4gen_description)*8), _interrupter_plx4gen_description); err != nil {
 		return err
 	}
 	if err := writeBuffer.PopContext("dynamicExecutor"); err != nil {

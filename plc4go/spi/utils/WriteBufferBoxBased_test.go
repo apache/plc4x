@@ -890,7 +890,6 @@ func Test_boxedWriteBuffer_WriteString(t *testing.T) {
 	type args struct {
 		logicalName string
 		bitLength   uint32
-		in2         string
 		value       string
 		writerArgs  []WithWriterArgs
 	}
@@ -922,7 +921,7 @@ func Test_boxedWriteBuffer_WriteString(t *testing.T) {
 				asciiBoxWriterLight: tt.fields.asciiBoxWriterLight,
 				pos:                 tt.fields.pos,
 			}
-			tt.wantErr(t, b.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.in2, tt.args.value, tt.args.writerArgs))
+			tt.wantErr(t, b.WriteString(tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs...), fmt.Sprintf("WriteString(%v, %v, %v, %v)", tt.args.logicalName, tt.args.bitLength, tt.args.value, tt.args.writerArgs))
 		})
 	}
 }

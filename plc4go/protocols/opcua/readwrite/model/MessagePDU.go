@@ -146,7 +146,7 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadString("messageType", uint32(24), "UTF-8")
+	messageType, _messageTypeErr := readBuffer.ReadString("messageType", uint32(24), utils.WithEncoding("UTF-8"))
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of MessagePDU")
 	}
@@ -228,7 +228,7 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := string(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteString("messageType", uint32(24), "UTF-8", (messageType))
+	_messageTypeErr := writeBuffer.WriteString("messageType", uint32(24), (messageType), utils.WithEncoding("UTF-8)"))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")

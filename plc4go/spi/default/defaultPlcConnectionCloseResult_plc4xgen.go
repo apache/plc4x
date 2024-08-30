@@ -56,7 +56,7 @@ func (d *defaultPlcConnectionCloseResult) SerializeWithWriteBuffer(ctx context.C
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.connection)
-			if err := writeBuffer.WriteString("connection", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("connection", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -64,7 +64,7 @@ func (d *defaultPlcConnectionCloseResult) SerializeWithWriteBuffer(ctx context.C
 
 	if d.err != nil {
 		_errString := d.err.Error()
-		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
+		if err := writeBuffer.WriteString("err", uint32(len(_errString)*8), _errString); err != nil {
 			return err
 		}
 	}
@@ -87,7 +87,7 @@ func (d *defaultPlcConnectionCloseResult) SerializeWithWriteBuffer(ctx context.C
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}

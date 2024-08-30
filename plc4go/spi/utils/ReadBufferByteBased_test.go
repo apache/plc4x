@@ -1566,7 +1566,7 @@ func TestReadBuffer_ReadString(t *testing.T) {
 				pos:       tt.fields.pos,
 				byteOrder: tt.fields.byteOrder,
 			}
-			got, err := rb.ReadString("", tt.args.bitLength, "utf-8")
+			got, err := rb.ReadString("", tt.args.bitLength)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("ReadString() error = %v, wantErr %v", err, tt.wantErr)
 				return

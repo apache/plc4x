@@ -69,7 +69,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}
@@ -80,7 +80,7 @@ func (d *executor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	}
 
 	_workItems_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.workItems))
-	if err := writeBuffer.WriteString("workItems", uint32(len(_workItems_plx4gen_description)*8), "UTF-8", _workItems_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("workItems", uint32(len(_workItems_plx4gen_description)*8), _workItems_plx4gen_description); err != nil {
 		return err
 	}
 

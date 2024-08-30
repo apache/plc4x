@@ -45,31 +45,31 @@ func (d *ApplicationLayerMessageCodec) SerializeWithWriteBuffer(ctx context.Cont
 	{
 		_value := fmt.Sprintf("%v", d.bipSimpleApplication)
 
-		if err := writeBuffer.WriteString("bipSimpleApplication", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("bipSimpleApplication", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.messageCode)
 
-		if err := writeBuffer.WriteString("messageCode", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("messageCode", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.deviceInfoCache)
 
-		if err := writeBuffer.WriteString("deviceInfoCache", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("deviceInfoCache", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	if d.localAddress != nil {
-		if err := writeBuffer.WriteString("localAddress", uint32(len(d.localAddress.String())*8), "UTF-8", d.localAddress.String()); err != nil {
+		if err := writeBuffer.WriteString("localAddress", uint32(len(d.localAddress.String())*8), d.localAddress.String()); err != nil {
 			return err
 		}
 	}
 	if d.remoteAddress != nil {
-		if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.remoteAddress.String())*8), "UTF-8", d.remoteAddress.String()); err != nil {
+		if err := writeBuffer.WriteString("remoteAddress", uint32(len(d.remoteAddress.String())*8), d.remoteAddress.String()); err != nil {
 			return err
 		}
 	}

@@ -49,42 +49,42 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	{
 		_value := fmt.Sprintf("%v", d.request)
 
-		if err := writeBuffer.WriteString("request", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("request", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.destination)
 
-		if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("destination", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.ioState)
 
-		if err := writeBuffer.WriteString("ioState", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("ioState", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.ioResponse)
 
-		if err := writeBuffer.WriteString("ioResponse", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("ioResponse", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
 
 	if d.ioError != nil {
 		_errString := d.ioError.Error()
-		if err := writeBuffer.WriteString("ioError", uint32(len(_errString)*8), "UTF-8", _errString); err != nil {
+		if err := writeBuffer.WriteString("ioError", uint32(len(_errString)*8), _errString); err != nil {
 			return err
 		}
 	}
 	{
 		_value := fmt.Sprintf("%v", d.ioController)
 
-		if err := writeBuffer.WriteString("ioController", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("ioController", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -98,7 +98,7 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	for _, elem := range d.ioQueue {
 		_value := fmt.Sprintf("%v", elem)
 
-		if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), "UTF-8", _value); err != nil {
+		if err := writeBuffer.WriteString("ioQueue", uint32(len(_value)*8), _value); err != nil {
 			return err
 		}
 	}
@@ -107,7 +107,7 @@ func (d *IOCB) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.W
 	}
 
 	_ioTimoutCancel_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.ioTimoutCancel))
-	if err := writeBuffer.WriteString("ioTimoutCancel", uint32(len(_ioTimoutCancel_plx4gen_description)*8), "UTF-8", _ioTimoutCancel_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("ioTimoutCancel", uint32(len(_ioTimoutCancel_plx4gen_description)*8), _ioTimoutCancel_plx4gen_description); err != nil {
 		return err
 	}
 

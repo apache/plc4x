@@ -56,7 +56,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}
 		} else {
 			stringValue := fmt.Sprintf("%v", d.transportInstance)
-			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+			if err := writeBuffer.WriteString("transportInstance", uint32(len(stringValue)*8), stringValue); err != nil {
 				return err
 			}
 		}
@@ -80,7 +80,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 				}
 			} else {
 				stringValue := fmt.Sprintf("%v", elem)
-				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), "UTF-8", stringValue); err != nil {
+				if err := writeBuffer.WriteString("value", uint32(len(stringValue)*8), stringValue); err != nil {
 					return err
 				}
 			}
@@ -91,7 +91,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 	}
 
 	_defaultIncomingMessageChannel_plx4gen_description := fmt.Sprintf("%d element(s)", len(d.defaultIncomingMessageChannel))
-	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), "UTF-8", _defaultIncomingMessageChannel_plx4gen_description); err != nil {
+	if err := writeBuffer.WriteString("defaultIncomingMessageChannel", uint32(len(_defaultIncomingMessageChannel_plx4gen_description)*8), _defaultIncomingMessageChannel_plx4gen_description); err != nil {
 		return err
 	}
 
@@ -103,7 +103,7 @@ func (d *defaultCodec) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		return err
 	}
 
-	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(d.receiveTimeout.String())*8), "UTF-8", d.receiveTimeout.String()); err != nil {
+	if err := writeBuffer.WriteString("receiveTimeout", uint32(len(d.receiveTimeout.String())*8), d.receiveTimeout.String()); err != nil {
 		return err
 	}
 

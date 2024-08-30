@@ -142,7 +142,7 @@ func IdentifyReplyCommandManufacturerParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Simple Field (manufacturerName)
-	_manufacturerName, _manufacturerNameErr := readBuffer.ReadString("manufacturerName", uint32(64), "UTF-8")
+	_manufacturerName, _manufacturerNameErr := readBuffer.ReadString("manufacturerName", uint32(64), utils.WithEncoding("UTF-8"))
 	if _manufacturerNameErr != nil {
 		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field of IdentifyReplyCommandManufacturer")
 	}
@@ -183,7 +183,7 @@ func (m *_IdentifyReplyCommandManufacturer) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (manufacturerName)
 		manufacturerName := string(m.GetManufacturerName())
-		_manufacturerNameErr := writeBuffer.WriteString("manufacturerName", uint32(64), "UTF-8", (manufacturerName))
+		_manufacturerNameErr := writeBuffer.WriteString("manufacturerName", uint32(64), (manufacturerName), utils.WithEncoding("UTF-8)"))
 		if _manufacturerNameErr != nil {
 			return errors.Wrap(_manufacturerNameErr, "Error serializing 'manufacturerName' field")
 		}

@@ -19,26 +19,11 @@
 
 package utils
 
-import (
-	"testing"
+// CustomOption can be used for transporting custom readerWriterArgs. Use NewCustomOption to create one.
+type CustomOption struct {
+	readerWriterArg
+}
 
-	"github.com/stretchr/testify/assert"
-)
-
-func Test_writerArg_isWriterArgs(t *testing.T) {
-	tests := []struct {
-		name string
-		want bool
-	}{
-		{
-			name: "it is",
-			want: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			wr := writerArg{}
-			assert.Equalf(t, tt.want, wr.isWriterArgs(), "IsWriterArgs()")
-		})
-	}
+func NewCustomOption() CustomOption {
+	return CustomOption{readerWriterArg{readerArg{}, writerArg{}}}
 }
