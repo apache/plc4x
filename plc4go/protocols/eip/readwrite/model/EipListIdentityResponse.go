@@ -166,11 +166,9 @@ func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (itemCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemCount, _itemCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("itemCount", 16)
-	_ = itemCount
-	if _itemCountErr != nil {
-		return nil, errors.Wrap(_itemCountErr, "Error parsing 'itemCount' field of EipListIdentityResponse")
+	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemCount' field"))
 	}
 
 	items, err := ReadCountArrayField[CommandSpecificDataItem](ctx, "items", ReadComplex[CommandSpecificDataItem](CommandSpecificDataItemParseWithBuffer, readBuffer), uint64(itemCount))

@@ -103,7 +103,7 @@ func (e COTPTpduSize) SizeInBytes() uint16 {
 	}
 }
 
-func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, bool) {
+func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (enum COTPTpduSize, ok bool) {
 	for _, sizeValue := range COTPTpduSizeValues {
 		if sizeValue.SizeInBytes() == value {
 			return sizeValue, true

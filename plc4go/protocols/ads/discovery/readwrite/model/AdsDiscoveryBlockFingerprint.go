@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,11 +148,9 @@ func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (dataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLen, _dataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataLen", 16)
-	_ = dataLen
-	if _dataLenErr != nil {
-		return nil, errors.Wrap(_dataLenErr, "Error parsing 'dataLen' field of AdsDiscoveryBlockFingerprint")
+	dataLen, err := ReadImplicitField[uint16](ctx, "dataLen", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLen' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(dataLen))

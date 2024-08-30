@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -170,11 +172,9 @@ func ModbusPDUWriteFileRecordRequestItemParseWithBuffer(ctx context.Context, rea
 	}
 	recordNumber := _recordNumber
 
-	// Implicit Field (recordLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	recordLength, _recordLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("recordLength", 16)
-	_ = recordLength
-	if _recordLengthErr != nil {
-		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field of ModbusPDUWriteFileRecordRequestItem")
+	recordLength, err := ReadImplicitField[uint16](ctx, "recordLength", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordLength' field"))
 	}
 
 	recordData, err := readBuffer.ReadByteArray("recordData", int(int32(recordLength)*int32(int32(2))))

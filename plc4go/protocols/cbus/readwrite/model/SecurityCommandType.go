@@ -79,7 +79,7 @@ func (e SecurityCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (SecurityCommandType, bool) {
+func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum SecurityCommandType, ok bool) {
 	for _, sizeValue := range SecurityCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

@@ -85,7 +85,7 @@ func (e ProtectionLevel) Description() string {
 	}
 }
 
-func ProtectionLevelFirstEnumForFieldDescription(value string) (ProtectionLevel, bool) {
+func ProtectionLevelFirstEnumForFieldDescription(value string) (enum ProtectionLevel, ok bool) {
 	for _, sizeValue := range ProtectionLevelValues {
 		if sizeValue.Description() == value {
 			return sizeValue, true

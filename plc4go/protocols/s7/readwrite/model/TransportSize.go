@@ -263,7 +263,7 @@ func (e TransportSize) Supported_S7_300() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_300() == value {
 			return sizeValue, true
@@ -409,7 +409,7 @@ func (e TransportSize) Supported_LOGO() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_LOGO() == value {
 			return sizeValue, true
@@ -555,7 +555,7 @@ func (e TransportSize) Code() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldCode(value uint8) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldCode(value uint8) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Code() == value {
 			return sizeValue, true
@@ -701,7 +701,7 @@ func (e TransportSize) SizeInBytes() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.SizeInBytes() == value {
 			return sizeValue, true
@@ -847,7 +847,7 @@ func (e TransportSize) Supported_S7_400() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_400() == value {
 			return sizeValue, true
@@ -993,7 +993,7 @@ func (e TransportSize) Supported_S7_1200() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_1200() == value {
 			return sizeValue, true
@@ -1139,7 +1139,7 @@ func (e TransportSize) ShortName() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldShortName(value uint8) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldShortName(value uint8) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.ShortName() == value {
 			return sizeValue, true
@@ -1285,7 +1285,7 @@ func (e TransportSize) Supported_S7_1500() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_1500() == value {
 			return sizeValue, true
@@ -1431,7 +1431,7 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 	}
 }
 
-func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.DataTransportSize() == value {
 			return sizeValue, true
@@ -1577,7 +1577,7 @@ func (e TransportSize) DataProtocolId() string {
 	}
 }
 
-func TransportSizeFirstEnumForFieldDataProtocolId(value string) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldDataProtocolId(value string) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.DataProtocolId() == value {
 			return sizeValue, true
@@ -1723,7 +1723,7 @@ func (e TransportSize) BaseType() TransportSize {
 	}
 }
 
-func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize, bool) {
+func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (enum TransportSize, ok bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.BaseType() == value {
 			return sizeValue, true

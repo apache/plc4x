@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -293,11 +295,9 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	}
 	toApi := _toApi
 
-	// Implicit Field (replySize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	replySize, _replySizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("replySize", 8)
-	_ = replySize
-	if _replySizeErr != nil {
-		return nil, errors.Wrap(_replySizeErr, "Error parsing 'replySize' field of CipConnectionManagerResponse")
+	replySize, err := ReadImplicitField[uint8](ctx, "replySize", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'replySize' field"))
 	}
 
 	var reservedField1 *uint8

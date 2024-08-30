@@ -188,11 +188,9 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
-	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetLen, _packetLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetLen", 16)
-	_ = packetLen
-	if _packetLenErr != nil {
-		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field of CIPEncapsulationPacket")
+	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLen' field"))
 	}
 
 	// Simple Field (sessionHandle)

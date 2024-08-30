@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -188,11 +190,9 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (serviceLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	serviceLen, _serviceLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serviceLen", 16)
-	_ = serviceLen
-	if _serviceLenErr != nil {
-		return nil, errors.Wrap(_serviceLenErr, "Error parsing 'serviceLen' field of ServicesResponse")
+	serviceLen, err := ReadImplicitField[uint16](ctx, "serviceLen", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceLen' field"))
 	}
 
 	// Simple Field (encapsulationProtocol)

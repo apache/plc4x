@@ -92,7 +92,7 @@ func (e AccessLevel) Purpose() string {
 	}
 }
 
-func AccessLevelFirstEnumForFieldPurpose(value string) (AccessLevel, bool) {
+func AccessLevelFirstEnumForFieldPurpose(value string) (enum AccessLevel, ok bool) {
 	for _, sizeValue := range AccessLevelValues {
 		if sizeValue.Purpose() == value {
 			return sizeValue, true
@@ -130,7 +130,7 @@ func (e AccessLevel) NeedsAuthentication() bool {
 	}
 }
 
-func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, bool) {
+func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (enum AccessLevel, ok bool) {
 	for _, sizeValue := range AccessLevelValues {
 		if sizeValue.NeedsAuthentication() == value {
 			return sizeValue, true

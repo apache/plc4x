@@ -239,11 +239,9 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for portNumber")
 	}
 
-	// Implicit Field (numBlocks) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numBlocks, _numBlocksErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("numBlocks", 32)
-	_ = numBlocks
-	if _numBlocksErr != nil {
-		return nil, errors.Wrap(_numBlocksErr, "Error parsing 'numBlocks' field of AdsDiscovery")
+	numBlocks, err := ReadImplicitField[uint32](ctx, "numBlocks", ReadUnsignedInt(readBuffer, 32), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBlocks' field"))
 	}
 
 	blocks, err := ReadCountArrayField[AdsDiscoveryBlock](ctx, "blocks", ReadComplex[AdsDiscoveryBlock](AdsDiscoveryBlockParseWithBuffer, readBuffer), uint64(numBlocks), codegen.WithByteOrder(binary.LittleEndian))

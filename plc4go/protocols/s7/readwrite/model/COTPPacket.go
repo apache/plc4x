@@ -166,11 +166,9 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("headerLength", 8)
-	_ = headerLength
-	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of COTPPacket")
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 
 	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, 8))

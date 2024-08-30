@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -136,11 +138,9 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (sLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	sLength, _sLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("sLength", 32)
-	_ = sLength
-	if _sLengthErr != nil {
-		return nil, errors.Wrap(_sLengthErr, "Error parsing 'sLength' field of PascalString")
+	sLength, err := ReadImplicitField[int32](ctx, "sLength", ReadSignedInt(readBuffer, 32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sLength' field"))
 	}
 
 	// Virtual field

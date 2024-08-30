@@ -116,7 +116,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ClockAndTimekeepingCommandTypeContainer, bool) {
+func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum ClockAndTimekeepingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range ClockAndTimekeepingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -170,7 +170,7 @@ func (e ClockAndTimekeepingCommandTypeContainer) CommandType() ClockAndTimekeepi
 	}
 }
 
-func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldCommandType(value ClockAndTimekeepingCommandType) (ClockAndTimekeepingCommandTypeContainer, bool) {
+func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldCommandType(value ClockAndTimekeepingCommandType) (enum ClockAndTimekeepingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range ClockAndTimekeepingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

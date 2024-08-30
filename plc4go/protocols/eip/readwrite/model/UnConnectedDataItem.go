@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,11 +146,9 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetSize, _packetSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetSize", 16)
-	_ = packetSize
-	if _packetSizeErr != nil {
-		return nil, errors.Wrap(_packetSizeErr, "Error parsing 'packetSize' field of UnConnectedDataItem")
+	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
 	}
 
 	// Simple Field (service)

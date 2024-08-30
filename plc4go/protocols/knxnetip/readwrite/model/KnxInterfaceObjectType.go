@@ -212,7 +212,7 @@ func (e KnxInterfaceObjectType) Code() string {
 	}
 }
 
-func KnxInterfaceObjectTypeFirstEnumForFieldCode(value string) (KnxInterfaceObjectType, bool) {
+func KnxInterfaceObjectTypeFirstEnumForFieldCode(value string) (enum KnxInterfaceObjectType, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectTypeValues {
 		if sizeValue.Code() == value {
 			return sizeValue, true
@@ -330,7 +330,7 @@ func (e KnxInterfaceObjectType) Name() string {
 	}
 }
 
-func KnxInterfaceObjectTypeFirstEnumForFieldName(value string) (KnxInterfaceObjectType, bool) {
+func KnxInterfaceObjectTypeFirstEnumForFieldName(value string) (enum KnxInterfaceObjectType, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectTypeValues {
 		if sizeValue.Name() == value {
 			return sizeValue, true

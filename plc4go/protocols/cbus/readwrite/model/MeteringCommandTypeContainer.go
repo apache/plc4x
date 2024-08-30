@@ -110,7 +110,7 @@ func (e MeteringCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func MeteringCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeteringCommandTypeContainer, bool) {
+func MeteringCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum MeteringCommandTypeContainer, ok bool) {
 	for _, sizeValue := range MeteringCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -160,7 +160,7 @@ func (e MeteringCommandTypeContainer) CommandType() MeteringCommandType {
 	}
 }
 
-func MeteringCommandTypeContainerFirstEnumForFieldCommandType(value MeteringCommandType) (MeteringCommandTypeContainer, bool) {
+func MeteringCommandTypeContainerFirstEnumForFieldCommandType(value MeteringCommandType) (enum MeteringCommandTypeContainer, ok bool) {
 	for _, sizeValue := range MeteringCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

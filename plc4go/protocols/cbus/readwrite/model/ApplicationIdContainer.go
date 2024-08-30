@@ -1598,7 +1598,7 @@ func (e ApplicationIdContainer) LightingCompatible() LightingCompatible {
 	}
 }
 
-func ApplicationIdContainerFirstEnumForFieldLightingCompatible(value LightingCompatible) (ApplicationIdContainer, bool) {
+func ApplicationIdContainerFirstEnumForFieldLightingCompatible(value LightingCompatible) (enum ApplicationIdContainer, ok bool) {
 	for _, sizeValue := range ApplicationIdContainerValues {
 		if sizeValue.LightingCompatible() == value {
 			return sizeValue, true
@@ -2640,7 +2640,7 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 	}
 }
 
-func ApplicationIdContainerFirstEnumForFieldApplicationId(value ApplicationId) (ApplicationIdContainer, bool) {
+func ApplicationIdContainerFirstEnumForFieldApplicationId(value ApplicationId) (enum ApplicationIdContainer, ok bool) {
 	for _, sizeValue := range ApplicationIdContainerValues {
 		if sizeValue.ApplicationId() == value {
 			return sizeValue, true

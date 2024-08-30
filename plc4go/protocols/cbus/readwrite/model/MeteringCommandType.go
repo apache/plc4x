@@ -67,7 +67,7 @@ func (e MeteringCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func MeteringCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MeteringCommandType, bool) {
+func MeteringCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum MeteringCommandType, ok bool) {
 	for _, sizeValue := range MeteringCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

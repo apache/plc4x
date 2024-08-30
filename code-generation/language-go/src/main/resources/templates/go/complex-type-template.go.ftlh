@@ -889,13 +889,12 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#break>
 			<#case "implicit">
 				<#assign implicitField = field.asImplicitField().orElseThrow()>
-				<#assign simpleTypeReference = implicitField.type.asSimpleTypeReference().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Implicit Field (${implicitField.name}) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	${implicitField.name}, _${implicitField.name}Err := ${helper.getReadBufferReadMethodCall(implicitField.name, simpleTypeReference, implicitField)}
-	_ = ${implicitField.name}
-	if _${implicitField.name}Err != nil {
-		return nil, errors.Wrap(_${implicitField.name}Err, "Error parsing '${implicitField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "manualArray">

@@ -91,7 +91,7 @@ func (e LightingCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func LightingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (LightingCommandType, bool) {
+func LightingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum LightingCommandType, ok bool) {
 	for _, sizeValue := range LightingCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

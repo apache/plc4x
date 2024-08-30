@@ -103,7 +103,7 @@ func (e DataTransportSize) SizeInBits() bool {
 	}
 }
 
-func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize, bool) {
+func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (enum DataTransportSize, ok bool) {
 	for _, sizeValue := range DataTransportSizeValues {
 		if sizeValue.SizeInBits() == value {
 			return sizeValue, true

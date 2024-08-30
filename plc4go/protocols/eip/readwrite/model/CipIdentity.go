@@ -310,11 +310,9 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("itemLength", 16)
-	_ = itemLength
-	if _itemLengthErr != nil {
-		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of CipIdentity")
+	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 
 	// Simple Field (encapsulationProtocolVersion)
@@ -404,11 +402,9 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 	serialNumber := _serialNumber
 
-	// Implicit Field (productNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	productNameLength, _productNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("productNameLength", 8)
-	_ = productNameLength
-	if _productNameLengthErr != nil {
-		return nil, errors.Wrap(_productNameLengthErr, "Error parsing 'productNameLength' field of CipIdentity")
+	productNameLength, err := ReadImplicitField[uint8](ctx, "productNameLength", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productNameLength' field"))
 	}
 
 	// Simple Field (productName)

@@ -4196,7 +4196,7 @@ func (e KnxManufacturer) Number() uint16 {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, bool) {
+func KnxManufacturerFirstEnumForFieldNumber(value uint16) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Number() == value {
 			return sizeValue, true
@@ -6970,7 +6970,7 @@ func (e KnxManufacturer) Name() string {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, bool) {
+func KnxManufacturerFirstEnumForFieldName(value string) (enum KnxManufacturer, ok bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Name() == value {
 			return sizeValue, true

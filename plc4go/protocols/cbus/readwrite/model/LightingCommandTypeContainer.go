@@ -368,7 +368,7 @@ func (e LightingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func LightingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (LightingCommandTypeContainer, bool) {
+func LightingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum LightingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range LightingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -590,7 +590,7 @@ func (e LightingCommandTypeContainer) CommandType() LightingCommandType {
 	}
 }
 
-func LightingCommandTypeContainerFirstEnumForFieldCommandType(value LightingCommandType) (LightingCommandTypeContainer, bool) {
+func LightingCommandTypeContainerFirstEnumForFieldCommandType(value LightingCommandType) (enum LightingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range LightingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

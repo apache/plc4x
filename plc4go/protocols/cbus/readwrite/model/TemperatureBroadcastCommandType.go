@@ -67,7 +67,7 @@ func (e TemperatureBroadcastCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TemperatureBroadcastCommandType, bool) {
+func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum TemperatureBroadcastCommandType, ok bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

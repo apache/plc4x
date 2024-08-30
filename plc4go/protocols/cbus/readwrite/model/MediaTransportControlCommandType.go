@@ -159,7 +159,7 @@ func (e MediaTransportControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MediaTransportControlCommandType, bool) {
+func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum MediaTransportControlCommandType, ok bool) {
 	for _, sizeValue := range MediaTransportControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

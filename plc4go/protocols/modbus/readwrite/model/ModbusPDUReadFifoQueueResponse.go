@@ -159,18 +159,14 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("byteCount", 16)
-	_ = byteCount
-	if _byteCountErr != nil {
-		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReadFifoQueueResponse")
+	byteCount, err := ReadImplicitField[uint16](ctx, "byteCount", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
 
-	// Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	fifoCount, _fifoCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("fifoCount", 16)
-	_ = fifoCount
-	if _fifoCountErr != nil {
-		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field of ModbusPDUReadFifoQueueResponse")
+	fifoCount, err := ReadImplicitField[uint16](ctx, "fifoCount", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoCount' field"))
 	}
 
 	fifoValue, err := ReadCountArrayField[uint16](ctx, "fifoValue", ReadUnsignedShort(readBuffer, 16), uint64(fifoCount))

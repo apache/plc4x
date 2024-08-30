@@ -149,11 +149,9 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("headerLength", 8)
-	_ = headerLength
-	if _headerLengthErr != nil {
-		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of KnxNetIpMessage")
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 
 	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, 8), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
@@ -167,11 +165,9 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msgType' field"))
 	}
 
-	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("totalLength", 16)
-	_ = totalLength
-	if _totalLengthErr != nil {
-		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of KnxNetIpMessage")
+	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -132,11 +132,9 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterType' field"))
 	}
 
-	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("parameterLength", 8)
-	_ = parameterLength
-	if _parameterLengthErr != nil {
-		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of COTPParameter")
+	parameterLength, err := ReadImplicitField[uint8](ctx, "parameterLength", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

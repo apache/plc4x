@@ -1360,7 +1360,7 @@ func (e KnxInterfaceObjectProperty) PropertyDataType() KnxPropertyDataType {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyDataType(value KnxPropertyDataType) (KnxInterfaceObjectProperty, bool) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyDataType(value KnxPropertyDataType) (enum KnxInterfaceObjectProperty, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.PropertyDataType() == value {
 			return sizeValue, true
@@ -2242,7 +2242,7 @@ func (e KnxInterfaceObjectProperty) Name() string {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldName(value string) (KnxInterfaceObjectProperty, bool) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldName(value string) (enum KnxInterfaceObjectProperty, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.Name() == value {
 			return sizeValue, true
@@ -3124,7 +3124,7 @@ func (e KnxInterfaceObjectProperty) PropertyId() uint8 {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyId(value uint8) (KnxInterfaceObjectProperty, bool) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyId(value uint8) (enum KnxInterfaceObjectProperty, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.PropertyId() == value {
 			return sizeValue, true
@@ -4006,7 +4006,7 @@ func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObjectType) (KnxInterfaceObjectProperty, bool) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObjectType) (enum KnxInterfaceObjectProperty, ok bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.ObjectType() == value {
 			return sizeValue, true

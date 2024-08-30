@@ -67,7 +67,7 @@ func (e EnableControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (EnableControlCommandType, bool) {
+func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum EnableControlCommandType, ok bool) {
 	for _, sizeValue := range EnableControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

@@ -302,7 +302,7 @@ func (e AdsDataType) NumBytes() uint16 {
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, bool) {
+func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (enum AdsDataType, ok bool) {
 	for _, sizeValue := range AdsDataTypeValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -480,7 +480,7 @@ func (e AdsDataType) PlcValueType() PlcValueType {
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (AdsDataType, bool) {
+func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (enum AdsDataType, ok bool) {
 	for _, sizeValue := range AdsDataTypeValues {
 		if sizeValue.PlcValueType() == value {
 			return sizeValue, true

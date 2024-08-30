@@ -190,11 +190,9 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx context.
 	}
 	_ = functionId
 
-	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
-	_ = numberOfObjects
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
+	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
 
 	messageObjects, err := ReadCountArrayField[AlarmMessageObjectAckType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectAckType](AlarmMessageObjectAckTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))

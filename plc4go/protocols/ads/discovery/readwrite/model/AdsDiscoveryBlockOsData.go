@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,11 +148,9 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (osDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	osDataLen, _osDataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("osDataLen", 16)
-	_ = osDataLen
-	if _osDataLenErr != nil {
-		return nil, errors.Wrap(_osDataLenErr, "Error parsing 'osDataLen' field of AdsDiscoveryBlockOsData")
+	osDataLen, err := ReadImplicitField[uint16](ctx, "osDataLen", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osDataLen' field"))
 	}
 
 	osData, err := readBuffer.ReadByteArray("osData", int(osDataLen))

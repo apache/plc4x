@@ -11317,7 +11317,7 @@ func (e ComObjectTableAddresses) ComObjectTableAddress() uint16 {
 	}
 }
 
-func ComObjectTableAddressesFirstEnumForFieldComObjectTableAddress(value uint16) (ComObjectTableAddresses, bool) {
+func ComObjectTableAddressesFirstEnumForFieldComObjectTableAddress(value uint16) (enum ComObjectTableAddresses, ok bool) {
 	for _, sizeValue := range ComObjectTableAddressesValues {
 		if sizeValue.ComObjectTableAddress() == value {
 			return sizeValue, true

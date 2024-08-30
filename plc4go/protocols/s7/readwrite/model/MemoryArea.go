@@ -115,7 +115,7 @@ func (e MemoryArea) ShortName() string {
 	}
 }
 
-func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, bool) {
+func MemoryAreaFirstEnumForFieldShortName(value string) (enum MemoryArea, ok bool) {
 	for _, sizeValue := range MemoryAreaValues {
 		if sizeValue.ShortName() == value {
 			return sizeValue, true

@@ -223,7 +223,7 @@ func (e SimulatedDataTypeSizes) DataTypeSize() uint8 {
 	}
 }
 
-func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (SimulatedDataTypeSizes, bool) {
+func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (enum SimulatedDataTypeSizes, ok bool) {
 	for _, sizeValue := range SimulatedDataTypeSizesValues {
 		if sizeValue.DataTypeSize() == value {
 			return sizeValue, true

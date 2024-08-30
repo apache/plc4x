@@ -225,11 +225,9 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	requestPathSize, _requestPathSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("requestPathSize", 8)
-	_ = requestPathSize
-	if _requestPathSizeErr != nil {
-		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipUnconnectedRequest")
+	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
 
 	// Simple Field (classSegment)
@@ -275,11 +273,9 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 		}
 	}
 
-	// Implicit Field (messageSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	messageSize, _messageSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("messageSize", 16)
-	_ = messageSize
-	if _messageSizeErr != nil {
-		return nil, errors.Wrap(_messageSizeErr, "Error parsing 'messageSize' field of CipUnconnectedRequest")
+	messageSize, err := ReadImplicitField[uint16](ctx, "messageSize", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageSize' field"))
 	}
 
 	// Simple Field (unconnectedService)

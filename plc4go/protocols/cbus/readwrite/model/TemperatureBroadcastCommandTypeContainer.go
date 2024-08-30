@@ -158,7 +158,7 @@ func (e TemperatureBroadcastCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TemperatureBroadcastCommandTypeContainer, bool) {
+func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum TemperatureBroadcastCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -240,7 +240,7 @@ func (e TemperatureBroadcastCommandTypeContainer) CommandType() TemperatureBroad
 	}
 }
 
-func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldCommandType(value TemperatureBroadcastCommandType) (TemperatureBroadcastCommandTypeContainer, bool) {
+func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldCommandType(value TemperatureBroadcastCommandType) (enum TemperatureBroadcastCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

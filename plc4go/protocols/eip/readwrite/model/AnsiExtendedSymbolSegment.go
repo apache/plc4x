@@ -27,6 +27,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,11 +160,9 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataSize, _dataSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataSize", 8)
-	_ = dataSize
-	if _dataSizeErr != nil {
-		return nil, errors.Wrap(_dataSizeErr, "Error parsing 'dataSize' field of AnsiExtendedSymbolSegment")
+	dataSize, err := ReadImplicitField[uint8](ctx, "dataSize", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSize' field"))
 	}
 
 	// Simple Field (symbol)

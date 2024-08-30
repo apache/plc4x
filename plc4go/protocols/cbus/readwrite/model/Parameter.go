@@ -1602,7 +1602,7 @@ func (e Parameter) ParameterType() ParameterType {
 	}
 }
 
-func ParameterFirstEnumForFieldParameterType(value ParameterType) (Parameter, bool) {
+func ParameterFirstEnumForFieldParameterType(value ParameterType) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.ParameterType() == value {
 			return sizeValue, true
@@ -2644,7 +2644,7 @@ func (e Parameter) Form() string {
 	}
 }
 
-func ParameterFirstEnumForFieldForm(value string) (Parameter, bool) {
+func ParameterFirstEnumForFieldForm(value string) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.Form() == value {
 			return sizeValue, true
@@ -3686,7 +3686,7 @@ func (e Parameter) IsVolatile() bool {
 	}
 }
 
-func ParameterFirstEnumForFieldIsVolatile(value bool) (Parameter, bool) {
+func ParameterFirstEnumForFieldIsVolatile(value bool) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.IsVolatile() == value {
 			return sizeValue, true
@@ -4728,7 +4728,7 @@ func (e Parameter) ParameterDescription() string {
 	}
 }
 
-func ParameterFirstEnumForFieldParameterDescription(value string) (Parameter, bool) {
+func ParameterFirstEnumForFieldParameterDescription(value string) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.ParameterDescription() == value {
 			return sizeValue, true
@@ -5770,7 +5770,7 @@ func (e Parameter) ProtectionLevel() ProtectionLevel {
 	}
 }
 
-func ParameterFirstEnumForFieldProtectionLevel(value ProtectionLevel) (Parameter, bool) {
+func ParameterFirstEnumForFieldProtectionLevel(value ProtectionLevel) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.ProtectionLevel() == value {
 			return sizeValue, true
@@ -6812,7 +6812,7 @@ func (e Parameter) Group() string {
 	}
 }
 
-func ParameterFirstEnumForFieldGroup(value string) (Parameter, bool) {
+func ParameterFirstEnumForFieldGroup(value string) (enum Parameter, ok bool) {
 	for _, sizeValue := range ParameterValues {
 		if sizeValue.Group() == value {
 			return sizeValue, true

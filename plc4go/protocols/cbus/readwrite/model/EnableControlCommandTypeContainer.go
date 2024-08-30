@@ -158,7 +158,7 @@ func (e EnableControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func EnableControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (EnableControlCommandTypeContainer, bool) {
+func EnableControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum EnableControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range EnableControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -240,7 +240,7 @@ func (e EnableControlCommandTypeContainer) CommandType() EnableControlCommandTyp
 	}
 }
 
-func EnableControlCommandTypeContainerFirstEnumForFieldCommandType(value EnableControlCommandType) (EnableControlCommandTypeContainer, bool) {
+func EnableControlCommandTypeContainerFirstEnumForFieldCommandType(value EnableControlCommandType) (enum EnableControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range EnableControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

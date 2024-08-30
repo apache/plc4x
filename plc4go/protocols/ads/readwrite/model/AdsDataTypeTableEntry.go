@@ -386,25 +386,19 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 	flags := _flags
 
-	// Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataTypeNameLength, _dataTypeNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataTypeNameLength", 16)
-	_ = dataTypeNameLength
-	if _dataTypeNameLengthErr != nil {
-		return nil, errors.Wrap(_dataTypeNameLengthErr, "Error parsing 'dataTypeNameLength' field of AdsDataTypeTableEntry")
+	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameLength' field"))
 	}
 
-	// Implicit Field (simpleTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	simpleTypeNameLength, _simpleTypeNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("simpleTypeNameLength", 16)
-	_ = simpleTypeNameLength
-	if _simpleTypeNameLengthErr != nil {
-		return nil, errors.Wrap(_simpleTypeNameLengthErr, "Error parsing 'simpleTypeNameLength' field of AdsDataTypeTableEntry")
+	simpleTypeNameLength, err := ReadImplicitField[uint16](ctx, "simpleTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleTypeNameLength' field"))
 	}
 
-	// Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	commentLength, _commentLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("commentLength", 16)
-	_ = commentLength
-	if _commentLengthErr != nil {
-		return nil, errors.Wrap(_commentLengthErr, "Error parsing 'commentLength' field of AdsDataTypeTableEntry")
+	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
 
 	// Simple Field (arrayDimensions)

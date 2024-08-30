@@ -202,11 +202,9 @@ func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	_ = protocolIdentifier
 
-	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("length", 16)
-	_ = length
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of ModbusTcpADU")
+	length, err := ReadImplicitField[uint16](ctx, "length", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 
 	// Simple Field (unitIdentifier)

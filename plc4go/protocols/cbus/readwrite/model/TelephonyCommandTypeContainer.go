@@ -260,7 +260,7 @@ func (e TelephonyCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TelephonyCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TelephonyCommandTypeContainer, bool) {
+func TelephonyCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum TelephonyCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TelephonyCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -410,7 +410,7 @@ func (e TelephonyCommandTypeContainer) CommandType() TelephonyCommandType {
 	}
 }
 
-func TelephonyCommandTypeContainerFirstEnumForFieldCommandType(value TelephonyCommandType) (TelephonyCommandTypeContainer, bool) {
+func TelephonyCommandTypeContainerFirstEnumForFieldCommandType(value TelephonyCommandType) (enum TelephonyCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TelephonyCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

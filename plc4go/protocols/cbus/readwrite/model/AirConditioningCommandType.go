@@ -175,7 +175,7 @@ func (e AirConditioningCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AirConditioningCommandType, bool) {
+func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum AirConditioningCommandType, ok bool) {
 	for _, sizeValue := range AirConditioningCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

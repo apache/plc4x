@@ -67,7 +67,7 @@ func (e TelephonyCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TelephonyCommandType, bool) {
+func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum TelephonyCommandType, ok bool) {
 	for _, sizeValue := range TelephonyCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

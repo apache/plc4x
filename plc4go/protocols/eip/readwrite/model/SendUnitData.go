@@ -209,11 +209,9 @@ func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	timeout := _timeout
 
-	// Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	typeIdCount, _typeIdCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("typeIdCount", 16)
-	_ = typeIdCount
-	if _typeIdCountErr != nil {
-		return nil, errors.Wrap(_typeIdCountErr, "Error parsing 'typeIdCount' field of SendUnitData")
+	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}
 
 	typeIds, err := ReadCountArrayField[TypeId](ctx, "typeIds", ReadComplex[TypeId](TypeIdParseWithBuffer, readBuffer), uint64(typeIdCount))

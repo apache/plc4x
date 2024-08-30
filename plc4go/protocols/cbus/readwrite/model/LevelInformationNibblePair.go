@@ -157,7 +157,7 @@ func (e LevelInformationNibblePair) NibbleValue() uint8 {
 	}
 }
 
-func LevelInformationNibblePairFirstEnumForFieldNibbleValue(value uint8) (LevelInformationNibblePair, bool) {
+func LevelInformationNibblePairFirstEnumForFieldNibbleValue(value uint8) (enum LevelInformationNibblePair, ok bool) {
 	for _, sizeValue := range LevelInformationNibblePairValues {
 		if sizeValue.NibbleValue() == value {
 			return sizeValue, true

@@ -764,7 +764,7 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func CALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (CALCommandTypeContainer, bool) {
+func CALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum CALCommandTypeContainer, ok bool) {
 	for _, sizeValue := range CALCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -1250,7 +1250,7 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 	}
 }
 
-func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (CALCommandTypeContainer, bool) {
+func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (enum CALCommandTypeContainer, ok bool) {
 	for _, sizeValue := range CALCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

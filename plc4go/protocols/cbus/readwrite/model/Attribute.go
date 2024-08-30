@@ -169,7 +169,7 @@ func (e Attribute) BytesReturned() uint8 {
 	}
 }
 
-func AttributeFirstEnumForFieldBytesReturned(value uint8) (Attribute, bool) {
+func AttributeFirstEnumForFieldBytesReturned(value uint8) (enum Attribute, ok bool) {
 	for _, sizeValue := range AttributeValues {
 		if sizeValue.BytesReturned() == value {
 			return sizeValue, true

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,11 +148,9 @@ func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (versionDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	versionDataLen, _versionDataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("versionDataLen", 16)
-	_ = versionDataLen
-	if _versionDataLenErr != nil {
-		return nil, errors.Wrap(_versionDataLenErr, "Error parsing 'versionDataLen' field of AdsDiscoveryBlockVersion")
+	versionDataLen, err := ReadImplicitField[uint16](ctx, "versionDataLen", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'versionDataLen' field"))
 	}
 
 	versionData, err := readBuffer.ReadByteArray("versionData", int(versionDataLen))

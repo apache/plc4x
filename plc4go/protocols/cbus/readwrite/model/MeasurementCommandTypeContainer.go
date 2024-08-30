@@ -68,7 +68,7 @@ func (e MeasurementCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func MeasurementCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeasurementCommandTypeContainer, bool) {
+func MeasurementCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum MeasurementCommandTypeContainer, ok bool) {
 	for _, sizeValue := range MeasurementCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -90,7 +90,7 @@ func (e MeasurementCommandTypeContainer) CommandType() MeasurementCommandType {
 	}
 }
 
-func MeasurementCommandTypeContainerFirstEnumForFieldCommandType(value MeasurementCommandType) (MeasurementCommandTypeContainer, bool) {
+func MeasurementCommandTypeContainerFirstEnumForFieldCommandType(value MeasurementCommandType) (enum MeasurementCommandTypeContainer, ok bool) {
 	for _, sizeValue := range MeasurementCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

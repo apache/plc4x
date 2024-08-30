@@ -231,18 +231,14 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	tpduReference := _tpduReference
 
-	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("parameterLength", 16)
-	_ = parameterLength
-	if _parameterLengthErr != nil {
-		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of S7Message")
+	parameterLength, err := ReadImplicitField[uint16](ctx, "parameterLength", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}
 
-	// Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	payloadLength, _payloadLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("payloadLength", 16)
-	_ = payloadLength
-	if _payloadLengthErr != nil {
-		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of S7Message")
+	payloadLength, err := ReadImplicitField[uint16](ctx, "payloadLength", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadLength' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

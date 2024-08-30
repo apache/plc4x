@@ -193,11 +193,9 @@ func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	notificationLength, _notificationLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("notificationLength", 32)
-	_ = notificationLength
-	if _notificationLengthErr != nil {
-		return nil, errors.Wrap(_notificationLengthErr, "Error parsing 'notificationLength' field of DataChangeNotification")
+	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, 32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
 
 	// Simple Field (noOfMonitoredItems)

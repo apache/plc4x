@@ -151,7 +151,7 @@ func (e ComObjectValueType) SizeInBytes() uint8 {
 	}
 }
 
-func ComObjectValueTypeFirstEnumForFieldSizeInBytes(value uint8) (ComObjectValueType, bool) {
+func ComObjectValueTypeFirstEnumForFieldSizeInBytes(value uint8) (enum ComObjectValueType, ok bool) {
 	for _, sizeValue := range ComObjectValueTypeValues {
 		if sizeValue.SizeInBytes() == value {
 			return sizeValue, true

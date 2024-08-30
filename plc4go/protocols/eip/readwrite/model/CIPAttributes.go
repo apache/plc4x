@@ -161,11 +161,9 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numberOfClasses) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfClasses, _numberOfClassesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("numberOfClasses", 16)
-	_ = numberOfClasses
-	if _numberOfClassesErr != nil {
-		return nil, errors.Wrap(_numberOfClassesErr, "Error parsing 'numberOfClasses' field of CIPAttributes")
+	numberOfClasses, err := ReadImplicitField[uint16](ctx, "numberOfClasses", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfClasses' field"))
 	}
 
 	classId, err := ReadCountArrayField[uint16](ctx, "classId", ReadUnsignedShort(readBuffer, 16), uint64(numberOfClasses))

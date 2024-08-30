@@ -368,7 +368,7 @@ func (e TriggerControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TriggerControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TriggerControlCommandTypeContainer, bool) {
+func TriggerControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum TriggerControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TriggerControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -590,7 +590,7 @@ func (e TriggerControlCommandTypeContainer) CommandType() TriggerControlCommandT
 	}
 }
 
-func TriggerControlCommandTypeContainerFirstEnumForFieldCommandType(value TriggerControlCommandType) (TriggerControlCommandTypeContainer, bool) {
+func TriggerControlCommandTypeContainerFirstEnumForFieldCommandType(value TriggerControlCommandType) (enum TriggerControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range TriggerControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

@@ -8972,7 +8972,7 @@ func (e BACnetVendorId) VendorId() uint16 {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (BACnetVendorId, bool) {
+func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (enum BACnetVendorId, ok bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorId() == value {
 			return sizeValue, true
@@ -14930,7 +14930,7 @@ func (e BACnetVendorId) VendorName() string {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorName(value string) (BACnetVendorId, bool) {
+func BACnetVendorIdFirstEnumForFieldVendorName(value string) (enum BACnetVendorId, ok bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorName() == value {
 			return sizeValue, true

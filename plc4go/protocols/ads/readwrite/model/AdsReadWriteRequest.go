@@ -231,11 +231,9 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	readLength := _readLength
 
-	// Implicit Field (writeLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	writeLength, _writeLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("writeLength", 32)
-	_ = writeLength
-	if _writeLengthErr != nil {
-		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field of AdsReadWriteRequest")
+	writeLength, err := ReadImplicitField[uint32](ctx, "writeLength", ReadUnsignedInt(readBuffer, 32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeLength' field"))
 	}
 
 	items, err := ReadCountArrayField[AdsMultiRequestItem](ctx, "items", ReadComplex[AdsMultiRequestItem](func(ctx context.Context, buffer utils.ReadBuffer) (AdsMultiRequestItem, error) {

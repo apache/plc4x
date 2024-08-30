@@ -363,7 +363,7 @@ func (e KnxPropertyDataType) Number() uint8 {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldNumber(value uint8) (KnxPropertyDataType, bool) {
+func KnxPropertyDataTypeFirstEnumForFieldNumber(value uint8) (enum KnxPropertyDataType, ok bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.Number() == value {
 			return sizeValue, true
@@ -581,7 +581,7 @@ func (e KnxPropertyDataType) SizeInBytes() uint8 {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldSizeInBytes(value uint8) (KnxPropertyDataType, bool) {
+func KnxPropertyDataTypeFirstEnumForFieldSizeInBytes(value uint8) (enum KnxPropertyDataType, ok bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.SizeInBytes() == value {
 			return sizeValue, true
@@ -799,7 +799,7 @@ func (e KnxPropertyDataType) Name() string {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldName(value string) (KnxPropertyDataType, bool) {
+func KnxPropertyDataTypeFirstEnumForFieldName(value string) (enum KnxPropertyDataType, ok bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.Name() == value {
 			return sizeValue, true

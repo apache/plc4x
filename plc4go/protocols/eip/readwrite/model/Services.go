@@ -141,11 +141,9 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	serviceNb, _serviceNbErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serviceNb", 16)
-	_ = serviceNb
-	if _serviceNbErr != nil {
-		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of Services")
+	serviceNb, err := ReadImplicitField[uint16](ctx, "serviceNb", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceNb' field"))
 	}
 
 	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, 16), uint64(serviceNb))

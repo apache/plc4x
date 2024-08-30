@@ -187,11 +187,9 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	// Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetLength, _packetLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetLength", 16)
-	_ = packetLength
-	if _packetLengthErr != nil {
-		return nil, errors.Wrap(_packetLengthErr, "Error parsing 'packetLength' field of EipPacket")
+	packetLength, err := ReadImplicitField[uint16](ctx, "packetLength", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLength' field"))
 	}
 
 	// Simple Field (sessionHandle)

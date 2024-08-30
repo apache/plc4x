@@ -67,7 +67,7 @@ func (e MeasurementCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func MeasurementCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MeasurementCommandType, bool) {
+func MeasurementCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum MeasurementCommandType, ok bool) {
 	for _, sizeValue := range MeasurementCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

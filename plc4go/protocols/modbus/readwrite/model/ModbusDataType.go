@@ -223,7 +223,7 @@ func (e ModbusDataType) DataTypeSize() uint8 {
 	}
 }
 
-func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (ModbusDataType, bool) {
+func ModbusDataTypeFirstEnumForFieldDataTypeSize(value uint8) (enum ModbusDataType, ok bool) {
 	for _, sizeValue := range ModbusDataTypeValues {
 		if sizeValue.DataTypeSize() == value {
 			return sizeValue, true

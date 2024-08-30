@@ -236,7 +236,7 @@ func (e DeviceDescriptor) FirmwareType() FirmwareType {
 	}
 }
 
-func DeviceDescriptorFirstEnumForFieldFirmwareType(value FirmwareType) (DeviceDescriptor, bool) {
+func DeviceDescriptorFirstEnumForFieldFirmwareType(value FirmwareType) (enum DeviceDescriptor, ok bool) {
 	for _, sizeValue := range DeviceDescriptorValues {
 		if sizeValue.FirmwareType() == value {
 			return sizeValue, true
@@ -370,7 +370,7 @@ func (e DeviceDescriptor) MediumType() DeviceDescriptorMediumType {
 	}
 }
 
-func DeviceDescriptorFirstEnumForFieldMediumType(value DeviceDescriptorMediumType) (DeviceDescriptor, bool) {
+func DeviceDescriptorFirstEnumForFieldMediumType(value DeviceDescriptorMediumType) (enum DeviceDescriptor, ok bool) {
 	for _, sizeValue := range DeviceDescriptorValues {
 		if sizeValue.MediumType() == value {
 			return sizeValue, true

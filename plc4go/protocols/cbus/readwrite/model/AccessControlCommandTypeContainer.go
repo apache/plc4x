@@ -483,7 +483,7 @@ func (e AccessControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AccessControlCommandTypeContainer, bool) {
+func AccessControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum AccessControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -781,7 +781,7 @@ func (e AccessControlCommandTypeContainer) CommandType() AccessControlCommandTyp
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldCommandType(value AccessControlCommandType) (AccessControlCommandTypeContainer, bool) {
+func AccessControlCommandTypeContainerFirstEnumForFieldCommandType(value AccessControlCommandType) (enum AccessControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true
@@ -1079,7 +1079,7 @@ func (e AccessControlCommandTypeContainer) Category() AccessControlCategory {
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldCategory(value AccessControlCategory) (AccessControlCommandTypeContainer, bool) {
+func AccessControlCommandTypeContainerFirstEnumForFieldCategory(value AccessControlCategory) (enum AccessControlCommandTypeContainer, ok bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.Category() == value {
 			return sizeValue, true

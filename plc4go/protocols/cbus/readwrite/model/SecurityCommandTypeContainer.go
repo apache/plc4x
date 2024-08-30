@@ -782,7 +782,7 @@ func (e SecurityCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func SecurityCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (SecurityCommandTypeContainer, bool) {
+func SecurityCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum SecurityCommandTypeContainer, ok bool) {
 	for _, sizeValue := range SecurityCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -1280,7 +1280,7 @@ func (e SecurityCommandTypeContainer) CommandType() SecurityCommandType {
 	}
 }
 
-func SecurityCommandTypeContainerFirstEnumForFieldCommandType(value SecurityCommandType) (SecurityCommandTypeContainer, bool) {
+func SecurityCommandTypeContainerFirstEnumForFieldCommandType(value SecurityCommandType) (enum SecurityCommandTypeContainer, ok bool) {
 	for _, sizeValue := range SecurityCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

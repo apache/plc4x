@@ -168,11 +168,9 @@ func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 		}
 	}
 
-	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("len", 16)
-	_ = len
-	if _lenErr != nil {
-		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of TPKTPacket")
+	len, err := ReadImplicitField[uint16](ctx, "len", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
 	}
 
 	// Simple Field (payload)

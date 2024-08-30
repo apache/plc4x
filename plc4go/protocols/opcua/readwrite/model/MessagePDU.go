@@ -165,11 +165,9 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(closeErr, "Error closing for chunk")
 	}
 
-	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("totalLength", 32)
-	_ = totalLength
-	if _totalLengthErr != nil {
-		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of MessagePDU")
+	totalLength, err := ReadImplicitField[uint32](ctx, "totalLength", ReadUnsignedInt(readBuffer, 32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,11 +159,9 @@ func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numBytes) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numBytes, _numBytesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numBytes", 6)
-	_ = numBytes
-	if _numBytesErr != nil {
-		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field of ApduDataMemoryResponse")
+	numBytes, err := ReadImplicitField[uint8](ctx, "numBytes", ReadUnsignedByte(readBuffer, 6))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBytes' field"))
 	}
 
 	// Simple Field (address)

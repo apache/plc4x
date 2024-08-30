@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -155,11 +157,9 @@ func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (policyLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	policyLength, _policyLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("policyLength", 32)
-	_ = policyLength
-	if _policyLengthErr != nil {
-		return nil, errors.Wrap(_policyLengthErr, "Error parsing 'policyLength' field of UserIdentityToken")
+	policyLength, err := ReadImplicitField[int32](ctx, "policyLength", ReadSignedInt(readBuffer, 32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyLength' field"))
 	}
 
 	// Simple Field (policyId)

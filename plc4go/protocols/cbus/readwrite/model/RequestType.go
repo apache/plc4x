@@ -103,7 +103,7 @@ func (e RequestType) ControlChar() uint8 {
 	}
 }
 
-func RequestTypeFirstEnumForFieldControlChar(value uint8) (RequestType, bool) {
+func RequestTypeFirstEnumForFieldControlChar(value uint8) (enum RequestType, ok bool) {
 	for _, sizeValue := range RequestTypeValues {
 		if sizeValue.ControlChar() == value {
 			return sizeValue, true

@@ -2175,7 +2175,7 @@ func (e KnxDatapointType) Number() uint16 {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldNumber(value uint16) (KnxDatapointType, bool) {
+func KnxDatapointTypeFirstEnumForFieldNumber(value uint16) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.Number() == value {
 			return sizeValue, true
@@ -3601,7 +3601,7 @@ func (e KnxDatapointType) Name() string {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldName(value string) (KnxDatapointType, bool) {
+func KnxDatapointTypeFirstEnumForFieldName(value string) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.Name() == value {
 			return sizeValue, true
@@ -5027,7 +5027,7 @@ func (e KnxDatapointType) DatapointMainType() KnxDatapointMainType {
 	}
 }
 
-func KnxDatapointTypeFirstEnumForFieldDatapointMainType(value KnxDatapointMainType) (KnxDatapointType, bool) {
+func KnxDatapointTypeFirstEnumForFieldDatapointMainType(value KnxDatapointMainType) (enum KnxDatapointType, ok bool) {
 	for _, sizeValue := range KnxDatapointTypeValues {
 		if sizeValue.DatapointMainType() == value {
 			return sizeValue, true

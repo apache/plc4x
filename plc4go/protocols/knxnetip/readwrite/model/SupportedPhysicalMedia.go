@@ -188,7 +188,7 @@ func (e SupportedPhysicalMedia) KnxSupport() bool {
 	}
 }
 
-func SupportedPhysicalMediaFirstEnumForFieldKnxSupport(value bool) (SupportedPhysicalMedia, bool) {
+func SupportedPhysicalMediaFirstEnumForFieldKnxSupport(value bool) (enum SupportedPhysicalMedia, ok bool) {
 	for _, sizeValue := range SupportedPhysicalMediaValues {
 		if sizeValue.KnxSupport() == value {
 			return sizeValue, true
@@ -290,7 +290,7 @@ func (e SupportedPhysicalMedia) Description() string {
 	}
 }
 
-func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (SupportedPhysicalMedia, bool) {
+func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (enum SupportedPhysicalMedia, ok bool) {
 	for _, sizeValue := range SupportedPhysicalMediaValues {
 		if sizeValue.Description() == value {
 			return sizeValue, true

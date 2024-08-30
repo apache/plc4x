@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -136,11 +138,9 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	}
 	objectId := _objectId
 
-	// Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	objectLength, _objectLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("objectLength", 8)
-	_ = objectLength
-	if _objectLengthErr != nil {
-		return nil, errors.Wrap(_objectLengthErr, "Error parsing 'objectLength' field of ModbusDeviceInformationObject")
+	objectLength, err := ReadImplicitField[uint8](ctx, "objectLength", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectLength' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(objectLength))

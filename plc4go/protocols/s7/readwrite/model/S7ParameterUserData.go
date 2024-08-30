@@ -157,11 +157,9 @@ func S7ParameterUserDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numItems", 8)
-	_ = numItems
-	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterUserData")
+	numItems, err := ReadImplicitField[uint8](ctx, "numItems", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
 	}
 
 	items, err := ReadCountArrayField[S7ParameterUserDataItem](ctx, "items", ReadComplex[S7ParameterUserDataItem](S7ParameterUserDataItemParseWithBuffer, readBuffer), uint64(numItems))

@@ -205,7 +205,7 @@ func (e OpcuaDataType) VariantType() uint8 {
 	}
 }
 
-func OpcuaDataTypeFirstEnumForFieldVariantType(value uint8) (OpcuaDataType, bool) {
+func OpcuaDataTypeFirstEnumForFieldVariantType(value uint8) (enum OpcuaDataType, ok bool) {
 	for _, sizeValue := range OpcuaDataTypeValues {
 		if sizeValue.VariantType() == value {
 			return sizeValue, true

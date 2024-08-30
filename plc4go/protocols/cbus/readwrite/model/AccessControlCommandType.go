@@ -109,7 +109,7 @@ func (e AccessControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func AccessControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AccessControlCommandType, bool) {
+func AccessControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum AccessControlCommandType, ok bool) {
 	for _, sizeValue := range AccessControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

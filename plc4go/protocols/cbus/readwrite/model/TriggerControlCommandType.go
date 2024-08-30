@@ -91,7 +91,7 @@ func (e TriggerControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TriggerControlCommandType, bool) {
+func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (enum TriggerControlCommandType, ok bool) {
 	for _, sizeValue := range TriggerControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
 			return sizeValue, true

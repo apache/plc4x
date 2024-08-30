@@ -86,7 +86,7 @@ func (e ErrorReportingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func ErrorReportingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ErrorReportingCommandTypeContainer, bool) {
+func ErrorReportingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum ErrorReportingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range ErrorReportingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -120,7 +120,7 @@ func (e ErrorReportingCommandTypeContainer) CommandType() ErrorReportingCommandT
 	}
 }
 
-func ErrorReportingCommandTypeContainerFirstEnumForFieldCommandType(value ErrorReportingCommandType) (ErrorReportingCommandTypeContainer, bool) {
+func ErrorReportingCommandTypeContainerFirstEnumForFieldCommandType(value ErrorReportingCommandType) (enum ErrorReportingCommandTypeContainer, ok bool) {
 	for _, sizeValue := range ErrorReportingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true

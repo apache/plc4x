@@ -176,7 +176,7 @@ func (e AirConditioningCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func AirConditioningCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AirConditioningCommandTypeContainer, bool) {
+func AirConditioningCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (enum AirConditioningCommandTypeContainer, ok bool) {
 	for _, sizeValue := range AirConditioningCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
 			return sizeValue, true
@@ -270,7 +270,7 @@ func (e AirConditioningCommandTypeContainer) CommandType() AirConditioningComman
 	}
 }
 
-func AirConditioningCommandTypeContainerFirstEnumForFieldCommandType(value AirConditioningCommandType) (AirConditioningCommandTypeContainer, bool) {
+func AirConditioningCommandTypeContainerFirstEnumForFieldCommandType(value AirConditioningCommandType) (enum AirConditioningCommandTypeContainer, ok bool) {
 	for _, sizeValue := range AirConditioningCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
 			return sizeValue, true
