@@ -809,25 +809,32 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 				<#if arrayElementTypeReference.isByteBased()>
 					<#if !field.isCountArrayField() && !field.isLengthArrayField()>${helper.fail("array fields of type byte only support 'count' and 'length' loop-types.")}</#if>
-	${namedField.name},err := readBuffer.ReadByteArray("${namedField.name}", int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := readBuffer.ReadByteArray("${namedField.name}", int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 				<#else>
 				<#-- If this is a count array, we can directly initialize an array with the given size -->
 					<#if field.isCountArrayField()>
-	${arrayField.name},err := ReadCountArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, uint64(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	${arrayField.name},err := ReadCountArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, uint64(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 					<#-- In all other cases do we have to work with a list, that is later converted to an array -->
 					<#else>
 					<#-- For a length array, we read data till the read position of the buffer reaches a given position -->
 						<#if field.isLengthArrayField()>
-	${arrayField.name},err := ReadLengthArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	${arrayField.name},err := ReadLengthArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 						<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 						<#elseif field.isTerminatedArrayField()>
-	${arrayField.name},err := ReadTerminatedArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, func() bool {return ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)});
+	${arrayField.name},err := ReadTerminatedArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, func() bool {return ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)})
 						</#if>
 					</#if>
 				</#if>
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))
 	}
+				<#break>
+			<#case "assert">
+				<#assign assertField = field.asAssertField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
+
+	${namedField.name} := Read${field.typeName?cap_first}Field(ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field.asChecksumField().orElseThrow()>
