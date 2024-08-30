@@ -7,7 +7,7 @@
  * "License"); you may not use this file except in compliance
  * with the License.  You may obtain a copy of the License at
  *
- *   https://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing,
  * software distributed under the License is distributed on an
@@ -16,16 +16,12 @@
  * specific language governing permissions and limitations
  * under the License.
  */
+
 package org.apache.plc4x.java.spi.codegen.io;
 
-import org.apache.plc4x.java.spi.generation.SerializationException;
 import org.apache.plc4x.java.spi.generation.WithWriterArgs;
-import org.apache.plc4x.java.spi.generation.WriteBuffer;
 
-public interface DataWriter<T> extends ByteOrderAware, ContextWriter {
-
-    void write(String logicalName, T value, WithWriterArgs... writerArgs) throws SerializationException;
-
-    WriteBuffer getWriteBuffer();
-
+public interface ContextWriter {
+    void pushContext(String logicalName, WithWriterArgs... writerArgs);
+    void popContext(String logicalName, WithWriterArgs... writerArgs);
 }
