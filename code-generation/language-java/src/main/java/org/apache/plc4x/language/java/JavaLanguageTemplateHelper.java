@@ -168,7 +168,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
     }
 
     public String getPlcValueTypeForTypeReference(TypeReference typeReference) {
-        if(typeReference.isArrayTypeReference() && typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased()) {
+        if (typeReference.isArrayTypeReference() && typeReference.asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased()) {
             return "PlcRawByteArray";
         }
         if (!(typeReference instanceof SimpleTypeReference)) {
@@ -593,9 +593,9 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public boolean isRawByteArray(DiscriminatedComplexTypeDefinition currentCase) {
         Optional<Field> valueFieldOptional = currentCase.getFields().stream().filter(field -> field.isNamedField() && field.asNamedField().orElseThrow().getName().equals("value")).findFirst();
-        if(valueFieldOptional.isPresent()) {
+        if (valueFieldOptional.isPresent()) {
             Field valueField = valueFieldOptional.get();
-            if(valueField.isTypedField()) {
+            if (valueField.isTypedField()) {
                 TypedField typedField = valueField.asTypedField().orElseThrow();
                 return typedField.getType().isArrayTypeReference() && typedField.getType().asArrayTypeReference().orElseThrow().getElementTypeReference().isByteBased();
             }
@@ -605,7 +605,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getDataIoPropertyValue(PropertyField propertyField) {
         TypeReference propertyFieldType = propertyField.getType();
-        if(propertyFieldType.isSimpleTypeReference()) {
+        if (propertyFieldType.isSimpleTypeReference()) {
             SimpleTypeReference simpleTypeReference = propertyFieldType.asSimpleTypeReference().orElseThrow();
             switch (propertyField.getName()) {
                 case "value":
@@ -632,25 +632,25 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
                 case "millisecondsOfSecond":
                     return "_value.getTime().get(ChronoField.MILLI_OF_SECOND)";
                 case "millisecondsSinceMidnight":
-                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                    if (simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getTime().getLong(ChronoField.MILLI_OF_DAY)";
                     } else {
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.MILLI_OF_DAY))";
                     }
                 case "nanoseconds":
-                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                    if (simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getDuration().toNanos()";
                     } else {
                         return "BigInteger.valueOf(_value.getDuration().toNanos())";
                     }
                 case "nanosecondsSinceMidnight":
-                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                    if (simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getTime().getLong(ChronoField.NANO_OF_DAY)";
                     } else {
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_DAY))";
                     }
                 case "nannosecondsOfSecond":
-                    if(simpleTypeReference.getSizeInBits() <= 63) {
+                    if (simpleTypeReference.getSizeInBits() <= 63) {
                         return "_value.getTime().getLong(ChronoField.NANO_OF_SECOND)";
                     } else {
                         return "BigInteger.valueOf(_value.getTime().getLong(ChronoField.NANO_OF_SECOND))";
@@ -1348,21 +1348,20 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
 
     public String getFieldOptions(TypedField field, List<Argument> parserArguments) {
         StringBuilder sb = new StringBuilder();
-        final Optional<Term> encodingOptional = field.getEncoding();
-        if (encodingOptional.isPresent()) {
-            final String encoding = toParseExpression(field, field.getType(), encodingOptional.get(), parserArguments);
+        field.getEncoding().ifPresent(term -> {
+            final String encoding = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", WithOption.WithEncoding(").append(encoding).append(")");
-        }
-        final Optional<Term> byteOrderOptional = field.getByteOrder();
-        if (byteOrderOptional.isPresent()) {
-            final String byteOrder = toParseExpression(field, field.getType(), byteOrderOptional.get(), parserArguments);
+        });
+
+        field.getByteOrder().ifPresent(term -> {
+            final String byteOrder = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", WithOption.WithByteOrder(").append(byteOrder).append(")");
-        }
-        final Optional<Term> nullBytesHexOptional = field.getAttribute("nullBytesHex");
-        if (nullBytesHexOptional.isPresent()) {
-            final String nullBytesHex = toParseExpression(field, field.getType(), nullBytesHexOptional.get(), parserArguments);
+        });
+
+        field.getAttribute("nullBytesHex").ifPresent(term -> {
+            final String nullBytesHex = toParseExpression(field, field.getType(), term, parserArguments);
             sb.append(", WithOption.WithNullBytesHex(\"").append(nullBytesHex).append("\")");
-        }
+        });
         return sb.toString();
     }
 
