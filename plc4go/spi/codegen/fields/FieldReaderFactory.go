@@ -65,8 +65,13 @@ func ReadAssertField[T comparable](ctx context.Context, logicalName string, data
 	return NewFieldReaderAssert[T](log).ReadAssertField(ctx, logicalName, dataReader, expectedValue, readerArgs...)
 }
 
-func ReadChecksumField[T comparable](ctx context.Context, logicalName string, dataReader io.DataReader[T], expectedValue T, readerArgs ...utils.WithReaderArgs) (T, error) {
+func ReadChecksumField[T comparable](ctx context.Context, logicalName string, dataReader io.DataReader[T], expectedValueProducer func() (expectedValue T, err error), readerArgs ...utils.WithReaderArgs) (T, error) {
 	log := *zerolog.Ctx(ctx)
+	var zero T
+	expectedValue, err := expectedValueProducer()
+	if err != nil {
+		return zero, err
+	}
 	return NewFieldReaderChecksum[T](log).ReadChecksumField(ctx, logicalName, dataReader, expectedValue, readerArgs...)
 }
 

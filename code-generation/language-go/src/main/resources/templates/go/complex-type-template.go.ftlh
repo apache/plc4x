@@ -826,7 +826,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 					</#if>
 				</#if>
 	if err != nil {
-		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "assert">
@@ -834,48 +834,34 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name} := Read${field.typeName?cap_first}Field(ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
+	${namedField.name} := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+	}
+	_ = ${namedField.name}
 				<#break>
 			<#case "checksum">
 				<#assign checksumField = field.asChecksumField().orElseThrow()>
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name} := Read${field.typeName?cap_first}Field("${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, (${helper.getLanguageTypeNameForField(field)}) (${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+	}
 	_ = ${namedField.name}
 			<#break>
 			<#case "const">
 				<#assign constField = field.asConstField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Const Field (${constField.name})
-				<#if constField.type.isEnumTypeReference()>
-                    <#--<#assign constField=constField.asEnumField().orElseThrow()>-->
-					<#-- TODO: finish me-->
-                    <#if false && constField.fieldName.isPresent()>
-	${constField.name}${constField.fieldName.orElseThrow()?cap_first}, _${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err := ${helper.getReadBufferReadMethodCall(constField.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName.orElseThrow()), constField)}
-	if _${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err != nil {
-		return nil, errors.Wrap(_${constField.name}${constField.fieldName.orElseThrow()?cap_first}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	${namedField.name},err := read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
-	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}FirstEnumForField${constField.fieldName.orElseThrow()?cap_first}(${constField.name}${constField.fieldName.orElseThrow()?cap_first})
-	if _${constField.name}Err != nil {
-		return nil, errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-                    <#else>
-	${constField.name}, _${constField.name}Err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
-	if _${constField.name}Err != nil {
-		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-                    </#if> 
-				<#else>
-	${constField.name}, _${constField.name}Err := ${helper.getReadBufferReadMethodCall(constField.name, constField.type.asSimpleTypeReference().orElseThrow(), constField)}
-				</#if>
-	if _${constField.name}Err != nil {
-		return nil, errors.Wrap(_${constField.name}Err, "Error parsing '${constField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	if ${constField.name} != ${type.name}_${constField.name?upper_case} {
-		return nil, errors.New("Expected constant value " + fmt.Sprintf("%<#if constField.type.isBooleanTypeReference()>t<#else>d</#if>", ${type.name}_${constField.name?upper_case}) + " but got " + fmt.Sprintf("%<#if constField.type.isBooleanTypeReference()>t<#else>d</#if>", ${constField.name}))<@emitImport import="github.com/pkg/errors" /><@emitImport import="fmt" />
-	}
-				<#break>
+	_ = ${namedField.name}
+			<#break>
 			<#case "discriminator">
 				<#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
 
@@ -1523,19 +1509,14 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "checksum">
 					<#assign checksumField = field.asChecksumField().orElseThrow()>
-					<#assign simpleTypeReference = checksumField.type.asSimpleTypeReference().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
 	// Checksum Field (checksum) (Calculated)
-	{
-		_checksum, _checksumErr := ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}
-		if _checksumErr != nil {
-			return errors.Wrap(_checksumErr, "Checksum calculation failed")<@emitImport import="github.com/pkg/errors" />
- 		}
-		_checksumWriteErr := ${helper.getWriteBufferWriteMethodCall("checksum", simpleTypeReference, "(_checksum)", checksumField)}
-		if _checksumWriteErr != nil {
-			return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
-		}
+	if err:= WriteChecksumField(ctx, "${namedField.name}", ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
+					<#break>
 					<#break>
 				<#case "const">
 					<#assign constField = field.asConstField().orElseThrow()>
