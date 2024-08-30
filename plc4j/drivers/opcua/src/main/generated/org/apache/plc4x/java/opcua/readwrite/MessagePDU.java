@@ -119,9 +119,7 @@ public abstract class MessagePDU implements Message {
 
     ChunkType chunk =
         readEnumField(
-            "chunk",
-            "ChunkType",
-            new DataReaderEnumDefault<>(ChunkType::enumForValue, readString(readBuffer, 8)));
+            "chunk", "ChunkType", readEnum(ChunkType::enumForValue, readString(readBuffer, 8)));
 
     long totalLength = readImplicitField("totalLength", readUnsignedLong(readBuffer, 32));
 

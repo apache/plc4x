@@ -148,7 +148,7 @@ public class LightingDataLabel extends LightingData implements Message {
     Language language =
         readOptionalField(
             "language",
-            new DataReaderEnumDefault<>(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
             (labelOptions.getLabelType()) != (LightingLabelType.LOAD_DYNAMIC_ICON));
 
     byte[] data =

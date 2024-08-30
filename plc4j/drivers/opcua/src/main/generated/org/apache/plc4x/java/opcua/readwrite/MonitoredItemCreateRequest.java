@@ -133,8 +133,7 @@ public class MonitoredItemCreateRequest extends ExtensionObjectDefinition implem
         readEnumField(
             "monitoringMode",
             "MonitoringMode",
-            new DataReaderEnumDefault<>(
-                MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExtensionObjectDefinition requestedParameters =
         readSimpleField(

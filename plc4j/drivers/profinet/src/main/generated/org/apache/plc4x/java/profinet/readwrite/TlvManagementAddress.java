@@ -166,8 +166,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
         readEnumField(
             "addressSubType",
             "ManagementAddressSubType",
-            new DataReaderEnumDefault<>(
-                ManagementAddressSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ManagementAddressSubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IpAddress ipAddress =
         readSimpleField(

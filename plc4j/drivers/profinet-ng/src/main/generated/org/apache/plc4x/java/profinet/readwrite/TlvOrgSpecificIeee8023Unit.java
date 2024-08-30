@@ -95,8 +95,7 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
         readDiscriminatorEnumField(
             "subType",
             "TlvIEEESubType",
-            new DataReaderEnumDefault<>(
-                TlvIEEESubType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(TlvIEEESubType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     TlvOrgSpecificIeee8023UnitBuilder builder = null;

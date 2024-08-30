@@ -114,8 +114,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
         readEnumField(
             "permissions",
             "PermissionType",
-            new DataReaderEnumDefault<>(
-                PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(PermissionType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("RolePermissionType");
     // Create the instance

@@ -161,8 +161,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
         readDiscriminatorEnumField(
             "serviceId",
             "PnDcp_ServiceId",
-            new DataReaderEnumDefault<>(
-                PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(PnDcp_ServiceId::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     PnDcp_ServiceType serviceType =

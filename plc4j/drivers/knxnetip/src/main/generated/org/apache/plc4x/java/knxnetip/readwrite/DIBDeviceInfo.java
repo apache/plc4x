@@ -218,7 +218,7 @@ public class DIBDeviceInfo implements Message {
         readEnumField(
             "knxMedium",
             "KnxMedium",
-            new DataReaderEnumDefault<>(KnxMedium::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(KnxMedium::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DeviceStatus deviceStatus =
         readSimpleField(

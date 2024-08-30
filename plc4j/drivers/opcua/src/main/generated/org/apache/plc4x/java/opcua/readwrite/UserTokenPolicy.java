@@ -156,8 +156,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
         readEnumField(
             "tokenType",
             "UserTokenType",
-            new DataReaderEnumDefault<>(
-                UserTokenType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(UserTokenType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString issuedTokenType =
         readSimpleField(

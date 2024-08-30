@@ -158,8 +158,7 @@ public class CipWriteRequest extends CipService implements Message {
         readEnumField(
             "dataType",
             "CIPDataTypeCode",
-            new DataReaderEnumDefault<>(
-                CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     int elementNb = readSimpleField("elementNb", readUnsignedInt(readBuffer, 16));
 

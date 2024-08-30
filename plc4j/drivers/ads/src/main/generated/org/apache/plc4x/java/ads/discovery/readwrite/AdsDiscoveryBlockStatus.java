@@ -114,9 +114,7 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
 
     Status status =
         readEnumField(
-            "status",
-            "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedLong(readBuffer, 32)));
+            "status", "Status", readEnum(Status::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AdsDiscoveryBlockStatus");
     // Create the instance

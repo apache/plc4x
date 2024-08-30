@@ -174,8 +174,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         readEnumField(
             "browseDirection",
             "BrowseDirection",
-            new DataReaderEnumDefault<>(
-                BrowseDirection::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(BrowseDirection::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     NodeId referenceTypeId =
         readSimpleField(

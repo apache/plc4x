@@ -138,15 +138,13 @@ public class LevelInformationNormal extends LevelInformation implements Message 
         readEnumField(
             "pair1",
             "LevelInformationNibblePair",
-            new DataReaderEnumDefault<>(
-                LevelInformationNibblePair::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(LevelInformationNibblePair::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     LevelInformationNibblePair pair2 =
         readEnumField(
             "pair2",
             "LevelInformationNibblePair",
-            new DataReaderEnumDefault<>(
-                LevelInformationNibblePair::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(LevelInformationNibblePair::enumForValue, readUnsignedShort(readBuffer, 8)));
     short actualLevel =
         readVirtualField(
             "actualLevel",

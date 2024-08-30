@@ -109,8 +109,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
         readEnumField(
             "result",
             "ReturnCode",
-            new DataReaderEnumDefault<>(
-                ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AdsWriteControlResponse");
     // Create the instance

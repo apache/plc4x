@@ -91,8 +91,7 @@ public class ZoneStatus implements Message {
         readEnumField(
             "value",
             "ZoneStatusTemp",
-            new DataReaderEnumDefault<>(
-                ZoneStatusTemp::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(ZoneStatusTemp::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     readBuffer.closeContext("ZoneStatus");
     // Create the instance

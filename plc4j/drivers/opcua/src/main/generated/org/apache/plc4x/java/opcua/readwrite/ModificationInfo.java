@@ -128,8 +128,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
         readEnumField(
             "updateType",
             "HistoryUpdateType",
-            new DataReaderEnumDefault<>(
-                HistoryUpdateType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(HistoryUpdateType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString userName =
         readSimpleField(

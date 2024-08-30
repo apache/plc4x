@@ -99,7 +99,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
         readEnumField(
             "state",
             "NMTState",
-            new DataReaderEnumDefault<>(NMTState::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(NMTState::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("CANOpenHeartbeatPayload");
     // Create the instance

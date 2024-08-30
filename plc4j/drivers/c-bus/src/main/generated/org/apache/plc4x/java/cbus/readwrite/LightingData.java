@@ -118,8 +118,7 @@ public abstract class LightingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "LightingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                LightingCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(LightingCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     LightingCommandType commandType =
         readVirtualField(
             "commandType", LightingCommandType.class, commandTypeContainer.getCommandType());

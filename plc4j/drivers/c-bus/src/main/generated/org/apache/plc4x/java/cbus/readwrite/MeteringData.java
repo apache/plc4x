@@ -130,8 +130,7 @@ public abstract class MeteringData implements Message {
         readEnumField(
             "commandTypeContainer",
             "MeteringCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                MeteringCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(MeteringCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     MeteringCommandType commandType =
         readVirtualField(
             "commandType", MeteringCommandType.class, commandTypeContainer.getCommandType());

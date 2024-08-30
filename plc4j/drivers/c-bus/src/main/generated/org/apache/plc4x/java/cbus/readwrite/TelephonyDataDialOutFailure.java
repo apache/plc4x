@@ -101,8 +101,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
         readEnumField(
             "reason",
             "DialOutFailureReason",
-            new DataReaderEnumDefault<>(
-                DialOutFailureReason::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DialOutFailureReason::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("TelephonyDataDialOutFailure");
     // Create the instance

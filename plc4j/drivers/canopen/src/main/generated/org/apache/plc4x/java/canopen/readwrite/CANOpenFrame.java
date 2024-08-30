@@ -161,8 +161,7 @@ public class CANOpenFrame implements Message {
         readEnumField(
             "service",
             "CANOpenService",
-            new DataReaderEnumDefault<>(
-                CANOpenService::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(CANOpenService::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     byte alignment =

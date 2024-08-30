@@ -142,28 +142,22 @@ public class RequestReset extends Request implements Message {
 
     RequestType tildePeek =
         readPeekField(
-            "tildePeek",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "tildePeek", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType secondTilde =
         readOptionalField(
             "secondTilde",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (tildePeek) == (RequestType.RESET));
 
     RequestType tildePeek2 =
         readPeekField(
-            "tildePeek2",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "tildePeek2", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType thirdTilde =
         readOptionalField(
             "thirdTilde",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (tildePeek2) == (RequestType.RESET));
 
     readBuffer.closeContext("RequestReset");

@@ -201,8 +201,7 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
         readEnumField(
             "humidityType",
             "HVACHumidityType",
-            new DataReaderEnumDefault<>(
-                HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACHumidity level =
         readOptionalField(

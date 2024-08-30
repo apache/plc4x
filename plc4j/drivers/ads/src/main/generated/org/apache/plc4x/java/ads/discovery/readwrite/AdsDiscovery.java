@@ -208,7 +208,7 @@ public class AdsDiscovery implements Message {
         readEnumField(
             "operation",
             "Operation",
-            new DataReaderEnumDefault<>(Operation::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Operation::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     AmsNetId amsNetId =
@@ -221,8 +221,7 @@ public class AdsDiscovery implements Message {
         readEnumField(
             "portNumber",
             "AdsPortNumbers",
-            new DataReaderEnumDefault<>(
-                AdsPortNumbers::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(AdsPortNumbers::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     long numBlocks =

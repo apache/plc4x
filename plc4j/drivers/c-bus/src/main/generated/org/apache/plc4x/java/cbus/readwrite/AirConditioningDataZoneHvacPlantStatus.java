@@ -161,7 +161,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
         readEnumField(
             "hvacType",
             "HVACType",
-            new DataReaderEnumDefault<>(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACStatusFlags hvacStatus =
         readSimpleField(
@@ -171,7 +171,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
         readEnumField(
             "hvacErrorCode",
             "HVACError",
-            new DataReaderEnumDefault<>(HVACError::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACError::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("AirConditioningDataZoneHvacPlantStatus");
     // Create the instance

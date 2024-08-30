@@ -177,8 +177,7 @@ public abstract class LDataFrame implements Message {
         readEnumField(
             "priority",
             "CEMIPriority",
-            new DataReaderEnumDefault<>(
-                CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     boolean acknowledgeRequested = readSimpleField("acknowledgeRequested", readBoolean(readBuffer));
 

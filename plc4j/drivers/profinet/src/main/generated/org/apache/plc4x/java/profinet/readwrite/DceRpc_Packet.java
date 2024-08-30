@@ -624,8 +624,7 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "packetType",
             "DceRpc_PacketType",
-            new DataReaderEnumDefault<>(
-                DceRpc_PacketType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(DceRpc_PacketType::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Boolean reservedField0 =
@@ -704,24 +703,21 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "integerEncoding",
             "IntegerEncoding",
-            new DataReaderEnumDefault<>(
-                IntegerEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(IntegerEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     CharacterEncoding characterEncoding =
         readEnumField(
             "characterEncoding",
             "CharacterEncoding",
-            new DataReaderEnumDefault<>(
-                CharacterEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(CharacterEncoding::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     FloatingPointEncoding floatingPointEncoding =
         readEnumField(
             "floatingPointEncoding",
             "FloatingPointEncoding",
-            new DataReaderEnumDefault<>(
-                FloatingPointEncoding::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(FloatingPointEncoding::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Short reservedField4 =
@@ -797,8 +793,7 @@ public class DceRpc_Packet implements Message {
         readEnumField(
             "operation",
             "DceRpc_Operation",
-            new DataReaderEnumDefault<>(
-                DceRpc_Operation::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(DceRpc_Operation::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(
                 (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))
                     ? ByteOrder.BIG_ENDIAN

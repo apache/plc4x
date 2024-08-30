@@ -125,8 +125,7 @@ public class BACnetTagPayloadCharacterString implements Message {
         readEnumField(
             "encoding",
             "BACnetCharacterEncoding",
-            new DataReaderEnumDefault<>(
-                BACnetCharacterEncoding::enumForValue, readByte(readBuffer, 8)));
+            readEnum(BACnetCharacterEncoding::enumForValue, readByte(readBuffer, 8)));
     int actualLengthInBit =
         readVirtualField("actualLengthInBit", int.class, ((actualLength) * (8)) - (8));
 

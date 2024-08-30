@@ -122,8 +122,7 @@ public class StatusRequestBinaryStateDeprecated extends StatusRequest implements
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField1 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x00);
 

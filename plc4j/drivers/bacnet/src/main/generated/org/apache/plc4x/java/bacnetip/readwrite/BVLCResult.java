@@ -98,8 +98,7 @@ public class BVLCResult extends BVLC implements Message {
         readEnumField(
             "code",
             "BVLCResultCode",
-            new DataReaderEnumDefault<>(
-                BVLCResultCode::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(BVLCResultCode::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("BVLCResult");

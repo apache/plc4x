@@ -138,8 +138,7 @@ public class CBusHeader implements Message {
         readEnumField(
             "priorityClass",
             "PriorityClass",
-            new DataReaderEnumDefault<>(
-                PriorityClass::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(PriorityClass::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     boolean dp = readSimpleField("dp", readBoolean(readBuffer));
 
@@ -149,8 +148,7 @@ public class CBusHeader implements Message {
         readEnumField(
             "destinationAddressType",
             "DestinationAddressType",
-            new DataReaderEnumDefault<>(
-                DestinationAddressType::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(DestinationAddressType::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("CBusHeader");
     // Create the instance

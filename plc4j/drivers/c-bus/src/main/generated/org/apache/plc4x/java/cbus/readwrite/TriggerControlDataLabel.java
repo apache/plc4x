@@ -150,7 +150,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
     Language language =
         readOptionalField(
             "language",
-            new DataReaderEnumDefault<>(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Language::enumForValue, readUnsignedShort(readBuffer, 8)),
             (triggerControlOptions.getLabelType()) != (TriggerControlLabelType.LOAD_DYNAMIC_ICON));
 
     byte[] data =

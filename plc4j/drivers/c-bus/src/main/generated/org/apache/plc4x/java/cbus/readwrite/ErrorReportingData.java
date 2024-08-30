@@ -118,7 +118,7 @@ public abstract class ErrorReportingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "ErrorReportingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     ErrorReportingCommandType commandType =

@@ -128,7 +128,7 @@ public class ErrorReportingSystemCategory implements Message {
         readEnumField(
             "systemCategoryClass",
             "ErrorReportingSystemCategoryClass",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryClass::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     ErrorReportingSystemCategoryType systemCategoryType =
@@ -144,7 +144,7 @@ public class ErrorReportingSystemCategory implements Message {
         readEnumField(
             "systemCategoryVariant",
             "ErrorReportingSystemCategoryVariant",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryVariant::enumForValue,
                 readUnsignedByte(readBuffer, 2)));
 

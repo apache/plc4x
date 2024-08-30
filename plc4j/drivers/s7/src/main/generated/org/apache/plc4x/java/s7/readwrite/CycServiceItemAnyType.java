@@ -166,8 +166,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
         readEnumField(
             "memoryArea",
             "MemoryArea",
-            new DataReaderEnumDefault<>(
-                MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     int address = readSimpleField("address", readUnsignedInt(readBuffer, 24));
 

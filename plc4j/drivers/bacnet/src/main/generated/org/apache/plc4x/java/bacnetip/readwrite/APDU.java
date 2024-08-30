@@ -97,7 +97,7 @@ public abstract class APDU implements Message {
         readDiscriminatorEnumField(
             "apduType",
             "ApduType",
-            new DataReaderEnumDefault<>(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(ApduType::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     APDUBuilder builder = null;

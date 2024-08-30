@@ -137,15 +137,14 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
         readEnumField(
             "requestMid",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     ApplicationCommunicationError error =
         readEnumField(
             "error",
             "ApplicationCommunicationError",
-            new DataReaderEnumDefault<>(
-                ApplicationCommunicationError::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(ApplicationCommunicationError::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageApplicationCommandErrorRev1");

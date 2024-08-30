@@ -185,15 +185,13 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         readEnumField(
             "requestType",
             "SecurityTokenRequestType",
-            new DataReaderEnumDefault<>(
-                SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(SecurityTokenRequestType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     MessageSecurityMode securityMode =
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalByteString clientNonce =
         readSimpleField(

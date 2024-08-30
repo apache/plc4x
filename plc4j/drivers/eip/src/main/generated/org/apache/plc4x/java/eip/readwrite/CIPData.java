@@ -106,8 +106,7 @@ public class CIPData implements Message {
         readEnumField(
             "dataType",
             "CIPDataTypeCode",
-            new DataReaderEnumDefault<>(
-                CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(CIPDataTypeCode::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((packetLength) - (2)));
 

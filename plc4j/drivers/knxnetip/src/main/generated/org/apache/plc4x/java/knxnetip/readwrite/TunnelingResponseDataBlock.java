@@ -131,9 +131,7 @@ public class TunnelingResponseDataBlock implements Message {
 
     Status status =
         readEnumField(
-            "status",
-            "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "status", "Status", readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("TunnelingResponseDataBlock");
     // Create the instance

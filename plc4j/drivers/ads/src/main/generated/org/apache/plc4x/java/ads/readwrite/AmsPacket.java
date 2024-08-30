@@ -298,7 +298,7 @@ public abstract class AmsPacket implements Message {
         readDiscriminatorEnumField(
             "commandId",
             "CommandId",
-            new DataReaderEnumDefault<>(CommandId::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(CommandId::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     boolean initCommand =
         readConstField("initCommand", readBoolean(readBuffer), AmsPacket.INITCOMMAND);

@@ -117,8 +117,7 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
         readEnumField(
             "vendorId",
             "BACnetVendorId",
-            new DataReaderEnumDefault<>(
-                BACnetVendorId::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(BACnetVendorId::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     byte[] proprietaryMessage =
         readBuffer.readByteArray(

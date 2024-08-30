@@ -111,8 +111,7 @@ public abstract class BACnetConfirmedServiceRequest implements Message {
         readDiscriminatorEnumField(
             "serviceChoice",
             "BACnetConfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
     long serviceRequestPayloadLength =
         readVirtualField(
             "serviceRequestPayloadLength",

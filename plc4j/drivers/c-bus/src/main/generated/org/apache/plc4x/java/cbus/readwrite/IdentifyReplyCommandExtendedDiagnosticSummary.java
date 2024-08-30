@@ -390,15 +390,13 @@ public class IdentifyReplyCommandExtendedDiagnosticSummary extends IdentifyReply
         readEnumField(
             "lowApplication",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ApplicationIdContainer highApplication =
         readEnumField(
             "highApplication",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte area = readSimpleField("area", readByte(readBuffer, 8));
 

@@ -135,8 +135,7 @@ public class COTPPacketConnectionRequest extends COTPPacket implements Message {
         readEnumField(
             "protocolClass",
             "COTPProtocolClass",
-            new DataReaderEnumDefault<>(
-                COTPProtocolClass::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(COTPProtocolClass::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("COTPPacketConnectionRequest");
     // Create the instance

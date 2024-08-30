@@ -159,8 +159,7 @@ public class TriggerControlLabelOptions implements Message {
         readEnumField(
             "labelFlavour",
             "TriggerControlLabelFlavour",
-            new DataReaderEnumDefault<>(
-                TriggerControlLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(TriggerControlLabelFlavour::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField1 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);
@@ -172,8 +171,7 @@ public class TriggerControlLabelOptions implements Message {
         readEnumField(
             "labelType",
             "TriggerControlLabelType",
-            new DataReaderEnumDefault<>(
-                TriggerControlLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(TriggerControlLabelType::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     Boolean reservedField3 =
         readReservedField("reserved", readBoolean(readBuffer), (boolean) false);

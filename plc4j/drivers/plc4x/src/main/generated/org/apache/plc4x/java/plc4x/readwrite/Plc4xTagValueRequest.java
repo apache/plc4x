@@ -125,8 +125,7 @@ public class Plc4xTagValueRequest implements Message {
         readEnumField(
             "valueType",
             "Plc4xValueType",
-            new DataReaderEnumDefault<>(
-                Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     PlcValue value =
         readOptionalField(

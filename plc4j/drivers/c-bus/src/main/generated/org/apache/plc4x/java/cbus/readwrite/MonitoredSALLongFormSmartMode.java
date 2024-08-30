@@ -227,8 +227,7 @@ public class MonitoredSALLongFormSmartMode extends MonitoredSAL implements Messa
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedByte = readOptionalField("reservedByte", readByte(readBuffer, 8), isUnitAddress);
     // Validation

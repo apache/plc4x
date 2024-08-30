@@ -113,8 +113,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
         readEnumField(
             "command",
             "SDOResponseCommand",
-            new DataReaderEnumDefault<>(
-                SDOResponseCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(SDOResponseCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     SDOResponse response =
         readSimpleField(

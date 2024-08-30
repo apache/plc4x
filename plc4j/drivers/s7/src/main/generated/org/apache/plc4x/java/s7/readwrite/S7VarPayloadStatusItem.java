@@ -93,8 +93,7 @@ public class S7VarPayloadStatusItem implements Message {
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("S7VarPayloadStatusItem");
     // Create the instance

@@ -210,8 +210,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         readEnumField(
             "applicationType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(

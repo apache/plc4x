@@ -245,8 +245,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         readEnumField(
             "dataSetFieldContentMask",
             "DataSetFieldContentMask",
-            new DataReaderEnumDefault<>(
-                DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(DataSetFieldContentMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     long keyFrameCount = readSimpleField("keyFrameCount", readUnsignedLong(readBuffer, 32));
 

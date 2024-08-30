@@ -130,8 +130,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
         readEnumField(
             "serverState",
             "ServerState",
-            new DataReaderEnumDefault<>(
-                ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("RedundantServerDataType");
     // Create the instance

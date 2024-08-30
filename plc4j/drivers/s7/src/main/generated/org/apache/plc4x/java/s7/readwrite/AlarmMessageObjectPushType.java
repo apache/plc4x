@@ -224,8 +224,7 @@ public class AlarmMessageObjectPushType implements Message {
         readEnumField(
             "syntaxId",
             "SyntaxIdType",
-            new DataReaderEnumDefault<>(
-                SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short numberOfValues = readSimpleField("numberOfValues", readUnsignedShort(readBuffer, 8));
 

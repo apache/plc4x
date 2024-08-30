@@ -143,7 +143,7 @@ public abstract class AccessControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "AccessControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 AccessControlCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     AccessControlCommandType commandType =
         readVirtualField(

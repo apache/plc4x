@@ -106,8 +106,7 @@ public class ModbusPDUError extends ModbusPDU implements Message {
         readEnumField(
             "exceptionCode",
             "ModbusErrorCode",
-            new DataReaderEnumDefault<>(
-                ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ModbusErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("ModbusPDUError");
     // Create the instance

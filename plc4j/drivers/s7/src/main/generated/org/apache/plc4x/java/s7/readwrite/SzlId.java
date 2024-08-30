@@ -122,8 +122,7 @@ public class SzlId implements Message {
         readEnumField(
             "typeClass",
             "SzlModuleTypeClass",
-            new DataReaderEnumDefault<>(
-                SzlModuleTypeClass::enumForValue, readUnsignedByte(readBuffer, 4)));
+            readEnum(SzlModuleTypeClass::enumForValue, readUnsignedByte(readBuffer, 4)));
 
     byte sublistExtract = readSimpleField("sublistExtract", readUnsignedByte(readBuffer, 4));
 
@@ -131,8 +130,7 @@ public class SzlId implements Message {
         readEnumField(
             "sublistList",
             "SzlSublist",
-            new DataReaderEnumDefault<>(
-                SzlSublist::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SzlSublist::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("SzlId");
     // Create the instance

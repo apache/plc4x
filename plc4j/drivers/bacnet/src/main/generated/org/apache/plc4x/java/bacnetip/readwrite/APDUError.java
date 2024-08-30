@@ -148,8 +148,7 @@ public class APDUError extends APDU implements Message {
         readEnumField(
             "errorChoice",
             "BACnetConfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     BACnetError error =
         readSimpleField(

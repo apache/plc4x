@@ -122,8 +122,7 @@ public class CBusPointToPointToMultiPointCommandNormal extends CBusPointToPointT
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     SALData salData =
         readSimpleField(

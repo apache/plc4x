@@ -241,8 +241,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         readEnumField(
             "severity",
             "ErrorReportingSeverity",
-            new DataReaderEnumDefault<>(
-                ErrorReportingSeverity::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(ErrorReportingSeverity::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     short deviceId = readSimpleField("deviceId", readUnsignedShort(readBuffer, 8));
 

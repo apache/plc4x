@@ -118,8 +118,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
         readEnumField(
             "accessControlDirection",
             "AccessControlDirection",
-            new DataReaderEnumDefault<>(
-                AccessControlDirection::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(AccessControlDirection::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte[] data =
         readBuffer.readByteArray(

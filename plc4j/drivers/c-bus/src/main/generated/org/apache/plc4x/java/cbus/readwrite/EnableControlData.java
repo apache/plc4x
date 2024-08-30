@@ -135,7 +135,7 @@ public class EnableControlData implements Message {
         readEnumField(
             "commandTypeContainer",
             "EnableControlCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 EnableControlCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     EnableControlCommandType commandType =
         readVirtualField(

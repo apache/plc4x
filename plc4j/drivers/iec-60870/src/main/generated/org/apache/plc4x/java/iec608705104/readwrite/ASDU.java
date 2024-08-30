@@ -233,8 +233,7 @@ public class ASDU implements Message {
         readEnumField(
             "typeIdentification",
             "TypeIdentification",
-            new DataReaderEnumDefault<>(
-                TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(TypeIdentification::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     boolean structureQualifier =
@@ -261,8 +260,7 @@ public class ASDU implements Message {
         readEnumField(
             "causeOfTransmission",
             "CauseOfTransmission",
-            new DataReaderEnumDefault<>(
-                CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)),
+            readEnum(CauseOfTransmission::enumForValue, readUnsignedByte(readBuffer, 6)),
             WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     short originatorAddress =

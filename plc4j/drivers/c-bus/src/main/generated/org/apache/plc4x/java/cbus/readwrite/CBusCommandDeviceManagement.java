@@ -125,7 +125,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
         readEnumField(
             "paramNo",
             "Parameter",
-            new DataReaderEnumDefault<>(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte delimiter =
         readConstField("delimiter", readByte(readBuffer, 8), CBusCommandDeviceManagement.DELIMITER);

@@ -122,7 +122,7 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
         readEnumField(
             "status",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("ConnectionStateResponse");

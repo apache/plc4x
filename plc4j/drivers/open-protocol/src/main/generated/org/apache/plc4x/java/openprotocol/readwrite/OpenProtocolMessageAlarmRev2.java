@@ -270,7 +270,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
         readEnumField(
             "controllerReadyStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdToolReadyStatus =
@@ -284,7 +284,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
         readEnumField(
             "toolReadyStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdTime =

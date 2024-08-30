@@ -253,8 +253,7 @@ public abstract class PnIoCm_Submodule implements Message {
         readDiscriminatorEnumField(
             "submoduleType",
             "PnIoCm_SubmoduleType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_SubmoduleType::enumForValue, readUnsignedByte(readBuffer, 2)),
+            readEnum(PnIoCm_SubmoduleType::enumForValue, readUnsignedByte(readBuffer, 2)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

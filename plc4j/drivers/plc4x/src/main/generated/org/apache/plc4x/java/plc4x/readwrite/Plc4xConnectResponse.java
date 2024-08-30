@@ -123,8 +123,7 @@ public class Plc4xConnectResponse extends Plc4xMessage implements Message {
         readEnumField(
             "responseCode",
             "Plc4xResponseCode",
-            new DataReaderEnumDefault<>(
-                Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     readBuffer.closeContext("Plc4xConnectResponse");

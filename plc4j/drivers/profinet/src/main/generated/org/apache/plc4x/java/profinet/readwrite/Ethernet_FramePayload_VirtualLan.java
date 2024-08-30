@@ -138,8 +138,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
         readEnumField(
             "priority",
             "VirtualLanPriority",
-            new DataReaderEnumDefault<>(
-                VirtualLanPriority::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(VirtualLanPriority::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     boolean ineligible = readSimpleField("ineligible", readBoolean(readBuffer));
 

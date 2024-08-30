@@ -130,8 +130,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         readEnumField(
             "filterOperator",
             "FilterOperator",
-            new DataReaderEnumDefault<>(
-                FilterOperator::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(FilterOperator::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfFilterOperands = readSimpleField("noOfFilterOperands", readSignedInt(readBuffer, 32));
 

@@ -511,8 +511,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev2
         readEnumField(
             "rotationDirection",
             "RotationDirection",
-            new DataReaderEnumDefault<>(
-                RotationDirection::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RotationDirection::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchSize =

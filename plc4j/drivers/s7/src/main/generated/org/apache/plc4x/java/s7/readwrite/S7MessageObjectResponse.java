@@ -127,15 +127,13 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
         readEnumField(
             "returnCode",
             "DataTransportErrorCode",
-            new DataReaderEnumDefault<>(
-                DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportErrorCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     DataTransportSize transportSize =
         readEnumField(
             "transportSize",
             "DataTransportSize",
-            new DataReaderEnumDefault<>(
-                DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DataTransportSize::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);

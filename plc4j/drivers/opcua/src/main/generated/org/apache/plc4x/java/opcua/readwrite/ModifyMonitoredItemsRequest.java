@@ -169,8 +169,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfItemsToModify = readSimpleField("noOfItemsToModify", readSignedInt(readBuffer, 32));
 

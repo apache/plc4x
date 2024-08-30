@@ -132,8 +132,7 @@ public class APDUSimpleAck extends APDU implements Message {
         readEnumField(
             "serviceChoice",
             "BACnetConfirmedServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("APDUSimpleAck");
     // Create the instance

@@ -262,8 +262,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         readEnumField(
             "fieldFlags",
             "DataSetFieldFlags",
-            new DataReaderEnumDefault<>(
-                DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(DataSetFieldFlags::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     short builtInType = readSimpleField("builtInType", readUnsignedShort(readBuffer, 8));
 

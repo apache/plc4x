@@ -111,8 +111,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
         readEnumField(
             "option",
             "PnDcp_BlockOptions",
-            new DataReaderEnumDefault<>(
-                PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(PnDcp_BlockOptions::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     short suboption =

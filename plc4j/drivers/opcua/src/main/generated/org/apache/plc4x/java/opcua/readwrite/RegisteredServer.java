@@ -251,8 +251,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         readEnumField(
             "serverType",
             "ApplicationType",
-            new DataReaderEnumDefault<>(
-                ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ApplicationType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString gatewayServerUri =
         readSimpleField(

@@ -117,8 +117,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
         readEnumField(
             "request",
             "NMTStateRequest",
-            new DataReaderEnumDefault<>(
-                NMTStateRequest::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(NMTStateRequest::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 1), (byte) 0x00);

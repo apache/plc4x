@@ -161,8 +161,7 @@ public abstract class Plc4xMessage implements Message {
         readDiscriminatorEnumField(
             "requestType",
             "Plc4xRequestType",
-            new DataReaderEnumDefault<>(
-                Plc4xRequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Plc4xRequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

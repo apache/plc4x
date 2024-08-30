@@ -169,8 +169,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfNodesToRead = readSimpleField("noOfNodesToRead", readSignedInt(readBuffer, 32));
 

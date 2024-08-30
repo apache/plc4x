@@ -119,7 +119,7 @@ public class CALDataIdentifyReply extends CALData implements Message {
         readEnumField(
             "attribute",
             "Attribute",
-            new DataReaderEnumDefault<>(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Attribute::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IdentifyReplyCommand identifyReplyCommand =
         readSimpleField(

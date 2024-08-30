@@ -229,8 +229,7 @@ public class EndpointDescription extends ExtensionObjectDefinition implements Me
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityPolicyUri =
         readSimpleField(

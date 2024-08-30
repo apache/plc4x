@@ -145,15 +145,13 @@ public class Plc4xTagValueResponse implements Message {
         readEnumField(
             "responseCode",
             "Plc4xResponseCode",
-            new DataReaderEnumDefault<>(
-                Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Plc4xValueType valueType =
         readEnumField(
             "valueType",
             "Plc4xValueType",
-            new DataReaderEnumDefault<>(
-                Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     PlcValue value =
         readOptionalField(

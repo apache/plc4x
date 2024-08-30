@@ -108,8 +108,7 @@ public class Plc4xTagResponse implements Message {
         readEnumField(
             "responseCode",
             "Plc4xResponseCode",
-            new DataReaderEnumDefault<>(
-                Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Plc4xResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("Plc4xTagResponse");
     // Create the instance

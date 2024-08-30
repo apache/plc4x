@@ -130,8 +130,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField0 = readReservedField("reserved", readByte(readBuffer, 8), (byte) 0x00);
 

@@ -221,8 +221,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         readEnumField(
             "level",
             "ModbusDeviceInformationLevel",
-            new DataReaderEnumDefault<>(
-                ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ModbusDeviceInformationLevel::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     boolean individualAccess = readSimpleField("individualAccess", readBoolean(readBuffer));
 
@@ -230,7 +229,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         readEnumField(
             "conformityLevel",
             "ModbusDeviceInformationConformityLevel",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ModbusDeviceInformationConformityLevel::enumForValue,
                 readUnsignedByte(readBuffer, 7)));
 
@@ -238,7 +237,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         readEnumField(
             "moreFollows",
             "ModbusDeviceInformationMoreFollows",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ModbusDeviceInformationMoreFollows::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
 

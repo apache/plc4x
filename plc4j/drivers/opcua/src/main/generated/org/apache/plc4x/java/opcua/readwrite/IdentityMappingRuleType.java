@@ -113,8 +113,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         readEnumField(
             "criteriaType",
             "IdentityCriteriaType",
-            new DataReaderEnumDefault<>(
-                IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(IdentityCriteriaType::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString criteria =
         readSimpleField(

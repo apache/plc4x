@@ -116,7 +116,7 @@ public class CALDataRecall extends CALData implements Message {
         readEnumField(
             "paramNo",
             "Parameter",
-            new DataReaderEnumDefault<>(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short count = readSimpleField("count", readUnsignedShort(readBuffer, 8));
 

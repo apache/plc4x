@@ -137,14 +137,14 @@ public class OpenProtocolMessageLinkLevelNegativeAcknowledgeRev1
         readEnumField(
             "midNumber",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     LinkLevelNegativeAcknowledgeError error =
         readEnumField(
             "error",
             "LinkLevelNegativeAcknowledgeError",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 LinkLevelNegativeAcknowledgeError::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 

@@ -262,64 +262,55 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         readEnumField(
             "channelStatus1",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus2 =
         readEnumField(
             "channelStatus2",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus3 =
         readEnumField(
             "channelStatus3",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus4 =
         readEnumField(
             "channelStatus4",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus5 =
         readEnumField(
             "channelStatus5",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus6 =
         readEnumField(
             "channelStatus6",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus7 =
         readEnumField(
             "channelStatus7",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ChannelStatus channelStatus8 =
         readEnumField(
             "channelStatus8",
             "ChannelStatus",
-            new DataReaderEnumDefault<>(
-                ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ChannelStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     UnitStatus unitStatus =
         readEnumField(
             "unitStatus",
             "UnitStatus",
-            new DataReaderEnumDefault<>(
-                UnitStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(UnitStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte dimmingUCRevisionNumber =
         readSimpleField("dimmingUCRevisionNumber", readByte(readBuffer, 8));

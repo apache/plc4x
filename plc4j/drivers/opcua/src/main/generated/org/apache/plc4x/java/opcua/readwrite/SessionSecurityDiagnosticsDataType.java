@@ -258,8 +258,7 @@ public class SessionSecurityDiagnosticsDataType extends ExtensionObjectDefinitio
         readEnumField(
             "securityMode",
             "MessageSecurityMode",
-            new DataReaderEnumDefault<>(
-                MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MessageSecurityMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString securityPolicyUri =
         readSimpleField(

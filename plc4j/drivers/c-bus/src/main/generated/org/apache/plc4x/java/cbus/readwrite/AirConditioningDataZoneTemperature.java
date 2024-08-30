@@ -149,8 +149,7 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
         readEnumField(
             "sensorStatus",
             "HVACSensorStatus",
-            new DataReaderEnumDefault<>(
-                HVACSensorStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACSensorStatus::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("AirConditioningDataZoneTemperature");
     // Create the instance

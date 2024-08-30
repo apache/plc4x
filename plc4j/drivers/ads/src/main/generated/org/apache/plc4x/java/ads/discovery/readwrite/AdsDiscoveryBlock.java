@@ -96,8 +96,7 @@ public abstract class AdsDiscoveryBlock implements Message {
         readDiscriminatorEnumField(
             "blockType",
             "AdsDiscoveryBlockType",
-            new DataReaderEnumDefault<>(
-                AdsDiscoveryBlockType::enumForValue, readUnsignedInt(readBuffer, 16)));
+            readEnum(AdsDiscoveryBlockType::enumForValue, readUnsignedInt(readBuffer, 16)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     AdsDiscoveryBlockBuilder builder = null;

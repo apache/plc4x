@@ -134,7 +134,7 @@ public class Confirmation implements Message {
         readEnumField(
             "confirmationType",
             "ConfirmationType",
-            new DataReaderEnumDefault<>(ConfirmationType::enumForValue, readByte(readBuffer, 8)));
+            readEnum(ConfirmationType::enumForValue, readByte(readBuffer, 8)));
     boolean isSuccess =
         readVirtualField(
             "isSuccess",

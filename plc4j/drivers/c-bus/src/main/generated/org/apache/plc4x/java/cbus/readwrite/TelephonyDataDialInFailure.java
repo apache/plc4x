@@ -101,8 +101,7 @@ public class TelephonyDataDialInFailure extends TelephonyData implements Message
         readEnumField(
             "reason",
             "DialInFailureReason",
-            new DataReaderEnumDefault<>(
-                DialInFailureReason::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(DialInFailureReason::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("TelephonyDataDialInFailure");
     // Create the instance

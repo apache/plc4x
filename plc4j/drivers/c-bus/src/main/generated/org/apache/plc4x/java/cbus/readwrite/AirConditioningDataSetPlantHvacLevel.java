@@ -196,7 +196,7 @@ public class AirConditioningDataSetPlantHvacLevel extends AirConditioningData im
         readEnumField(
             "hvacType",
             "HVACType",
-            new DataReaderEnumDefault<>(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACTemperature level =
         readOptionalField(

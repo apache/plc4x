@@ -373,7 +373,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "new DataReaderEnumDefault<>(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "readEnum(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);

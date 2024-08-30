@@ -170,8 +170,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         readEnumField(
             "state",
             "ServerState",
-            new DataReaderEnumDefault<>(
-                ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ServerState::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExtensionObjectDefinition buildInfo =
         readSimpleField(

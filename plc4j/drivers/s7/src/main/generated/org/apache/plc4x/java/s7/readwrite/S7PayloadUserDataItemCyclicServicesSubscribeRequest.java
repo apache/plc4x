@@ -160,7 +160,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
         readEnumField(
             "timeBase",
             "TimeBase",
-            new DataReaderEnumDefault<>(TimeBase::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(TimeBase::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short timeFactor = readSimpleField("timeFactor", readUnsignedShort(readBuffer, 8));
 

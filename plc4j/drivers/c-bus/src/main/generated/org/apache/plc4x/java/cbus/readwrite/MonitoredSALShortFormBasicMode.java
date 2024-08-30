@@ -186,8 +186,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     SALData salData =
         readOptionalField(

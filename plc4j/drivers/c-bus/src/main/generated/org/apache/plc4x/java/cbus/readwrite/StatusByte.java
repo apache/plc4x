@@ -140,27 +140,19 @@ public class StatusByte implements Message {
 
     GAVState gav3 =
         readEnumField(
-            "gav3",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav3", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav2 =
         readEnumField(
-            "gav2",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav2", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav1 =
         readEnumField(
-            "gav1",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav1", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     GAVState gav0 =
         readEnumField(
-            "gav0",
-            "GAVState",
-            new DataReaderEnumDefault<>(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
+            "gav0", "GAVState", readEnum(GAVState::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     readBuffer.closeContext("StatusByte");
     // Create the instance

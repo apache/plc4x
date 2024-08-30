@@ -127,8 +127,7 @@ public class HPAIControlEndpoint implements Message {
         readEnumField(
             "hostProtocolCode",
             "HostProtocolCode",
-            new DataReaderEnumDefault<>(
-                HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HostProtocolCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     IPAddress ipAddress =
         readSimpleField(

@@ -200,8 +200,7 @@ public class PnIoCm_Block_AlarmCrRes extends PnIoCm_Block implements Message {
         readEnumField(
             "alarmType",
             "PnIoCm_AlarmCrType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_AlarmCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_AlarmCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int localAlarmReference =

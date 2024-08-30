@@ -280,8 +280,7 @@ public class APDUComplexAck extends APDU implements Message {
     BACnetConfirmedServiceChoice segmentServiceChoice =
         readOptionalField(
             "segmentServiceChoice",
-            new DataReaderEnumDefault<>(
-                BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(BACnetConfirmedServiceChoice::enumForValue, readUnsignedShort(readBuffer, 8)),
             (segmentedMessage) && ((sequenceNumber) != (0)));
     int segmentReduction =
         readVirtualField(

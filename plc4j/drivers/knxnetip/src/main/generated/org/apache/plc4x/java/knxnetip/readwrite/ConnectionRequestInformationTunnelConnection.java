@@ -106,7 +106,7 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
         readEnumField(
             "knxLayer",
             "KnxLayer",
-            new DataReaderEnumDefault<>(KnxLayer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(KnxLayer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);

@@ -130,8 +130,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
         readEnumField(
             "userConfiguration",
             "UserConfigurationMask",
-            new DataReaderEnumDefault<>(
-                UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(UserConfigurationMask::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString description =
         readSimpleField(

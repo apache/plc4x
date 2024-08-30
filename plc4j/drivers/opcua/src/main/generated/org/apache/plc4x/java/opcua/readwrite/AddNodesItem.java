@@ -195,7 +195,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
         readEnumField(
             "nodeClass",
             "NodeClass",
-            new DataReaderEnumDefault<>(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExtensionObject nodeAttributes =
         readSimpleField(

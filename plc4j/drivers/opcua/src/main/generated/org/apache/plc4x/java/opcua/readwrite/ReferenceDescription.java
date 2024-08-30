@@ -205,7 +205,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
         readEnumField(
             "nodeClass",
             "NodeClass",
-            new DataReaderEnumDefault<>(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     ExpandedNodeId typeDefinition =
         readSimpleField(

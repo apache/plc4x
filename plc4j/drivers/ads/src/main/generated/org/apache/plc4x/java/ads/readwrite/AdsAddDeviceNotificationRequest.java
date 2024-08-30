@@ -195,8 +195,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
         readEnumField(
             "transmissionMode",
             "AdsTransMode",
-            new DataReaderEnumDefault<>(
-                AdsTransMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(AdsTransMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     long maxDelayInMs = readSimpleField("maxDelayInMs", readUnsignedLong(readBuffer, 32));
 

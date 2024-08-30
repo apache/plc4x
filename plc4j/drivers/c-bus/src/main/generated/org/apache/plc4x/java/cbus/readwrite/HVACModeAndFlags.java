@@ -258,8 +258,7 @@ public class HVACModeAndFlags implements Message {
         readEnumField(
             "mode",
             "HVACModeAndFlagsMode",
-            new DataReaderEnumDefault<>(
-                HVACModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(HVACModeAndFlagsMode::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     readBuffer.closeContext("HVACModeAndFlags");
     // Create the instance

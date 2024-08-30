@@ -122,8 +122,7 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
         readEnumField(
             "result",
             "ReturnCode",
-            new DataReaderEnumDefault<>(
-                ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(ReturnCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     long notificationHandle =
         readSimpleField("notificationHandle", readUnsignedLong(readBuffer, 32));

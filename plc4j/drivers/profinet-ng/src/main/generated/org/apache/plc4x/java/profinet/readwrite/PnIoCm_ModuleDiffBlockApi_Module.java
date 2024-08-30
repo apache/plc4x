@@ -174,8 +174,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
         readEnumField(
             "moduleState",
             "PnIoCm_ModuleState",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ModuleState::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int numSubmodules =

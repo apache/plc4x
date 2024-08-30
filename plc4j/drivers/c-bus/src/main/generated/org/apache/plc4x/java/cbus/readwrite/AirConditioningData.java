@@ -118,7 +118,7 @@ public abstract class AirConditioningData implements Message {
         readEnumField(
             "commandTypeContainer",
             "AirConditioningCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 AirConditioningCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     AirConditioningCommandType commandType =

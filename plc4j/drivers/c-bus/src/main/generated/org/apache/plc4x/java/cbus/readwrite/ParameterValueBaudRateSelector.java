@@ -123,8 +123,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
         readEnumField(
             "value",
             "BaudRateSelector",
-            new DataReaderEnumDefault<>(
-                BaudRateSelector::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(BaudRateSelector::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte[] data = readBuffer.readByteArray("data", Math.toIntExact((numBytes) - (1)));
 

@@ -169,7 +169,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
         readEnumField(
             "alarmType",
             "AlarmType",
-            new DataReaderEnumDefault<>(AlarmType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(AlarmType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short reserved02 = readSimpleField("reserved02", readUnsignedShort(readBuffer, 8));
 

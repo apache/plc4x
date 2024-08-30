@@ -138,8 +138,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     byte startingGroupAddressLabel =
         readSimpleField("startingGroupAddressLabel", readByte(readBuffer, 8));

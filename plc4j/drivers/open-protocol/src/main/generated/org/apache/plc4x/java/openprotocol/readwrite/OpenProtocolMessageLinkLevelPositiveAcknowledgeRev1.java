@@ -116,7 +116,7 @@ public class OpenProtocolMessageLinkLevelPositiveAcknowledgeRev1
         readEnumField(
             "midNumber",
             "Mid",
-            new DataReaderEnumDefault<>(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
+            readEnum(Mid::enumForValue, readUnsignedLong(readBuffer, 32)),
             WithOption.WithEncoding("ASCII"));
 
     readBuffer.closeContext("OpenProtocolMessageLinkLevelPositiveAcknowledgeRev1");

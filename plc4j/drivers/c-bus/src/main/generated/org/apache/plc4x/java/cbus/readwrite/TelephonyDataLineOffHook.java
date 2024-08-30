@@ -118,8 +118,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
         readEnumField(
             "reason",
             "LineOffHookReason",
-            new DataReaderEnumDefault<>(
-                LineOffHookReason::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(LineOffHookReason::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     String number =
         readSimpleField(

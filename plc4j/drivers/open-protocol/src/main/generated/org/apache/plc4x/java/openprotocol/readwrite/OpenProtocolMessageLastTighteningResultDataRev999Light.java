@@ -347,29 +347,28 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         readEnumField(
             "batchStatus",
             "BatchStatus",
-            new DataReaderEnumDefault<>(
-                BatchStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(BatchStatus::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     NokOk tighteningStatus =
         readEnumField(
             "tighteningStatus",
             "NokOk",
-            new DataReaderEnumDefault<>(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NokOk::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     Status torqueStatus =
         readEnumField(
             "torqueStatus",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     Status angleStatus =
         readEnumField(
             "angleStatus",
             "Status",
-            new DataReaderEnumDefault<>(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(Status::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     long torque =

@@ -113,8 +113,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
         readEnumField(
             "command",
             "SDORequestCommand",
-            new DataReaderEnumDefault<>(
-                SDORequestCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
+            readEnum(SDORequestCommand::enumForValue, readUnsignedByte(readBuffer, 3)));
 
     SDORequest request =
         readSimpleField(

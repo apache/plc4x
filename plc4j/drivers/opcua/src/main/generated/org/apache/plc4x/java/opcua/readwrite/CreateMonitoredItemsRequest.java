@@ -169,8 +169,7 @@ public class CreateMonitoredItemsRequest extends ExtensionObjectDefinition imple
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfItemsToCreate = readSimpleField("noOfItemsToCreate", readSignedInt(readBuffer, 32));
 

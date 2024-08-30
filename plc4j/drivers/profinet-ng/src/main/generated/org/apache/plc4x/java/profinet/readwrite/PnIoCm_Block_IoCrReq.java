@@ -528,8 +528,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         readEnumField(
             "ioCrType",
             "PnIoCm_IoCrType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_IoCrType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int ioCrReference =
@@ -584,8 +583,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         readEnumField(
             "rtClass",
             "PnIoCm_RtClass",
-            new DataReaderEnumDefault<>(
-                PnIoCm_RtClass::enumForValue, readUnsignedByte(readBuffer, 4)),
+            readEnum(PnIoCm_RtClass::enumForValue, readUnsignedByte(readBuffer, 4)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int dataLength =

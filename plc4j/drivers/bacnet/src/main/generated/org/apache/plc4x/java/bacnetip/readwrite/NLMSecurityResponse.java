@@ -147,8 +147,7 @@ public class NLMSecurityResponse extends NLM implements Message {
         readEnumField(
             "responseCode",
             "SecurityResponseCode",
-            new DataReaderEnumDefault<>(
-                SecurityResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SecurityResponseCode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     long originalMessageId = readSimpleField("originalMessageId", readUnsignedLong(readBuffer, 32));
 

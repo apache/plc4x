@@ -732,8 +732,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "forcedOrder",
             "ForcedOrder",
-            new DataReaderEnumDefault<>(
-                ForcedOrder::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(ForcedOrder::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdLockAtJobDone =
@@ -747,7 +746,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "lockAtJobDone",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdToolLoosening =
@@ -761,8 +760,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "toolLoosening",
             "ToolLoosening",
-            new DataReaderEnumDefault<>(
-                ToolLoosening::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(ToolLoosening::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdRepeatJob =
@@ -776,7 +774,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "repeatJob",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdJobBatchModeAndCountType =
@@ -790,8 +788,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "jobBatchModeAndCountType",
             "JobBatchMode",
-            new DataReaderEnumDefault<>(
-                JobBatchMode::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(JobBatchMode::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdBatchStatusAtIncrementBypass =
@@ -805,7 +802,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "batchStatusAtIncrementBypass",
             "OkNok",
-            new DataReaderEnumDefault<>(OkNok::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(OkNok::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdDecrementBatchAtOkLoosening =
@@ -819,7 +816,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "decrementBatchAtOkLoosening",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdMaxTimeForFirstTightening =
@@ -872,7 +869,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "useLineControl",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdIdentifierResultPart =
@@ -886,8 +883,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "identifierResultPart",
             "IdentifierResult",
-            new DataReaderEnumDefault<>(
-                IdentifierResult::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(IdentifierResult::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdResultOfNonTightenings =
@@ -901,7 +897,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "resultOfNonTightenings",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdResetAllIdentifiersAtJobDone =
@@ -915,7 +911,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         readEnumField(
             "resetAllIdentifiersAtJobDone",
             "NoYes",
-            new DataReaderEnumDefault<>(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(NoYes::enumForValue, readUnsignedShort(readBuffer, 8)),
             WithOption.WithEncoding("ASCII"));
 
     int blockIdReserved =

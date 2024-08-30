@@ -187,8 +187,7 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
         readEnumField(
             "axisScaleType",
             "AxisScaleEnumeration",
-            new DataReaderEnumDefault<>(
-                AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(AxisScaleEnumeration::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfAxisSteps = readSimpleField("noOfAxisSteps", readSignedInt(readBuffer, 32));
 

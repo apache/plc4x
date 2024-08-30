@@ -131,7 +131,7 @@ public abstract class ClockAndTimekeepingData implements Message {
         readEnumField(
             "commandTypeContainer",
             "ClockAndTimekeepingCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ClockAndTimekeepingCommandTypeContainer::enumForValue,
                 readUnsignedShort(readBuffer, 8)));
     ClockAndTimekeepingCommandType commandType =

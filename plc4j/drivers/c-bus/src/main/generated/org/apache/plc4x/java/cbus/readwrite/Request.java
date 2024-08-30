@@ -172,29 +172,23 @@ public abstract class Request implements Message {
 
     RequestType peekedByte =
         readPeekField(
-            "peekedByte",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "peekedByte", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     RequestType startingCR =
         readOptionalField(
             "startingCR",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (peekedByte) == (RequestType.EMPTY));
 
     RequestType resetMode =
         readOptionalField(
             "resetMode",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
+            readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)),
             (peekedByte) == (RequestType.RESET));
 
     RequestType secondPeek =
         readPeekField(
-            "secondPeek",
-            new DataReaderEnumDefault<>(
-                RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "secondPeek", readEnum(RequestType::enumForValue, readUnsignedShort(readBuffer, 8)));
     RequestType actualPeek =
         readVirtualField(
             "actualPeek",

@@ -119,7 +119,7 @@ public class CALDataReply extends CALData implements Message {
         readEnumField(
             "paramNo",
             "Parameter",
-            new DataReaderEnumDefault<>(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(Parameter::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     ParameterValue parameterValue =
         readSimpleField(

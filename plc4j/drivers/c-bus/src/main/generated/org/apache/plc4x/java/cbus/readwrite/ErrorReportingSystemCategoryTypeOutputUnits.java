@@ -106,7 +106,7 @@ public class ErrorReportingSystemCategoryTypeOutputUnits extends ErrorReportingS
         readEnumField(
             "categoryForType",
             "ErrorReportingSystemCategoryTypeForOutputUnits",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryTypeForOutputUnits::enumForValue,
                 readUnsignedByte(readBuffer, 4)));
 

@@ -164,8 +164,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         readEnumField(
             "monitoringMode",
             "MonitoringMode",
-            new DataReaderEnumDefault<>(
-                MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(MonitoringMode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     int noOfMonitoredItemIds =
         readSimpleField("noOfMonitoredItemIds", readSignedInt(readBuffer, 32));

@@ -96,7 +96,7 @@ public abstract class NodeIdTypeDefinition implements Message {
         readDiscriminatorEnumField(
             "nodeType",
             "NodeIdType",
-            new DataReaderEnumDefault<>(NodeIdType::enumForValue, readUnsignedByte(readBuffer, 6)));
+            readEnum(NodeIdType::enumForValue, readUnsignedByte(readBuffer, 6)));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
     NodeIdTypeDefinitionBuilder builder = null;

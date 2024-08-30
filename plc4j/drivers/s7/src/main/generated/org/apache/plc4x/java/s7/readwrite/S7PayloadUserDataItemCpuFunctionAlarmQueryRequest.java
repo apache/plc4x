@@ -231,8 +231,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
         readEnumField(
             "syntaxId",
             "SyntaxIdType",
-            new DataReaderEnumDefault<>(
-                SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(SyntaxIdType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Short reservedField0 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x00);
@@ -241,7 +240,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
         readEnumField(
             "queryType",
             "QueryType",
-            new DataReaderEnumDefault<>(QueryType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(QueryType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Short reservedField1 =
         readReservedField("reserved", readUnsignedShort(readBuffer, 8), (short) 0x34);
@@ -250,7 +249,7 @@ public class S7PayloadUserDataItemCpuFunctionAlarmQueryRequest extends S7Payload
         readEnumField(
             "alarmType",
             "AlarmType",
-            new DataReaderEnumDefault<>(AlarmType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(AlarmType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest");
     // Create the instance

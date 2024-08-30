@@ -185,8 +185,7 @@ public class S7AddressAny extends S7Address implements Message {
         readEnumField(
             "area",
             "MemoryArea",
-            new DataReaderEnumDefault<>(
-                MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(MemoryArea::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 5), (byte) 0x00);

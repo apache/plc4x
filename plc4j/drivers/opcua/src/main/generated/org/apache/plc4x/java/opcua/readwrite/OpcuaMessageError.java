@@ -114,8 +114,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
         readEnumField(
             "error",
             "OpcuaStatusCode",
-            new DataReaderEnumDefault<>(
-                OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(OpcuaStatusCode::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     PascalString reason =
         readSimpleField(

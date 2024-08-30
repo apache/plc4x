@@ -111,9 +111,7 @@ public class FirmataCommandSetPinMode extends FirmataCommand implements Message 
 
     PinMode mode =
         readEnumField(
-            "mode",
-            "PinMode",
-            new DataReaderEnumDefault<>(PinMode::enumForValue, readUnsignedShort(readBuffer, 8)));
+            "mode", "PinMode", readEnum(PinMode::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("FirmataCommandSetPinMode");
     // Create the instance

@@ -151,8 +151,7 @@ public abstract class CALData implements Message {
         readEnumField(
             "commandTypeContainer",
             "CALCommandTypeContainer",
-            new DataReaderEnumDefault<>(
-                CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(CALCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     CALCommandType commandType =
         readVirtualField(
             "commandType", CALCommandType.class, commandTypeContainer.getCommandType());

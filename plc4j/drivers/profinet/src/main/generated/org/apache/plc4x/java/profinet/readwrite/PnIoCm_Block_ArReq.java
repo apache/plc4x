@@ -478,8 +478,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "arType",
             "PnIoCm_ArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Uuid arUuid =
@@ -541,8 +540,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "companionArType",
             "PnIoCm_CompanionArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_CompanionArType::enumForValue, readUnsignedByte(readBuffer, 2)),
+            readEnum(PnIoCm_CompanionArType::enumForValue, readUnsignedByte(readBuffer, 2)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     boolean deviceAccess =
@@ -572,8 +570,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         readEnumField(
             "state",
             "PnIoCm_State",
-            new DataReaderEnumDefault<>(
-                PnIoCm_State::enumForValue, readUnsignedByte(readBuffer, 3)),
+            readEnum(PnIoCm_State::enumForValue, readUnsignedByte(readBuffer, 3)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     int cmInitiatorActivityTimeoutFactor =

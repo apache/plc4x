@@ -106,7 +106,7 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
         readEnumField(
             "categoryForType",
             "ErrorReportingSystemCategoryTypeForClimateControllers",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryTypeForClimateControllers::enumForValue,
                 readUnsignedByte(readBuffer, 4)));
 

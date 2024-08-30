@@ -106,7 +106,7 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
         readEnumField(
             "categoryForType",
             "ErrorReportingSystemCategoryTypeForBuildingManagementSystems",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 ErrorReportingSystemCategoryTypeForBuildingManagementSystems::enumForValue,
                 readUnsignedByte(readBuffer, 4)));
 

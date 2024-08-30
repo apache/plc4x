@@ -166,8 +166,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
         readEnumField(
             "humidityType",
             "HVACHumidityType",
-            new DataReaderEnumDefault<>(
-                HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACHumidityType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     HVACHumidityStatusFlags humidityStatus =
         readSimpleField(
@@ -178,8 +177,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
         readEnumField(
             "humidityErrorCode",
             "HVACHumidityError",
-            new DataReaderEnumDefault<>(
-                HVACHumidityError::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(HVACHumidityError::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("AirConditioningDataZoneHumidityPlantStatus");
     // Create the instance

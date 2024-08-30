@@ -204,15 +204,13 @@ public class GroupObjectDescriptorRealisationTypeB implements Message {
         readEnumField(
             "priority",
             "CEMIPriority",
-            new DataReaderEnumDefault<>(
-                CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
+            readEnum(CEMIPriority::enumForValue, readUnsignedByte(readBuffer, 2)));
 
     ComObjectValueType valueType =
         readEnumField(
             "valueType",
             "ComObjectValueType",
-            new DataReaderEnumDefault<>(
-                ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ComObjectValueType::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     readBuffer.closeContext("GroupObjectDescriptorRealisationTypeB");
     // Create the instance

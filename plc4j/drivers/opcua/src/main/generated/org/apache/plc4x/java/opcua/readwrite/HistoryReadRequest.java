@@ -193,8 +193,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
         readEnumField(
             "timestampsToReturn",
             "TimestampsToReturn",
-            new DataReaderEnumDefault<>(
-                TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(TimestampsToReturn::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     Byte reservedField0 =
         readReservedField("reserved", readUnsignedByte(readBuffer, 7), (byte) 0x00);

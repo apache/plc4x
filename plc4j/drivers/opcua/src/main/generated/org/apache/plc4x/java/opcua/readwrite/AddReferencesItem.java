@@ -192,7 +192,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         readEnumField(
             "targetNodeClass",
             "NodeClass",
-            new DataReaderEnumDefault<>(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(NodeClass::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     readBuffer.closeContext("AddReferencesItem");
     // Create the instance

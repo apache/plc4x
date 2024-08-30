@@ -106,9 +106,7 @@ public abstract class LldpUnit implements Message {
 
     TlvType tlvId =
         readDiscriminatorEnumField(
-            "tlvId",
-            "TlvType",
-            new DataReaderEnumDefault<>(TlvType::enumForValue, readUnsignedByte(readBuffer, 7)));
+            "tlvId", "TlvType", readEnum(TlvType::enumForValue, readUnsignedByte(readBuffer, 7)));
 
     short tlvIdLength = readSimpleField("tlvIdLength", readUnsignedShort(readBuffer, 9));
 

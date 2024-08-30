@@ -130,7 +130,7 @@ public abstract class TelephonyData implements Message {
         readEnumField(
             "commandTypeContainer",
             "TelephonyCommandTypeContainer",
-            new DataReaderEnumDefault<>(
+            readEnum(
                 TelephonyCommandTypeContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
     TelephonyCommandType commandType =
         readVirtualField(

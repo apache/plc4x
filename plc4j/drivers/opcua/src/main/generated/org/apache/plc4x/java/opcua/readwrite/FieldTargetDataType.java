@@ -199,8 +199,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         readEnumField(
             "overrideValueHandling",
             "OverrideValueHandling",
-            new DataReaderEnumDefault<>(
-                OverrideValueHandling::enumForValue, readUnsignedLong(readBuffer, 32)));
+            readEnum(OverrideValueHandling::enumForValue, readUnsignedLong(readBuffer, 32)));
 
     Variant overrideValue =
         readSimpleField(

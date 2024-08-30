@@ -140,8 +140,7 @@ public class CALDataStatus extends CALData implements Message {
         readEnumField(
             "application",
             "ApplicationIdContainer",
-            new DataReaderEnumDefault<>(
-                ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
+            readEnum(ApplicationIdContainer::enumForValue, readUnsignedShort(readBuffer, 8)));
 
     short blockStart = readSimpleField("blockStart", readUnsignedShort(readBuffer, 8));
 

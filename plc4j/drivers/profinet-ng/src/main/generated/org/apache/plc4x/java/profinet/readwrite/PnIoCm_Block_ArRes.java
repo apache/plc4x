@@ -232,8 +232,7 @@ public class PnIoCm_Block_ArRes extends PnIoCm_Block implements Message {
         readEnumField(
             "arType",
             "PnIoCm_ArType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_ArType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     Uuid arUuid =

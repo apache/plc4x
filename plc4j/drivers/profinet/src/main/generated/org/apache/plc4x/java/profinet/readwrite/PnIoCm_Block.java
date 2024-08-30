@@ -95,8 +95,7 @@ public abstract class PnIoCm_Block implements Message {
         readDiscriminatorEnumField(
             "blockType",
             "PnIoCm_BlockType",
-            new DataReaderEnumDefault<>(
-                PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
+            readEnum(PnIoCm_BlockType::enumForValue, readUnsignedInt(readBuffer, 16)),
             WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
