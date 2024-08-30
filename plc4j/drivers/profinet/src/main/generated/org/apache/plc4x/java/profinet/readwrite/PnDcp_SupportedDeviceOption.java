@@ -65,7 +65,7 @@ public class PnDcp_SupportedDeviceOption implements Message {
         "option",
         "PnDcp_BlockOptions",
         option,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
             writeUnsignedShort(writeBuffer, 8)),

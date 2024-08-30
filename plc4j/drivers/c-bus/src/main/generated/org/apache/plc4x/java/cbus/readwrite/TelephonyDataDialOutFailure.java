@@ -66,7 +66,7 @@ public class TelephonyDataDialOutFailure extends TelephonyData implements Messag
         "reason",
         "DialOutFailureReason",
         reason,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DialOutFailureReason::getValue,
             DialOutFailureReason::name,
             writeUnsignedShort(writeBuffer, 8)));

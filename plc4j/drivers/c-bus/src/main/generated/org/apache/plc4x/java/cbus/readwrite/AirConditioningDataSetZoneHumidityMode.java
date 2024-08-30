@@ -116,7 +116,7 @@ public class AirConditioningDataSetZoneHumidityMode extends AirConditioningData 
         "humidityType",
         "HVACHumidityType",
         humidityType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityType::getValue,
             HVACHumidityType::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -71,7 +71,7 @@ public class SzlId implements Message {
         "typeClass",
         "SzlModuleTypeClass",
         typeClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SzlModuleTypeClass::getValue,
             SzlModuleTypeClass::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -84,8 +84,7 @@ public class SzlId implements Message {
         "sublistList",
         "SzlSublist",
         sublistList,
-        new DataWriterEnumDefault<>(
-            SzlSublist::getValue, SzlSublist::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SzlSublist::getValue, SzlSublist::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("SzlId");
   }

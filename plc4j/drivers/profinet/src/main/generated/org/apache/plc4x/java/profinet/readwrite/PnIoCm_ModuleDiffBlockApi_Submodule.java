@@ -144,7 +144,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "identInfo",
         "PnIoCm_IdentInfo",
         identInfo,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_IdentInfo::getValue, PnIoCm_IdentInfo::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -153,8 +153,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "arInfo",
         "PnIoCm_ArInfo",
         arInfo,
-        new DataWriterEnumDefault<>(
-            PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)),
+        writeEnum(PnIoCm_ArInfo::getValue, PnIoCm_ArInfo::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (diagInfoAvailable)
@@ -190,7 +189,7 @@ public class PnIoCm_ModuleDiffBlockApi_Submodule implements Message {
         "addInfo",
         "PnIoCm_AddInfo",
         addInfo,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_AddInfo::getValue, PnIoCm_AddInfo::name, writeUnsignedByte(writeBuffer, 3)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

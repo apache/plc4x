@@ -82,7 +82,7 @@ public class UserManagementDataType extends ExtensionObjectDefinition implements
         "userConfiguration",
         "UserConfigurationMask",
         userConfiguration,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             UserConfigurationMask::getValue,
             UserConfigurationMask::name,
             writeUnsignedLong(writeBuffer, 32)));

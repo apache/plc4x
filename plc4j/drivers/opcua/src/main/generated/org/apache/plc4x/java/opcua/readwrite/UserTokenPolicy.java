@@ -98,7 +98,7 @@ public class UserTokenPolicy extends ExtensionObjectDefinition implements Messag
         "tokenType",
         "UserTokenType",
         tokenType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             UserTokenType::getValue, UserTokenType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (issuedTokenType)

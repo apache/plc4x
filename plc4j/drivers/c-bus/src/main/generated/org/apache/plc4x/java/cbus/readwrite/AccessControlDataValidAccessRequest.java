@@ -74,7 +74,7 @@ public class AccessControlDataValidAccessRequest extends AccessControlData imple
         "accessControlDirection",
         "AccessControlDirection",
         accessControlDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AccessControlDirection::getValue,
             AccessControlDirection::name,
             writeUnsignedShort(writeBuffer, 8)));

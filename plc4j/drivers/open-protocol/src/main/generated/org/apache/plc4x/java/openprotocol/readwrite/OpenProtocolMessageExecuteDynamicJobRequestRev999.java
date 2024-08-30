@@ -334,8 +334,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "forcedOrder",
         "ForcedOrder",
         forcedOrder,
-        new DataWriterEnumDefault<>(
-            ForcedOrder::getValue, ForcedOrder::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(ForcedOrder::getValue, ForcedOrder::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdLockAtJobDone)
@@ -350,8 +349,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "lockAtJobDone",
         "NoYes",
         lockAtJobDone,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdToolLoosening)
@@ -366,8 +364,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "toolLoosening",
         "ToolLoosening",
         toolLoosening,
-        new DataWriterEnumDefault<>(
-            ToolLoosening::getValue, ToolLoosening::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(ToolLoosening::getValue, ToolLoosening::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdRepeatJob)
@@ -382,8 +379,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "repeatJob",
         "NoYes",
         repeatJob,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdJobBatchModeAndCountType)
@@ -398,8 +394,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "jobBatchModeAndCountType",
         "JobBatchMode",
         jobBatchModeAndCountType,
-        new DataWriterEnumDefault<>(
-            JobBatchMode::getValue, JobBatchMode::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(JobBatchMode::getValue, JobBatchMode::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdBatchStatusAtIncrementBypass)
@@ -414,8 +409,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "batchStatusAtIncrementBypass",
         "OkNok",
         batchStatusAtIncrementBypass,
-        new DataWriterEnumDefault<>(
-            OkNok::getValue, OkNok::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(OkNok::getValue, OkNok::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdDecrementBatchAtOkLoosening)
@@ -430,8 +424,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "decrementBatchAtOkLoosening",
         "NoYes",
         decrementBatchAtOkLoosening,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdMaxTimeForFirstTightening)
@@ -488,8 +481,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "useLineControl",
         "NoYes",
         useLineControl,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdIdentifierResultPart)
@@ -504,7 +496,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "identifierResultPart",
         "IdentifierResult",
         identifierResultPart,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IdentifierResult::getValue, IdentifierResult::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
@@ -520,8 +512,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "resultOfNonTightenings",
         "NoYes",
         resultOfNonTightenings,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdResetAllIdentifiersAtJobDone)
@@ -536,8 +527,7 @@ public class OpenProtocolMessageExecuteDynamicJobRequestRev999
         "resetAllIdentifiersAtJobDone",
         "NoYes",
         resetAllIdentifiersAtJobDone,
-        new DataWriterEnumDefault<>(
-            NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NoYes::getValue, NoYes::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdReserved)

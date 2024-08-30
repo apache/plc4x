@@ -124,7 +124,7 @@ public class FieldTargetDataType extends ExtensionObjectDefinition implements Me
         "overrideValueHandling",
         "OverrideValueHandling",
         overrideValueHandling,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             OverrideValueHandling::getValue,
             OverrideValueHandling::name,
             writeUnsignedLong(writeBuffer, 32)));

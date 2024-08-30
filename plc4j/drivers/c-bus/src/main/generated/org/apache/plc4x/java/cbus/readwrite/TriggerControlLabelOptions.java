@@ -78,7 +78,7 @@ public class TriggerControlLabelOptions implements Message {
         "labelFlavour",
         "TriggerControlLabelFlavour",
         labelFlavour,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlLabelFlavour::getValue,
             TriggerControlLabelFlavour::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -100,7 +100,7 @@ public class TriggerControlLabelOptions implements Message {
         "labelType",
         "TriggerControlLabelType",
         labelType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TriggerControlLabelType::getValue,
             TriggerControlLabelType::name,
             writeUnsignedByte(writeBuffer, 2)));

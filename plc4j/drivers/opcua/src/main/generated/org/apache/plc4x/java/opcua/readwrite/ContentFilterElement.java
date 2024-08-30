@@ -79,7 +79,7 @@ public class ContentFilterElement extends ExtensionObjectDefinition implements M
         "filterOperator",
         "FilterOperator",
         filterOperator,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             FilterOperator::getValue, FilterOperator::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (noOfFilterOperands)

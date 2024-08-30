@@ -90,8 +90,7 @@ public class AdsReadStateResponse extends AmsPacket implements Message {
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (adsState)
     writeSimpleField("adsState", adsState, writeUnsignedInt(writeBuffer, 16));

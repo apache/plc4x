@@ -92,7 +92,7 @@ public class NLMSecurityResponse extends NLM implements Message {
         "responseCode",
         "SecurityResponseCode",
         responseCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityResponseCode::getValue,
             SecurityResponseCode::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -88,7 +88,7 @@ public class PubSubConfigurationRefDataType extends ExtensionObjectDefinition im
         "configurationMask",
         "PubSubConfigurationRefMask",
         configurationMask,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PubSubConfigurationRefMask::getValue,
             PubSubConfigurationRefMask::name,
             writeUnsignedLong(writeBuffer, 32)));

@@ -109,8 +109,7 @@ public class AdsDiscovery implements Message {
         "operation",
         "Operation",
         operation,
-        new DataWriterEnumDefault<>(
-            Operation::getValue, Operation::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Operation::getValue, Operation::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 
     // Simple Field (amsNetId)
@@ -125,7 +124,7 @@ public class AdsDiscovery implements Message {
         "portNumber",
         "AdsPortNumbers",
         portNumber,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AdsPortNumbers::getValue, AdsPortNumbers::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

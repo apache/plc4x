@@ -101,7 +101,7 @@ public class ReadRequest extends ExtensionObjectDefinition implements Message {
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));

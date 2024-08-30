@@ -117,7 +117,7 @@ public class AirConditioningDataSetPlantHumidityLevel extends AirConditioningDat
         "humidityType",
         "HVACHumidityType",
         humidityType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityType::getValue,
             HVACHumidityType::name,
             writeUnsignedShort(writeBuffer, 8)));

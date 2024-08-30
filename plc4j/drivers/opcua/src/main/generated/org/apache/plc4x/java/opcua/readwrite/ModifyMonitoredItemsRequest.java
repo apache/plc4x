@@ -101,7 +101,7 @@ public class ModifyMonitoredItemsRequest extends ExtensionObjectDefinition imple
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));

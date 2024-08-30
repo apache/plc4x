@@ -57,7 +57,7 @@ public abstract class TlvOrgSpecificIeee8023Unit implements Message {
         "subType",
         "TlvIEEESubType",
         getSubType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TlvIEEESubType::getValue, TlvIEEESubType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Switch field (Serialize the sub-type)

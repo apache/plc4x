@@ -141,7 +141,7 @@ public class PDInterfaceAdjust extends PnIoCm_Block implements Message {
         "multipleInterfaceModeNameOfDevice",
         "MultipleInterfaceModeNameOfDevice",
         multipleInterfaceModeNameOfDevice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MultipleInterfaceModeNameOfDevice::getValue,
             MultipleInterfaceModeNameOfDevice::name,
             writeBoolean(writeBuffer)),

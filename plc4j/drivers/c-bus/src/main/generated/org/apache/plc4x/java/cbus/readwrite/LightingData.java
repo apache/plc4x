@@ -68,7 +68,7 @@ public abstract class LightingData implements Message {
         "commandTypeContainer",
         "LightingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingCommandTypeContainer::getValue,
             LightingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

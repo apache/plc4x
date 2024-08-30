@@ -68,7 +68,7 @@ public abstract class ErrorReportingData implements Message {
         "commandTypeContainer",
         "ErrorReportingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingCommandTypeContainer::getValue,
             ErrorReportingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

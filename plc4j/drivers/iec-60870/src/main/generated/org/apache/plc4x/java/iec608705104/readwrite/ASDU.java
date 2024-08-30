@@ -109,7 +109,7 @@ public class ASDU implements Message {
         "typeIdentification",
         "TypeIdentification",
         typeIdentification,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TypeIdentification::getValue,
             TypeIdentification::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -147,7 +147,7 @@ public class ASDU implements Message {
         "causeOfTransmission",
         "CauseOfTransmission",
         causeOfTransmission,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CauseOfTransmission::getValue,
             CauseOfTransmission::name,
             writeUnsignedByte(writeBuffer, 6)),

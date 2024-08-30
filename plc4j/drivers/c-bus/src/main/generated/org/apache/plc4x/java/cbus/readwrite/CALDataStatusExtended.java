@@ -114,15 +114,14 @@ public class CALDataStatusExtended extends CALData implements Message {
         "coding",
         "StatusCoding",
         coding,
-        new DataWriterEnumDefault<>(
-            StatusCoding::getValue, StatusCoding::name, writeByte(writeBuffer, 8)));
+        writeEnum(StatusCoding::getValue, StatusCoding::name, writeByte(writeBuffer, 8)));
 
     // Simple Field (application)
     writeSimpleEnumField(
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -101,7 +101,7 @@ public class SetMonitoringModeRequest extends ExtensionObjectDefinition implemen
         "monitoringMode",
         "MonitoringMode",
         monitoringMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MonitoringMode::getValue, MonitoringMode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (noOfMonitoredItemIds)

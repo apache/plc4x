@@ -76,7 +76,7 @@ public class ParameterValueBaudRateSelector extends ParameterValue implements Me
         "value",
         "BaudRateSelector",
         value,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BaudRateSelector::getValue,
             BaudRateSelector::name,
             writeUnsignedShort(writeBuffer, 8)));

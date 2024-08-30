@@ -91,8 +91,7 @@ public class LightingDataLabel extends LightingData implements Message {
         "language",
         "Language",
         language,
-        new DataWriterEnumDefault<>(
-            Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
         (getLabelOptions().getLabelType()) != (LightingLabelType.LOAD_DYNAMIC_ICON));
 
     // Array Field (data)

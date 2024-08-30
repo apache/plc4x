@@ -68,7 +68,7 @@ public class ErrorReportingSystemCategoryTypeClimateControllers
         "categoryForType",
         "ErrorReportingSystemCategoryTypeForClimateControllers",
         categoryForType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryTypeForClimateControllers::getValue,
             ErrorReportingSystemCategoryTypeForClimateControllers::name,
             writeUnsignedByte(writeBuffer, 4)));

@@ -74,7 +74,7 @@ public abstract class SecurityData implements Message {
         "commandTypeContainer",
         "SecurityCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityCommandTypeContainer::getValue,
             SecurityCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -76,8 +76,7 @@ public class AdsDeleteDeviceNotificationResponse extends AmsPacket implements Me
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AdsDeleteDeviceNotificationResponse");
   }

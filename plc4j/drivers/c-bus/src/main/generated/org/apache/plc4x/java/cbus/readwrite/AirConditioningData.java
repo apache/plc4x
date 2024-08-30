@@ -68,7 +68,7 @@ public abstract class AirConditioningData implements Message {
         "commandTypeContainer",
         "AirConditioningCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AirConditioningCommandTypeContainer::getValue,
             AirConditioningCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

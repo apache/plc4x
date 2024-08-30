@@ -72,7 +72,7 @@ public class IdentityMappingRuleType extends ExtensionObjectDefinition implement
         "criteriaType",
         "IdentityCriteriaType",
         criteriaType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IdentityCriteriaType::getValue,
             IdentityCriteriaType::name,
             writeUnsignedLong(writeBuffer, 32)));

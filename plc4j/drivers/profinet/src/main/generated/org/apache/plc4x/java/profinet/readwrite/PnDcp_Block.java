@@ -59,7 +59,7 @@ public abstract class PnDcp_Block implements Message {
         "option",
         "PnDcp_BlockOptions",
         getOption(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_BlockOptions::getValue,
             PnDcp_BlockOptions::name,
             writeUnsignedShort(writeBuffer, 8)),

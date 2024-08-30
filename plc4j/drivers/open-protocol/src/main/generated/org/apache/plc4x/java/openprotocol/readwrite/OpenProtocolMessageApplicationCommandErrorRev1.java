@@ -89,7 +89,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
         "requestMid",
         "Mid",
         requestMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (error)
@@ -97,7 +97,7 @@ public class OpenProtocolMessageApplicationCommandErrorRev1
         "error",
         "ApplicationCommunicationError",
         error,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationCommunicationError::getValue,
             ApplicationCommunicationError::name,
             writeUnsignedInt(writeBuffer, 16)),

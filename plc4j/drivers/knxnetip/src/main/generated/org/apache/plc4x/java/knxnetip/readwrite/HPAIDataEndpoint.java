@@ -76,7 +76,7 @@ public class HPAIDataEndpoint implements Message {
         "hostProtocolCode",
         "HostProtocolCode",
         hostProtocolCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HostProtocolCode::getValue,
             HostProtocolCode::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -74,7 +74,7 @@ public class Plc4xTagValueRequest implements Message {
         "valueType",
         "Plc4xValueType",
         valueType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xValueType::getValue, Plc4xValueType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (value) (Can be skipped, if the value is null)

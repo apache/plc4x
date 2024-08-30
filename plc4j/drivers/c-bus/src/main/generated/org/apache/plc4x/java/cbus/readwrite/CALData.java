@@ -86,7 +86,7 @@ public abstract class CALData implements Message {
         "commandTypeContainer",
         "CALCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CALCommandTypeContainer::getValue,
             CALCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -130,7 +130,7 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         "propertyDataType",
         "KnxPropertyDataType",
         propertyDataType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             KnxPropertyDataType::getValue,
             KnxPropertyDataType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -146,16 +146,14 @@ public class ApduDataExtPropertyDescriptionResponse extends ApduDataExt implemen
         "readLevel",
         "AccessLevel",
         readLevel,
-        new DataWriterEnumDefault<>(
-            AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
 
     // Simple Field (writeLevel)
     writeSimpleEnumField(
         "writeLevel",
         "AccessLevel",
         writeLevel,
-        new DataWriterEnumDefault<>(
-            AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(AccessLevel::getValue, AccessLevel::name, writeUnsignedByte(writeBuffer, 4)));
 
     writeBuffer.popContext("ApduDataExtPropertyDescriptionResponse");
   }

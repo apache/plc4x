@@ -82,7 +82,7 @@ public class ModificationInfo extends ExtensionObjectDefinition implements Messa
         "updateType",
         "HistoryUpdateType",
         updateType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HistoryUpdateType::getValue,
             HistoryUpdateType::name,
             writeUnsignedLong(writeBuffer, 32)));

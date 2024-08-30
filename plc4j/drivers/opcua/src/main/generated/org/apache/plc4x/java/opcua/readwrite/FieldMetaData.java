@@ -150,7 +150,7 @@ public class FieldMetaData extends ExtensionObjectDefinition implements Message 
         "fieldFlags",
         "DataSetFieldFlags",
         fieldFlags,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldFlags::getValue,
             DataSetFieldFlags::name,
             writeUnsignedInt(writeBuffer, 16)));

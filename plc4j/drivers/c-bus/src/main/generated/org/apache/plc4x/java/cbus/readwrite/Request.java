@@ -107,8 +107,7 @@ public abstract class Request implements Message {
         "startingCR",
         "RequestType",
         startingCR,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getPeekedByte()) == (RequestType.EMPTY));
 
     // Optional Field (resetMode) (Can be skipped, if the value is null)
@@ -116,8 +115,7 @@ public abstract class Request implements Message {
         "resetMode",
         "RequestType",
         resetMode,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getPeekedByte()) == (RequestType.RESET));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)

@@ -77,32 +77,28 @@ public class StatusByte implements Message {
         "gav3",
         "GAVState",
         gav3,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav2)
     writeSimpleEnumField(
         "gav2",
         "GAVState",
         gav2,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav1)
     writeSimpleEnumField(
         "gav1",
         "GAVState",
         gav1,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (gav0)
     writeSimpleEnumField(
         "gav0",
         "GAVState",
         gav0,
-        new DataWriterEnumDefault<>(
-            GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(GAVState::getValue, GAVState::name, writeUnsignedByte(writeBuffer, 2)));
 
     writeBuffer.popContext("StatusByte");
   }

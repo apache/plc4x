@@ -154,8 +154,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
         "controllerReadyStatus",
         "NokOk",
         controllerReadyStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdToolReadyStatus)
@@ -170,8 +169,7 @@ public class OpenProtocolMessageAlarmRev2 extends OpenProtocolMessageAlarm imple
         "toolReadyStatus",
         "NokOk",
         toolReadyStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTime)

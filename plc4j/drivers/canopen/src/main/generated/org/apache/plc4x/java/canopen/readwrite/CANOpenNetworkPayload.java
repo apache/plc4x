@@ -72,7 +72,7 @@ public class CANOpenNetworkPayload extends CANOpenPayload implements Message {
         "request",
         "NMTStateRequest",
         request,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             NMTStateRequest::getValue, NMTStateRequest::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)

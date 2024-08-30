@@ -84,8 +84,7 @@ public class CALDataWrite extends CALData implements Message {
         "paramNo",
         "Parameter",
         paramNo,
-        new DataWriterEnumDefault<>(
-            Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (code)
     writeSimpleField("code", code, writeByte(writeBuffer, 8));

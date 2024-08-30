@@ -121,8 +121,7 @@ public class AdsAddDeviceNotificationRequest extends AmsPacket implements Messag
         "transmissionMode",
         "AdsTransMode",
         transmissionMode,
-        new DataWriterEnumDefault<>(
-            AdsTransMode::getValue, AdsTransMode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(AdsTransMode::getValue, AdsTransMode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (maxDelayInMs)
     writeSimpleField("maxDelayInMs", maxDelayInMs, writeUnsignedLong(writeBuffer, 32));

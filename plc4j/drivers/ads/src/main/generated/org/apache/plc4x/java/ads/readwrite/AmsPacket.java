@@ -157,8 +157,7 @@ public abstract class AmsPacket implements Message {
         "commandId",
         "CommandId",
         getCommandId(),
-        new DataWriterEnumDefault<>(
-            CommandId::getValue, CommandId::name, writeUnsignedInt(writeBuffer, 16)));
+        writeEnum(CommandId::getValue, CommandId::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Const Field (initCommand)
     writeConstField("initCommand", INITCOMMAND, writeBoolean(writeBuffer));

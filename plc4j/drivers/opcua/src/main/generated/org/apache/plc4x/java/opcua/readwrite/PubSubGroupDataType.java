@@ -132,7 +132,7 @@ public class PubSubGroupDataType extends ExtensionObjectDefinition implements Me
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));

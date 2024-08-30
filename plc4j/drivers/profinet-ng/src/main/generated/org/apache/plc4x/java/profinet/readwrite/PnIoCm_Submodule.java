@@ -153,7 +153,7 @@ public abstract class PnIoCm_Submodule implements Message {
         "submoduleType",
         "PnIoCm_SubmoduleType",
         getSubmoduleType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_SubmoduleType::getValue,
             PnIoCm_SubmoduleType::name,
             writeUnsignedByte(writeBuffer, 2)),

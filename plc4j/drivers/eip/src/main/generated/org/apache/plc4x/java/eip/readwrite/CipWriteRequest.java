@@ -99,7 +99,7 @@ public class CipWriteRequest extends CipService implements Message {
         "dataType",
         "CIPDataTypeCode",
         dataType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CIPDataTypeCode::getValue, CIPDataTypeCode::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Simple Field (elementNb)

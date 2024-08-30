@@ -103,8 +103,7 @@ public class S7PayloadUserDataItemCyclicServicesSubscribeRequest extends S7Paylo
         "timeBase",
         "TimeBase",
         timeBase,
-        new DataWriterEnumDefault<>(
-            TimeBase::getValue, TimeBase::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(TimeBase::getValue, TimeBase::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (timeFactor)
     writeSimpleField("timeFactor", timeFactor, writeUnsignedShort(writeBuffer, 8));

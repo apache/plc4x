@@ -219,8 +219,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "arType",
         "PnIoCm_ArType",
         arType,
-        new DataWriterEnumDefault<>(
-            PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
+        writeEnum(PnIoCm_ArType::getValue, PnIoCm_ArType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (arUuid)
@@ -291,7 +290,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "companionArType",
         "PnIoCm_CompanionArType",
         companionArType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_CompanionArType::getValue,
             PnIoCm_CompanionArType::name,
             writeUnsignedByte(writeBuffer, 2)),
@@ -330,8 +329,7 @@ public class PnIoCm_Block_ArReq extends PnIoCm_Block implements Message {
         "state",
         "PnIoCm_State",
         state,
-        new DataWriterEnumDefault<>(
-            PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
+        writeEnum(PnIoCm_State::getValue, PnIoCm_State::name, writeUnsignedByte(writeBuffer, 3)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     // Simple Field (cmInitiatorActivityTimeoutFactor)

@@ -68,7 +68,7 @@ public abstract class MeasurementData implements Message {
         "commandTypeContainer",
         "MeasurementCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeasurementCommandTypeContainer::getValue,
             MeasurementCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

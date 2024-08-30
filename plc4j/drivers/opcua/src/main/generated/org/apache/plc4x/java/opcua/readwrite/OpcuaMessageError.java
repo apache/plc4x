@@ -75,7 +75,7 @@ public class OpcuaMessageError extends MessagePDU implements Message {
         "error",
         "OpcuaStatusCode",
         error,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             OpcuaStatusCode::getValue, OpcuaStatusCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (reason)

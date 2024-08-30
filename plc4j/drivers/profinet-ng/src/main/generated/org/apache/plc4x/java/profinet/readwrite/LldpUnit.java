@@ -65,8 +65,7 @@ public abstract class LldpUnit implements Message {
         "tlvId",
         "TlvType",
         getTlvId(),
-        new DataWriterEnumDefault<>(
-            TlvType::getValue, TlvType::name, writeUnsignedByte(writeBuffer, 7)));
+        writeEnum(TlvType::getValue, TlvType::name, writeUnsignedByte(writeBuffer, 7)));
 
     // Simple Field (tlvIdLength)
     writeSimpleField("tlvIdLength", tlvIdLength, writeUnsignedShort(writeBuffer, 9));

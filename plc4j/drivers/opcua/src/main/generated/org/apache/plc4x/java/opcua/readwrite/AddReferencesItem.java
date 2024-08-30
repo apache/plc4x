@@ -120,8 +120,7 @@ public class AddReferencesItem extends ExtensionObjectDefinition implements Mess
         "targetNodeClass",
         "NodeClass",
         targetNodeClass,
-        new DataWriterEnumDefault<>(
-            NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AddReferencesItem");
   }

@@ -83,8 +83,7 @@ public class AdsAddDeviceNotificationResponse extends AmsPacket implements Messa
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (notificationHandle)
     writeSimpleField("notificationHandle", notificationHandle, writeUnsignedLong(writeBuffer, 32));

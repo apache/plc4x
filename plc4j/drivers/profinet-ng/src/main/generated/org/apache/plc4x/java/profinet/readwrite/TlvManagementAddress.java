@@ -101,7 +101,7 @@ public class TlvManagementAddress extends LldpUnit implements Message {
         "addressSubType",
         "ManagementAddressSubType",
         addressSubType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ManagementAddressSubType::getValue,
             ManagementAddressSubType::name,
             writeUnsignedShort(writeBuffer, 8)));

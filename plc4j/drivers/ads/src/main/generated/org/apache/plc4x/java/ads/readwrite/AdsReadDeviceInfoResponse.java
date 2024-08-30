@@ -104,8 +104,7 @@ public class AdsReadDeviceInfoResponse extends AmsPacket implements Message {
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (majorVersion)
     writeSimpleField("majorVersion", majorVersion, writeUnsignedShort(writeBuffer, 8));

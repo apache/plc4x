@@ -60,8 +60,7 @@ public abstract class APDU implements Message {
         "apduType",
         "ApduType",
         getApduType(),
-        new DataWriterEnumDefault<>(
-            ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
+        writeEnum(ApduType::getValue, ApduType::name, writeUnsignedByte(writeBuffer, 4)));
 
     // Switch field (Serialize the sub-type)
     serializeAPDUChild(writeBuffer);

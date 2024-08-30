@@ -116,7 +116,7 @@ public class NPDUControl implements Message {
         "networkPriority",
         "NPDUNetworkPriority",
         networkPriority,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             NPDUNetworkPriority::getValue,
             NPDUNetworkPriority::name,
             writeUnsignedByte(writeBuffer, 2)));

@@ -142,7 +142,7 @@ public class DataSetWriterDataType extends ExtensionObjectDefinition implements 
         "dataSetFieldContentMask",
         "DataSetFieldContentMask",
         dataSetFieldContentMask,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataSetFieldContentMask::getValue,
             DataSetFieldContentMask::name,
             writeUnsignedLong(writeBuffer, 32)));

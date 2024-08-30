@@ -80,7 +80,7 @@ public class CBusPointToMultiPointCommandNormal extends CBusPointToMultiPointCom
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

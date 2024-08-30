@@ -169,7 +169,7 @@ public class PnIoCm_Block_AlarmCrReq extends PnIoCm_Block implements Message {
         "alarmType",
         "PnIoCm_AlarmCrType",
         alarmType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_AlarmCrType::getValue,
             PnIoCm_AlarmCrType::name,
             writeUnsignedInt(writeBuffer, 16)),

@@ -84,8 +84,7 @@ public class DeviceConfigurationAckDataBlock implements Message {
         "status",
         "Status",
         status,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("DeviceConfigurationAckDataBlock");
   }

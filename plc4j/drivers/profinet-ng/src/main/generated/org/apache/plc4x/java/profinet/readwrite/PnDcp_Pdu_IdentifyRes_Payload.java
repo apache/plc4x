@@ -80,7 +80,7 @@ public abstract class PnDcp_Pdu_IdentifyRes_Payload implements Message {
         "serviceId",
         "PnDcp_ServiceId",
         getServiceId(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnDcp_ServiceId::getValue, PnDcp_ServiceId::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

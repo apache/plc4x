@@ -72,7 +72,7 @@ public class CANOpenSDORequest extends CANOpenPayload implements Message {
         "command",
         "SDORequestCommand",
         command,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SDORequestCommand::getValue,
             SDORequestCommand::name,
             writeUnsignedByte(writeBuffer, 3)));

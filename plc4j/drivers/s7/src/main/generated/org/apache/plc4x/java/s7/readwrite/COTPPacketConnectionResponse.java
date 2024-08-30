@@ -89,7 +89,7 @@ public class COTPPacketConnectionResponse extends COTPPacket implements Message 
         "protocolClass",
         "COTPProtocolClass",
         protocolClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             COTPProtocolClass::getValue,
             COTPProtocolClass::name,
             writeUnsignedShort(writeBuffer, 8)));

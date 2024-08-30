@@ -75,7 +75,7 @@ public abstract class ClockAndTimekeepingData implements Message {
         "commandTypeContainer",
         "ClockAndTimekeepingCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ClockAndTimekeepingCommandTypeContainer::getValue,
             ClockAndTimekeepingCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

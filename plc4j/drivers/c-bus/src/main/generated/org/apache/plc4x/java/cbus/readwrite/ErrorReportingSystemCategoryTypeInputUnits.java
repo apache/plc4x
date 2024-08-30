@@ -68,7 +68,7 @@ public class ErrorReportingSystemCategoryTypeInputUnits extends ErrorReportingSy
         "categoryForType",
         "ErrorReportingSystemCategoryTypeForInputUnits",
         categoryForType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryTypeForInputUnits::getValue,
             ErrorReportingSystemCategoryTypeForInputUnits::name,
             writeUnsignedByte(writeBuffer, 4)));

@@ -93,8 +93,7 @@ public class TriggerControlDataLabel extends TriggerControlData implements Messa
         "language",
         "Language",
         language,
-        new DataWriterEnumDefault<>(
-            Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Language::getValue, Language::name, writeUnsignedShort(writeBuffer, 8)),
         (getTriggerControlOptions().getLabelType()) != (TriggerControlLabelType.LOAD_DYNAMIC_ICON));
 
     // Array Field (data)

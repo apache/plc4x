@@ -87,7 +87,7 @@ public class APDUSimpleAck extends APDU implements Message {
         "serviceChoice",
         "BACnetConfirmedServiceChoice",
         serviceChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));

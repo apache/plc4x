@@ -170,7 +170,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         "maxSegmentsAccepted",
         "MaxSegmentsAccepted",
         maxSegmentsAccepted,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MaxSegmentsAccepted::getValue,
             MaxSegmentsAccepted::name,
             writeUnsignedByte(writeBuffer, 3)));
@@ -180,7 +180,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         "maxApduLengthAccepted",
         "MaxApduLengthAccepted",
         maxApduLengthAccepted,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MaxApduLengthAccepted::getValue,
             MaxApduLengthAccepted::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -215,7 +215,7 @@ public class APDUConfirmedRequest extends APDU implements Message {
         "segmentServiceChoice",
         "BACnetConfirmedServiceChoice",
         segmentServiceChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)),

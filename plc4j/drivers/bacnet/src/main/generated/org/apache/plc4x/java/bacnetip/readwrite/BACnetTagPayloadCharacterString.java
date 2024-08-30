@@ -74,7 +74,7 @@ public class BACnetTagPayloadCharacterString implements Message {
         "encoding",
         "BACnetCharacterEncoding",
         encoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetCharacterEncoding::getValue,
             BACnetCharacterEncoding::name,
             writeByte(writeBuffer, 8)));

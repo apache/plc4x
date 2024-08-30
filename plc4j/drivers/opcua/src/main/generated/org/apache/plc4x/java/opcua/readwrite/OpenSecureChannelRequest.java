@@ -109,7 +109,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "requestType",
         "SecurityTokenRequestType",
         requestType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SecurityTokenRequestType::getValue,
             SecurityTokenRequestType::name,
             writeUnsignedLong(writeBuffer, 32)));
@@ -119,7 +119,7 @@ public class OpenSecureChannelRequest extends ExtensionObjectDefinition implemen
         "securityMode",
         "MessageSecurityMode",
         securityMode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MessageSecurityMode::getValue,
             MessageSecurityMode::name,
             writeUnsignedLong(writeBuffer, 32)));

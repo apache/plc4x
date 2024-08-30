@@ -57,7 +57,7 @@ public abstract class TlvOrgSpecificProfibusUnit implements Message {
         "subType",
         "TlvProfibusSubType",
         getSubType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TlvProfibusSubType::getValue,
             TlvProfibusSubType::name,
             writeUnsignedShort(writeBuffer, 8)));

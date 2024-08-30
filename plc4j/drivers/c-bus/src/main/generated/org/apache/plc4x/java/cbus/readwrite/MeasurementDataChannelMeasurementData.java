@@ -114,7 +114,7 @@ public class MeasurementDataChannelMeasurementData extends MeasurementData imple
         "units",
         "MeasurementUnits",
         units,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeasurementUnits::getValue,
             MeasurementUnits::name,
             writeUnsignedShort(writeBuffer, 8)));

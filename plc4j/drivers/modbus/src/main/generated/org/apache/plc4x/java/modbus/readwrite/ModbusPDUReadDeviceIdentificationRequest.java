@@ -90,7 +90,7 @@ public class ModbusPDUReadDeviceIdentificationRequest extends ModbusPDU implemen
         "level",
         "ModbusDeviceInformationLevel",
         level,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusDeviceInformationLevel::getValue,
             ModbusDeviceInformationLevel::name,
             writeUnsignedShort(writeBuffer, 8)));

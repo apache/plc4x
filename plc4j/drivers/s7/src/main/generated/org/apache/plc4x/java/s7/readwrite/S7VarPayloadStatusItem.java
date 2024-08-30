@@ -59,7 +59,7 @@ public class S7VarPayloadStatusItem implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));

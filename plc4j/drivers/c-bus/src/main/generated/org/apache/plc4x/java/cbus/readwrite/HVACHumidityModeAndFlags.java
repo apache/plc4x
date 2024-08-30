@@ -173,7 +173,7 @@ public class HVACHumidityModeAndFlags implements Message {
         "mode",
         "HVACHumidityModeAndFlagsMode",
         mode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityModeAndFlagsMode::getValue,
             HVACHumidityModeAndFlagsMode::name,
             writeUnsignedByte(writeBuffer, 3)));

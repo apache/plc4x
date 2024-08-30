@@ -73,7 +73,7 @@ public class TelephonyDataLineOffHook extends TelephonyData implements Message {
         "reason",
         "LineOffHookReason",
         reason,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LineOffHookReason::getValue,
             LineOffHookReason::name,
             writeUnsignedShort(writeBuffer, 8)));

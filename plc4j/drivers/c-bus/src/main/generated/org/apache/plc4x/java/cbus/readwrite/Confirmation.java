@@ -81,8 +81,7 @@ public class Confirmation implements Message {
         "confirmationType",
         "ConfirmationType",
         confirmationType,
-        new DataWriterEnumDefault<>(
-            ConfirmationType::getValue, ConfirmationType::name, writeByte(writeBuffer, 8)));
+        writeEnum(ConfirmationType::getValue, ConfirmationType::name, writeByte(writeBuffer, 8)));
 
     // Virtual field (doesn't actually serialize anything, just makes the value available)
     boolean isSuccess = getIsSuccess();

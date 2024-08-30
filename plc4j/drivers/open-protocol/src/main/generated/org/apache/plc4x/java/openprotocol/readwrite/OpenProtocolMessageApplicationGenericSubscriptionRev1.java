@@ -96,7 +96,7 @@ public class OpenProtocolMessageApplicationGenericSubscriptionRev1
         "subscriptionMid",
         "Mid",
         subscriptionMid,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (wantedRevision)

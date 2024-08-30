@@ -85,7 +85,7 @@ public class CANOpenFrame implements Message {
         "service",
         "CANOpenService",
         service,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CANOpenService::getValue, CANOpenService::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.LITTLE_ENDIAN));
 

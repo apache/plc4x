@@ -119,7 +119,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         "level",
         "ModbusDeviceInformationLevel",
         level,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusDeviceInformationLevel::getValue,
             ModbusDeviceInformationLevel::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -132,7 +132,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         "conformityLevel",
         "ModbusDeviceInformationConformityLevel",
         conformityLevel,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusDeviceInformationConformityLevel::getValue,
             ModbusDeviceInformationConformityLevel::name,
             writeUnsignedByte(writeBuffer, 7)));
@@ -142,7 +142,7 @@ public class ModbusPDUReadDeviceIdentificationResponse extends ModbusPDU impleme
         "moreFollows",
         "ModbusDeviceInformationMoreFollows",
         moreFollows,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusDeviceInformationMoreFollows::getValue,
             ModbusDeviceInformationMoreFollows::name,
             writeUnsignedShort(writeBuffer, 8)));

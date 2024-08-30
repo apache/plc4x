@@ -170,7 +170,7 @@ public class APDUComplexAck extends APDU implements Message {
         "segmentServiceChoice",
         "BACnetConfirmedServiceChoice",
         segmentServiceChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)),

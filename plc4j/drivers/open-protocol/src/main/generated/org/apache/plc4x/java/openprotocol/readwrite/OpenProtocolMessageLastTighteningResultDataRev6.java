@@ -805,8 +805,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "strategy",
         "Strategy",
         strategy,
-        new DataWriterEnumDefault<>(
-            Strategy::getValue, Strategy::name, writeUnsignedInt(writeBuffer, 16)),
+        writeEnum(Strategy::getValue, Strategy::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdStrategyOptions)
@@ -856,8 +855,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "tighteningStatus",
         "NokOk",
         tighteningStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdBatchStatus)
@@ -872,8 +870,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "batchStatus",
         "BatchStatus",
         batchStatus,
-        new DataWriterEnumDefault<>(
-            BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTorqueStatus)
@@ -888,8 +885,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "torqueStatus",
         "Status",
         torqueStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdAngleStatus)
@@ -904,8 +900,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "angleStatus",
         "Status",
         angleStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdRundownAngleStatus)
@@ -920,8 +915,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "rundownAngleStatus",
         "Status",
         rundownAngleStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdCurrentMonitoringStatus)
@@ -936,8 +930,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "currentMonitoringStatus",
         "Status",
         currentMonitoringStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdSelfTapStatus)
@@ -952,8 +945,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "selfTapStatus",
         "Status",
         selfTapStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdPrevailTorqueMonitoringStatus)
@@ -968,8 +960,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "prevailTorqueMonitoringStatus",
         "Status",
         prevailTorqueMonitoringStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdPrevailTorqueCompensateStatus)
@@ -984,8 +975,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "prevailTorqueCompensateStatus",
         "Status",
         prevailTorqueCompensateStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdTighteningErrorStatus)
@@ -1370,7 +1360,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "torqueValueUnit",
         "Unit",
         torqueValueUnit,
-        new DataWriterEnumDefault<>(Unit::getValue, Unit::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Unit::getValue, Unit::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdResultType)
@@ -1385,8 +1375,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "resultType",
         "ResultType",
         resultType,
-        new DataWriterEnumDefault<>(
-            ResultType::getValue, ResultType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(ResultType::getValue, ResultType::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Const Field (blockIdIdentifierResultPart2)
@@ -1471,8 +1460,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev6
         "tighteningErrorStatus2",
         "Status",
         tighteningErrorStatus2,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageLastTighteningResultDataRev6");

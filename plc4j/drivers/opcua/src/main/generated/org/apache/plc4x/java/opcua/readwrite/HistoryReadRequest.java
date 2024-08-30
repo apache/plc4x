@@ -108,7 +108,7 @@ public class HistoryReadRequest extends ExtensionObjectDefinition implements Mes
         "timestampsToReturn",
         "TimestampsToReturn",
         timestampsToReturn,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TimestampsToReturn::getValue,
             TimestampsToReturn::name,
             writeUnsignedLong(writeBuffer, 32)));

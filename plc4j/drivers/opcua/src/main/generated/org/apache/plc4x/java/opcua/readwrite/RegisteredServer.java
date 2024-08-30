@@ -142,7 +142,7 @@ public class RegisteredServer extends ExtensionObjectDefinition implements Messa
         "serverType",
         "ApplicationType",
         serverType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)

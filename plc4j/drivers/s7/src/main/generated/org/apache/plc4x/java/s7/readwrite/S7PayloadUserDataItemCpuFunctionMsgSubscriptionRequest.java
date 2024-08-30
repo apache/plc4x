@@ -109,7 +109,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest extends S7Pa
         "alarmtype",
         "AlarmStateType",
         alarmtype,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AlarmStateType::getValue, AlarmStateType::name, writeUnsignedShort(writeBuffer, 8)),
         (getSubscription()) >= (128));
 

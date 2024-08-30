@@ -127,8 +127,7 @@ public class ReferenceDescription extends ExtensionObjectDefinition implements M
         "nodeClass",
         "NodeClass",
         nodeClass,
-        new DataWriterEnumDefault<>(
-            NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (typeDefinition)
     writeSimpleField("typeDefinition", typeDefinition, writeComplex(writeBuffer));

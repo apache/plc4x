@@ -118,7 +118,7 @@ public class MonitoredSALShortFormBasicMode extends MonitoredSAL implements Mess
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

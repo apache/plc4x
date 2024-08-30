@@ -57,7 +57,7 @@ public abstract class AdsDiscoveryBlock implements Message {
         "blockType",
         "AdsDiscoveryBlockType",
         getBlockType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AdsDiscoveryBlockType::getValue,
             AdsDiscoveryBlockType::name,
             writeUnsignedInt(writeBuffer, 16)));

@@ -150,7 +150,7 @@ public class ErrorReportingDataGeneric extends ErrorReportingData implements Mes
         "severity",
         "ErrorReportingSeverity",
         severity,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSeverity::getValue,
             ErrorReportingSeverity::name,
             writeUnsignedByte(writeBuffer, 3)));

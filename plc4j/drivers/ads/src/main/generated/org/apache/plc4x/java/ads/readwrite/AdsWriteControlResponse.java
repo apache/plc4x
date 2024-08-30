@@ -76,8 +76,7 @@ public class AdsWriteControlResponse extends AmsPacket implements Message {
         "result",
         "ReturnCode",
         result,
-        new DataWriterEnumDefault<>(
-            ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ReturnCode::getValue, ReturnCode::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AdsWriteControlResponse");
   }

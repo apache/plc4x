@@ -101,8 +101,7 @@ public class S7AddressAny extends S7Address implements Message {
         "transportSize",
         "TransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
-            TransportSize::getCode, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(TransportSize::getCode, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (numberOfElements)
     writeSimpleField("numberOfElements", numberOfElements, writeUnsignedInt(writeBuffer, 16));
@@ -115,8 +114,7 @@ public class S7AddressAny extends S7Address implements Message {
         "area",
         "MemoryArea",
         area,
-        new DataWriterEnumDefault<>(
-            MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (byte) 0x00, writeUnsignedByte(writeBuffer, 5));

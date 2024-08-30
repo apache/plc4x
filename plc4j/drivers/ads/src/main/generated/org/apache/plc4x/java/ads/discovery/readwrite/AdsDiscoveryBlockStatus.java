@@ -76,8 +76,7 @@ public class AdsDiscoveryBlockStatus extends AdsDiscoveryBlock implements Messag
         "status",
         "Status",
         status,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(Status::getValue, Status::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("AdsDiscoveryBlockStatus");
   }

@@ -73,7 +73,7 @@ public class ModbusPDUError extends ModbusPDU implements Message {
         "exceptionCode",
         "ModbusErrorCode",
         exceptionCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ModbusErrorCode::getValue, ModbusErrorCode::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("ModbusPDUError");

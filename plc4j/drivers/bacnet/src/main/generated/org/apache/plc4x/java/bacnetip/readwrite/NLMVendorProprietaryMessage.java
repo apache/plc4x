@@ -76,7 +76,7 @@ public class NLMVendorProprietaryMessage extends NLM implements Message {
         "vendorId",
         "BACnetVendorId",
         vendorId,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetVendorId::getValue, BACnetVendorId::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Array Field (proprietaryMessage)

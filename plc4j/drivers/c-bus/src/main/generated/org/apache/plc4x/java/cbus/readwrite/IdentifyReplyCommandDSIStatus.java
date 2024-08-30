@@ -135,7 +135,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus1",
         "ChannelStatus",
         channelStatus1,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus2)
@@ -143,7 +143,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus2",
         "ChannelStatus",
         channelStatus2,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus3)
@@ -151,7 +151,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus3",
         "ChannelStatus",
         channelStatus3,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus4)
@@ -159,7 +159,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus4",
         "ChannelStatus",
         channelStatus4,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus5)
@@ -167,7 +167,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus5",
         "ChannelStatus",
         channelStatus5,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus6)
@@ -175,7 +175,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus6",
         "ChannelStatus",
         channelStatus6,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus7)
@@ -183,7 +183,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus7",
         "ChannelStatus",
         channelStatus7,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (channelStatus8)
@@ -191,7 +191,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "channelStatus8",
         "ChannelStatus",
         channelStatus8,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ChannelStatus::getValue, ChannelStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (unitStatus)
@@ -199,8 +199,7 @@ public class IdentifyReplyCommandDSIStatus extends IdentifyReplyCommand implemen
         "unitStatus",
         "UnitStatus",
         unitStatus,
-        new DataWriterEnumDefault<>(
-            UnitStatus::getValue, UnitStatus::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(UnitStatus::getValue, UnitStatus::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (dimmingUCRevisionNumber)
     writeSimpleField("dimmingUCRevisionNumber", dimmingUCRevisionNumber, writeByte(writeBuffer, 8));

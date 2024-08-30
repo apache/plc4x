@@ -67,8 +67,7 @@ public class ConnectionRequestInformationTunnelConnection extends ConnectionRequ
         "knxLayer",
         "KnxLayer",
         knxLayer,
-        new DataWriterEnumDefault<>(
-            KnxLayer::getValue, KnxLayer::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(KnxLayer::getValue, KnxLayer::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));

@@ -65,7 +65,7 @@ public class CIPData implements Message {
         "dataType",
         "CIPDataTypeCode",
         dataType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CIPDataTypeCode::getValue, CIPDataTypeCode::name, writeUnsignedInt(writeBuffer, 16)));
 
     // Array Field (data)

@@ -81,7 +81,7 @@ public class Plc4xTagValueResponse implements Message {
         "responseCode",
         "Plc4xResponseCode",
         responseCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -91,7 +91,7 @@ public class Plc4xTagValueResponse implements Message {
         "valueType",
         "Plc4xValueType",
         valueType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xValueType::getValue, Plc4xValueType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (value) (Can be skipped, if the value is null)

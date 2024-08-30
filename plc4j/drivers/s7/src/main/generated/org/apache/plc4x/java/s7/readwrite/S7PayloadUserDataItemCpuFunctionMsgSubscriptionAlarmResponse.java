@@ -113,8 +113,7 @@ public class S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse
         "alarmType",
         "AlarmType",
         alarmType,
-        new DataWriterEnumDefault<>(
-            AlarmType::getValue, AlarmType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(AlarmType::getValue, AlarmType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (reserved02)
     writeSimpleField("reserved02", reserved02, writeUnsignedShort(writeBuffer, 8));

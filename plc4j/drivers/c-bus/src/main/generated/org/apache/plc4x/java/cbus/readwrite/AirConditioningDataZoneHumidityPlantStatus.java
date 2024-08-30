@@ -100,7 +100,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
         "humidityType",
         "HVACHumidityType",
         humidityType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityType::getValue,
             HVACHumidityType::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -113,7 +113,7 @@ public class AirConditioningDataZoneHumidityPlantStatus extends AirConditioningD
         "humidityErrorCode",
         "HVACHumidityError",
         humidityErrorCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACHumidityError::getValue,
             HVACHumidityError::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -80,8 +80,7 @@ public class CBusCommandDeviceManagement extends CBusCommand implements Message 
         "paramNo",
         "Parameter",
         paramNo,
-        new DataWriterEnumDefault<>(
-            Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Const Field (delimiter)
     writeConstField("delimiter", DELIMITER, writeByte(writeBuffer, 8));

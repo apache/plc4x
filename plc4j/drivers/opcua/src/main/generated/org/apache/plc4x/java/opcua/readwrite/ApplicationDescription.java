@@ -125,7 +125,7 @@ public class ApplicationDescription extends ExtensionObjectDefinition implements
         "applicationType",
         "ApplicationType",
         applicationType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationType::getValue, ApplicationType::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (gatewayServerUri)

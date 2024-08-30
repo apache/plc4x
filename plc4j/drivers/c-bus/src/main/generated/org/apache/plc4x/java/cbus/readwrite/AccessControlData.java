@@ -81,7 +81,7 @@ public abstract class AccessControlData implements Message {
         "commandTypeContainer",
         "AccessControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AccessControlCommandTypeContainer::getValue,
             AccessControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

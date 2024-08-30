@@ -61,7 +61,7 @@ public abstract class BACnetUnconfirmedServiceRequest implements Message {
         "serviceChoice",
         "BACnetUnconfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetUnconfirmedServiceChoice::getValue,
             BACnetUnconfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));

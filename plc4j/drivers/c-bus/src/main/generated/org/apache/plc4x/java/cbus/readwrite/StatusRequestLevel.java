@@ -86,7 +86,7 @@ public class StatusRequestLevel extends StatusRequest implements Message {
         "application",
         "ApplicationIdContainer",
         application,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ApplicationIdContainer::getValue,
             ApplicationIdContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

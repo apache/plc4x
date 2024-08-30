@@ -129,8 +129,7 @@ public class AlarmMessageObjectPushType implements Message {
         "syntaxId",
         "SyntaxIdType",
         syntaxId,
-        new DataWriterEnumDefault<>(
-            SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (numberOfValues)
     writeSimpleField("numberOfValues", numberOfValues, writeUnsignedShort(writeBuffer, 8));

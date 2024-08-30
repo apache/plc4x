@@ -124,8 +124,7 @@ public class DIBDeviceInfo implements Message {
         "knxMedium",
         "KnxMedium",
         knxMedium,
-        new DataWriterEnumDefault<>(
-            KnxMedium::getValue, KnxMedium::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(KnxMedium::getValue, KnxMedium::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (deviceStatus)
     writeSimpleField("deviceStatus", deviceStatus, writeComplex(writeBuffer));

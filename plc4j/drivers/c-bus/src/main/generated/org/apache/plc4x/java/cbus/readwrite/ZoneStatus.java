@@ -59,7 +59,7 @@ public class ZoneStatus implements Message {
         "value",
         "ZoneStatusTemp",
         value,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ZoneStatusTemp::getValue, ZoneStatusTemp::name, writeUnsignedByte(writeBuffer, 2)));
 
     writeBuffer.popContext("ZoneStatus");

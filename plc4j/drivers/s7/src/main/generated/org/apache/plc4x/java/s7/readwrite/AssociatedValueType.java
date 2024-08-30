@@ -81,7 +81,7 @@ public class AssociatedValueType implements Message {
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -91,7 +91,7 @@ public class AssociatedValueType implements Message {
         "transportSize",
         "DataTransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportSize::getValue,
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -74,7 +74,7 @@ public abstract class MeteringData implements Message {
         "commandTypeContainer",
         "MeteringCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MeteringCommandTypeContainer::getValue,
             MeteringCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

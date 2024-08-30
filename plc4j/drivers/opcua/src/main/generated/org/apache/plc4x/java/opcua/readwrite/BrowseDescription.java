@@ -105,7 +105,7 @@ public class BrowseDescription extends ExtensionObjectDefinition implements Mess
         "browseDirection",
         "BrowseDirection",
         browseDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BrowseDirection::getValue, BrowseDirection::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (referenceTypeId)

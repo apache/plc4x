@@ -75,7 +75,7 @@ public abstract class MediaTransportControlData implements Message {
         "commandTypeContainer",
         "MediaTransportControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             MediaTransportControlCommandTypeContainer::getValue,
             MediaTransportControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

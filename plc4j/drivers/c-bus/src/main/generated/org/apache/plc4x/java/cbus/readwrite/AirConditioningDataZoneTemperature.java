@@ -95,7 +95,7 @@ public class AirConditioningDataZoneTemperature extends AirConditioningData impl
         "sensorStatus",
         "HVACSensorStatus",
         sensorStatus,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACSensorStatus::getValue,
             HVACSensorStatus::name,
             writeUnsignedShort(writeBuffer, 8)));

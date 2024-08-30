@@ -66,8 +66,7 @@ public class COTPParameterTpduSize extends COTPParameter implements Message {
         "tpduSize",
         "COTPTpduSize",
         tpduSize,
-        new DataWriterEnumDefault<>(
-            COTPTpduSize::getValue, COTPTpduSize::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(COTPTpduSize::getValue, COTPTpduSize::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("COTPParameterTpduSize");
   }

@@ -95,7 +95,7 @@ public abstract class Plc4xMessage implements Message {
         "requestType",
         "Plc4xRequestType",
         getRequestType(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xRequestType::getValue, Plc4xRequestType::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

@@ -85,8 +85,7 @@ public class RedundantServerDataType extends ExtensionObjectDefinition implement
         "serverState",
         "ServerState",
         serverState,
-        new DataWriterEnumDefault<>(
-            ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("RedundantServerDataType");
   }

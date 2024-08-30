@@ -59,8 +59,7 @@ public abstract class NodeIdTypeDefinition implements Message {
         "nodeType",
         "NodeIdType",
         getNodeType(),
-        new DataWriterEnumDefault<>(
-            NodeIdType::getValue, NodeIdType::name, writeUnsignedByte(writeBuffer, 6)));
+        writeEnum(NodeIdType::getValue, NodeIdType::name, writeUnsignedByte(writeBuffer, 6)));
 
     // Switch field (Serialize the sub-type)
     serializeNodeIdTypeDefinitionChild(writeBuffer);

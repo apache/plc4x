@@ -65,7 +65,7 @@ public abstract class BACnetServiceAck implements Message {
         "serviceChoice",
         "BACnetConfirmedServiceChoice",
         getServiceChoice(),
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));

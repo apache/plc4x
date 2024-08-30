@@ -66,8 +66,7 @@ public class CANOpenHeartbeatPayload extends CANOpenPayload implements Message {
         "state",
         "NMTState",
         state,
-        new DataWriterEnumDefault<>(
-            NMTState::getValue, NMTState::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(NMTState::getValue, NMTState::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("CANOpenHeartbeatPayload");
   }

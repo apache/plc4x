@@ -78,7 +78,7 @@ public class EnableControlData implements Message {
         "commandTypeContainer",
         "EnableControlCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             EnableControlCommandTypeContainer::getValue,
             EnableControlCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

@@ -240,7 +240,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "ioCrType",
         "PnIoCm_IoCrType",
         ioCrType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_IoCrType::getValue, PnIoCm_IoCrType::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -305,7 +305,7 @@ public class PnIoCm_Block_IoCrReq extends PnIoCm_Block implements Message {
         "rtClass",
         "PnIoCm_RtClass",
         rtClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_RtClass::getValue, PnIoCm_RtClass::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 

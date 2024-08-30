@@ -94,8 +94,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
         "transportSize",
         "TransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
-            TransportSize::getCode, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(TransportSize::getCode, TransportSize::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (length)
     writeSimpleField("length", length, writeUnsignedInt(writeBuffer, 16));
@@ -108,8 +107,7 @@ public class CycServiceItemAnyType extends CycServiceItemType implements Message
         "memoryArea",
         "MemoryArea",
         memoryArea,
-        new DataWriterEnumDefault<>(
-            MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(MemoryArea::getValue, MemoryArea::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (address)
     writeSimpleField("address", address, writeUnsignedInt(writeBuffer, 24));

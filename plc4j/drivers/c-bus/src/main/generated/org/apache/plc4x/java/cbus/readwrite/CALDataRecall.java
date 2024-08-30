@@ -77,8 +77,7 @@ public class CALDataRecall extends CALData implements Message {
         "paramNo",
         "Parameter",
         paramNo,
-        new DataWriterEnumDefault<>(
-            Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(Parameter::getValue, Parameter::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (count)
     writeSimpleField("count", count, writeUnsignedShort(writeBuffer, 8));

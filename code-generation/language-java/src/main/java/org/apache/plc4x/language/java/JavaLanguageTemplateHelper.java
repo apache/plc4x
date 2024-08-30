@@ -474,7 +474,7 @@ public class JavaLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHe
         } else {
             outputTypeReference = getEnumFieldSimpleTypeReference(typeReference.asNonSimpleTypeReference().orElseThrow(), attributeName);
         }
-        return "new DataWriterEnumDefault<>(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
+        return "writeEnum(" + languageTypeName + "::get" + StringUtils.capitalize(attributeName) + ", " + languageTypeName + "::name, " + getDataWriterCall(outputTypeReference, fieldName) + ")";
     }
 
     public String getDataWriterCall(SimpleTypeReference simpleTypeReference) {

@@ -75,7 +75,7 @@ public class RolePermissionType extends ExtensionObjectDefinition implements Mes
         "permissions",
         "PermissionType",
         permissions,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PermissionType::getValue, PermissionType::name, writeUnsignedLong(writeBuffer, 32)));
 
     writeBuffer.popContext("RolePermissionType");

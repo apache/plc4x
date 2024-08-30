@@ -111,7 +111,7 @@ public class AxisInformation extends ExtensionObjectDefinition implements Messag
         "axisScaleType",
         "AxisScaleEnumeration",
         axisScaleType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             AxisScaleEnumeration::getValue,
             AxisScaleEnumeration::name,
             writeUnsignedLong(writeBuffer, 32)));

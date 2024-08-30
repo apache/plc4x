@@ -77,7 +77,7 @@ public class LightingLabelOptions implements Message {
         "labelFlavour",
         "LightingLabelFlavour",
         labelFlavour,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingLabelFlavour::getValue,
             LightingLabelFlavour::name,
             writeUnsignedByte(writeBuffer, 2)));
@@ -99,7 +99,7 @@ public class LightingLabelOptions implements Message {
         "labelType",
         "LightingLabelType",
         labelType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             LightingLabelType::getValue,
             LightingLabelType::name,
             writeUnsignedByte(writeBuffer, 2)));

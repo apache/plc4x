@@ -256,7 +256,7 @@ public class OpenProtocolMessageParameterSetDataUploadReplyRev2
         "rotationDirection",
         "RotationDirection",
         rotationDirection,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             RotationDirection::getValue,
             RotationDirection::name,
             writeUnsignedShort(writeBuffer, 8)),

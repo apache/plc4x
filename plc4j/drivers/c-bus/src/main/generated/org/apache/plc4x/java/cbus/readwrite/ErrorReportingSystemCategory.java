@@ -74,7 +74,7 @@ public class ErrorReportingSystemCategory implements Message {
         "systemCategoryClass",
         "ErrorReportingSystemCategoryClass",
         systemCategoryClass,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryClass::getValue,
             ErrorReportingSystemCategoryClass::name,
             writeUnsignedByte(writeBuffer, 4)));
@@ -87,7 +87,7 @@ public class ErrorReportingSystemCategory implements Message {
         "systemCategoryVariant",
         "ErrorReportingSystemCategoryVariant",
         systemCategoryVariant,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryVariant::getValue,
             ErrorReportingSystemCategoryVariant::name,
             writeUnsignedByte(writeBuffer, 2)));

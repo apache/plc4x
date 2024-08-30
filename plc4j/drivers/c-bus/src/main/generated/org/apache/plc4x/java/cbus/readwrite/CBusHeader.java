@@ -81,8 +81,7 @@ public class CBusHeader implements Message {
         "priorityClass",
         "PriorityClass",
         priorityClass,
-        new DataWriterEnumDefault<>(
-            PriorityClass::getValue, PriorityClass::name, writeUnsignedByte(writeBuffer, 2)));
+        writeEnum(PriorityClass::getValue, PriorityClass::name, writeUnsignedByte(writeBuffer, 2)));
 
     // Simple Field (dp)
     writeSimpleField("dp", dp, writeBoolean(writeBuffer));
@@ -95,7 +94,7 @@ public class CBusHeader implements Message {
         "destinationAddressType",
         "DestinationAddressType",
         destinationAddressType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DestinationAddressType::getValue,
             DestinationAddressType::name,
             writeUnsignedByte(writeBuffer, 3)));

@@ -116,8 +116,7 @@ public class AirConditioningDataSetZoneHvacMode extends AirConditioningData impl
         "hvacType",
         "HVACType",
         hvacType,
-        new DataWriterEnumDefault<>(
-            HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Optional Field (level) (Can be skipped, if the value is null)
     writeOptionalField(

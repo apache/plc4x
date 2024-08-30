@@ -94,8 +94,7 @@ public class RequestReset extends Request implements Message {
         "secondTilde",
         "RequestType",
         secondTilde,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getTildePeek()) == (RequestType.RESET));
 
     // Optional Field (thirdTilde) (Can be skipped, if the value is null)
@@ -103,8 +102,7 @@ public class RequestReset extends Request implements Message {
         "thirdTilde",
         "RequestType",
         thirdTilde,
-        new DataWriterEnumDefault<>(
-            RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(RequestType::getValue, RequestType::name, writeUnsignedShort(writeBuffer, 8)),
         (getTildePeek2()) == (RequestType.RESET));
 
     writeBuffer.popContext("RequestReset");

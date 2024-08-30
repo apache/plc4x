@@ -108,8 +108,7 @@ public class ServerStatusDataType extends ExtensionObjectDefinition implements M
         "state",
         "ServerState",
         state,
-        new DataWriterEnumDefault<>(
-            ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(ServerState::getValue, ServerState::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (buildInfo)
     writeSimpleField("buildInfo", buildInfo, writeComplex(writeBuffer));

@@ -68,7 +68,7 @@ public class ErrorReportingSystemCategoryTypeBuildingManagementSystems
         "categoryForType",
         "ErrorReportingSystemCategoryTypeForBuildingManagementSystems",
         categoryForType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             ErrorReportingSystemCategoryTypeForBuildingManagementSystems::getValue,
             ErrorReportingSystemCategoryTypeForBuildingManagementSystems::name,
             writeUnsignedByte(writeBuffer, 4)));

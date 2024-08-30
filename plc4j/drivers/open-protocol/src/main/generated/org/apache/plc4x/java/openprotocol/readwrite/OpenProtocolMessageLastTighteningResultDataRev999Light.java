@@ -202,8 +202,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         "batchStatus",
         "BatchStatus",
         batchStatus,
-        new DataWriterEnumDefault<>(
-            BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(BatchStatus::getValue, BatchStatus::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (tighteningStatus)
@@ -211,8 +210,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         "tighteningStatus",
         "NokOk",
         tighteningStatus,
-        new DataWriterEnumDefault<>(
-            NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(NokOk::getValue, NokOk::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (torqueStatus)
@@ -220,8 +218,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         "torqueStatus",
         "Status",
         torqueStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (angleStatus)
@@ -229,8 +226,7 @@ public class OpenProtocolMessageLastTighteningResultDataRev999Light
         "angleStatus",
         "Status",
         angleStatus,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithEncoding("ASCII"));
 
     // Simple Field (torque)

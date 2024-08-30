@@ -74,7 +74,7 @@ public abstract class TelephonyData implements Message {
         "commandTypeContainer",
         "TelephonyCommandTypeContainer",
         commandTypeContainer,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             TelephonyCommandTypeContainer::getValue,
             TelephonyCommandTypeContainer::name,
             writeUnsignedShort(writeBuffer, 8)));

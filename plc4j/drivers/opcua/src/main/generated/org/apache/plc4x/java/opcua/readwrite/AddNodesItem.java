@@ -121,8 +121,7 @@ public class AddNodesItem extends ExtensionObjectDefinition implements Message {
         "nodeClass",
         "NodeClass",
         nodeClass,
-        new DataWriterEnumDefault<>(
-            NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
+        writeEnum(NodeClass::getValue, NodeClass::name, writeUnsignedLong(writeBuffer, 32)));
 
     // Simple Field (nodeAttributes)
     writeSimpleField("nodeAttributes", nodeAttributes, writeComplex(writeBuffer));

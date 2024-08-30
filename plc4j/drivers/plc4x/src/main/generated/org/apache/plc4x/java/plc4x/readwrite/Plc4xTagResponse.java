@@ -68,7 +68,7 @@ public class Plc4xTagResponse implements Message {
         "responseCode",
         "Plc4xResponseCode",
         responseCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             Plc4xResponseCode::getValue,
             Plc4xResponseCode::name,
             writeUnsignedShort(writeBuffer, 8)));

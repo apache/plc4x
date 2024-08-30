@@ -85,7 +85,7 @@ public class Ethernet_FramePayload_VirtualLan extends Ethernet_FramePayload impl
         "priority",
         "VirtualLanPriority",
         priority,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             VirtualLanPriority::getValue,
             VirtualLanPriority::name,
             writeUnsignedByte(writeBuffer, 3)));

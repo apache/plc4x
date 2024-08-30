@@ -96,8 +96,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
         "syntaxId",
         "SyntaxIdType",
         syntaxId,
-        new DataWriterEnumDefault<>(
-            SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(SyntaxIdType::getValue, SyntaxIdType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0x00, writeUnsignedShort(writeBuffer, 8));
@@ -107,8 +106,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
         "queryType",
         "QueryType",
         queryType,
-        new DataWriterEnumDefault<>(
-            QueryType::getValue, QueryType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(QueryType::getValue, QueryType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Reserved Field (reserved)
     writeReservedField("reserved", (short) 0x34, writeUnsignedShort(writeBuffer, 8));
@@ -118,8 +116,7 @@ public class S7MessageObjectRequest extends S7DataAlarmMessage implements Messag
         "alarmType",
         "AlarmType",
         alarmType,
-        new DataWriterEnumDefault<>(
-            AlarmType::getValue, AlarmType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(AlarmType::getValue, AlarmType::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("S7MessageObjectRequest");
   }

@@ -72,7 +72,7 @@ public class CANOpenSDOResponse extends CANOpenPayload implements Message {
         "command",
         "SDOResponseCommand",
         command,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             SDOResponseCommand::getValue,
             SDOResponseCommand::name,
             writeUnsignedByte(writeBuffer, 3)));

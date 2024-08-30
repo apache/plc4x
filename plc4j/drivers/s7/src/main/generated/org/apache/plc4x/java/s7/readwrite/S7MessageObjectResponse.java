@@ -73,7 +73,7 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
         "returnCode",
         "DataTransportErrorCode",
         returnCode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportErrorCode::getValue,
             DataTransportErrorCode::name,
             writeUnsignedShort(writeBuffer, 8)));
@@ -83,7 +83,7 @@ public class S7MessageObjectResponse extends S7DataAlarmMessage implements Messa
         "transportSize",
         "DataTransportSize",
         transportSize,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DataTransportSize::getValue,
             DataTransportSize::name,
             writeUnsignedShort(writeBuffer, 8)));

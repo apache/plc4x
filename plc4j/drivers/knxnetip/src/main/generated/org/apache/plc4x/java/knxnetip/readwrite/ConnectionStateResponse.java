@@ -79,8 +79,7 @@ public class ConnectionStateResponse extends KnxNetIpMessage implements Message 
         "status",
         "Status",
         status,
-        new DataWriterEnumDefault<>(
-            Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
+        writeEnum(Status::getValue, Status::name, writeUnsignedShort(writeBuffer, 8)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
     writeBuffer.popContext("ConnectionStateResponse");

@@ -82,7 +82,7 @@ public class OpenProtocolMessageLinkLevelPositiveAcknowledgeRev1
         "midNumber",
         "Mid",
         midNumber,
-        new DataWriterEnumDefault<>(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
+        writeEnum(Mid::getValue, Mid::name, writeUnsignedLong(writeBuffer, 32)),
         WithOption.WithEncoding("ASCII"));
 
     writeBuffer.popContext("OpenProtocolMessageLinkLevelPositiveAcknowledgeRev1");

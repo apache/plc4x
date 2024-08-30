@@ -173,7 +173,7 @@ public class HVACModeAndFlags implements Message {
         "mode",
         "HVACModeAndFlagsMode",
         mode,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             HVACModeAndFlagsMode::getValue,
             HVACModeAndFlagsMode::name,
             writeUnsignedByte(writeBuffer, 3)));

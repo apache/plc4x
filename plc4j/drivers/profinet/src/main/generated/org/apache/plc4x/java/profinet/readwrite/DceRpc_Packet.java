@@ -229,7 +229,7 @@ public class DceRpc_Packet implements Message {
         "packetType",
         "DceRpc_PacketType",
         packetType,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DceRpc_PacketType::getValue,
             DceRpc_PacketType::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -314,7 +314,7 @@ public class DceRpc_Packet implements Message {
         "integerEncoding",
         "IntegerEncoding",
         integerEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             IntegerEncoding::getValue, IntegerEncoding::name, writeUnsignedByte(writeBuffer, 4)),
         WithOption.WithByteOrder(ByteOrder.BIG_ENDIAN));
 
@@ -323,7 +323,7 @@ public class DceRpc_Packet implements Message {
         "characterEncoding",
         "CharacterEncoding",
         characterEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             CharacterEncoding::getValue,
             CharacterEncoding::name,
             writeUnsignedByte(writeBuffer, 4)),
@@ -334,7 +334,7 @@ public class DceRpc_Packet implements Message {
         "floatingPointEncoding",
         "FloatingPointEncoding",
         floatingPointEncoding,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             FloatingPointEncoding::getValue,
             FloatingPointEncoding::name,
             writeUnsignedShort(writeBuffer, 8)),
@@ -419,7 +419,7 @@ public class DceRpc_Packet implements Message {
         "operation",
         "DceRpc_Operation",
         operation,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             DceRpc_Operation::getValue, DceRpc_Operation::name, writeUnsignedInt(writeBuffer, 16)),
         WithOption.WithByteOrder(
             (((integerEncoding) == (IntegerEncoding.BIG_ENDIAN))

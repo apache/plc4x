@@ -95,7 +95,7 @@ public class PnIoCm_ModuleDiffBlockApi_Module implements Message {
         "moduleState",
         "PnIoCm_ModuleState",
         moduleState,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             PnIoCm_ModuleState::getValue,
             PnIoCm_ModuleState::name,
             writeUnsignedInt(writeBuffer, 16)),

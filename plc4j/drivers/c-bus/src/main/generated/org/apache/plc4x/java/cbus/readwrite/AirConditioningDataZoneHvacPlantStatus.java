@@ -99,8 +99,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
         "hvacType",
         "HVACType",
         hvacType,
-        new DataWriterEnumDefault<>(
-            HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACType::getValue, HVACType::name, writeUnsignedShort(writeBuffer, 8)));
 
     // Simple Field (hvacStatus)
     writeSimpleField("hvacStatus", hvacStatus, writeComplex(writeBuffer));
@@ -110,8 +109,7 @@ public class AirConditioningDataZoneHvacPlantStatus extends AirConditioningData 
         "hvacErrorCode",
         "HVACError",
         hvacErrorCode,
-        new DataWriterEnumDefault<>(
-            HVACError::getValue, HVACError::name, writeUnsignedShort(writeBuffer, 8)));
+        writeEnum(HVACError::getValue, HVACError::name, writeUnsignedShort(writeBuffer, 8)));
 
     writeBuffer.popContext("AirConditioningDataZoneHvacPlantStatus");
   }

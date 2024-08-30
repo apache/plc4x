@@ -96,7 +96,7 @@ public class APDUError extends APDU implements Message {
         "errorChoice",
         "BACnetConfirmedServiceChoice",
         errorChoice,
-        new DataWriterEnumDefault<>(
+        writeEnum(
             BACnetConfirmedServiceChoice::getValue,
             BACnetConfirmedServiceChoice::name,
             writeUnsignedShort(writeBuffer, 8)));
