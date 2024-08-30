@@ -157,13 +157,13 @@ func (e LevelInformationNibblePair) NibbleValue() uint8 {
 	}
 }
 
-func LevelInformationNibblePairFirstEnumForFieldNibbleValue(value uint8) (LevelInformationNibblePair, error) {
+func LevelInformationNibblePairFirstEnumForFieldNibbleValue(value uint8) (LevelInformationNibblePair, bool) {
 	for _, sizeValue := range LevelInformationNibblePairValues {
 		if sizeValue.NibbleValue() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NibbleValue not found", value)
+	return 0, false
 }
 func LevelInformationNibblePairByValue(value uint8) (enum LevelInformationNibblePair, ok bool) {
 	switch value {

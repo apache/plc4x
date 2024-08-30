@@ -86,13 +86,13 @@ func (e ErrorReportingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func ErrorReportingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ErrorReportingCommandTypeContainer, error) {
+func ErrorReportingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ErrorReportingCommandTypeContainer, bool) {
 	for _, sizeValue := range ErrorReportingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e ErrorReportingCommandTypeContainer) CommandType() ErrorReportingCommandType {
@@ -120,13 +120,13 @@ func (e ErrorReportingCommandTypeContainer) CommandType() ErrorReportingCommandT
 	}
 }
 
-func ErrorReportingCommandTypeContainerFirstEnumForFieldCommandType(value ErrorReportingCommandType) (ErrorReportingCommandTypeContainer, error) {
+func ErrorReportingCommandTypeContainerFirstEnumForFieldCommandType(value ErrorReportingCommandType) (ErrorReportingCommandTypeContainer, bool) {
 	for _, sizeValue := range ErrorReportingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func ErrorReportingCommandTypeContainerByValue(value uint8) (enum ErrorReportingCommandTypeContainer, ok bool) {
 	switch value {

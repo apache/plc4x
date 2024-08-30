@@ -158,13 +158,13 @@ func (e TemperatureBroadcastCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TemperatureBroadcastCommandTypeContainer, error) {
+func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TemperatureBroadcastCommandTypeContainer, bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e TemperatureBroadcastCommandTypeContainer) CommandType() TemperatureBroadcastCommandType {
@@ -240,13 +240,13 @@ func (e TemperatureBroadcastCommandTypeContainer) CommandType() TemperatureBroad
 	}
 }
 
-func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldCommandType(value TemperatureBroadcastCommandType) (TemperatureBroadcastCommandTypeContainer, error) {
+func TemperatureBroadcastCommandTypeContainerFirstEnumForFieldCommandType(value TemperatureBroadcastCommandType) (TemperatureBroadcastCommandTypeContainer, bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func TemperatureBroadcastCommandTypeContainerByValue(value uint8) (enum TemperatureBroadcastCommandTypeContainer, ok bool) {
 	switch value {

@@ -223,13 +223,13 @@ func (e SimulatedDataTypeSizes) DataTypeSize() uint8 {
 	}
 }
 
-func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (SimulatedDataTypeSizes, error) {
+func SimulatedDataTypeSizesFirstEnumForFieldDataTypeSize(value uint8) (SimulatedDataTypeSizes, bool) {
 	for _, sizeValue := range SimulatedDataTypeSizesValues {
 		if sizeValue.DataTypeSize() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DataTypeSize not found", value)
+	return 0, false
 }
 func SimulatedDataTypeSizesByValue(value uint8) (enum SimulatedDataTypeSizes, ok bool) {
 	switch value {

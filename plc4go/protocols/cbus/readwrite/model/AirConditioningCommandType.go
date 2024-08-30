@@ -175,13 +175,13 @@ func (e AirConditioningCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AirConditioningCommandType, error) {
+func AirConditioningCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (AirConditioningCommandType, bool) {
 	for _, sizeValue := range AirConditioningCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func AirConditioningCommandTypeByValue(value uint8) (enum AirConditioningCommandType, ok bool) {
 	switch value {

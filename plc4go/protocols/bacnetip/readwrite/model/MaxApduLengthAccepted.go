@@ -157,13 +157,13 @@ func (e MaxApduLengthAccepted) NumberOfOctets() uint16 {
 	}
 }
 
-func MaxApduLengthAcceptedFirstEnumForFieldNumberOfOctets(value uint16) (MaxApduLengthAccepted, error) {
+func MaxApduLengthAcceptedFirstEnumForFieldNumberOfOctets(value uint16) (MaxApduLengthAccepted, bool) {
 	for _, sizeValue := range MaxApduLengthAcceptedValues {
 		if sizeValue.NumberOfOctets() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfOctets not found", value)
+	return 0, false
 }
 func MaxApduLengthAcceptedByValue(value uint8) (enum MaxApduLengthAccepted, ok bool) {
 	switch value {

@@ -782,13 +782,13 @@ func (e SecurityCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func SecurityCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (SecurityCommandTypeContainer, error) {
+func SecurityCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (SecurityCommandTypeContainer, bool) {
 	for _, sizeValue := range SecurityCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e SecurityCommandTypeContainer) CommandType() SecurityCommandType {
@@ -1280,13 +1280,13 @@ func (e SecurityCommandTypeContainer) CommandType() SecurityCommandType {
 	}
 }
 
-func SecurityCommandTypeContainerFirstEnumForFieldCommandType(value SecurityCommandType) (SecurityCommandTypeContainer, error) {
+func SecurityCommandTypeContainerFirstEnumForFieldCommandType(value SecurityCommandType) (SecurityCommandTypeContainer, bool) {
 	for _, sizeValue := range SecurityCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func SecurityCommandTypeContainerByValue(value uint8) (enum SecurityCommandTypeContainer, ok bool) {
 	switch value {

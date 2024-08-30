@@ -67,13 +67,13 @@ func (e EnableControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (EnableControlCommandType, error) {
+func EnableControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (EnableControlCommandType, bool) {
 	for _, sizeValue := range EnableControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func EnableControlCommandTypeByValue(value uint8) (enum EnableControlCommandType, ok bool) {
 	switch value {

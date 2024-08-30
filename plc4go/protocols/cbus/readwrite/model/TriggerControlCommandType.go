@@ -91,13 +91,13 @@ func (e TriggerControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TriggerControlCommandType, error) {
+func TriggerControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TriggerControlCommandType, bool) {
 	for _, sizeValue := range TriggerControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func TriggerControlCommandTypeByValue(value uint8) (enum TriggerControlCommandType, ok bool) {
 	switch value {

@@ -116,13 +116,13 @@ func (e ClockAndTimekeepingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ClockAndTimekeepingCommandTypeContainer, error) {
+func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (ClockAndTimekeepingCommandTypeContainer, bool) {
 	for _, sizeValue := range ClockAndTimekeepingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e ClockAndTimekeepingCommandTypeContainer) CommandType() ClockAndTimekeepingCommandType {
@@ -170,13 +170,13 @@ func (e ClockAndTimekeepingCommandTypeContainer) CommandType() ClockAndTimekeepi
 	}
 }
 
-func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldCommandType(value ClockAndTimekeepingCommandType) (ClockAndTimekeepingCommandTypeContainer, error) {
+func ClockAndTimekeepingCommandTypeContainerFirstEnumForFieldCommandType(value ClockAndTimekeepingCommandType) (ClockAndTimekeepingCommandTypeContainer, bool) {
 	for _, sizeValue := range ClockAndTimekeepingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func ClockAndTimekeepingCommandTypeContainerByValue(value uint8) (enum ClockAndTimekeepingCommandTypeContainer, ok bool) {
 	switch value {

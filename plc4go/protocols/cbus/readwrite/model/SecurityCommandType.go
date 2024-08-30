@@ -79,13 +79,13 @@ func (e SecurityCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (SecurityCommandType, error) {
+func SecurityCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (SecurityCommandType, bool) {
 	for _, sizeValue := range SecurityCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func SecurityCommandTypeByValue(value uint8) (enum SecurityCommandType, ok bool) {
 	switch value {

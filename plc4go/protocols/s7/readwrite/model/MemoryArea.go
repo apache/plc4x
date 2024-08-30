@@ -115,13 +115,13 @@ func (e MemoryArea) ShortName() string {
 	}
 }
 
-func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, error) {
+func MemoryAreaFirstEnumForFieldShortName(value string) (MemoryArea, bool) {
 	for _, sizeValue := range MemoryAreaValues {
 		if sizeValue.ShortName() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ShortName not found", value)
+	return 0, false
 }
 func MemoryAreaByValue(value uint8) (enum MemoryArea, ok bool) {
 	switch value {

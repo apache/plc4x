@@ -176,13 +176,13 @@ func (e AirConditioningCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func AirConditioningCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AirConditioningCommandTypeContainer, error) {
+func AirConditioningCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AirConditioningCommandTypeContainer, bool) {
 	for _, sizeValue := range AirConditioningCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e AirConditioningCommandTypeContainer) CommandType() AirConditioningCommandType {
@@ -270,13 +270,13 @@ func (e AirConditioningCommandTypeContainer) CommandType() AirConditioningComman
 	}
 }
 
-func AirConditioningCommandTypeContainerFirstEnumForFieldCommandType(value AirConditioningCommandType) (AirConditioningCommandTypeContainer, error) {
+func AirConditioningCommandTypeContainerFirstEnumForFieldCommandType(value AirConditioningCommandType) (AirConditioningCommandTypeContainer, bool) {
 	for _, sizeValue := range AirConditioningCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func AirConditioningCommandTypeContainerByValue(value uint8) (enum AirConditioningCommandTypeContainer, ok bool) {
 	switch value {

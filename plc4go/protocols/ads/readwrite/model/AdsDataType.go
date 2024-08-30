@@ -302,13 +302,13 @@ func (e AdsDataType) NumBytes() uint16 {
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, error) {
+func AdsDataTypeFirstEnumForFieldNumBytes(value uint16) (AdsDataType, bool) {
 	for _, sizeValue := range AdsDataTypeValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e AdsDataType) PlcValueType() PlcValueType {
@@ -480,13 +480,13 @@ func (e AdsDataType) PlcValueType() PlcValueType {
 	}
 }
 
-func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (AdsDataType, error) {
+func AdsDataTypeFirstEnumForFieldPlcValueType(value PlcValueType) (AdsDataType, bool) {
 	for _, sizeValue := range AdsDataTypeValues {
 		if sizeValue.PlcValueType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing PlcValueType not found", value)
+	return 0, false
 }
 func AdsDataTypeByValue(value int8) (enum AdsDataType, ok bool) {
 	switch value {

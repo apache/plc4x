@@ -368,13 +368,13 @@ func (e LightingCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func LightingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (LightingCommandTypeContainer, error) {
+func LightingCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (LightingCommandTypeContainer, bool) {
 	for _, sizeValue := range LightingCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e LightingCommandTypeContainer) CommandType() LightingCommandType {
@@ -590,13 +590,13 @@ func (e LightingCommandTypeContainer) CommandType() LightingCommandType {
 	}
 }
 
-func LightingCommandTypeContainerFirstEnumForFieldCommandType(value LightingCommandType) (LightingCommandTypeContainer, error) {
+func LightingCommandTypeContainerFirstEnumForFieldCommandType(value LightingCommandType) (LightingCommandTypeContainer, bool) {
 	for _, sizeValue := range LightingCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func LightingCommandTypeContainerByValue(value uint8) (enum LightingCommandTypeContainer, ok bool) {
 	switch value {

@@ -109,13 +109,13 @@ func (e MaxSegmentsAccepted) MaxSegments() uint8 {
 	}
 }
 
-func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAccepted, error) {
+func MaxSegmentsAcceptedFirstEnumForFieldMaxSegments(value uint8) (MaxSegmentsAccepted, bool) {
 	for _, sizeValue := range MaxSegmentsAcceptedValues {
 		if sizeValue.MaxSegments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing MaxSegments not found", value)
+	return 0, false
 }
 func MaxSegmentsAcceptedByValue(value uint8) (enum MaxSegmentsAccepted, ok bool) {
 	switch value {

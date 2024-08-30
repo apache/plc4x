@@ -123,13 +123,13 @@ func (e ${type.name}) ${constantName?cap_first}() ${helper.getLanguageTypeNameFo
 	}
 }
 
-func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(constantType)}) (${type.name}, error) {
+func ${type.name}FirstEnumForField${constantName?cap_first}(value ${helper.getLanguageTypeNameForTypeReference(constantType)}) (enum ${type.name}, ok bool) {
 	for _, sizeValue := range ${type.name}Values {
 		if sizeValue.${constantName?cap_first}() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, errors.Errorf("enum for %v describing ${constantName?cap_first} not found", value)
+	return <#if type.type.orElseThrow().isStringTypeReference()>""<#else>0</#if>, false
 }
 	</#list>
 </#if>

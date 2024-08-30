@@ -363,13 +363,13 @@ func (e KnxPropertyDataType) Number() uint8 {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldNumber(value uint8) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeFirstEnumForFieldNumber(value uint8) (KnxPropertyDataType, bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxPropertyDataType) SizeInBytes() uint8 {
@@ -581,13 +581,13 @@ func (e KnxPropertyDataType) SizeInBytes() uint8 {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldSizeInBytes(value uint8) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeFirstEnumForFieldSizeInBytes(value uint8) (KnxPropertyDataType, bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.SizeInBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
+	return 0, false
 }
 
 func (e KnxPropertyDataType) Name() string {
@@ -799,13 +799,13 @@ func (e KnxPropertyDataType) Name() string {
 	}
 }
 
-func KnxPropertyDataTypeFirstEnumForFieldName(value string) (KnxPropertyDataType, error) {
+func KnxPropertyDataTypeFirstEnumForFieldName(value string) (KnxPropertyDataType, bool) {
 	for _, sizeValue := range KnxPropertyDataTypeValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 func KnxPropertyDataTypeByValue(value uint8) (enum KnxPropertyDataType, ok bool) {
 	switch value {

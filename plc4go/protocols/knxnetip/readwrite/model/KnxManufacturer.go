@@ -4196,13 +4196,13 @@ func (e KnxManufacturer) Number() uint16 {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldNumber(value uint16) (KnxManufacturer, bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxManufacturer) Name() string {
@@ -6970,13 +6970,13 @@ func (e KnxManufacturer) Name() string {
 	}
 }
 
-func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, error) {
+func KnxManufacturerFirstEnumForFieldName(value string) (KnxManufacturer, bool) {
 	for _, sizeValue := range KnxManufacturerValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 func KnxManufacturerByValue(value uint16) (enum KnxManufacturer, ok bool) {
 	switch value {

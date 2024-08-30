@@ -110,13 +110,13 @@ func (e MeteringCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func MeteringCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeteringCommandTypeContainer, error) {
+func MeteringCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeteringCommandTypeContainer, bool) {
 	for _, sizeValue := range MeteringCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e MeteringCommandTypeContainer) CommandType() MeteringCommandType {
@@ -160,13 +160,13 @@ func (e MeteringCommandTypeContainer) CommandType() MeteringCommandType {
 	}
 }
 
-func MeteringCommandTypeContainerFirstEnumForFieldCommandType(value MeteringCommandType) (MeteringCommandTypeContainer, error) {
+func MeteringCommandTypeContainerFirstEnumForFieldCommandType(value MeteringCommandType) (MeteringCommandTypeContainer, bool) {
 	for _, sizeValue := range MeteringCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func MeteringCommandTypeContainerByValue(value uint8) (enum MeteringCommandTypeContainer, ok bool) {
 	switch value {

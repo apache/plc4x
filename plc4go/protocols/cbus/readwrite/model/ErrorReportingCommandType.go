@@ -85,13 +85,13 @@ func (e ErrorReportingCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func ErrorReportingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ErrorReportingCommandType, error) {
+func ErrorReportingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ErrorReportingCommandType, bool) {
 	for _, sizeValue := range ErrorReportingCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func ErrorReportingCommandTypeByValue(value uint8) (enum ErrorReportingCommandType, ok bool) {
 	switch value {

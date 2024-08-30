@@ -103,13 +103,13 @@ func (e COTPTpduSize) SizeInBytes() uint16 {
 	}
 }
 
-func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, error) {
+func COTPTpduSizeFirstEnumForFieldSizeInBytes(value uint16) (COTPTpduSize, bool) {
 	for _, sizeValue := range COTPTpduSizeValues {
 		if sizeValue.SizeInBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
+	return 0, false
 }
 func COTPTpduSizeByValue(value uint8) (enum COTPTpduSize, ok bool) {
 	switch value {

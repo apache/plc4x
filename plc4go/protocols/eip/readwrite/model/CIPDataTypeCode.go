@@ -239,13 +239,13 @@ func (e CIPDataTypeCode) Size() uint8 {
 	}
 }
 
-func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, error) {
+func CIPDataTypeCodeFirstEnumForFieldSize(value uint8) (CIPDataTypeCode, bool) {
 	for _, sizeValue := range CIPDataTypeCodeValues {
 		if sizeValue.Size() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Size not found", value)
+	return 0, false
 }
 func CIPDataTypeCodeByValue(value uint16) (enum CIPDataTypeCode, ok bool) {
 	switch value {

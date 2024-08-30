@@ -483,13 +483,13 @@ func (e AccessControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (AccessControlCommandTypeContainer, bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e AccessControlCommandTypeContainer) CommandType() AccessControlCommandType {
@@ -781,13 +781,13 @@ func (e AccessControlCommandTypeContainer) CommandType() AccessControlCommandTyp
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldCommandType(value AccessControlCommandType) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerFirstEnumForFieldCommandType(value AccessControlCommandType) (AccessControlCommandTypeContainer, bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 
 func (e AccessControlCommandTypeContainer) Category() AccessControlCategory {
@@ -1079,13 +1079,13 @@ func (e AccessControlCommandTypeContainer) Category() AccessControlCategory {
 	}
 }
 
-func AccessControlCommandTypeContainerFirstEnumForFieldCategory(value AccessControlCategory) (AccessControlCommandTypeContainer, error) {
+func AccessControlCommandTypeContainerFirstEnumForFieldCategory(value AccessControlCategory) (AccessControlCommandTypeContainer, bool) {
 	for _, sizeValue := range AccessControlCommandTypeContainerValues {
 		if sizeValue.Category() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Category not found", value)
+	return 0, false
 }
 func AccessControlCommandTypeContainerByValue(value uint8) (enum AccessControlCommandTypeContainer, ok bool) {
 	switch value {

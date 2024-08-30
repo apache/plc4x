@@ -11317,13 +11317,13 @@ func (e ComObjectTableAddresses) ComObjectTableAddress() uint16 {
 	}
 }
 
-func ComObjectTableAddressesFirstEnumForFieldComObjectTableAddress(value uint16) (ComObjectTableAddresses, error) {
+func ComObjectTableAddressesFirstEnumForFieldComObjectTableAddress(value uint16) (ComObjectTableAddresses, bool) {
 	for _, sizeValue := range ComObjectTableAddressesValues {
 		if sizeValue.ComObjectTableAddress() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ComObjectTableAddress not found", value)
+	return 0, false
 }
 func ComObjectTableAddressesByValue(value uint16) (enum ComObjectTableAddresses, ok bool) {
 	switch value {

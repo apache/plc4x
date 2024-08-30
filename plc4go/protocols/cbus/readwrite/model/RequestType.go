@@ -103,13 +103,13 @@ func (e RequestType) ControlChar() uint8 {
 	}
 }
 
-func RequestTypeFirstEnumForFieldControlChar(value uint8) (RequestType, error) {
+func RequestTypeFirstEnumForFieldControlChar(value uint8) (RequestType, bool) {
 	for _, sizeValue := range RequestTypeValues {
 		if sizeValue.ControlChar() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ControlChar not found", value)
+	return 0, false
 }
 func RequestTypeByValue(value uint8) (enum RequestType, ok bool) {
 	switch value {

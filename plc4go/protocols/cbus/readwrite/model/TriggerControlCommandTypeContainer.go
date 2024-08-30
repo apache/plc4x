@@ -368,13 +368,13 @@ func (e TriggerControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TriggerControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TriggerControlCommandTypeContainer, error) {
+func TriggerControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TriggerControlCommandTypeContainer, bool) {
 	for _, sizeValue := range TriggerControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e TriggerControlCommandTypeContainer) CommandType() TriggerControlCommandType {
@@ -590,13 +590,13 @@ func (e TriggerControlCommandTypeContainer) CommandType() TriggerControlCommandT
 	}
 }
 
-func TriggerControlCommandTypeContainerFirstEnumForFieldCommandType(value TriggerControlCommandType) (TriggerControlCommandTypeContainer, error) {
+func TriggerControlCommandTypeContainerFirstEnumForFieldCommandType(value TriggerControlCommandType) (TriggerControlCommandTypeContainer, bool) {
 	for _, sizeValue := range TriggerControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func TriggerControlCommandTypeContainerByValue(value uint8) (enum TriggerControlCommandTypeContainer, ok bool) {
 	switch value {

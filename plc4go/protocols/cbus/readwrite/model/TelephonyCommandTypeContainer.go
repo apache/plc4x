@@ -260,13 +260,13 @@ func (e TelephonyCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func TelephonyCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TelephonyCommandTypeContainer, error) {
+func TelephonyCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (TelephonyCommandTypeContainer, bool) {
 	for _, sizeValue := range TelephonyCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e TelephonyCommandTypeContainer) CommandType() TelephonyCommandType {
@@ -410,13 +410,13 @@ func (e TelephonyCommandTypeContainer) CommandType() TelephonyCommandType {
 	}
 }
 
-func TelephonyCommandTypeContainerFirstEnumForFieldCommandType(value TelephonyCommandType) (TelephonyCommandTypeContainer, error) {
+func TelephonyCommandTypeContainerFirstEnumForFieldCommandType(value TelephonyCommandType) (TelephonyCommandTypeContainer, bool) {
 	for _, sizeValue := range TelephonyCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func TelephonyCommandTypeContainerByValue(value uint8) (enum TelephonyCommandTypeContainer, ok bool) {
 	switch value {

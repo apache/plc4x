@@ -67,13 +67,13 @@ func (e TemperatureBroadcastCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TemperatureBroadcastCommandType, error) {
+func TemperatureBroadcastCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TemperatureBroadcastCommandType, bool) {
 	for _, sizeValue := range TemperatureBroadcastCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func TemperatureBroadcastCommandTypeByValue(value uint8) (enum TemperatureBroadcastCommandType, ok bool) {
 	switch value {

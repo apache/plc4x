@@ -103,13 +103,13 @@ func (e DataTransportSize) SizeInBits() bool {
 	}
 }
 
-func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize, error) {
+func DataTransportSizeFirstEnumForFieldSizeInBits(value bool) (DataTransportSize, bool) {
 	for _, sizeValue := range DataTransportSizeValues {
 		if sizeValue.SizeInBits() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing SizeInBits not found", value)
+	return 0, false
 }
 func DataTransportSizeByValue(value uint8) (enum DataTransportSize, ok bool) {
 	switch value {

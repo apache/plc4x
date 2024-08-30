@@ -68,13 +68,13 @@ func (e MeasurementCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func MeasurementCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeasurementCommandTypeContainer, error) {
+func MeasurementCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MeasurementCommandTypeContainer, bool) {
 	for _, sizeValue := range MeasurementCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e MeasurementCommandTypeContainer) CommandType() MeasurementCommandType {
@@ -90,13 +90,13 @@ func (e MeasurementCommandTypeContainer) CommandType() MeasurementCommandType {
 	}
 }
 
-func MeasurementCommandTypeContainerFirstEnumForFieldCommandType(value MeasurementCommandType) (MeasurementCommandTypeContainer, error) {
+func MeasurementCommandTypeContainerFirstEnumForFieldCommandType(value MeasurementCommandType) (MeasurementCommandTypeContainer, bool) {
 	for _, sizeValue := range MeasurementCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func MeasurementCommandTypeContainerByValue(value uint8) (enum MeasurementCommandTypeContainer, ok bool) {
 	switch value {

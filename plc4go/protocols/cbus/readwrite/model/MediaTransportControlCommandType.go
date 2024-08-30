@@ -159,13 +159,13 @@ func (e MediaTransportControlCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MediaTransportControlCommandType, error) {
+func MediaTransportControlCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (MediaTransportControlCommandType, bool) {
 	for _, sizeValue := range MediaTransportControlCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func MediaTransportControlCommandTypeByValue(value uint8) (enum MediaTransportControlCommandType, ok bool) {
 	switch value {

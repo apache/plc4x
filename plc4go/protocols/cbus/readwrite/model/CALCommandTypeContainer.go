@@ -764,13 +764,13 @@ func (e CALCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func CALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (CALCommandTypeContainer, error) {
+func CALCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (CALCommandTypeContainer, bool) {
 	for _, sizeValue := range CALCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e CALCommandTypeContainer) CommandType() CALCommandType {
@@ -1250,13 +1250,13 @@ func (e CALCommandTypeContainer) CommandType() CALCommandType {
 	}
 }
 
-func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (CALCommandTypeContainer, error) {
+func CALCommandTypeContainerFirstEnumForFieldCommandType(value CALCommandType) (CALCommandTypeContainer, bool) {
 	for _, sizeValue := range CALCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func CALCommandTypeContainerByValue(value uint8) (enum CALCommandTypeContainer, ok bool) {
 	switch value {

@@ -169,13 +169,13 @@ func (e Attribute) BytesReturned() uint8 {
 	}
 }
 
-func AttributeFirstEnumForFieldBytesReturned(value uint8) (Attribute, error) {
+func AttributeFirstEnumForFieldBytesReturned(value uint8) (Attribute, bool) {
 	for _, sizeValue := range AttributeValues {
 		if sizeValue.BytesReturned() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing BytesReturned not found", value)
+	return 0, false
 }
 func AttributeByValue(value uint8) (enum Attribute, ok bool) {
 	switch value {

@@ -1360,13 +1360,13 @@ func (e KnxInterfaceObjectProperty) PropertyDataType() KnxPropertyDataType {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyDataType(value KnxPropertyDataType) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyDataType(value KnxPropertyDataType) (KnxInterfaceObjectProperty, bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.PropertyDataType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing PropertyDataType not found", value)
+	return 0, false
 }
 
 func (e KnxInterfaceObjectProperty) Name() string {
@@ -2242,13 +2242,13 @@ func (e KnxInterfaceObjectProperty) Name() string {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldName(value string) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldName(value string) (KnxInterfaceObjectProperty, bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 
 func (e KnxInterfaceObjectProperty) PropertyId() uint8 {
@@ -3124,13 +3124,13 @@ func (e KnxInterfaceObjectProperty) PropertyId() uint8 {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyId(value uint8) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldPropertyId(value uint8) (KnxInterfaceObjectProperty, bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.PropertyId() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing PropertyId not found", value)
+	return 0, false
 }
 
 func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
@@ -4006,13 +4006,13 @@ func (e KnxInterfaceObjectProperty) ObjectType() KnxInterfaceObjectType {
 	}
 }
 
-func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObjectType) (KnxInterfaceObjectProperty, error) {
+func KnxInterfaceObjectPropertyFirstEnumForFieldObjectType(value KnxInterfaceObjectType) (KnxInterfaceObjectProperty, bool) {
 	for _, sizeValue := range KnxInterfaceObjectPropertyValues {
 		if sizeValue.ObjectType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ObjectType not found", value)
+	return 0, false
 }
 func KnxInterfaceObjectPropertyByValue(value uint32) (enum KnxInterfaceObjectProperty, ok bool) {
 	switch value {

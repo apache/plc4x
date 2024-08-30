@@ -67,13 +67,13 @@ func (e TelephonyCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TelephonyCommandType, error) {
+func TelephonyCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (TelephonyCommandType, bool) {
 	for _, sizeValue := range TelephonyCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func TelephonyCommandTypeByValue(value uint8) (enum TelephonyCommandType, ok bool) {
 	switch value {

@@ -188,13 +188,13 @@ func (e SupportedPhysicalMedia) KnxSupport() bool {
 	}
 }
 
-func SupportedPhysicalMediaFirstEnumForFieldKnxSupport(value bool) (SupportedPhysicalMedia, error) {
+func SupportedPhysicalMediaFirstEnumForFieldKnxSupport(value bool) (SupportedPhysicalMedia, bool) {
 	for _, sizeValue := range SupportedPhysicalMediaValues {
 		if sizeValue.KnxSupport() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing KnxSupport not found", value)
+	return 0, false
 }
 
 func (e SupportedPhysicalMedia) Description() string {
@@ -290,13 +290,13 @@ func (e SupportedPhysicalMedia) Description() string {
 	}
 }
 
-func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (SupportedPhysicalMedia, error) {
+func SupportedPhysicalMediaFirstEnumForFieldDescription(value string) (SupportedPhysicalMedia, bool) {
 	for _, sizeValue := range SupportedPhysicalMediaValues {
 		if sizeValue.Description() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Description not found", value)
+	return 0, false
 }
 func SupportedPhysicalMediaByValue(value uint8) (enum SupportedPhysicalMedia, ok bool) {
 	switch value {

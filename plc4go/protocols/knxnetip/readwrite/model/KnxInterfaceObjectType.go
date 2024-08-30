@@ -212,13 +212,13 @@ func (e KnxInterfaceObjectType) Code() string {
 	}
 }
 
-func KnxInterfaceObjectTypeFirstEnumForFieldCode(value string) (KnxInterfaceObjectType, error) {
+func KnxInterfaceObjectTypeFirstEnumForFieldCode(value string) (KnxInterfaceObjectType, bool) {
 	for _, sizeValue := range KnxInterfaceObjectTypeValues {
 		if sizeValue.Code() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Code not found", value)
+	return 0, false
 }
 
 func (e KnxInterfaceObjectType) Name() string {
@@ -330,13 +330,13 @@ func (e KnxInterfaceObjectType) Name() string {
 	}
 }
 
-func KnxInterfaceObjectTypeFirstEnumForFieldName(value string) (KnxInterfaceObjectType, error) {
+func KnxInterfaceObjectTypeFirstEnumForFieldName(value string) (KnxInterfaceObjectType, bool) {
 	for _, sizeValue := range KnxInterfaceObjectTypeValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 func KnxInterfaceObjectTypeByValue(value uint16) (enum KnxInterfaceObjectType, ok bool) {
 	switch value {

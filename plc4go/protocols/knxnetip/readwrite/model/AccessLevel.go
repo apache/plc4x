@@ -92,13 +92,13 @@ func (e AccessLevel) Purpose() string {
 	}
 }
 
-func AccessLevelFirstEnumForFieldPurpose(value string) (AccessLevel, error) {
+func AccessLevelFirstEnumForFieldPurpose(value string) (AccessLevel, bool) {
 	for _, sizeValue := range AccessLevelValues {
 		if sizeValue.Purpose() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Purpose not found", value)
+	return 0, false
 }
 
 func (e AccessLevel) NeedsAuthentication() bool {
@@ -130,13 +130,13 @@ func (e AccessLevel) NeedsAuthentication() bool {
 	}
 }
 
-func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, error) {
+func AccessLevelFirstEnumForFieldNeedsAuthentication(value bool) (AccessLevel, bool) {
 	for _, sizeValue := range AccessLevelValues {
 		if sizeValue.NeedsAuthentication() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NeedsAuthentication not found", value)
+	return 0, false
 }
 func AccessLevelByValue(value uint8) (enum AccessLevel, ok bool) {
 	switch value {

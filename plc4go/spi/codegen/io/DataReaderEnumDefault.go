@@ -23,8 +23,9 @@ import (
 	"context"
 	"encoding/binary"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
 	"github.com/pkg/errors"
+
+	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
 type DataReaderEnumDefault[T any, I any] struct {

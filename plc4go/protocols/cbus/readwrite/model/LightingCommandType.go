@@ -91,13 +91,13 @@ func (e LightingCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func LightingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (LightingCommandType, error) {
+func LightingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (LightingCommandType, bool) {
 	for _, sizeValue := range LightingCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func LightingCommandTypeByValue(value uint8) (enum LightingCommandType, ok bool) {
 	switch value {

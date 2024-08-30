@@ -877,22 +877,14 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 				<#break>
 			<#case "enum">
+			<#case "enum">
 				<#assign enumField = field.asEnumField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	if pullErr := readBuffer.PullContext("${enumField.name}"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	// Enum field (${enumField.name})
-	${enumField.name}${enumField.fieldName?cap_first}, _${enumField.name}${enumField.fieldName?cap_first}Err := ${helper.getReadBufferReadMethodCall(enumField.type.name, helper.getEnumFieldSimpleTypeReference(enumField.type, enumField.fieldName), enumField)}
-	if _${enumField.name}${enumField.fieldName?cap_first}Err != nil {
-		return nil, errors.Wrap(_${enumField.name}${enumField.fieldName?cap_first}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-	${enumField.name}, _${enumField.name}Err := ${helper.getLanguageTypeNameForField(field)}FirstEnumForField${enumField.fieldName?cap_first}(${enumField.name}${enumField.fieldName?cap_first})
-	if _${enumField.name}Err != nil {
-		return nil, errors.Wrap(_${enumField.name}Err, "Error serializing '${enumField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-	if closeErr := readBuffer.CloseContext("${enumField.name}"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${enumField.name}")<@emitImport import="github.com/pkg/errors" />
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}", ReadEnum[${helper.getLanguageTypeNameForField(field)},${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type.asNonSimpleTypeReference().orElseThrow(), enumField.fieldName))}](${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}FirstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "implicit">

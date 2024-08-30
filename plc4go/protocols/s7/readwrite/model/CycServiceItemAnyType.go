@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -184,20 +186,9 @@ func CycServiceItemAnyTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
-	}
-	// Enum field (transportSize)
-	transportSizeCode, _transportSizeCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("TransportSize", 8)
-	if _transportSizeCodeErr != nil {
-		return nil, errors.Wrap(_transportSizeCodeErr, "Error serializing 'transportSize' field")
-	}
-	transportSize, _transportSizeErr := TransportSizeFirstEnumForFieldCode(transportSizeCode)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
-	}
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
+	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
 
 	// Simple Field (length)

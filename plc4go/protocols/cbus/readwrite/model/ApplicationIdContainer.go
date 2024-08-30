@@ -1598,13 +1598,13 @@ func (e ApplicationIdContainer) LightingCompatible() LightingCompatible {
 	}
 }
 
-func ApplicationIdContainerFirstEnumForFieldLightingCompatible(value LightingCompatible) (ApplicationIdContainer, error) {
+func ApplicationIdContainerFirstEnumForFieldLightingCompatible(value LightingCompatible) (ApplicationIdContainer, bool) {
 	for _, sizeValue := range ApplicationIdContainerValues {
 		if sizeValue.LightingCompatible() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing LightingCompatible not found", value)
+	return 0, false
 }
 
 func (e ApplicationIdContainer) ApplicationId() ApplicationId {
@@ -2640,13 +2640,13 @@ func (e ApplicationIdContainer) ApplicationId() ApplicationId {
 	}
 }
 
-func ApplicationIdContainerFirstEnumForFieldApplicationId(value ApplicationId) (ApplicationIdContainer, error) {
+func ApplicationIdContainerFirstEnumForFieldApplicationId(value ApplicationId) (ApplicationIdContainer, bool) {
 	for _, sizeValue := range ApplicationIdContainerValues {
 		if sizeValue.ApplicationId() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ApplicationId not found", value)
+	return 0, false
 }
 func ApplicationIdContainerByValue(value uint8) (enum ApplicationIdContainer, ok bool) {
 	switch value {

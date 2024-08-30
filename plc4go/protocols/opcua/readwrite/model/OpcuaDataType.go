@@ -205,13 +205,13 @@ func (e OpcuaDataType) VariantType() uint8 {
 	}
 }
 
-func OpcuaDataTypeFirstEnumForFieldVariantType(value uint8) (OpcuaDataType, error) {
+func OpcuaDataTypeFirstEnumForFieldVariantType(value uint8) (OpcuaDataType, bool) {
 	for _, sizeValue := range OpcuaDataTypeValues {
 		if sizeValue.VariantType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return "", errors.Errorf("enum for %v describing VariantType not found", value)
+	return "", false
 }
 func OpcuaDataTypeByValue(value string) (enum OpcuaDataType, ok bool) {
 	switch value {

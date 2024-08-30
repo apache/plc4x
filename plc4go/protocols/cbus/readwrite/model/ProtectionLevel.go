@@ -85,13 +85,13 @@ func (e ProtectionLevel) Description() string {
 	}
 }
 
-func ProtectionLevelFirstEnumForFieldDescription(value string) (ProtectionLevel, error) {
+func ProtectionLevelFirstEnumForFieldDescription(value string) (ProtectionLevel, bool) {
 	for _, sizeValue := range ProtectionLevelValues {
 		if sizeValue.Description() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Description not found", value)
+	return 0, false
 }
 func ProtectionLevelByValue(value uint8) (enum ProtectionLevel, ok bool) {
 	switch value {

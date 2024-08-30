@@ -73,13 +73,13 @@ func (e ClockAndTimekeepingCommandType) NumberOfArguments() uint8 {
 	}
 }
 
-func ClockAndTimekeepingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ClockAndTimekeepingCommandType, error) {
+func ClockAndTimekeepingCommandTypeFirstEnumForFieldNumberOfArguments(value uint8) (ClockAndTimekeepingCommandType, bool) {
 	for _, sizeValue := range ClockAndTimekeepingCommandTypeValues {
 		if sizeValue.NumberOfArguments() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumberOfArguments not found", value)
+	return 0, false
 }
 func ClockAndTimekeepingCommandTypeByValue(value uint8) (enum ClockAndTimekeepingCommandType, ok bool) {
 	switch value {

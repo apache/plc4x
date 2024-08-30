@@ -429,13 +429,13 @@ func (e KnxDatapointMainType) Number() uint16 {
 	}
 }
 
-func KnxDatapointMainTypeFirstEnumForFieldNumber(value uint16) (KnxDatapointMainType, error) {
+func KnxDatapointMainTypeFirstEnumForFieldNumber(value uint16) (KnxDatapointMainType, bool) {
 	for _, sizeValue := range KnxDatapointMainTypeValues {
 		if sizeValue.Number() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Number not found", value)
+	return 0, false
 }
 
 func (e KnxDatapointMainType) Name() string {
@@ -691,13 +691,13 @@ func (e KnxDatapointMainType) Name() string {
 	}
 }
 
-func KnxDatapointMainTypeFirstEnumForFieldName(value string) (KnxDatapointMainType, error) {
+func KnxDatapointMainTypeFirstEnumForFieldName(value string) (KnxDatapointMainType, bool) {
 	for _, sizeValue := range KnxDatapointMainTypeValues {
 		if sizeValue.Name() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Name not found", value)
+	return 0, false
 }
 
 func (e KnxDatapointMainType) SizeInBits() uint8 {
@@ -953,13 +953,13 @@ func (e KnxDatapointMainType) SizeInBits() uint8 {
 	}
 }
 
-func KnxDatapointMainTypeFirstEnumForFieldSizeInBits(value uint8) (KnxDatapointMainType, error) {
+func KnxDatapointMainTypeFirstEnumForFieldSizeInBits(value uint8) (KnxDatapointMainType, bool) {
 	for _, sizeValue := range KnxDatapointMainTypeValues {
 		if sizeValue.SizeInBits() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing SizeInBits not found", value)
+	return 0, false
 }
 func KnxDatapointMainTypeByValue(value uint16) (enum KnxDatapointMainType, ok bool) {
 	switch value {

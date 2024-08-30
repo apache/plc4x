@@ -746,13 +746,13 @@ func (e MediaTransportControlCommandTypeContainer) NumBytes() uint8 {
 	}
 }
 
-func MediaTransportControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MediaTransportControlCommandTypeContainer, error) {
+func MediaTransportControlCommandTypeContainerFirstEnumForFieldNumBytes(value uint8) (MediaTransportControlCommandTypeContainer, bool) {
 	for _, sizeValue := range MediaTransportControlCommandTypeContainerValues {
 		if sizeValue.NumBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing NumBytes not found", value)
+	return 0, false
 }
 
 func (e MediaTransportControlCommandTypeContainer) CommandType() MediaTransportControlCommandType {
@@ -1220,13 +1220,13 @@ func (e MediaTransportControlCommandTypeContainer) CommandType() MediaTransportC
 	}
 }
 
-func MediaTransportControlCommandTypeContainerFirstEnumForFieldCommandType(value MediaTransportControlCommandType) (MediaTransportControlCommandTypeContainer, error) {
+func MediaTransportControlCommandTypeContainerFirstEnumForFieldCommandType(value MediaTransportControlCommandType) (MediaTransportControlCommandTypeContainer, bool) {
 	for _, sizeValue := range MediaTransportControlCommandTypeContainerValues {
 		if sizeValue.CommandType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing CommandType not found", value)
+	return 0, false
 }
 func MediaTransportControlCommandTypeContainerByValue(value uint8) (enum MediaTransportControlCommandTypeContainer, ok bool) {
 	switch value {

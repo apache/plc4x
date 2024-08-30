@@ -8972,13 +8972,13 @@ func (e BACnetVendorId) VendorId() uint16 {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (BACnetVendorId, error) {
+func BACnetVendorIdFirstEnumForFieldVendorId(value uint16) (BACnetVendorId, bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorId() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing VendorId not found", value)
+	return 0, false
 }
 
 func (e BACnetVendorId) VendorName() string {
@@ -14930,13 +14930,13 @@ func (e BACnetVendorId) VendorName() string {
 	}
 }
 
-func BACnetVendorIdFirstEnumForFieldVendorName(value string) (BACnetVendorId, error) {
+func BACnetVendorIdFirstEnumForFieldVendorName(value string) (BACnetVendorId, bool) {
 	for _, sizeValue := range BACnetVendorIdValues {
 		if sizeValue.VendorName() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing VendorName not found", value)
+	return 0, false
 }
 func BACnetVendorIdByValue(value uint16) (enum BACnetVendorId, ok bool) {
 	switch value {

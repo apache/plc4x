@@ -263,13 +263,13 @@ func (e TransportSize) Supported_S7_300() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSupported_S7_300(value bool) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_300() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Supported_S7_300 not found", value)
+	return 0, false
 }
 
 func (e TransportSize) Supported_LOGO() bool {
@@ -409,13 +409,13 @@ func (e TransportSize) Supported_LOGO() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSupported_LOGO(value bool) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_LOGO() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Supported_LOGO not found", value)
+	return 0, false
 }
 
 func (e TransportSize) Code() uint8 {
@@ -555,13 +555,13 @@ func (e TransportSize) Code() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldCode(value uint8) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldCode(value uint8) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Code() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Code not found", value)
+	return 0, false
 }
 
 func (e TransportSize) SizeInBytes() uint8 {
@@ -701,13 +701,13 @@ func (e TransportSize) SizeInBytes() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSizeInBytes(value uint8) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.SizeInBytes() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing SizeInBytes not found", value)
+	return 0, false
 }
 
 func (e TransportSize) Supported_S7_400() bool {
@@ -847,13 +847,13 @@ func (e TransportSize) Supported_S7_400() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSupported_S7_400(value bool) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_400() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Supported_S7_400 not found", value)
+	return 0, false
 }
 
 func (e TransportSize) Supported_S7_1200() bool {
@@ -993,13 +993,13 @@ func (e TransportSize) Supported_S7_1200() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSupported_S7_1200(value bool) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_1200() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Supported_S7_1200 not found", value)
+	return 0, false
 }
 
 func (e TransportSize) ShortName() uint8 {
@@ -1139,13 +1139,13 @@ func (e TransportSize) ShortName() uint8 {
 	}
 }
 
-func TransportSizeFirstEnumForFieldShortName(value uint8) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldShortName(value uint8) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.ShortName() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing ShortName not found", value)
+	return 0, false
 }
 
 func (e TransportSize) Supported_S7_1500() bool {
@@ -1285,13 +1285,13 @@ func (e TransportSize) Supported_S7_1500() bool {
 	}
 }
 
-func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldSupported_S7_1500(value bool) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.Supported_S7_1500() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing Supported_S7_1500 not found", value)
+	return 0, false
 }
 
 func (e TransportSize) DataTransportSize() DataTransportSize {
@@ -1431,13 +1431,13 @@ func (e TransportSize) DataTransportSize() DataTransportSize {
 	}
 }
 
-func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldDataTransportSize(value DataTransportSize) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.DataTransportSize() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DataTransportSize not found", value)
+	return 0, false
 }
 
 func (e TransportSize) DataProtocolId() string {
@@ -1577,13 +1577,13 @@ func (e TransportSize) DataProtocolId() string {
 	}
 }
 
-func TransportSizeFirstEnumForFieldDataProtocolId(value string) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldDataProtocolId(value string) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.DataProtocolId() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing DataProtocolId not found", value)
+	return 0, false
 }
 
 func (e TransportSize) BaseType() TransportSize {
@@ -1723,13 +1723,13 @@ func (e TransportSize) BaseType() TransportSize {
 	}
 }
 
-func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize, error) {
+func TransportSizeFirstEnumForFieldBaseType(value TransportSize) (TransportSize, bool) {
 	for _, sizeValue := range TransportSizeValues {
 		if sizeValue.BaseType() == value {
-			return sizeValue, nil
+			return sizeValue, true
 		}
 	}
-	return 0, errors.Errorf("enum for %v describing BaseType not found", value)
+	return 0, false
 }
 func TransportSizeByValue(value uint8) (enum TransportSize, ok bool) {
 	switch value {
