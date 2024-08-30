@@ -124,7 +124,7 @@ func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 4)
+	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageType", 4)
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of FirmataMessage")
 	}
@@ -180,7 +180,7 @@ func (pm *_FirmataMessage) SerializeParent(ctx context.Context, writeBuffer util
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteUint8("messageType", 4, uint8((messageType)))
+	_messageTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("messageType", 4, uint8((messageType)))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")

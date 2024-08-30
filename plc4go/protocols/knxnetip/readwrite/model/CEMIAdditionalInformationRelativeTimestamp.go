@@ -162,7 +162,7 @@ func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Conte
 	_ = currentPos
 
 	// Const Field (len)
-	len, _lenErr := readBuffer.ReadUint8("len", 8)
+	len, _lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("len", 8)
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationRelativeTimestamp")
 	}
@@ -215,7 +215,7 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 		}
 
 		// Const Field (len)
-		_lenErr := writeBuffer.WriteUint8("len", 8, uint8(2))
+		_lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("len", 8, uint8(2))
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}

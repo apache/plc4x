@@ -115,7 +115,7 @@ func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	_ = currentPos
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadByte("value")
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadByte("value")
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of Checksum")
 	}
@@ -150,7 +150,7 @@ func (m *_Checksum) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 	// Simple Field (value)
 	value := byte(m.GetValue())
-	_valueErr := writeBuffer.WriteByte("value", (value))
+	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("value", (value))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

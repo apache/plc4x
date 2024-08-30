@@ -151,14 +151,14 @@ func LightingDataRampToLevelParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
+	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
 	if _groupErr != nil {
 		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataRampToLevel")
 	}
 	group := _group
 
 	// Simple Field (level)
-	_level, _levelErr := readBuffer.ReadByte("level")
+	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadByte("level")
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of LightingDataRampToLevel")
 	}
@@ -198,14 +198,14 @@ func (m *_LightingDataRampToLevel) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (group)
 		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
+		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
 		if _groupErr != nil {
 			return errors.Wrap(_groupErr, "Error serializing 'group' field")
 		}
 
 		// Simple Field (level)
 		level := byte(m.GetLevel())
-		_levelErr := writeBuffer.WriteByte("level", (level))
+		_levelErr := /*TODO: migrate me*/ writeBuffer.WriteByte("level", (level))
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}

@@ -115,7 +115,7 @@ func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Const Field (cbusTcpDefaultPort)
-	cbusTcpDefaultPort, _cbusTcpDefaultPortErr := readBuffer.ReadUint16("cbusTcpDefaultPort", 16)
+	cbusTcpDefaultPort, _cbusTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("cbusTcpDefaultPort", 16)
 	if _cbusTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_cbusTcpDefaultPortErr, "Error parsing 'cbusTcpDefaultPort' field of CBusConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_CBusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 
 	// Const Field (cbusTcpDefaultPort)
-	_cbusTcpDefaultPortErr := writeBuffer.WriteUint16("cbusTcpDefaultPort", 16, uint16(10001))
+	_cbusTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("cbusTcpDefaultPort", 16, uint16(10001))
 	if _cbusTcpDefaultPortErr != nil {
 		return errors.Wrap(_cbusTcpDefaultPortErr, "Error serializing 'cbusTcpDefaultPort' field")
 	}

@@ -195,14 +195,14 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
+	_destinationAddress, _destinationAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
 		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1SymbolMessageFrame")
 	}
 	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
+	_sourceAddress, _sourceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1SymbolMessageFrame")
 	}
@@ -222,7 +222,7 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Const Field (messageEnd)
-	messageEnd, _messageEndErr := readBuffer.ReadUint8("messageEnd", 8)
+	messageEnd, _messageEndErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageEnd", 8)
 	if _messageEndErr != nil {
 		return nil, errors.Wrap(_messageEndErr, "Error parsing 'messageEnd' field of DF1SymbolMessageFrame")
 	}
@@ -231,7 +231,7 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Const Field (endTransaction)
-	endTransaction, _endTransactionErr := readBuffer.ReadUint8("endTransaction", 8)
+	endTransaction, _endTransactionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("endTransaction", 8)
 	if _endTransactionErr != nil {
 		return nil, errors.Wrap(_endTransactionErr, "Error parsing 'endTransaction' field of DF1SymbolMessageFrame")
 	}
@@ -241,7 +241,7 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 
 	// Checksum Field (checksum)
 	{
-		checksumRef, _checksumRefErr := readBuffer.ReadUint16("checksum", 16)
+		checksumRef, _checksumRefErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("checksum", 16)
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of DF1SymbolMessageFrame")
 		}
@@ -289,14 +289,14 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (destinationAddress)
 		destinationAddress := uint8(m.GetDestinationAddress())
-		_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
+		_destinationAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
 		if _destinationAddressErr != nil {
 			return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
 		}
 
 		// Simple Field (sourceAddress)
 		sourceAddress := uint8(m.GetSourceAddress())
-		_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
+		_sourceAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
 		if _sourceAddressErr != nil {
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
@@ -314,13 +314,13 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 
 		// Const Field (messageEnd)
-		_messageEndErr := writeBuffer.WriteUint8("messageEnd", 8, uint8(0x10))
+		_messageEndErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("messageEnd", 8, uint8(0x10))
 		if _messageEndErr != nil {
 			return errors.Wrap(_messageEndErr, "Error serializing 'messageEnd' field")
 		}
 
 		// Const Field (endTransaction)
-		_endTransactionErr := writeBuffer.WriteUint8("endTransaction", 8, uint8(0x03))
+		_endTransactionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("endTransaction", 8, uint8(0x03))
 		if _endTransactionErr != nil {
 			return errors.Wrap(_endTransactionErr, "Error serializing 'endTransaction' field")
 		}
@@ -331,7 +331,7 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Checksum calculation failed")
 			}
-			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
+			_checksumWriteErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
 			if _checksumWriteErr != nil {
 				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
 			}

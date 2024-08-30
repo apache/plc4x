@@ -134,7 +134,7 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (rawValue)
-	_rawValue, _rawValueErr := readBuffer.ReadInt16("rawValue", 16)
+	_rawValue, _rawValueErr := /*TODO: migrate me*/ readBuffer.ReadInt16("rawValue", 16)
 	if _rawValueErr != nil {
 		return nil, errors.Wrap(_rawValueErr, "Error parsing 'rawValue' field of HVACRawLevels")
 	}
@@ -174,7 +174,7 @@ func (m *_HVACRawLevels) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (rawValue)
 	rawValue := int16(m.GetRawValue())
-	_rawValueErr := writeBuffer.WriteInt16("rawValue", 16, int16((rawValue)))
+	_rawValueErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("rawValue", 16, int16((rawValue)))
 	if _rawValueErr != nil {
 		return errors.Wrap(_rawValueErr, "Error serializing 'rawValue' field")
 	}

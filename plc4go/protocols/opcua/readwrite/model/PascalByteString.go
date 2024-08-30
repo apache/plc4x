@@ -127,7 +127,7 @@ func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Simple Field (stringLength)
-	_stringLength, _stringLengthErr := readBuffer.ReadInt32("stringLength", 32)
+	_stringLength, _stringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("stringLength", 32)
 	if _stringLengthErr != nil {
 		return nil, errors.Wrap(_stringLengthErr, "Error parsing 'stringLength' field of PascalByteString")
 	}
@@ -169,7 +169,7 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 	// Simple Field (stringLength)
 	stringLength := int32(m.GetStringLength())
-	_stringLengthErr := writeBuffer.WriteInt32("stringLength", 32, int32((stringLength)))
+	_stringLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("stringLength", 32, int32((stringLength)))
 	if _stringLengthErr != nil {
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}

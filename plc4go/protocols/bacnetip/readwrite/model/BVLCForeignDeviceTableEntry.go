@@ -162,7 +162,7 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer 
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'ip' field of BVLCForeignDeviceTableEntry")
 			}
@@ -174,21 +174,21 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint16("port", 16)
+	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint16("port", 16)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCForeignDeviceTableEntry")
 	}
 	port := _port
 
 	// Simple Field (ttl)
-	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
+	_ttl, _ttlErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ttl", 16)
 	if _ttlErr != nil {
 		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCForeignDeviceTableEntry")
 	}
 	ttl := _ttl
 
 	// Simple Field (secondRemainingBeforePurge)
-	_secondRemainingBeforePurge, _secondRemainingBeforePurgeErr := readBuffer.ReadUint16("secondRemainingBeforePurge", 16)
+	_secondRemainingBeforePurge, _secondRemainingBeforePurgeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("secondRemainingBeforePurge", 16)
 	if _secondRemainingBeforePurgeErr != nil {
 		return nil, errors.Wrap(_secondRemainingBeforePurgeErr, "Error parsing 'secondRemainingBeforePurge' field of BVLCForeignDeviceTableEntry")
 	}
@@ -230,7 +230,7 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 	}
 	for _curItem, _element := range m.GetIp() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
 		}
@@ -241,21 +241,21 @@ func (m *_BVLCForeignDeviceTableEntry) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (port)
 	port := uint16(m.GetPort())
-	_portErr := writeBuffer.WriteUint16("port", 16, uint16((port)))
+	_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("port", 16, uint16((port)))
 	if _portErr != nil {
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
 	// Simple Field (ttl)
 	ttl := uint16(m.GetTtl())
-	_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
+	_ttlErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
 	if _ttlErr != nil {
 		return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
 	}
 
 	// Simple Field (secondRemainingBeforePurge)
 	secondRemainingBeforePurge := uint16(m.GetSecondRemainingBeforePurge())
-	_secondRemainingBeforePurgeErr := writeBuffer.WriteUint16("secondRemainingBeforePurge", 16, uint16((secondRemainingBeforePurge)))
+	_secondRemainingBeforePurgeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("secondRemainingBeforePurge", 16, uint16((secondRemainingBeforePurge)))
 	if _secondRemainingBeforePurgeErr != nil {
 		return errors.Wrap(_secondRemainingBeforePurgeErr, "Error serializing 'secondRemainingBeforePurge' field")
 	}

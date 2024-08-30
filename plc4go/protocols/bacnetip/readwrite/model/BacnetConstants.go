@@ -115,7 +115,7 @@ func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Const Field (bacnetUdpDefaultPort)
-	bacnetUdpDefaultPort, _bacnetUdpDefaultPortErr := readBuffer.ReadUint16("bacnetUdpDefaultPort", 16)
+	bacnetUdpDefaultPort, _bacnetUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("bacnetUdpDefaultPort", 16)
 	if _bacnetUdpDefaultPortErr != nil {
 		return nil, errors.Wrap(_bacnetUdpDefaultPortErr, "Error parsing 'bacnetUdpDefaultPort' field of BacnetConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 
 	// Const Field (bacnetUdpDefaultPort)
-	_bacnetUdpDefaultPortErr := writeBuffer.WriteUint16("bacnetUdpDefaultPort", 16, uint16(47808))
+	_bacnetUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("bacnetUdpDefaultPort", 16, uint16(47808))
 	if _bacnetUdpDefaultPortErr != nil {
 		return errors.Wrap(_bacnetUdpDefaultPortErr, "Error serializing 'bacnetUdpDefaultPort' field")
 	}

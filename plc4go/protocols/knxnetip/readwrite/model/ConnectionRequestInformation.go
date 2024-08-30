@@ -123,14 +123,14 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, _structureLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of ConnectionRequestInformation")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType, _connectionTypeErr := readBuffer.ReadUint8("connectionType", 8)
+	connectionType, _connectionTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("connectionType", 8)
 	if _connectionTypeErr != nil {
 		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of ConnectionRequestInformation")
 	}
@@ -180,14 +180,14 @@ func (pm *_ConnectionRequestInformation) SerializeParent(ctx context.Context, wr
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
+	_structureLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Discriminator Field (connectionType) (Used as input to a switch field)
 	connectionType := uint8(child.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
+	_connectionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionType", 8, uint8((connectionType)))
 
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")

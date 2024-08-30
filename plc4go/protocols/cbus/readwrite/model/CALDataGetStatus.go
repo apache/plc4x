@@ -165,7 +165,7 @@ func CALDataGetStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (count)
-	_count, _countErr := readBuffer.ReadUint8("count", 8)
+	_count, _countErr := /*TODO: migrate me*/ readBuffer.ReadUint8("count", 8)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of CALDataGetStatus")
 	}
@@ -219,7 +219,7 @@ func (m *_CALDataGetStatus) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (count)
 		count := uint8(m.GetCount())
-		_countErr := writeBuffer.WriteUint8("count", 8, uint8((count)))
+		_countErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("count", 8, uint8((count)))
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}

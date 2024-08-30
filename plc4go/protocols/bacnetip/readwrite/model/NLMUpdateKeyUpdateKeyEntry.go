@@ -137,14 +137,14 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (keyIdentifier)
-	_keyIdentifier, _keyIdentifierErr := readBuffer.ReadUint16("keyIdentifier", 16)
+	_keyIdentifier, _keyIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint16("keyIdentifier", 16)
 	if _keyIdentifierErr != nil {
 		return nil, errors.Wrap(_keyIdentifierErr, "Error parsing 'keyIdentifier' field of NLMUpdateKeyUpdateKeyEntry")
 	}
 	keyIdentifier := _keyIdentifier
 
 	// Simple Field (keySize)
-	_keySize, _keySizeErr := readBuffer.ReadUint8("keySize", 8)
+	_keySize, _keySizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("keySize", 8)
 	if _keySizeErr != nil {
 		return nil, errors.Wrap(_keySizeErr, "Error parsing 'keySize' field of NLMUpdateKeyUpdateKeyEntry")
 	}
@@ -187,14 +187,14 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 
 	// Simple Field (keyIdentifier)
 	keyIdentifier := uint16(m.GetKeyIdentifier())
-	_keyIdentifierErr := writeBuffer.WriteUint16("keyIdentifier", 16, uint16((keyIdentifier)))
+	_keyIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("keyIdentifier", 16, uint16((keyIdentifier)))
 	if _keyIdentifierErr != nil {
 		return errors.Wrap(_keyIdentifierErr, "Error serializing 'keyIdentifier' field")
 	}
 
 	// Simple Field (keySize)
 	keySize := uint8(m.GetKeySize())
-	_keySizeErr := writeBuffer.WriteUint8("keySize", 8, uint8((keySize)))
+	_keySizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("keySize", 8, uint8((keySize)))
 	if _keySizeErr != nil {
 		return errors.Wrap(_keySizeErr, "Error serializing 'keySize' field")
 	}

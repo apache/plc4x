@@ -205,7 +205,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MultipleServiceResponse")
 		}
@@ -220,21 +220,21 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of MultipleServiceResponse")
 	}
 	status := _status
 
 	// Simple Field (extStatus)
-	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of MultipleServiceResponse")
 	}
 	extStatus := _extStatus
 
 	// Simple Field (serviceNb)
-	_serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	_serviceNb, _serviceNbErr := /*TODO: migrate me*/ readBuffer.ReadUint16("serviceNb", 16)
 	if _serviceNbErr != nil {
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of MultipleServiceResponse")
 	}
@@ -256,7 +256,7 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint16("", 16)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of MultipleServiceResponse")
 			}
@@ -321,7 +321,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -329,21 +329,21 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (status)
 		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
+		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (extStatus)
 		extStatus := uint8(m.GetExtStatus())
-		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
+		_extStatusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
 		if _extStatusErr != nil {
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}
 
 		// Simple Field (serviceNb)
 		serviceNb := uint16(m.GetServiceNb())
-		_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
+		_serviceNbErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
 		if _serviceNbErr != nil {
 			return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 		}
@@ -354,7 +354,7 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		for _curItem, _element := range m.GetOffsets() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 			}

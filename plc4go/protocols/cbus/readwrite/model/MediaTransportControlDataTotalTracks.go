@@ -174,28 +174,28 @@ func MediaTransportControlDataTotalTracksParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (totalTracksMSB)
-	_totalTracksMSB, _totalTracksMSBErr := readBuffer.ReadByte("totalTracksMSB")
+	_totalTracksMSB, _totalTracksMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMSB")
 	if _totalTracksMSBErr != nil {
 		return nil, errors.Wrap(_totalTracksMSBErr, "Error parsing 'totalTracksMSB' field of MediaTransportControlDataTotalTracks")
 	}
 	totalTracksMSB := _totalTracksMSB
 
 	// Simple Field (totalTracksMMSB)
-	_totalTracksMMSB, _totalTracksMMSBErr := readBuffer.ReadByte("totalTracksMMSB")
+	_totalTracksMMSB, _totalTracksMMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMMSB")
 	if _totalTracksMMSBErr != nil {
 		return nil, errors.Wrap(_totalTracksMMSBErr, "Error parsing 'totalTracksMMSB' field of MediaTransportControlDataTotalTracks")
 	}
 	totalTracksMMSB := _totalTracksMMSB
 
 	// Simple Field (totalTracksMLSB)
-	_totalTracksMLSB, _totalTracksMLSBErr := readBuffer.ReadByte("totalTracksMLSB")
+	_totalTracksMLSB, _totalTracksMLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMLSB")
 	if _totalTracksMLSBErr != nil {
 		return nil, errors.Wrap(_totalTracksMLSBErr, "Error parsing 'totalTracksMLSB' field of MediaTransportControlDataTotalTracks")
 	}
 	totalTracksMLSB := _totalTracksMLSB
 
 	// Simple Field (totalTracksLSB)
-	_totalTracksLSB, _totalTracksLSBErr := readBuffer.ReadByte("totalTracksLSB")
+	_totalTracksLSB, _totalTracksLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksLSB")
 	if _totalTracksLSBErr != nil {
 		return nil, errors.Wrap(_totalTracksLSBErr, "Error parsing 'totalTracksLSB' field of MediaTransportControlDataTotalTracks")
 	}
@@ -237,28 +237,28 @@ func (m *_MediaTransportControlDataTotalTracks) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (totalTracksMSB)
 		totalTracksMSB := byte(m.GetTotalTracksMSB())
-		_totalTracksMSBErr := writeBuffer.WriteByte("totalTracksMSB", (totalTracksMSB))
+		_totalTracksMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMSB", (totalTracksMSB))
 		if _totalTracksMSBErr != nil {
 			return errors.Wrap(_totalTracksMSBErr, "Error serializing 'totalTracksMSB' field")
 		}
 
 		// Simple Field (totalTracksMMSB)
 		totalTracksMMSB := byte(m.GetTotalTracksMMSB())
-		_totalTracksMMSBErr := writeBuffer.WriteByte("totalTracksMMSB", (totalTracksMMSB))
+		_totalTracksMMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMMSB", (totalTracksMMSB))
 		if _totalTracksMMSBErr != nil {
 			return errors.Wrap(_totalTracksMMSBErr, "Error serializing 'totalTracksMMSB' field")
 		}
 
 		// Simple Field (totalTracksMLSB)
 		totalTracksMLSB := byte(m.GetTotalTracksMLSB())
-		_totalTracksMLSBErr := writeBuffer.WriteByte("totalTracksMLSB", (totalTracksMLSB))
+		_totalTracksMLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksMLSB", (totalTracksMLSB))
 		if _totalTracksMLSBErr != nil {
 			return errors.Wrap(_totalTracksMLSBErr, "Error serializing 'totalTracksMLSB' field")
 		}
 
 		// Simple Field (totalTracksLSB)
 		totalTracksLSB := byte(m.GetTotalTracksLSB())
-		_totalTracksLSBErr := writeBuffer.WriteByte("totalTracksLSB", (totalTracksLSB))
+		_totalTracksLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("totalTracksLSB", (totalTracksLSB))
 		if _totalTracksLSBErr != nil {
 			return errors.Wrap(_totalTracksLSBErr, "Error serializing 'totalTracksLSB' field")
 		}

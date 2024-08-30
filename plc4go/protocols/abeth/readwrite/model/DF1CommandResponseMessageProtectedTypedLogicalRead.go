@@ -158,7 +158,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx conte
 		_dataLength := uint16(payloadLength) - uint16(uint16(8))
 		_dataEndPos := positionAware.GetPos() + uint16(_dataLength)
 		for positionAware.GetPos() < _dataEndPos {
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of DF1CommandResponseMessageProtectedTypedLogicalRead")
 			}
@@ -208,7 +208,7 @@ func (m *_DF1CommandResponseMessageProtectedTypedLogicalRead) SerializeWithWrite
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

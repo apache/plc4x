@@ -161,7 +161,7 @@ func AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Const Field (amsNetIdLength)
-	amsNetIdLength, _amsNetIdLengthErr := readBuffer.ReadUint16("amsNetIdLength", 16)
+	amsNetIdLength, _amsNetIdLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("amsNetIdLength", 16)
 	if _amsNetIdLengthErr != nil {
 		return nil, errors.Wrap(_amsNetIdLengthErr, "Error parsing 'amsNetIdLength' field of AdsDiscoveryBlockAmsNetId")
 	}
@@ -214,7 +214,7 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 		}
 
 		// Const Field (amsNetIdLength)
-		_amsNetIdLengthErr := writeBuffer.WriteUint16("amsNetIdLength", 16, uint16(0x0006))
+		_amsNetIdLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("amsNetIdLength", 16, uint16(0x0006))
 		if _amsNetIdLengthErr != nil {
 			return errors.Wrap(_amsNetIdLengthErr, "Error serializing 'amsNetIdLength' field")
 		}

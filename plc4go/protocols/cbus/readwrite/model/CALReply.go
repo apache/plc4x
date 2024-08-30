@@ -148,7 +148,7 @@ func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, c
 
 	// Peek Field (calType)
 	currentPos = positionAware.GetPos()
-	calType, _err := readBuffer.ReadByte("calType")
+	calType, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("calType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'calType' field of CALReply")
 	}

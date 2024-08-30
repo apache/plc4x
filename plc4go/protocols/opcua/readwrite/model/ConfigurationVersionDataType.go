@@ -153,14 +153,14 @@ func ConfigurationVersionDataTypeParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := readBuffer.ReadUint32("majorVersion", 32)
+	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("majorVersion", 32)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of ConfigurationVersionDataType")
 	}
 	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := readBuffer.ReadUint32("minorVersion", 32)
+	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("minorVersion", 32)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of ConfigurationVersionDataType")
 	}
@@ -200,14 +200,14 @@ func (m *_ConfigurationVersionDataType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (majorVersion)
 		majorVersion := uint32(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint32("majorVersion", 32, uint32((majorVersion)))
+		_majorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("majorVersion", 32, uint32((majorVersion)))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint32(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint32("minorVersion", 32, uint32((minorVersion)))
+		_minorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("minorVersion", 32, uint32((minorVersion)))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}

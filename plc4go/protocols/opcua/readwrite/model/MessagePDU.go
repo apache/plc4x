@@ -146,7 +146,7 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	_ = currentPos
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadString("messageType", uint32(24), utils.WithEncoding("UTF-8"))
+	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("messageType", uint32(24), utils.WithEncoding("UTF-8"))
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of MessagePDU")
 	}
@@ -165,7 +165,7 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := readBuffer.ReadUint32("totalLength", 32)
+	totalLength, _totalLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("totalLength", 32)
 	_ = totalLength
 	if _totalLengthErr != nil {
 		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of MessagePDU")
@@ -228,7 +228,7 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := string(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteString("messageType", uint32(24), (messageType), utils.WithEncoding("UTF-8)"))
+	_messageTypeErr := /*TODO: migrate me*/ writeBuffer.WriteString("messageType", uint32(24), (messageType), utils.WithEncoding("UTF-8)"))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
@@ -248,7 +248,7 @@ func (pm *_MessagePDU) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint32(uint32(m.GetLengthInBytes(ctx)))
-	_totalLengthErr := writeBuffer.WriteUint32("totalLength", 32, uint32((totalLength)))
+	_totalLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("totalLength", 32, uint32((totalLength)))
 	if _totalLengthErr != nil {
 		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
 	}

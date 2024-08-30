@@ -175,7 +175,7 @@ func OpenChannelMessageResponseParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadInt32("secureChannelId", 32)
+	_secureChannelId, _secureChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("secureChannelId", 32)
 	if _secureChannelIdErr != nil {
 		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of OpenChannelMessageResponse")
 	}
@@ -256,7 +256,7 @@ func (m *_OpenChannelMessageResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (secureChannelId)
 		secureChannelId := int32(m.GetSecureChannelId())
-		_secureChannelIdErr := writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
+		_secureChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("secureChannelId", 32, int32((secureChannelId)))
 		if _secureChannelIdErr != nil {
 			return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
 		}

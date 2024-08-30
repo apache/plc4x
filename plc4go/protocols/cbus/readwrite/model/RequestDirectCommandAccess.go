@@ -198,7 +198,7 @@ func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Const Field (at)
-	at, _atErr := readBuffer.ReadByte("at")
+	at, _atErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("at")
 	if _atErr != nil {
 		return nil, errors.Wrap(_atErr, "Error parsing 'at' field of RequestDirectCommandAccess")
 	}
@@ -278,7 +278,7 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 		}
 
 		// Const Field (at)
-		_atErr := writeBuffer.WriteByte("at", 0x40)
+		_atErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("at", 0x40)
 		if _atErr != nil {
 			return errors.Wrap(_atErr, "Error serializing 'at' field")
 		}

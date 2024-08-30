@@ -189,7 +189,7 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 	_ = commandType
 
 	// Simple Field (argument)
-	_argument, _argumentErr := readBuffer.ReadByte("argument")
+	_argument, _argumentErr := /*TODO: migrate me*/ readBuffer.ReadByte("argument")
 	if _argumentErr != nil {
 		return nil, errors.Wrap(_argumentErr, "Error parsing 'argument' field of ClockAndTimekeepingData")
 	}
@@ -260,7 +260,7 @@ func (pm *_ClockAndTimekeepingData) SerializeParent(ctx context.Context, writeBu
 
 	// Simple Field (argument)
 	argument := byte(m.GetArgument())
-	_argumentErr := writeBuffer.WriteByte("argument", (argument))
+	_argumentErr := /*TODO: migrate me*/ writeBuffer.WriteByte("argument", (argument))
 	if _argumentErr != nil {
 		return errors.Wrap(_argumentErr, "Error serializing 'argument' field")
 	}

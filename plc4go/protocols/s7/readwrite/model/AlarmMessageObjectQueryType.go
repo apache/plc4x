@@ -209,7 +209,7 @@ func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (lengthDataset)
-	_lengthDataset, _lengthDatasetErr := readBuffer.ReadUint8("lengthDataset", 8)
+	_lengthDataset, _lengthDatasetErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lengthDataset", 8)
 	if _lengthDatasetErr != nil {
 		return nil, errors.Wrap(_lengthDatasetErr, "Error parsing 'lengthDataset' field of AlarmMessageObjectQueryType")
 	}
@@ -218,7 +218,7 @@ func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AlarmMessageObjectQueryType")
 		}
@@ -233,7 +233,7 @@ func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Const Field (variableSpec)
-	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
+	variableSpec, _variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
 		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of AlarmMessageObjectQueryType")
 	}
@@ -369,7 +369,7 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (lengthDataset)
 	lengthDataset := uint8(m.GetLengthDataset())
-	_lengthDatasetErr := writeBuffer.WriteUint8("lengthDataset", 8, uint8((lengthDataset)))
+	_lengthDatasetErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lengthDataset", 8, uint8((lengthDataset)))
 	if _lengthDatasetErr != nil {
 		return errors.Wrap(_lengthDatasetErr, "Error serializing 'lengthDataset' field")
 	}
@@ -384,14 +384,14 @@ func (m *_AlarmMessageObjectQueryType) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
 	}
 
 	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
+	_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 	if _variableSpecErr != nil {
 		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 	}

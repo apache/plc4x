@@ -251,7 +251,7 @@ func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (noOfAxisSteps)
-	_noOfAxisSteps, _noOfAxisStepsErr := readBuffer.ReadInt32("noOfAxisSteps", 32)
+	_noOfAxisSteps, _noOfAxisStepsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAxisSteps", 32)
 	if _noOfAxisStepsErr != nil {
 		return nil, errors.Wrap(_noOfAxisStepsErr, "Error parsing 'noOfAxisSteps' field of AxisInformation")
 	}
@@ -273,7 +273,7 @@ func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadFloat64("", 64)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("", 64)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'axisSteps' field of AxisInformation")
 			}
@@ -370,7 +370,7 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfAxisSteps)
 		noOfAxisSteps := int32(m.GetNoOfAxisSteps())
-		_noOfAxisStepsErr := writeBuffer.WriteInt32("noOfAxisSteps", 32, int32((noOfAxisSteps)))
+		_noOfAxisStepsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAxisSteps", 32, int32((noOfAxisSteps)))
 		if _noOfAxisStepsErr != nil {
 			return errors.Wrap(_noOfAxisStepsErr, "Error serializing 'noOfAxisSteps' field")
 		}
@@ -381,7 +381,7 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		for _curItem, _element := range m.GetAxisSteps() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteFloat64("", 64, _element)
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("", 64, _element)
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'axisSteps' field")
 			}

@@ -153,14 +153,14 @@ func NLMEstablishConnectionToNetworkParseWithBuffer(ctx context.Context, readBuf
 	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
+	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
 		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMEstablishConnectionToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	// Simple Field (terminationTime)
-	_terminationTime, _terminationTimeErr := readBuffer.ReadUint8("terminationTime", 8)
+	_terminationTime, _terminationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("terminationTime", 8)
 	if _terminationTimeErr != nil {
 		return nil, errors.Wrap(_terminationTimeErr, "Error parsing 'terminationTime' field of NLMEstablishConnectionToNetwork")
 	}
@@ -202,14 +202,14 @@ func (m *_NLMEstablishConnectionToNetwork) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (destinationNetworkAddress)
 		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
+		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		// Simple Field (terminationTime)
 		terminationTime := uint8(m.GetTerminationTime())
-		_terminationTimeErr := writeBuffer.WriteUint8("terminationTime", 8, uint8((terminationTime)))
+		_terminationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("terminationTime", 8, uint8((terminationTime)))
 		if _terminationTimeErr != nil {
 			return errors.Wrap(_terminationTimeErr, "Error serializing 'terminationTime' field")
 		}

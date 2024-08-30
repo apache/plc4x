@@ -125,14 +125,14 @@ func NumericNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := readBuffer.ReadUint16("namespaceIndex", 16)
+	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("namespaceIndex", 16)
 	if _namespaceIndexErr != nil {
 		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NumericNodeId")
 	}
 	namespaceIndex := _namespaceIndex
 
 	// Simple Field (identifier)
-	_identifier, _identifierErr := readBuffer.ReadUint32("identifier", 32)
+	_identifier, _identifierErr := /*TODO: migrate me*/ readBuffer.ReadUint32("identifier", 32)
 	if _identifierErr != nil {
 		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of NumericNodeId")
 	}
@@ -168,14 +168,14 @@ func (m *_NumericNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (namespaceIndex)
 	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
+	_namespaceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
 	if _namespaceIndexErr != nil {
 		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 	}
 
 	// Simple Field (identifier)
 	identifier := uint32(m.GetIdentifier())
-	_identifierErr := writeBuffer.WriteUint32("identifier", 32, uint32((identifier)))
+	_identifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("identifier", 32, uint32((identifier)))
 	if _identifierErr != nil {
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}

@@ -153,14 +153,14 @@ func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
+	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
 		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMICouldBeRouterToNetwork")
 	}
 	destinationNetworkAddress := _destinationNetworkAddress
 
 	// Simple Field (performanceIndex)
-	_performanceIndex, _performanceIndexErr := readBuffer.ReadUint8("performanceIndex", 8)
+	_performanceIndex, _performanceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("performanceIndex", 8)
 	if _performanceIndexErr != nil {
 		return nil, errors.Wrap(_performanceIndexErr, "Error parsing 'performanceIndex' field of NLMICouldBeRouterToNetwork")
 	}
@@ -202,14 +202,14 @@ func (m *_NLMICouldBeRouterToNetwork) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (destinationNetworkAddress)
 		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
+		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
 
 		// Simple Field (performanceIndex)
 		performanceIndex := uint8(m.GetPerformanceIndex())
-		_performanceIndexErr := writeBuffer.WriteUint8("performanceIndex", 8, uint8((performanceIndex)))
+		_performanceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("performanceIndex", 8, uint8((performanceIndex)))
 		if _performanceIndexErr != nil {
 			return errors.Wrap(_performanceIndexErr, "Error serializing 'performanceIndex' field")
 		}

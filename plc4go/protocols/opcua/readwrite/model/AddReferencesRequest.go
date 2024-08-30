@@ -184,7 +184,7 @@ func AddReferencesRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfReferencesToAdd)
-	_noOfReferencesToAdd, _noOfReferencesToAddErr := readBuffer.ReadInt32("noOfReferencesToAdd", 32)
+	_noOfReferencesToAdd, _noOfReferencesToAddErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferencesToAdd", 32)
 	if _noOfReferencesToAddErr != nil {
 		return nil, errors.Wrap(_noOfReferencesToAddErr, "Error parsing 'noOfReferencesToAdd' field of AddReferencesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfReferencesToAdd)
 		noOfReferencesToAdd := int32(m.GetNoOfReferencesToAdd())
-		_noOfReferencesToAddErr := writeBuffer.WriteInt32("noOfReferencesToAdd", 32, int32((noOfReferencesToAdd)))
+		_noOfReferencesToAddErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReferencesToAdd", 32, int32((noOfReferencesToAdd)))
 		if _noOfReferencesToAddErr != nil {
 			return errors.Wrap(_noOfReferencesToAddErr, "Error serializing 'noOfReferencesToAdd' field")
 		}

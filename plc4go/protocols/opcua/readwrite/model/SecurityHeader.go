@@ -125,14 +125,14 @@ func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := readBuffer.ReadUint32("secureChannelId", 32)
+	_secureChannelId, _secureChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secureChannelId", 32)
 	if _secureChannelIdErr != nil {
 		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of SecurityHeader")
 	}
 	secureChannelId := _secureChannelId
 
 	// Simple Field (secureTokenId)
-	_secureTokenId, _secureTokenIdErr := readBuffer.ReadUint32("secureTokenId", 32)
+	_secureTokenId, _secureTokenIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secureTokenId", 32)
 	if _secureTokenIdErr != nil {
 		return nil, errors.Wrap(_secureTokenIdErr, "Error parsing 'secureTokenId' field of SecurityHeader")
 	}
@@ -168,14 +168,14 @@ func (m *_SecurityHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (secureChannelId)
 	secureChannelId := uint32(m.GetSecureChannelId())
-	_secureChannelIdErr := writeBuffer.WriteUint32("secureChannelId", 32, uint32((secureChannelId)))
+	_secureChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secureChannelId", 32, uint32((secureChannelId)))
 	if _secureChannelIdErr != nil {
 		return errors.Wrap(_secureChannelIdErr, "Error serializing 'secureChannelId' field")
 	}
 
 	// Simple Field (secureTokenId)
 	secureTokenId := uint32(m.GetSecureTokenId())
-	_secureTokenIdErr := writeBuffer.WriteUint32("secureTokenId", 32, uint32((secureTokenId)))
+	_secureTokenIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secureTokenId", 32, uint32((secureTokenId)))
 	if _secureTokenIdErr != nil {
 		return errors.Wrap(_secureTokenIdErr, "Error serializing 'secureTokenId' field")
 	}

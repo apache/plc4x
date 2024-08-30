@@ -145,28 +145,28 @@ func ModbusPDUReadFileRecordRequestItemParseWithBuffer(ctx context.Context, read
 	_ = currentPos
 
 	// Simple Field (referenceType)
-	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUReadFileRecordRequestItem")
 	}
 	referenceType := _referenceType
 
 	// Simple Field (fileNumber)
-	_fileNumber, _fileNumberErr := readBuffer.ReadUint16("fileNumber", 16)
+	_fileNumber, _fileNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("fileNumber", 16)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of ModbusPDUReadFileRecordRequestItem")
 	}
 	fileNumber := _fileNumber
 
 	// Simple Field (recordNumber)
-	_recordNumber, _recordNumberErr := readBuffer.ReadUint16("recordNumber", 16)
+	_recordNumber, _recordNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("recordNumber", 16)
 	if _recordNumberErr != nil {
 		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field of ModbusPDUReadFileRecordRequestItem")
 	}
 	recordNumber := _recordNumber
 
 	// Simple Field (recordLength)
-	_recordLength, _recordLengthErr := readBuffer.ReadUint16("recordLength", 16)
+	_recordLength, _recordLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("recordLength", 16)
 	if _recordLengthErr != nil {
 		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field of ModbusPDUReadFileRecordRequestItem")
 	}
@@ -204,28 +204,28 @@ func (m *_ModbusPDUReadFileRecordRequestItem) SerializeWithWriteBuffer(ctx conte
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
+	_referenceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
 	if _referenceTypeErr != nil {
 		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}
 
 	// Simple Field (fileNumber)
 	fileNumber := uint16(m.GetFileNumber())
-	_fileNumberErr := writeBuffer.WriteUint16("fileNumber", 16, uint16((fileNumber)))
+	_fileNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("fileNumber", 16, uint16((fileNumber)))
 	if _fileNumberErr != nil {
 		return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 	}
 
 	// Simple Field (recordNumber)
 	recordNumber := uint16(m.GetRecordNumber())
-	_recordNumberErr := writeBuffer.WriteUint16("recordNumber", 16, uint16((recordNumber)))
+	_recordNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("recordNumber", 16, uint16((recordNumber)))
 	if _recordNumberErr != nil {
 		return errors.Wrap(_recordNumberErr, "Error serializing 'recordNumber' field")
 	}
 
 	// Simple Field (recordLength)
 	recordLength := uint16(m.GetRecordLength())
-	_recordLengthErr := writeBuffer.WriteUint16("recordLength", 16, uint16((recordLength)))
+	_recordLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("recordLength", 16, uint16((recordLength)))
 	if _recordLengthErr != nil {
 		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}

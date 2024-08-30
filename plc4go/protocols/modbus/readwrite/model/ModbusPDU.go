@@ -128,13 +128,13 @@ func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	_ = currentPos
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
+	errorFlag, _errorFlagErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of ModbusPDU")
 	}
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag, _functionFlagErr := readBuffer.ReadUint8("functionFlag", 7)
+	functionFlag, _functionFlagErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionFlag", 7)
 	if _functionFlagErr != nil {
 		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field of ModbusPDU")
 	}
@@ -258,7 +258,7 @@ func (pm *_ModbusPDU) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (errorFlag) (Used as input to a switch field)
 	errorFlag := bool(child.GetErrorFlag())
-	_errorFlagErr := writeBuffer.WriteBit("errorFlag", (errorFlag))
+	_errorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("errorFlag", (errorFlag))
 
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
@@ -266,7 +266,7 @@ func (pm *_ModbusPDU) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (functionFlag) (Used as input to a switch field)
 	functionFlag := uint8(child.GetFunctionFlag())
-	_functionFlagErr := writeBuffer.WriteUint8("functionFlag", 7, uint8((functionFlag)))
+	_functionFlagErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionFlag", 7, uint8((functionFlag)))
 
 	if _functionFlagErr != nil {
 		return errors.Wrap(_functionFlagErr, "Error serializing 'functionFlag' field")

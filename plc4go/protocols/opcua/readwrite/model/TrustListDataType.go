@@ -258,14 +258,14 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (specifiedLists)
-	_specifiedLists, _specifiedListsErr := readBuffer.ReadUint32("specifiedLists", 32)
+	_specifiedLists, _specifiedListsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("specifiedLists", 32)
 	if _specifiedListsErr != nil {
 		return nil, errors.Wrap(_specifiedListsErr, "Error parsing 'specifiedLists' field of TrustListDataType")
 	}
 	specifiedLists := _specifiedLists
 
 	// Simple Field (noOfTrustedCertificates)
-	_noOfTrustedCertificates, _noOfTrustedCertificatesErr := readBuffer.ReadInt32("noOfTrustedCertificates", 32)
+	_noOfTrustedCertificates, _noOfTrustedCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTrustedCertificates", 32)
 	if _noOfTrustedCertificatesErr != nil {
 		return nil, errors.Wrap(_noOfTrustedCertificatesErr, "Error parsing 'noOfTrustedCertificates' field of TrustListDataType")
 	}
@@ -299,7 +299,7 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfTrustedCrls)
-	_noOfTrustedCrls, _noOfTrustedCrlsErr := readBuffer.ReadInt32("noOfTrustedCrls", 32)
+	_noOfTrustedCrls, _noOfTrustedCrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTrustedCrls", 32)
 	if _noOfTrustedCrlsErr != nil {
 		return nil, errors.Wrap(_noOfTrustedCrlsErr, "Error parsing 'noOfTrustedCrls' field of TrustListDataType")
 	}
@@ -333,7 +333,7 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfIssuerCertificates)
-	_noOfIssuerCertificates, _noOfIssuerCertificatesErr := readBuffer.ReadInt32("noOfIssuerCertificates", 32)
+	_noOfIssuerCertificates, _noOfIssuerCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfIssuerCertificates", 32)
 	if _noOfIssuerCertificatesErr != nil {
 		return nil, errors.Wrap(_noOfIssuerCertificatesErr, "Error parsing 'noOfIssuerCertificates' field of TrustListDataType")
 	}
@@ -367,7 +367,7 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfIssuerCrls)
-	_noOfIssuerCrls, _noOfIssuerCrlsErr := readBuffer.ReadInt32("noOfIssuerCrls", 32)
+	_noOfIssuerCrls, _noOfIssuerCrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfIssuerCrls", 32)
 	if _noOfIssuerCrlsErr != nil {
 		return nil, errors.Wrap(_noOfIssuerCrlsErr, "Error parsing 'noOfIssuerCrls' field of TrustListDataType")
 	}
@@ -441,14 +441,14 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (specifiedLists)
 		specifiedLists := uint32(m.GetSpecifiedLists())
-		_specifiedListsErr := writeBuffer.WriteUint32("specifiedLists", 32, uint32((specifiedLists)))
+		_specifiedListsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("specifiedLists", 32, uint32((specifiedLists)))
 		if _specifiedListsErr != nil {
 			return errors.Wrap(_specifiedListsErr, "Error serializing 'specifiedLists' field")
 		}
 
 		// Simple Field (noOfTrustedCertificates)
 		noOfTrustedCertificates := int32(m.GetNoOfTrustedCertificates())
-		_noOfTrustedCertificatesErr := writeBuffer.WriteInt32("noOfTrustedCertificates", 32, int32((noOfTrustedCertificates)))
+		_noOfTrustedCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTrustedCertificates", 32, int32((noOfTrustedCertificates)))
 		if _noOfTrustedCertificatesErr != nil {
 			return errors.Wrap(_noOfTrustedCertificatesErr, "Error serializing 'noOfTrustedCertificates' field")
 		}
@@ -472,7 +472,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfTrustedCrls)
 		noOfTrustedCrls := int32(m.GetNoOfTrustedCrls())
-		_noOfTrustedCrlsErr := writeBuffer.WriteInt32("noOfTrustedCrls", 32, int32((noOfTrustedCrls)))
+		_noOfTrustedCrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTrustedCrls", 32, int32((noOfTrustedCrls)))
 		if _noOfTrustedCrlsErr != nil {
 			return errors.Wrap(_noOfTrustedCrlsErr, "Error serializing 'noOfTrustedCrls' field")
 		}
@@ -496,7 +496,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfIssuerCertificates)
 		noOfIssuerCertificates := int32(m.GetNoOfIssuerCertificates())
-		_noOfIssuerCertificatesErr := writeBuffer.WriteInt32("noOfIssuerCertificates", 32, int32((noOfIssuerCertificates)))
+		_noOfIssuerCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfIssuerCertificates", 32, int32((noOfIssuerCertificates)))
 		if _noOfIssuerCertificatesErr != nil {
 			return errors.Wrap(_noOfIssuerCertificatesErr, "Error serializing 'noOfIssuerCertificates' field")
 		}
@@ -520,7 +520,7 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfIssuerCrls)
 		noOfIssuerCrls := int32(m.GetNoOfIssuerCrls())
-		_noOfIssuerCrlsErr := writeBuffer.WriteInt32("noOfIssuerCrls", 32, int32((noOfIssuerCrls)))
+		_noOfIssuerCrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfIssuerCrls", 32, int32((noOfIssuerCrls)))
 		if _noOfIssuerCrlsErr != nil {
 			return errors.Wrap(_noOfIssuerCrlsErr, "Error serializing 'noOfIssuerCrls' field")
 		}

@@ -152,7 +152,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -167,7 +167,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (burden)
-	_burden, _burdenErr := readBuffer.ReadBit("burden")
+	_burden, _burdenErr := /*TODO: migrate me*/ readBuffer.ReadBit("burden")
 	if _burdenErr != nil {
 		return nil, errors.Wrap(_burdenErr, "Error parsing 'burden' field of InterfaceOptions2")
 	}
@@ -176,7 +176,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -193,7 +193,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField2 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -210,7 +210,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField3 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -227,7 +227,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField4 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -244,7 +244,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField5 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions2")
 		}
@@ -259,7 +259,7 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (clockGen)
-	_clockGen, _clockGenErr := readBuffer.ReadBit("clockGen")
+	_clockGen, _clockGenErr := /*TODO: migrate me*/ readBuffer.ReadBit("clockGen")
 	if _clockGenErr != nil {
 		return nil, errors.Wrap(_clockGenErr, "Error parsing 'clockGen' field of InterfaceOptions2")
 	}
@@ -309,7 +309,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -317,7 +317,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (burden)
 	burden := bool(m.GetBurden())
-	_burdenErr := writeBuffer.WriteBit("burden", (burden))
+	_burdenErr := /*TODO: migrate me*/ writeBuffer.WriteBit("burden", (burden))
 	if _burdenErr != nil {
 		return errors.Wrap(_burdenErr, "Error serializing 'burden' field")
 	}
@@ -332,7 +332,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -348,7 +348,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField2
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -364,7 +364,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField3
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -380,7 +380,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField4
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -396,7 +396,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField5
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -404,7 +404,7 @@ func (m *_InterfaceOptions2) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (clockGen)
 	clockGen := bool(m.GetClockGen())
-	_clockGenErr := writeBuffer.WriteBit("clockGen", (clockGen))
+	_clockGenErr := /*TODO: migrate me*/ writeBuffer.WriteBit("clockGen", (clockGen))
 	if _clockGenErr != nil {
 		return errors.Wrap(_clockGenErr, "Error serializing 'clockGen' field")
 	}

@@ -123,7 +123,7 @@ func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Const Field (specialChar1)
-	specialChar1, _specialChar1Err := readBuffer.ReadByte("specialChar1")
+	specialChar1, _specialChar1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("specialChar1")
 	if _specialChar1Err != nil {
 		return nil, errors.Wrap(_specialChar1Err, "Error parsing 'specialChar1' field of ParameterChange")
 	}
@@ -132,7 +132,7 @@ func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Const Field (specialChar2)
-	specialChar2, _specialChar2Err := readBuffer.ReadByte("specialChar2")
+	specialChar2, _specialChar2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("specialChar2")
 	if _specialChar2Err != nil {
 		return nil, errors.Wrap(_specialChar2Err, "Error parsing 'specialChar2' field of ParameterChange")
 	}
@@ -166,13 +166,13 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 
 	// Const Field (specialChar1)
-	_specialChar1Err := writeBuffer.WriteByte("specialChar1", 0x3D)
+	_specialChar1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("specialChar1", 0x3D)
 	if _specialChar1Err != nil {
 		return errors.Wrap(_specialChar1Err, "Error serializing 'specialChar1' field")
 	}
 
 	// Const Field (specialChar2)
-	_specialChar2Err := writeBuffer.WriteByte("specialChar2", 0x3D)
+	_specialChar2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("specialChar2", 0x3D)
 	if _specialChar2Err != nil {
 		return errors.Wrap(_specialChar2Err, "Error serializing 'specialChar2' field")
 	}

@@ -171,7 +171,7 @@ func VariantStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	var arrayLength *int32 = nil
 	if arrayLengthSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("arrayLength", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("arrayLength", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -246,7 +246,7 @@ func (m *_VariantString) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		var arrayLength *int32 = nil
 		if m.GetArrayLength() != nil {
 			arrayLength = m.GetArrayLength()
-			_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
+			_arrayLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("arrayLength", 32, int32(*(arrayLength)))
 			if _arrayLengthErr != nil {
 				return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
 			}

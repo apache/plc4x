@@ -183,7 +183,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, rea
 
 	// Peek Field (peekedApplication)
 	currentPos = positionAware.GetPos()
-	peekedApplication, _err := readBuffer.ReadByte("peekedApplication")
+	peekedApplication, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedApplication")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field of CBusPointToPointToMultiPointCommand")
 	}

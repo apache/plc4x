@@ -121,7 +121,7 @@ func HistoryUpdateTypeParse(ctx context.Context, theBytes []byte) (HistoryUpdate
 func HistoryUpdateTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryUpdateType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("HistoryUpdateType", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("HistoryUpdateType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading HistoryUpdateType")
 	}
@@ -144,7 +144,7 @@ func (e HistoryUpdateType) Serialize() ([]byte, error) {
 func (e HistoryUpdateType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("HistoryUpdateType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("HistoryUpdateType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

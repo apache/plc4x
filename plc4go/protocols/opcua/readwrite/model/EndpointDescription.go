@@ -302,7 +302,7 @@ func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfUserIdentityTokens)
-	_noOfUserIdentityTokens, _noOfUserIdentityTokensErr := readBuffer.ReadInt32("noOfUserIdentityTokens", 32)
+	_noOfUserIdentityTokens, _noOfUserIdentityTokensErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfUserIdentityTokens", 32)
 	if _noOfUserIdentityTokensErr != nil {
 		return nil, errors.Wrap(_noOfUserIdentityTokensErr, "Error parsing 'noOfUserIdentityTokens' field of EndpointDescription")
 	}
@@ -349,7 +349,7 @@ func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (securityLevel)
-	_securityLevel, _securityLevelErr := readBuffer.ReadUint8("securityLevel", 8)
+	_securityLevel, _securityLevelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("securityLevel", 8)
 	if _securityLevelErr != nil {
 		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of EndpointDescription")
 	}
@@ -456,7 +456,7 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfUserIdentityTokens)
 		noOfUserIdentityTokens := int32(m.GetNoOfUserIdentityTokens())
-		_noOfUserIdentityTokensErr := writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, int32((noOfUserIdentityTokens)))
+		_noOfUserIdentityTokensErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfUserIdentityTokens", 32, int32((noOfUserIdentityTokens)))
 		if _noOfUserIdentityTokensErr != nil {
 			return errors.Wrap(_noOfUserIdentityTokensErr, "Error serializing 'noOfUserIdentityTokens' field")
 		}
@@ -492,7 +492,7 @@ func (m *_EndpointDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (securityLevel)
 		securityLevel := uint8(m.GetSecurityLevel())
-		_securityLevelErr := writeBuffer.WriteUint8("securityLevel", 8, uint8((securityLevel)))
+		_securityLevelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("securityLevel", 8, uint8((securityLevel)))
 		if _securityLevelErr != nil {
 			return errors.Wrap(_securityLevelErr, "Error serializing 'securityLevel' field")
 		}

@@ -181,27 +181,27 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType, _commandTypeErr := readBuffer.ReadUint16("commandType", 16)
+	commandType, _commandTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("commandType", 16)
 	if _commandTypeErr != nil {
 		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field of CIPEncapsulationPacket")
 	}
 
 	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetLen, _packetLenErr := readBuffer.ReadUint16("packetLen", 16)
+	packetLen, _packetLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetLen", 16)
 	_ = packetLen
 	if _packetLenErr != nil {
 		return nil, errors.Wrap(_packetLenErr, "Error parsing 'packetLen' field of CIPEncapsulationPacket")
 	}
 
 	// Simple Field (sessionHandle)
-	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
+	_sessionHandle, _sessionHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionHandle", 32)
 	if _sessionHandleErr != nil {
 		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of CIPEncapsulationPacket")
 	}
 	sessionHandle := _sessionHandle
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint32("status", 32)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint32("status", 32)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CIPEncapsulationPacket")
 	}
@@ -223,7 +223,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'senderContext' field of CIPEncapsulationPacket")
 			}
@@ -235,7 +235,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (options)
-	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
+	_options, _optionsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("options", 32)
 	if _optionsErr != nil {
 		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of CIPEncapsulationPacket")
 	}
@@ -244,7 +244,7 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	var reservedField0 *uint32
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint32("reserved", 32)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("reserved", 32)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CIPEncapsulationPacket")
 		}
@@ -308,7 +308,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Discriminator Field (commandType) (Used as input to a switch field)
 	commandType := uint16(child.GetCommandType())
-	_commandTypeErr := writeBuffer.WriteUint16("commandType", 16, uint16((commandType)))
+	_commandTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("commandType", 16, uint16((commandType)))
 
 	if _commandTypeErr != nil {
 		return errors.Wrap(_commandTypeErr, "Error serializing 'commandType' field")
@@ -316,21 +316,21 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Implicit Field (packetLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(28)))
-	_packetLenErr := writeBuffer.WriteUint16("packetLen", 16, uint16((packetLen)))
+	_packetLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetLen", 16, uint16((packetLen)))
 	if _packetLenErr != nil {
 		return errors.Wrap(_packetLenErr, "Error serializing 'packetLen' field")
 	}
 
 	// Simple Field (sessionHandle)
 	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
+	_sessionHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
 	if _sessionHandleErr != nil {
 		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
 	}
 
 	// Simple Field (status)
 	status := uint32(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint32("status", 32, uint32((status)))
+	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("status", 32, uint32((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
@@ -341,7 +341,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 	}
 	for _curItem, _element := range m.GetSenderContext() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
 		}
@@ -352,7 +352,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 
 	// Simple Field (options)
 	options := uint32(m.GetOptions())
-	_optionsErr := writeBuffer.WriteUint32("options", 32, uint32((options)))
+	_optionsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("options", 32, uint32((options)))
 	if _optionsErr != nil {
 		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
 	}
@@ -367,7 +367,7 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint32("reserved", 32, uint32(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

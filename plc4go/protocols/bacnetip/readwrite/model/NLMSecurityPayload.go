@@ -155,7 +155,7 @@ func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Simple Field (payloadLength)
-	_payloadLength, _payloadLengthErr := readBuffer.ReadUint16("payloadLength", 16)
+	_payloadLength, _payloadLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("payloadLength", 16)
 	if _payloadLengthErr != nil {
 		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of NLMSecurityPayload")
 	}
@@ -203,7 +203,7 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (payloadLength)
 		payloadLength := uint16(m.GetPayloadLength())
-		_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
+		_payloadLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
 		if _payloadLengthErr != nil {
 			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 		}

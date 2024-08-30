@@ -141,7 +141,7 @@ func MediaTransportControlDataCategoryNameParseWithBuffer(ctx context.Context, r
 	_ = currentPos
 
 	// Simple Field (categoryName)
-	_categoryName, _categoryNameErr := readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
+	_categoryName, _categoryNameErr := /*TODO: migrate me*/ readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
 	if _categoryNameErr != nil {
 		return nil, errors.Wrap(_categoryNameErr, "Error parsing 'categoryName' field of MediaTransportControlDataCategoryName")
 	}
@@ -180,7 +180,7 @@ func (m *_MediaTransportControlDataCategoryName) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (categoryName)
 		categoryName := string(m.GetCategoryName())
-		_categoryNameErr := writeBuffer.WriteString("categoryName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (categoryName), utils.WithEncoding("UTF-8)"))
+		_categoryNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("categoryName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (categoryName), utils.WithEncoding("UTF-8)"))
 		if _categoryNameErr != nil {
 			return errors.Wrap(_categoryNameErr, "Error serializing 'categoryName' field")
 		}

@@ -148,7 +148,7 @@ func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Szl
 	}
 
 	// Simple Field (sublistExtract)
-	_sublistExtract, _sublistExtractErr := readBuffer.ReadUint8("sublistExtract", 4)
+	_sublistExtract, _sublistExtractErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sublistExtract", 4)
 	if _sublistExtractErr != nil {
 		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field of SzlId")
 	}
@@ -210,7 +210,7 @@ func (m *_SzlId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 	// Simple Field (sublistExtract)
 	sublistExtract := uint8(m.GetSublistExtract())
-	_sublistExtractErr := writeBuffer.WriteUint8("sublistExtract", 4, uint8((sublistExtract)))
+	_sublistExtractErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sublistExtract", 4, uint8((sublistExtract)))
 	if _sublistExtractErr != nil {
 		return errors.Wrap(_sublistExtractErr, "Error serializing 'sublistExtract' field")
 	}

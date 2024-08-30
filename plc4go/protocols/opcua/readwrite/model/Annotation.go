@@ -190,7 +190,7 @@ func AnnotationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 
 	// Simple Field (annotationTime)
-	_annotationTime, _annotationTimeErr := readBuffer.ReadInt64("annotationTime", 64)
+	_annotationTime, _annotationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("annotationTime", 64)
 	if _annotationTimeErr != nil {
 		return nil, errors.Wrap(_annotationTimeErr, "Error parsing 'annotationTime' field of Annotation")
 	}
@@ -255,7 +255,7 @@ func (m *_Annotation) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 		// Simple Field (annotationTime)
 		annotationTime := int64(m.GetAnnotationTime())
-		_annotationTimeErr := writeBuffer.WriteInt64("annotationTime", 64, int64((annotationTime)))
+		_annotationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("annotationTime", 64, int64((annotationTime)))
 		if _annotationTimeErr != nil {
 			return errors.Wrap(_annotationTimeErr, "Error serializing 'annotationTime' field")
 		}

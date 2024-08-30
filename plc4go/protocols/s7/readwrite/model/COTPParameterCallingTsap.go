@@ -142,7 +142,7 @@ func COTPParameterCallingTsapParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (tsapId)
-	_tsapId, _tsapIdErr := readBuffer.ReadUint16("tsapId", 16)
+	_tsapId, _tsapIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("tsapId", 16)
 	if _tsapIdErr != nil {
 		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field of COTPParameterCallingTsap")
 	}
@@ -183,7 +183,7 @@ func (m *_COTPParameterCallingTsap) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (tsapId)
 		tsapId := uint16(m.GetTsapId())
-		_tsapIdErr := writeBuffer.WriteUint16("tsapId", 16, uint16((tsapId)))
+		_tsapIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("tsapId", 16, uint16((tsapId)))
 		if _tsapIdErr != nil {
 			return errors.Wrap(_tsapIdErr, "Error serializing 'tsapId' field")
 		}

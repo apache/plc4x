@@ -208,49 +208,49 @@ func NLMRequestKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (set1KeyRevision)
-	_set1KeyRevision, _set1KeyRevisionErr := readBuffer.ReadByte("set1KeyRevision")
+	_set1KeyRevision, _set1KeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("set1KeyRevision")
 	if _set1KeyRevisionErr != nil {
 		return nil, errors.Wrap(_set1KeyRevisionErr, "Error parsing 'set1KeyRevision' field of NLMRequestKeyUpdate")
 	}
 	set1KeyRevision := _set1KeyRevision
 
 	// Simple Field (set1ActivationTime)
-	_set1ActivationTime, _set1ActivationTimeErr := readBuffer.ReadUint32("set1ActivationTime", 32)
+	_set1ActivationTime, _set1ActivationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set1ActivationTime", 32)
 	if _set1ActivationTimeErr != nil {
 		return nil, errors.Wrap(_set1ActivationTimeErr, "Error parsing 'set1ActivationTime' field of NLMRequestKeyUpdate")
 	}
 	set1ActivationTime := _set1ActivationTime
 
 	// Simple Field (set1ExpirationTime)
-	_set1ExpirationTime, _set1ExpirationTimeErr := readBuffer.ReadUint32("set1ExpirationTime", 32)
+	_set1ExpirationTime, _set1ExpirationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set1ExpirationTime", 32)
 	if _set1ExpirationTimeErr != nil {
 		return nil, errors.Wrap(_set1ExpirationTimeErr, "Error parsing 'set1ExpirationTime' field of NLMRequestKeyUpdate")
 	}
 	set1ExpirationTime := _set1ExpirationTime
 
 	// Simple Field (set2KeyRevision)
-	_set2KeyRevision, _set2KeyRevisionErr := readBuffer.ReadByte("set2KeyRevision")
+	_set2KeyRevision, _set2KeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("set2KeyRevision")
 	if _set2KeyRevisionErr != nil {
 		return nil, errors.Wrap(_set2KeyRevisionErr, "Error parsing 'set2KeyRevision' field of NLMRequestKeyUpdate")
 	}
 	set2KeyRevision := _set2KeyRevision
 
 	// Simple Field (set2ActivationTime)
-	_set2ActivationTime, _set2ActivationTimeErr := readBuffer.ReadUint32("set2ActivationTime", 32)
+	_set2ActivationTime, _set2ActivationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set2ActivationTime", 32)
 	if _set2ActivationTimeErr != nil {
 		return nil, errors.Wrap(_set2ActivationTimeErr, "Error parsing 'set2ActivationTime' field of NLMRequestKeyUpdate")
 	}
 	set2ActivationTime := _set2ActivationTime
 
 	// Simple Field (set2ExpirationTime)
-	_set2ExpirationTime, _set2ExpirationTimeErr := readBuffer.ReadUint32("set2ExpirationTime", 32)
+	_set2ExpirationTime, _set2ExpirationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set2ExpirationTime", 32)
 	if _set2ExpirationTimeErr != nil {
 		return nil, errors.Wrap(_set2ExpirationTimeErr, "Error parsing 'set2ExpirationTime' field of NLMRequestKeyUpdate")
 	}
 	set2ExpirationTime := _set2ExpirationTime
 
 	// Simple Field (distributionKeyRevision)
-	_distributionKeyRevision, _distributionKeyRevisionErr := readBuffer.ReadByte("distributionKeyRevision")
+	_distributionKeyRevision, _distributionKeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("distributionKeyRevision")
 	if _distributionKeyRevisionErr != nil {
 		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of NLMRequestKeyUpdate")
 	}
@@ -297,49 +297,49 @@ func (m *_NLMRequestKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (set1KeyRevision)
 		set1KeyRevision := byte(m.GetSet1KeyRevision())
-		_set1KeyRevisionErr := writeBuffer.WriteByte("set1KeyRevision", (set1KeyRevision))
+		_set1KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set1KeyRevision", (set1KeyRevision))
 		if _set1KeyRevisionErr != nil {
 			return errors.Wrap(_set1KeyRevisionErr, "Error serializing 'set1KeyRevision' field")
 		}
 
 		// Simple Field (set1ActivationTime)
 		set1ActivationTime := uint32(m.GetSet1ActivationTime())
-		_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, uint32((set1ActivationTime)))
+		_set1ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ActivationTime", 32, uint32((set1ActivationTime)))
 		if _set1ActivationTimeErr != nil {
 			return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
 		}
 
 		// Simple Field (set1ExpirationTime)
 		set1ExpirationTime := uint32(m.GetSet1ExpirationTime())
-		_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32((set1ExpirationTime)))
+		_set1ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32((set1ExpirationTime)))
 		if _set1ExpirationTimeErr != nil {
 			return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
 		}
 
 		// Simple Field (set2KeyRevision)
 		set2KeyRevision := byte(m.GetSet2KeyRevision())
-		_set2KeyRevisionErr := writeBuffer.WriteByte("set2KeyRevision", (set2KeyRevision))
+		_set2KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set2KeyRevision", (set2KeyRevision))
 		if _set2KeyRevisionErr != nil {
 			return errors.Wrap(_set2KeyRevisionErr, "Error serializing 'set2KeyRevision' field")
 		}
 
 		// Simple Field (set2ActivationTime)
 		set2ActivationTime := uint32(m.GetSet2ActivationTime())
-		_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, uint32((set2ActivationTime)))
+		_set2ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ActivationTime", 32, uint32((set2ActivationTime)))
 		if _set2ActivationTimeErr != nil {
 			return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
 		}
 
 		// Simple Field (set2ExpirationTime)
 		set2ExpirationTime := uint32(m.GetSet2ExpirationTime())
-		_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32((set2ExpirationTime)))
+		_set2ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32((set2ExpirationTime)))
 		if _set2ExpirationTimeErr != nil {
 			return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
 		}
 
 		// Simple Field (distributionKeyRevision)
 		distributionKeyRevision := byte(m.GetDistributionKeyRevision())
-		_distributionKeyRevisionErr := writeBuffer.WriteByte("distributionKeyRevision", (distributionKeyRevision))
+		_distributionKeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("distributionKeyRevision", (distributionKeyRevision))
 		if _distributionKeyRevisionErr != nil {
 			return errors.Wrap(_distributionKeyRevisionErr, "Error serializing 'distributionKeyRevision' field")
 		}

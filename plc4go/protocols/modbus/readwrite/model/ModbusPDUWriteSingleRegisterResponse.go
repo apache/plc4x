@@ -161,14 +161,14 @@ func ModbusPDUWriteSingleRegisterResponseParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusPDUWriteSingleRegisterResponse")
 	}
 	address := _address
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadUint16("value", 16)
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ModbusPDUWriteSingleRegisterResponse")
 	}
@@ -208,14 +208,14 @@ func (m *_ModbusPDUWriteSingleRegisterResponse) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
+		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (value)
 		value := uint16(m.GetValue())
-		_valueErr := writeBuffer.WriteUint16("value", 16, uint16((value)))
+		_valueErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

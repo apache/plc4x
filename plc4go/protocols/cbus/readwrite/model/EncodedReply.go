@@ -157,7 +157,7 @@ func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Peek Field (peekedByte)
 	currentPos = positionAware.GetPos()
-	peekedByte, _err := readBuffer.ReadByte("peekedByte")
+	peekedByte, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedByte")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of EncodedReply")
 	}

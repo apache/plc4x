@@ -153,14 +153,14 @@ func ServiceCounterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Simple Field (totalCount)
-	_totalCount, _totalCountErr := readBuffer.ReadUint32("totalCount", 32)
+	_totalCount, _totalCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("totalCount", 32)
 	if _totalCountErr != nil {
 		return nil, errors.Wrap(_totalCountErr, "Error parsing 'totalCount' field of ServiceCounterDataType")
 	}
 	totalCount := _totalCount
 
 	// Simple Field (errorCount)
-	_errorCount, _errorCountErr := readBuffer.ReadUint32("errorCount", 32)
+	_errorCount, _errorCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("errorCount", 32)
 	if _errorCountErr != nil {
 		return nil, errors.Wrap(_errorCountErr, "Error parsing 'errorCount' field of ServiceCounterDataType")
 	}
@@ -200,14 +200,14 @@ func (m *_ServiceCounterDataType) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (totalCount)
 		totalCount := uint32(m.GetTotalCount())
-		_totalCountErr := writeBuffer.WriteUint32("totalCount", 32, uint32((totalCount)))
+		_totalCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("totalCount", 32, uint32((totalCount)))
 		if _totalCountErr != nil {
 			return errors.Wrap(_totalCountErr, "Error serializing 'totalCount' field")
 		}
 
 		// Simple Field (errorCount)
 		errorCount := uint32(m.GetErrorCount())
-		_errorCountErr := writeBuffer.WriteUint32("errorCount", 32, uint32((errorCount)))
+		_errorCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("errorCount", 32, uint32((errorCount)))
 		if _errorCountErr != nil {
 			return errors.Wrap(_errorCountErr, "Error serializing 'errorCount' field")
 		}

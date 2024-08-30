@@ -234,7 +234,7 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 	_ = currentPos
 
 	// Const Field (meiType)
-	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
+	meiType, _meiTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("meiType", 8)
 	if _meiTypeErr != nil {
 		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -256,7 +256,7 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 	}
 
 	// Simple Field (individualAccess)
-	_individualAccess, _individualAccessErr := readBuffer.ReadBit("individualAccess")
+	_individualAccess, _individualAccessErr := /*TODO: migrate me*/ readBuffer.ReadBit("individualAccess")
 	if _individualAccessErr != nil {
 		return nil, errors.Wrap(_individualAccessErr, "Error parsing 'individualAccess' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -289,14 +289,14 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Contex
 	}
 
 	// Simple Field (nextObjectId)
-	_nextObjectId, _nextObjectIdErr := readBuffer.ReadUint8("nextObjectId", 8)
+	_nextObjectId, _nextObjectIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("nextObjectId", 8)
 	if _nextObjectIdErr != nil {
 		return nil, errors.Wrap(_nextObjectIdErr, "Error parsing 'nextObjectId' field of ModbusPDUReadDeviceIdentificationResponse")
 	}
 	nextObjectId := _nextObjectId
 
 	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of ModbusPDUReadDeviceIdentificationResponse")
@@ -366,7 +366,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 		}
 
 		// Const Field (meiType)
-		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
+		_meiTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
 		if _meiTypeErr != nil {
 			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
 		}
@@ -385,7 +385,7 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 
 		// Simple Field (individualAccess)
 		individualAccess := bool(m.GetIndividualAccess())
-		_individualAccessErr := writeBuffer.WriteBit("individualAccess", (individualAccess))
+		_individualAccessErr := /*TODO: migrate me*/ writeBuffer.WriteBit("individualAccess", (individualAccess))
 		if _individualAccessErr != nil {
 			return errors.Wrap(_individualAccessErr, "Error serializing 'individualAccess' field")
 		}
@@ -416,14 +416,14 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 
 		// Simple Field (nextObjectId)
 		nextObjectId := uint8(m.GetNextObjectId())
-		_nextObjectIdErr := writeBuffer.WriteUint8("nextObjectId", 8, uint8((nextObjectId)))
+		_nextObjectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("nextObjectId", 8, uint8((nextObjectId)))
 		if _nextObjectIdErr != nil {
 			return errors.Wrap(_nextObjectIdErr, "Error serializing 'nextObjectId' field")
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetObjects())))
-		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
+		_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 		}

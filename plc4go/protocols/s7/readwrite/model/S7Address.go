@@ -120,7 +120,7 @@ func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType, _addressTypeErr := readBuffer.ReadUint8("addressType", 8)
+	addressType, _addressTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("addressType", 8)
 	if _addressTypeErr != nil {
 		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field of S7Address")
 	}
@@ -168,7 +168,7 @@ func (pm *_S7Address) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (addressType) (Used as input to a switch field)
 	addressType := uint8(child.GetAddressType())
-	_addressTypeErr := writeBuffer.WriteUint8("addressType", 8, uint8((addressType)))
+	_addressTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("addressType", 8, uint8((addressType)))
 
 	if _addressTypeErr != nil {
 		return errors.Wrap(_addressTypeErr, "Error serializing 'addressType' field")

@@ -213,7 +213,7 @@ func HistoryUpdateResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfOperationResults)
-	_noOfOperationResults, _noOfOperationResultsErr := readBuffer.ReadInt32("noOfOperationResults", 32)
+	_noOfOperationResults, _noOfOperationResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOperationResults", 32)
 	if _noOfOperationResultsErr != nil {
 		return nil, errors.Wrap(_noOfOperationResultsErr, "Error parsing 'noOfOperationResults' field of HistoryUpdateResult")
 	}
@@ -247,7 +247,7 @@ func HistoryUpdateResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
+	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
 	if _noOfDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of HistoryUpdateResult")
 	}
@@ -329,7 +329,7 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfOperationResults)
 		noOfOperationResults := int32(m.GetNoOfOperationResults())
-		_noOfOperationResultsErr := writeBuffer.WriteInt32("noOfOperationResults", 32, int32((noOfOperationResults)))
+		_noOfOperationResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOperationResults", 32, int32((noOfOperationResults)))
 		if _noOfOperationResultsErr != nil {
 			return errors.Wrap(_noOfOperationResultsErr, "Error serializing 'noOfOperationResults' field")
 		}
@@ -353,7 +353,7 @@ func (m *_HistoryUpdateResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
+		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

@@ -160,7 +160,7 @@ func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (noOfDataValues)
-	_noOfDataValues, _noOfDataValuesErr := readBuffer.ReadInt32("noOfDataValues", 32)
+	_noOfDataValues, _noOfDataValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataValues", 32)
 	if _noOfDataValuesErr != nil {
 		return nil, errors.Wrap(_noOfDataValuesErr, "Error parsing 'noOfDataValues' field of HistoryData")
 	}
@@ -227,7 +227,7 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (noOfDataValues)
 		noOfDataValues := int32(m.GetNoOfDataValues())
-		_noOfDataValuesErr := writeBuffer.WriteInt32("noOfDataValues", 32, int32((noOfDataValues)))
+		_noOfDataValuesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDataValues", 32, int32((noOfDataValues)))
 		if _noOfDataValuesErr != nil {
 			return errors.Wrap(_noOfDataValuesErr, "Error serializing 'noOfDataValues' field")
 		}

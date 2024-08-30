@@ -208,7 +208,7 @@ func RegisterServer2RequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (noOfDiscoveryConfiguration)
-	_noOfDiscoveryConfiguration, _noOfDiscoveryConfigurationErr := readBuffer.ReadInt32("noOfDiscoveryConfiguration", 32)
+	_noOfDiscoveryConfiguration, _noOfDiscoveryConfigurationErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryConfiguration", 32)
 	if _noOfDiscoveryConfigurationErr != nil {
 		return nil, errors.Wrap(_noOfDiscoveryConfigurationErr, "Error parsing 'noOfDiscoveryConfiguration' field of RegisterServer2Request")
 	}
@@ -301,7 +301,7 @@ func (m *_RegisterServer2Request) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfDiscoveryConfiguration)
 		noOfDiscoveryConfiguration := int32(m.GetNoOfDiscoveryConfiguration())
-		_noOfDiscoveryConfigurationErr := writeBuffer.WriteInt32("noOfDiscoveryConfiguration", 32, int32((noOfDiscoveryConfiguration)))
+		_noOfDiscoveryConfigurationErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiscoveryConfiguration", 32, int32((noOfDiscoveryConfiguration)))
 		if _noOfDiscoveryConfigurationErr != nil {
 			return errors.Wrap(_noOfDiscoveryConfigurationErr, "Error serializing 'noOfDiscoveryConfiguration' field")
 		}

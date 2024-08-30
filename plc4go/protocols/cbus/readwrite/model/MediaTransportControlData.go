@@ -188,7 +188,7 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = commandType
 
 	// Simple Field (mediaLinkGroup)
-	_mediaLinkGroup, _mediaLinkGroupErr := readBuffer.ReadByte("mediaLinkGroup")
+	_mediaLinkGroup, _mediaLinkGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("mediaLinkGroup")
 	if _mediaLinkGroupErr != nil {
 		return nil, errors.Wrap(_mediaLinkGroupErr, "Error parsing 'mediaLinkGroup' field of MediaTransportControlData")
 	}
@@ -295,7 +295,7 @@ func (pm *_MediaTransportControlData) SerializeParent(ctx context.Context, write
 
 	// Simple Field (mediaLinkGroup)
 	mediaLinkGroup := byte(m.GetMediaLinkGroup())
-	_mediaLinkGroupErr := writeBuffer.WriteByte("mediaLinkGroup", (mediaLinkGroup))
+	_mediaLinkGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("mediaLinkGroup", (mediaLinkGroup))
 	if _mediaLinkGroupErr != nil {
 		return errors.Wrap(_mediaLinkGroupErr, "Error serializing 'mediaLinkGroup' field")
 	}

@@ -156,7 +156,7 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Simple Field (pinBlock)
-	_pinBlock, _pinBlockErr := readBuffer.ReadUint8("pinBlock", 4)
+	_pinBlock, _pinBlockErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinBlock", 4)
 	if _pinBlockErr != nil {
 		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field of FirmataMessageDigitalIO")
 	}
@@ -178,7 +178,7 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadInt8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of FirmataMessageDigitalIO")
 			}
@@ -225,7 +225,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (pinBlock)
 		pinBlock := uint8(m.GetPinBlock())
-		_pinBlockErr := writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
+		_pinBlockErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pinBlock", 4, uint8((pinBlock)))
 		if _pinBlockErr != nil {
 			return errors.Wrap(_pinBlockErr, "Error serializing 'pinBlock' field")
 		}
@@ -236,7 +236,7 @@ func (m *_FirmataMessageDigitalIO) SerializeWithWriteBuffer(ctx context.Context,
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("", 8, int8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

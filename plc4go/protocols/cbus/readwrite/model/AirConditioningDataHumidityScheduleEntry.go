@@ -222,7 +222,7 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context
 	_ = currentPos
 
 	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
+	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
 	if _zoneGroupErr != nil {
 		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataHumidityScheduleEntry")
 	}
@@ -242,14 +242,14 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context
 	}
 
 	// Simple Field (entry)
-	_entry, _entryErr := readBuffer.ReadUint8("entry", 8)
+	_entry, _entryErr := /*TODO: migrate me*/ readBuffer.ReadUint8("entry", 8)
 	if _entryErr != nil {
 		return nil, errors.Wrap(_entryErr, "Error parsing 'entry' field of AirConditioningDataHumidityScheduleEntry")
 	}
 	entry := _entry
 
 	// Simple Field (format)
-	_format, _formatErr := readBuffer.ReadByte("format")
+	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadByte("format")
 	if _formatErr != nil {
 		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of AirConditioningDataHumidityScheduleEntry")
 	}
@@ -365,7 +365,7 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (zoneGroup)
 		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
+		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
 		if _zoneGroupErr != nil {
 			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
 		}
@@ -384,14 +384,14 @@ func (m *_AirConditioningDataHumidityScheduleEntry) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (entry)
 		entry := uint8(m.GetEntry())
-		_entryErr := writeBuffer.WriteUint8("entry", 8, uint8((entry)))
+		_entryErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("entry", 8, uint8((entry)))
 		if _entryErr != nil {
 			return errors.Wrap(_entryErr, "Error serializing 'entry' field")
 		}
 
 		// Simple Field (format)
 		format := byte(m.GetFormat())
-		_formatErr := writeBuffer.WriteByte("format", (format))
+		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteByte("format", (format))
 		if _formatErr != nil {
 			return errors.Wrap(_formatErr, "Error serializing 'format' field")
 		}

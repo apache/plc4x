@@ -151,7 +151,7 @@ func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer uti
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
@@ -181,7 +181,7 @@ func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer uti
 	var reservedField1 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestBinaryState")
 		}
@@ -238,7 +238,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -266,7 +266,7 @@ func (m *_StatusRequestBinaryState) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

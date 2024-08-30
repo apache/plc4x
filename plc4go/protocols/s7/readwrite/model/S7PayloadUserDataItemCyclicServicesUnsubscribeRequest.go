@@ -165,14 +165,14 @@ func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx co
 	_ = currentPos
 
 	// Simple Field (function)
-	_function, _functionErr := readBuffer.ReadUint8("function", 8)
+	_function, _functionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("function", 8)
 	if _functionErr != nil {
 		return nil, errors.Wrap(_functionErr, "Error parsing 'function' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 	}
 	function := _function
 
 	// Simple Field (jobId)
-	_jobId, _jobIdErr := readBuffer.ReadUint8("jobId", 8)
+	_jobId, _jobIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("jobId", 8)
 	if _jobIdErr != nil {
 		return nil, errors.Wrap(_jobIdErr, "Error parsing 'jobId' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
 	}
@@ -212,14 +212,14 @@ func (m *_S7PayloadUserDataItemCyclicServicesUnsubscribeRequest) SerializeWithWr
 
 		// Simple Field (function)
 		function := uint8(m.GetFunction())
-		_functionErr := writeBuffer.WriteUint8("function", 8, uint8((function)))
+		_functionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("function", 8, uint8((function)))
 		if _functionErr != nil {
 			return errors.Wrap(_functionErr, "Error serializing 'function' field")
 		}
 
 		// Simple Field (jobId)
 		jobId := uint8(m.GetJobId())
-		_jobIdErr := writeBuffer.WriteUint8("jobId", 8, uint8((jobId)))
+		_jobIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("jobId", 8, uint8((jobId)))
 		if _jobIdErr != nil {
 			return errors.Wrap(_jobIdErr, "Error serializing 'jobId' field")
 		}

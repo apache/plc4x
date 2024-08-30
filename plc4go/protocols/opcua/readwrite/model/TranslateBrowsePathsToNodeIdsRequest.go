@@ -184,7 +184,7 @@ func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, re
 	}
 
 	// Simple Field (noOfBrowsePaths)
-	_noOfBrowsePaths, _noOfBrowsePathsErr := readBuffer.ReadInt32("noOfBrowsePaths", 32)
+	_noOfBrowsePaths, _noOfBrowsePathsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfBrowsePaths", 32)
 	if _noOfBrowsePathsErr != nil {
 		return nil, errors.Wrap(_noOfBrowsePathsErr, "Error parsing 'noOfBrowsePaths' field of TranslateBrowsePathsToNodeIdsRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (noOfBrowsePaths)
 		noOfBrowsePaths := int32(m.GetNoOfBrowsePaths())
-		_noOfBrowsePathsErr := writeBuffer.WriteInt32("noOfBrowsePaths", 32, int32((noOfBrowsePaths)))
+		_noOfBrowsePathsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfBrowsePaths", 32, int32((noOfBrowsePaths)))
 		if _noOfBrowsePathsErr != nil {
 			return errors.Wrap(_noOfBrowsePathsErr, "Error serializing 'noOfBrowsePaths' field")
 		}

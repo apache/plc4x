@@ -166,42 +166,42 @@ func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (symbolCount)
-	_symbolCount, _symbolCountErr := readBuffer.ReadUint32("symbolCount", 32)
+	_symbolCount, _symbolCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("symbolCount", 32)
 	if _symbolCountErr != nil {
 		return nil, errors.Wrap(_symbolCountErr, "Error parsing 'symbolCount' field of AdsTableSizes")
 	}
 	symbolCount := _symbolCount
 
 	// Simple Field (symbolLength)
-	_symbolLength, _symbolLengthErr := readBuffer.ReadUint32("symbolLength", 32)
+	_symbolLength, _symbolLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("symbolLength", 32)
 	if _symbolLengthErr != nil {
 		return nil, errors.Wrap(_symbolLengthErr, "Error parsing 'symbolLength' field of AdsTableSizes")
 	}
 	symbolLength := _symbolLength
 
 	// Simple Field (dataTypeCount)
-	_dataTypeCount, _dataTypeCountErr := readBuffer.ReadUint32("dataTypeCount", 32)
+	_dataTypeCount, _dataTypeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataTypeCount", 32)
 	if _dataTypeCountErr != nil {
 		return nil, errors.Wrap(_dataTypeCountErr, "Error parsing 'dataTypeCount' field of AdsTableSizes")
 	}
 	dataTypeCount := _dataTypeCount
 
 	// Simple Field (dataTypeLength)
-	_dataTypeLength, _dataTypeLengthErr := readBuffer.ReadUint32("dataTypeLength", 32)
+	_dataTypeLength, _dataTypeLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataTypeLength", 32)
 	if _dataTypeLengthErr != nil {
 		return nil, errors.Wrap(_dataTypeLengthErr, "Error parsing 'dataTypeLength' field of AdsTableSizes")
 	}
 	dataTypeLength := _dataTypeLength
 
 	// Simple Field (extraCount)
-	_extraCount, _extraCountErr := readBuffer.ReadUint32("extraCount", 32)
+	_extraCount, _extraCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("extraCount", 32)
 	if _extraCountErr != nil {
 		return nil, errors.Wrap(_extraCountErr, "Error parsing 'extraCount' field of AdsTableSizes")
 	}
 	extraCount := _extraCount
 
 	// Simple Field (extraLength)
-	_extraLength, _extraLengthErr := readBuffer.ReadUint32("extraLength", 32)
+	_extraLength, _extraLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("extraLength", 32)
 	if _extraLengthErr != nil {
 		return nil, errors.Wrap(_extraLengthErr, "Error parsing 'extraLength' field of AdsTableSizes")
 	}
@@ -241,42 +241,42 @@ func (m *_AdsTableSizes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (symbolCount)
 	symbolCount := uint32(m.GetSymbolCount())
-	_symbolCountErr := writeBuffer.WriteUint32("symbolCount", 32, uint32((symbolCount)))
+	_symbolCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("symbolCount", 32, uint32((symbolCount)))
 	if _symbolCountErr != nil {
 		return errors.Wrap(_symbolCountErr, "Error serializing 'symbolCount' field")
 	}
 
 	// Simple Field (symbolLength)
 	symbolLength := uint32(m.GetSymbolLength())
-	_symbolLengthErr := writeBuffer.WriteUint32("symbolLength", 32, uint32((symbolLength)))
+	_symbolLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("symbolLength", 32, uint32((symbolLength)))
 	if _symbolLengthErr != nil {
 		return errors.Wrap(_symbolLengthErr, "Error serializing 'symbolLength' field")
 	}
 
 	// Simple Field (dataTypeCount)
 	dataTypeCount := uint32(m.GetDataTypeCount())
-	_dataTypeCountErr := writeBuffer.WriteUint32("dataTypeCount", 32, uint32((dataTypeCount)))
+	_dataTypeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataTypeCount", 32, uint32((dataTypeCount)))
 	if _dataTypeCountErr != nil {
 		return errors.Wrap(_dataTypeCountErr, "Error serializing 'dataTypeCount' field")
 	}
 
 	// Simple Field (dataTypeLength)
 	dataTypeLength := uint32(m.GetDataTypeLength())
-	_dataTypeLengthErr := writeBuffer.WriteUint32("dataTypeLength", 32, uint32((dataTypeLength)))
+	_dataTypeLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataTypeLength", 32, uint32((dataTypeLength)))
 	if _dataTypeLengthErr != nil {
 		return errors.Wrap(_dataTypeLengthErr, "Error serializing 'dataTypeLength' field")
 	}
 
 	// Simple Field (extraCount)
 	extraCount := uint32(m.GetExtraCount())
-	_extraCountErr := writeBuffer.WriteUint32("extraCount", 32, uint32((extraCount)))
+	_extraCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extraCount", 32, uint32((extraCount)))
 	if _extraCountErr != nil {
 		return errors.Wrap(_extraCountErr, "Error serializing 'extraCount' field")
 	}
 
 	// Simple Field (extraLength)
 	extraLength := uint32(m.GetExtraLength())
-	_extraLengthErr := writeBuffer.WriteUint32("extraLength", 32, uint32((extraLength)))
+	_extraLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extraLength", 32, uint32((extraLength)))
 	if _extraLengthErr != nil {
 		return errors.Wrap(_extraLengthErr, "Error serializing 'extraLength' field")
 	}

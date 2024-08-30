@@ -212,21 +212,21 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (groupAddress)
-	_groupAddress, _groupAddressErr := readBuffer.ReadBit("groupAddress")
+	_groupAddress, _groupAddressErr := /*TODO: migrate me*/ readBuffer.ReadBit("groupAddress")
 	if _groupAddressErr != nil {
 		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field of LDataExtended")
 	}
 	groupAddress := _groupAddress
 
 	// Simple Field (hopCount)
-	_hopCount, _hopCountErr := readBuffer.ReadUint8("hopCount", 3)
+	_hopCount, _hopCountErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hopCount", 3)
 	if _hopCountErr != nil {
 		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field of LDataExtended")
 	}
 	hopCount := _hopCount
 
 	// Simple Field (extendedFrameFormat)
-	_extendedFrameFormat, _extendedFrameFormatErr := readBuffer.ReadUint8("extendedFrameFormat", 4)
+	_extendedFrameFormat, _extendedFrameFormatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extendedFrameFormat", 4)
 	if _extendedFrameFormatErr != nil {
 		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field of LDataExtended")
 	}
@@ -252,7 +252,7 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
+	dataLength, _dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of LDataExtended")
@@ -309,21 +309,21 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (groupAddress)
 		groupAddress := bool(m.GetGroupAddress())
-		_groupAddressErr := writeBuffer.WriteBit("groupAddress", (groupAddress))
+		_groupAddressErr := /*TODO: migrate me*/ writeBuffer.WriteBit("groupAddress", (groupAddress))
 		if _groupAddressErr != nil {
 			return errors.Wrap(_groupAddressErr, "Error serializing 'groupAddress' field")
 		}
 
 		// Simple Field (hopCount)
 		hopCount := uint8(m.GetHopCount())
-		_hopCountErr := writeBuffer.WriteUint8("hopCount", 3, uint8((hopCount)))
+		_hopCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hopCount", 3, uint8((hopCount)))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}
 
 		// Simple Field (extendedFrameFormat)
 		extendedFrameFormat := uint8(m.GetExtendedFrameFormat())
-		_extendedFrameFormatErr := writeBuffer.WriteUint8("extendedFrameFormat", 4, uint8((extendedFrameFormat)))
+		_extendedFrameFormatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extendedFrameFormat", 4, uint8((extendedFrameFormat)))
 		if _extendedFrameFormatErr != nil {
 			return errors.Wrap(_extendedFrameFormatErr, "Error serializing 'extendedFrameFormat' field")
 		}
@@ -348,7 +348,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLength := uint8(uint8(m.GetApdu().GetLengthInBytes(ctx)) - uint8(uint8(1)))
-		_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
+		_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
 		if _dataLengthErr != nil {
 			return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 		}

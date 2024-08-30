@@ -175,28 +175,28 @@ func LinearConversionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (initialAddend)
-	_initialAddend, _initialAddendErr := readBuffer.ReadFloat32("initialAddend", 32)
+	_initialAddend, _initialAddendErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("initialAddend", 32)
 	if _initialAddendErr != nil {
 		return nil, errors.Wrap(_initialAddendErr, "Error parsing 'initialAddend' field of LinearConversionDataType")
 	}
 	initialAddend := _initialAddend
 
 	// Simple Field (multiplicand)
-	_multiplicand, _multiplicandErr := readBuffer.ReadFloat32("multiplicand", 32)
+	_multiplicand, _multiplicandErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("multiplicand", 32)
 	if _multiplicandErr != nil {
 		return nil, errors.Wrap(_multiplicandErr, "Error parsing 'multiplicand' field of LinearConversionDataType")
 	}
 	multiplicand := _multiplicand
 
 	// Simple Field (divisor)
-	_divisor, _divisorErr := readBuffer.ReadFloat32("divisor", 32)
+	_divisor, _divisorErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("divisor", 32)
 	if _divisorErr != nil {
 		return nil, errors.Wrap(_divisorErr, "Error parsing 'divisor' field of LinearConversionDataType")
 	}
 	divisor := _divisor
 
 	// Simple Field (finalAddend)
-	_finalAddend, _finalAddendErr := readBuffer.ReadFloat32("finalAddend", 32)
+	_finalAddend, _finalAddendErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("finalAddend", 32)
 	if _finalAddendErr != nil {
 		return nil, errors.Wrap(_finalAddendErr, "Error parsing 'finalAddend' field of LinearConversionDataType")
 	}
@@ -238,28 +238,28 @@ func (m *_LinearConversionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (initialAddend)
 		initialAddend := float32(m.GetInitialAddend())
-		_initialAddendErr := writeBuffer.WriteFloat32("initialAddend", 32, (initialAddend))
+		_initialAddendErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("initialAddend", 32, (initialAddend))
 		if _initialAddendErr != nil {
 			return errors.Wrap(_initialAddendErr, "Error serializing 'initialAddend' field")
 		}
 
 		// Simple Field (multiplicand)
 		multiplicand := float32(m.GetMultiplicand())
-		_multiplicandErr := writeBuffer.WriteFloat32("multiplicand", 32, (multiplicand))
+		_multiplicandErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("multiplicand", 32, (multiplicand))
 		if _multiplicandErr != nil {
 			return errors.Wrap(_multiplicandErr, "Error serializing 'multiplicand' field")
 		}
 
 		// Simple Field (divisor)
 		divisor := float32(m.GetDivisor())
-		_divisorErr := writeBuffer.WriteFloat32("divisor", 32, (divisor))
+		_divisorErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("divisor", 32, (divisor))
 		if _divisorErr != nil {
 			return errors.Wrap(_divisorErr, "Error serializing 'divisor' field")
 		}
 
 		// Simple Field (finalAddend)
 		finalAddend := float32(m.GetFinalAddend())
-		_finalAddendErr := writeBuffer.WriteFloat32("finalAddend", 32, (finalAddend))
+		_finalAddendErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("finalAddend", 32, (finalAddend))
 		if _finalAddendErr != nil {
 			return errors.Wrap(_finalAddendErr, "Error serializing 'finalAddend' field")
 		}

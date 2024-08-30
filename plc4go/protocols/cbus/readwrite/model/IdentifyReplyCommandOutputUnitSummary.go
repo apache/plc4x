@@ -196,7 +196,7 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 	var gavStoreEnabledByte1 *byte = nil
 	if bool((numBytes) > (1)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("gavStoreEnabledByte1")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("gavStoreEnabledByte1")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -212,7 +212,7 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 	var gavStoreEnabledByte2 *byte = nil
 	if bool((numBytes) > (2)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("gavStoreEnabledByte2")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("gavStoreEnabledByte2")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -225,7 +225,7 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 	}
 
 	// Simple Field (timeFromLastRecoverOfMainsInSeconds)
-	_timeFromLastRecoverOfMainsInSeconds, _timeFromLastRecoverOfMainsInSecondsErr := readBuffer.ReadUint8("timeFromLastRecoverOfMainsInSeconds", 8)
+	_timeFromLastRecoverOfMainsInSeconds, _timeFromLastRecoverOfMainsInSecondsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("timeFromLastRecoverOfMainsInSeconds", 8)
 	if _timeFromLastRecoverOfMainsInSecondsErr != nil {
 		return nil, errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error parsing 'timeFromLastRecoverOfMainsInSeconds' field of IdentifyReplyCommandOutputUnitSummary")
 	}
@@ -283,7 +283,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 		var gavStoreEnabledByte1 *byte = nil
 		if m.GetGavStoreEnabledByte1() != nil {
 			gavStoreEnabledByte1 = m.GetGavStoreEnabledByte1()
-			_gavStoreEnabledByte1Err := writeBuffer.WriteByte("gavStoreEnabledByte1", *(gavStoreEnabledByte1))
+			_gavStoreEnabledByte1Err := /*TODO: migrate me*/ writeBuffer.WriteByte("gavStoreEnabledByte1", *(gavStoreEnabledByte1))
 			if _gavStoreEnabledByte1Err != nil {
 				return errors.Wrap(_gavStoreEnabledByte1Err, "Error serializing 'gavStoreEnabledByte1' field")
 			}
@@ -293,7 +293,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 		var gavStoreEnabledByte2 *byte = nil
 		if m.GetGavStoreEnabledByte2() != nil {
 			gavStoreEnabledByte2 = m.GetGavStoreEnabledByte2()
-			_gavStoreEnabledByte2Err := writeBuffer.WriteByte("gavStoreEnabledByte2", *(gavStoreEnabledByte2))
+			_gavStoreEnabledByte2Err := /*TODO: migrate me*/ writeBuffer.WriteByte("gavStoreEnabledByte2", *(gavStoreEnabledByte2))
 			if _gavStoreEnabledByte2Err != nil {
 				return errors.Wrap(_gavStoreEnabledByte2Err, "Error serializing 'gavStoreEnabledByte2' field")
 			}
@@ -301,7 +301,7 @@ func (m *_IdentifyReplyCommandOutputUnitSummary) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (timeFromLastRecoverOfMainsInSeconds)
 		timeFromLastRecoverOfMainsInSeconds := uint8(m.GetTimeFromLastRecoverOfMainsInSeconds())
-		_timeFromLastRecoverOfMainsInSecondsErr := writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, uint8((timeFromLastRecoverOfMainsInSeconds)))
+		_timeFromLastRecoverOfMainsInSecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeFromLastRecoverOfMainsInSeconds", 8, uint8((timeFromLastRecoverOfMainsInSeconds)))
 		if _timeFromLastRecoverOfMainsInSecondsErr != nil {
 			return errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error serializing 'timeFromLastRecoverOfMainsInSeconds' field")
 		}

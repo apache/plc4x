@@ -260,7 +260,7 @@ func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (key)
-	_key, _keyErr := readBuffer.ReadByte("key")
+	_key, _keyErr := /*TODO: migrate me*/ readBuffer.ReadByte("key")
 	if _keyErr != nil {
 		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of SecurityDataEmulatedKeypad")
 	}
@@ -354,7 +354,7 @@ func (m *_SecurityDataEmulatedKeypad) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (key)
 		key := byte(m.GetKey())
-		_keyErr := writeBuffer.WriteByte("key", (key))
+		_keyErr := /*TODO: migrate me*/ writeBuffer.WriteByte("key", (key))
 		if _keyErr != nil {
 			return errors.Wrap(_keyErr, "Error serializing 'key' field")
 		}

@@ -182,7 +182,7 @@ func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipReadResponse")
 		}
@@ -197,14 +197,14 @@ func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipReadResponse")
 	}
 	status := _status
 
 	// Simple Field (extStatus)
-	_extStatus, _extStatusErr := readBuffer.ReadUint8("extStatus", 8)
+	_extStatus, _extStatusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extStatus", 8)
 	if _extStatusErr != nil {
 		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of CipReadResponse")
 	}
@@ -278,7 +278,7 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -286,14 +286,14 @@ func (m *_CipReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (status)
 		status := uint8(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
+		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (extStatus)
 		extStatus := uint8(m.GetExtStatus())
-		_extStatusErr := writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
+		_extStatusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extStatus", 8, uint8((extStatus)))
 		if _extStatusErr != nil {
 			return errors.Wrap(_extStatusErr, "Error serializing 'extStatus' field")
 		}

@@ -250,28 +250,28 @@ func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
+	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
 	if _attributeIdErr != nil {
 		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of PublishedVariableDataType")
 	}
 	attributeId := _attributeId
 
 	// Simple Field (samplingIntervalHint)
-	_samplingIntervalHint, _samplingIntervalHintErr := readBuffer.ReadFloat64("samplingIntervalHint", 64)
+	_samplingIntervalHint, _samplingIntervalHintErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingIntervalHint", 64)
 	if _samplingIntervalHintErr != nil {
 		return nil, errors.Wrap(_samplingIntervalHintErr, "Error parsing 'samplingIntervalHint' field of PublishedVariableDataType")
 	}
 	samplingIntervalHint := _samplingIntervalHint
 
 	// Simple Field (deadbandType)
-	_deadbandType, _deadbandTypeErr := readBuffer.ReadUint32("deadbandType", 32)
+	_deadbandType, _deadbandTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("deadbandType", 32)
 	if _deadbandTypeErr != nil {
 		return nil, errors.Wrap(_deadbandTypeErr, "Error parsing 'deadbandType' field of PublishedVariableDataType")
 	}
 	deadbandType := _deadbandType
 
 	// Simple Field (deadbandValue)
-	_deadbandValue, _deadbandValueErr := readBuffer.ReadFloat64("deadbandValue", 64)
+	_deadbandValue, _deadbandValueErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("deadbandValue", 64)
 	if _deadbandValueErr != nil {
 		return nil, errors.Wrap(_deadbandValueErr, "Error parsing 'deadbandValue' field of PublishedVariableDataType")
 	}
@@ -304,7 +304,7 @@ func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (noOfMetaDataProperties)
-	_noOfMetaDataProperties, _noOfMetaDataPropertiesErr := readBuffer.ReadInt32("noOfMetaDataProperties", 32)
+	_noOfMetaDataProperties, _noOfMetaDataPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMetaDataProperties", 32)
 	if _noOfMetaDataPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfMetaDataPropertiesErr, "Error parsing 'noOfMetaDataProperties' field of PublishedVariableDataType")
 	}
@@ -390,28 +390,28 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (attributeId)
 		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
+		_attributeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
 		if _attributeIdErr != nil {
 			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
 		}
 
 		// Simple Field (samplingIntervalHint)
 		samplingIntervalHint := float64(m.GetSamplingIntervalHint())
-		_samplingIntervalHintErr := writeBuffer.WriteFloat64("samplingIntervalHint", 64, (samplingIntervalHint))
+		_samplingIntervalHintErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("samplingIntervalHint", 64, (samplingIntervalHint))
 		if _samplingIntervalHintErr != nil {
 			return errors.Wrap(_samplingIntervalHintErr, "Error serializing 'samplingIntervalHint' field")
 		}
 
 		// Simple Field (deadbandType)
 		deadbandType := uint32(m.GetDeadbandType())
-		_deadbandTypeErr := writeBuffer.WriteUint32("deadbandType", 32, uint32((deadbandType)))
+		_deadbandTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("deadbandType", 32, uint32((deadbandType)))
 		if _deadbandTypeErr != nil {
 			return errors.Wrap(_deadbandTypeErr, "Error serializing 'deadbandType' field")
 		}
 
 		// Simple Field (deadbandValue)
 		deadbandValue := float64(m.GetDeadbandValue())
-		_deadbandValueErr := writeBuffer.WriteFloat64("deadbandValue", 64, (deadbandValue))
+		_deadbandValueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("deadbandValue", 64, (deadbandValue))
 		if _deadbandValueErr != nil {
 			return errors.Wrap(_deadbandValueErr, "Error serializing 'deadbandValue' field")
 		}
@@ -442,7 +442,7 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (noOfMetaDataProperties)
 		noOfMetaDataProperties := int32(m.GetNoOfMetaDataProperties())
-		_noOfMetaDataPropertiesErr := writeBuffer.WriteInt32("noOfMetaDataProperties", 32, int32((noOfMetaDataProperties)))
+		_noOfMetaDataPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfMetaDataProperties", 32, int32((noOfMetaDataProperties)))
 		if _noOfMetaDataPropertiesErr != nil {
 			return errors.Wrap(_noOfMetaDataPropertiesErr, "Error serializing 'noOfMetaDataProperties' field")
 		}

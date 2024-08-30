@@ -188,14 +188,14 @@ func AdsReadStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (adsState)
-	_adsState, _adsStateErr := readBuffer.ReadUint16("adsState", 16)
+	_adsState, _adsStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("adsState", 16)
 	if _adsStateErr != nil {
 		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field of AdsReadStateResponse")
 	}
 	adsState := _adsState
 
 	// Simple Field (deviceState)
-	_deviceState, _deviceStateErr := readBuffer.ReadUint16("deviceState", 16)
+	_deviceState, _deviceStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceState", 16)
 	if _deviceStateErr != nil {
 		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field of AdsReadStateResponse")
 	}
@@ -248,14 +248,14 @@ func (m *_AdsReadStateResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (adsState)
 		adsState := uint16(m.GetAdsState())
-		_adsStateErr := writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
+		_adsStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("adsState", 16, uint16((adsState)))
 		if _adsStateErr != nil {
 			return errors.Wrap(_adsStateErr, "Error serializing 'adsState' field")
 		}
 
 		// Simple Field (deviceState)
 		deviceState := uint16(m.GetDeviceState())
-		_deviceStateErr := writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
+		_deviceStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceState", 16, uint16((deviceState)))
 		if _deviceStateErr != nil {
 			return errors.Wrap(_deviceStateErr, "Error serializing 'deviceState' field")
 		}

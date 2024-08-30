@@ -142,14 +142,14 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (timestamp)
-	_timestamp, _timestampErr := readBuffer.ReadUint64("timestamp", 64)
+	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadUint64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of AdsStampHeader")
 	}
 	timestamp := _timestamp
 
 	// Simple Field (samples)
-	_samples, _samplesErr := readBuffer.ReadUint32("samples", 32)
+	_samples, _samplesErr := /*TODO: migrate me*/ readBuffer.ReadUint32("samples", 32)
 	if _samplesErr != nil {
 		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field of AdsStampHeader")
 	}
@@ -213,14 +213,14 @@ func (m *_AdsStampHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (timestamp)
 	timestamp := uint64(m.GetTimestamp())
-	_timestampErr := writeBuffer.WriteUint64("timestamp", 64, uint64((timestamp)))
+	_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteUint64("timestamp", 64, uint64((timestamp)))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}
 
 	// Simple Field (samples)
 	samples := uint32(m.GetSamples())
-	_samplesErr := writeBuffer.WriteUint32("samples", 32, uint32((samples)))
+	_samplesErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("samples", 32, uint32((samples)))
 	if _samplesErr != nil {
 		return errors.Wrap(_samplesErr, "Error serializing 'samples' field")
 	}

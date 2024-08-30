@@ -226,28 +226,28 @@ func CreateSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (requestedPublishingInterval)
-	_requestedPublishingInterval, _requestedPublishingIntervalErr := readBuffer.ReadFloat64("requestedPublishingInterval", 64)
+	_requestedPublishingInterval, _requestedPublishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("requestedPublishingInterval", 64)
 	if _requestedPublishingIntervalErr != nil {
 		return nil, errors.Wrap(_requestedPublishingIntervalErr, "Error parsing 'requestedPublishingInterval' field of CreateSubscriptionRequest")
 	}
 	requestedPublishingInterval := _requestedPublishingInterval
 
 	// Simple Field (requestedLifetimeCount)
-	_requestedLifetimeCount, _requestedLifetimeCountErr := readBuffer.ReadUint32("requestedLifetimeCount", 32)
+	_requestedLifetimeCount, _requestedLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedLifetimeCount", 32)
 	if _requestedLifetimeCountErr != nil {
 		return nil, errors.Wrap(_requestedLifetimeCountErr, "Error parsing 'requestedLifetimeCount' field of CreateSubscriptionRequest")
 	}
 	requestedLifetimeCount := _requestedLifetimeCount
 
 	// Simple Field (requestedMaxKeepAliveCount)
-	_requestedMaxKeepAliveCount, _requestedMaxKeepAliveCountErr := readBuffer.ReadUint32("requestedMaxKeepAliveCount", 32)
+	_requestedMaxKeepAliveCount, _requestedMaxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedMaxKeepAliveCount", 32)
 	if _requestedMaxKeepAliveCountErr != nil {
 		return nil, errors.Wrap(_requestedMaxKeepAliveCountErr, "Error parsing 'requestedMaxKeepAliveCount' field of CreateSubscriptionRequest")
 	}
 	requestedMaxKeepAliveCount := _requestedMaxKeepAliveCount
 
 	// Simple Field (maxNotificationsPerPublish)
-	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
+	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
 	if _maxNotificationsPerPublishErr != nil {
 		return nil, errors.Wrap(_maxNotificationsPerPublishErr, "Error parsing 'maxNotificationsPerPublish' field of CreateSubscriptionRequest")
 	}
@@ -256,7 +256,7 @@ func CreateSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CreateSubscriptionRequest")
 		}
@@ -271,14 +271,14 @@ func CreateSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (publishingEnabled)
-	_publishingEnabled, _publishingEnabledErr := readBuffer.ReadBit("publishingEnabled")
+	_publishingEnabled, _publishingEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("publishingEnabled")
 	if _publishingEnabledErr != nil {
 		return nil, errors.Wrap(_publishingEnabledErr, "Error parsing 'publishingEnabled' field of CreateSubscriptionRequest")
 	}
 	publishingEnabled := _publishingEnabled
 
 	// Simple Field (priority)
-	_priority, _priorityErr := readBuffer.ReadUint8("priority", 8)
+	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 8)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of CreateSubscriptionRequest")
 	}
@@ -336,28 +336,28 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (requestedPublishingInterval)
 		requestedPublishingInterval := float64(m.GetRequestedPublishingInterval())
-		_requestedPublishingIntervalErr := writeBuffer.WriteFloat64("requestedPublishingInterval", 64, (requestedPublishingInterval))
+		_requestedPublishingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("requestedPublishingInterval", 64, (requestedPublishingInterval))
 		if _requestedPublishingIntervalErr != nil {
 			return errors.Wrap(_requestedPublishingIntervalErr, "Error serializing 'requestedPublishingInterval' field")
 		}
 
 		// Simple Field (requestedLifetimeCount)
 		requestedLifetimeCount := uint32(m.GetRequestedLifetimeCount())
-		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
+		_requestedLifetimeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
 		if _requestedLifetimeCountErr != nil {
 			return errors.Wrap(_requestedLifetimeCountErr, "Error serializing 'requestedLifetimeCount' field")
 		}
 
 		// Simple Field (requestedMaxKeepAliveCount)
 		requestedMaxKeepAliveCount := uint32(m.GetRequestedMaxKeepAliveCount())
-		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
+		_requestedMaxKeepAliveCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
 		if _requestedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_requestedMaxKeepAliveCountErr, "Error serializing 'requestedMaxKeepAliveCount' field")
 		}
 
 		// Simple Field (maxNotificationsPerPublish)
 		maxNotificationsPerPublish := uint32(m.GetMaxNotificationsPerPublish())
-		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
+		_maxNotificationsPerPublishErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
 		if _maxNotificationsPerPublishErr != nil {
 			return errors.Wrap(_maxNotificationsPerPublishErr, "Error serializing 'maxNotificationsPerPublish' field")
 		}
@@ -372,7 +372,7 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -380,14 +380,14 @@ func (m *_CreateSubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (publishingEnabled)
 		publishingEnabled := bool(m.GetPublishingEnabled())
-		_publishingEnabledErr := writeBuffer.WriteBit("publishingEnabled", (publishingEnabled))
+		_publishingEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("publishingEnabled", (publishingEnabled))
 		if _publishingEnabledErr != nil {
 			return errors.Wrap(_publishingEnabledErr, "Error serializing 'publishingEnabled' field")
 		}
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 8, uint8((priority)))
+		_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 8, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}

@@ -191,14 +191,14 @@ func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := readBuffer.ReadUint32("clientHandle", 32)
+	_clientHandle, _clientHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientHandle", 32)
 	if _clientHandleErr != nil {
 		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of MonitoringParameters")
 	}
 	clientHandle := _clientHandle
 
 	// Simple Field (samplingInterval)
-	_samplingInterval, _samplingIntervalErr := readBuffer.ReadFloat64("samplingInterval", 64)
+	_samplingInterval, _samplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingInterval", 64)
 	if _samplingIntervalErr != nil {
 		return nil, errors.Wrap(_samplingIntervalErr, "Error parsing 'samplingInterval' field of MonitoringParameters")
 	}
@@ -218,7 +218,7 @@ func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (queueSize)
-	_queueSize, _queueSizeErr := readBuffer.ReadUint32("queueSize", 32)
+	_queueSize, _queueSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("queueSize", 32)
 	if _queueSizeErr != nil {
 		return nil, errors.Wrap(_queueSizeErr, "Error parsing 'queueSize' field of MonitoringParameters")
 	}
@@ -227,7 +227,7 @@ func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of MonitoringParameters")
 		}
@@ -242,7 +242,7 @@ func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (discardOldest)
-	_discardOldest, _discardOldestErr := readBuffer.ReadBit("discardOldest")
+	_discardOldest, _discardOldestErr := /*TODO: migrate me*/ readBuffer.ReadBit("discardOldest")
 	if _discardOldestErr != nil {
 		return nil, errors.Wrap(_discardOldestErr, "Error parsing 'discardOldest' field of MonitoringParameters")
 	}
@@ -286,14 +286,14 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (clientHandle)
 		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
+		_clientHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
 		if _clientHandleErr != nil {
 			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
 		}
 
 		// Simple Field (samplingInterval)
 		samplingInterval := float64(m.GetSamplingInterval())
-		_samplingIntervalErr := writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
+		_samplingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
 		if _samplingIntervalErr != nil {
 			return errors.Wrap(_samplingIntervalErr, "Error serializing 'samplingInterval' field")
 		}
@@ -312,7 +312,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (queueSize)
 		queueSize := uint32(m.GetQueueSize())
-		_queueSizeErr := writeBuffer.WriteUint32("queueSize", 32, uint32((queueSize)))
+		_queueSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("queueSize", 32, uint32((queueSize)))
 		if _queueSizeErr != nil {
 			return errors.Wrap(_queueSizeErr, "Error serializing 'queueSize' field")
 		}
@@ -327,7 +327,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -335,7 +335,7 @@ func (m *_MonitoringParameters) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (discardOldest)
 		discardOldest := bool(m.GetDiscardOldest())
-		_discardOldestErr := writeBuffer.WriteBit("discardOldest", (discardOldest))
+		_discardOldestErr := /*TODO: migrate me*/ writeBuffer.WriteBit("discardOldest", (discardOldest))
 		if _discardOldestErr != nil {
 			return errors.Wrap(_discardOldestErr, "Error serializing 'discardOldest' field")
 		}

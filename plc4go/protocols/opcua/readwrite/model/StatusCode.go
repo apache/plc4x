@@ -115,7 +115,7 @@ func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Simple Field (statusCode)
-	_statusCode, _statusCodeErr := readBuffer.ReadUint32("statusCode", 32)
+	_statusCode, _statusCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("statusCode", 32)
 	if _statusCodeErr != nil {
 		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of StatusCode")
 	}
@@ -150,7 +150,7 @@ func (m *_StatusCode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (statusCode)
 	statusCode := uint32(m.GetStatusCode())
-	_statusCodeErr := writeBuffer.WriteUint32("statusCode", 32, uint32((statusCode)))
+	_statusCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("statusCode", 32, uint32((statusCode)))
 	if _statusCodeErr != nil {
 		return errors.Wrap(_statusCodeErr, "Error serializing 'statusCode' field")
 	}

@@ -150,7 +150,7 @@ func ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (fifoPointerAddress)
-	_fifoPointerAddress, _fifoPointerAddressErr := readBuffer.ReadUint16("fifoPointerAddress", 16)
+	_fifoPointerAddress, _fifoPointerAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("fifoPointerAddress", 16)
 	if _fifoPointerAddressErr != nil {
 		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field of ModbusPDUReadFifoQueueRequest")
 	}
@@ -189,7 +189,7 @@ func (m *_ModbusPDUReadFifoQueueRequest) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (fifoPointerAddress)
 		fifoPointerAddress := uint16(m.GetFifoPointerAddress())
-		_fifoPointerAddressErr := writeBuffer.WriteUint16("fifoPointerAddress", 16, uint16((fifoPointerAddress)))
+		_fifoPointerAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("fifoPointerAddress", 16, uint16((fifoPointerAddress)))
 		if _fifoPointerAddressErr != nil {
 			return errors.Wrap(_fifoPointerAddressErr, "Error serializing 'fifoPointerAddress' field")
 		}

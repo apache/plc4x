@@ -164,21 +164,21 @@ func AdsMultiRequestItemWriteParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (itemIndexGroup)
-	_itemIndexGroup, _itemIndexGroupErr := readBuffer.ReadUint32("itemIndexGroup", 32)
+	_itemIndexGroup, _itemIndexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemIndexGroup", 32)
 	if _itemIndexGroupErr != nil {
 		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field of AdsMultiRequestItemWrite")
 	}
 	itemIndexGroup := _itemIndexGroup
 
 	// Simple Field (itemIndexOffset)
-	_itemIndexOffset, _itemIndexOffsetErr := readBuffer.ReadUint32("itemIndexOffset", 32)
+	_itemIndexOffset, _itemIndexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemIndexOffset", 32)
 	if _itemIndexOffsetErr != nil {
 		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field of AdsMultiRequestItemWrite")
 	}
 	itemIndexOffset := _itemIndexOffset
 
 	// Simple Field (itemWriteLength)
-	_itemWriteLength, _itemWriteLengthErr := readBuffer.ReadUint32("itemWriteLength", 32)
+	_itemWriteLength, _itemWriteLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemWriteLength", 32)
 	if _itemWriteLengthErr != nil {
 		return nil, errors.Wrap(_itemWriteLengthErr, "Error parsing 'itemWriteLength' field of AdsMultiRequestItemWrite")
 	}
@@ -219,21 +219,21 @@ func (m *_AdsMultiRequestItemWrite) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (itemIndexGroup)
 		itemIndexGroup := uint32(m.GetItemIndexGroup())
-		_itemIndexGroupErr := writeBuffer.WriteUint32("itemIndexGroup", 32, uint32((itemIndexGroup)))
+		_itemIndexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("itemIndexGroup", 32, uint32((itemIndexGroup)))
 		if _itemIndexGroupErr != nil {
 			return errors.Wrap(_itemIndexGroupErr, "Error serializing 'itemIndexGroup' field")
 		}
 
 		// Simple Field (itemIndexOffset)
 		itemIndexOffset := uint32(m.GetItemIndexOffset())
-		_itemIndexOffsetErr := writeBuffer.WriteUint32("itemIndexOffset", 32, uint32((itemIndexOffset)))
+		_itemIndexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("itemIndexOffset", 32, uint32((itemIndexOffset)))
 		if _itemIndexOffsetErr != nil {
 			return errors.Wrap(_itemIndexOffsetErr, "Error serializing 'itemIndexOffset' field")
 		}
 
 		// Simple Field (itemWriteLength)
 		itemWriteLength := uint32(m.GetItemWriteLength())
-		_itemWriteLengthErr := writeBuffer.WriteUint32("itemWriteLength", 32, uint32((itemWriteLength)))
+		_itemWriteLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("itemWriteLength", 32, uint32((itemWriteLength)))
 		if _itemWriteLengthErr != nil {
 			return errors.Wrap(_itemWriteLengthErr, "Error serializing 'itemWriteLength' field")
 		}

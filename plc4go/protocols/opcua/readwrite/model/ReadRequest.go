@@ -206,7 +206,7 @@ func ReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (maxAge)
-	_maxAge, _maxAgeErr := readBuffer.ReadFloat64("maxAge", 64)
+	_maxAge, _maxAgeErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("maxAge", 64)
 	if _maxAgeErr != nil {
 		return nil, errors.Wrap(_maxAgeErr, "Error parsing 'maxAge' field of ReadRequest")
 	}
@@ -226,7 +226,7 @@ func ReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (noOfNodesToRead)
-	_noOfNodesToRead, _noOfNodesToReadErr := readBuffer.ReadInt32("noOfNodesToRead", 32)
+	_noOfNodesToRead, _noOfNodesToReadErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRead", 32)
 	if _noOfNodesToReadErr != nil {
 		return nil, errors.Wrap(_noOfNodesToReadErr, "Error parsing 'noOfNodesToRead' field of ReadRequest")
 	}
@@ -308,7 +308,7 @@ func (m *_ReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (maxAge)
 		maxAge := float64(m.GetMaxAge())
-		_maxAgeErr := writeBuffer.WriteFloat64("maxAge", 64, (maxAge))
+		_maxAgeErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("maxAge", 64, (maxAge))
 		if _maxAgeErr != nil {
 			return errors.Wrap(_maxAgeErr, "Error serializing 'maxAge' field")
 		}
@@ -327,7 +327,7 @@ func (m *_ReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (noOfNodesToRead)
 		noOfNodesToRead := int32(m.GetNoOfNodesToRead())
-		_noOfNodesToReadErr := writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
+		_noOfNodesToReadErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
 		if _noOfNodesToReadErr != nil {
 			return errors.Wrap(_noOfNodesToReadErr, "Error serializing 'noOfNodesToRead' field")
 		}

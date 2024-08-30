@@ -155,7 +155,7 @@ func ApduDataGroupValueResponseParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (dataFirstByte)
-	_dataFirstByte, _dataFirstByteErr := readBuffer.ReadInt8("dataFirstByte", 6)
+	_dataFirstByte, _dataFirstByteErr := /*TODO: migrate me*/ readBuffer.ReadInt8("dataFirstByte", 6)
 	if _dataFirstByteErr != nil {
 		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field of ApduDataGroupValueResponse")
 	}
@@ -203,7 +203,7 @@ func (m *_ApduDataGroupValueResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (dataFirstByte)
 		dataFirstByte := int8(m.GetDataFirstByte())
-		_dataFirstByteErr := writeBuffer.WriteInt8("dataFirstByte", 6, int8((dataFirstByte)))
+		_dataFirstByteErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("dataFirstByte", 6, int8((dataFirstByte)))
 		if _dataFirstByteErr != nil {
 			return errors.Wrap(_dataFirstByteErr, "Error serializing 'dataFirstByte' field")
 		}

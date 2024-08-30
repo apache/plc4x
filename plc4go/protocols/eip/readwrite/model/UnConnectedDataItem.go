@@ -145,7 +145,7 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetSize, _packetSizeErr := readBuffer.ReadUint16("packetSize", 16)
+	packetSize, _packetSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetSize", 16)
 	_ = packetSize
 	if _packetSizeErr != nil {
 		return nil, errors.Wrap(_packetSizeErr, "Error parsing 'packetSize' field of UnConnectedDataItem")
@@ -197,7 +197,7 @@ func (m *_UnConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (packetSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		packetSize := uint16(m.GetService().GetLengthInBytes(ctx))
-		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
+		_packetSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
 		if _packetSizeErr != nil {
 			return errors.Wrap(_packetSizeErr, "Error serializing 'packetSize' field")
 		}

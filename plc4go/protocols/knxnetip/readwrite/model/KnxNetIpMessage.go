@@ -147,14 +147,14 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Implicit Field (headerLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	headerLength, _headerLengthErr := readBuffer.ReadUint8("headerLength", 8)
+	headerLength, _headerLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("headerLength", 8)
 	_ = headerLength
 	if _headerLengthErr != nil {
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of KnxNetIpMessage")
 	}
 
 	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := readBuffer.ReadUint8("protocolVersion", 8)
+	protocolVersion, _protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of KnxNetIpMessage")
 	}
@@ -163,13 +163,13 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType, _msgTypeErr := readBuffer.ReadUint16("msgType", 16)
+	msgType, _msgTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("msgType", 16)
 	if _msgTypeErr != nil {
 		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field of KnxNetIpMessage")
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	totalLength, _totalLengthErr := readBuffer.ReadUint16("totalLength", 16)
+	totalLength, _totalLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("totalLength", 16)
 	_ = totalLength
 	if _totalLengthErr != nil {
 		return nil, errors.Wrap(_totalLengthErr, "Error parsing 'totalLength' field of KnxNetIpMessage")
@@ -248,20 +248,20 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 
 	// Implicit Field (headerLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	headerLength := uint8(uint8(6))
-	_headerLengthErr := writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
+	_headerLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("headerLength", 8, uint8((headerLength)))
 	if _headerLengthErr != nil {
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
 	// Const Field (protocolVersion)
-	_protocolVersionErr := writeBuffer.WriteUint8("protocolVersion", 8, uint8(0x10))
+	_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersion", 8, uint8(0x10))
 	if _protocolVersionErr != nil {
 		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)
 	msgType := uint16(child.GetMsgType())
-	_msgTypeErr := writeBuffer.WriteUint16("msgType", 16, uint16((msgType)))
+	_msgTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("msgType", 16, uint16((msgType)))
 
 	if _msgTypeErr != nil {
 		return errors.Wrap(_msgTypeErr, "Error serializing 'msgType' field")
@@ -269,7 +269,7 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 
 	// Implicit Field (totalLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	totalLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	_totalLengthErr := writeBuffer.WriteUint16("totalLength", 16, uint16((totalLength)))
+	_totalLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("totalLength", 16, uint16((totalLength)))
 	if _totalLengthErr != nil {
 		return errors.Wrap(_totalLengthErr, "Error serializing 'totalLength' field")
 	}

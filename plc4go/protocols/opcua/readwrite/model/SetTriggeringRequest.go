@@ -225,21 +225,21 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SetTriggeringRequest")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (triggeringItemId)
-	_triggeringItemId, _triggeringItemIdErr := readBuffer.ReadUint32("triggeringItemId", 32)
+	_triggeringItemId, _triggeringItemIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("triggeringItemId", 32)
 	if _triggeringItemIdErr != nil {
 		return nil, errors.Wrap(_triggeringItemIdErr, "Error parsing 'triggeringItemId' field of SetTriggeringRequest")
 	}
 	triggeringItemId := _triggeringItemId
 
 	// Simple Field (noOfLinksToAdd)
-	_noOfLinksToAdd, _noOfLinksToAddErr := readBuffer.ReadInt32("noOfLinksToAdd", 32)
+	_noOfLinksToAdd, _noOfLinksToAddErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLinksToAdd", 32)
 	if _noOfLinksToAddErr != nil {
 		return nil, errors.Wrap(_noOfLinksToAddErr, "Error parsing 'noOfLinksToAdd' field of SetTriggeringRequest")
 	}
@@ -261,7 +261,7 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'linksToAdd' field of SetTriggeringRequest")
 			}
@@ -273,7 +273,7 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfLinksToRemove)
-	_noOfLinksToRemove, _noOfLinksToRemoveErr := readBuffer.ReadInt32("noOfLinksToRemove", 32)
+	_noOfLinksToRemove, _noOfLinksToRemoveErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLinksToRemove", 32)
 	if _noOfLinksToRemoveErr != nil {
 		return nil, errors.Wrap(_noOfLinksToRemoveErr, "Error parsing 'noOfLinksToRemove' field of SetTriggeringRequest")
 	}
@@ -295,7 +295,7 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'linksToRemove' field of SetTriggeringRequest")
 			}
@@ -357,21 +357,21 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (triggeringItemId)
 		triggeringItemId := uint32(m.GetTriggeringItemId())
-		_triggeringItemIdErr := writeBuffer.WriteUint32("triggeringItemId", 32, uint32((triggeringItemId)))
+		_triggeringItemIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("triggeringItemId", 32, uint32((triggeringItemId)))
 		if _triggeringItemIdErr != nil {
 			return errors.Wrap(_triggeringItemIdErr, "Error serializing 'triggeringItemId' field")
 		}
 
 		// Simple Field (noOfLinksToAdd)
 		noOfLinksToAdd := int32(m.GetNoOfLinksToAdd())
-		_noOfLinksToAddErr := writeBuffer.WriteInt32("noOfLinksToAdd", 32, int32((noOfLinksToAdd)))
+		_noOfLinksToAddErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLinksToAdd", 32, int32((noOfLinksToAdd)))
 		if _noOfLinksToAddErr != nil {
 			return errors.Wrap(_noOfLinksToAddErr, "Error serializing 'noOfLinksToAdd' field")
 		}
@@ -382,7 +382,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetLinksToAdd() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'linksToAdd' field")
 			}
@@ -393,7 +393,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfLinksToRemove)
 		noOfLinksToRemove := int32(m.GetNoOfLinksToRemove())
-		_noOfLinksToRemoveErr := writeBuffer.WriteInt32("noOfLinksToRemove", 32, int32((noOfLinksToRemove)))
+		_noOfLinksToRemoveErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLinksToRemove", 32, int32((noOfLinksToRemove)))
 		if _noOfLinksToRemoveErr != nil {
 			return errors.Wrap(_noOfLinksToRemoveErr, "Error serializing 'noOfLinksToRemove' field")
 		}
@@ -404,7 +404,7 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		}
 		for _curItem, _element := range m.GetLinksToRemove() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'linksToRemove' field")
 			}

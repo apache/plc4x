@@ -171,7 +171,7 @@ func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 3)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUAbort")
 		}
@@ -186,14 +186,14 @@ func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	// Simple Field (server)
-	_server, _serverErr := readBuffer.ReadBit("server")
+	_server, _serverErr := /*TODO: migrate me*/ readBuffer.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUAbort")
 	}
 	server := _server
 
 	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUAbort")
 	}
@@ -258,7 +258,7 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -266,14 +266,14 @@ func (m *_APDUAbort) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (server)
 		server := bool(m.GetServer())
-		_serverErr := writeBuffer.WriteBit("server", (server))
+		_serverErr := /*TODO: migrate me*/ writeBuffer.WriteBit("server", (server))
 		if _serverErr != nil {
 			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
+		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}

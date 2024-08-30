@@ -125,7 +125,7 @@ func QualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := readBuffer.ReadUint16("namespaceIndex", 16)
+	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("namespaceIndex", 16)
 	if _namespaceIndexErr != nil {
 		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of QualifiedName")
 	}
@@ -174,7 +174,7 @@ func (m *_QualifiedName) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (namespaceIndex)
 	namespaceIndex := uint16(m.GetNamespaceIndex())
-	_namespaceIndexErr := writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
+	_namespaceIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("namespaceIndex", 16, uint16((namespaceIndex)))
 	if _namespaceIndexErr != nil {
 		return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 	}

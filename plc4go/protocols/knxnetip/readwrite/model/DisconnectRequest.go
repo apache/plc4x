@@ -159,7 +159,7 @@ func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DisconnectRequest")
 	}
@@ -168,7 +168,7 @@ func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DisconnectRequest")
 		}
@@ -230,7 +230,7 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
+		_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}
@@ -245,7 +245,7 @@ func (m *_DisconnectRequest) SerializeWithWriteBuffer(ctx context.Context, write
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

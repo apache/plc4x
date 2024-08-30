@@ -209,21 +209,21 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (expansion)
-	_expansion, _expansionErr := readBuffer.ReadBit("expansion")
+	_expansion, _expansionErr := /*TODO: migrate me*/ readBuffer.ReadBit("expansion")
 	if _expansionErr != nil {
 		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACStatusFlags")
 	}
 	expansion := _expansion
 
 	// Simple Field (error)
-	_error, _errorErr := readBuffer.ReadBit("error")
+	_error, _errorErr := /*TODO: migrate me*/ readBuffer.ReadBit("error")
 	if _errorErr != nil {
 		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of HVACStatusFlags")
 	}
 	error := _error
 
 	// Simple Field (busy)
-	_busy, _busyErr := readBuffer.ReadBit("busy")
+	_busy, _busyErr := /*TODO: migrate me*/ readBuffer.ReadBit("busy")
 	if _busyErr != nil {
 		return nil, errors.Wrap(_busyErr, "Error parsing 'busy' field of HVACStatusFlags")
 	}
@@ -232,7 +232,7 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACStatusFlags")
 		}
@@ -247,7 +247,7 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (damperState)
-	_damperState, _damperStateErr := readBuffer.ReadBit("damperState")
+	_damperState, _damperStateErr := /*TODO: migrate me*/ readBuffer.ReadBit("damperState")
 	if _damperStateErr != nil {
 		return nil, errors.Wrap(_damperStateErr, "Error parsing 'damperState' field of HVACStatusFlags")
 	}
@@ -264,21 +264,21 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = isDamperStateOpen
 
 	// Simple Field (fanActive)
-	_fanActive, _fanActiveErr := readBuffer.ReadBit("fanActive")
+	_fanActive, _fanActiveErr := /*TODO: migrate me*/ readBuffer.ReadBit("fanActive")
 	if _fanActiveErr != nil {
 		return nil, errors.Wrap(_fanActiveErr, "Error parsing 'fanActive' field of HVACStatusFlags")
 	}
 	fanActive := _fanActive
 
 	// Simple Field (heatingPlant)
-	_heatingPlant, _heatingPlantErr := readBuffer.ReadBit("heatingPlant")
+	_heatingPlant, _heatingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("heatingPlant")
 	if _heatingPlantErr != nil {
 		return nil, errors.Wrap(_heatingPlantErr, "Error parsing 'heatingPlant' field of HVACStatusFlags")
 	}
 	heatingPlant := _heatingPlant
 
 	// Simple Field (coolingPlant)
-	_coolingPlant, _coolingPlantErr := readBuffer.ReadBit("coolingPlant")
+	_coolingPlant, _coolingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("coolingPlant")
 	if _coolingPlantErr != nil {
 		return nil, errors.Wrap(_coolingPlantErr, "Error parsing 'coolingPlant' field of HVACStatusFlags")
 	}
@@ -320,21 +320,21 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (expansion)
 	expansion := bool(m.GetExpansion())
-	_expansionErr := writeBuffer.WriteBit("expansion", (expansion))
+	_expansionErr := /*TODO: migrate me*/ writeBuffer.WriteBit("expansion", (expansion))
 	if _expansionErr != nil {
 		return errors.Wrap(_expansionErr, "Error serializing 'expansion' field")
 	}
 
 	// Simple Field (error)
 	error := bool(m.GetError())
-	_errorErr := writeBuffer.WriteBit("error", (error))
+	_errorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("error", (error))
 	if _errorErr != nil {
 		return errors.Wrap(_errorErr, "Error serializing 'error' field")
 	}
 
 	// Simple Field (busy)
 	busy := bool(m.GetBusy())
-	_busyErr := writeBuffer.WriteBit("busy", (busy))
+	_busyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("busy", (busy))
 	if _busyErr != nil {
 		return errors.Wrap(_busyErr, "Error serializing 'busy' field")
 	}
@@ -349,7 +349,7 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -357,7 +357,7 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (damperState)
 	damperState := bool(m.GetDamperState())
-	_damperStateErr := writeBuffer.WriteBit("damperState", (damperState))
+	_damperStateErr := /*TODO: migrate me*/ writeBuffer.WriteBit("damperState", (damperState))
 	if _damperStateErr != nil {
 		return errors.Wrap(_damperStateErr, "Error serializing 'damperState' field")
 	}
@@ -376,21 +376,21 @@ func (m *_HVACStatusFlags) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (fanActive)
 	fanActive := bool(m.GetFanActive())
-	_fanActiveErr := writeBuffer.WriteBit("fanActive", (fanActive))
+	_fanActiveErr := /*TODO: migrate me*/ writeBuffer.WriteBit("fanActive", (fanActive))
 	if _fanActiveErr != nil {
 		return errors.Wrap(_fanActiveErr, "Error serializing 'fanActive' field")
 	}
 
 	// Simple Field (heatingPlant)
 	heatingPlant := bool(m.GetHeatingPlant())
-	_heatingPlantErr := writeBuffer.WriteBit("heatingPlant", (heatingPlant))
+	_heatingPlantErr := /*TODO: migrate me*/ writeBuffer.WriteBit("heatingPlant", (heatingPlant))
 	if _heatingPlantErr != nil {
 		return errors.Wrap(_heatingPlantErr, "Error serializing 'heatingPlant' field")
 	}
 
 	// Simple Field (coolingPlant)
 	coolingPlant := bool(m.GetCoolingPlant())
-	_coolingPlantErr := writeBuffer.WriteBit("coolingPlant", (coolingPlant))
+	_coolingPlantErr := /*TODO: migrate me*/ writeBuffer.WriteBit("coolingPlant", (coolingPlant))
 	if _coolingPlantErr != nil {
 		return errors.Wrap(_coolingPlantErr, "Error serializing 'coolingPlant' field")
 	}

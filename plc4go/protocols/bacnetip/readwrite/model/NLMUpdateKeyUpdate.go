@@ -299,7 +299,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set1KeyRevision *byte = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("set1KeyRevision")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("set1KeyRevision")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -315,7 +315,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set1ActivationTime *uint32 = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set1ActivationTime", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set1ActivationTime", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -331,7 +331,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set1ExpirationTime *uint32 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set1ExpirationTime", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set1ExpirationTime", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -347,7 +347,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set1KeyCount *uint8 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("set1KeyCount", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("set1KeyCount", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -390,7 +390,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set2KeyRevision *byte = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("set2KeyRevision")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("set2KeyRevision")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -406,7 +406,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set2ActivationTime *uint32 = nil
 	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set2ActivationTime", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set2ActivationTime", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -422,7 +422,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set2ExpirationTime *uint32 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("set2ExpirationTime", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set2ExpirationTime", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -438,7 +438,7 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var set2KeyCount *uint8 = nil
 	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("set2KeyCount", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("set2KeyCount", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -536,7 +536,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1KeyRevision *byte = nil
 		if m.GetSet1KeyRevision() != nil {
 			set1KeyRevision = m.GetSet1KeyRevision()
-			_set1KeyRevisionErr := writeBuffer.WriteByte("set1KeyRevision", *(set1KeyRevision))
+			_set1KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set1KeyRevision", *(set1KeyRevision))
 			if _set1KeyRevisionErr != nil {
 				return errors.Wrap(_set1KeyRevisionErr, "Error serializing 'set1KeyRevision' field")
 			}
@@ -546,7 +546,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1ActivationTime *uint32 = nil
 		if m.GetSet1ActivationTime() != nil {
 			set1ActivationTime = m.GetSet1ActivationTime()
-			_set1ActivationTimeErr := writeBuffer.WriteUint32("set1ActivationTime", 32, uint32(*(set1ActivationTime)))
+			_set1ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ActivationTime", 32, uint32(*(set1ActivationTime)))
 			if _set1ActivationTimeErr != nil {
 				return errors.Wrap(_set1ActivationTimeErr, "Error serializing 'set1ActivationTime' field")
 			}
@@ -556,7 +556,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1ExpirationTime *uint32 = nil
 		if m.GetSet1ExpirationTime() != nil {
 			set1ExpirationTime = m.GetSet1ExpirationTime()
-			_set1ExpirationTimeErr := writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32(*(set1ExpirationTime)))
+			_set1ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set1ExpirationTime", 32, uint32(*(set1ExpirationTime)))
 			if _set1ExpirationTimeErr != nil {
 				return errors.Wrap(_set1ExpirationTimeErr, "Error serializing 'set1ExpirationTime' field")
 			}
@@ -566,7 +566,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set1KeyCount *uint8 = nil
 		if m.GetSet1KeyCount() != nil {
 			set1KeyCount = m.GetSet1KeyCount()
-			_set1KeyCountErr := writeBuffer.WriteUint8("set1KeyCount", 8, uint8(*(set1KeyCount)))
+			_set1KeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("set1KeyCount", 8, uint8(*(set1KeyCount)))
 			if _set1KeyCountErr != nil {
 				return errors.Wrap(_set1KeyCountErr, "Error serializing 'set1KeyCount' field")
 			}
@@ -593,7 +593,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2KeyRevision *byte = nil
 		if m.GetSet2KeyRevision() != nil {
 			set2KeyRevision = m.GetSet2KeyRevision()
-			_set2KeyRevisionErr := writeBuffer.WriteByte("set2KeyRevision", *(set2KeyRevision))
+			_set2KeyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("set2KeyRevision", *(set2KeyRevision))
 			if _set2KeyRevisionErr != nil {
 				return errors.Wrap(_set2KeyRevisionErr, "Error serializing 'set2KeyRevision' field")
 			}
@@ -603,7 +603,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2ActivationTime *uint32 = nil
 		if m.GetSet2ActivationTime() != nil {
 			set2ActivationTime = m.GetSet2ActivationTime()
-			_set2ActivationTimeErr := writeBuffer.WriteUint32("set2ActivationTime", 32, uint32(*(set2ActivationTime)))
+			_set2ActivationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ActivationTime", 32, uint32(*(set2ActivationTime)))
 			if _set2ActivationTimeErr != nil {
 				return errors.Wrap(_set2ActivationTimeErr, "Error serializing 'set2ActivationTime' field")
 			}
@@ -613,7 +613,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2ExpirationTime *uint32 = nil
 		if m.GetSet2ExpirationTime() != nil {
 			set2ExpirationTime = m.GetSet2ExpirationTime()
-			_set2ExpirationTimeErr := writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32(*(set2ExpirationTime)))
+			_set2ExpirationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("set2ExpirationTime", 32, uint32(*(set2ExpirationTime)))
 			if _set2ExpirationTimeErr != nil {
 				return errors.Wrap(_set2ExpirationTimeErr, "Error serializing 'set2ExpirationTime' field")
 			}
@@ -623,7 +623,7 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 		var set2KeyCount *uint8 = nil
 		if m.GetSet2KeyCount() != nil {
 			set2KeyCount = m.GetSet2KeyCount()
-			_set2KeyCountErr := writeBuffer.WriteUint8("set2KeyCount", 8, uint8(*(set2KeyCount)))
+			_set2KeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("set2KeyCount", 8, uint8(*(set2KeyCount)))
 			if _set2KeyCountErr != nil {
 				return errors.Wrap(_set2KeyCountErr, "Error serializing 'set2KeyCount' field")
 			}

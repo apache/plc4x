@@ -170,7 +170,7 @@ func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuff
 	_ = currentPos
 
 	// Simple Field (startStop)
-	_startStop, _startStopErr := readBuffer.ReadByte("startStop")
+	_startStop, _startStopErr := /*TODO: migrate me*/ readBuffer.ReadByte("startStop")
 	if _startStopErr != nil {
 		return nil, errors.Wrap(_startStopErr, "Error parsing 'startStop' field of SecurityDataLowBatteryCharging")
 	}
@@ -219,7 +219,7 @@ func (m *_SecurityDataLowBatteryCharging) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (startStop)
 		startStop := byte(m.GetStartStop())
-		_startStopErr := writeBuffer.WriteByte("startStop", (startStop))
+		_startStopErr := /*TODO: migrate me*/ writeBuffer.WriteByte("startStop", (startStop))
 		if _startStopErr != nil {
 			return errors.Wrap(_startStopErr, "Error serializing 'startStop' field")
 		}

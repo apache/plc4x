@@ -160,7 +160,7 @@ func HistoryEventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (noOfEventFields)
-	_noOfEventFields, _noOfEventFieldsErr := readBuffer.ReadInt32("noOfEventFields", 32)
+	_noOfEventFields, _noOfEventFieldsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEventFields", 32)
 	if _noOfEventFieldsErr != nil {
 		return nil, errors.Wrap(_noOfEventFieldsErr, "Error parsing 'noOfEventFields' field of HistoryEventFieldList")
 	}
@@ -227,7 +227,7 @@ func (m *_HistoryEventFieldList) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfEventFields)
 		noOfEventFields := int32(m.GetNoOfEventFields())
-		_noOfEventFieldsErr := writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
+		_noOfEventFieldsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
 		if _noOfEventFieldsErr != nil {
 			return errors.Wrap(_noOfEventFieldsErr, "Error serializing 'noOfEventFields' field")
 		}

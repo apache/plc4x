@@ -176,14 +176,14 @@ func S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx context.Context, readB
 	_ = currentPos
 
 	// Simple Field (res)
-	_res, _resErr := readBuffer.ReadUint8("res", 8)
+	_res, _resErr := /*TODO: migrate me*/ readBuffer.ReadUint8("res", 8)
 	if _resErr != nil {
 		return nil, errors.Wrap(_resErr, "Error parsing 'res' field of S7PayloadUserDataItemClkFResponse")
 	}
 	res := _res
 
 	// Simple Field (year1)
-	_year1, _year1Err := readBuffer.ReadUint8("year1", 8)
+	_year1, _year1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("year1", 8)
 	if _year1Err != nil {
 		return nil, errors.Wrap(_year1Err, "Error parsing 'year1' field of S7PayloadUserDataItemClkFResponse")
 	}
@@ -237,14 +237,14 @@ func (m *_S7PayloadUserDataItemClkFResponse) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (res)
 		res := uint8(m.GetRes())
-		_resErr := writeBuffer.WriteUint8("res", 8, uint8((res)))
+		_resErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("res", 8, uint8((res)))
 		if _resErr != nil {
 			return errors.Wrap(_resErr, "Error serializing 'res' field")
 		}
 
 		// Simple Field (year1)
 		year1 := uint8(m.GetYear1())
-		_year1Err := writeBuffer.WriteUint8("year1", 8, uint8((year1)))
+		_year1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("year1", 8, uint8((year1)))
 		if _year1Err != nil {
 			return errors.Wrap(_year1Err, "Error serializing 'year1' field")
 		}

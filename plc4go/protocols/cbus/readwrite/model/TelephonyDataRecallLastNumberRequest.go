@@ -170,7 +170,7 @@ func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (recallLastNumberType)
-	_recallLastNumberType, _recallLastNumberTypeErr := readBuffer.ReadByte("recallLastNumberType")
+	_recallLastNumberType, _recallLastNumberTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("recallLastNumberType")
 	if _recallLastNumberTypeErr != nil {
 		return nil, errors.Wrap(_recallLastNumberTypeErr, "Error parsing 'recallLastNumberType' field of TelephonyDataRecallLastNumberRequest")
 	}
@@ -219,7 +219,7 @@ func (m *_TelephonyDataRecallLastNumberRequest) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (recallLastNumberType)
 		recallLastNumberType := byte(m.GetRecallLastNumberType())
-		_recallLastNumberTypeErr := writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
+		_recallLastNumberTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
 		if _recallLastNumberTypeErr != nil {
 			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
 		}

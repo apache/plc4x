@@ -132,7 +132,7 @@ func ExtensionHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *int8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadInt8("reserved", 5)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("reserved", 5)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ExtensionHeader")
 		}
@@ -147,14 +147,14 @@ func ExtensionHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (xmlbody)
-	_xmlbody, _xmlbodyErr := readBuffer.ReadBit("xmlbody")
+	_xmlbody, _xmlbodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("xmlbody")
 	if _xmlbodyErr != nil {
 		return nil, errors.Wrap(_xmlbodyErr, "Error parsing 'xmlbody' field of ExtensionHeader")
 	}
 	xmlbody := _xmlbody
 
 	// Simple Field (binaryBody)
-	_binaryBody, _binaryBodyErr := readBuffer.ReadBit("binaryBody")
+	_binaryBody, _binaryBodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("binaryBody")
 	if _binaryBodyErr != nil {
 		return nil, errors.Wrap(_binaryBodyErr, "Error parsing 'binaryBody' field of ExtensionHeader")
 	}
@@ -199,7 +199,7 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteInt8("reserved", 5, int8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteInt8("reserved", 5, int8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -207,14 +207,14 @@ func (m *_ExtensionHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (xmlbody)
 	xmlbody := bool(m.GetXmlbody())
-	_xmlbodyErr := writeBuffer.WriteBit("xmlbody", (xmlbody))
+	_xmlbodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("xmlbody", (xmlbody))
 	if _xmlbodyErr != nil {
 		return errors.Wrap(_xmlbodyErr, "Error serializing 'xmlbody' field")
 	}
 
 	// Simple Field (binaryBody)
 	binaryBody := bool(m.GetBinaryBody())
-	_binaryBodyErr := writeBuffer.WriteBit("binaryBody", (binaryBody))
+	_binaryBodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("binaryBody", (binaryBody))
 	if _binaryBodyErr != nil {
 		return errors.Wrap(_binaryBodyErr, "Error serializing 'binaryBody' field")
 	}

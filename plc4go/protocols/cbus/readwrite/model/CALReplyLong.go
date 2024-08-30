@@ -236,7 +236,7 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CALReplyLong")
 		}
@@ -252,7 +252,7 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Peek Field (terminatingByte)
 	currentPos = positionAware.GetPos()
-	terminatingByte, _err := readBuffer.ReadUint32("terminatingByte", 24)
+	terminatingByte, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("terminatingByte", 24)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field of CALReplyLong")
 	}
@@ -325,7 +325,7 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	var reservedByte *byte = nil
 	if isUnitAddress {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("reservedByte")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reservedByte")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -414,7 +414,7 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -474,7 +474,7 @@ func (m *_CALReplyLong) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		var reservedByte *byte = nil
 		if m.GetReservedByte() != nil {
 			reservedByte = m.GetReservedByte()
-			_reservedByteErr := writeBuffer.WriteByte("reservedByte", *(reservedByte))
+			_reservedByteErr := /*TODO: migrate me*/ writeBuffer.WriteByte("reservedByte", *(reservedByte))
 			if _reservedByteErr != nil {
 				return errors.Wrap(_reservedByteErr, "Error serializing 'reservedByte' field")
 			}

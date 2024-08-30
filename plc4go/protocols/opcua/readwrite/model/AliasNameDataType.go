@@ -184,7 +184,7 @@ func AliasNameDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfReferencedNodes)
-	_noOfReferencedNodes, _noOfReferencedNodesErr := readBuffer.ReadInt32("noOfReferencedNodes", 32)
+	_noOfReferencedNodes, _noOfReferencedNodesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferencedNodes", 32)
 	if _noOfReferencedNodesErr != nil {
 		return nil, errors.Wrap(_noOfReferencedNodesErr, "Error parsing 'noOfReferencedNodes' field of AliasNameDataType")
 	}
@@ -264,7 +264,7 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfReferencedNodes)
 		noOfReferencedNodes := int32(m.GetNoOfReferencedNodes())
-		_noOfReferencedNodesErr := writeBuffer.WriteInt32("noOfReferencedNodes", 32, int32((noOfReferencedNodes)))
+		_noOfReferencedNodesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReferencedNodes", 32, int32((noOfReferencedNodes)))
 		if _noOfReferencedNodesErr != nil {
 			return errors.Wrap(_noOfReferencedNodesErr, "Error serializing 'noOfReferencedNodes' field")
 		}

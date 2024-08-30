@@ -171,7 +171,7 @@ func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUError")
 		}
@@ -186,7 +186,7 @@ func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUError")
 	}
@@ -264,7 +264,7 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -272,7 +272,7 @@ func (m *_APDUError) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
+		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}

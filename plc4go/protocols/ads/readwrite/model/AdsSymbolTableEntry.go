@@ -383,91 +383,91 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = startPos
 
 	// Simple Field (entryLength)
-	_entryLength, _entryLengthErr := readBuffer.ReadUint32("entryLength", 32)
+	_entryLength, _entryLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("entryLength", 32)
 	if _entryLengthErr != nil {
 		return nil, errors.Wrap(_entryLengthErr, "Error parsing 'entryLength' field of AdsSymbolTableEntry")
 	}
 	entryLength := _entryLength
 
 	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadUint32("group", 32)
+	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("group", 32)
 	if _groupErr != nil {
 		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of AdsSymbolTableEntry")
 	}
 	group := _group
 
 	// Simple Field (offset)
-	_offset, _offsetErr := readBuffer.ReadUint32("offset", 32)
+	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("offset", 32)
 	if _offsetErr != nil {
 		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of AdsSymbolTableEntry")
 	}
 	offset := _offset
 
 	// Simple Field (size)
-	_size, _sizeErr := readBuffer.ReadUint32("size", 32)
+	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("size", 32)
 	if _sizeErr != nil {
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of AdsSymbolTableEntry")
 	}
 	size := _size
 
 	// Simple Field (dataType)
-	_dataType, _dataTypeErr := readBuffer.ReadUint32("dataType", 32)
+	_dataType, _dataTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataType", 32)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of AdsSymbolTableEntry")
 	}
 	dataType := _dataType
 
 	// Simple Field (flagMethodDeref)
-	_flagMethodDeref, _flagMethodDerefErr := readBuffer.ReadBit("flagMethodDeref")
+	_flagMethodDeref, _flagMethodDerefErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagMethodDeref")
 	if _flagMethodDerefErr != nil {
 		return nil, errors.Wrap(_flagMethodDerefErr, "Error parsing 'flagMethodDeref' field of AdsSymbolTableEntry")
 	}
 	flagMethodDeref := _flagMethodDeref
 
 	// Simple Field (flagItfMethodAccess)
-	_flagItfMethodAccess, _flagItfMethodAccessErr := readBuffer.ReadBit("flagItfMethodAccess")
+	_flagItfMethodAccess, _flagItfMethodAccessErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagItfMethodAccess")
 	if _flagItfMethodAccessErr != nil {
 		return nil, errors.Wrap(_flagItfMethodAccessErr, "Error parsing 'flagItfMethodAccess' field of AdsSymbolTableEntry")
 	}
 	flagItfMethodAccess := _flagItfMethodAccess
 
 	// Simple Field (flagReadOnly)
-	_flagReadOnly, _flagReadOnlyErr := readBuffer.ReadBit("flagReadOnly")
+	_flagReadOnly, _flagReadOnlyErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagReadOnly")
 	if _flagReadOnlyErr != nil {
 		return nil, errors.Wrap(_flagReadOnlyErr, "Error parsing 'flagReadOnly' field of AdsSymbolTableEntry")
 	}
 	flagReadOnly := _flagReadOnly
 
 	// Simple Field (flagTComInterfacePointer)
-	_flagTComInterfacePointer, _flagTComInterfacePointerErr := readBuffer.ReadBit("flagTComInterfacePointer")
+	_flagTComInterfacePointer, _flagTComInterfacePointerErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagTComInterfacePointer")
 	if _flagTComInterfacePointerErr != nil {
 		return nil, errors.Wrap(_flagTComInterfacePointerErr, "Error parsing 'flagTComInterfacePointer' field of AdsSymbolTableEntry")
 	}
 	flagTComInterfacePointer := _flagTComInterfacePointer
 
 	// Simple Field (flagTypeGuid)
-	_flagTypeGuid, _flagTypeGuidErr := readBuffer.ReadBit("flagTypeGuid")
+	_flagTypeGuid, _flagTypeGuidErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagTypeGuid")
 	if _flagTypeGuidErr != nil {
 		return nil, errors.Wrap(_flagTypeGuidErr, "Error parsing 'flagTypeGuid' field of AdsSymbolTableEntry")
 	}
 	flagTypeGuid := _flagTypeGuid
 
 	// Simple Field (flagReferenceTo)
-	_flagReferenceTo, _flagReferenceToErr := readBuffer.ReadBit("flagReferenceTo")
+	_flagReferenceTo, _flagReferenceToErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagReferenceTo")
 	if _flagReferenceToErr != nil {
 		return nil, errors.Wrap(_flagReferenceToErr, "Error parsing 'flagReferenceTo' field of AdsSymbolTableEntry")
 	}
 	flagReferenceTo := _flagReferenceTo
 
 	// Simple Field (flagBitValue)
-	_flagBitValue, _flagBitValueErr := readBuffer.ReadBit("flagBitValue")
+	_flagBitValue, _flagBitValueErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagBitValue")
 	if _flagBitValueErr != nil {
 		return nil, errors.Wrap(_flagBitValueErr, "Error parsing 'flagBitValue' field of AdsSymbolTableEntry")
 	}
 	flagBitValue := _flagBitValue
 
 	// Simple Field (flagPersistent)
-	_flagPersistent, _flagPersistentErr := readBuffer.ReadBit("flagPersistent")
+	_flagPersistent, _flagPersistentErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagPersistent")
 	if _flagPersistentErr != nil {
 		return nil, errors.Wrap(_flagPersistentErr, "Error parsing 'flagPersistent' field of AdsSymbolTableEntry")
 	}
@@ -476,7 +476,7 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 3)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
 		}
@@ -491,35 +491,35 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (flagExtendedFlags)
-	_flagExtendedFlags, _flagExtendedFlagsErr := readBuffer.ReadBit("flagExtendedFlags")
+	_flagExtendedFlags, _flagExtendedFlagsErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagExtendedFlags")
 	if _flagExtendedFlagsErr != nil {
 		return nil, errors.Wrap(_flagExtendedFlagsErr, "Error parsing 'flagExtendedFlags' field of AdsSymbolTableEntry")
 	}
 	flagExtendedFlags := _flagExtendedFlags
 
 	// Simple Field (flagInitOnReset)
-	_flagInitOnReset, _flagInitOnResetErr := readBuffer.ReadBit("flagInitOnReset")
+	_flagInitOnReset, _flagInitOnResetErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagInitOnReset")
 	if _flagInitOnResetErr != nil {
 		return nil, errors.Wrap(_flagInitOnResetErr, "Error parsing 'flagInitOnReset' field of AdsSymbolTableEntry")
 	}
 	flagInitOnReset := _flagInitOnReset
 
 	// Simple Field (flagStatic)
-	_flagStatic, _flagStaticErr := readBuffer.ReadBit("flagStatic")
+	_flagStatic, _flagStaticErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagStatic")
 	if _flagStaticErr != nil {
 		return nil, errors.Wrap(_flagStaticErr, "Error parsing 'flagStatic' field of AdsSymbolTableEntry")
 	}
 	flagStatic := _flagStatic
 
 	// Simple Field (flagAttributes)
-	_flagAttributes, _flagAttributesErr := readBuffer.ReadBit("flagAttributes")
+	_flagAttributes, _flagAttributesErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagAttributes")
 	if _flagAttributesErr != nil {
 		return nil, errors.Wrap(_flagAttributesErr, "Error parsing 'flagAttributes' field of AdsSymbolTableEntry")
 	}
 	flagAttributes := _flagAttributes
 
 	// Simple Field (flagContextMask)
-	_flagContextMask, _flagContextMaskErr := readBuffer.ReadBit("flagContextMask")
+	_flagContextMask, _flagContextMaskErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagContextMask")
 	if _flagContextMaskErr != nil {
 		return nil, errors.Wrap(_flagContextMaskErr, "Error parsing 'flagContextMask' field of AdsSymbolTableEntry")
 	}
@@ -528,7 +528,7 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField1 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
 		}
@@ -543,35 +543,35 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Implicit Field (nameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	nameLength, _nameLengthErr := readBuffer.ReadUint16("nameLength", 16)
+	nameLength, _nameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("nameLength", 16)
 	_ = nameLength
 	if _nameLengthErr != nil {
 		return nil, errors.Wrap(_nameLengthErr, "Error parsing 'nameLength' field of AdsSymbolTableEntry")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataTypeNameLength, _dataTypeNameLengthErr := readBuffer.ReadUint16("dataTypeNameLength", 16)
+	dataTypeNameLength, _dataTypeNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataTypeNameLength", 16)
 	_ = dataTypeNameLength
 	if _dataTypeNameLengthErr != nil {
 		return nil, errors.Wrap(_dataTypeNameLengthErr, "Error parsing 'dataTypeNameLength' field of AdsSymbolTableEntry")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	commentLength, _commentLengthErr := readBuffer.ReadUint16("commentLength", 16)
+	commentLength, _commentLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("commentLength", 16)
 	_ = commentLength
 	if _commentLengthErr != nil {
 		return nil, errors.Wrap(_commentLengthErr, "Error parsing 'commentLength' field of AdsSymbolTableEntry")
 	}
 
 	// Simple Field (name)
-	_name, _nameErr := readBuffer.ReadString("name", uint32((nameLength)*(8)), utils.WithEncoding("UTF-8"))
+	_name, _nameErr := /*TODO: migrate me*/ readBuffer.ReadString("name", uint32((nameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _nameErr != nil {
 		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of AdsSymbolTableEntry")
 	}
 	name := _name
 
 	// Const Field (nameTerminator)
-	nameTerminator, _nameTerminatorErr := readBuffer.ReadUint8("nameTerminator", 8)
+	nameTerminator, _nameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("nameTerminator", 8)
 	if _nameTerminatorErr != nil {
 		return nil, errors.Wrap(_nameTerminatorErr, "Error parsing 'nameTerminator' field of AdsSymbolTableEntry")
 	}
@@ -580,14 +580,14 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
+	_dataTypeName, _dataTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _dataTypeNameErr != nil {
 		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsSymbolTableEntry")
 	}
 	dataTypeName := _dataTypeName
 
 	// Const Field (dataTypeNameTerminator)
-	dataTypeNameTerminator, _dataTypeNameTerminatorErr := readBuffer.ReadUint8("dataTypeNameTerminator", 8)
+	dataTypeNameTerminator, _dataTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataTypeNameTerminator", 8)
 	if _dataTypeNameTerminatorErr != nil {
 		return nil, errors.Wrap(_dataTypeNameTerminatorErr, "Error parsing 'dataTypeNameTerminator' field of AdsSymbolTableEntry")
 	}
@@ -596,14 +596,14 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (comment)
-	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
+	_comment, _commentErr := /*TODO: migrate me*/ readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _commentErr != nil {
 		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsSymbolTableEntry")
 	}
 	comment := _comment
 
 	// Const Field (commentTerminator)
-	commentTerminator, _commentTerminatorErr := readBuffer.ReadUint8("commentTerminator", 8)
+	commentTerminator, _commentTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commentTerminator", 8)
 	if _commentTerminatorErr != nil {
 		return nil, errors.Wrap(_commentTerminatorErr, "Error parsing 'commentTerminator' field of AdsSymbolTableEntry")
 	}
@@ -669,91 +669,91 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (entryLength)
 	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
+	_entryLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
 	if _entryLengthErr != nil {
 		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
 	}
 
 	// Simple Field (group)
 	group := uint32(m.GetGroup())
-	_groupErr := writeBuffer.WriteUint32("group", 32, uint32((group)))
+	_groupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("group", 32, uint32((group)))
 	if _groupErr != nil {
 		return errors.Wrap(_groupErr, "Error serializing 'group' field")
 	}
 
 	// Simple Field (offset)
 	offset := uint32(m.GetOffset())
-	_offsetErr := writeBuffer.WriteUint32("offset", 32, uint32((offset)))
+	_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("offset", 32, uint32((offset)))
 	if _offsetErr != nil {
 		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 	}
 
 	// Simple Field (size)
 	size := uint32(m.GetSize())
-	_sizeErr := writeBuffer.WriteUint32("size", 32, uint32((size)))
+	_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("size", 32, uint32((size)))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 	}
 
 	// Simple Field (dataType)
 	dataType := uint32(m.GetDataType())
-	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
+	_dataTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
 	if _dataTypeErr != nil {
 		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
 	}
 
 	// Simple Field (flagMethodDeref)
 	flagMethodDeref := bool(m.GetFlagMethodDeref())
-	_flagMethodDerefErr := writeBuffer.WriteBit("flagMethodDeref", (flagMethodDeref))
+	_flagMethodDerefErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagMethodDeref", (flagMethodDeref))
 	if _flagMethodDerefErr != nil {
 		return errors.Wrap(_flagMethodDerefErr, "Error serializing 'flagMethodDeref' field")
 	}
 
 	// Simple Field (flagItfMethodAccess)
 	flagItfMethodAccess := bool(m.GetFlagItfMethodAccess())
-	_flagItfMethodAccessErr := writeBuffer.WriteBit("flagItfMethodAccess", (flagItfMethodAccess))
+	_flagItfMethodAccessErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagItfMethodAccess", (flagItfMethodAccess))
 	if _flagItfMethodAccessErr != nil {
 		return errors.Wrap(_flagItfMethodAccessErr, "Error serializing 'flagItfMethodAccess' field")
 	}
 
 	// Simple Field (flagReadOnly)
 	flagReadOnly := bool(m.GetFlagReadOnly())
-	_flagReadOnlyErr := writeBuffer.WriteBit("flagReadOnly", (flagReadOnly))
+	_flagReadOnlyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagReadOnly", (flagReadOnly))
 	if _flagReadOnlyErr != nil {
 		return errors.Wrap(_flagReadOnlyErr, "Error serializing 'flagReadOnly' field")
 	}
 
 	// Simple Field (flagTComInterfacePointer)
 	flagTComInterfacePointer := bool(m.GetFlagTComInterfacePointer())
-	_flagTComInterfacePointerErr := writeBuffer.WriteBit("flagTComInterfacePointer", (flagTComInterfacePointer))
+	_flagTComInterfacePointerErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagTComInterfacePointer", (flagTComInterfacePointer))
 	if _flagTComInterfacePointerErr != nil {
 		return errors.Wrap(_flagTComInterfacePointerErr, "Error serializing 'flagTComInterfacePointer' field")
 	}
 
 	// Simple Field (flagTypeGuid)
 	flagTypeGuid := bool(m.GetFlagTypeGuid())
-	_flagTypeGuidErr := writeBuffer.WriteBit("flagTypeGuid", (flagTypeGuid))
+	_flagTypeGuidErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagTypeGuid", (flagTypeGuid))
 	if _flagTypeGuidErr != nil {
 		return errors.Wrap(_flagTypeGuidErr, "Error serializing 'flagTypeGuid' field")
 	}
 
 	// Simple Field (flagReferenceTo)
 	flagReferenceTo := bool(m.GetFlagReferenceTo())
-	_flagReferenceToErr := writeBuffer.WriteBit("flagReferenceTo", (flagReferenceTo))
+	_flagReferenceToErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagReferenceTo", (flagReferenceTo))
 	if _flagReferenceToErr != nil {
 		return errors.Wrap(_flagReferenceToErr, "Error serializing 'flagReferenceTo' field")
 	}
 
 	// Simple Field (flagBitValue)
 	flagBitValue := bool(m.GetFlagBitValue())
-	_flagBitValueErr := writeBuffer.WriteBit("flagBitValue", (flagBitValue))
+	_flagBitValueErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagBitValue", (flagBitValue))
 	if _flagBitValueErr != nil {
 		return errors.Wrap(_flagBitValueErr, "Error serializing 'flagBitValue' field")
 	}
 
 	// Simple Field (flagPersistent)
 	flagPersistent := bool(m.GetFlagPersistent())
-	_flagPersistentErr := writeBuffer.WriteBit("flagPersistent", (flagPersistent))
+	_flagPersistentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagPersistent", (flagPersistent))
 	if _flagPersistentErr != nil {
 		return errors.Wrap(_flagPersistentErr, "Error serializing 'flagPersistent' field")
 	}
@@ -768,7 +768,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -776,35 +776,35 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (flagExtendedFlags)
 	flagExtendedFlags := bool(m.GetFlagExtendedFlags())
-	_flagExtendedFlagsErr := writeBuffer.WriteBit("flagExtendedFlags", (flagExtendedFlags))
+	_flagExtendedFlagsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagExtendedFlags", (flagExtendedFlags))
 	if _flagExtendedFlagsErr != nil {
 		return errors.Wrap(_flagExtendedFlagsErr, "Error serializing 'flagExtendedFlags' field")
 	}
 
 	// Simple Field (flagInitOnReset)
 	flagInitOnReset := bool(m.GetFlagInitOnReset())
-	_flagInitOnResetErr := writeBuffer.WriteBit("flagInitOnReset", (flagInitOnReset))
+	_flagInitOnResetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagInitOnReset", (flagInitOnReset))
 	if _flagInitOnResetErr != nil {
 		return errors.Wrap(_flagInitOnResetErr, "Error serializing 'flagInitOnReset' field")
 	}
 
 	// Simple Field (flagStatic)
 	flagStatic := bool(m.GetFlagStatic())
-	_flagStaticErr := writeBuffer.WriteBit("flagStatic", (flagStatic))
+	_flagStaticErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagStatic", (flagStatic))
 	if _flagStaticErr != nil {
 		return errors.Wrap(_flagStaticErr, "Error serializing 'flagStatic' field")
 	}
 
 	// Simple Field (flagAttributes)
 	flagAttributes := bool(m.GetFlagAttributes())
-	_flagAttributesErr := writeBuffer.WriteBit("flagAttributes", (flagAttributes))
+	_flagAttributesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagAttributes", (flagAttributes))
 	if _flagAttributesErr != nil {
 		return errors.Wrap(_flagAttributesErr, "Error serializing 'flagAttributes' field")
 	}
 
 	// Simple Field (flagContextMask)
 	flagContextMask := bool(m.GetFlagContextMask())
-	_flagContextMaskErr := writeBuffer.WriteBit("flagContextMask", (flagContextMask))
+	_flagContextMaskErr := /*TODO: migrate me*/ writeBuffer.WriteBit("flagContextMask", (flagContextMask))
 	if _flagContextMaskErr != nil {
 		return errors.Wrap(_flagContextMaskErr, "Error serializing 'flagContextMask' field")
 	}
@@ -819,7 +819,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -827,60 +827,60 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Implicit Field (nameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	nameLength := uint16(uint16(len(m.GetName())))
-	_nameLengthErr := writeBuffer.WriteUint16("nameLength", 16, uint16((nameLength)))
+	_nameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("nameLength", 16, uint16((nameLength)))
 	if _nameLengthErr != nil {
 		return errors.Wrap(_nameLengthErr, "Error serializing 'nameLength' field")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
-	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
+	_dataTypeNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
 	if _dataTypeNameLengthErr != nil {
 		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	commentLength := uint16(uint16(len(m.GetComment())))
-	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
+	_commentLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
 	if _commentLengthErr != nil {
 		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
 	}
 
 	// Simple Field (name)
 	name := string(m.GetName())
-	_nameErr := writeBuffer.WriteString("name", uint32((uint16(len(m.GetName())))*(8)), (name), utils.WithEncoding("UTF-8)"))
+	_nameErr := /*TODO: migrate me*/ writeBuffer.WriteString("name", uint32((uint16(len(m.GetName())))*(8)), (name), utils.WithEncoding("UTF-8)"))
 	if _nameErr != nil {
 		return errors.Wrap(_nameErr, "Error serializing 'name' field")
 	}
 
 	// Const Field (nameTerminator)
-	_nameTerminatorErr := writeBuffer.WriteUint8("nameTerminator", 8, uint8(0x00))
+	_nameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("nameTerminator", 8, uint8(0x00))
 	if _nameTerminatorErr != nil {
 		return errors.Wrap(_nameTerminatorErr, "Error serializing 'nameTerminator' field")
 	}
 
 	// Simple Field (dataTypeName)
 	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
+	_dataTypeNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
 	if _dataTypeNameErr != nil {
 		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
 
 	// Const Field (dataTypeNameTerminator)
-	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
+	_dataTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
 	if _dataTypeNameTerminatorErr != nil {
 		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
 	// Simple Field (comment)
 	comment := string(m.GetComment())
-	_commentErr := writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
+	_commentErr := /*TODO: migrate me*/ writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
 	if _commentErr != nil {
 		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
 	}
 
 	// Const Field (commentTerminator)
-	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
+	_commentTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
 	if _commentTerminatorErr != nil {
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}

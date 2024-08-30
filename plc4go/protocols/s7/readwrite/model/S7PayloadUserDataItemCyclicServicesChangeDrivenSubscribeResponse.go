@@ -172,7 +172,7 @@ func S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponseParseWithBu
 	_ = currentPos
 
 	// Simple Field (itemsCount)
-	_itemsCount, _itemsCountErr := readBuffer.ReadUint16("itemsCount", 16)
+	_itemsCount, _itemsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("itemsCount", 16)
 	if _itemsCountErr != nil {
 		return nil, errors.Wrap(_itemsCountErr, "Error parsing 'itemsCount' field of S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse")
 	}
@@ -239,7 +239,7 @@ func (m *_S7PayloadUserDataItemCyclicServicesChangeDrivenSubscribeResponse) Seri
 
 		// Simple Field (itemsCount)
 		itemsCount := uint16(m.GetItemsCount())
-		_itemsCountErr := writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
+		_itemsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemsCount", 16, uint16((itemsCount)))
 		if _itemsCountErr != nil {
 			return errors.Wrap(_itemsCountErr, "Error serializing 'itemsCount' field")
 		}

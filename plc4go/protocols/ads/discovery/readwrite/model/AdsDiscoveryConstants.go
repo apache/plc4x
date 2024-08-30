@@ -115,7 +115,7 @@ func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Const Field (adsDiscoveryUdpDefaultPort)
-	adsDiscoveryUdpDefaultPort, _adsDiscoveryUdpDefaultPortErr := readBuffer.ReadUint16("adsDiscoveryUdpDefaultPort", 16)
+	adsDiscoveryUdpDefaultPort, _adsDiscoveryUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("adsDiscoveryUdpDefaultPort", 16)
 	if _adsDiscoveryUdpDefaultPortErr != nil {
 		return nil, errors.Wrap(_adsDiscoveryUdpDefaultPortErr, "Error parsing 'adsDiscoveryUdpDefaultPort' field of AdsDiscoveryConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 	}
 
 	// Const Field (adsDiscoveryUdpDefaultPort)
-	_adsDiscoveryUdpDefaultPortErr := writeBuffer.WriteUint16("adsDiscoveryUdpDefaultPort", 16, uint16(48899))
+	_adsDiscoveryUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("adsDiscoveryUdpDefaultPort", 16, uint16(48899))
 	if _adsDiscoveryUdpDefaultPortErr != nil {
 		return errors.Wrap(_adsDiscoveryUdpDefaultPortErr, "Error serializing 'adsDiscoveryUdpDefaultPort' field")
 	}

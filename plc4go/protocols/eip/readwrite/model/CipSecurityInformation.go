@@ -147,7 +147,7 @@ func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint16("itemLength", 16)
+	itemLength, _itemLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("itemLength", 16)
 	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of CipSecurityInformation")
@@ -169,7 +169,7 @@ func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'todoImplement' field of CipSecurityInformation")
 			}
@@ -213,7 +213,7 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint16(uint16(len(m.GetTodoImplement())))
-		_itemLengthErr := writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
+		_itemLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
@@ -224,7 +224,7 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		for _curItem, _element := range m.GetTodoImplement() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'todoImplement' field")
 			}

@@ -215,14 +215,14 @@ func ResponseHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (timestamp)
-	_timestamp, _timestampErr := readBuffer.ReadInt64("timestamp", 64)
+	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadInt64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ResponseHeader")
 	}
 	timestamp := _timestamp
 
 	// Simple Field (requestHandle)
-	_requestHandle, _requestHandleErr := readBuffer.ReadUint32("requestHandle", 32)
+	_requestHandle, _requestHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestHandle", 32)
 	if _requestHandleErr != nil {
 		return nil, errors.Wrap(_requestHandleErr, "Error parsing 'requestHandle' field of ResponseHeader")
 	}
@@ -255,7 +255,7 @@ func ResponseHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (noOfStringTable)
-	_noOfStringTable, _noOfStringTableErr := readBuffer.ReadInt32("noOfStringTable", 32)
+	_noOfStringTable, _noOfStringTableErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfStringTable", 32)
 	if _noOfStringTableErr != nil {
 		return nil, errors.Wrap(_noOfStringTableErr, "Error parsing 'noOfStringTable' field of ResponseHeader")
 	}
@@ -340,14 +340,14 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (timestamp)
 		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
+		_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
 		if _timestampErr != nil {
 			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (requestHandle)
 		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
+		_requestHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
 		if _requestHandleErr != nil {
 			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
 		}
@@ -378,7 +378,7 @@ func (m *_ResponseHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfStringTable)
 		noOfStringTable := int32(m.GetNoOfStringTable())
-		_noOfStringTableErr := writeBuffer.WriteInt32("noOfStringTable", 32, int32((noOfStringTable)))
+		_noOfStringTableErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfStringTable", 32, int32((noOfStringTable)))
 		if _noOfStringTableErr != nil {
 			return errors.Wrap(_noOfStringTableErr, "Error serializing 'noOfStringTable' field")
 		}

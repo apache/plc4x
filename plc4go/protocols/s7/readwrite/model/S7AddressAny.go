@@ -205,7 +205,7 @@ func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
 	}
 	// Enum field (transportSize)
-	transportSizeCode, _transportSizeCodeErr := readBuffer.ReadUint8("TransportSize", 8)
+	transportSizeCode, _transportSizeCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("TransportSize", 8)
 	if _transportSizeCodeErr != nil {
 		return nil, errors.Wrap(_transportSizeCodeErr, "Error serializing 'transportSize' field")
 	}
@@ -218,14 +218,14 @@ func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint16("numberOfElements", 16)
+	_numberOfElements, _numberOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("numberOfElements", 16)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of S7AddressAny")
 	}
 	numberOfElements := _numberOfElements
 
 	// Simple Field (dbNumber)
-	_dbNumber, _dbNumberErr := readBuffer.ReadUint16("dbNumber", 16)
+	_dbNumber, _dbNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dbNumber", 16)
 	if _dbNumberErr != nil {
 		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of S7AddressAny")
 	}
@@ -247,7 +247,7 @@ func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 5)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 5)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7AddressAny")
 		}
@@ -262,14 +262,14 @@ func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (byteAddress)
-	_byteAddress, _byteAddressErr := readBuffer.ReadUint16("byteAddress", 16)
+	_byteAddress, _byteAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("byteAddress", 16)
 	if _byteAddressErr != nil {
 		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field of S7AddressAny")
 	}
 	byteAddress := _byteAddress
 
 	// Simple Field (bitAddress)
-	_bitAddress, _bitAddressErr := readBuffer.ReadUint8("bitAddress", 3)
+	_bitAddress, _bitAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("bitAddress", 3)
 	if _bitAddressErr != nil {
 		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field of S7AddressAny")
 	}
@@ -316,7 +316,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for transportSize")
 		}
 		// Enum field (transportSize)
-		_transportSizeErr := writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
+		_transportSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("TransportSize", 8, uint8(m.TransportSize.Code()), utils.WithAdditionalStringRepresentation(m.GetTransportSize().PLC4XEnumName()))
 		if _transportSizeErr != nil {
 			return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 		}
@@ -326,14 +326,14 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint16(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint16("numberOfElements", 16, uint16((numberOfElements)))
+		_numberOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberOfElements", 16, uint16((numberOfElements)))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (dbNumber)
 		dbNumber := uint16(m.GetDbNumber())
-		_dbNumberErr := writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
+		_dbNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dbNumber", 16, uint16((dbNumber)))
 		if _dbNumberErr != nil {
 			return errors.Wrap(_dbNumberErr, "Error serializing 'dbNumber' field")
 		}
@@ -360,7 +360,7 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 5, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 5, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -368,14 +368,14 @@ func (m *_S7AddressAny) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (byteAddress)
 		byteAddress := uint16(m.GetByteAddress())
-		_byteAddressErr := writeBuffer.WriteUint16("byteAddress", 16, uint16((byteAddress)))
+		_byteAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("byteAddress", 16, uint16((byteAddress)))
 		if _byteAddressErr != nil {
 			return errors.Wrap(_byteAddressErr, "Error serializing 'byteAddress' field")
 		}
 
 		// Simple Field (bitAddress)
 		bitAddress := uint8(m.GetBitAddress())
-		_bitAddressErr := writeBuffer.WriteUint8("bitAddress", 3, uint8((bitAddress)))
+		_bitAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bitAddress", 3, uint8((bitAddress)))
 		if _bitAddressErr != nil {
 			return errors.Wrap(_bitAddressErr, "Error serializing 'bitAddress' field")
 		}

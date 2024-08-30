@@ -166,7 +166,7 @@ func BrowsePathTargetParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (remainingPathIndex)
-	_remainingPathIndex, _remainingPathIndexErr := readBuffer.ReadUint32("remainingPathIndex", 32)
+	_remainingPathIndex, _remainingPathIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint32("remainingPathIndex", 32)
 	if _remainingPathIndexErr != nil {
 		return nil, errors.Wrap(_remainingPathIndexErr, "Error parsing 'remainingPathIndex' field of BrowsePathTarget")
 	}
@@ -218,7 +218,7 @@ func (m *_BrowsePathTarget) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (remainingPathIndex)
 		remainingPathIndex := uint32(m.GetRemainingPathIndex())
-		_remainingPathIndexErr := writeBuffer.WriteUint32("remainingPathIndex", 32, uint32((remainingPathIndex)))
+		_remainingPathIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("remainingPathIndex", 32, uint32((remainingPathIndex)))
 		if _remainingPathIndexErr != nil {
 			return errors.Wrap(_remainingPathIndexErr, "Error serializing 'remainingPathIndex' field")
 		}

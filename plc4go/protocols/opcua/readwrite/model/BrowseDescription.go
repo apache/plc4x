@@ -243,7 +243,7 @@ func BrowseDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of BrowseDescription")
 		}
@@ -258,21 +258,21 @@ func BrowseDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (includeSubtypes)
-	_includeSubtypes, _includeSubtypesErr := readBuffer.ReadBit("includeSubtypes")
+	_includeSubtypes, _includeSubtypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubtypes")
 	if _includeSubtypesErr != nil {
 		return nil, errors.Wrap(_includeSubtypesErr, "Error parsing 'includeSubtypes' field of BrowseDescription")
 	}
 	includeSubtypes := _includeSubtypes
 
 	// Simple Field (nodeClassMask)
-	_nodeClassMask, _nodeClassMaskErr := readBuffer.ReadUint32("nodeClassMask", 32)
+	_nodeClassMask, _nodeClassMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("nodeClassMask", 32)
 	if _nodeClassMaskErr != nil {
 		return nil, errors.Wrap(_nodeClassMaskErr, "Error parsing 'nodeClassMask' field of BrowseDescription")
 	}
 	nodeClassMask := _nodeClassMask
 
 	// Simple Field (resultMask)
-	_resultMask, _resultMaskErr := readBuffer.ReadUint32("resultMask", 32)
+	_resultMask, _resultMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("resultMask", 32)
 	if _resultMaskErr != nil {
 		return nil, errors.Wrap(_resultMaskErr, "Error parsing 'resultMask' field of BrowseDescription")
 	}
@@ -361,7 +361,7 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -369,21 +369,21 @@ func (m *_BrowseDescription) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (includeSubtypes)
 		includeSubtypes := bool(m.GetIncludeSubtypes())
-		_includeSubtypesErr := writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
+		_includeSubtypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
 		if _includeSubtypesErr != nil {
 			return errors.Wrap(_includeSubtypesErr, "Error serializing 'includeSubtypes' field")
 		}
 
 		// Simple Field (nodeClassMask)
 		nodeClassMask := uint32(m.GetNodeClassMask())
-		_nodeClassMaskErr := writeBuffer.WriteUint32("nodeClassMask", 32, uint32((nodeClassMask)))
+		_nodeClassMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("nodeClassMask", 32, uint32((nodeClassMask)))
 		if _nodeClassMaskErr != nil {
 			return errors.Wrap(_nodeClassMaskErr, "Error serializing 'nodeClassMask' field")
 		}
 
 		// Simple Field (resultMask)
 		resultMask := uint32(m.GetResultMask())
-		_resultMaskErr := writeBuffer.WriteUint32("resultMask", 32, uint32((resultMask)))
+		_resultMaskErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("resultMask", 32, uint32((resultMask)))
 		if _resultMaskErr != nil {
 			return errors.Wrap(_resultMaskErr, "Error serializing 'resultMask' field")
 		}

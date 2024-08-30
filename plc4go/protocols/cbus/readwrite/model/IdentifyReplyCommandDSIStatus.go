@@ -358,7 +358,7 @@ func IdentifyReplyCommandDSIStatusParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Simple Field (dimmingUCRevisionNumber)
-	_dimmingUCRevisionNumber, _dimmingUCRevisionNumberErr := readBuffer.ReadByte("dimmingUCRevisionNumber")
+	_dimmingUCRevisionNumber, _dimmingUCRevisionNumberErr := /*TODO: migrate me*/ readBuffer.ReadByte("dimmingUCRevisionNumber")
 	if _dimmingUCRevisionNumberErr != nil {
 		return nil, errors.Wrap(_dimmingUCRevisionNumberErr, "Error parsing 'dimmingUCRevisionNumber' field of IdentifyReplyCommandDSIStatus")
 	}
@@ -516,7 +516,7 @@ func (m *_IdentifyReplyCommandDSIStatus) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (dimmingUCRevisionNumber)
 		dimmingUCRevisionNumber := byte(m.GetDimmingUCRevisionNumber())
-		_dimmingUCRevisionNumberErr := writeBuffer.WriteByte("dimmingUCRevisionNumber", (dimmingUCRevisionNumber))
+		_dimmingUCRevisionNumberErr := /*TODO: migrate me*/ writeBuffer.WriteByte("dimmingUCRevisionNumber", (dimmingUCRevisionNumber))
 		if _dimmingUCRevisionNumberErr != nil {
 			return errors.Wrap(_dimmingUCRevisionNumberErr, "Error serializing 'dimmingUCRevisionNumber' field")
 		}

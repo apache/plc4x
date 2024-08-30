@@ -160,7 +160,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Implicit Field (numberOfClasses) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfClasses, _numberOfClassesErr := readBuffer.ReadUint16("numberOfClasses", 16)
+	numberOfClasses, _numberOfClassesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("numberOfClasses", 16)
 	_ = numberOfClasses
 	if _numberOfClassesErr != nil {
 		return nil, errors.Wrap(_numberOfClassesErr, "Error parsing 'numberOfClasses' field of CIPAttributes")
@@ -182,7 +182,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint16("", 16)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'classId' field of CIPAttributes")
 			}
@@ -197,7 +197,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	var numberAvailable *uint16 = nil
 	if bool((packetLength) >= (((numberOfClasses) * (2)) + (4))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("numberAvailable", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("numberAvailable", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -213,7 +213,7 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	var numberActive *uint16 = nil
 	if bool((packetLength) >= (((numberOfClasses) * (2)) + (6))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("numberActive", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("numberActive", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -266,7 +266,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Implicit Field (numberOfClasses) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numberOfClasses := uint16(uint16(len(m.GetClassId())))
-	_numberOfClassesErr := writeBuffer.WriteUint16("numberOfClasses", 16, uint16((numberOfClasses)))
+	_numberOfClassesErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberOfClasses", 16, uint16((numberOfClasses)))
 	if _numberOfClassesErr != nil {
 		return errors.Wrap(_numberOfClassesErr, "Error serializing 'numberOfClasses' field")
 	}
@@ -277,7 +277,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	}
 	for _curItem, _element := range m.GetClassId() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'classId' field")
 		}
@@ -290,7 +290,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	var numberAvailable *uint16 = nil
 	if m.GetNumberAvailable() != nil {
 		numberAvailable = m.GetNumberAvailable()
-		_numberAvailableErr := writeBuffer.WriteUint16("numberAvailable", 16, uint16(*(numberAvailable)))
+		_numberAvailableErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberAvailable", 16, uint16(*(numberAvailable)))
 		if _numberAvailableErr != nil {
 			return errors.Wrap(_numberAvailableErr, "Error serializing 'numberAvailable' field")
 		}
@@ -300,7 +300,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 	var numberActive *uint16 = nil
 	if m.GetNumberActive() != nil {
 		numberActive = m.GetNumberActive()
-		_numberActiveErr := writeBuffer.WriteUint16("numberActive", 16, uint16(*(numberActive)))
+		_numberActiveErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numberActive", 16, uint16(*(numberActive)))
 		if _numberActiveErr != nil {
 			return errors.Wrap(_numberActiveErr, "Error serializing 'numberActive' field")
 		}

@@ -135,21 +135,21 @@ func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Simple Field (mainGroup)
-	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 4)
+	_mainGroup, _mainGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mainGroup", 4)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxAddress")
 	}
 	mainGroup := _mainGroup
 
 	// Simple Field (middleGroup)
-	_middleGroup, _middleGroupErr := readBuffer.ReadUint8("middleGroup", 4)
+	_middleGroup, _middleGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("middleGroup", 4)
 	if _middleGroupErr != nil {
 		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field of KnxAddress")
 	}
 	middleGroup := _middleGroup
 
 	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := readBuffer.ReadUint8("subGroup", 8)
+	_subGroup, _subGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subGroup", 8)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxAddress")
 	}
@@ -186,21 +186,21 @@ func (m *_KnxAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (mainGroup)
 	mainGroup := uint8(m.GetMainGroup())
-	_mainGroupErr := writeBuffer.WriteUint8("mainGroup", 4, uint8((mainGroup)))
+	_mainGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("mainGroup", 4, uint8((mainGroup)))
 	if _mainGroupErr != nil {
 		return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 	}
 
 	// Simple Field (middleGroup)
 	middleGroup := uint8(m.GetMiddleGroup())
-	_middleGroupErr := writeBuffer.WriteUint8("middleGroup", 4, uint8((middleGroup)))
+	_middleGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("middleGroup", 4, uint8((middleGroup)))
 	if _middleGroupErr != nil {
 		return errors.Wrap(_middleGroupErr, "Error serializing 'middleGroup' field")
 	}
 
 	// Simple Field (subGroup)
 	subGroup := uint8(m.GetSubGroup())
-	_subGroupErr := writeBuffer.WriteUint8("subGroup", 8, uint8((subGroup)))
+	_subGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("subGroup", 8, uint8((subGroup)))
 	if _subGroupErr != nil {
 		return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 	}

@@ -187,14 +187,14 @@ func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (transactionIdentifier)
-	_transactionIdentifier, _transactionIdentifierErr := readBuffer.ReadUint16("transactionIdentifier", 16)
+	_transactionIdentifier, _transactionIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionIdentifier", 16)
 	if _transactionIdentifierErr != nil {
 		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field of ModbusTcpADU")
 	}
 	transactionIdentifier := _transactionIdentifier
 
 	// Const Field (protocolIdentifier)
-	protocolIdentifier, _protocolIdentifierErr := readBuffer.ReadUint16("protocolIdentifier", 16)
+	protocolIdentifier, _protocolIdentifierErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("protocolIdentifier", 16)
 	if _protocolIdentifierErr != nil {
 		return nil, errors.Wrap(_protocolIdentifierErr, "Error parsing 'protocolIdentifier' field of ModbusTcpADU")
 	}
@@ -203,14 +203,14 @@ func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint16("length", 16)
+	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("length", 16)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of ModbusTcpADU")
 	}
 
 	// Simple Field (unitIdentifier)
-	_unitIdentifier, _unitIdentifierErr := readBuffer.ReadUint8("unitIdentifier", 8)
+	_unitIdentifier, _unitIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unitIdentifier", 8)
 	if _unitIdentifierErr != nil {
 		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field of ModbusTcpADU")
 	}
@@ -266,27 +266,27 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (transactionIdentifier)
 		transactionIdentifier := uint16(m.GetTransactionIdentifier())
-		_transactionIdentifierErr := writeBuffer.WriteUint16("transactionIdentifier", 16, uint16((transactionIdentifier)))
+		_transactionIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("transactionIdentifier", 16, uint16((transactionIdentifier)))
 		if _transactionIdentifierErr != nil {
 			return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 		}
 
 		// Const Field (protocolIdentifier)
-		_protocolIdentifierErr := writeBuffer.WriteUint16("protocolIdentifier", 16, uint16(0x0000))
+		_protocolIdentifierErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("protocolIdentifier", 16, uint16(0x0000))
 		if _protocolIdentifierErr != nil {
 			return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		length := uint16(uint16(m.GetPdu().GetLengthInBytes(ctx)) + uint16(uint16(1)))
-		_lengthErr := writeBuffer.WriteUint16("length", 16, uint16((length)))
+		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("length", 16, uint16((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (unitIdentifier)
 		unitIdentifier := uint8(m.GetUnitIdentifier())
-		_unitIdentifierErr := writeBuffer.WriteUint8("unitIdentifier", 8, uint8((unitIdentifier)))
+		_unitIdentifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("unitIdentifier", 8, uint8((unitIdentifier)))
 		if _unitIdentifierErr != nil {
 			return errors.Wrap(_unitIdentifierErr, "Error serializing 'unitIdentifier' field")
 		}

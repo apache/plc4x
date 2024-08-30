@@ -193,7 +193,7 @@ func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (recordId)
-	_recordId, _recordIdErr := readBuffer.ReadUint32("recordId", 32)
+	_recordId, _recordIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("recordId", 32)
 	if _recordIdErr != nil {
 		return nil, errors.Wrap(_recordIdErr, "Error parsing 'recordId' field of ServerOnNetwork")
 	}
@@ -226,7 +226,7 @@ func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (noOfServerCapabilities)
-	_noOfServerCapabilities, _noOfServerCapabilitiesErr := readBuffer.ReadInt32("noOfServerCapabilities", 32)
+	_noOfServerCapabilities, _noOfServerCapabilitiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerCapabilities", 32)
 	if _noOfServerCapabilitiesErr != nil {
 		return nil, errors.Wrap(_noOfServerCapabilitiesErr, "Error parsing 'noOfServerCapabilities' field of ServerOnNetwork")
 	}
@@ -296,7 +296,7 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (recordId)
 		recordId := uint32(m.GetRecordId())
-		_recordIdErr := writeBuffer.WriteUint32("recordId", 32, uint32((recordId)))
+		_recordIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("recordId", 32, uint32((recordId)))
 		if _recordIdErr != nil {
 			return errors.Wrap(_recordIdErr, "Error serializing 'recordId' field")
 		}
@@ -327,7 +327,7 @@ func (m *_ServerOnNetwork) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfServerCapabilities)
 		noOfServerCapabilities := int32(m.GetNoOfServerCapabilities())
-		_noOfServerCapabilitiesErr := writeBuffer.WriteInt32("noOfServerCapabilities", 32, int32((noOfServerCapabilities)))
+		_noOfServerCapabilitiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerCapabilities", 32, int32((noOfServerCapabilities)))
 		if _noOfServerCapabilitiesErr != nil {
 			return errors.Wrap(_noOfServerCapabilitiesErr, "Error serializing 'noOfServerCapabilities' field")
 		}

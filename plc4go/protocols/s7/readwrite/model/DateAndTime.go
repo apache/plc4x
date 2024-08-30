@@ -185,56 +185,56 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (year)
-	_year, _yearErr := readBuffer.ReadUint8("year", 8)
+	_year, _yearErr := /*TODO: migrate me*/ readBuffer.ReadUint8("year", 8)
 	if _yearErr != nil {
 		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
 	}
 	year := _year
 
 	// Simple Field (month)
-	_month, _monthErr := readBuffer.ReadUint8("month", 8)
+	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
 	}
 	month := _month
 
 	// Simple Field (day)
-	_day, _dayErr := readBuffer.ReadUint8("day", 8)
+	_day, _dayErr := /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
 	}
 	day := _day
 
 	// Simple Field (hour)
-	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
+	_hour, _hourErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 8)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
 	}
 	hour := _hour
 
 	// Simple Field (minutes)
-	_minutes, _minutesErr := readBuffer.ReadUint8("minutes", 8)
+	_minutes, _minutesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 8)
 	if _minutesErr != nil {
 		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
 	}
 	minutes := _minutes
 
 	// Simple Field (seconds)
-	_seconds, _secondsErr := readBuffer.ReadUint8("seconds", 8)
+	_seconds, _secondsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 8)
 	if _secondsErr != nil {
 		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
 	}
 	seconds := _seconds
 
 	// Simple Field (msec)
-	_msec, _msecErr := readBuffer.ReadUint16("msec", 12)
+	_msec, _msecErr := /*TODO: migrate me*/ readBuffer.ReadUint16("msec", 12)
 	if _msecErr != nil {
 		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
 	}
 	msec := _msec
 
 	// Simple Field (dow)
-	_dow, _dowErr := readBuffer.ReadUint8("dow", 4)
+	_dow, _dowErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dow", 4)
 	if _dowErr != nil {
 		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field of DateAndTime")
 	}
@@ -276,56 +276,56 @@ func (m *_DateAndTime) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (year)
 	year := uint8(m.GetYear())
-	_yearErr := writeBuffer.WriteUint8("year", 8, uint8((year)))
+	_yearErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("year", 8, uint8((year)))
 	if _yearErr != nil {
 		return errors.Wrap(_yearErr, "Error serializing 'year' field")
 	}
 
 	// Simple Field (month)
 	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
+	_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
 
 	// Simple Field (day)
 	day := uint8(m.GetDay())
-	_dayErr := writeBuffer.WriteUint8("day", 8, uint8((day)))
+	_dayErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8((day)))
 	if _dayErr != nil {
 		return errors.Wrap(_dayErr, "Error serializing 'day' field")
 	}
 
 	// Simple Field (hour)
 	hour := uint8(m.GetHour())
-	_hourErr := writeBuffer.WriteUint8("hour", 8, uint8((hour)))
+	_hourErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8((hour)))
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
 
 	// Simple Field (minutes)
 	minutes := uint8(m.GetMinutes())
-	_minutesErr := writeBuffer.WriteUint8("minutes", 8, uint8((minutes)))
+	_minutesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 8, uint8((minutes)))
 	if _minutesErr != nil {
 		return errors.Wrap(_minutesErr, "Error serializing 'minutes' field")
 	}
 
 	// Simple Field (seconds)
 	seconds := uint8(m.GetSeconds())
-	_secondsErr := writeBuffer.WriteUint8("seconds", 8, uint8((seconds)))
+	_secondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 8, uint8((seconds)))
 	if _secondsErr != nil {
 		return errors.Wrap(_secondsErr, "Error serializing 'seconds' field")
 	}
 
 	// Simple Field (msec)
 	msec := uint16(m.GetMsec())
-	_msecErr := writeBuffer.WriteUint16("msec", 12, uint16((msec)))
+	_msecErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("msec", 12, uint16((msec)))
 	if _msecErr != nil {
 		return errors.Wrap(_msecErr, "Error serializing 'msec' field")
 	}
 
 	// Simple Field (dow)
 	dow := uint8(m.GetDow())
-	_dowErr := writeBuffer.WriteUint8("dow", 4, uint8((dow)))
+	_dowErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dow", 4, uint8((dow)))
 	if _dowErr != nil {
 		return errors.Wrap(_dowErr, "Error serializing 'dow' field")
 	}

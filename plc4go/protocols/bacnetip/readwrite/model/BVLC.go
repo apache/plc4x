@@ -163,7 +163,7 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	_ = currentPos
 
 	// Const Field (bacnetType)
-	bacnetType, _bacnetTypeErr := readBuffer.ReadUint8("bacnetType", 8)
+	bacnetType, _bacnetTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("bacnetType", 8)
 	if _bacnetTypeErr != nil {
 		return nil, errors.Wrap(_bacnetTypeErr, "Error parsing 'bacnetType' field of BVLC")
 	}
@@ -172,13 +172,13 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction, _bvlcFunctionErr := readBuffer.ReadUint8("bvlcFunction", 8)
+	bvlcFunction, _bvlcFunctionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("bvlcFunction", 8)
 	if _bvlcFunctionErr != nil {
 		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field of BVLC")
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	bvlcLength, _bvlcLengthErr := readBuffer.ReadUint16("bvlcLength", 16)
+	bvlcLength, _bvlcLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("bvlcLength", 16)
 	_ = bvlcLength
 	if _bvlcLengthErr != nil {
 		return nil, errors.Wrap(_bvlcLengthErr, "Error parsing 'bvlcLength' field of BVLC")
@@ -255,14 +255,14 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 	}
 
 	// Const Field (bacnetType)
-	_bacnetTypeErr := writeBuffer.WriteUint8("bacnetType", 8, uint8(0x81))
+	_bacnetTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("bacnetType", 8, uint8(0x81))
 	if _bacnetTypeErr != nil {
 		return errors.Wrap(_bacnetTypeErr, "Error serializing 'bacnetType' field")
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
 	bvlcFunction := uint8(child.GetBvlcFunction())
-	_bvlcFunctionErr := writeBuffer.WriteUint8("bvlcFunction", 8, uint8((bvlcFunction)))
+	_bvlcFunctionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bvlcFunction", 8, uint8((bvlcFunction)))
 
 	if _bvlcFunctionErr != nil {
 		return errors.Wrap(_bvlcFunctionErr, "Error serializing 'bvlcFunction' field")
@@ -270,7 +270,7 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Implicit Field (bvlcLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	bvlcLength := uint16(uint16(m.GetLengthInBytes(ctx)))
-	_bvlcLengthErr := writeBuffer.WriteUint16("bvlcLength", 16, uint16((bvlcLength)))
+	_bvlcLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("bvlcLength", 16, uint16((bvlcLength)))
 	if _bvlcLengthErr != nil {
 		return errors.Wrap(_bvlcLengthErr, "Error serializing 'bvlcLength' field")
 	}

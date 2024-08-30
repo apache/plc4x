@@ -141,7 +141,7 @@ func MeteringDataDrinkingWaterConsumptionParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (kL)
-	_kL, _kLErr := readBuffer.ReadUint32("kL", 32)
+	_kL, _kLErr := /*TODO: migrate me*/ readBuffer.ReadUint32("kL", 32)
 	if _kLErr != nil {
 		return nil, errors.Wrap(_kLErr, "Error parsing 'kL' field of MeteringDataDrinkingWaterConsumption")
 	}
@@ -180,7 +180,7 @@ func (m *_MeteringDataDrinkingWaterConsumption) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (kL)
 		kL := uint32(m.GetKL())
-		_kLErr := writeBuffer.WriteUint32("kL", 32, uint32((kL)))
+		_kLErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("kL", 32, uint32((kL)))
 		if _kLErr != nil {
 			return errors.Wrap(_kLErr, "Error serializing 'kL' field")
 		}

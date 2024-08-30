@@ -145,28 +145,28 @@ func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (octet1)
-	_octet1, _octet1Err := readBuffer.ReadByte("octet1")
+	_octet1, _octet1Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet1")
 	if _octet1Err != nil {
 		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of SerialNumber")
 	}
 	octet1 := _octet1
 
 	// Simple Field (octet2)
-	_octet2, _octet2Err := readBuffer.ReadByte("octet2")
+	_octet2, _octet2Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet2")
 	if _octet2Err != nil {
 		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of SerialNumber")
 	}
 	octet2 := _octet2
 
 	// Simple Field (octet3)
-	_octet3, _octet3Err := readBuffer.ReadByte("octet3")
+	_octet3, _octet3Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet3")
 	if _octet3Err != nil {
 		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of SerialNumber")
 	}
 	octet3 := _octet3
 
 	// Simple Field (octet4)
-	_octet4, _octet4Err := readBuffer.ReadByte("octet4")
+	_octet4, _octet4Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet4")
 	if _octet4Err != nil {
 		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of SerialNumber")
 	}
@@ -204,28 +204,28 @@ func (m *_SerialNumber) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (octet1)
 	octet1 := byte(m.GetOctet1())
-	_octet1Err := writeBuffer.WriteByte("octet1", (octet1))
+	_octet1Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet1", (octet1))
 	if _octet1Err != nil {
 		return errors.Wrap(_octet1Err, "Error serializing 'octet1' field")
 	}
 
 	// Simple Field (octet2)
 	octet2 := byte(m.GetOctet2())
-	_octet2Err := writeBuffer.WriteByte("octet2", (octet2))
+	_octet2Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet2", (octet2))
 	if _octet2Err != nil {
 		return errors.Wrap(_octet2Err, "Error serializing 'octet2' field")
 	}
 
 	// Simple Field (octet3)
 	octet3 := byte(m.GetOctet3())
-	_octet3Err := writeBuffer.WriteByte("octet3", (octet3))
+	_octet3Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet3", (octet3))
 	if _octet3Err != nil {
 		return errors.Wrap(_octet3Err, "Error serializing 'octet3' field")
 	}
 
 	// Simple Field (octet4)
 	octet4 := byte(m.GetOctet4())
-	_octet4Err := writeBuffer.WriteByte("octet4", (octet4))
+	_octet4Err := /*TODO: migrate me*/ writeBuffer.WriteByte("octet4", (octet4))
 	if _octet4Err != nil {
 		return errors.Wrap(_octet4Err, "Error serializing 'octet4' field")
 	}

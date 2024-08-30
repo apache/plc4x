@@ -115,7 +115,7 @@ func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (timestamp)
-	_timestamp, _timestampErr := readBuffer.ReadUint16("timestamp", 16)
+	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadUint16("timestamp", 16)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of RelativeTimestamp")
 	}
@@ -150,7 +150,7 @@ func (m *_RelativeTimestamp) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (timestamp)
 	timestamp := uint16(m.GetTimestamp())
-	_timestampErr := writeBuffer.WriteUint16("timestamp", 16, uint16((timestamp)))
+	_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("timestamp", 16, uint16((timestamp)))
 	if _timestampErr != nil {
 		return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 	}

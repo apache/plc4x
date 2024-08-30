@@ -127,7 +127,7 @@ func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (arrayLength)
-	_arrayLength, _arrayLengthErr := readBuffer.ReadInt32("arrayLength", 32)
+	_arrayLength, _arrayLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("arrayLength", 32)
 	if _arrayLengthErr != nil {
 		return nil, errors.Wrap(_arrayLengthErr, "Error parsing 'arrayLength' field of ByteStringArray")
 	}
@@ -149,7 +149,7 @@ func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'value' field of ByteStringArray")
 			}
@@ -190,7 +190,7 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (arrayLength)
 	arrayLength := int32(m.GetArrayLength())
-	_arrayLengthErr := writeBuffer.WriteInt32("arrayLength", 32, int32((arrayLength)))
+	_arrayLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("arrayLength", 32, int32((arrayLength)))
 	if _arrayLengthErr != nil {
 		return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
 	}
@@ -201,7 +201,7 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 	for _curItem, _element := range m.GetValue() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'value' field")
 		}

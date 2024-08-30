@@ -125,14 +125,14 @@ func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (projectNumber)
-	_projectNumber, _projectNumberErr := readBuffer.ReadUint8("projectNumber", 8)
+	_projectNumber, _projectNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("projectNumber", 8)
 	if _projectNumberErr != nil {
 		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field of ProjectInstallationIdentifier")
 	}
 	projectNumber := _projectNumber
 
 	// Simple Field (installationNumber)
-	_installationNumber, _installationNumberErr := readBuffer.ReadUint8("installationNumber", 8)
+	_installationNumber, _installationNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("installationNumber", 8)
 	if _installationNumberErr != nil {
 		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field of ProjectInstallationIdentifier")
 	}
@@ -168,14 +168,14 @@ func (m *_ProjectInstallationIdentifier) SerializeWithWriteBuffer(ctx context.Co
 
 	// Simple Field (projectNumber)
 	projectNumber := uint8(m.GetProjectNumber())
-	_projectNumberErr := writeBuffer.WriteUint8("projectNumber", 8, uint8((projectNumber)))
+	_projectNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("projectNumber", 8, uint8((projectNumber)))
 	if _projectNumberErr != nil {
 		return errors.Wrap(_projectNumberErr, "Error serializing 'projectNumber' field")
 	}
 
 	// Simple Field (installationNumber)
 	installationNumber := uint8(m.GetInstallationNumber())
-	_installationNumberErr := writeBuffer.WriteUint8("installationNumber", 8, uint8((installationNumber)))
+	_installationNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("installationNumber", 8, uint8((installationNumber)))
 	if _installationNumberErr != nil {
 		return errors.Wrap(_installationNumberErr, "Error serializing 'installationNumber' field")
 	}

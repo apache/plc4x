@@ -164,7 +164,7 @@ func EnumValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadInt64("value", 64)
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadInt64("value", 64)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of EnumValueType")
 	}
@@ -231,7 +231,7 @@ func (m *_EnumValueType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (value)
 		value := int64(m.GetValue())
-		_valueErr := writeBuffer.WriteInt64("value", 64, int64((value)))
+		_valueErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("value", 64, int64((value)))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

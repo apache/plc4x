@@ -152,14 +152,14 @@ func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := readBuffer.ReadUint8("zoneNumber", 8)
+	_zoneNumber, _zoneNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("zoneNumber", 8)
 	if _zoneNumberErr != nil {
 		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneName")
 	}
 	zoneNumber := _zoneNumber
 
 	// Simple Field (zoneName)
-	_zoneName, _zoneNameErr := readBuffer.ReadString("zoneName", uint32(88), utils.WithEncoding("UTF-8"))
+	_zoneName, _zoneNameErr := /*TODO: migrate me*/ readBuffer.ReadString("zoneName", uint32(88), utils.WithEncoding("UTF-8"))
 	if _zoneNameErr != nil {
 		return nil, errors.Wrap(_zoneNameErr, "Error parsing 'zoneName' field of SecurityDataZoneName")
 	}
@@ -199,14 +199,14 @@ func (m *_SecurityDataZoneName) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (zoneNumber)
 		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
+		_zoneNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
 		if _zoneNumberErr != nil {
 			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
 		}
 
 		// Simple Field (zoneName)
 		zoneName := string(m.GetZoneName())
-		_zoneNameErr := writeBuffer.WriteString("zoneName", uint32(88), (zoneName), utils.WithEncoding("UTF-8)"))
+		_zoneNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("zoneName", uint32(88), (zoneName), utils.WithEncoding("UTF-8)"))
 		if _zoneNameErr != nil {
 			return errors.Wrap(_zoneNameErr, "Error serializing 'zoneName' field")
 		}

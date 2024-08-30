@@ -153,14 +153,14 @@ func DoubleComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Simple Field (real)
-	_real, _realErr := readBuffer.ReadFloat64("real", 64)
+	_real, _realErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("real", 64)
 	if _realErr != nil {
 		return nil, errors.Wrap(_realErr, "Error parsing 'real' field of DoubleComplexNumberType")
 	}
 	real := _real
 
 	// Simple Field (imaginary)
-	_imaginary, _imaginaryErr := readBuffer.ReadFloat64("imaginary", 64)
+	_imaginary, _imaginaryErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("imaginary", 64)
 	if _imaginaryErr != nil {
 		return nil, errors.Wrap(_imaginaryErr, "Error parsing 'imaginary' field of DoubleComplexNumberType")
 	}
@@ -200,14 +200,14 @@ func (m *_DoubleComplexNumberType) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (real)
 		real := float64(m.GetReal())
-		_realErr := writeBuffer.WriteFloat64("real", 64, (real))
+		_realErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("real", 64, (real))
 		if _realErr != nil {
 			return errors.Wrap(_realErr, "Error serializing 'real' field")
 		}
 
 		// Simple Field (imaginary)
 		imaginary := float64(m.GetImaginary())
-		_imaginaryErr := writeBuffer.WriteFloat64("imaginary", 64, (imaginary))
+		_imaginaryErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("imaginary", 64, (imaginary))
 		if _imaginaryErr != nil {
 			return errors.Wrap(_imaginaryErr, "Error serializing 'imaginary' field")
 		}

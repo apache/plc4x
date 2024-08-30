@@ -202,7 +202,7 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LPollData")
 		}
@@ -217,7 +217,7 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (numberExpectedPollData)
-	_numberExpectedPollData, _numberExpectedPollDataErr := readBuffer.ReadUint8("numberExpectedPollData", 6)
+	_numberExpectedPollData, _numberExpectedPollDataErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberExpectedPollData", 6)
 	if _numberExpectedPollDataErr != nil {
 		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field of LPollData")
 	}
@@ -285,7 +285,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -293,7 +293,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (numberExpectedPollData)
 		numberExpectedPollData := uint8(m.GetNumberExpectedPollData())
-		_numberExpectedPollDataErr := writeBuffer.WriteUint8("numberExpectedPollData", 6, uint8((numberExpectedPollData)))
+		_numberExpectedPollDataErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberExpectedPollData", 6, uint8((numberExpectedPollData)))
 		if _numberExpectedPollDataErr != nil {
 			return errors.Wrap(_numberExpectedPollDataErr, "Error serializing 'numberExpectedPollData' field")
 		}

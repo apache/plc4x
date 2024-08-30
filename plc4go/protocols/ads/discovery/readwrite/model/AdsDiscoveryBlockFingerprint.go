@@ -147,7 +147,7 @@ func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Implicit Field (dataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLen, _dataLenErr := readBuffer.ReadUint16("dataLen", 16)
+	dataLen, _dataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataLen", 16)
 	_ = dataLen
 	if _dataLenErr != nil {
 		return nil, errors.Wrap(_dataLenErr, "Error parsing 'dataLen' field of AdsDiscoveryBlockFingerprint")
@@ -192,7 +192,7 @@ func (m *_AdsDiscoveryBlockFingerprint) SerializeWithWriteBuffer(ctx context.Con
 
 		// Implicit Field (dataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataLen := uint16(uint16(len(m.GetData())))
-		_dataLenErr := writeBuffer.WriteUint16("dataLen", 16, uint16((dataLen)))
+		_dataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLen", 16, uint16((dataLen)))
 		if _dataLenErr != nil {
 			return errors.Wrap(_dataLenErr, "Error serializing 'dataLen' field")
 		}

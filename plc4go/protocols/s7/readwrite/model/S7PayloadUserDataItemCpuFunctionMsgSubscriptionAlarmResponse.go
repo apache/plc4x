@@ -198,14 +198,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer
 	_ = currentPos
 
 	// Simple Field (result)
-	_result, _resultErr := readBuffer.ReadUint8("result", 8)
+	_result, _resultErr := /*TODO: migrate me*/ readBuffer.ReadUint8("result", 8)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 	}
 	result := _result
 
 	// Simple Field (reserved01)
-	_reserved01, _reserved01Err := readBuffer.ReadUint8("reserved01", 8)
+	_reserved01, _reserved01Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved01", 8)
 	if _reserved01Err != nil {
 		return nil, errors.Wrap(_reserved01Err, "Error parsing 'reserved01' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 	}
@@ -225,14 +225,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer
 	}
 
 	// Simple Field (reserved02)
-	_reserved02, _reserved02Err := readBuffer.ReadUint8("reserved02", 8)
+	_reserved02, _reserved02Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved02", 8)
 	if _reserved02Err != nil {
 		return nil, errors.Wrap(_reserved02Err, "Error parsing 'reserved02' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 	}
 	reserved02 := _reserved02
 
 	// Simple Field (reserved03)
-	_reserved03, _reserved03Err := readBuffer.ReadUint8("reserved03", 8)
+	_reserved03, _reserved03Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved03", 8)
 	if _reserved03Err != nil {
 		return nil, errors.Wrap(_reserved03Err, "Error parsing 'reserved03' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
 	}
@@ -275,14 +275,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 
 		// Simple Field (result)
 		result := uint8(m.GetResult())
-		_resultErr := writeBuffer.WriteUint8("result", 8, uint8((result)))
+		_resultErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("result", 8, uint8((result)))
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (reserved01)
 		reserved01 := uint8(m.GetReserved01())
-		_reserved01Err := writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
+		_reserved01Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
 		if _reserved01Err != nil {
 			return errors.Wrap(_reserved01Err, "Error serializing 'reserved01' field")
 		}
@@ -301,14 +301,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse) Serializ
 
 		// Simple Field (reserved02)
 		reserved02 := uint8(m.GetReserved02())
-		_reserved02Err := writeBuffer.WriteUint8("reserved02", 8, uint8((reserved02)))
+		_reserved02Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved02", 8, uint8((reserved02)))
 		if _reserved02Err != nil {
 			return errors.Wrap(_reserved02Err, "Error serializing 'reserved02' field")
 		}
 
 		// Simple Field (reserved03)
 		reserved03 := uint8(m.GetReserved03())
-		_reserved03Err := writeBuffer.WriteUint8("reserved03", 8, uint8((reserved03)))
+		_reserved03Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved03", 8, uint8((reserved03)))
 		if _reserved03Err != nil {
 			return errors.Wrap(_reserved03Err, "Error serializing 'reserved03' field")
 		}

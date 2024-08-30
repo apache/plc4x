@@ -184,7 +184,7 @@ func AddNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (noOfNodesToAdd)
-	_noOfNodesToAdd, _noOfNodesToAddErr := readBuffer.ReadInt32("noOfNodesToAdd", 32)
+	_noOfNodesToAdd, _noOfNodesToAddErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToAdd", 32)
 	if _noOfNodesToAddErr != nil {
 		return nil, errors.Wrap(_noOfNodesToAddErr, "Error parsing 'noOfNodesToAdd' field of AddNodesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_AddNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfNodesToAdd)
 		noOfNodesToAdd := int32(m.GetNoOfNodesToAdd())
-		_noOfNodesToAddErr := writeBuffer.WriteInt32("noOfNodesToAdd", 32, int32((noOfNodesToAdd)))
+		_noOfNodesToAddErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToAdd", 32, int32((noOfNodesToAdd)))
 		if _noOfNodesToAddErr != nil {
 			return errors.Wrap(_noOfNodesToAddErr, "Error serializing 'noOfNodesToAdd' field")
 		}

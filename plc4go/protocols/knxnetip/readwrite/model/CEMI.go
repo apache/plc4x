@@ -123,7 +123,7 @@ func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size 
 	_ = currentPos
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode, _messageCodeErr := readBuffer.ReadUint8("messageCode", 8)
+	messageCode, _messageCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageCode", 8)
 	if _messageCodeErr != nil {
 		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field of CEMI")
 	}
@@ -215,7 +215,7 @@ func (pm *_CEMI) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Discriminator Field (messageCode) (Used as input to a switch field)
 	messageCode := uint8(child.GetMessageCode())
-	_messageCodeErr := writeBuffer.WriteUint8("messageCode", 8, uint8((messageCode)))
+	_messageCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("messageCode", 8, uint8((messageCode)))
 
 	if _messageCodeErr != nil {
 		return errors.Wrap(_messageCodeErr, "Error serializing 'messageCode' field")

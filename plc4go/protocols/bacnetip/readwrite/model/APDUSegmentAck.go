@@ -193,7 +193,7 @@ func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUSegmentAck")
 		}
@@ -208,35 +208,35 @@ func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (negativeAck)
-	_negativeAck, _negativeAckErr := readBuffer.ReadBit("negativeAck")
+	_negativeAck, _negativeAckErr := /*TODO: migrate me*/ readBuffer.ReadBit("negativeAck")
 	if _negativeAckErr != nil {
 		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field of APDUSegmentAck")
 	}
 	negativeAck := _negativeAck
 
 	// Simple Field (server)
-	_server, _serverErr := readBuffer.ReadBit("server")
+	_server, _serverErr := /*TODO: migrate me*/ readBuffer.ReadBit("server")
 	if _serverErr != nil {
 		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUSegmentAck")
 	}
 	server := _server
 
 	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := readBuffer.ReadUint8("originalInvokeId", 8)
+	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
 	if _originalInvokeIdErr != nil {
 		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUSegmentAck")
 	}
 	originalInvokeId := _originalInvokeId
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of APDUSegmentAck")
 	}
 	sequenceNumber := _sequenceNumber
 
 	// Simple Field (actualWindowSize)
-	_actualWindowSize, _actualWindowSizeErr := readBuffer.ReadUint8("actualWindowSize", 8)
+	_actualWindowSize, _actualWindowSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("actualWindowSize", 8)
 	if _actualWindowSizeErr != nil {
 		return nil, errors.Wrap(_actualWindowSizeErr, "Error parsing 'actualWindowSize' field of APDUSegmentAck")
 	}
@@ -290,7 +290,7 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -298,35 +298,35 @@ func (m *_APDUSegmentAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (negativeAck)
 		negativeAck := bool(m.GetNegativeAck())
-		_negativeAckErr := writeBuffer.WriteBit("negativeAck", (negativeAck))
+		_negativeAckErr := /*TODO: migrate me*/ writeBuffer.WriteBit("negativeAck", (negativeAck))
 		if _negativeAckErr != nil {
 			return errors.Wrap(_negativeAckErr, "Error serializing 'negativeAck' field")
 		}
 
 		// Simple Field (server)
 		server := bool(m.GetServer())
-		_serverErr := writeBuffer.WriteBit("server", (server))
+		_serverErr := /*TODO: migrate me*/ writeBuffer.WriteBit("server", (server))
 		if _serverErr != nil {
 			return errors.Wrap(_serverErr, "Error serializing 'server' field")
 		}
 
 		// Simple Field (originalInvokeId)
 		originalInvokeId := uint8(m.GetOriginalInvokeId())
-		_originalInvokeIdErr := writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
+		_originalInvokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("originalInvokeId", 8, uint8((originalInvokeId)))
 		if _originalInvokeIdErr != nil {
 			return errors.Wrap(_originalInvokeIdErr, "Error serializing 'originalInvokeId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
+		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (actualWindowSize)
 		actualWindowSize := uint8(m.GetActualWindowSize())
-		_actualWindowSizeErr := writeBuffer.WriteUint8("actualWindowSize", 8, uint8((actualWindowSize)))
+		_actualWindowSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("actualWindowSize", 8, uint8((actualWindowSize)))
 		if _actualWindowSizeErr != nil {
 			return errors.Wrap(_actualWindowSizeErr, "Error serializing 'actualWindowSize' field")
 		}

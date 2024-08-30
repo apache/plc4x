@@ -120,7 +120,7 @@ func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
-	functionCode, _functionCodeErr := readBuffer.ReadUint8("functionCode", 8)
+	functionCode, _functionCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionCode", 8)
 	if _functionCodeErr != nil {
 		return nil, errors.Wrap(_functionCodeErr, "Error parsing 'functionCode' field of DF1RequestCommand")
 	}
@@ -168,7 +168,7 @@ func (pm *_DF1RequestCommand) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Discriminator Field (functionCode) (Used as input to a switch field)
 	functionCode := uint8(child.GetFunctionCode())
-	_functionCodeErr := writeBuffer.WriteUint8("functionCode", 8, uint8((functionCode)))
+	_functionCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionCode", 8, uint8((functionCode)))
 
 	if _functionCodeErr != nil {
 		return errors.Wrap(_functionCodeErr, "Error serializing 'functionCode' field")

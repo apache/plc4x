@@ -153,7 +153,7 @@ func NLMIAmRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.
 		_destinationNetworkAddressesLength := uint16(apduLength) - uint16(uint16(1))
 		_destinationNetworkAddressesEndPos := positionAware.GetPos() + uint16(_destinationNetworkAddressesLength)
 		for positionAware.GetPos() < _destinationNetworkAddressesEndPos {
-			_item, _err := readBuffer.ReadUint16("", 16)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddresses' field of NLMIAmRouterToNetwork")
 			}
@@ -203,7 +203,7 @@ func (m *_NLMIAmRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 		for _curItem, _element := range m.GetDestinationNetworkAddresses() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddresses' field")
 			}

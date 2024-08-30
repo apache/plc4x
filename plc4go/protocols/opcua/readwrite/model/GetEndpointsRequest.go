@@ -237,7 +237,7 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
+	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
 	if _noOfLocaleIdsErr != nil {
 		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of GetEndpointsRequest")
 	}
@@ -271,7 +271,7 @@ func GetEndpointsRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfProfileUris)
-	_noOfProfileUris, _noOfProfileUrisErr := readBuffer.ReadInt32("noOfProfileUris", 32)
+	_noOfProfileUris, _noOfProfileUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfProfileUris", 32)
 	if _noOfProfileUrisErr != nil {
 		return nil, errors.Wrap(_noOfProfileUrisErr, "Error parsing 'noOfProfileUris' field of GetEndpointsRequest")
 	}
@@ -366,7 +366,7 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
+		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -390,7 +390,7 @@ func (m *_GetEndpointsRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfProfileUris)
 		noOfProfileUris := int32(m.GetNoOfProfileUris())
-		_noOfProfileUrisErr := writeBuffer.WriteInt32("noOfProfileUris", 32, int32((noOfProfileUris)))
+		_noOfProfileUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfProfileUris", 32, int32((noOfProfileUris)))
 		if _noOfProfileUrisErr != nil {
 			return errors.Wrap(_noOfProfileUrisErr, "Error serializing 'noOfProfileUris' field")
 		}

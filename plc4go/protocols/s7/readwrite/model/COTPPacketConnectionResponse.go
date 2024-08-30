@@ -167,14 +167,14 @@ func COTPPacketConnectionResponseParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (destinationReference)
-	_destinationReference, _destinationReferenceErr := readBuffer.ReadUint16("destinationReference", 16)
+	_destinationReference, _destinationReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationReference", 16)
 	if _destinationReferenceErr != nil {
 		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field of COTPPacketConnectionResponse")
 	}
 	destinationReference := _destinationReference
 
 	// Simple Field (sourceReference)
-	_sourceReference, _sourceReferenceErr := readBuffer.ReadUint16("sourceReference", 16)
+	_sourceReference, _sourceReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sourceReference", 16)
 	if _sourceReferenceErr != nil {
 		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field of COTPPacketConnectionResponse")
 	}
@@ -230,14 +230,14 @@ func (m *_COTPPacketConnectionResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (destinationReference)
 		destinationReference := uint16(m.GetDestinationReference())
-		_destinationReferenceErr := writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
+		_destinationReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationReference", 16, uint16((destinationReference)))
 		if _destinationReferenceErr != nil {
 			return errors.Wrap(_destinationReferenceErr, "Error serializing 'destinationReference' field")
 		}
 
 		// Simple Field (sourceReference)
 		sourceReference := uint16(m.GetSourceReference())
-		_sourceReferenceErr := writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
+		_sourceReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceReference", 16, uint16((sourceReference)))
 		if _sourceReferenceErr != nil {
 			return errors.Wrap(_sourceReferenceErr, "Error serializing 'sourceReference' field")
 		}

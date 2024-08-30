@@ -161,14 +161,14 @@ func ModbusPDUDiagnosticRequestParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (subFunction)
-	_subFunction, _subFunctionErr := readBuffer.ReadUint16("subFunction", 16)
+	_subFunction, _subFunctionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("subFunction", 16)
 	if _subFunctionErr != nil {
 		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field of ModbusPDUDiagnosticRequest")
 	}
 	subFunction := _subFunction
 
 	// Simple Field (data)
-	_data, _dataErr := readBuffer.ReadUint16("data", 16)
+	_data, _dataErr := /*TODO: migrate me*/ readBuffer.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of ModbusPDUDiagnosticRequest")
 	}
@@ -208,14 +208,14 @@ func (m *_ModbusPDUDiagnosticRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (subFunction)
 		subFunction := uint16(m.GetSubFunction())
-		_subFunctionErr := writeBuffer.WriteUint16("subFunction", 16, uint16((subFunction)))
+		_subFunctionErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("subFunction", 16, uint16((subFunction)))
 		if _subFunctionErr != nil {
 			return errors.Wrap(_subFunctionErr, "Error serializing 'subFunction' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.GetData())
-		_dataErr := writeBuffer.WriteUint16("data", 16, uint16((data)))
+		_dataErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("data", 16, uint16((data)))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}

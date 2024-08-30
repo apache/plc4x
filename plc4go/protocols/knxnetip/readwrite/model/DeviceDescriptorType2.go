@@ -205,42 +205,42 @@ func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (manufacturerId)
-	_manufacturerId, _manufacturerIdErr := readBuffer.ReadUint16("manufacturerId", 16)
+	_manufacturerId, _manufacturerIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("manufacturerId", 16)
 	if _manufacturerIdErr != nil {
 		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field of DeviceDescriptorType2")
 	}
 	manufacturerId := _manufacturerId
 
 	// Simple Field (deviceType)
-	_deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
+	_deviceType, _deviceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceType", 16)
 	if _deviceTypeErr != nil {
 		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of DeviceDescriptorType2")
 	}
 	deviceType := _deviceType
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of DeviceDescriptorType2")
 	}
 	version := _version
 
 	// Simple Field (readSupported)
-	_readSupported, _readSupportedErr := readBuffer.ReadBit("readSupported")
+	_readSupported, _readSupportedErr := /*TODO: migrate me*/ readBuffer.ReadBit("readSupported")
 	if _readSupportedErr != nil {
 		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field of DeviceDescriptorType2")
 	}
 	readSupported := _readSupported
 
 	// Simple Field (writeSupported)
-	_writeSupported, _writeSupportedErr := readBuffer.ReadBit("writeSupported")
+	_writeSupported, _writeSupportedErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeSupported")
 	if _writeSupportedErr != nil {
 		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field of DeviceDescriptorType2")
 	}
 	writeSupported := _writeSupported
 
 	// Simple Field (logicalTagBase)
-	_logicalTagBase, _logicalTagBaseErr := readBuffer.ReadUint8("logicalTagBase", 6)
+	_logicalTagBase, _logicalTagBaseErr := /*TODO: migrate me*/ readBuffer.ReadUint8("logicalTagBase", 6)
 	if _logicalTagBaseErr != nil {
 		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field of DeviceDescriptorType2")
 	}
@@ -336,42 +336,42 @@ func (m *_DeviceDescriptorType2) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (manufacturerId)
 	manufacturerId := uint16(m.GetManufacturerId())
-	_manufacturerIdErr := writeBuffer.WriteUint16("manufacturerId", 16, uint16((manufacturerId)))
+	_manufacturerIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("manufacturerId", 16, uint16((manufacturerId)))
 	if _manufacturerIdErr != nil {
 		return errors.Wrap(_manufacturerIdErr, "Error serializing 'manufacturerId' field")
 	}
 
 	// Simple Field (deviceType)
 	deviceType := uint16(m.GetDeviceType())
-	_deviceTypeErr := writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
+	_deviceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
 	if _deviceTypeErr != nil {
 		return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
 	}
 
 	// Simple Field (version)
 	version := uint8(m.GetVersion())
-	_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
+	_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("version", 8, uint8((version)))
 	if _versionErr != nil {
 		return errors.Wrap(_versionErr, "Error serializing 'version' field")
 	}
 
 	// Simple Field (readSupported)
 	readSupported := bool(m.GetReadSupported())
-	_readSupportedErr := writeBuffer.WriteBit("readSupported", (readSupported))
+	_readSupportedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("readSupported", (readSupported))
 	if _readSupportedErr != nil {
 		return errors.Wrap(_readSupportedErr, "Error serializing 'readSupported' field")
 	}
 
 	// Simple Field (writeSupported)
 	writeSupported := bool(m.GetWriteSupported())
-	_writeSupportedErr := writeBuffer.WriteBit("writeSupported", (writeSupported))
+	_writeSupportedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeSupported", (writeSupported))
 	if _writeSupportedErr != nil {
 		return errors.Wrap(_writeSupportedErr, "Error serializing 'writeSupported' field")
 	}
 
 	// Simple Field (logicalTagBase)
 	logicalTagBase := uint8(m.GetLogicalTagBase())
-	_logicalTagBaseErr := writeBuffer.WriteUint8("logicalTagBase", 6, uint8((logicalTagBase)))
+	_logicalTagBaseErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalTagBase", 6, uint8((logicalTagBase)))
 	if _logicalTagBaseErr != nil {
 		return errors.Wrap(_logicalTagBaseErr, "Error serializing 'logicalTagBase' field")
 	}

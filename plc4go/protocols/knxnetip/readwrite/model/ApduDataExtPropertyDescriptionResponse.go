@@ -228,28 +228,28 @@ func ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx context.Context, 
 	_ = currentPos
 
 	// Simple Field (objectIndex)
-	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
+	_objectIndex, _objectIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	propertyId := _propertyId
 
 	// Simple Field (index)
-	_index, _indexErr := readBuffer.ReadUint8("index", 8)
+	_index, _indexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("index", 8)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyDescriptionResponse")
 	}
 	index := _index
 
 	// Simple Field (writeEnabled)
-	_writeEnabled, _writeEnabledErr := readBuffer.ReadBit("writeEnabled")
+	_writeEnabled, _writeEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeEnabled")
 	if _writeEnabledErr != nil {
 		return nil, errors.Wrap(_writeEnabledErr, "Error parsing 'writeEnabled' field of ApduDataExtPropertyDescriptionResponse")
 	}
@@ -258,7 +258,7 @@ func ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx context.Context, 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataExtPropertyDescriptionResponse")
 		}
@@ -288,7 +288,7 @@ func ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx context.Context, 
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 4)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataExtPropertyDescriptionResponse")
 		}
@@ -303,7 +303,7 @@ func ApduDataExtPropertyDescriptionResponseParseWithBuffer(ctx context.Context, 
 	}
 
 	// Simple Field (maxNrOfElements)
-	_maxNrOfElements, _maxNrOfElementsErr := readBuffer.ReadUint16("maxNrOfElements", 12)
+	_maxNrOfElements, _maxNrOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("maxNrOfElements", 12)
 	if _maxNrOfElementsErr != nil {
 		return nil, errors.Wrap(_maxNrOfElementsErr, "Error parsing 'maxNrOfElements' field of ApduDataExtPropertyDescriptionResponse")
 	}
@@ -379,28 +379,28 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
+		_objectIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
+		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (index)
 		index := uint8(m.GetIndex())
-		_indexErr := writeBuffer.WriteUint8("index", 8, uint8((index)))
+		_indexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("index", 8, uint8((index)))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
 		// Simple Field (writeEnabled)
 		writeEnabled := bool(m.GetWriteEnabled())
-		_writeEnabledErr := writeBuffer.WriteBit("writeEnabled", (writeEnabled))
+		_writeEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeEnabled", (writeEnabled))
 		if _writeEnabledErr != nil {
 			return errors.Wrap(_writeEnabledErr, "Error serializing 'writeEnabled' field")
 		}
@@ -415,7 +415,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -443,7 +443,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -451,7 +451,7 @@ func (m *_ApduDataExtPropertyDescriptionResponse) SerializeWithWriteBuffer(ctx c
 
 		// Simple Field (maxNrOfElements)
 		maxNrOfElements := uint16(m.GetMaxNrOfElements())
-		_maxNrOfElementsErr := writeBuffer.WriteUint16("maxNrOfElements", 12, uint16((maxNrOfElements)))
+		_maxNrOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("maxNrOfElements", 12, uint16((maxNrOfElements)))
 		if _maxNrOfElementsErr != nil {
 			return errors.Wrap(_maxNrOfElementsErr, "Error serializing 'maxNrOfElements' field")
 		}

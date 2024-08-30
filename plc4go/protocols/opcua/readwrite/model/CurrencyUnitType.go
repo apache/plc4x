@@ -175,14 +175,14 @@ func CurrencyUnitTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Simple Field (numericCode)
-	_numericCode, _numericCodeErr := readBuffer.ReadInt16("numericCode", 16)
+	_numericCode, _numericCodeErr := /*TODO: migrate me*/ readBuffer.ReadInt16("numericCode", 16)
 	if _numericCodeErr != nil {
 		return nil, errors.Wrap(_numericCodeErr, "Error parsing 'numericCode' field of CurrencyUnitType")
 	}
 	numericCode := _numericCode
 
 	// Simple Field (exponent)
-	_exponent, _exponentErr := readBuffer.ReadInt8("exponent", 8)
+	_exponent, _exponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("exponent", 8)
 	if _exponentErr != nil {
 		return nil, errors.Wrap(_exponentErr, "Error parsing 'exponent' field of CurrencyUnitType")
 	}
@@ -250,14 +250,14 @@ func (m *_CurrencyUnitType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (numericCode)
 		numericCode := int16(m.GetNumericCode())
-		_numericCodeErr := writeBuffer.WriteInt16("numericCode", 16, int16((numericCode)))
+		_numericCodeErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("numericCode", 16, int16((numericCode)))
 		if _numericCodeErr != nil {
 			return errors.Wrap(_numericCodeErr, "Error serializing 'numericCode' field")
 		}
 
 		// Simple Field (exponent)
 		exponent := int8(m.GetExponent())
-		_exponentErr := writeBuffer.WriteInt8("exponent", 8, int8((exponent)))
+		_exponentErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("exponent", 8, int8((exponent)))
 		if _exponentErr != nil {
 			return errors.Wrap(_exponentErr, "Error serializing 'exponent' field")
 		}

@@ -123,7 +123,7 @@ func ApduDataExtParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
-	extApciType, _extApciTypeErr := readBuffer.ReadUint8("extApciType", 6)
+	extApciType, _extApciTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extApciType", 6)
 	if _extApciTypeErr != nil {
 		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field of ApduDataExt")
 	}
@@ -251,7 +251,7 @@ func (pm *_ApduDataExt) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (extApciType) (Used as input to a switch field)
 	extApciType := uint8(child.GetExtApciType())
-	_extApciTypeErr := writeBuffer.WriteUint8("extApciType", 6, uint8((extApciType)))
+	_extApciTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extApciType", 6, uint8((extApciType)))
 
 	if _extApciTypeErr != nil {
 		return errors.Wrap(_extApciTypeErr, "Error serializing 'extApciType' field")

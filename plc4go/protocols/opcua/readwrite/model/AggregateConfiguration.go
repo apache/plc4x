@@ -197,7 +197,7 @@ func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 6)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AggregateConfiguration")
 		}
@@ -212,28 +212,28 @@ func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (treatUncertainAsBad)
-	_treatUncertainAsBad, _treatUncertainAsBadErr := readBuffer.ReadBit("treatUncertainAsBad")
+	_treatUncertainAsBad, _treatUncertainAsBadErr := /*TODO: migrate me*/ readBuffer.ReadBit("treatUncertainAsBad")
 	if _treatUncertainAsBadErr != nil {
 		return nil, errors.Wrap(_treatUncertainAsBadErr, "Error parsing 'treatUncertainAsBad' field of AggregateConfiguration")
 	}
 	treatUncertainAsBad := _treatUncertainAsBad
 
 	// Simple Field (useServerCapabilitiesDefaults)
-	_useServerCapabilitiesDefaults, _useServerCapabilitiesDefaultsErr := readBuffer.ReadBit("useServerCapabilitiesDefaults")
+	_useServerCapabilitiesDefaults, _useServerCapabilitiesDefaultsErr := /*TODO: migrate me*/ readBuffer.ReadBit("useServerCapabilitiesDefaults")
 	if _useServerCapabilitiesDefaultsErr != nil {
 		return nil, errors.Wrap(_useServerCapabilitiesDefaultsErr, "Error parsing 'useServerCapabilitiesDefaults' field of AggregateConfiguration")
 	}
 	useServerCapabilitiesDefaults := _useServerCapabilitiesDefaults
 
 	// Simple Field (percentDataBad)
-	_percentDataBad, _percentDataBadErr := readBuffer.ReadUint8("percentDataBad", 8)
+	_percentDataBad, _percentDataBadErr := /*TODO: migrate me*/ readBuffer.ReadUint8("percentDataBad", 8)
 	if _percentDataBadErr != nil {
 		return nil, errors.Wrap(_percentDataBadErr, "Error parsing 'percentDataBad' field of AggregateConfiguration")
 	}
 	percentDataBad := _percentDataBad
 
 	// Simple Field (percentDataGood)
-	_percentDataGood, _percentDataGoodErr := readBuffer.ReadUint8("percentDataGood", 8)
+	_percentDataGood, _percentDataGoodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("percentDataGood", 8)
 	if _percentDataGoodErr != nil {
 		return nil, errors.Wrap(_percentDataGoodErr, "Error parsing 'percentDataGood' field of AggregateConfiguration")
 	}
@@ -242,7 +242,7 @@ func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AggregateConfiguration")
 		}
@@ -257,7 +257,7 @@ func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (useSlopedExtrapolation)
-	_useSlopedExtrapolation, _useSlopedExtrapolationErr := readBuffer.ReadBit("useSlopedExtrapolation")
+	_useSlopedExtrapolation, _useSlopedExtrapolationErr := /*TODO: migrate me*/ readBuffer.ReadBit("useSlopedExtrapolation")
 	if _useSlopedExtrapolationErr != nil {
 		return nil, errors.Wrap(_useSlopedExtrapolationErr, "Error parsing 'useSlopedExtrapolation' field of AggregateConfiguration")
 	}
@@ -310,7 +310,7 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -318,28 +318,28 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (treatUncertainAsBad)
 		treatUncertainAsBad := bool(m.GetTreatUncertainAsBad())
-		_treatUncertainAsBadErr := writeBuffer.WriteBit("treatUncertainAsBad", (treatUncertainAsBad))
+		_treatUncertainAsBadErr := /*TODO: migrate me*/ writeBuffer.WriteBit("treatUncertainAsBad", (treatUncertainAsBad))
 		if _treatUncertainAsBadErr != nil {
 			return errors.Wrap(_treatUncertainAsBadErr, "Error serializing 'treatUncertainAsBad' field")
 		}
 
 		// Simple Field (useServerCapabilitiesDefaults)
 		useServerCapabilitiesDefaults := bool(m.GetUseServerCapabilitiesDefaults())
-		_useServerCapabilitiesDefaultsErr := writeBuffer.WriteBit("useServerCapabilitiesDefaults", (useServerCapabilitiesDefaults))
+		_useServerCapabilitiesDefaultsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("useServerCapabilitiesDefaults", (useServerCapabilitiesDefaults))
 		if _useServerCapabilitiesDefaultsErr != nil {
 			return errors.Wrap(_useServerCapabilitiesDefaultsErr, "Error serializing 'useServerCapabilitiesDefaults' field")
 		}
 
 		// Simple Field (percentDataBad)
 		percentDataBad := uint8(m.GetPercentDataBad())
-		_percentDataBadErr := writeBuffer.WriteUint8("percentDataBad", 8, uint8((percentDataBad)))
+		_percentDataBadErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("percentDataBad", 8, uint8((percentDataBad)))
 		if _percentDataBadErr != nil {
 			return errors.Wrap(_percentDataBadErr, "Error serializing 'percentDataBad' field")
 		}
 
 		// Simple Field (percentDataGood)
 		percentDataGood := uint8(m.GetPercentDataGood())
-		_percentDataGoodErr := writeBuffer.WriteUint8("percentDataGood", 8, uint8((percentDataGood)))
+		_percentDataGoodErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("percentDataGood", 8, uint8((percentDataGood)))
 		if _percentDataGoodErr != nil {
 			return errors.Wrap(_percentDataGoodErr, "Error serializing 'percentDataGood' field")
 		}
@@ -354,7 +354,7 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -362,7 +362,7 @@ func (m *_AggregateConfiguration) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (useSlopedExtrapolation)
 		useSlopedExtrapolation := bool(m.GetUseSlopedExtrapolation())
-		_useSlopedExtrapolationErr := writeBuffer.WriteBit("useSlopedExtrapolation", (useSlopedExtrapolation))
+		_useSlopedExtrapolationErr := /*TODO: migrate me*/ writeBuffer.WriteBit("useSlopedExtrapolation", (useSlopedExtrapolation))
 		if _useSlopedExtrapolationErr != nil {
 			return errors.Wrap(_useSlopedExtrapolationErr, "Error serializing 'useSlopedExtrapolation' field")
 		}

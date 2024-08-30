@@ -153,14 +153,14 @@ func RangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, iden
 	_ = currentPos
 
 	// Simple Field (low)
-	_low, _lowErr := readBuffer.ReadFloat64("low", 64)
+	_low, _lowErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("low", 64)
 	if _lowErr != nil {
 		return nil, errors.Wrap(_lowErr, "Error parsing 'low' field of Range")
 	}
 	low := _low
 
 	// Simple Field (high)
-	_high, _highErr := readBuffer.ReadFloat64("high", 64)
+	_high, _highErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("high", 64)
 	if _highErr != nil {
 		return nil, errors.Wrap(_highErr, "Error parsing 'high' field of Range")
 	}
@@ -200,14 +200,14 @@ func (m *_Range) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 		// Simple Field (low)
 		low := float64(m.GetLow())
-		_lowErr := writeBuffer.WriteFloat64("low", 64, (low))
+		_lowErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("low", 64, (low))
 		if _lowErr != nil {
 			return errors.Wrap(_lowErr, "Error serializing 'low' field")
 		}
 
 		// Simple Field (high)
 		high := float64(m.GetHigh())
-		_highErr := writeBuffer.WriteFloat64("high", 64, (high))
+		_highErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("high", 64, (high))
 		if _highErr != nil {
 			return errors.Wrap(_highErr, "Error serializing 'high' field")
 		}

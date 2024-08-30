@@ -202,7 +202,7 @@ func BrowseNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of BrowseNextRequest")
 		}
@@ -217,14 +217,14 @@ func BrowseNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (releaseContinuationPoints)
-	_releaseContinuationPoints, _releaseContinuationPointsErr := readBuffer.ReadBit("releaseContinuationPoints")
+	_releaseContinuationPoints, _releaseContinuationPointsErr := /*TODO: migrate me*/ readBuffer.ReadBit("releaseContinuationPoints")
 	if _releaseContinuationPointsErr != nil {
 		return nil, errors.Wrap(_releaseContinuationPointsErr, "Error parsing 'releaseContinuationPoints' field of BrowseNextRequest")
 	}
 	releaseContinuationPoints := _releaseContinuationPoints
 
 	// Simple Field (noOfContinuationPoints)
-	_noOfContinuationPoints, _noOfContinuationPointsErr := readBuffer.ReadInt32("noOfContinuationPoints", 32)
+	_noOfContinuationPoints, _noOfContinuationPointsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfContinuationPoints", 32)
 	if _noOfContinuationPointsErr != nil {
 		return nil, errors.Wrap(_noOfContinuationPointsErr, "Error parsing 'noOfContinuationPoints' field of BrowseNextRequest")
 	}
@@ -314,7 +314,7 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -322,14 +322,14 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (releaseContinuationPoints)
 		releaseContinuationPoints := bool(m.GetReleaseContinuationPoints())
-		_releaseContinuationPointsErr := writeBuffer.WriteBit("releaseContinuationPoints", (releaseContinuationPoints))
+		_releaseContinuationPointsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("releaseContinuationPoints", (releaseContinuationPoints))
 		if _releaseContinuationPointsErr != nil {
 			return errors.Wrap(_releaseContinuationPointsErr, "Error serializing 'releaseContinuationPoints' field")
 		}
 
 		// Simple Field (noOfContinuationPoints)
 		noOfContinuationPoints := int32(m.GetNoOfContinuationPoints())
-		_noOfContinuationPointsErr := writeBuffer.WriteInt32("noOfContinuationPoints", 32, int32((noOfContinuationPoints)))
+		_noOfContinuationPointsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfContinuationPoints", 32, int32((noOfContinuationPoints)))
 		if _noOfContinuationPointsErr != nil {
 			return errors.Wrap(_noOfContinuationPointsErr, "Error serializing 'noOfContinuationPoints' field")
 		}

@@ -184,7 +184,7 @@ func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfHistoryUpdateDetails)
-	_noOfHistoryUpdateDetails, _noOfHistoryUpdateDetailsErr := readBuffer.ReadInt32("noOfHistoryUpdateDetails", 32)
+	_noOfHistoryUpdateDetails, _noOfHistoryUpdateDetailsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfHistoryUpdateDetails", 32)
 	if _noOfHistoryUpdateDetailsErr != nil {
 		return nil, errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error parsing 'noOfHistoryUpdateDetails' field of HistoryUpdateRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfHistoryUpdateDetails)
 		noOfHistoryUpdateDetails := int32(m.GetNoOfHistoryUpdateDetails())
-		_noOfHistoryUpdateDetailsErr := writeBuffer.WriteInt32("noOfHistoryUpdateDetails", 32, int32((noOfHistoryUpdateDetails)))
+		_noOfHistoryUpdateDetailsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfHistoryUpdateDetails", 32, int32((noOfHistoryUpdateDetails)))
 		if _noOfHistoryUpdateDetailsErr != nil {
 			return errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error serializing 'noOfHistoryUpdateDetails' field")
 		}

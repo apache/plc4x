@@ -120,7 +120,7 @@ func ServiceIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
-	serviceType, _serviceTypeErr := readBuffer.ReadUint8("serviceType", 8)
+	serviceType, _serviceTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("serviceType", 8)
 	if _serviceTypeErr != nil {
 		return nil, errors.Wrap(_serviceTypeErr, "Error parsing 'serviceType' field of ServiceId")
 	}
@@ -180,7 +180,7 @@ func (pm *_ServiceId) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (serviceType) (Used as input to a switch field)
 	serviceType := uint8(child.GetServiceType())
-	_serviceTypeErr := writeBuffer.WriteUint8("serviceType", 8, uint8((serviceType)))
+	_serviceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("serviceType", 8, uint8((serviceType)))
 
 	if _serviceTypeErr != nil {
 		return errors.Wrap(_serviceTypeErr, "Error serializing 'serviceType' field")

@@ -169,7 +169,7 @@ func JsonDataSetMessageContentMaskParse(ctx context.Context, theBytes []byte) (J
 func JsonDataSetMessageContentMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (JsonDataSetMessageContentMask, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("JsonDataSetMessageContentMask", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("JsonDataSetMessageContentMask", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading JsonDataSetMessageContentMask")
 	}
@@ -192,7 +192,7 @@ func (e JsonDataSetMessageContentMask) Serialize() ([]byte, error) {
 func (e JsonDataSetMessageContentMask) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("JsonDataSetMessageContentMask", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("JsonDataSetMessageContentMask", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

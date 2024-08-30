@@ -141,7 +141,7 @@ func SecurityDataZoneIsolatedParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := readBuffer.ReadUint8("zoneNumber", 8)
+	_zoneNumber, _zoneNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("zoneNumber", 8)
 	if _zoneNumberErr != nil {
 		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneIsolated")
 	}
@@ -180,7 +180,7 @@ func (m *_SecurityDataZoneIsolated) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (zoneNumber)
 		zoneNumber := uint8(m.GetZoneNumber())
-		_zoneNumberErr := writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
+		_zoneNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("zoneNumber", 8, uint8((zoneNumber)))
 		if _zoneNumberErr != nil {
 			return errors.Wrap(_zoneNumberErr, "Error serializing 'zoneNumber' field")
 		}

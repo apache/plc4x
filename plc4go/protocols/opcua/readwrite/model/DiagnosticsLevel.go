@@ -127,7 +127,7 @@ func DiagnosticsLevelParse(ctx context.Context, theBytes []byte) (DiagnosticsLev
 func DiagnosticsLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticsLevel, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("DiagnosticsLevel", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("DiagnosticsLevel", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DiagnosticsLevel")
 	}
@@ -150,7 +150,7 @@ func (e DiagnosticsLevel) Serialize() ([]byte, error) {
 func (e DiagnosticsLevel) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("DiagnosticsLevel", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("DiagnosticsLevel", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

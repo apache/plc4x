@@ -43,12 +43,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	switch {
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadBit("value")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -57,7 +57,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcBOOL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -66,7 +66,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -75,7 +75,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -84,7 +84,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -93,7 +93,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -102,7 +102,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -114,12 +114,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_map := map[string]api.PlcValue{}
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 5)
+		dayOfMonth, _dayOfMonthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfMonth", 5)
 		if _dayOfMonthErr != nil {
 			return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 		}
@@ -127,12 +127,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = dayOfMonth // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (month)
-		month, _monthErr := readBuffer.ReadUint8("month", 4)
+		month, _monthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("month", 4)
 		if _monthErr != nil {
 			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
@@ -140,12 +140,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = month // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 1); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 1); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (year)
-		year, _yearErr := readBuffer.ReadUint8("year", 7)
+		year, _yearErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("year", 7)
 		if _yearErr != nil {
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
@@ -158,7 +158,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (day)
-		day, _dayErr := readBuffer.ReadUint8("day", 3)
+		day, _dayErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("day", 3)
 		if _dayErr != nil {
 			return nil, errors.Wrap(_dayErr, "Error parsing 'day' field")
 		}
@@ -166,7 +166,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = day // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (hour)
-		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
+		hour, _hourErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 5)
 		if _hourErr != nil {
 			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
@@ -174,12 +174,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = hour // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (minutes)
-		minutes, _minutesErr := readBuffer.ReadUint8("minutes", 6)
+		minutes, _minutesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 6)
 		if _minutesErr != nil {
 			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
@@ -187,12 +187,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = minutes // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (seconds)
-		seconds, _secondsErr := readBuffer.ReadUint8("seconds", 6)
+		seconds, _secondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 6)
 		if _secondsErr != nil {
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
@@ -202,7 +202,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadInt32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -211,7 +211,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -220,7 +220,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUDINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat32("value", 32)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -229,7 +229,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcREAL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadFloat64("value", 64)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadFloat64("value", 64)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -240,7 +240,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((10)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -256,7 +256,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (groupAddress)
 		var groupAddress []api.PlcValue
 		for i := 0; i < int((2)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("groupAddress")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("groupAddress")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -265,7 +265,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = groupAddress // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (disable)
-		disable, _disableErr := readBuffer.ReadBit("disable")
+		disable, _disableErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("disable")
 		if _disableErr != nil {
 			return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field")
 		}
@@ -273,12 +273,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = disable // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (pollingSoftNr)
-		pollingSoftNr, _pollingSoftNrErr := readBuffer.ReadUint8("pollingSoftNr", 4)
+		pollingSoftNr, _pollingSoftNrErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("pollingSoftNr", 4)
 		if _pollingSoftNrErr != nil {
 			return nil, errors.Wrap(_pollingSoftNrErr, "Error parsing 'pollingSoftNr' field")
 		}
@@ -290,7 +290,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((5)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -304,7 +304,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (year)
-		year, _yearErr := readBuffer.ReadUint8("year", 8)
+		year, _yearErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("year", 8)
 		if _yearErr != nil {
 			return nil, errors.Wrap(_yearErr, "Error parsing 'year' field")
 		}
@@ -312,12 +312,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = year // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (month)
-		month, _monthErr := readBuffer.ReadUint8("month", 4)
+		month, _monthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("month", 4)
 		if _monthErr != nil {
 			return nil, errors.Wrap(_monthErr, "Error parsing 'month' field")
 		}
@@ -325,12 +325,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = month // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 3); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 5)
+		dayOfMonth, _dayOfMonthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfMonth", 5)
 		if _dayOfMonthErr != nil {
 			return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field")
 		}
@@ -338,7 +338,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = dayOfMonth // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (dayOfWeek)
-		dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 3)
+		dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 3)
 		if _dayOfWeekErr != nil {
 			return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field")
 		}
@@ -346,7 +346,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = dayOfWeek // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (hour)
-		hour, _hourErr := readBuffer.ReadUint8("hour", 5)
+		hour, _hourErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 5)
 		if _hourErr != nil {
 			return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field")
 		}
@@ -354,12 +354,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = hour // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (minutes)
-		minutes, _minutesErr := readBuffer.ReadUint8("minutes", 6)
+		minutes, _minutesErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 6)
 		if _minutesErr != nil {
 			return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field")
 		}
@@ -367,12 +367,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = minutes // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 2); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (seconds)
-		seconds, _secondsErr := readBuffer.ReadUint8("seconds", 6)
+		seconds, _secondsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 6)
 		if _secondsErr != nil {
 			return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field")
 		}
@@ -380,7 +380,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = seconds // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (fault)
-		fault, _faultErr := readBuffer.ReadBit("fault")
+		fault, _faultErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("fault")
 		if _faultErr != nil {
 			return nil, errors.Wrap(_faultErr, "Error parsing 'fault' field")
 		}
@@ -388,7 +388,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = fault // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (workingDay)
-		workingDay, _workingDayErr := readBuffer.ReadBit("workingDay")
+		workingDay, _workingDayErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("workingDay")
 		if _workingDayErr != nil {
 			return nil, errors.Wrap(_workingDayErr, "Error parsing 'workingDay' field")
 		}
@@ -396,7 +396,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = workingDay // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noWd)
-		noWd, _noWdErr := readBuffer.ReadBit("noWd")
+		noWd, _noWdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noWd")
 		if _noWdErr != nil {
 			return nil, errors.Wrap(_noWdErr, "Error parsing 'noWd' field")
 		}
@@ -404,7 +404,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = noWd // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noYear)
-		noYear, _noYearErr := readBuffer.ReadBit("noYear")
+		noYear, _noYearErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noYear")
 		if _noYearErr != nil {
 			return nil, errors.Wrap(_noYearErr, "Error parsing 'noYear' field")
 		}
@@ -412,7 +412,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = noYear // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noDate)
-		noDate, _noDateErr := readBuffer.ReadBit("noDate")
+		noDate, _noDateErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noDate")
 		if _noDateErr != nil {
 			return nil, errors.Wrap(_noDateErr, "Error parsing 'noDate' field")
 		}
@@ -420,7 +420,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = noDate // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noDayOfWeek)
-		noDayOfWeek, _noDayOfWeekErr := readBuffer.ReadBit("noDayOfWeek")
+		noDayOfWeek, _noDayOfWeekErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noDayOfWeek")
 		if _noDayOfWeekErr != nil {
 			return nil, errors.Wrap(_noDayOfWeekErr, "Error parsing 'noDayOfWeek' field")
 		}
@@ -428,7 +428,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = noDayOfWeek // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (noTime)
-		noTime, _noTimeErr := readBuffer.ReadBit("noTime")
+		noTime, _noTimeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noTime")
 		if _noTimeErr != nil {
 			return nil, errors.Wrap(_noTimeErr, "Error parsing 'noTime' field")
 		}
@@ -436,7 +436,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = noTime // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (standardSummerTime)
-		standardSummerTime, _standardSummerTimeErr := readBuffer.ReadBit("standardSummerTime")
+		standardSummerTime, _standardSummerTimeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("standardSummerTime")
 		if _standardSummerTimeErr != nil {
 			return nil, errors.Wrap(_standardSummerTimeErr, "Error parsing 'standardSummerTime' field")
 		}
@@ -444,7 +444,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = standardSummerTime // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (qualityOfClock)
-		qualityOfClock, _qualityOfClockErr := readBuffer.ReadBit("qualityOfClock")
+		qualityOfClock, _qualityOfClockErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("qualityOfClock")
 		if _qualityOfClockErr != nil {
 			return nil, errors.Wrap(_qualityOfClockErr, "Error parsing 'qualityOfClock' field")
 		}
@@ -452,7 +452,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = qualityOfClock // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 		readBuffer.CloseContext("KnxProperty")
@@ -461,7 +461,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((1)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -474,7 +474,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((2)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -487,7 +487,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((3)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -500,7 +500,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((4)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -513,7 +513,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((5)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -526,7 +526,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((6)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -539,7 +539,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((7)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -552,7 +552,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((8)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -565,7 +565,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((9)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -578,7 +578,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((10)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -591,7 +591,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((11)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -604,7 +604,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((12)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -617,7 +617,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((13)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -630,7 +630,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((14)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -643,7 +643,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((15)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -656,7 +656,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((16)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -669,7 +669,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((17)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -682,7 +682,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((18)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -695,7 +695,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((19)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -708,7 +708,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int((20)); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -722,7 +722,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (magicNumber)
-		magicNumber, _magicNumberErr := readBuffer.ReadUint8("magicNumber", 5)
+		magicNumber, _magicNumberErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("magicNumber", 5)
 		if _magicNumberErr != nil {
 			return nil, errors.Wrap(_magicNumberErr, "Error parsing 'magicNumber' field")
 		}
@@ -730,7 +730,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = magicNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (versionNumber)
-		versionNumber, _versionNumberErr := readBuffer.ReadUint8("versionNumber", 5)
+		versionNumber, _versionNumberErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("versionNumber", 5)
 		if _versionNumberErr != nil {
 			return nil, errors.Wrap(_versionNumberErr, "Error parsing 'versionNumber' field")
 		}
@@ -738,7 +738,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = versionNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (revisionNumber)
-		revisionNumber, _revisionNumberErr := readBuffer.ReadUint8("revisionNumber", 6)
+		revisionNumber, _revisionNumberErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("revisionNumber", 6)
 		if _revisionNumberErr != nil {
 			return nil, errors.Wrap(_revisionNumberErr, "Error parsing 'revisionNumber' field")
 		}
@@ -751,7 +751,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_map := map[string]api.PlcValue{}
 
 		// Simple Field (logNumber)
-		logNumber, _logNumberErr := readBuffer.ReadUint8("logNumber", 8)
+		logNumber, _logNumberErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("logNumber", 8)
 		if _logNumberErr != nil {
 			return nil, errors.Wrap(_logNumberErr, "Error parsing 'logNumber' field")
 		}
@@ -759,7 +759,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = logNumber // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmPriority)
-		alarmPriority, _alarmPriorityErr := readBuffer.ReadUint8("alarmPriority", 8)
+		alarmPriority, _alarmPriorityErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("alarmPriority", 8)
 		if _alarmPriorityErr != nil {
 			return nil, errors.Wrap(_alarmPriorityErr, "Error parsing 'alarmPriority' field")
 		}
@@ -767,7 +767,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = alarmPriority // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (applicationArea)
-		applicationArea, _applicationAreaErr := readBuffer.ReadUint8("applicationArea", 8)
+		applicationArea, _applicationAreaErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("applicationArea", 8)
 		if _applicationAreaErr != nil {
 			return nil, errors.Wrap(_applicationAreaErr, "Error parsing 'applicationArea' field")
 		}
@@ -775,7 +775,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = applicationArea // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (errorClass)
-		errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
+		errorClass, _errorClassErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("errorClass", 8)
 		if _errorClassErr != nil {
 			return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field")
 		}
@@ -783,12 +783,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = errorClass // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 4); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 4); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (errorcodeSup)
-		errorcodeSup, _errorcodeSupErr := readBuffer.ReadBit("errorcodeSup")
+		errorcodeSup, _errorcodeSupErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("errorcodeSup")
 		if _errorcodeSupErr != nil {
 			return nil, errors.Wrap(_errorcodeSupErr, "Error parsing 'errorcodeSup' field")
 		}
@@ -796,7 +796,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = errorcodeSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmtextSup)
-		alarmtextSup, _alarmtextSupErr := readBuffer.ReadBit("alarmtextSup")
+		alarmtextSup, _alarmtextSupErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("alarmtextSup")
 		if _alarmtextSupErr != nil {
 			return nil, errors.Wrap(_alarmtextSupErr, "Error parsing 'alarmtextSup' field")
 		}
@@ -804,7 +804,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = alarmtextSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (timestampSup)
-		timestampSup, _timestampSupErr := readBuffer.ReadBit("timestampSup")
+		timestampSup, _timestampSupErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("timestampSup")
 		if _timestampSupErr != nil {
 			return nil, errors.Wrap(_timestampSupErr, "Error parsing 'timestampSup' field")
 		}
@@ -812,7 +812,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = timestampSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (ackSup)
-		ackSup, _ackSupErr := readBuffer.ReadBit("ackSup")
+		ackSup, _ackSupErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("ackSup")
 		if _ackSupErr != nil {
 			return nil, errors.Wrap(_ackSupErr, "Error parsing 'ackSup' field")
 		}
@@ -820,12 +820,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = ackSup // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 5); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 5); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (locked)
-		locked, _lockedErr := readBuffer.ReadBit("locked")
+		locked, _lockedErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("locked")
 		if _lockedErr != nil {
 			return nil, errors.Wrap(_lockedErr, "Error parsing 'locked' field")
 		}
@@ -833,7 +833,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = locked // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (alarmunack)
-		alarmunack, _alarmunackErr := readBuffer.ReadBit("alarmunack")
+		alarmunack, _alarmunackErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("alarmunack")
 		if _alarmunackErr != nil {
 			return nil, errors.Wrap(_alarmunackErr, "Error parsing 'alarmunack' field")
 		}
@@ -841,7 +841,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		_ = alarmunack // TODO: temporary till we fix TIME stuff in golang (see above in the template)
 
 		// Simple Field (inalarm)
-		inalarm, _inalarmErr := readBuffer.ReadBit("inalarm")
+		inalarm, _inalarmErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("inalarm")
 		if _inalarmErr != nil {
 			return nil, errors.Wrap(_inalarmErr, "Error parsing 'inalarm' field")
 		}
@@ -851,12 +851,12 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcStruct(_map), nil
 	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _, _err := readBuffer.ReadUint8("reserved", 7); _err != nil {
+		if _, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7); _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing reserved field")
 		}
 
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadBit("value")
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("value")
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -865,7 +865,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcBOOL(value), nil
 	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -874,7 +874,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcBYTE(value), nil
 	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint16("value", 16)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -883,7 +883,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcWORD(value), nil
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -892,7 +892,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return values.NewPlcUSINT(value), nil
 	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 		// Simple Field (value)
-		value, _valueErr := readBuffer.ReadUint8("value", 8)
+		value, _valueErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
 		if _valueErr != nil {
 			return nil, errors.Wrap(_valueErr, "Error parsing 'value' field")
 		}
@@ -903,7 +903,7 @@ func KnxPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		// Array Field (value)
 		var value []api.PlcValue
 		for i := 0; i < int(dataLengthInBytes); i++ {
-			_item, _itemErr := readBuffer.ReadByte("value")
+			_item, _itemErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("value")
 			if _itemErr != nil {
 				return nil, errors.Wrap(_itemErr, "Error parsing 'value' field")
 			}
@@ -940,128 +940,128 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	switch {
 	case propertyType == KnxPropertyDataType_PDT_CONTROL: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR: // SINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt8("value", 8, int8(value.GetInt8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_CHAR: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_INT: // INT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt16("value", 16, int16(value.GetInt16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT && dataLengthInBytes == uint8(4): // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_INT: // UINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_KNX_FLOAT: // REAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 16, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE: // Struct
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 1, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 1, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint8("year", 7, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("year", 7, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_TIME: // Struct
 		// Simple Field (day)
-		if _err := writeBuffer.WriteUint8("day", 3, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 3, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'day' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_LONG: // DINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteInt32("value", 32, int32(value.GetInt32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_UNSIGNED_LONG: // UDINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint32("value", 32, uint32(value.GetUint32())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_FLOAT: // REAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, value.GetFloat32()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_DOUBLE: // LREAL
 		// Simple Field (value)
-		if _err := writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteFloat64("value", 64, value.GetFloat64()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_CHAR_BLOCK: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1070,143 +1070,143 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		// Array Field (groupAddress)
 		for i := uint32(0); i < uint32((2)); i++ {
 			groupAddress := value.GetValue("groupAddress")
-			_itemErr := writeBuffer.WriteByte("", groupAddress.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", groupAddress.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 
 		// Simple Field (disable)
-		if _err := writeBuffer.WriteBit("disable", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("disable", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'disable' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x0))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x0))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (pollingSoftNr)
-		if _err := writeBuffer.WriteUint8("pollingSoftNr", 4, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("pollingSoftNr", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'pollingSoftNr' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SHORT_CHAR_BLOCK: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case propertyType == KnxPropertyDataType_PDT_DATE_TIME: // Struct
 		// Simple Field (year)
-		if _err := writeBuffer.WriteUint8("year", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("year", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'year' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (month)
-		if _err := writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 4, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'month' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 3, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (dayOfMonth)
-		if _err := writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfMonth", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfMonth' field")
 		}
 
 		// Simple Field (dayOfWeek)
-		if _err := writeBuffer.WriteUint8("dayOfWeek", 3, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 3, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'dayOfWeek' field")
 		}
 
 		// Simple Field (hour)
-		if _err := writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'hour' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (minutes)
-		if _err := writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("minutes", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'minutes' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (seconds)
-		if _err := writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("seconds", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'seconds' field")
 		}
 
 		// Simple Field (fault)
-		if _err := writeBuffer.WriteBit("fault", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("fault", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'fault' field")
 		}
 
 		// Simple Field (workingDay)
-		if _err := writeBuffer.WriteBit("workingDay", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("workingDay", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'workingDay' field")
 		}
 
 		// Simple Field (noWd)
-		if _err := writeBuffer.WriteBit("noWd", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("noWd", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noWd' field")
 		}
 
 		// Simple Field (noYear)
-		if _err := writeBuffer.WriteBit("noYear", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("noYear", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noYear' field")
 		}
 
 		// Simple Field (noDate)
-		if _err := writeBuffer.WriteBit("noDate", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("noDate", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDate' field")
 		}
 
 		// Simple Field (noDayOfWeek)
-		if _err := writeBuffer.WriteBit("noDayOfWeek", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("noDayOfWeek", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noDayOfWeek' field")
 		}
 
 		// Simple Field (noTime)
-		if _err := writeBuffer.WriteBit("noTime", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("noTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'noTime' field")
 		}
 
 		// Simple Field (standardSummerTime)
-		if _err := writeBuffer.WriteBit("standardSummerTime", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("standardSummerTime", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'standardSummerTime' field")
 		}
 
 		// Simple Field (qualityOfClock)
-		if _err := writeBuffer.WriteBit("qualityOfClock", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("qualityOfClock", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'qualityOfClock' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_01: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((1)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1214,7 +1214,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_02: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((2)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1222,7 +1222,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_03: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((3)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1230,7 +1230,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_04: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((4)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1238,7 +1238,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_05: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((5)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1246,7 +1246,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_06: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((6)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1254,7 +1254,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_07: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((7)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1262,7 +1262,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_08: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((8)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1270,7 +1270,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_09: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((9)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1278,7 +1278,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_10: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((10)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1286,7 +1286,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_11: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((11)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1294,7 +1294,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_12: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((12)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1302,7 +1302,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_13: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((13)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1310,7 +1310,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_14: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((14)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1318,7 +1318,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_15: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((15)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1326,7 +1326,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_16: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((16)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1334,7 +1334,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_17: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((17)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1342,7 +1342,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_18: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((18)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1350,7 +1350,7 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_19: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((19)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
@@ -1358,125 +1358,125 @@ func KnxPropertySerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	case propertyType == KnxPropertyDataType_PDT_GENERIC_20: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32((20)); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}
 		}
 	case propertyType == KnxPropertyDataType_PDT_VERSION: // Struct
 		// Simple Field (magicNumber)
-		if _err := writeBuffer.WriteUint8("magicNumber", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("magicNumber", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'magicNumber' field")
 		}
 
 		// Simple Field (versionNumber)
-		if _err := writeBuffer.WriteUint8("versionNumber", 5, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("versionNumber", 5, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'versionNumber' field")
 		}
 
 		// Simple Field (revisionNumber)
-		if _err := writeBuffer.WriteUint8("revisionNumber", 6, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("revisionNumber", 6, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'revisionNumber' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ALARM_INFO: // Struct
 		// Simple Field (logNumber)
-		if _err := writeBuffer.WriteUint8("logNumber", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("logNumber", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'logNumber' field")
 		}
 
 		// Simple Field (alarmPriority)
-		if _err := writeBuffer.WriteUint8("alarmPriority", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("alarmPriority", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmPriority' field")
 		}
 
 		// Simple Field (applicationArea)
-		if _err := writeBuffer.WriteUint8("applicationArea", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("applicationArea", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'applicationArea' field")
 		}
 
 		// Simple Field (errorClass)
-		if _err := writeBuffer.WriteUint8("errorClass", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorClass", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorClass' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 4, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (errorcodeSup)
-		if _err := writeBuffer.WriteBit("errorcodeSup", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("errorcodeSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'errorcodeSup' field")
 		}
 
 		// Simple Field (alarmtextSup)
-		if _err := writeBuffer.WriteBit("alarmtextSup", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("alarmtextSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmtextSup' field")
 		}
 
 		// Simple Field (timestampSup)
-		if _err := writeBuffer.WriteBit("timestampSup", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("timestampSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'timestampSup' field")
 		}
 
 		// Simple Field (ackSup)
-		if _err := writeBuffer.WriteBit("ackSup", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("ackSup", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'ackSup' field")
 		}
 
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 5, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 5, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (locked)
-		if _err := writeBuffer.WriteBit("locked", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("locked", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'locked' field")
 		}
 
 		// Simple Field (alarmunack)
-		if _err := writeBuffer.WriteBit("alarmunack", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("alarmunack", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'alarmunack' field")
 		}
 
 		// Simple Field (inalarm)
-		if _err := writeBuffer.WriteBit("inalarm", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("inalarm", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'inalarm' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_BINARY_INFORMATION: // BOOL
 		// Reserved Field (Just skip the bytes)
-		if _err := writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(uint8(0x00))); _err != nil {
 			return errors.Wrap(_err, "Error serializing reserved field")
 		}
 
 		// Simple Field (value)
-		if _err := writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteBit("value", value.GetBool()); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_BITSET8: // BYTE
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_BITSET16: // WORD
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint16("value", 16, uint16(value.GetUint16())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_ENUM8: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	case propertyType == KnxPropertyDataType_PDT_SCALING: // USINT
 		// Simple Field (value)
-		if _err := writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
+		if _err := /*TODO: migrate me*/ writeBuffer.WriteUint8("value", 8, uint8(value.GetUint8())); _err != nil {
 			return errors.Wrap(_err, "Error serializing 'value' field")
 		}
 	default: // List
 		// Array Field (value)
 		for i := uint32(0); i < uint32(m.DataLengthInBytes); i++ {
-			_itemErr := writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
+			_itemErr := /*TODO: migrate me*/ writeBuffer.WriteByte("", value.GetIndex(i).GetByte())
 			if _itemErr != nil {
 				return errors.Wrap(_itemErr, "Error serializing 'value' field")
 			}

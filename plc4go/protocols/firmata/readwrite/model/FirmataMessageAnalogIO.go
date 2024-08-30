@@ -156,7 +156,7 @@ func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
+	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 4)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataMessageAnalogIO")
 	}
@@ -178,7 +178,7 @@ func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadInt8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of FirmataMessageAnalogIO")
 			}
@@ -225,7 +225,7 @@ func (m *_FirmataMessageAnalogIO) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 4, uint8((pin)))
+		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 4, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
@@ -236,7 +236,7 @@ func (m *_FirmataMessageAnalogIO) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 		for _curItem, _element := range m.GetData() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteInt8("", 8, int8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("", 8, int8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'data' field")
 			}

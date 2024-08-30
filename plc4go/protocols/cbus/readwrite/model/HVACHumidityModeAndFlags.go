@@ -251,7 +251,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACHumidityModeAndFlags")
 		}
@@ -266,7 +266,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (auxiliaryLevel)
-	_auxiliaryLevel, _auxiliaryLevelErr := readBuffer.ReadBit("auxiliaryLevel")
+	_auxiliaryLevel, _auxiliaryLevelErr := /*TODO: migrate me*/ readBuffer.ReadBit("auxiliaryLevel")
 	if _auxiliaryLevelErr != nil {
 		return nil, errors.Wrap(_auxiliaryLevelErr, "Error parsing 'auxiliaryLevel' field of HVACHumidityModeAndFlags")
 	}
@@ -283,7 +283,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = isAuxLevelUsed
 
 	// Simple Field (guard)
-	_guard, _guardErr := readBuffer.ReadBit("guard")
+	_guard, _guardErr := /*TODO: migrate me*/ readBuffer.ReadBit("guard")
 	if _guardErr != nil {
 		return nil, errors.Wrap(_guardErr, "Error parsing 'guard' field of HVACHumidityModeAndFlags")
 	}
@@ -300,7 +300,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = isGuardEnabled
 
 	// Simple Field (setback)
-	_setback, _setbackErr := readBuffer.ReadBit("setback")
+	_setback, _setbackErr := /*TODO: migrate me*/ readBuffer.ReadBit("setback")
 	if _setbackErr != nil {
 		return nil, errors.Wrap(_setbackErr, "Error parsing 'setback' field of HVACHumidityModeAndFlags")
 	}
@@ -317,7 +317,7 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = isSetbackEnabled
 
 	// Simple Field (level)
-	_level, _levelErr := readBuffer.ReadBit("level")
+	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadBit("level")
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of HVACHumidityModeAndFlags")
 	}
@@ -388,7 +388,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -396,7 +396,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (auxiliaryLevel)
 	auxiliaryLevel := bool(m.GetAuxiliaryLevel())
-	_auxiliaryLevelErr := writeBuffer.WriteBit("auxiliaryLevel", (auxiliaryLevel))
+	_auxiliaryLevelErr := /*TODO: migrate me*/ writeBuffer.WriteBit("auxiliaryLevel", (auxiliaryLevel))
 	if _auxiliaryLevelErr != nil {
 		return errors.Wrap(_auxiliaryLevelErr, "Error serializing 'auxiliaryLevel' field")
 	}
@@ -415,7 +415,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (guard)
 	guard := bool(m.GetGuard())
-	_guardErr := writeBuffer.WriteBit("guard", (guard))
+	_guardErr := /*TODO: migrate me*/ writeBuffer.WriteBit("guard", (guard))
 	if _guardErr != nil {
 		return errors.Wrap(_guardErr, "Error serializing 'guard' field")
 	}
@@ -434,7 +434,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (setback)
 	setback := bool(m.GetSetback())
-	_setbackErr := writeBuffer.WriteBit("setback", (setback))
+	_setbackErr := /*TODO: migrate me*/ writeBuffer.WriteBit("setback", (setback))
 	if _setbackErr != nil {
 		return errors.Wrap(_setbackErr, "Error serializing 'setback' field")
 	}
@@ -453,7 +453,7 @@ func (m *_HVACHumidityModeAndFlags) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (level)
 	level := bool(m.GetLevel())
-	_levelErr := writeBuffer.WriteBit("level", (level))
+	_levelErr := /*TODO: migrate me*/ writeBuffer.WriteBit("level", (level))
 	if _levelErr != nil {
 		return errors.Wrap(_levelErr, "Error serializing 'level' field")
 	}

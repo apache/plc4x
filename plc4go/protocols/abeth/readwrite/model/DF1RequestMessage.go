@@ -175,14 +175,14 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := readBuffer.ReadUint8("destinationAddress", 8)
+	_destinationAddress, _destinationAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("destinationAddress", 8)
 	if _destinationAddressErr != nil {
 		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1RequestMessage")
 	}
 	destinationAddress := _destinationAddress
 
 	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := readBuffer.ReadUint8("sourceAddress", 8)
+	_sourceAddress, _sourceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sourceAddress", 8)
 	if _sourceAddressErr != nil {
 		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1RequestMessage")
 	}
@@ -191,7 +191,7 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DF1RequestMessage")
 		}
@@ -206,20 +206,20 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 8)
+	commandCode, _commandCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commandCode", 8)
 	if _commandCodeErr != nil {
 		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of DF1RequestMessage")
 	}
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1RequestMessage")
 	}
 	status := _status
 
 	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
+	_transactionCounter, _transactionCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionCounter", 16)
 	if _transactionCounterErr != nil {
 		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1RequestMessage")
 	}
@@ -269,14 +269,14 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Simple Field (destinationAddress)
 	destinationAddress := uint8(m.GetDestinationAddress())
-	_destinationAddressErr := writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
+	_destinationAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationAddress", 8, uint8((destinationAddress)))
 	if _destinationAddressErr != nil {
 		return errors.Wrap(_destinationAddressErr, "Error serializing 'destinationAddress' field")
 	}
 
 	// Simple Field (sourceAddress)
 	sourceAddress := uint8(m.GetSourceAddress())
-	_sourceAddressErr := writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
+	_sourceAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceAddress", 8, uint8((sourceAddress)))
 	if _sourceAddressErr != nil {
 		return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 	}
@@ -291,7 +291,7 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -299,7 +299,7 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
+	_commandCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
 
 	if _commandCodeErr != nil {
 		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
@@ -307,14 +307,14 @@ func (pm *_DF1RequestMessage) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Simple Field (status)
 	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
+	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
 	// Simple Field (transactionCounter)
 	transactionCounter := uint16(m.GetTransactionCounter())
-	_transactionCounterErr := writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
+	_transactionCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
 	if _transactionCounterErr != nil {
 		return errors.Wrap(_transactionCounterErr, "Error serializing 'transactionCounter' field")
 	}

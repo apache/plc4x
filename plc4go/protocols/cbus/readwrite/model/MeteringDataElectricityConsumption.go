@@ -141,7 +141,7 @@ func MeteringDataElectricityConsumptionParseWithBuffer(ctx context.Context, read
 	_ = currentPos
 
 	// Simple Field (kWhr)
-	_kWhr, _kWhrErr := readBuffer.ReadUint32("kWhr", 32)
+	_kWhr, _kWhrErr := /*TODO: migrate me*/ readBuffer.ReadUint32("kWhr", 32)
 	if _kWhrErr != nil {
 		return nil, errors.Wrap(_kWhrErr, "Error parsing 'kWhr' field of MeteringDataElectricityConsumption")
 	}
@@ -180,7 +180,7 @@ func (m *_MeteringDataElectricityConsumption) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (kWhr)
 		kWhr := uint32(m.GetKWhr())
-		_kWhrErr := writeBuffer.WriteUint32("kWhr", 32, uint32((kWhr)))
+		_kWhrErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("kWhr", 32, uint32((kWhr)))
 		if _kWhrErr != nil {
 			return errors.Wrap(_kWhrErr, "Error serializing 'kWhr' field")
 		}

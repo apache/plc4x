@@ -153,7 +153,7 @@ func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (keyRevision)
-	_keyRevision, _keyRevisionErr := readBuffer.ReadByte("keyRevision")
+	_keyRevision, _keyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("keyRevision")
 	if _keyRevisionErr != nil {
 		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of NLMUpdateKeyDistributionKey")
 	}
@@ -208,7 +208,7 @@ func (m *_NLMUpdateKeyDistributionKey) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (keyRevision)
 		keyRevision := byte(m.GetKeyRevision())
-		_keyRevisionErr := writeBuffer.WriteByte("keyRevision", (keyRevision))
+		_keyRevisionErr := /*TODO: migrate me*/ writeBuffer.WriteByte("keyRevision", (keyRevision))
 		if _keyRevisionErr != nil {
 			return errors.Wrap(_keyRevisionErr, "Error serializing 'keyRevision' field")
 		}

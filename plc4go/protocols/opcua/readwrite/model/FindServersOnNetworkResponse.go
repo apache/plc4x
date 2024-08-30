@@ -195,14 +195,14 @@ func FindServersOnNetworkResponseParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (lastCounterResetTime)
-	_lastCounterResetTime, _lastCounterResetTimeErr := readBuffer.ReadInt64("lastCounterResetTime", 64)
+	_lastCounterResetTime, _lastCounterResetTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastCounterResetTime", 64)
 	if _lastCounterResetTimeErr != nil {
 		return nil, errors.Wrap(_lastCounterResetTimeErr, "Error parsing 'lastCounterResetTime' field of FindServersOnNetworkResponse")
 	}
 	lastCounterResetTime := _lastCounterResetTime
 
 	// Simple Field (noOfServers)
-	_noOfServers, _noOfServersErr := readBuffer.ReadInt32("noOfServers", 32)
+	_noOfServers, _noOfServersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServers", 32)
 	if _noOfServersErr != nil {
 		return nil, errors.Wrap(_noOfServersErr, "Error parsing 'noOfServers' field of FindServersOnNetworkResponse")
 	}
@@ -283,14 +283,14 @@ func (m *_FindServersOnNetworkResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (lastCounterResetTime)
 		lastCounterResetTime := int64(m.GetLastCounterResetTime())
-		_lastCounterResetTimeErr := writeBuffer.WriteInt64("lastCounterResetTime", 64, int64((lastCounterResetTime)))
+		_lastCounterResetTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastCounterResetTime", 64, int64((lastCounterResetTime)))
 		if _lastCounterResetTimeErr != nil {
 			return errors.Wrap(_lastCounterResetTimeErr, "Error serializing 'lastCounterResetTime' field")
 		}
 
 		// Simple Field (noOfServers)
 		noOfServers := int32(m.GetNoOfServers())
-		_noOfServersErr := writeBuffer.WriteInt32("noOfServers", 32, int32((noOfServers)))
+		_noOfServersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServers", 32, int32((noOfServers)))
 		if _noOfServersErr != nil {
 			return errors.Wrap(_noOfServersErr, "Error serializing 'noOfServers' field")
 		}

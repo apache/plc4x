@@ -132,7 +132,7 @@ func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readB
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkProtocolControlInformation")
 		}
@@ -147,14 +147,14 @@ func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readB
 	}
 
 	// Simple Field (stackCounter)
-	_stackCounter, _stackCounterErr := readBuffer.ReadUint8("stackCounter", 3)
+	_stackCounter, _stackCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint8("stackCounter", 3)
 	if _stackCounterErr != nil {
 		return nil, errors.Wrap(_stackCounterErr, "Error parsing 'stackCounter' field of NetworkProtocolControlInformation")
 	}
 	stackCounter := _stackCounter
 
 	// Simple Field (stackDepth)
-	_stackDepth, _stackDepthErr := readBuffer.ReadUint8("stackDepth", 3)
+	_stackDepth, _stackDepthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("stackDepth", 3)
 	if _stackDepthErr != nil {
 		return nil, errors.Wrap(_stackDepthErr, "Error parsing 'stackDepth' field of NetworkProtocolControlInformation")
 	}
@@ -199,7 +199,7 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -207,14 +207,14 @@ func (m *_NetworkProtocolControlInformation) SerializeWithWriteBuffer(ctx contex
 
 	// Simple Field (stackCounter)
 	stackCounter := uint8(m.GetStackCounter())
-	_stackCounterErr := writeBuffer.WriteUint8("stackCounter", 3, uint8((stackCounter)))
+	_stackCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("stackCounter", 3, uint8((stackCounter)))
 	if _stackCounterErr != nil {
 		return errors.Wrap(_stackCounterErr, "Error serializing 'stackCounter' field")
 	}
 
 	// Simple Field (stackDepth)
 	stackDepth := uint8(m.GetStackDepth())
-	_stackDepthErr := writeBuffer.WriteUint8("stackDepth", 3, uint8((stackDepth)))
+	_stackDepthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("stackDepth", 3, uint8((stackDepth)))
 	if _stackDepthErr != nil {
 		return errors.Wrap(_stackDepthErr, "Error serializing 'stackDepth' field")
 	}

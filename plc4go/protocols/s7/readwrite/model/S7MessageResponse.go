@@ -157,14 +157,14 @@ func S7MessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (errorClass)
-	_errorClass, _errorClassErr := readBuffer.ReadUint8("errorClass", 8)
+	_errorClass, _errorClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("errorClass", 8)
 	if _errorClassErr != nil {
 		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of S7MessageResponse")
 	}
 	errorClass := _errorClass
 
 	// Simple Field (errorCode)
-	_errorCode, _errorCodeErr := readBuffer.ReadUint8("errorCode", 8)
+	_errorCode, _errorCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("errorCode", 8)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of S7MessageResponse")
 	}
@@ -204,14 +204,14 @@ func (m *_S7MessageResponse) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (errorClass)
 		errorClass := uint8(m.GetErrorClass())
-		_errorClassErr := writeBuffer.WriteUint8("errorClass", 8, uint8((errorClass)))
+		_errorClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorClass", 8, uint8((errorClass)))
 		if _errorClassErr != nil {
 			return errors.Wrap(_errorClassErr, "Error serializing 'errorClass' field")
 		}
 
 		// Simple Field (errorCode)
 		errorCode := uint8(m.GetErrorCode())
-		_errorCodeErr := writeBuffer.WriteUint8("errorCode", 8, uint8((errorCode)))
+		_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorCode", 8, uint8((errorCode)))
 		if _errorCodeErr != nil {
 			return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 		}

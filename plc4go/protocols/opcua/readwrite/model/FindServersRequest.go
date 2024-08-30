@@ -237,7 +237,7 @@ func FindServersRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
+	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
 	if _noOfLocaleIdsErr != nil {
 		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of FindServersRequest")
 	}
@@ -271,7 +271,7 @@ func FindServersRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32)
+	_noOfServerUris, _noOfServerUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerUris", 32)
 	if _noOfServerUrisErr != nil {
 		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of FindServersRequest")
 	}
@@ -366,7 +366,7 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
+		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -390,7 +390,7 @@ func (m *_FindServersRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfServerUris)
 		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
+		_noOfServerUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
 		if _noOfServerUrisErr != nil {
 			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
 		}

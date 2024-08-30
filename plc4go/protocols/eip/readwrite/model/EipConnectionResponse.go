@@ -162,7 +162,7 @@ func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := readBuffer.ReadUint16("protocolVersion", 16)
+	protocolVersion, _protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("protocolVersion", 16)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of EipConnectionResponse")
 	}
@@ -171,7 +171,7 @@ func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Const Field (flags)
-	flags, _flagsErr := readBuffer.ReadUint16("flags", 16)
+	flags, _flagsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("flags", 16)
 	if _flagsErr != nil {
 		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of EipConnectionResponse")
 	}
@@ -210,13 +210,13 @@ func (m *_EipConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 		}
 
 		// Const Field (protocolVersion)
-		_protocolVersionErr := writeBuffer.WriteUint16("protocolVersion", 16, uint16(0x01))
+		_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("protocolVersion", 16, uint16(0x01))
 		if _protocolVersionErr != nil {
 			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 		}
 
 		// Const Field (flags)
-		_flagsErr := writeBuffer.WriteUint16("flags", 16, uint16(0x00))
+		_flagsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("flags", 16, uint16(0x00))
 		if _flagsErr != nil {
 			return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
 		}

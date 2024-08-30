@@ -166,7 +166,7 @@ func NLMRejectMessageToNetworkParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := readBuffer.ReadUint16("destinationNetworkAddress", 16)
+	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
 	if _destinationNetworkAddressErr != nil {
 		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMRejectMessageToNetwork")
 	}
@@ -220,7 +220,7 @@ func (m *_NLMRejectMessageToNetwork) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (destinationNetworkAddress)
 		destinationNetworkAddress := uint16(m.GetDestinationNetworkAddress())
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
+		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16((destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}

@@ -163,14 +163,14 @@ func EventNotificationListParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Implicit Field (notificationLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	notificationLength, _notificationLengthErr := readBuffer.ReadInt32("notificationLength", 32)
+	notificationLength, _notificationLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("notificationLength", 32)
 	_ = notificationLength
 	if _notificationLengthErr != nil {
 		return nil, errors.Wrap(_notificationLengthErr, "Error parsing 'notificationLength' field of EventNotificationList")
 	}
 
 	// Simple Field (noOfEvents)
-	_noOfEvents, _noOfEventsErr := readBuffer.ReadInt32("noOfEvents", 32)
+	_noOfEvents, _noOfEventsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEvents", 32)
 	if _noOfEventsErr != nil {
 		return nil, errors.Wrap(_noOfEventsErr, "Error parsing 'noOfEvents' field of EventNotificationList")
 	}
@@ -237,14 +237,14 @@ func (m *_EventNotificationList) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Implicit Field (notificationLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		notificationLength := int32(int32(m.GetLengthInBytes(ctx)))
-		_notificationLengthErr := writeBuffer.WriteInt32("notificationLength", 32, int32((notificationLength)))
+		_notificationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("notificationLength", 32, int32((notificationLength)))
 		if _notificationLengthErr != nil {
 			return errors.Wrap(_notificationLengthErr, "Error serializing 'notificationLength' field")
 		}
 
 		// Simple Field (noOfEvents)
 		noOfEvents := int32(m.GetNoOfEvents())
-		_noOfEventsErr := writeBuffer.WriteInt32("noOfEvents", 32, int32((noOfEvents)))
+		_noOfEventsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEvents", 32, int32((noOfEvents)))
 		if _noOfEventsErr != nil {
 			return errors.Wrap(_noOfEventsErr, "Error serializing 'noOfEvents' field")
 		}

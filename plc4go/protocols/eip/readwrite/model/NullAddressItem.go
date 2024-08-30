@@ -128,7 +128,7 @@ func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NullAddressItem")
 		}
@@ -183,7 +183,7 @@ func (m *_NullAddressItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

@@ -210,7 +210,7 @@ func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (armMode)
-	_armMode, _armModeErr := readBuffer.ReadByte("armMode")
+	_armMode, _armModeErr := /*TODO: migrate me*/ readBuffer.ReadByte("armMode")
 	if _armModeErr != nil {
 		return nil, errors.Wrap(_armModeErr, "Error parsing 'armMode' field of SecurityDataArmSystem")
 	}
@@ -279,7 +279,7 @@ func (m *_SecurityDataArmSystem) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (armMode)
 		armMode := byte(m.GetArmMode())
-		_armModeErr := writeBuffer.WriteByte("armMode", (armMode))
+		_armModeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("armMode", (armMode))
 		if _armModeErr != nil {
 			return errors.Wrap(_armModeErr, "Error serializing 'armMode' field")
 		}

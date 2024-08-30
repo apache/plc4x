@@ -267,7 +267,7 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DiagnosticInfo")
 		}
@@ -282,49 +282,49 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (innerDiagnosticInfoSpecified)
-	_innerDiagnosticInfoSpecified, _innerDiagnosticInfoSpecifiedErr := readBuffer.ReadBit("innerDiagnosticInfoSpecified")
+	_innerDiagnosticInfoSpecified, _innerDiagnosticInfoSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("innerDiagnosticInfoSpecified")
 	if _innerDiagnosticInfoSpecifiedErr != nil {
 		return nil, errors.Wrap(_innerDiagnosticInfoSpecifiedErr, "Error parsing 'innerDiagnosticInfoSpecified' field of DiagnosticInfo")
 	}
 	innerDiagnosticInfoSpecified := _innerDiagnosticInfoSpecified
 
 	// Simple Field (innerStatusCodeSpecified)
-	_innerStatusCodeSpecified, _innerStatusCodeSpecifiedErr := readBuffer.ReadBit("innerStatusCodeSpecified")
+	_innerStatusCodeSpecified, _innerStatusCodeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("innerStatusCodeSpecified")
 	if _innerStatusCodeSpecifiedErr != nil {
 		return nil, errors.Wrap(_innerStatusCodeSpecifiedErr, "Error parsing 'innerStatusCodeSpecified' field of DiagnosticInfo")
 	}
 	innerStatusCodeSpecified := _innerStatusCodeSpecified
 
 	// Simple Field (additionalInfoSpecified)
-	_additionalInfoSpecified, _additionalInfoSpecifiedErr := readBuffer.ReadBit("additionalInfoSpecified")
+	_additionalInfoSpecified, _additionalInfoSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("additionalInfoSpecified")
 	if _additionalInfoSpecifiedErr != nil {
 		return nil, errors.Wrap(_additionalInfoSpecifiedErr, "Error parsing 'additionalInfoSpecified' field of DiagnosticInfo")
 	}
 	additionalInfoSpecified := _additionalInfoSpecified
 
 	// Simple Field (localeSpecified)
-	_localeSpecified, _localeSpecifiedErr := readBuffer.ReadBit("localeSpecified")
+	_localeSpecified, _localeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localeSpecified")
 	if _localeSpecifiedErr != nil {
 		return nil, errors.Wrap(_localeSpecifiedErr, "Error parsing 'localeSpecified' field of DiagnosticInfo")
 	}
 	localeSpecified := _localeSpecified
 
 	// Simple Field (localizedTextSpecified)
-	_localizedTextSpecified, _localizedTextSpecifiedErr := readBuffer.ReadBit("localizedTextSpecified")
+	_localizedTextSpecified, _localizedTextSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localizedTextSpecified")
 	if _localizedTextSpecifiedErr != nil {
 		return nil, errors.Wrap(_localizedTextSpecifiedErr, "Error parsing 'localizedTextSpecified' field of DiagnosticInfo")
 	}
 	localizedTextSpecified := _localizedTextSpecified
 
 	// Simple Field (namespaceURISpecified)
-	_namespaceURISpecified, _namespaceURISpecifiedErr := readBuffer.ReadBit("namespaceURISpecified")
+	_namespaceURISpecified, _namespaceURISpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("namespaceURISpecified")
 	if _namespaceURISpecifiedErr != nil {
 		return nil, errors.Wrap(_namespaceURISpecifiedErr, "Error parsing 'namespaceURISpecified' field of DiagnosticInfo")
 	}
 	namespaceURISpecified := _namespaceURISpecified
 
 	// Simple Field (symbolicIdSpecified)
-	_symbolicIdSpecified, _symbolicIdSpecifiedErr := readBuffer.ReadBit("symbolicIdSpecified")
+	_symbolicIdSpecified, _symbolicIdSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("symbolicIdSpecified")
 	if _symbolicIdSpecifiedErr != nil {
 		return nil, errors.Wrap(_symbolicIdSpecifiedErr, "Error parsing 'symbolicIdSpecified' field of DiagnosticInfo")
 	}
@@ -334,7 +334,7 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var symbolicId *int32 = nil
 	if symbolicIdSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("symbolicId", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("symbolicId", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -350,7 +350,7 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var namespaceURI *int32 = nil
 	if namespaceURISpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("namespaceURI", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("namespaceURI", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -366,7 +366,7 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var locale *int32 = nil
 	if localeSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("locale", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("locale", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -382,7 +382,7 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var localizedText *int32 = nil
 	if localizedTextSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("localizedText", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("localizedText", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -511,7 +511,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -519,49 +519,49 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (innerDiagnosticInfoSpecified)
 	innerDiagnosticInfoSpecified := bool(m.GetInnerDiagnosticInfoSpecified())
-	_innerDiagnosticInfoSpecifiedErr := writeBuffer.WriteBit("innerDiagnosticInfoSpecified", (innerDiagnosticInfoSpecified))
+	_innerDiagnosticInfoSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("innerDiagnosticInfoSpecified", (innerDiagnosticInfoSpecified))
 	if _innerDiagnosticInfoSpecifiedErr != nil {
 		return errors.Wrap(_innerDiagnosticInfoSpecifiedErr, "Error serializing 'innerDiagnosticInfoSpecified' field")
 	}
 
 	// Simple Field (innerStatusCodeSpecified)
 	innerStatusCodeSpecified := bool(m.GetInnerStatusCodeSpecified())
-	_innerStatusCodeSpecifiedErr := writeBuffer.WriteBit("innerStatusCodeSpecified", (innerStatusCodeSpecified))
+	_innerStatusCodeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("innerStatusCodeSpecified", (innerStatusCodeSpecified))
 	if _innerStatusCodeSpecifiedErr != nil {
 		return errors.Wrap(_innerStatusCodeSpecifiedErr, "Error serializing 'innerStatusCodeSpecified' field")
 	}
 
 	// Simple Field (additionalInfoSpecified)
 	additionalInfoSpecified := bool(m.GetAdditionalInfoSpecified())
-	_additionalInfoSpecifiedErr := writeBuffer.WriteBit("additionalInfoSpecified", (additionalInfoSpecified))
+	_additionalInfoSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("additionalInfoSpecified", (additionalInfoSpecified))
 	if _additionalInfoSpecifiedErr != nil {
 		return errors.Wrap(_additionalInfoSpecifiedErr, "Error serializing 'additionalInfoSpecified' field")
 	}
 
 	// Simple Field (localeSpecified)
 	localeSpecified := bool(m.GetLocaleSpecified())
-	_localeSpecifiedErr := writeBuffer.WriteBit("localeSpecified", (localeSpecified))
+	_localeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localeSpecified", (localeSpecified))
 	if _localeSpecifiedErr != nil {
 		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
 	}
 
 	// Simple Field (localizedTextSpecified)
 	localizedTextSpecified := bool(m.GetLocalizedTextSpecified())
-	_localizedTextSpecifiedErr := writeBuffer.WriteBit("localizedTextSpecified", (localizedTextSpecified))
+	_localizedTextSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localizedTextSpecified", (localizedTextSpecified))
 	if _localizedTextSpecifiedErr != nil {
 		return errors.Wrap(_localizedTextSpecifiedErr, "Error serializing 'localizedTextSpecified' field")
 	}
 
 	// Simple Field (namespaceURISpecified)
 	namespaceURISpecified := bool(m.GetNamespaceURISpecified())
-	_namespaceURISpecifiedErr := writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
+	_namespaceURISpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
 	if _namespaceURISpecifiedErr != nil {
 		return errors.Wrap(_namespaceURISpecifiedErr, "Error serializing 'namespaceURISpecified' field")
 	}
 
 	// Simple Field (symbolicIdSpecified)
 	symbolicIdSpecified := bool(m.GetSymbolicIdSpecified())
-	_symbolicIdSpecifiedErr := writeBuffer.WriteBit("symbolicIdSpecified", (symbolicIdSpecified))
+	_symbolicIdSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("symbolicIdSpecified", (symbolicIdSpecified))
 	if _symbolicIdSpecifiedErr != nil {
 		return errors.Wrap(_symbolicIdSpecifiedErr, "Error serializing 'symbolicIdSpecified' field")
 	}
@@ -570,7 +570,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var symbolicId *int32 = nil
 	if m.GetSymbolicId() != nil {
 		symbolicId = m.GetSymbolicId()
-		_symbolicIdErr := writeBuffer.WriteInt32("symbolicId", 32, int32(*(symbolicId)))
+		_symbolicIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("symbolicId", 32, int32(*(symbolicId)))
 		if _symbolicIdErr != nil {
 			return errors.Wrap(_symbolicIdErr, "Error serializing 'symbolicId' field")
 		}
@@ -580,7 +580,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var namespaceURI *int32 = nil
 	if m.GetNamespaceURI() != nil {
 		namespaceURI = m.GetNamespaceURI()
-		_namespaceURIErr := writeBuffer.WriteInt32("namespaceURI", 32, int32(*(namespaceURI)))
+		_namespaceURIErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("namespaceURI", 32, int32(*(namespaceURI)))
 		if _namespaceURIErr != nil {
 			return errors.Wrap(_namespaceURIErr, "Error serializing 'namespaceURI' field")
 		}
@@ -590,7 +590,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var locale *int32 = nil
 	if m.GetLocale() != nil {
 		locale = m.GetLocale()
-		_localeErr := writeBuffer.WriteInt32("locale", 32, int32(*(locale)))
+		_localeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("locale", 32, int32(*(locale)))
 		if _localeErr != nil {
 			return errors.Wrap(_localeErr, "Error serializing 'locale' field")
 		}
@@ -600,7 +600,7 @@ func (m *_DiagnosticInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var localizedText *int32 = nil
 	if m.GetLocalizedText() != nil {
 		localizedText = m.GetLocalizedText()
-		_localizedTextErr := writeBuffer.WriteInt32("localizedText", 32, int32(*(localizedText)))
+		_localizedTextErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("localizedText", 32, int32(*(localizedText)))
 		if _localizedTextErr != nil {
 			return errors.Wrap(_localizedTextErr, "Error serializing 'localizedText' field")
 		}

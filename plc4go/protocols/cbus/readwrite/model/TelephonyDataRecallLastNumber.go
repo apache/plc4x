@@ -181,7 +181,7 @@ func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (recallLastNumberType)
-	_recallLastNumberType, _recallLastNumberTypeErr := readBuffer.ReadByte("recallLastNumberType")
+	_recallLastNumberType, _recallLastNumberTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("recallLastNumberType")
 	if _recallLastNumberTypeErr != nil {
 		return nil, errors.Wrap(_recallLastNumberTypeErr, "Error parsing 'recallLastNumberType' field of TelephonyDataRecallLastNumber")
 	}
@@ -198,7 +198,7 @@ func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffe
 	_ = isNumberOfLastIncomingCall
 
 	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
+	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
 	if _numberErr != nil {
 		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRecallLastNumber")
 	}
@@ -238,7 +238,7 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (recallLastNumberType)
 		recallLastNumberType := byte(m.GetRecallLastNumberType())
-		_recallLastNumberTypeErr := writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
+		_recallLastNumberTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("recallLastNumberType", (recallLastNumberType))
 		if _recallLastNumberTypeErr != nil {
 			return errors.Wrap(_recallLastNumberTypeErr, "Error serializing 'recallLastNumberType' field")
 		}
@@ -257,7 +257,7 @@ func (m *_TelephonyDataRecallLastNumber) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (number)
 		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
+		_numberErr := /*TODO: migrate me*/ writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
 		if _numberErr != nil {
 			return errors.Wrap(_numberErr, "Error serializing 'number' field")
 		}

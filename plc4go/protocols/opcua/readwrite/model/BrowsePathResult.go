@@ -184,7 +184,7 @@ func BrowsePathResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfTargets)
-	_noOfTargets, _noOfTargetsErr := readBuffer.ReadInt32("noOfTargets", 32)
+	_noOfTargets, _noOfTargetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTargets", 32)
 	if _noOfTargetsErr != nil {
 		return nil, errors.Wrap(_noOfTargetsErr, "Error parsing 'noOfTargets' field of BrowsePathResult")
 	}
@@ -264,7 +264,7 @@ func (m *_BrowsePathResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfTargets)
 		noOfTargets := int32(m.GetNoOfTargets())
-		_noOfTargetsErr := writeBuffer.WriteInt32("noOfTargets", 32, int32((noOfTargets)))
+		_noOfTargetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfTargets", 32, int32((noOfTargets)))
 		if _noOfTargetsErr != nil {
 			return errors.Wrap(_noOfTargetsErr, "Error serializing 'noOfTargets' field")
 		}

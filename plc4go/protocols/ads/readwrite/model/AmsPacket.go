@@ -292,7 +292,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (targetAmsPort)
-	_targetAmsPort, _targetAmsPortErr := readBuffer.ReadUint16("targetAmsPort", 16)
+	_targetAmsPort, _targetAmsPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("targetAmsPort", 16)
 	if _targetAmsPortErr != nil {
 		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field of AmsPacket")
 	}
@@ -312,7 +312,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (sourceAmsPort)
-	_sourceAmsPort, _sourceAmsPortErr := readBuffer.ReadUint16("sourceAmsPort", 16)
+	_sourceAmsPort, _sourceAmsPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sourceAmsPort", 16)
 	if _sourceAmsPortErr != nil {
 		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field of AmsPacket")
 	}
@@ -332,7 +332,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (initCommand)
-	initCommand, _initCommandErr := readBuffer.ReadBit("initCommand")
+	initCommand, _initCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("initCommand")
 	if _initCommandErr != nil {
 		return nil, errors.Wrap(_initCommandErr, "Error parsing 'initCommand' field of AmsPacket")
 	}
@@ -341,7 +341,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (updCommand)
-	updCommand, _updCommandErr := readBuffer.ReadBit("updCommand")
+	updCommand, _updCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("updCommand")
 	if _updCommandErr != nil {
 		return nil, errors.Wrap(_updCommandErr, "Error parsing 'updCommand' field of AmsPacket")
 	}
@@ -350,7 +350,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (timestampAdded)
-	timestampAdded, _timestampAddedErr := readBuffer.ReadBit("timestampAdded")
+	timestampAdded, _timestampAddedErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("timestampAdded")
 	if _timestampAddedErr != nil {
 		return nil, errors.Wrap(_timestampAddedErr, "Error parsing 'timestampAdded' field of AmsPacket")
 	}
@@ -359,7 +359,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (highPriorityCommand)
-	highPriorityCommand, _highPriorityCommandErr := readBuffer.ReadBit("highPriorityCommand")
+	highPriorityCommand, _highPriorityCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("highPriorityCommand")
 	if _highPriorityCommandErr != nil {
 		return nil, errors.Wrap(_highPriorityCommandErr, "Error parsing 'highPriorityCommand' field of AmsPacket")
 	}
@@ -368,7 +368,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (systemCommand)
-	systemCommand, _systemCommandErr := readBuffer.ReadBit("systemCommand")
+	systemCommand, _systemCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("systemCommand")
 	if _systemCommandErr != nil {
 		return nil, errors.Wrap(_systemCommandErr, "Error parsing 'systemCommand' field of AmsPacket")
 	}
@@ -377,7 +377,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (adsCommand)
-	adsCommand, _adsCommandErr := readBuffer.ReadBit("adsCommand")
+	adsCommand, _adsCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("adsCommand")
 	if _adsCommandErr != nil {
 		return nil, errors.Wrap(_adsCommandErr, "Error parsing 'adsCommand' field of AmsPacket")
 	}
@@ -386,7 +386,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Const Field (noReturn)
-	noReturn, _noReturnErr := readBuffer.ReadBit("noReturn")
+	noReturn, _noReturnErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("noReturn")
 	if _noReturnErr != nil {
 		return nil, errors.Wrap(_noReturnErr, "Error parsing 'noReturn' field of AmsPacket")
 	}
@@ -395,13 +395,13 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Discriminator Field (response) (Used as input to a switch field)
-	response, _responseErr := readBuffer.ReadBit("response")
+	response, _responseErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("response")
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of AmsPacket")
 	}
 
 	// Const Field (broadcast)
-	broadcast, _broadcastErr := readBuffer.ReadBit("broadcast")
+	broadcast, _broadcastErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("broadcast")
 	if _broadcastErr != nil {
 		return nil, errors.Wrap(_broadcastErr, "Error parsing 'broadcast' field of AmsPacket")
 	}
@@ -412,7 +412,7 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var reservedField0 *int8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadInt8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsPacket")
 		}
@@ -427,21 +427,21 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsPacket")
 	}
 
 	// Simple Field (errorCode)
-	_errorCode, _errorCodeErr := readBuffer.ReadUint32("errorCode", 32)
+	_errorCode, _errorCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("errorCode", 32)
 	if _errorCodeErr != nil {
 		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of AmsPacket")
 	}
 	errorCode := _errorCode
 
 	// Simple Field (invokeId)
-	_invokeId, _invokeIdErr := readBuffer.ReadUint32("invokeId", 32)
+	_invokeId, _invokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("invokeId", 32)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of AmsPacket")
 	}
@@ -543,7 +543,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (targetAmsPort)
 	targetAmsPort := uint16(m.GetTargetAmsPort())
-	_targetAmsPortErr := writeBuffer.WriteUint16("targetAmsPort", 16, uint16((targetAmsPort)))
+	_targetAmsPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("targetAmsPort", 16, uint16((targetAmsPort)))
 	if _targetAmsPortErr != nil {
 		return errors.Wrap(_targetAmsPortErr, "Error serializing 'targetAmsPort' field")
 	}
@@ -562,7 +562,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (sourceAmsPort)
 	sourceAmsPort := uint16(m.GetSourceAmsPort())
-	_sourceAmsPortErr := writeBuffer.WriteUint16("sourceAmsPort", 16, uint16((sourceAmsPort)))
+	_sourceAmsPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceAmsPort", 16, uint16((sourceAmsPort)))
 	if _sourceAmsPortErr != nil {
 		return errors.Wrap(_sourceAmsPortErr, "Error serializing 'sourceAmsPort' field")
 	}
@@ -582,57 +582,57 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Const Field (initCommand)
-	_initCommandErr := writeBuffer.WriteBit("initCommand", false)
+	_initCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("initCommand", false)
 	if _initCommandErr != nil {
 		return errors.Wrap(_initCommandErr, "Error serializing 'initCommand' field")
 	}
 
 	// Const Field (updCommand)
-	_updCommandErr := writeBuffer.WriteBit("updCommand", false)
+	_updCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("updCommand", false)
 	if _updCommandErr != nil {
 		return errors.Wrap(_updCommandErr, "Error serializing 'updCommand' field")
 	}
 
 	// Const Field (timestampAdded)
-	_timestampAddedErr := writeBuffer.WriteBit("timestampAdded", false)
+	_timestampAddedErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("timestampAdded", false)
 	if _timestampAddedErr != nil {
 		return errors.Wrap(_timestampAddedErr, "Error serializing 'timestampAdded' field")
 	}
 
 	// Const Field (highPriorityCommand)
-	_highPriorityCommandErr := writeBuffer.WriteBit("highPriorityCommand", false)
+	_highPriorityCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("highPriorityCommand", false)
 	if _highPriorityCommandErr != nil {
 		return errors.Wrap(_highPriorityCommandErr, "Error serializing 'highPriorityCommand' field")
 	}
 
 	// Const Field (systemCommand)
-	_systemCommandErr := writeBuffer.WriteBit("systemCommand", false)
+	_systemCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("systemCommand", false)
 	if _systemCommandErr != nil {
 		return errors.Wrap(_systemCommandErr, "Error serializing 'systemCommand' field")
 	}
 
 	// Const Field (adsCommand)
-	_adsCommandErr := writeBuffer.WriteBit("adsCommand", true)
+	_adsCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("adsCommand", true)
 	if _adsCommandErr != nil {
 		return errors.Wrap(_adsCommandErr, "Error serializing 'adsCommand' field")
 	}
 
 	// Const Field (noReturn)
-	_noReturnErr := writeBuffer.WriteBit("noReturn", false)
+	_noReturnErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("noReturn", false)
 	if _noReturnErr != nil {
 		return errors.Wrap(_noReturnErr, "Error serializing 'noReturn' field")
 	}
 
 	// Discriminator Field (response) (Used as input to a switch field)
 	response := bool(child.GetResponse())
-	_responseErr := writeBuffer.WriteBit("response", (response))
+	_responseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("response", (response))
 
 	if _responseErr != nil {
 		return errors.Wrap(_responseErr, "Error serializing 'response' field")
 	}
 
 	// Const Field (broadcast)
-	_broadcastErr := writeBuffer.WriteBit("broadcast", false)
+	_broadcastErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("broadcast", false)
 	if _broadcastErr != nil {
 		return errors.Wrap(_broadcastErr, "Error serializing 'broadcast' field")
 	}
@@ -647,7 +647,7 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteInt8("reserved", 7, int8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteInt8("reserved", 7, int8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -655,21 +655,21 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(uint32(uint32(m.GetLengthInBytes(ctx))) - uint32(uint32(32)))
-	_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
+	_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (errorCode)
 	errorCode := uint32(m.GetErrorCode())
-	_errorCodeErr := writeBuffer.WriteUint32("errorCode", 32, uint32((errorCode)))
+	_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("errorCode", 32, uint32((errorCode)))
 	if _errorCodeErr != nil {
 		return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 	}
 
 	// Simple Field (invokeId)
 	invokeId := uint32(m.GetInvokeId())
-	_invokeIdErr := writeBuffer.WriteUint32("invokeId", 32, uint32((invokeId)))
+	_invokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("invokeId", 32, uint32((invokeId)))
 	if _invokeIdErr != nil {
 		return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 	}

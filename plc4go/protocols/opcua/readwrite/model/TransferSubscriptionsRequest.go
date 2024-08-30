@@ -195,7 +195,7 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (noOfSubscriptionIds)
-	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := readBuffer.ReadInt32("noOfSubscriptionIds", 32)
+	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionIds", 32)
 	if _noOfSubscriptionIdsErr != nil {
 		return nil, errors.Wrap(_noOfSubscriptionIdsErr, "Error parsing 'noOfSubscriptionIds' field of TransferSubscriptionsRequest")
 	}
@@ -217,7 +217,7 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subscriptionIds' field of TransferSubscriptionsRequest")
 			}
@@ -231,7 +231,7 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TransferSubscriptionsRequest")
 		}
@@ -246,7 +246,7 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (sendInitialValues)
-	_sendInitialValues, _sendInitialValuesErr := readBuffer.ReadBit("sendInitialValues")
+	_sendInitialValues, _sendInitialValuesErr := /*TODO: migrate me*/ readBuffer.ReadBit("sendInitialValues")
 	if _sendInitialValuesErr != nil {
 		return nil, errors.Wrap(_sendInitialValuesErr, "Error parsing 'sendInitialValues' field of TransferSubscriptionsRequest")
 	}
@@ -301,7 +301,7 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (noOfSubscriptionIds)
 		noOfSubscriptionIds := int32(m.GetNoOfSubscriptionIds())
-		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
+		_noOfSubscriptionIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
 		if _noOfSubscriptionIdsErr != nil {
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
@@ -312,7 +312,7 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 		}
 		for _curItem, _element := range m.GetSubscriptionIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
 			}
@@ -331,7 +331,7 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -339,7 +339,7 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (sendInitialValues)
 		sendInitialValues := bool(m.GetSendInitialValues())
-		_sendInitialValuesErr := writeBuffer.WriteBit("sendInitialValues", (sendInitialValues))
+		_sendInitialValuesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sendInitialValues", (sendInitialValues))
 		if _sendInitialValuesErr != nil {
 			return errors.Wrap(_sendInitialValuesErr, "Error serializing 'sendInitialValues' field")
 		}

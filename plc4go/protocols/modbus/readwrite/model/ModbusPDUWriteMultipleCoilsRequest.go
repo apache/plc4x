@@ -177,21 +177,21 @@ func ModbusPDUWriteMultipleCoilsRequestParseWithBuffer(ctx context.Context, read
 	_ = currentPos
 
 	// Simple Field (startingAddress)
-	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := /*TODO: migrate me*/ readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUWriteMultipleCoilsRequest")
 	}
 	quantity := _quantity
 
 	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, _byteCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUWriteMultipleCoilsRequest")
@@ -238,21 +238,21 @@ func (m *_ModbusPDUWriteMultipleCoilsRequest) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.GetStartingAddress())
-		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
+		_startingAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.GetQuantity())
-		_quantityErr := writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
+		_quantityErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(len(m.GetValue())))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
+		_byteCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}

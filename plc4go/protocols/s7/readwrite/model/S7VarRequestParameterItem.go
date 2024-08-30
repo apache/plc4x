@@ -120,7 +120,7 @@ func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := readBuffer.ReadUint8("itemType", 8)
+	itemType, _itemTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("itemType", 8)
 	if _itemTypeErr != nil {
 		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field of S7VarRequestParameterItem")
 	}
@@ -168,7 +168,7 @@ func (pm *_S7VarRequestParameterItem) SerializeParent(ctx context.Context, write
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint8(child.GetItemType())
-	_itemTypeErr := writeBuffer.WriteUint8("itemType", 8, uint8((itemType)))
+	_itemTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("itemType", 8, uint8((itemType)))
 
 	if _itemTypeErr != nil {
 		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")

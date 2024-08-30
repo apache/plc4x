@@ -177,14 +177,14 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = commandType
 
 	// Simple Field (enableNetworkVariable)
-	_enableNetworkVariable, _enableNetworkVariableErr := readBuffer.ReadByte("enableNetworkVariable")
+	_enableNetworkVariable, _enableNetworkVariableErr := /*TODO: migrate me*/ readBuffer.ReadByte("enableNetworkVariable")
 	if _enableNetworkVariableErr != nil {
 		return nil, errors.Wrap(_enableNetworkVariableErr, "Error parsing 'enableNetworkVariable' field of EnableControlData")
 	}
 	enableNetworkVariable := _enableNetworkVariable
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadByte("value")
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadByte("value")
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of EnableControlData")
 	}
@@ -239,14 +239,14 @@ func (m *_EnableControlData) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (enableNetworkVariable)
 	enableNetworkVariable := byte(m.GetEnableNetworkVariable())
-	_enableNetworkVariableErr := writeBuffer.WriteByte("enableNetworkVariable", (enableNetworkVariable))
+	_enableNetworkVariableErr := /*TODO: migrate me*/ writeBuffer.WriteByte("enableNetworkVariable", (enableNetworkVariable))
 	if _enableNetworkVariableErr != nil {
 		return errors.Wrap(_enableNetworkVariableErr, "Error serializing 'enableNetworkVariable' field")
 	}
 
 	// Simple Field (value)
 	value := byte(m.GetValue())
-	_valueErr := writeBuffer.WriteByte("value", (value))
+	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("value", (value))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

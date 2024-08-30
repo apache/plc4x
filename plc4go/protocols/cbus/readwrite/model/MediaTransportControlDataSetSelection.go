@@ -152,14 +152,14 @@ func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, r
 	_ = currentPos
 
 	// Simple Field (selectionHi)
-	_selectionHi, _selectionHiErr := readBuffer.ReadByte("selectionHi")
+	_selectionHi, _selectionHiErr := /*TODO: migrate me*/ readBuffer.ReadByte("selectionHi")
 	if _selectionHiErr != nil {
 		return nil, errors.Wrap(_selectionHiErr, "Error parsing 'selectionHi' field of MediaTransportControlDataSetSelection")
 	}
 	selectionHi := _selectionHi
 
 	// Simple Field (selectionLo)
-	_selectionLo, _selectionLoErr := readBuffer.ReadByte("selectionLo")
+	_selectionLo, _selectionLoErr := /*TODO: migrate me*/ readBuffer.ReadByte("selectionLo")
 	if _selectionLoErr != nil {
 		return nil, errors.Wrap(_selectionLoErr, "Error parsing 'selectionLo' field of MediaTransportControlDataSetSelection")
 	}
@@ -199,14 +199,14 @@ func (m *_MediaTransportControlDataSetSelection) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (selectionHi)
 		selectionHi := byte(m.GetSelectionHi())
-		_selectionHiErr := writeBuffer.WriteByte("selectionHi", (selectionHi))
+		_selectionHiErr := /*TODO: migrate me*/ writeBuffer.WriteByte("selectionHi", (selectionHi))
 		if _selectionHiErr != nil {
 			return errors.Wrap(_selectionHiErr, "Error serializing 'selectionHi' field")
 		}
 
 		// Simple Field (selectionLo)
 		selectionLo := byte(m.GetSelectionLo())
-		_selectionLoErr := writeBuffer.WriteByte("selectionLo", (selectionLo))
+		_selectionLoErr := /*TODO: migrate me*/ writeBuffer.WriteByte("selectionLo", (selectionLo))
 		if _selectionLoErr != nil {
 			return errors.Wrap(_selectionLoErr, "Error serializing 'selectionLo' field")
 		}

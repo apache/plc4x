@@ -4924,7 +4924,7 @@ func KnxInterfaceObjectPropertyParse(ctx context.Context, theBytes []byte) (KnxI
 func KnxInterfaceObjectPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxInterfaceObjectProperty, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("KnxInterfaceObjectProperty", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading KnxInterfaceObjectProperty")
 	}
@@ -4947,7 +4947,7 @@ func (e KnxInterfaceObjectProperty) Serialize() ([]byte, error) {
 func (e KnxInterfaceObjectProperty) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("KnxInterfaceObjectProperty", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

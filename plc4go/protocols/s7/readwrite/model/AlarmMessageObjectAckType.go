@@ -182,7 +182,7 @@ func AlarmMessageObjectAckTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Const Field (variableSpec)
-	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
+	variableSpec, _variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
 		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of AlarmMessageObjectAckType")
 	}
@@ -191,7 +191,7 @@ func AlarmMessageObjectAckTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Const Field (length)
-	length, _lengthErr := readBuffer.ReadUint8("length", 8)
+	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("length", 8)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AlarmMessageObjectAckType")
 	}
@@ -213,14 +213,14 @@ func AlarmMessageObjectAckTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (numberOfValues)
-	_numberOfValues, _numberOfValuesErr := readBuffer.ReadUint8("numberOfValues", 8)
+	_numberOfValues, _numberOfValuesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfValues", 8)
 	if _numberOfValuesErr != nil {
 		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field of AlarmMessageObjectAckType")
 	}
 	numberOfValues := _numberOfValues
 
 	// Simple Field (eventId)
-	_eventId, _eventIdErr := readBuffer.ReadUint32("eventId", 32)
+	_eventId, _eventIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("eventId", 32)
 	if _eventIdErr != nil {
 		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of AlarmMessageObjectAckType")
 	}
@@ -284,13 +284,13 @@ func (m *_AlarmMessageObjectAckType) SerializeWithWriteBuffer(ctx context.Contex
 	}
 
 	// Const Field (variableSpec)
-	_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
+	_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 	if _variableSpecErr != nil {
 		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 	}
 
 	// Const Field (length)
-	_lengthErr := writeBuffer.WriteUint8("length", 8, uint8(0x08))
+	_lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("length", 8, uint8(0x08))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
@@ -309,14 +309,14 @@ func (m *_AlarmMessageObjectAckType) SerializeWithWriteBuffer(ctx context.Contex
 
 	// Simple Field (numberOfValues)
 	numberOfValues := uint8(m.GetNumberOfValues())
-	_numberOfValuesErr := writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
+	_numberOfValuesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfValues", 8, uint8((numberOfValues)))
 	if _numberOfValuesErr != nil {
 		return errors.Wrap(_numberOfValuesErr, "Error serializing 'numberOfValues' field")
 	}
 
 	// Simple Field (eventId)
 	eventId := uint32(m.GetEventId())
-	_eventIdErr := writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
+	_eventIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("eventId", 32, uint32((eventId)))
 	if _eventIdErr != nil {
 		return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
 	}

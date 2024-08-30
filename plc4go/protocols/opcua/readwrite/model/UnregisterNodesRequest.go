@@ -184,7 +184,7 @@ func UnregisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (noOfNodesToUnregister)
-	_noOfNodesToUnregister, _noOfNodesToUnregisterErr := readBuffer.ReadInt32("noOfNodesToUnregister", 32)
+	_noOfNodesToUnregister, _noOfNodesToUnregisterErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToUnregister", 32)
 	if _noOfNodesToUnregisterErr != nil {
 		return nil, errors.Wrap(_noOfNodesToUnregisterErr, "Error parsing 'noOfNodesToUnregister' field of UnregisterNodesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfNodesToUnregister)
 		noOfNodesToUnregister := int32(m.GetNoOfNodesToUnregister())
-		_noOfNodesToUnregisterErr := writeBuffer.WriteInt32("noOfNodesToUnregister", 32, int32((noOfNodesToUnregister)))
+		_noOfNodesToUnregisterErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToUnregister", 32, int32((noOfNodesToUnregister)))
 		if _noOfNodesToUnregisterErr != nil {
 			return errors.Wrap(_noOfNodesToUnregisterErr, "Error serializing 'noOfNodesToUnregister' field")
 		}

@@ -212,7 +212,7 @@ func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of BitFieldDefinition")
 		}
@@ -229,7 +229,7 @@ func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of BitFieldDefinition")
 		}
@@ -244,14 +244,14 @@ func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (startingBitPosition)
-	_startingBitPosition, _startingBitPositionErr := readBuffer.ReadUint32("startingBitPosition", 32)
+	_startingBitPosition, _startingBitPositionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("startingBitPosition", 32)
 	if _startingBitPositionErr != nil {
 		return nil, errors.Wrap(_startingBitPositionErr, "Error parsing 'startingBitPosition' field of BitFieldDefinition")
 	}
 	startingBitPosition := _startingBitPosition
 
 	// Simple Field (endingBitPosition)
-	_endingBitPosition, _endingBitPositionErr := readBuffer.ReadUint32("endingBitPosition", 32)
+	_endingBitPosition, _endingBitPositionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("endingBitPosition", 32)
 	if _endingBitPositionErr != nil {
 		return nil, errors.Wrap(_endingBitPositionErr, "Error parsing 'endingBitPosition' field of BitFieldDefinition")
 	}
@@ -327,7 +327,7 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -343,7 +343,7 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteBit("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -351,14 +351,14 @@ func (m *_BitFieldDefinition) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (startingBitPosition)
 		startingBitPosition := uint32(m.GetStartingBitPosition())
-		_startingBitPositionErr := writeBuffer.WriteUint32("startingBitPosition", 32, uint32((startingBitPosition)))
+		_startingBitPositionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("startingBitPosition", 32, uint32((startingBitPosition)))
 		if _startingBitPositionErr != nil {
 			return errors.Wrap(_startingBitPositionErr, "Error serializing 'startingBitPosition' field")
 		}
 
 		// Simple Field (endingBitPosition)
 		endingBitPosition := uint32(m.GetEndingBitPosition())
-		_endingBitPositionErr := writeBuffer.WriteUint32("endingBitPosition", 32, uint32((endingBitPosition)))
+		_endingBitPositionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("endingBitPosition", 32, uint32((endingBitPosition)))
 		if _endingBitPositionErr != nil {
 			return errors.Wrap(_endingBitPositionErr, "Error serializing 'endingBitPosition' field")
 		}

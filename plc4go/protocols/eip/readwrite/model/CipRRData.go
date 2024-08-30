@@ -187,21 +187,21 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	_ = currentPos
 
 	// Simple Field (interfaceHandle)
-	_interfaceHandle, _interfaceHandleErr := readBuffer.ReadUint32("interfaceHandle", 32)
+	_interfaceHandle, _interfaceHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("interfaceHandle", 32)
 	if _interfaceHandleErr != nil {
 		return nil, errors.Wrap(_interfaceHandleErr, "Error parsing 'interfaceHandle' field of CipRRData")
 	}
 	interfaceHandle := _interfaceHandle
 
 	// Simple Field (timeout)
-	_timeout, _timeoutErr := readBuffer.ReadUint16("timeout", 16)
+	_timeout, _timeoutErr := /*TODO: migrate me*/ readBuffer.ReadUint16("timeout", 16)
 	if _timeoutErr != nil {
 		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of CipRRData")
 	}
 	timeout := _timeout
 
 	// Implicit Field (typeIdCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	typeIdCount, _typeIdCountErr := readBuffer.ReadUint16("typeIdCount", 16)
+	typeIdCount, _typeIdCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("typeIdCount", 16)
 	_ = typeIdCount
 	if _typeIdCountErr != nil {
 		return nil, errors.Wrap(_typeIdCountErr, "Error parsing 'typeIdCount' field of CipRRData")
@@ -269,21 +269,21 @@ func (m *_CipRRData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (interfaceHandle)
 		interfaceHandle := uint32(m.GetInterfaceHandle())
-		_interfaceHandleErr := writeBuffer.WriteUint32("interfaceHandle", 32, uint32((interfaceHandle)))
+		_interfaceHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("interfaceHandle", 32, uint32((interfaceHandle)))
 		if _interfaceHandleErr != nil {
 			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
 		}
 
 		// Simple Field (timeout)
 		timeout := uint16(m.GetTimeout())
-		_timeoutErr := writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
+		_timeoutErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("timeout", 16, uint16((timeout)))
 		if _timeoutErr != nil {
 			return errors.Wrap(_timeoutErr, "Error serializing 'timeout' field")
 		}
 
 		// Implicit Field (typeIdCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		typeIdCount := uint16(uint16(len(m.GetTypeIds())))
-		_typeIdCountErr := writeBuffer.WriteUint16("typeIdCount", 16, uint16((typeIdCount)))
+		_typeIdCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("typeIdCount", 16, uint16((typeIdCount)))
 		if _typeIdCountErr != nil {
 			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
 		}

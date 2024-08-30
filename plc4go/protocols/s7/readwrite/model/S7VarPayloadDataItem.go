@@ -173,7 +173,7 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
+	dataLength, _dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataLength", 16)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of S7VarPayloadDataItem")
@@ -193,7 +193,7 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 		_timesPadding := (utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(data))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32))
 		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
 			// Just read the padding data and ignore it
-			_, _err := readBuffer.ReadUint8("", 8)
+			_, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'padding' field of S7VarPayloadDataItem")
 			}
@@ -260,7 +260,7 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 	dataLength := uint16(uint16(uint16(len(m.GetData()))) * uint16((utils.InlineIf((bool((m.GetTransportSize()) == (DataTransportSize_BIT))), func() any { return uint16(uint16(1)) }, func() any {
 		return uint16((utils.InlineIf(m.GetTransportSize().SizeInBits(), func() any { return uint16(uint16(8)) }, func() any { return uint16(uint16(1)) }).(uint16)))
 	}).(uint16))))
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
+	_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
@@ -279,7 +279,7 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		_timesPadding := uint8(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(m.GetData()))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32))
 		for ; _timesPadding > 0; _timesPadding-- {
 			_paddingValue := uint8(0x00)
-			_paddingErr := writeBuffer.WriteUint8("", 8, uint8((_paddingValue)))
+			_paddingErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8((_paddingValue)))
 			if _paddingErr != nil {
 				return errors.Wrap(_paddingErr, "Error serializing 'padding' field")
 			}

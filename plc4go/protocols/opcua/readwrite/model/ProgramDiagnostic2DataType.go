@@ -361,14 +361,14 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (invocationCreationTime)
-	_invocationCreationTime, _invocationCreationTimeErr := readBuffer.ReadInt64("invocationCreationTime", 64)
+	_invocationCreationTime, _invocationCreationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("invocationCreationTime", 64)
 	if _invocationCreationTimeErr != nil {
 		return nil, errors.Wrap(_invocationCreationTimeErr, "Error parsing 'invocationCreationTime' field of ProgramDiagnostic2DataType")
 	}
 	invocationCreationTime := _invocationCreationTime
 
 	// Simple Field (lastTransitionTime)
-	_lastTransitionTime, _lastTransitionTimeErr := readBuffer.ReadInt64("lastTransitionTime", 64)
+	_lastTransitionTime, _lastTransitionTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastTransitionTime", 64)
 	if _lastTransitionTimeErr != nil {
 		return nil, errors.Wrap(_lastTransitionTimeErr, "Error parsing 'lastTransitionTime' field of ProgramDiagnostic2DataType")
 	}
@@ -401,7 +401,7 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfLastMethodInputArguments)
-	_noOfLastMethodInputArguments, _noOfLastMethodInputArgumentsErr := readBuffer.ReadInt32("noOfLastMethodInputArguments", 32)
+	_noOfLastMethodInputArguments, _noOfLastMethodInputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodInputArguments", 32)
 	if _noOfLastMethodInputArgumentsErr != nil {
 		return nil, errors.Wrap(_noOfLastMethodInputArgumentsErr, "Error parsing 'noOfLastMethodInputArguments' field of ProgramDiagnostic2DataType")
 	}
@@ -435,7 +435,7 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfLastMethodOutputArguments)
-	_noOfLastMethodOutputArguments, _noOfLastMethodOutputArgumentsErr := readBuffer.ReadInt32("noOfLastMethodOutputArguments", 32)
+	_noOfLastMethodOutputArguments, _noOfLastMethodOutputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodOutputArguments", 32)
 	if _noOfLastMethodOutputArgumentsErr != nil {
 		return nil, errors.Wrap(_noOfLastMethodOutputArgumentsErr, "Error parsing 'noOfLastMethodOutputArguments' field of ProgramDiagnostic2DataType")
 	}
@@ -469,7 +469,7 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfLastMethodInputValues)
-	_noOfLastMethodInputValues, _noOfLastMethodInputValuesErr := readBuffer.ReadInt32("noOfLastMethodInputValues", 32)
+	_noOfLastMethodInputValues, _noOfLastMethodInputValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodInputValues", 32)
 	if _noOfLastMethodInputValuesErr != nil {
 		return nil, errors.Wrap(_noOfLastMethodInputValuesErr, "Error parsing 'noOfLastMethodInputValues' field of ProgramDiagnostic2DataType")
 	}
@@ -503,7 +503,7 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfLastMethodOutputValues)
-	_noOfLastMethodOutputValues, _noOfLastMethodOutputValuesErr := readBuffer.ReadInt32("noOfLastMethodOutputValues", 32)
+	_noOfLastMethodOutputValues, _noOfLastMethodOutputValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodOutputValues", 32)
 	if _noOfLastMethodOutputValuesErr != nil {
 		return nil, errors.Wrap(_noOfLastMethodOutputValuesErr, "Error parsing 'noOfLastMethodOutputValues' field of ProgramDiagnostic2DataType")
 	}
@@ -537,7 +537,7 @@ func ProgramDiagnostic2DataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (lastMethodCallTime)
-	_lastMethodCallTime, _lastMethodCallTimeErr := readBuffer.ReadInt64("lastMethodCallTime", 64)
+	_lastMethodCallTime, _lastMethodCallTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastMethodCallTime", 64)
 	if _lastMethodCallTimeErr != nil {
 		return nil, errors.Wrap(_lastMethodCallTimeErr, "Error parsing 'lastMethodCallTime' field of ProgramDiagnostic2DataType")
 	}
@@ -628,14 +628,14 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (invocationCreationTime)
 		invocationCreationTime := int64(m.GetInvocationCreationTime())
-		_invocationCreationTimeErr := writeBuffer.WriteInt64("invocationCreationTime", 64, int64((invocationCreationTime)))
+		_invocationCreationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("invocationCreationTime", 64, int64((invocationCreationTime)))
 		if _invocationCreationTimeErr != nil {
 			return errors.Wrap(_invocationCreationTimeErr, "Error serializing 'invocationCreationTime' field")
 		}
 
 		// Simple Field (lastTransitionTime)
 		lastTransitionTime := int64(m.GetLastTransitionTime())
-		_lastTransitionTimeErr := writeBuffer.WriteInt64("lastTransitionTime", 64, int64((lastTransitionTime)))
+		_lastTransitionTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastTransitionTime", 64, int64((lastTransitionTime)))
 		if _lastTransitionTimeErr != nil {
 			return errors.Wrap(_lastTransitionTimeErr, "Error serializing 'lastTransitionTime' field")
 		}
@@ -666,7 +666,7 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLastMethodInputArguments)
 		noOfLastMethodInputArguments := int32(m.GetNoOfLastMethodInputArguments())
-		_noOfLastMethodInputArgumentsErr := writeBuffer.WriteInt32("noOfLastMethodInputArguments", 32, int32((noOfLastMethodInputArguments)))
+		_noOfLastMethodInputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodInputArguments", 32, int32((noOfLastMethodInputArguments)))
 		if _noOfLastMethodInputArgumentsErr != nil {
 			return errors.Wrap(_noOfLastMethodInputArgumentsErr, "Error serializing 'noOfLastMethodInputArguments' field")
 		}
@@ -690,7 +690,7 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLastMethodOutputArguments)
 		noOfLastMethodOutputArguments := int32(m.GetNoOfLastMethodOutputArguments())
-		_noOfLastMethodOutputArgumentsErr := writeBuffer.WriteInt32("noOfLastMethodOutputArguments", 32, int32((noOfLastMethodOutputArguments)))
+		_noOfLastMethodOutputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodOutputArguments", 32, int32((noOfLastMethodOutputArguments)))
 		if _noOfLastMethodOutputArgumentsErr != nil {
 			return errors.Wrap(_noOfLastMethodOutputArgumentsErr, "Error serializing 'noOfLastMethodOutputArguments' field")
 		}
@@ -714,7 +714,7 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLastMethodInputValues)
 		noOfLastMethodInputValues := int32(m.GetNoOfLastMethodInputValues())
-		_noOfLastMethodInputValuesErr := writeBuffer.WriteInt32("noOfLastMethodInputValues", 32, int32((noOfLastMethodInputValues)))
+		_noOfLastMethodInputValuesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodInputValues", 32, int32((noOfLastMethodInputValues)))
 		if _noOfLastMethodInputValuesErr != nil {
 			return errors.Wrap(_noOfLastMethodInputValuesErr, "Error serializing 'noOfLastMethodInputValues' field")
 		}
@@ -738,7 +738,7 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLastMethodOutputValues)
 		noOfLastMethodOutputValues := int32(m.GetNoOfLastMethodOutputValues())
-		_noOfLastMethodOutputValuesErr := writeBuffer.WriteInt32("noOfLastMethodOutputValues", 32, int32((noOfLastMethodOutputValues)))
+		_noOfLastMethodOutputValuesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLastMethodOutputValues", 32, int32((noOfLastMethodOutputValues)))
 		if _noOfLastMethodOutputValuesErr != nil {
 			return errors.Wrap(_noOfLastMethodOutputValuesErr, "Error serializing 'noOfLastMethodOutputValues' field")
 		}
@@ -762,7 +762,7 @@ func (m *_ProgramDiagnostic2DataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (lastMethodCallTime)
 		lastMethodCallTime := int64(m.GetLastMethodCallTime())
-		_lastMethodCallTimeErr := writeBuffer.WriteInt64("lastMethodCallTime", 64, int64((lastMethodCallTime)))
+		_lastMethodCallTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("lastMethodCallTime", 64, int64((lastMethodCallTime)))
 		if _lastMethodCallTimeErr != nil {
 			return errors.Wrap(_lastMethodCallTimeErr, "Error serializing 'lastMethodCallTime' field")
 		}

@@ -142,7 +142,7 @@ func ExtensionObjectEncodingMaskParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField0 *int8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadInt8("reserved", 5)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("reserved", 5)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ExtensionObjectEncodingMask")
 		}
@@ -157,21 +157,21 @@ func ExtensionObjectEncodingMaskParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (typeIdSpecified)
-	_typeIdSpecified, _typeIdSpecifiedErr := readBuffer.ReadBit("typeIdSpecified")
+	_typeIdSpecified, _typeIdSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("typeIdSpecified")
 	if _typeIdSpecifiedErr != nil {
 		return nil, errors.Wrap(_typeIdSpecifiedErr, "Error parsing 'typeIdSpecified' field of ExtensionObjectEncodingMask")
 	}
 	typeIdSpecified := _typeIdSpecified
 
 	// Simple Field (xmlbody)
-	_xmlbody, _xmlbodyErr := readBuffer.ReadBit("xmlbody")
+	_xmlbody, _xmlbodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("xmlbody")
 	if _xmlbodyErr != nil {
 		return nil, errors.Wrap(_xmlbodyErr, "Error parsing 'xmlbody' field of ExtensionObjectEncodingMask")
 	}
 	xmlbody := _xmlbody
 
 	// Simple Field (binaryBody)
-	_binaryBody, _binaryBodyErr := readBuffer.ReadBit("binaryBody")
+	_binaryBody, _binaryBodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("binaryBody")
 	if _binaryBodyErr != nil {
 		return nil, errors.Wrap(_binaryBodyErr, "Error parsing 'binaryBody' field of ExtensionObjectEncodingMask")
 	}
@@ -217,7 +217,7 @@ func (m *_ExtensionObjectEncodingMask) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteInt8("reserved", 5, int8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteInt8("reserved", 5, int8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -225,21 +225,21 @@ func (m *_ExtensionObjectEncodingMask) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (typeIdSpecified)
 	typeIdSpecified := bool(m.GetTypeIdSpecified())
-	_typeIdSpecifiedErr := writeBuffer.WriteBit("typeIdSpecified", (typeIdSpecified))
+	_typeIdSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("typeIdSpecified", (typeIdSpecified))
 	if _typeIdSpecifiedErr != nil {
 		return errors.Wrap(_typeIdSpecifiedErr, "Error serializing 'typeIdSpecified' field")
 	}
 
 	// Simple Field (xmlbody)
 	xmlbody := bool(m.GetXmlbody())
-	_xmlbodyErr := writeBuffer.WriteBit("xmlbody", (xmlbody))
+	_xmlbodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("xmlbody", (xmlbody))
 	if _xmlbodyErr != nil {
 		return errors.Wrap(_xmlbodyErr, "Error serializing 'xmlbody' field")
 	}
 
 	// Simple Field (binaryBody)
 	binaryBody := bool(m.GetBinaryBody())
-	_binaryBodyErr := writeBuffer.WriteBit("binaryBody", (binaryBody))
+	_binaryBodyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("binaryBody", (binaryBody))
 	if _binaryBodyErr != nil {
 		return errors.Wrap(_binaryBodyErr, "Error serializing 'binaryBody' field")
 	}

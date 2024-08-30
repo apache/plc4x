@@ -165,14 +165,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponseParseWithBuffer(c
 	_ = currentPos
 
 	// Simple Field (result)
-	_result, _resultErr := readBuffer.ReadUint8("result", 8)
+	_result, _resultErr := /*TODO: migrate me*/ readBuffer.ReadUint8("result", 8)
 	if _resultErr != nil {
 		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse")
 	}
 	result := _result
 
 	// Simple Field (reserved01)
-	_reserved01, _reserved01Err := readBuffer.ReadUint8("reserved01", 8)
+	_reserved01, _reserved01Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved01", 8)
 	if _reserved01Err != nil {
 		return nil, errors.Wrap(_reserved01Err, "Error parsing 'reserved01' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse")
 	}
@@ -212,14 +212,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionSysResponse) SerializeW
 
 		// Simple Field (result)
 		result := uint8(m.GetResult())
-		_resultErr := writeBuffer.WriteUint8("result", 8, uint8((result)))
+		_resultErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("result", 8, uint8((result)))
 		if _resultErr != nil {
 			return errors.Wrap(_resultErr, "Error serializing 'result' field")
 		}
 
 		// Simple Field (reserved01)
 		reserved01 := uint8(m.GetReserved01())
-		_reserved01Err := writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
+		_reserved01Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved01", 8, uint8((reserved01)))
 		if _reserved01Err != nil {
 			return errors.Wrap(_reserved01Err, "Error serializing 'reserved01' field")
 		}

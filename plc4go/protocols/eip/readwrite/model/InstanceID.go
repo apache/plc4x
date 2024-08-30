@@ -153,14 +153,14 @@ func InstanceIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Simple Field (format)
-	_format, _formatErr := readBuffer.ReadUint8("format", 2)
+	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("format", 2)
 	if _formatErr != nil {
 		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of InstanceID")
 	}
 	format := _format
 
 	// Simple Field (instance)
-	_instance, _instanceErr := readBuffer.ReadUint8("instance", 8)
+	_instance, _instanceErr := /*TODO: migrate me*/ readBuffer.ReadUint8("instance", 8)
 	if _instanceErr != nil {
 		return nil, errors.Wrap(_instanceErr, "Error parsing 'instance' field of InstanceID")
 	}
@@ -200,14 +200,14 @@ func (m *_InstanceID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 		// Simple Field (format)
 		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
+		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("format", 2, uint8((format)))
 		if _formatErr != nil {
 			return errors.Wrap(_formatErr, "Error serializing 'format' field")
 		}
 
 		// Simple Field (instance)
 		instance := uint8(m.GetInstance())
-		_instanceErr := writeBuffer.WriteUint8("instance", 8, uint8((instance)))
+		_instanceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("instance", 8, uint8((instance)))
 		if _instanceErr != nil {
 			return errors.Wrap(_instanceErr, "Error serializing 'instance' field")
 		}

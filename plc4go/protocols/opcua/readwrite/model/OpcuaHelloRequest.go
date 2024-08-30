@@ -170,7 +170,7 @@ func OpcuaHelloRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint32("version", 32)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaHelloRequest")
 	}
@@ -237,7 +237,7 @@ func (m *_OpcuaHelloRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (version)
 		version := uint32(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
+		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("version", 32, uint32((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

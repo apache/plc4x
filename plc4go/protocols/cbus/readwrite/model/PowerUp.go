@@ -123,7 +123,7 @@ func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (P
 	_ = currentPos
 
 	// Const Field (powerUpIndicator1)
-	powerUpIndicator1, _powerUpIndicator1Err := readBuffer.ReadByte("powerUpIndicator1")
+	powerUpIndicator1, _powerUpIndicator1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("powerUpIndicator1")
 	if _powerUpIndicator1Err != nil {
 		return nil, errors.Wrap(_powerUpIndicator1Err, "Error parsing 'powerUpIndicator1' field of PowerUp")
 	}
@@ -132,7 +132,7 @@ func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (P
 	}
 
 	// Const Field (powerUpIndicator2)
-	powerUpIndicator2, _powerUpIndicator2Err := readBuffer.ReadByte("powerUpIndicator2")
+	powerUpIndicator2, _powerUpIndicator2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("powerUpIndicator2")
 	if _powerUpIndicator2Err != nil {
 		return nil, errors.Wrap(_powerUpIndicator2Err, "Error parsing 'powerUpIndicator2' field of PowerUp")
 	}
@@ -166,13 +166,13 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 	}
 
 	// Const Field (powerUpIndicator1)
-	_powerUpIndicator1Err := writeBuffer.WriteByte("powerUpIndicator1", 0x2B)
+	_powerUpIndicator1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("powerUpIndicator1", 0x2B)
 	if _powerUpIndicator1Err != nil {
 		return errors.Wrap(_powerUpIndicator1Err, "Error serializing 'powerUpIndicator1' field")
 	}
 
 	// Const Field (powerUpIndicator2)
-	_powerUpIndicator2Err := writeBuffer.WriteByte("powerUpIndicator2", 0x2B)
+	_powerUpIndicator2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("powerUpIndicator2", 0x2B)
 	if _powerUpIndicator2Err != nil {
 		return errors.Wrap(_powerUpIndicator2Err, "Error serializing 'powerUpIndicator2' field")
 	}

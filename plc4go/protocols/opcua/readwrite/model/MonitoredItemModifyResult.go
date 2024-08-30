@@ -188,14 +188,14 @@ func MonitoredItemModifyResultParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (revisedSamplingInterval)
-	_revisedSamplingInterval, _revisedSamplingIntervalErr := readBuffer.ReadFloat64("revisedSamplingInterval", 64)
+	_revisedSamplingInterval, _revisedSamplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedSamplingInterval", 64)
 	if _revisedSamplingIntervalErr != nil {
 		return nil, errors.Wrap(_revisedSamplingIntervalErr, "Error parsing 'revisedSamplingInterval' field of MonitoredItemModifyResult")
 	}
 	revisedSamplingInterval := _revisedSamplingInterval
 
 	// Simple Field (revisedQueueSize)
-	_revisedQueueSize, _revisedQueueSizeErr := readBuffer.ReadUint32("revisedQueueSize", 32)
+	_revisedQueueSize, _revisedQueueSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedQueueSize", 32)
 	if _revisedQueueSizeErr != nil {
 		return nil, errors.Wrap(_revisedQueueSizeErr, "Error parsing 'revisedQueueSize' field of MonitoredItemModifyResult")
 	}
@@ -262,14 +262,14 @@ func (m *_MonitoredItemModifyResult) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (revisedSamplingInterval)
 		revisedSamplingInterval := float64(m.GetRevisedSamplingInterval())
-		_revisedSamplingIntervalErr := writeBuffer.WriteFloat64("revisedSamplingInterval", 64, (revisedSamplingInterval))
+		_revisedSamplingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("revisedSamplingInterval", 64, (revisedSamplingInterval))
 		if _revisedSamplingIntervalErr != nil {
 			return errors.Wrap(_revisedSamplingIntervalErr, "Error serializing 'revisedSamplingInterval' field")
 		}
 
 		// Simple Field (revisedQueueSize)
 		revisedQueueSize := uint32(m.GetRevisedQueueSize())
-		_revisedQueueSizeErr := writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
+		_revisedQueueSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedQueueSize", 32, uint32((revisedQueueSize)))
 		if _revisedQueueSizeErr != nil {
 			return errors.Wrap(_revisedQueueSizeErr, "Error serializing 'revisedQueueSize' field")
 		}

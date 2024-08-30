@@ -159,14 +159,14 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Implicit Field (dataSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataSize, _dataSizeErr := readBuffer.ReadUint8("dataSize", 8)
+	dataSize, _dataSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataSize", 8)
 	_ = dataSize
 	if _dataSizeErr != nil {
 		return nil, errors.Wrap(_dataSizeErr, "Error parsing 'dataSize' field of AnsiExtendedSymbolSegment")
 	}
 
 	// Simple Field (symbol)
-	_symbol, _symbolErr := readBuffer.ReadString("symbol", uint32((dataSize)*(8)), utils.WithEncoding("UTF-8"))
+	_symbol, _symbolErr := /*TODO: migrate me*/ readBuffer.ReadString("symbol", uint32((dataSize)*(8)), utils.WithEncoding("UTF-8"))
 	if _symbolErr != nil {
 		return nil, errors.Wrap(_symbolErr, "Error parsing 'symbol' field of AnsiExtendedSymbolSegment")
 	}
@@ -176,7 +176,7 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	var pad *uint8 = nil
 	if bool(((len(symbol)) % (2)) != (0)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("pad", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("pad", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -222,14 +222,14 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Implicit Field (dataSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		dataSize := uint8(uint8(len(m.GetSymbol())))
-		_dataSizeErr := writeBuffer.WriteUint8("dataSize", 8, uint8((dataSize)))
+		_dataSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataSize", 8, uint8((dataSize)))
 		if _dataSizeErr != nil {
 			return errors.Wrap(_dataSizeErr, "Error serializing 'dataSize' field")
 		}
 
 		// Simple Field (symbol)
 		symbol := string(m.GetSymbol())
-		_symbolErr := writeBuffer.WriteString("symbol", uint32((uint8(len(m.GetSymbol())))*(8)), (symbol), utils.WithEncoding("UTF-8)"))
+		_symbolErr := /*TODO: migrate me*/ writeBuffer.WriteString("symbol", uint32((uint8(len(m.GetSymbol())))*(8)), (symbol), utils.WithEncoding("UTF-8)"))
 		if _symbolErr != nil {
 			return errors.Wrap(_symbolErr, "Error serializing 'symbol' field")
 		}
@@ -238,7 +238,7 @@ func (m *_AnsiExtendedSymbolSegment) SerializeWithWriteBuffer(ctx context.Contex
 		var pad *uint8 = nil
 		if m.GetPad() != nil {
 			pad = m.GetPad()
-			_padErr := writeBuffer.WriteUint8("pad", 8, uint8(*(pad)))
+			_padErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pad", 8, uint8(*(pad)))
 			if _padErr != nil {
 				return errors.Wrap(_padErr, "Error serializing 'pad' field")
 			}

@@ -147,7 +147,7 @@ func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Implicit Field (versionDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	versionDataLen, _versionDataLenErr := readBuffer.ReadUint16("versionDataLen", 16)
+	versionDataLen, _versionDataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("versionDataLen", 16)
 	_ = versionDataLen
 	if _versionDataLenErr != nil {
 		return nil, errors.Wrap(_versionDataLenErr, "Error parsing 'versionDataLen' field of AdsDiscoveryBlockVersion")
@@ -192,7 +192,7 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 
 		// Implicit Field (versionDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		versionDataLen := uint16(uint16(len(m.GetVersionData())))
-		_versionDataLenErr := writeBuffer.WriteUint16("versionDataLen", 16, uint16((versionDataLen)))
+		_versionDataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("versionDataLen", 16, uint16((versionDataLen)))
 		if _versionDataLenErr != nil {
 			return errors.Wrap(_versionDataLenErr, "Error serializing 'versionDataLen' field")
 		}

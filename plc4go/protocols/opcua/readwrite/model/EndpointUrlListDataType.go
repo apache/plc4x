@@ -160,7 +160,7 @@ func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Simple Field (noOfEndpointUrlList)
-	_noOfEndpointUrlList, _noOfEndpointUrlListErr := readBuffer.ReadInt32("noOfEndpointUrlList", 32)
+	_noOfEndpointUrlList, _noOfEndpointUrlListErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEndpointUrlList", 32)
 	if _noOfEndpointUrlListErr != nil {
 		return nil, errors.Wrap(_noOfEndpointUrlListErr, "Error parsing 'noOfEndpointUrlList' field of EndpointUrlListDataType")
 	}
@@ -227,7 +227,7 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfEndpointUrlList)
 		noOfEndpointUrlList := int32(m.GetNoOfEndpointUrlList())
-		_noOfEndpointUrlListErr := writeBuffer.WriteInt32("noOfEndpointUrlList", 32, int32((noOfEndpointUrlList)))
+		_noOfEndpointUrlListErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEndpointUrlList", 32, int32((noOfEndpointUrlList)))
 		if _noOfEndpointUrlListErr != nil {
 			return errors.Wrap(_noOfEndpointUrlListErr, "Error serializing 'noOfEndpointUrlList' field")
 		}

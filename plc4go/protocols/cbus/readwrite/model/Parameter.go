@@ -7890,7 +7890,7 @@ func ParameterParse(ctx context.Context, theBytes []byte) (Parameter, error) {
 func ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Parameter, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("Parameter", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("Parameter", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading Parameter")
 	}
@@ -7913,7 +7913,7 @@ func (e Parameter) Serialize() ([]byte, error) {
 func (e Parameter) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("Parameter", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("Parameter", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

@@ -177,14 +177,14 @@ func RepublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of RepublishRequest")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (retransmitSequenceNumber)
-	_retransmitSequenceNumber, _retransmitSequenceNumberErr := readBuffer.ReadUint32("retransmitSequenceNumber", 32)
+	_retransmitSequenceNumber, _retransmitSequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("retransmitSequenceNumber", 32)
 	if _retransmitSequenceNumberErr != nil {
 		return nil, errors.Wrap(_retransmitSequenceNumberErr, "Error parsing 'retransmitSequenceNumber' field of RepublishRequest")
 	}
@@ -237,14 +237,14 @@ func (m *_RepublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (retransmitSequenceNumber)
 		retransmitSequenceNumber := uint32(m.GetRetransmitSequenceNumber())
-		_retransmitSequenceNumberErr := writeBuffer.WriteUint32("retransmitSequenceNumber", 32, uint32((retransmitSequenceNumber)))
+		_retransmitSequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("retransmitSequenceNumber", 32, uint32((retransmitSequenceNumber)))
 		if _retransmitSequenceNumberErr != nil {
 			return errors.Wrap(_retransmitSequenceNumberErr, "Error serializing 'retransmitSequenceNumber' field")
 		}

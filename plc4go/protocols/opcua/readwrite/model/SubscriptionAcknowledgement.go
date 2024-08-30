@@ -153,14 +153,14 @@ func SubscriptionAcknowledgementParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SubscriptionAcknowledgement")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint32("sequenceNumber", 32)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sequenceNumber", 32)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SubscriptionAcknowledgement")
 	}
@@ -200,14 +200,14 @@ func (m *_SubscriptionAcknowledgement) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
+		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

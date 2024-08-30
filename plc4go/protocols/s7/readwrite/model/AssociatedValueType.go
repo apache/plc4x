@@ -198,7 +198,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of AssociatedValueType")
 			}
@@ -275,7 +275,7 @@ func (m *_AssociatedValueType) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}

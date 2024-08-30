@@ -120,7 +120,7 @@ func CommandSpecificDataItemParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := readBuffer.ReadUint16("itemType", 16)
+	itemType, _itemTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("itemType", 16)
 	if _itemTypeErr != nil {
 		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field of CommandSpecificDataItem")
 	}
@@ -170,7 +170,7 @@ func (pm *_CommandSpecificDataItem) SerializeParent(ctx context.Context, writeBu
 
 	// Discriminator Field (itemType) (Used as input to a switch field)
 	itemType := uint16(child.GetItemType())
-	_itemTypeErr := writeBuffer.WriteUint16("itemType", 16, uint16((itemType)))
+	_itemTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemType", 16, uint16((itemType)))
 
 	if _itemTypeErr != nil {
 		return errors.Wrap(_itemTypeErr, "Error serializing 'itemType' field")

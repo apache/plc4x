@@ -197,7 +197,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	_ = currentPos
 
 	// Simple Field (subscription)
-	_subscription, _subscriptionErr := readBuffer.ReadUint8("subscription", 8)
+	_subscription, _subscriptionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subscription", 8)
 	if _subscriptionErr != nil {
 		return nil, errors.Wrap(_subscriptionErr, "Error parsing 'subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
@@ -206,7 +206,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 		}
@@ -221,7 +221,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	}
 
 	// Simple Field (magicKey)
-	_magicKey, _magicKeyErr := readBuffer.ReadString("magicKey", uint32(64), utils.WithEncoding("UTF-8"))
+	_magicKey, _magicKeyErr := /*TODO: migrate me*/ readBuffer.ReadString("magicKey", uint32(64), utils.WithEncoding("UTF-8"))
 	if _magicKeyErr != nil {
 		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
 	}
@@ -253,7 +253,7 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	var reserve *uint8 = nil
 	if bool((subscription) >= (128)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("reserve", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserve", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -302,7 +302,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 
 		// Simple Field (subscription)
 		subscription := uint8(m.GetSubscription())
-		_subscriptionErr := writeBuffer.WriteUint8("subscription", 8, uint8((subscription)))
+		_subscriptionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("subscription", 8, uint8((subscription)))
 		if _subscriptionErr != nil {
 			return errors.Wrap(_subscriptionErr, "Error serializing 'subscription' field")
 		}
@@ -317,7 +317,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -325,7 +325,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 
 		// Simple Field (magicKey)
 		magicKey := string(m.GetMagicKey())
-		_magicKeyErr := writeBuffer.WriteString("magicKey", uint32(64), (magicKey), utils.WithEncoding("UTF-8)"))
+		_magicKeyErr := /*TODO: migrate me*/ writeBuffer.WriteString("magicKey", uint32(64), (magicKey), utils.WithEncoding("UTF-8)"))
 		if _magicKeyErr != nil {
 			return errors.Wrap(_magicKeyErr, "Error serializing 'magicKey' field")
 		}
@@ -350,7 +350,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest) SerializeWithW
 		var reserve *uint8 = nil
 		if m.GetReserve() != nil {
 			reserve = m.GetReserve()
-			_reserveErr := writeBuffer.WriteUint8("reserve", 8, uint8(*(reserve)))
+			_reserveErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserve", 8, uint8(*(reserve)))
 			if _reserveErr != nil {
 				return errors.Wrap(_reserveErr, "Error serializing 'reserve' field")
 			}

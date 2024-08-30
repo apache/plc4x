@@ -137,7 +137,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Implicit Field (sLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	sLength, _sLengthErr := readBuffer.ReadInt32("sLength", 32)
+	sLength, _sLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("sLength", 32)
 	_ = sLength
 	if _sLengthErr != nil {
 		return nil, errors.Wrap(_sLengthErr, "Error parsing 'sLength' field of PascalString")
@@ -149,7 +149,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = stringLength
 
 	// Simple Field (stringValue)
-	_stringValue, _stringValueErr := readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), utils.WithEncoding("UTF-8"))
+	_stringValue, _stringValueErr := /*TODO: migrate me*/ readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _stringValueErr != nil {
 		return nil, errors.Wrap(_stringValueErr, "Error parsing 'stringValue' field of PascalString")
 	}
@@ -184,7 +184,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (sLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	sLength := int32(Utf8LengthToPascalLength(ctx, m.GetStringValue()))
-	_sLengthErr := writeBuffer.WriteInt32("sLength", 32, int32((sLength)))
+	_sLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("sLength", 32, int32((sLength)))
 	if _sLengthErr != nil {
 		return errors.Wrap(_sLengthErr, "Error serializing 'sLength' field")
 	}
@@ -197,7 +197,7 @@ func (m *_PascalString) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (stringValue)
 	stringValue := string(m.GetStringValue())
-	_stringValueErr := writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), (stringValue), utils.WithEncoding("UTF-8)"))
+	_stringValueErr := /*TODO: migrate me*/ writeBuffer.WriteString("stringValue", uint32((stringLength)*(8)), (stringValue), utils.WithEncoding("UTF-8)"))
 	if _stringValueErr != nil {
 		return errors.Wrap(_stringValueErr, "Error serializing 'stringValue' field")
 	}

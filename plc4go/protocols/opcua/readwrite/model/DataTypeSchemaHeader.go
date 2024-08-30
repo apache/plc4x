@@ -247,7 +247,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (noOfNamespaces)
-	_noOfNamespaces, _noOfNamespacesErr := readBuffer.ReadInt32("noOfNamespaces", 32)
+	_noOfNamespaces, _noOfNamespacesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNamespaces", 32)
 	if _noOfNamespacesErr != nil {
 		return nil, errors.Wrap(_noOfNamespacesErr, "Error parsing 'noOfNamespaces' field of DataTypeSchemaHeader")
 	}
@@ -281,7 +281,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfStructureDataTypes)
-	_noOfStructureDataTypes, _noOfStructureDataTypesErr := readBuffer.ReadInt32("noOfStructureDataTypes", 32)
+	_noOfStructureDataTypes, _noOfStructureDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfStructureDataTypes", 32)
 	if _noOfStructureDataTypesErr != nil {
 		return nil, errors.Wrap(_noOfStructureDataTypesErr, "Error parsing 'noOfStructureDataTypes' field of DataTypeSchemaHeader")
 	}
@@ -315,7 +315,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfEnumDataTypes)
-	_noOfEnumDataTypes, _noOfEnumDataTypesErr := readBuffer.ReadInt32("noOfEnumDataTypes", 32)
+	_noOfEnumDataTypes, _noOfEnumDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEnumDataTypes", 32)
 	if _noOfEnumDataTypesErr != nil {
 		return nil, errors.Wrap(_noOfEnumDataTypesErr, "Error parsing 'noOfEnumDataTypes' field of DataTypeSchemaHeader")
 	}
@@ -349,7 +349,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfSimpleDataTypes)
-	_noOfSimpleDataTypes, _noOfSimpleDataTypesErr := readBuffer.ReadInt32("noOfSimpleDataTypes", 32)
+	_noOfSimpleDataTypes, _noOfSimpleDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSimpleDataTypes", 32)
 	if _noOfSimpleDataTypesErr != nil {
 		return nil, errors.Wrap(_noOfSimpleDataTypesErr, "Error parsing 'noOfSimpleDataTypes' field of DataTypeSchemaHeader")
 	}
@@ -422,7 +422,7 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfNamespaces)
 		noOfNamespaces := int32(m.GetNoOfNamespaces())
-		_noOfNamespacesErr := writeBuffer.WriteInt32("noOfNamespaces", 32, int32((noOfNamespaces)))
+		_noOfNamespacesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNamespaces", 32, int32((noOfNamespaces)))
 		if _noOfNamespacesErr != nil {
 			return errors.Wrap(_noOfNamespacesErr, "Error serializing 'noOfNamespaces' field")
 		}
@@ -446,7 +446,7 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfStructureDataTypes)
 		noOfStructureDataTypes := int32(m.GetNoOfStructureDataTypes())
-		_noOfStructureDataTypesErr := writeBuffer.WriteInt32("noOfStructureDataTypes", 32, int32((noOfStructureDataTypes)))
+		_noOfStructureDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfStructureDataTypes", 32, int32((noOfStructureDataTypes)))
 		if _noOfStructureDataTypesErr != nil {
 			return errors.Wrap(_noOfStructureDataTypesErr, "Error serializing 'noOfStructureDataTypes' field")
 		}
@@ -470,7 +470,7 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfEnumDataTypes)
 		noOfEnumDataTypes := int32(m.GetNoOfEnumDataTypes())
-		_noOfEnumDataTypesErr := writeBuffer.WriteInt32("noOfEnumDataTypes", 32, int32((noOfEnumDataTypes)))
+		_noOfEnumDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEnumDataTypes", 32, int32((noOfEnumDataTypes)))
 		if _noOfEnumDataTypesErr != nil {
 			return errors.Wrap(_noOfEnumDataTypesErr, "Error serializing 'noOfEnumDataTypes' field")
 		}
@@ -494,7 +494,7 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfSimpleDataTypes)
 		noOfSimpleDataTypes := int32(m.GetNoOfSimpleDataTypes())
-		_noOfSimpleDataTypesErr := writeBuffer.WriteInt32("noOfSimpleDataTypes", 32, int32((noOfSimpleDataTypes)))
+		_noOfSimpleDataTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSimpleDataTypes", 32, int32((noOfSimpleDataTypes)))
 		if _noOfSimpleDataTypesErr != nil {
 			return errors.Wrap(_noOfSimpleDataTypesErr, "Error serializing 'noOfSimpleDataTypes' field")
 		}

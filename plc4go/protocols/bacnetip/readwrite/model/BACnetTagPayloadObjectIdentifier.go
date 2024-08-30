@@ -179,7 +179,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	_ = isProprietary
 
 	// Simple Field (instanceNumber)
-	_instanceNumber, _instanceNumberErr := readBuffer.ReadUint32("instanceNumber", 22)
+	_instanceNumber, _instanceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("instanceNumber", 22)
 	if _instanceNumberErr != nil {
 		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field of BACnetTagPayloadObjectIdentifier")
 	}
@@ -234,7 +234,7 @@ func (m *_BACnetTagPayloadObjectIdentifier) SerializeWithWriteBuffer(ctx context
 
 	// Simple Field (instanceNumber)
 	instanceNumber := uint32(m.GetInstanceNumber())
-	_instanceNumberErr := writeBuffer.WriteUint32("instanceNumber", 22, uint32((instanceNumber)))
+	_instanceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("instanceNumber", 22, uint32((instanceNumber)))
 	if _instanceNumberErr != nil {
 		return errors.Wrap(_instanceNumberErr, "Error serializing 'instanceNumber' field")
 	}

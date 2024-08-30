@@ -262,7 +262,7 @@ func BuildInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	// Simple Field (buildDate)
-	_buildDate, _buildDateErr := readBuffer.ReadInt64("buildDate", 64)
+	_buildDate, _buildDateErr := /*TODO: migrate me*/ readBuffer.ReadInt64("buildDate", 64)
 	if _buildDateErr != nil {
 		return nil, errors.Wrap(_buildDateErr, "Error parsing 'buildDate' field of BuildInfo")
 	}
@@ -366,7 +366,7 @@ func (m *_BuildInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 		// Simple Field (buildDate)
 		buildDate := int64(m.GetBuildDate())
-		_buildDateErr := writeBuffer.WriteInt64("buildDate", 64, int64((buildDate)))
+		_buildDateErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("buildDate", 64, int64((buildDate)))
 		if _buildDateErr != nil {
 			return errors.Wrap(_buildDateErr, "Error serializing 'buildDate' field")
 		}

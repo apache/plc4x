@@ -187,14 +187,14 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = commandType
 
 	// Simple Field (temperatureGroup)
-	_temperatureGroup, _temperatureGroupErr := readBuffer.ReadByte("temperatureGroup")
+	_temperatureGroup, _temperatureGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("temperatureGroup")
 	if _temperatureGroupErr != nil {
 		return nil, errors.Wrap(_temperatureGroupErr, "Error parsing 'temperatureGroup' field of TemperatureBroadcastData")
 	}
 	temperatureGroup := _temperatureGroup
 
 	// Simple Field (temperatureByte)
-	_temperatureByte, _temperatureByteErr := readBuffer.ReadByte("temperatureByte")
+	_temperatureByte, _temperatureByteErr := /*TODO: migrate me*/ readBuffer.ReadByte("temperatureByte")
 	if _temperatureByteErr != nil {
 		return nil, errors.Wrap(_temperatureByteErr, "Error parsing 'temperatureByte' field of TemperatureBroadcastData")
 	}
@@ -254,14 +254,14 @@ func (m *_TemperatureBroadcastData) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (temperatureGroup)
 	temperatureGroup := byte(m.GetTemperatureGroup())
-	_temperatureGroupErr := writeBuffer.WriteByte("temperatureGroup", (temperatureGroup))
+	_temperatureGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("temperatureGroup", (temperatureGroup))
 	if _temperatureGroupErr != nil {
 		return errors.Wrap(_temperatureGroupErr, "Error serializing 'temperatureGroup' field")
 	}
 
 	// Simple Field (temperatureByte)
 	temperatureByte := byte(m.GetTemperatureByte())
-	_temperatureByteErr := writeBuffer.WriteByte("temperatureByte", (temperatureByte))
+	_temperatureByteErr := /*TODO: migrate me*/ writeBuffer.WriteByte("temperatureByte", (temperatureByte))
 	if _temperatureByteErr != nil {
 		return errors.Wrap(_temperatureByteErr, "Error serializing 'temperatureByte' field")
 	}

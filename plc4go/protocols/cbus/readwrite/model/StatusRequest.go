@@ -134,7 +134,7 @@ func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 
 	// Peek Field (statusType)
 	currentPos = positionAware.GetPos()
-	statusType, _err := readBuffer.ReadByte("statusType")
+	statusType, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("statusType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'statusType' field of StatusRequest")
 	}

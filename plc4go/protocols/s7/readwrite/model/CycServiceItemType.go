@@ -165,7 +165,7 @@ func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	functionId, _functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of CycServiceItemType")
 	}
@@ -174,14 +174,14 @@ func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (byteLength)
-	_byteLength, _byteLengthErr := readBuffer.ReadUint8("byteLength", 8)
+	_byteLength, _byteLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("byteLength", 8)
 	if _byteLengthErr != nil {
 		return nil, errors.Wrap(_byteLengthErr, "Error parsing 'byteLength' field of CycServiceItemType")
 	}
 	byteLength := _byteLength
 
 	// Simple Field (syntaxId)
-	_syntaxId, _syntaxIdErr := readBuffer.ReadUint8("syntaxId", 8)
+	_syntaxId, _syntaxIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("syntaxId", 8)
 	if _syntaxIdErr != nil {
 		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of CycServiceItemType")
 	}
@@ -231,21 +231,21 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 	}
 
 	// Const Field (functionId)
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x12))
+	_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x12))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (byteLength)
 	byteLength := uint8(m.GetByteLength())
-	_byteLengthErr := writeBuffer.WriteUint8("byteLength", 8, uint8((byteLength)))
+	_byteLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteLength", 8, uint8((byteLength)))
 	if _byteLengthErr != nil {
 		return errors.Wrap(_byteLengthErr, "Error serializing 'byteLength' field")
 	}
 
 	// Simple Field (syntaxId)
 	syntaxId := uint8(m.GetSyntaxId())
-	_syntaxIdErr := writeBuffer.WriteUint8("syntaxId", 8, uint8((syntaxId)))
+	_syntaxIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("syntaxId", 8, uint8((syntaxId)))
 	if _syntaxIdErr != nil {
 		return errors.Wrap(_syntaxIdErr, "Error serializing 'syntaxId' field")
 	}

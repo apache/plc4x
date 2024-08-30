@@ -197,14 +197,14 @@ func ServerStatusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (startTime)
-	_startTime, _startTimeErr := readBuffer.ReadInt64("startTime", 64)
+	_startTime, _startTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("startTime", 64)
 	if _startTimeErr != nil {
 		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field of ServerStatusDataType")
 	}
 	startTime := _startTime
 
 	// Simple Field (currentTime)
-	_currentTime, _currentTimeErr := readBuffer.ReadInt64("currentTime", 64)
+	_currentTime, _currentTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("currentTime", 64)
 	if _currentTimeErr != nil {
 		return nil, errors.Wrap(_currentTimeErr, "Error parsing 'currentTime' field of ServerStatusDataType")
 	}
@@ -237,7 +237,7 @@ func ServerStatusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (secondsTillShutdown)
-	_secondsTillShutdown, _secondsTillShutdownErr := readBuffer.ReadUint32("secondsTillShutdown", 32)
+	_secondsTillShutdown, _secondsTillShutdownErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secondsTillShutdown", 32)
 	if _secondsTillShutdownErr != nil {
 		return nil, errors.Wrap(_secondsTillShutdownErr, "Error parsing 'secondsTillShutdown' field of ServerStatusDataType")
 	}
@@ -294,14 +294,14 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (startTime)
 		startTime := int64(m.GetStartTime())
-		_startTimeErr := writeBuffer.WriteInt64("startTime", 64, int64((startTime)))
+		_startTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("startTime", 64, int64((startTime)))
 		if _startTimeErr != nil {
 			return errors.Wrap(_startTimeErr, "Error serializing 'startTime' field")
 		}
 
 		// Simple Field (currentTime)
 		currentTime := int64(m.GetCurrentTime())
-		_currentTimeErr := writeBuffer.WriteInt64("currentTime", 64, int64((currentTime)))
+		_currentTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("currentTime", 64, int64((currentTime)))
 		if _currentTimeErr != nil {
 			return errors.Wrap(_currentTimeErr, "Error serializing 'currentTime' field")
 		}
@@ -332,7 +332,7 @@ func (m *_ServerStatusDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (secondsTillShutdown)
 		secondsTillShutdown := uint32(m.GetSecondsTillShutdown())
-		_secondsTillShutdownErr := writeBuffer.WriteUint32("secondsTillShutdown", 32, uint32((secondsTillShutdown)))
+		_secondsTillShutdownErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("secondsTillShutdown", 32, uint32((secondsTillShutdown)))
 		if _secondsTillShutdownErr != nil {
 			return errors.Wrap(_secondsTillShutdownErr, "Error serializing 'secondsTillShutdown' field")
 		}

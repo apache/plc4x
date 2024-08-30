@@ -176,7 +176,7 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions1")
 		}
@@ -191,35 +191,35 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (idmon)
-	_idmon, _idmonErr := readBuffer.ReadBit("idmon")
+	_idmon, _idmonErr := /*TODO: migrate me*/ readBuffer.ReadBit("idmon")
 	if _idmonErr != nil {
 		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field of InterfaceOptions1")
 	}
 	idmon := _idmon
 
 	// Simple Field (monitor)
-	_monitor, _monitorErr := readBuffer.ReadBit("monitor")
+	_monitor, _monitorErr := /*TODO: migrate me*/ readBuffer.ReadBit("monitor")
 	if _monitorErr != nil {
 		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field of InterfaceOptions1")
 	}
 	monitor := _monitor
 
 	// Simple Field (smart)
-	_smart, _smartErr := readBuffer.ReadBit("smart")
+	_smart, _smartErr := /*TODO: migrate me*/ readBuffer.ReadBit("smart")
 	if _smartErr != nil {
 		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field of InterfaceOptions1")
 	}
 	smart := _smart
 
 	// Simple Field (srchk)
-	_srchk, _srchkErr := readBuffer.ReadBit("srchk")
+	_srchk, _srchkErr := /*TODO: migrate me*/ readBuffer.ReadBit("srchk")
 	if _srchkErr != nil {
 		return nil, errors.Wrap(_srchkErr, "Error parsing 'srchk' field of InterfaceOptions1")
 	}
 	srchk := _srchk
 
 	// Simple Field (xonXoff)
-	_xonXoff, _xonXoffErr := readBuffer.ReadBit("xonXoff")
+	_xonXoff, _xonXoffErr := /*TODO: migrate me*/ readBuffer.ReadBit("xonXoff")
 	if _xonXoffErr != nil {
 		return nil, errors.Wrap(_xonXoffErr, "Error parsing 'xonXoff' field of InterfaceOptions1")
 	}
@@ -228,7 +228,7 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of InterfaceOptions1")
 		}
@@ -243,7 +243,7 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (connect)
-	_connect, _connectErr := readBuffer.ReadBit("connect")
+	_connect, _connectErr := /*TODO: migrate me*/ readBuffer.ReadBit("connect")
 	if _connectErr != nil {
 		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field of InterfaceOptions1")
 	}
@@ -293,7 +293,7 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -301,35 +301,35 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (idmon)
 	idmon := bool(m.GetIdmon())
-	_idmonErr := writeBuffer.WriteBit("idmon", (idmon))
+	_idmonErr := /*TODO: migrate me*/ writeBuffer.WriteBit("idmon", (idmon))
 	if _idmonErr != nil {
 		return errors.Wrap(_idmonErr, "Error serializing 'idmon' field")
 	}
 
 	// Simple Field (monitor)
 	monitor := bool(m.GetMonitor())
-	_monitorErr := writeBuffer.WriteBit("monitor", (monitor))
+	_monitorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monitor", (monitor))
 	if _monitorErr != nil {
 		return errors.Wrap(_monitorErr, "Error serializing 'monitor' field")
 	}
 
 	// Simple Field (smart)
 	smart := bool(m.GetSmart())
-	_smartErr := writeBuffer.WriteBit("smart", (smart))
+	_smartErr := /*TODO: migrate me*/ writeBuffer.WriteBit("smart", (smart))
 	if _smartErr != nil {
 		return errors.Wrap(_smartErr, "Error serializing 'smart' field")
 	}
 
 	// Simple Field (srchk)
 	srchk := bool(m.GetSrchk())
-	_srchkErr := writeBuffer.WriteBit("srchk", (srchk))
+	_srchkErr := /*TODO: migrate me*/ writeBuffer.WriteBit("srchk", (srchk))
 	if _srchkErr != nil {
 		return errors.Wrap(_srchkErr, "Error serializing 'srchk' field")
 	}
 
 	// Simple Field (xonXoff)
 	xonXoff := bool(m.GetXonXoff())
-	_xonXoffErr := writeBuffer.WriteBit("xonXoff", (xonXoff))
+	_xonXoffErr := /*TODO: migrate me*/ writeBuffer.WriteBit("xonXoff", (xonXoff))
 	if _xonXoffErr != nil {
 		return errors.Wrap(_xonXoffErr, "Error serializing 'xonXoff' field")
 	}
@@ -344,7 +344,7 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -352,7 +352,7 @@ func (m *_InterfaceOptions1) SerializeWithWriteBuffer(ctx context.Context, write
 
 	// Simple Field (connect)
 	connect := bool(m.GetConnect())
-	_connectErr := writeBuffer.WriteBit("connect", (connect))
+	_connectErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connect", (connect))
 	if _connectErr != nil {
 		return errors.Wrap(_connectErr, "Error serializing 'connect' field")
 	}

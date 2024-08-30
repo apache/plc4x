@@ -309,28 +309,28 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint16("itemLength", 16)
+	itemLength, _itemLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("itemLength", 16)
 	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of CipIdentity")
 	}
 
 	// Simple Field (encapsulationProtocolVersion)
-	_encapsulationProtocolVersion, _encapsulationProtocolVersionErr := readBuffer.ReadUint16("encapsulationProtocolVersion", 16)
+	_encapsulationProtocolVersion, _encapsulationProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocolVersion", 16)
 	if _encapsulationProtocolVersionErr != nil {
 		return nil, errors.Wrap(_encapsulationProtocolVersionErr, "Error parsing 'encapsulationProtocolVersion' field of CipIdentity")
 	}
 	encapsulationProtocolVersion := _encapsulationProtocolVersion
 
 	// Simple Field (socketAddressFamily)
-	_socketAddressFamily, _socketAddressFamilyErr := readBuffer.ReadUint16("socketAddressFamily", 16)
+	_socketAddressFamily, _socketAddressFamilyErr := /*TODO: migrate me*/ readBuffer.ReadUint16("socketAddressFamily", 16)
 	if _socketAddressFamilyErr != nil {
 		return nil, errors.Wrap(_socketAddressFamilyErr, "Error parsing 'socketAddressFamily' field of CipIdentity")
 	}
 	socketAddressFamily := _socketAddressFamily
 
 	// Simple Field (socketAddressPort)
-	_socketAddressPort, _socketAddressPortErr := readBuffer.ReadUint16("socketAddressPort", 16)
+	_socketAddressPort, _socketAddressPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("socketAddressPort", 16)
 	if _socketAddressPortErr != nil {
 		return nil, errors.Wrap(_socketAddressPortErr, "Error parsing 'socketAddressPort' field of CipIdentity")
 	}
@@ -352,7 +352,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'socketAddressAddress' field of CipIdentity")
 			}
@@ -364,7 +364,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Const Field (zeroes1)
-	zeroes1, _zeroes1Err := readBuffer.ReadUint32("zeroes1", 32)
+	zeroes1, _zeroes1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("zeroes1", 32)
 	if _zeroes1Err != nil {
 		return nil, errors.Wrap(_zeroes1Err, "Error parsing 'zeroes1' field of CipIdentity")
 	}
@@ -373,7 +373,7 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Const Field (zeroes2)
-	zeroes2, _zeroes2Err := readBuffer.ReadUint32("zeroes2", 32)
+	zeroes2, _zeroes2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("zeroes2", 32)
 	if _zeroes2Err != nil {
 		return nil, errors.Wrap(_zeroes2Err, "Error parsing 'zeroes2' field of CipIdentity")
 	}
@@ -382,70 +382,70 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (vendorId)
-	_vendorId, _vendorIdErr := readBuffer.ReadUint16("vendorId", 16)
+	_vendorId, _vendorIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("vendorId", 16)
 	if _vendorIdErr != nil {
 		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of CipIdentity")
 	}
 	vendorId := _vendorId
 
 	// Simple Field (deviceType)
-	_deviceType, _deviceTypeErr := readBuffer.ReadUint16("deviceType", 16)
+	_deviceType, _deviceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceType", 16)
 	if _deviceTypeErr != nil {
 		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of CipIdentity")
 	}
 	deviceType := _deviceType
 
 	// Simple Field (productCode)
-	_productCode, _productCodeErr := readBuffer.ReadUint16("productCode", 16)
+	_productCode, _productCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("productCode", 16)
 	if _productCodeErr != nil {
 		return nil, errors.Wrap(_productCodeErr, "Error parsing 'productCode' field of CipIdentity")
 	}
 	productCode := _productCode
 
 	// Simple Field (revisionMajor)
-	_revisionMajor, _revisionMajorErr := readBuffer.ReadUint8("revisionMajor", 8)
+	_revisionMajor, _revisionMajorErr := /*TODO: migrate me*/ readBuffer.ReadUint8("revisionMajor", 8)
 	if _revisionMajorErr != nil {
 		return nil, errors.Wrap(_revisionMajorErr, "Error parsing 'revisionMajor' field of CipIdentity")
 	}
 	revisionMajor := _revisionMajor
 
 	// Simple Field (revisionMinor)
-	_revisionMinor, _revisionMinorErr := readBuffer.ReadUint8("revisionMinor", 8)
+	_revisionMinor, _revisionMinorErr := /*TODO: migrate me*/ readBuffer.ReadUint8("revisionMinor", 8)
 	if _revisionMinorErr != nil {
 		return nil, errors.Wrap(_revisionMinorErr, "Error parsing 'revisionMinor' field of CipIdentity")
 	}
 	revisionMinor := _revisionMinor
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint16("status", 16)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipIdentity")
 	}
 	status := _status
 
 	// Simple Field (serialNumber)
-	_serialNumber, _serialNumberErr := readBuffer.ReadUint32("serialNumber", 32)
+	_serialNumber, _serialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serialNumber", 32)
 	if _serialNumberErr != nil {
 		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of CipIdentity")
 	}
 	serialNumber := _serialNumber
 
 	// Implicit Field (productNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	productNameLength, _productNameLengthErr := readBuffer.ReadUint8("productNameLength", 8)
+	productNameLength, _productNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("productNameLength", 8)
 	_ = productNameLength
 	if _productNameLengthErr != nil {
 		return nil, errors.Wrap(_productNameLengthErr, "Error parsing 'productNameLength' field of CipIdentity")
 	}
 
 	// Simple Field (productName)
-	_productName, _productNameErr := readBuffer.ReadString("productName", uint32((productNameLength)*(8)), utils.WithEncoding("UTF-8"))
+	_productName, _productNameErr := /*TODO: migrate me*/ readBuffer.ReadString("productName", uint32((productNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _productNameErr != nil {
 		return nil, errors.Wrap(_productNameErr, "Error parsing 'productName' field of CipIdentity")
 	}
 	productName := _productName
 
 	// Simple Field (state)
-	_state, _stateErr := readBuffer.ReadUint8("state", 8)
+	_state, _stateErr := /*TODO: migrate me*/ readBuffer.ReadUint8("state", 8)
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of CipIdentity")
 	}
@@ -496,28 +496,28 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint16(uint16(uint16(34)) + uint16(uint8(len(m.GetProductName()))))
-		_itemLengthErr := writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
+		_itemLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("itemLength", 16, uint16((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (encapsulationProtocolVersion)
 		encapsulationProtocolVersion := uint16(m.GetEncapsulationProtocolVersion())
-		_encapsulationProtocolVersionErr := writeBuffer.WriteUint16("encapsulationProtocolVersion", 16, uint16((encapsulationProtocolVersion)))
+		_encapsulationProtocolVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("encapsulationProtocolVersion", 16, uint16((encapsulationProtocolVersion)))
 		if _encapsulationProtocolVersionErr != nil {
 			return errors.Wrap(_encapsulationProtocolVersionErr, "Error serializing 'encapsulationProtocolVersion' field")
 		}
 
 		// Simple Field (socketAddressFamily)
 		socketAddressFamily := uint16(m.GetSocketAddressFamily())
-		_socketAddressFamilyErr := writeBuffer.WriteUint16("socketAddressFamily", 16, uint16((socketAddressFamily)))
+		_socketAddressFamilyErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("socketAddressFamily", 16, uint16((socketAddressFamily)))
 		if _socketAddressFamilyErr != nil {
 			return errors.Wrap(_socketAddressFamilyErr, "Error serializing 'socketAddressFamily' field")
 		}
 
 		// Simple Field (socketAddressPort)
 		socketAddressPort := uint16(m.GetSocketAddressPort())
-		_socketAddressPortErr := writeBuffer.WriteUint16("socketAddressPort", 16, uint16((socketAddressPort)))
+		_socketAddressPortErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("socketAddressPort", 16, uint16((socketAddressPort)))
 		if _socketAddressPortErr != nil {
 			return errors.Wrap(_socketAddressPortErr, "Error serializing 'socketAddressPort' field")
 		}
@@ -528,7 +528,7 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 		for _curItem, _element := range m.GetSocketAddressAddress() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'socketAddressAddress' field")
 			}
@@ -538,83 +538,83 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 
 		// Const Field (zeroes1)
-		_zeroes1Err := writeBuffer.WriteUint32("zeroes1", 32, uint32(0x00000000))
+		_zeroes1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("zeroes1", 32, uint32(0x00000000))
 		if _zeroes1Err != nil {
 			return errors.Wrap(_zeroes1Err, "Error serializing 'zeroes1' field")
 		}
 
 		// Const Field (zeroes2)
-		_zeroes2Err := writeBuffer.WriteUint32("zeroes2", 32, uint32(0x00000000))
+		_zeroes2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("zeroes2", 32, uint32(0x00000000))
 		if _zeroes2Err != nil {
 			return errors.Wrap(_zeroes2Err, "Error serializing 'zeroes2' field")
 		}
 
 		// Simple Field (vendorId)
 		vendorId := uint16(m.GetVendorId())
-		_vendorIdErr := writeBuffer.WriteUint16("vendorId", 16, uint16((vendorId)))
+		_vendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("vendorId", 16, uint16((vendorId)))
 		if _vendorIdErr != nil {
 			return errors.Wrap(_vendorIdErr, "Error serializing 'vendorId' field")
 		}
 
 		// Simple Field (deviceType)
 		deviceType := uint16(m.GetDeviceType())
-		_deviceTypeErr := writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
+		_deviceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("deviceType", 16, uint16((deviceType)))
 		if _deviceTypeErr != nil {
 			return errors.Wrap(_deviceTypeErr, "Error serializing 'deviceType' field")
 		}
 
 		// Simple Field (productCode)
 		productCode := uint16(m.GetProductCode())
-		_productCodeErr := writeBuffer.WriteUint16("productCode", 16, uint16((productCode)))
+		_productCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("productCode", 16, uint16((productCode)))
 		if _productCodeErr != nil {
 			return errors.Wrap(_productCodeErr, "Error serializing 'productCode' field")
 		}
 
 		// Simple Field (revisionMajor)
 		revisionMajor := uint8(m.GetRevisionMajor())
-		_revisionMajorErr := writeBuffer.WriteUint8("revisionMajor", 8, uint8((revisionMajor)))
+		_revisionMajorErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("revisionMajor", 8, uint8((revisionMajor)))
 		if _revisionMajorErr != nil {
 			return errors.Wrap(_revisionMajorErr, "Error serializing 'revisionMajor' field")
 		}
 
 		// Simple Field (revisionMinor)
 		revisionMinor := uint8(m.GetRevisionMinor())
-		_revisionMinorErr := writeBuffer.WriteUint8("revisionMinor", 8, uint8((revisionMinor)))
+		_revisionMinorErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("revisionMinor", 8, uint8((revisionMinor)))
 		if _revisionMinorErr != nil {
 			return errors.Wrap(_revisionMinorErr, "Error serializing 'revisionMinor' field")
 		}
 
 		// Simple Field (status)
 		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
+		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("status", 16, uint16((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (serialNumber)
 		serialNumber := uint32(m.GetSerialNumber())
-		_serialNumberErr := writeBuffer.WriteUint32("serialNumber", 32, uint32((serialNumber)))
+		_serialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serialNumber", 32, uint32((serialNumber)))
 		if _serialNumberErr != nil {
 			return errors.Wrap(_serialNumberErr, "Error serializing 'serialNumber' field")
 		}
 
 		// Implicit Field (productNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		productNameLength := uint8(uint8(len(m.GetProductName())))
-		_productNameLengthErr := writeBuffer.WriteUint8("productNameLength", 8, uint8((productNameLength)))
+		_productNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("productNameLength", 8, uint8((productNameLength)))
 		if _productNameLengthErr != nil {
 			return errors.Wrap(_productNameLengthErr, "Error serializing 'productNameLength' field")
 		}
 
 		// Simple Field (productName)
 		productName := string(m.GetProductName())
-		_productNameErr := writeBuffer.WriteString("productName", uint32((uint8(len(m.GetProductName())))*(8)), (productName), utils.WithEncoding("UTF-8)"))
+		_productNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("productName", uint32((uint8(len(m.GetProductName())))*(8)), (productName), utils.WithEncoding("UTF-8)"))
 		if _productNameErr != nil {
 			return errors.Wrap(_productNameErr, "Error serializing 'productName' field")
 		}
 
 		// Simple Field (state)
 		state := uint8(m.GetState())
-		_stateErr := writeBuffer.WriteUint8("state", 8, uint8((state)))
+		_stateErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("state", 8, uint8((state)))
 		if _stateErr != nil {
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}

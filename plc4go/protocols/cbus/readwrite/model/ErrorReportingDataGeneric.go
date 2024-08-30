@@ -269,21 +269,21 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (mostRecent)
-	_mostRecent, _mostRecentErr := readBuffer.ReadBit("mostRecent")
+	_mostRecent, _mostRecentErr := /*TODO: migrate me*/ readBuffer.ReadBit("mostRecent")
 	if _mostRecentErr != nil {
 		return nil, errors.Wrap(_mostRecentErr, "Error parsing 'mostRecent' field of ErrorReportingDataGeneric")
 	}
 	mostRecent := _mostRecent
 
 	// Simple Field (acknowledge)
-	_acknowledge, _acknowledgeErr := readBuffer.ReadBit("acknowledge")
+	_acknowledge, _acknowledgeErr := /*TODO: migrate me*/ readBuffer.ReadBit("acknowledge")
 	if _acknowledgeErr != nil {
 		return nil, errors.Wrap(_acknowledgeErr, "Error parsing 'acknowledge' field of ErrorReportingDataGeneric")
 	}
 	acknowledge := _acknowledge
 
 	// Simple Field (mostSevere)
-	_mostSevere, _mostSevereErr := readBuffer.ReadBit("mostSevere")
+	_mostSevere, _mostSevereErr := /*TODO: migrate me*/ readBuffer.ReadBit("mostSevere")
 	if _mostSevereErr != nil {
 		return nil, errors.Wrap(_mostSevereErr, "Error parsing 'mostSevere' field of ErrorReportingDataGeneric")
 	}
@@ -323,21 +323,21 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (deviceId)
-	_deviceId, _deviceIdErr := readBuffer.ReadUint8("deviceId", 8)
+	_deviceId, _deviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("deviceId", 8)
 	if _deviceIdErr != nil {
 		return nil, errors.Wrap(_deviceIdErr, "Error parsing 'deviceId' field of ErrorReportingDataGeneric")
 	}
 	deviceId := _deviceId
 
 	// Simple Field (errorData1)
-	_errorData1, _errorData1Err := readBuffer.ReadUint8("errorData1", 8)
+	_errorData1, _errorData1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("errorData1", 8)
 	if _errorData1Err != nil {
 		return nil, errors.Wrap(_errorData1Err, "Error parsing 'errorData1' field of ErrorReportingDataGeneric")
 	}
 	errorData1 := _errorData1
 
 	// Simple Field (errorData2)
-	_errorData2, _errorData2Err := readBuffer.ReadUint8("errorData2", 8)
+	_errorData2, _errorData2Err := /*TODO: migrate me*/ readBuffer.ReadUint8("errorData2", 8)
 	if _errorData2Err != nil {
 		return nil, errors.Wrap(_errorData2Err, "Error parsing 'errorData2' field of ErrorReportingDataGeneric")
 	}
@@ -395,21 +395,21 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (mostRecent)
 		mostRecent := bool(m.GetMostRecent())
-		_mostRecentErr := writeBuffer.WriteBit("mostRecent", (mostRecent))
+		_mostRecentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("mostRecent", (mostRecent))
 		if _mostRecentErr != nil {
 			return errors.Wrap(_mostRecentErr, "Error serializing 'mostRecent' field")
 		}
 
 		// Simple Field (acknowledge)
 		acknowledge := bool(m.GetAcknowledge())
-		_acknowledgeErr := writeBuffer.WriteBit("acknowledge", (acknowledge))
+		_acknowledgeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("acknowledge", (acknowledge))
 		if _acknowledgeErr != nil {
 			return errors.Wrap(_acknowledgeErr, "Error serializing 'acknowledge' field")
 		}
 
 		// Simple Field (mostSevere)
 		mostSevere := bool(m.GetMostSevere())
-		_mostSevereErr := writeBuffer.WriteBit("mostSevere", (mostSevere))
+		_mostSevereErr := /*TODO: migrate me*/ writeBuffer.WriteBit("mostSevere", (mostSevere))
 		if _mostSevereErr != nil {
 			return errors.Wrap(_mostSevereErr, "Error serializing 'mostSevere' field")
 		}
@@ -446,21 +446,21 @@ func (m *_ErrorReportingDataGeneric) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (deviceId)
 		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
+		_deviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
 		if _deviceIdErr != nil {
 			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
 		}
 
 		// Simple Field (errorData1)
 		errorData1 := uint8(m.GetErrorData1())
-		_errorData1Err := writeBuffer.WriteUint8("errorData1", 8, uint8((errorData1)))
+		_errorData1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorData1", 8, uint8((errorData1)))
 		if _errorData1Err != nil {
 			return errors.Wrap(_errorData1Err, "Error serializing 'errorData1' field")
 		}
 
 		// Simple Field (errorData2)
 		errorData2 := uint8(m.GetErrorData2())
-		_errorData2Err := writeBuffer.WriteUint8("errorData2", 8, uint8((errorData2)))
+		_errorData2Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("errorData2", 8, uint8((errorData2)))
 		if _errorData2Err != nil {
 			return errors.Wrap(_errorData2Err, "Error serializing 'errorData2' field")
 		}

@@ -540,7 +540,7 @@ func DeviceDescriptorParse(ctx context.Context, theBytes []byte) (DeviceDescript
 func DeviceDescriptorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptor, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("DeviceDescriptor", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("DeviceDescriptor", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeviceDescriptor")
 	}
@@ -563,7 +563,7 @@ func (e DeviceDescriptor) Serialize() ([]byte, error) {
 func (e DeviceDescriptor) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("DeviceDescriptor", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

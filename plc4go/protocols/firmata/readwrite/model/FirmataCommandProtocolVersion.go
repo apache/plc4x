@@ -153,14 +153,14 @@ func FirmataCommandProtocolVersionParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
+	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of FirmataCommandProtocolVersion")
 	}
 	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
+	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of FirmataCommandProtocolVersion")
 	}
@@ -202,14 +202,14 @@ func (m *_FirmataCommandProtocolVersion) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
+		_majorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
+		_minorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}

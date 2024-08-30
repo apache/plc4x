@@ -166,7 +166,7 @@ func CancelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (cancelCount)
-	_cancelCount, _cancelCountErr := readBuffer.ReadUint32("cancelCount", 32)
+	_cancelCount, _cancelCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cancelCount", 32)
 	if _cancelCountErr != nil {
 		return nil, errors.Wrap(_cancelCountErr, "Error parsing 'cancelCount' field of CancelResponse")
 	}
@@ -218,7 +218,7 @@ func (m *_CancelResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (cancelCount)
 		cancelCount := uint32(m.GetCancelCount())
-		_cancelCountErr := writeBuffer.WriteUint32("cancelCount", 32, uint32((cancelCount)))
+		_cancelCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cancelCount", 32, uint32((cancelCount)))
 		if _cancelCountErr != nil {
 			return errors.Wrap(_cancelCountErr, "Error serializing 'cancelCount' field")
 		}

@@ -183,7 +183,7 @@ func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Const Field (delimiter)
-	delimiter, _delimiterErr := readBuffer.ReadByte("delimiter")
+	delimiter, _delimiterErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("delimiter")
 	if _delimiterErr != nil {
 		return nil, errors.Wrap(_delimiterErr, "Error parsing 'delimiter' field of CBusCommandDeviceManagement")
 	}
@@ -192,7 +192,7 @@ func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (parameterValue)
-	_parameterValue, _parameterValueErr := readBuffer.ReadByte("parameterValue")
+	_parameterValue, _parameterValueErr := /*TODO: migrate me*/ readBuffer.ReadByte("parameterValue")
 	if _parameterValueErr != nil {
 		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CBusCommandDeviceManagement")
 	}
@@ -245,14 +245,14 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 		}
 
 		// Const Field (delimiter)
-		_delimiterErr := writeBuffer.WriteByte("delimiter", 0x0)
+		_delimiterErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("delimiter", 0x0)
 		if _delimiterErr != nil {
 			return errors.Wrap(_delimiterErr, "Error serializing 'delimiter' field")
 		}
 
 		// Simple Field (parameterValue)
 		parameterValue := byte(m.GetParameterValue())
-		_parameterValueErr := writeBuffer.WriteByte("parameterValue", (parameterValue))
+		_parameterValueErr := /*TODO: migrate me*/ writeBuffer.WriteByte("parameterValue", (parameterValue))
 		if _parameterValueErr != nil {
 			return errors.Wrap(_parameterValueErr, "Error serializing 'parameterValue' field")
 		}

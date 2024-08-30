@@ -188,21 +188,21 @@ func PubSubConfigurationRefDataTypeParseWithBuffer(ctx context.Context, readBuff
 	}
 
 	// Simple Field (elementIndex)
-	_elementIndex, _elementIndexErr := readBuffer.ReadUint16("elementIndex", 16)
+	_elementIndex, _elementIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("elementIndex", 16)
 	if _elementIndexErr != nil {
 		return nil, errors.Wrap(_elementIndexErr, "Error parsing 'elementIndex' field of PubSubConfigurationRefDataType")
 	}
 	elementIndex := _elementIndex
 
 	// Simple Field (connectionIndex)
-	_connectionIndex, _connectionIndexErr := readBuffer.ReadUint16("connectionIndex", 16)
+	_connectionIndex, _connectionIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionIndex", 16)
 	if _connectionIndexErr != nil {
 		return nil, errors.Wrap(_connectionIndexErr, "Error parsing 'connectionIndex' field of PubSubConfigurationRefDataType")
 	}
 	connectionIndex := _connectionIndex
 
 	// Simple Field (groupIndex)
-	_groupIndex, _groupIndexErr := readBuffer.ReadUint16("groupIndex", 16)
+	_groupIndex, _groupIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("groupIndex", 16)
 	if _groupIndexErr != nil {
 		return nil, errors.Wrap(_groupIndexErr, "Error parsing 'groupIndex' field of PubSubConfigurationRefDataType")
 	}
@@ -256,21 +256,21 @@ func (m *_PubSubConfigurationRefDataType) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (elementIndex)
 		elementIndex := uint16(m.GetElementIndex())
-		_elementIndexErr := writeBuffer.WriteUint16("elementIndex", 16, uint16((elementIndex)))
+		_elementIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("elementIndex", 16, uint16((elementIndex)))
 		if _elementIndexErr != nil {
 			return errors.Wrap(_elementIndexErr, "Error serializing 'elementIndex' field")
 		}
 
 		// Simple Field (connectionIndex)
 		connectionIndex := uint16(m.GetConnectionIndex())
-		_connectionIndexErr := writeBuffer.WriteUint16("connectionIndex", 16, uint16((connectionIndex)))
+		_connectionIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionIndex", 16, uint16((connectionIndex)))
 		if _connectionIndexErr != nil {
 			return errors.Wrap(_connectionIndexErr, "Error serializing 'connectionIndex' field")
 		}
 
 		// Simple Field (groupIndex)
 		groupIndex := uint16(m.GetGroupIndex())
-		_groupIndexErr := writeBuffer.WriteUint16("groupIndex", 16, uint16((groupIndex)))
+		_groupIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("groupIndex", 16, uint16((groupIndex)))
 		if _groupIndexErr != nil {
 			return errors.Wrap(_groupIndexErr, "Error serializing 'groupIndex' field")
 		}

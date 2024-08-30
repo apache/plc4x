@@ -201,7 +201,7 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 	_ = currentPos
 
 	// Simple Field (enumerateType)
-	_enumerateType, _enumerateTypeErr := readBuffer.ReadByte("enumerateType")
+	_enumerateType, _enumerateTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("enumerateType")
 	if _enumerateTypeErr != nil {
 		return nil, errors.Wrap(_enumerateTypeErr, "Error parsing 'enumerateType' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 	}
@@ -228,7 +228,7 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 	_ = isReserved
 
 	// Simple Field (start)
-	_start, _startErr := readBuffer.ReadUint8("start", 8)
+	_start, _startErr := /*TODO: migrate me*/ readBuffer.ReadUint8("start", 8)
 	if _startErr != nil {
 		return nil, errors.Wrap(_startErr, "Error parsing 'start' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
 	}
@@ -268,7 +268,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 
 		// Simple Field (enumerateType)
 		enumerateType := byte(m.GetEnumerateType())
-		_enumerateTypeErr := writeBuffer.WriteByte("enumerateType", (enumerateType))
+		_enumerateTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("enumerateType", (enumerateType))
 		if _enumerateTypeErr != nil {
 			return errors.Wrap(_enumerateTypeErr, "Error serializing 'enumerateType' field")
 		}
@@ -299,7 +299,7 @@ func (m *_MediaTransportControlDataEnumerateCategoriesSelectionTracks) Serialize
 
 		// Simple Field (start)
 		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
+		_startErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("start", 8, uint8((start)))
 		if _startErr != nil {
 			return errors.Wrap(_startErr, "Error serializing 'start' field")
 		}

@@ -146,7 +146,7 @@ func SysexCommandPinStateQueryParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandPinStateQuery")
 	}
@@ -185,7 +185,7 @@ func (m *_SysexCommandPinStateQuery) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
+		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}

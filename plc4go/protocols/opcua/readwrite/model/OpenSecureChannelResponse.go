@@ -188,7 +188,7 @@ func OpenSecureChannelResponseParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (serverProtocolVersion)
-	_serverProtocolVersion, _serverProtocolVersionErr := readBuffer.ReadUint32("serverProtocolVersion", 32)
+	_serverProtocolVersion, _serverProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serverProtocolVersion", 32)
 	if _serverProtocolVersionErr != nil {
 		return nil, errors.Wrap(_serverProtocolVersionErr, "Error parsing 'serverProtocolVersion' field of OpenSecureChannelResponse")
 	}
@@ -268,7 +268,7 @@ func (m *_OpenSecureChannelResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (serverProtocolVersion)
 		serverProtocolVersion := uint32(m.GetServerProtocolVersion())
-		_serverProtocolVersionErr := writeBuffer.WriteUint32("serverProtocolVersion", 32, uint32((serverProtocolVersion)))
+		_serverProtocolVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serverProtocolVersion", 32, uint32((serverProtocolVersion)))
 		if _serverProtocolVersionErr != nil {
 			return errors.Wrap(_serverProtocolVersionErr, "Error serializing 'serverProtocolVersion' field")
 		}

@@ -157,7 +157,7 @@ func ModbusRtuADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint8("address", 8)
+	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("address", 8)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusRtuADU")
 	}
@@ -178,7 +178,7 @@ func ModbusRtuADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Checksum Field (checksum)
 	{
-		checksumRef, _checksumRefErr := readBuffer.ReadUint16("checksum", 16)
+		checksumRef, _checksumRefErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("checksum", 16)
 		if _checksumRefErr != nil {
 			return nil, errors.Wrap(_checksumRefErr, "Error parsing 'checksum' field of ModbusRtuADU")
 		}
@@ -227,7 +227,7 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (address)
 		address := uint8(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint8("address", 8, uint8((address)))
+		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("address", 8, uint8((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
@@ -250,7 +250,7 @@ func (m *_ModbusRtuADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			if _checksumErr != nil {
 				return errors.Wrap(_checksumErr, "Checksum calculation failed")
 			}
-			_checksumWriteErr := writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
+			_checksumWriteErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("checksum", 16, uint16((_checksum)))
 			if _checksumWriteErr != nil {
 				return errors.Wrap(_checksumWriteErr, "Error serializing 'checksum' field")
 			}

@@ -168,7 +168,7 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (connectionSize)
-	_connectionSize, _connectionSizeErr := readBuffer.ReadUint16("connectionSize", 16)
+	_connectionSize, _connectionSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionSize", 16)
 	if _connectionSizeErr != nil {
 		return nil, errors.Wrap(_connectionSizeErr, "Error parsing 'connectionSize' field of NetworkConnectionParameters")
 	}
@@ -177,7 +177,7 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkConnectionParameters")
 		}
@@ -192,14 +192,14 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (owner)
-	_owner, _ownerErr := readBuffer.ReadBit("owner")
+	_owner, _ownerErr := /*TODO: migrate me*/ readBuffer.ReadBit("owner")
 	if _ownerErr != nil {
 		return nil, errors.Wrap(_ownerErr, "Error parsing 'owner' field of NetworkConnectionParameters")
 	}
 	owner := _owner
 
 	// Simple Field (connectionType)
-	_connectionType, _connectionTypeErr := readBuffer.ReadUint8("connectionType", 2)
+	_connectionType, _connectionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("connectionType", 2)
 	if _connectionTypeErr != nil {
 		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of NetworkConnectionParameters")
 	}
@@ -208,7 +208,7 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkConnectionParameters")
 		}
@@ -223,14 +223,14 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (priority)
-	_priority, _priorityErr := readBuffer.ReadUint8("priority", 2)
+	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 2)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of NetworkConnectionParameters")
 	}
 	priority := _priority
 
 	// Simple Field (connectionSizeType)
-	_connectionSizeType, _connectionSizeTypeErr := readBuffer.ReadBit("connectionSizeType")
+	_connectionSizeType, _connectionSizeTypeErr := /*TODO: migrate me*/ readBuffer.ReadBit("connectionSizeType")
 	if _connectionSizeTypeErr != nil {
 		return nil, errors.Wrap(_connectionSizeTypeErr, "Error parsing 'connectionSizeType' field of NetworkConnectionParameters")
 	}
@@ -239,7 +239,7 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField2 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NetworkConnectionParameters")
 		}
@@ -289,7 +289,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (connectionSize)
 	connectionSize := uint16(m.GetConnectionSize())
-	_connectionSizeErr := writeBuffer.WriteUint16("connectionSize", 16, uint16((connectionSize)))
+	_connectionSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSize", 16, uint16((connectionSize)))
 	if _connectionSizeErr != nil {
 		return errors.Wrap(_connectionSizeErr, "Error serializing 'connectionSize' field")
 	}
@@ -304,7 +304,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -312,14 +312,14 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (owner)
 	owner := bool(m.GetOwner())
-	_ownerErr := writeBuffer.WriteBit("owner", (owner))
+	_ownerErr := /*TODO: migrate me*/ writeBuffer.WriteBit("owner", (owner))
 	if _ownerErr != nil {
 		return errors.Wrap(_ownerErr, "Error serializing 'owner' field")
 	}
 
 	// Simple Field (connectionType)
 	connectionType := uint8(m.GetConnectionType())
-	_connectionTypeErr := writeBuffer.WriteUint8("connectionType", 2, uint8((connectionType)))
+	_connectionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionType", 2, uint8((connectionType)))
 	if _connectionTypeErr != nil {
 		return errors.Wrap(_connectionTypeErr, "Error serializing 'connectionType' field")
 	}
@@ -334,7 +334,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -342,14 +342,14 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 
 	// Simple Field (priority)
 	priority := uint8(m.GetPriority())
-	_priorityErr := writeBuffer.WriteUint8("priority", 2, uint8((priority)))
+	_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 2, uint8((priority)))
 	if _priorityErr != nil {
 		return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 	}
 
 	// Simple Field (connectionSizeType)
 	connectionSizeType := bool(m.GetConnectionSizeType())
-	_connectionSizeTypeErr := writeBuffer.WriteBit("connectionSizeType", (connectionSizeType))
+	_connectionSizeTypeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connectionSizeType", (connectionSizeType))
 	if _connectionSizeTypeErr != nil {
 		return errors.Wrap(_connectionSizeTypeErr, "Error serializing 'connectionSizeType' field")
 	}
@@ -364,7 +364,7 @@ func (m *_NetworkConnectionParameters) SerializeWithWriteBuffer(ctx context.Cont
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField2
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

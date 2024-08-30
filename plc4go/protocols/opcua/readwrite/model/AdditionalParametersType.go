@@ -160,7 +160,7 @@ func AdditionalParametersTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (noOfParameters)
-	_noOfParameters, _noOfParametersErr := readBuffer.ReadInt32("noOfParameters", 32)
+	_noOfParameters, _noOfParametersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfParameters", 32)
 	if _noOfParametersErr != nil {
 		return nil, errors.Wrap(_noOfParametersErr, "Error parsing 'noOfParameters' field of AdditionalParametersType")
 	}
@@ -227,7 +227,7 @@ func (m *_AdditionalParametersType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfParameters)
 		noOfParameters := int32(m.GetNoOfParameters())
-		_noOfParametersErr := writeBuffer.WriteInt32("noOfParameters", 32, int32((noOfParameters)))
+		_noOfParametersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfParameters", 32, int32((noOfParameters)))
 		if _noOfParametersErr != nil {
 			return errors.Wrap(_noOfParametersErr, "Error serializing 'noOfParameters' field")
 		}

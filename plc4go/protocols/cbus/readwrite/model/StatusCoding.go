@@ -121,7 +121,7 @@ func StatusCodingParse(ctx context.Context, theBytes []byte) (StatusCoding, erro
 func StatusCodingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCoding, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadByte("StatusCoding")
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("StatusCoding")
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading StatusCoding")
 	}
@@ -144,7 +144,7 @@ func (e StatusCoding) Serialize() ([]byte, error) {
 func (e StatusCoding) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteByte("StatusCoding", byte(e), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

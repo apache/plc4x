@@ -161,14 +161,14 @@ func ModbusPDUReadCoilsRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (startingAddress)
-	_startingAddress, _startingAddressErr := readBuffer.ReadUint16("startingAddress", 16)
+	_startingAddress, _startingAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startingAddress", 16)
 	if _startingAddressErr != nil {
 		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUReadCoilsRequest")
 	}
 	startingAddress := _startingAddress
 
 	// Simple Field (quantity)
-	_quantity, _quantityErr := readBuffer.ReadUint16("quantity", 16)
+	_quantity, _quantityErr := /*TODO: migrate me*/ readBuffer.ReadUint16("quantity", 16)
 	if _quantityErr != nil {
 		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUReadCoilsRequest")
 	}
@@ -208,14 +208,14 @@ func (m *_ModbusPDUReadCoilsRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (startingAddress)
 		startingAddress := uint16(m.GetStartingAddress())
-		_startingAddressErr := writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
+		_startingAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("startingAddress", 16, uint16((startingAddress)))
 		if _startingAddressErr != nil {
 			return errors.Wrap(_startingAddressErr, "Error serializing 'startingAddress' field")
 		}
 
 		// Simple Field (quantity)
 		quantity := uint16(m.GetQuantity())
-		_quantityErr := writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
+		_quantityErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("quantity", 16, uint16((quantity)))
 		if _quantityErr != nil {
 			return errors.Wrap(_quantityErr, "Error serializing 'quantity' field")
 		}

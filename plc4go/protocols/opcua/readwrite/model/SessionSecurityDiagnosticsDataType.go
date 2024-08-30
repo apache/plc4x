@@ -274,7 +274,7 @@ func SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx context.Context, read
 	}
 
 	// Simple Field (noOfClientUserIdHistory)
-	_noOfClientUserIdHistory, _noOfClientUserIdHistoryErr := readBuffer.ReadInt32("noOfClientUserIdHistory", 32)
+	_noOfClientUserIdHistory, _noOfClientUserIdHistoryErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfClientUserIdHistory", 32)
 	if _noOfClientUserIdHistoryErr != nil {
 		return nil, errors.Wrap(_noOfClientUserIdHistoryErr, "Error parsing 'noOfClientUserIdHistory' field of SessionSecurityDiagnosticsDataType")
 	}
@@ -451,7 +451,7 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (noOfClientUserIdHistory)
 		noOfClientUserIdHistory := int32(m.GetNoOfClientUserIdHistory())
-		_noOfClientUserIdHistoryErr := writeBuffer.WriteInt32("noOfClientUserIdHistory", 32, int32((noOfClientUserIdHistory)))
+		_noOfClientUserIdHistoryErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfClientUserIdHistory", 32, int32((noOfClientUserIdHistory)))
 		if _noOfClientUserIdHistoryErr != nil {
 			return errors.Wrap(_noOfClientUserIdHistoryErr, "Error serializing 'noOfClientUserIdHistory' field")
 		}

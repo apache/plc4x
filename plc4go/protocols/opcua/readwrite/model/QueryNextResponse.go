@@ -195,7 +195,7 @@ func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfQueryDataSets)
-	_noOfQueryDataSets, _noOfQueryDataSetsErr := readBuffer.ReadInt32("noOfQueryDataSets", 32)
+	_noOfQueryDataSets, _noOfQueryDataSetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfQueryDataSets", 32)
 	if _noOfQueryDataSetsErr != nil {
 		return nil, errors.Wrap(_noOfQueryDataSetsErr, "Error parsing 'noOfQueryDataSets' field of QueryNextResponse")
 	}
@@ -289,7 +289,7 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfQueryDataSets)
 		noOfQueryDataSets := int32(m.GetNoOfQueryDataSets())
-		_noOfQueryDataSetsErr := writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
+		_noOfQueryDataSetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfQueryDataSets", 32, int32((noOfQueryDataSets)))
 		if _noOfQueryDataSetsErr != nil {
 			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
 		}

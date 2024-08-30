@@ -158,14 +158,14 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 	_ = currentPos
 
 	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint16("byteCount", 16)
+	byteCount, _byteCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("byteCount", 16)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUReadFifoQueueResponse")
 	}
 
 	// Implicit Field (fifoCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	fifoCount, _fifoCountErr := readBuffer.ReadUint16("fifoCount", 16)
+	fifoCount, _fifoCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("fifoCount", 16)
 	_ = fifoCount
 	if _fifoCountErr != nil {
 		return nil, errors.Wrap(_fifoCountErr, "Error parsing 'fifoCount' field of ModbusPDUReadFifoQueueResponse")
@@ -187,7 +187,7 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint16("", 16)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'fifoValue' field of ModbusPDUReadFifoQueueResponse")
 			}
@@ -231,14 +231,14 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) + uint16(uint16(2)))
-		_byteCountErr := writeBuffer.WriteUint16("byteCount", 16, uint16((byteCount)))
+		_byteCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("byteCount", 16, uint16((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Implicit Field (fifoCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		fifoCount := uint16(uint16((uint16(uint16(len(m.GetFifoValue()))) * uint16(uint16(2)))) / uint16(uint16(2)))
-		_fifoCountErr := writeBuffer.WriteUint16("fifoCount", 16, uint16((fifoCount)))
+		_fifoCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("fifoCount", 16, uint16((fifoCount)))
 		if _fifoCountErr != nil {
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
@@ -249,7 +249,7 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 		}
 		for _curItem, _element := range m.GetFifoValue() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
 			}

@@ -175,21 +175,21 @@ func AdsReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsReadRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsReadRequest")
 	}
 	indexOffset := _indexOffset
 
 	// Simple Field (length)
-	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsReadRequest")
 	}
@@ -230,21 +230,21 @@ func (m *_AdsReadRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
+		_indexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
+		_indexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
+		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}

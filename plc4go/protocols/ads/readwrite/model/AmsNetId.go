@@ -165,42 +165,42 @@ func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	_ = currentPos
 
 	// Simple Field (octet1)
-	_octet1, _octet1Err := readBuffer.ReadUint8("octet1", 8)
+	_octet1, _octet1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet1", 8)
 	if _octet1Err != nil {
 		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of AmsNetId")
 	}
 	octet1 := _octet1
 
 	// Simple Field (octet2)
-	_octet2, _octet2Err := readBuffer.ReadUint8("octet2", 8)
+	_octet2, _octet2Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet2", 8)
 	if _octet2Err != nil {
 		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of AmsNetId")
 	}
 	octet2 := _octet2
 
 	// Simple Field (octet3)
-	_octet3, _octet3Err := readBuffer.ReadUint8("octet3", 8)
+	_octet3, _octet3Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet3", 8)
 	if _octet3Err != nil {
 		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of AmsNetId")
 	}
 	octet3 := _octet3
 
 	// Simple Field (octet4)
-	_octet4, _octet4Err := readBuffer.ReadUint8("octet4", 8)
+	_octet4, _octet4Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet4", 8)
 	if _octet4Err != nil {
 		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of AmsNetId")
 	}
 	octet4 := _octet4
 
 	// Simple Field (octet5)
-	_octet5, _octet5Err := readBuffer.ReadUint8("octet5", 8)
+	_octet5, _octet5Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet5", 8)
 	if _octet5Err != nil {
 		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field of AmsNetId")
 	}
 	octet5 := _octet5
 
 	// Simple Field (octet6)
-	_octet6, _octet6Err := readBuffer.ReadUint8("octet6", 8)
+	_octet6, _octet6Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet6", 8)
 	if _octet6Err != nil {
 		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field of AmsNetId")
 	}
@@ -240,42 +240,42 @@ func (m *_AmsNetId) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 	// Simple Field (octet1)
 	octet1 := uint8(m.GetOctet1())
-	_octet1Err := writeBuffer.WriteUint8("octet1", 8, uint8((octet1)))
+	_octet1Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet1", 8, uint8((octet1)))
 	if _octet1Err != nil {
 		return errors.Wrap(_octet1Err, "Error serializing 'octet1' field")
 	}
 
 	// Simple Field (octet2)
 	octet2 := uint8(m.GetOctet2())
-	_octet2Err := writeBuffer.WriteUint8("octet2", 8, uint8((octet2)))
+	_octet2Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet2", 8, uint8((octet2)))
 	if _octet2Err != nil {
 		return errors.Wrap(_octet2Err, "Error serializing 'octet2' field")
 	}
 
 	// Simple Field (octet3)
 	octet3 := uint8(m.GetOctet3())
-	_octet3Err := writeBuffer.WriteUint8("octet3", 8, uint8((octet3)))
+	_octet3Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet3", 8, uint8((octet3)))
 	if _octet3Err != nil {
 		return errors.Wrap(_octet3Err, "Error serializing 'octet3' field")
 	}
 
 	// Simple Field (octet4)
 	octet4 := uint8(m.GetOctet4())
-	_octet4Err := writeBuffer.WriteUint8("octet4", 8, uint8((octet4)))
+	_octet4Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet4", 8, uint8((octet4)))
 	if _octet4Err != nil {
 		return errors.Wrap(_octet4Err, "Error serializing 'octet4' field")
 	}
 
 	// Simple Field (octet5)
 	octet5 := uint8(m.GetOctet5())
-	_octet5Err := writeBuffer.WriteUint8("octet5", 8, uint8((octet5)))
+	_octet5Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet5", 8, uint8((octet5)))
 	if _octet5Err != nil {
 		return errors.Wrap(_octet5Err, "Error serializing 'octet5' field")
 	}
 
 	// Simple Field (octet6)
 	octet6 := uint8(m.GetOctet6())
-	_octet6Err := writeBuffer.WriteUint8("octet6", 8, uint8((octet6)))
+	_octet6Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("octet6", 8, uint8((octet6)))
 	if _octet6Err != nil {
 		return errors.Wrap(_octet6Err, "Error serializing 'octet6' field")
 	}

@@ -149,7 +149,7 @@ func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Contex
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CBusPointToPointToMultiPointCommandStatus")
 		}
@@ -220,7 +220,7 @@ func (m *_CBusPointToPointToMultiPointCommandStatus) SerializeWithWriteBuffer(ct
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

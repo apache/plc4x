@@ -181,7 +181,7 @@ func ConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of ConnectionResponse")
 	}
@@ -280,7 +280,7 @@ func (m *_ConnectionResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (communicationChannelId)
 		communicationChannelId := uint8(m.GetCommunicationChannelId())
-		_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
+		_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
 		if _communicationChannelIdErr != nil {
 			return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 		}

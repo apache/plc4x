@@ -115,7 +115,7 @@ func AdsConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Const Field (adsTcpDefaultPort)
-	adsTcpDefaultPort, _adsTcpDefaultPortErr := readBuffer.ReadUint16("adsTcpDefaultPort", 16)
+	adsTcpDefaultPort, _adsTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("adsTcpDefaultPort", 16)
 	if _adsTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_adsTcpDefaultPortErr, "Error parsing 'adsTcpDefaultPort' field of AdsConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Const Field (adsTcpDefaultPort)
-	_adsTcpDefaultPortErr := writeBuffer.WriteUint16("adsTcpDefaultPort", 16, uint16(48898))
+	_adsTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("adsTcpDefaultPort", 16, uint16(48898))
 	if _adsTcpDefaultPortErr != nil {
 		return errors.Wrap(_adsTcpDefaultPortErr, "Error serializing 'adsTcpDefaultPort' field")
 	}

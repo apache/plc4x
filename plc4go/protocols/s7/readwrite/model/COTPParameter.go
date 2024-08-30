@@ -126,13 +126,13 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
+	parameterType, _parameterTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field of COTPParameter")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := readBuffer.ReadUint8("parameterLength", 8)
+	parameterLength, _parameterLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("parameterLength", 8)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of COTPParameter")
@@ -189,7 +189,7 @@ func (pm *_COTPParameter) SerializeParent(ctx context.Context, writeBuffer utils
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.GetParameterType())
-	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, uint8((parameterType)))
+	_parameterTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("parameterType", 8, uint8((parameterType)))
 
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")
@@ -197,7 +197,7 @@ func (pm *_COTPParameter) SerializeParent(ctx context.Context, writeBuffer utils
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-	_parameterLengthErr := writeBuffer.WriteUint8("parameterLength", 8, uint8((parameterLength)))
+	_parameterLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("parameterLength", 8, uint8((parameterLength)))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}

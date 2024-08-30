@@ -143,7 +143,7 @@ func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (ttl)
-	_ttl, _ttlErr := readBuffer.ReadUint16("ttl", 16)
+	_ttl, _ttlErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ttl", 16)
 	if _ttlErr != nil {
 		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCRegisterForeignDevice")
 	}
@@ -182,7 +182,7 @@ func (m *_BVLCRegisterForeignDevice) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (ttl)
 		ttl := uint16(m.GetTtl())
-		_ttlErr := writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
+		_ttlErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("ttl", 16, uint16((ttl)))
 		if _ttlErr != nil {
 			return errors.Wrap(_ttlErr, "Error serializing 'ttl' field")
 		}

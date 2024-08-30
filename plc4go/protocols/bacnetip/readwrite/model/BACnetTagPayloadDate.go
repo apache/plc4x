@@ -269,7 +269,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = wildcard
 
 	// Simple Field (yearMinus1900)
-	_yearMinus1900, _yearMinus1900Err := readBuffer.ReadUint8("yearMinus1900", 8)
+	_yearMinus1900, _yearMinus1900Err := /*TODO: migrate me*/ readBuffer.ReadUint8("yearMinus1900", 8)
 	if _yearMinus1900Err != nil {
 		return nil, errors.Wrap(_yearMinus1900Err, "Error parsing 'yearMinus1900' field of BACnetTagPayloadDate")
 	}
@@ -286,7 +286,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = year
 
 	// Simple Field (month)
-	_month, _monthErr := readBuffer.ReadUint8("month", 8)
+	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of BACnetTagPayloadDate")
 	}
@@ -308,7 +308,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = evenMonthWildcard
 
 	// Simple Field (dayOfMonth)
-	_dayOfMonth, _dayOfMonthErr := readBuffer.ReadUint8("dayOfMonth", 8)
+	_dayOfMonth, _dayOfMonthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfMonth", 8)
 	if _dayOfMonthErr != nil {
 		return nil, errors.Wrap(_dayOfMonthErr, "Error parsing 'dayOfMonth' field of BACnetTagPayloadDate")
 	}
@@ -335,7 +335,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = evenDayOfMonthWildcard
 
 	// Simple Field (dayOfWeek)
-	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
+	_dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 8)
 	if _dayOfWeekErr != nil {
 		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of BACnetTagPayloadDate")
 	}
@@ -384,7 +384,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (yearMinus1900)
 	yearMinus1900 := uint8(m.GetYearMinus1900())
-	_yearMinus1900Err := writeBuffer.WriteUint8("yearMinus1900", 8, uint8((yearMinus1900)))
+	_yearMinus1900Err := /*TODO: migrate me*/ writeBuffer.WriteUint8("yearMinus1900", 8, uint8((yearMinus1900)))
 	if _yearMinus1900Err != nil {
 		return errors.Wrap(_yearMinus1900Err, "Error serializing 'yearMinus1900' field")
 	}
@@ -403,7 +403,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (month)
 	month := uint8(m.GetMonth())
-	_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
+	_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
 	if _monthErr != nil {
 		return errors.Wrap(_monthErr, "Error serializing 'month' field")
 	}
@@ -428,7 +428,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (dayOfMonth)
 	dayOfMonth := uint8(m.GetDayOfMonth())
-	_dayOfMonthErr := writeBuffer.WriteUint8("dayOfMonth", 8, uint8((dayOfMonth)))
+	_dayOfMonthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfMonth", 8, uint8((dayOfMonth)))
 	if _dayOfMonthErr != nil {
 		return errors.Wrap(_dayOfMonthErr, "Error serializing 'dayOfMonth' field")
 	}
@@ -459,7 +459,7 @@ func (m *_BACnetTagPayloadDate) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (dayOfWeek)
 	dayOfWeek := uint8(m.GetDayOfWeek())
-	_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
+	_dayOfWeekErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 	if _dayOfWeekErr != nil {
 		return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 	}

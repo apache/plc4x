@@ -127,7 +127,7 @@ func TimestampsToReturnParse(ctx context.Context, theBytes []byte) (TimestampsTo
 func TimestampsToReturnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimestampsToReturn, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("TimestampsToReturn", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("TimestampsToReturn", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TimestampsToReturn")
 	}
@@ -150,7 +150,7 @@ func (e TimestampsToReturn) Serialize() ([]byte, error) {
 func (e TimestampsToReturn) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("TimestampsToReturn", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("TimestampsToReturn", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

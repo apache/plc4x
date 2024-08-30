@@ -160,7 +160,7 @@ func RelativePathParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (noOfElements)
-	_noOfElements, _noOfElementsErr := readBuffer.ReadInt32("noOfElements", 32)
+	_noOfElements, _noOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElements", 32)
 	if _noOfElementsErr != nil {
 		return nil, errors.Wrap(_noOfElementsErr, "Error parsing 'noOfElements' field of RelativePath")
 	}
@@ -227,7 +227,7 @@ func (m *_RelativePath) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfElements)
 		noOfElements := int32(m.GetNoOfElements())
-		_noOfElementsErr := writeBuffer.WriteInt32("noOfElements", 32, int32((noOfElements)))
+		_noOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElements", 32, int32((noOfElements)))
 		if _noOfElementsErr != nil {
 			return errors.Wrap(_noOfElementsErr, "Error serializing 'noOfElements' field")
 		}

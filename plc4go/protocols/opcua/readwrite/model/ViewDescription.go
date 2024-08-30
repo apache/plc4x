@@ -177,14 +177,14 @@ func ViewDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (timestamp)
-	_timestamp, _timestampErr := readBuffer.ReadInt64("timestamp", 64)
+	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadInt64("timestamp", 64)
 	if _timestampErr != nil {
 		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ViewDescription")
 	}
 	timestamp := _timestamp
 
 	// Simple Field (viewVersion)
-	_viewVersion, _viewVersionErr := readBuffer.ReadUint32("viewVersion", 32)
+	_viewVersion, _viewVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("viewVersion", 32)
 	if _viewVersionErr != nil {
 		return nil, errors.Wrap(_viewVersionErr, "Error parsing 'viewVersion' field of ViewDescription")
 	}
@@ -237,14 +237,14 @@ func (m *_ViewDescription) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (timestamp)
 		timestamp := int64(m.GetTimestamp())
-		_timestampErr := writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
+		_timestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("timestamp", 64, int64((timestamp)))
 		if _timestampErr != nil {
 			return errors.Wrap(_timestampErr, "Error serializing 'timestamp' field")
 		}
 
 		// Simple Field (viewVersion)
 		viewVersion := uint32(m.GetViewVersion())
-		_viewVersionErr := writeBuffer.WriteUint32("viewVersion", 32, uint32((viewVersion)))
+		_viewVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("viewVersion", 32, uint32((viewVersion)))
 		if _viewVersionErr != nil {
 			return errors.Wrap(_viewVersionErr, "Error serializing 'viewVersion' field")
 		}

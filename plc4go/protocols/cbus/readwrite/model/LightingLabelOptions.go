@@ -144,7 +144,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
@@ -174,7 +174,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField1 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
@@ -191,7 +191,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField2 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
@@ -221,7 +221,7 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField3 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LightingLabelOptions")
 		}
@@ -277,7 +277,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -305,7 +305,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -321,7 +321,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField2
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -349,7 +349,7 @@ func (m *_LightingLabelOptions) SerializeWithWriteBuffer(ctx context.Context, wr
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField3
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

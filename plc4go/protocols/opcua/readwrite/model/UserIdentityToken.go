@@ -156,7 +156,7 @@ func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Implicit Field (policyLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	policyLength, _policyLengthErr := readBuffer.ReadInt32("policyLength", 32)
+	policyLength, _policyLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("policyLength", 32)
 	_ = policyLength
 	if _policyLengthErr != nil {
 		return nil, errors.Wrap(_policyLengthErr, "Error parsing 'policyLength' field of UserIdentityToken")
@@ -222,7 +222,7 @@ func (m *_UserIdentityToken) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Implicit Field (policyLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		policyLength := int32(int32(m.GetPolicyId().GetLengthInBytes(ctx)) + int32(m.GetUserIdentityTokenDefinition().GetLengthInBytes(ctx)))
-		_policyLengthErr := writeBuffer.WriteInt32("policyLength", 32, int32((policyLength)))
+		_policyLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("policyLength", 32, int32((policyLength)))
 		if _policyLengthErr != nil {
 			return errors.Wrap(_policyLengthErr, "Error serializing 'policyLength' field")
 		}

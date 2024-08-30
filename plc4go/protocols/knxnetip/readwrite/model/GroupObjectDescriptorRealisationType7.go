@@ -195,49 +195,49 @@ func GroupObjectDescriptorRealisationType7ParseWithBuffer(ctx context.Context, r
 	_ = currentPos
 
 	// Simple Field (dataAddress)
-	_dataAddress, _dataAddressErr := readBuffer.ReadUint16("dataAddress", 16)
+	_dataAddress, _dataAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dataAddress", 16)
 	if _dataAddressErr != nil {
 		return nil, errors.Wrap(_dataAddressErr, "Error parsing 'dataAddress' field of GroupObjectDescriptorRealisationType7")
 	}
 	dataAddress := _dataAddress
 
 	// Simple Field (updateEnable)
-	_updateEnable, _updateEnableErr := readBuffer.ReadBit("updateEnable")
+	_updateEnable, _updateEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("updateEnable")
 	if _updateEnableErr != nil {
 		return nil, errors.Wrap(_updateEnableErr, "Error parsing 'updateEnable' field of GroupObjectDescriptorRealisationType7")
 	}
 	updateEnable := _updateEnable
 
 	// Simple Field (transmitEnable)
-	_transmitEnable, _transmitEnableErr := readBuffer.ReadBit("transmitEnable")
+	_transmitEnable, _transmitEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("transmitEnable")
 	if _transmitEnableErr != nil {
 		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field of GroupObjectDescriptorRealisationType7")
 	}
 	transmitEnable := _transmitEnable
 
 	// Simple Field (segmentSelectorEnable)
-	_segmentSelectorEnable, _segmentSelectorEnableErr := readBuffer.ReadBit("segmentSelectorEnable")
+	_segmentSelectorEnable, _segmentSelectorEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentSelectorEnable")
 	if _segmentSelectorEnableErr != nil {
 		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field of GroupObjectDescriptorRealisationType7")
 	}
 	segmentSelectorEnable := _segmentSelectorEnable
 
 	// Simple Field (writeEnable)
-	_writeEnable, _writeEnableErr := readBuffer.ReadBit("writeEnable")
+	_writeEnable, _writeEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeEnable")
 	if _writeEnableErr != nil {
 		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field of GroupObjectDescriptorRealisationType7")
 	}
 	writeEnable := _writeEnable
 
 	// Simple Field (readEnable)
-	_readEnable, _readEnableErr := readBuffer.ReadBit("readEnable")
+	_readEnable, _readEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("readEnable")
 	if _readEnableErr != nil {
 		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field of GroupObjectDescriptorRealisationType7")
 	}
 	readEnable := _readEnable
 
 	// Simple Field (communicationEnable)
-	_communicationEnable, _communicationEnableErr := readBuffer.ReadBit("communicationEnable")
+	_communicationEnable, _communicationEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("communicationEnable")
 	if _communicationEnableErr != nil {
 		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field of GroupObjectDescriptorRealisationType7")
 	}
@@ -306,49 +306,49 @@ func (m *_GroupObjectDescriptorRealisationType7) SerializeWithWriteBuffer(ctx co
 
 	// Simple Field (dataAddress)
 	dataAddress := uint16(m.GetDataAddress())
-	_dataAddressErr := writeBuffer.WriteUint16("dataAddress", 16, uint16((dataAddress)))
+	_dataAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataAddress", 16, uint16((dataAddress)))
 	if _dataAddressErr != nil {
 		return errors.Wrap(_dataAddressErr, "Error serializing 'dataAddress' field")
 	}
 
 	// Simple Field (updateEnable)
 	updateEnable := bool(m.GetUpdateEnable())
-	_updateEnableErr := writeBuffer.WriteBit("updateEnable", (updateEnable))
+	_updateEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("updateEnable", (updateEnable))
 	if _updateEnableErr != nil {
 		return errors.Wrap(_updateEnableErr, "Error serializing 'updateEnable' field")
 	}
 
 	// Simple Field (transmitEnable)
 	transmitEnable := bool(m.GetTransmitEnable())
-	_transmitEnableErr := writeBuffer.WriteBit("transmitEnable", (transmitEnable))
+	_transmitEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("transmitEnable", (transmitEnable))
 	if _transmitEnableErr != nil {
 		return errors.Wrap(_transmitEnableErr, "Error serializing 'transmitEnable' field")
 	}
 
 	// Simple Field (segmentSelectorEnable)
 	segmentSelectorEnable := bool(m.GetSegmentSelectorEnable())
-	_segmentSelectorEnableErr := writeBuffer.WriteBit("segmentSelectorEnable", (segmentSelectorEnable))
+	_segmentSelectorEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentSelectorEnable", (segmentSelectorEnable))
 	if _segmentSelectorEnableErr != nil {
 		return errors.Wrap(_segmentSelectorEnableErr, "Error serializing 'segmentSelectorEnable' field")
 	}
 
 	// Simple Field (writeEnable)
 	writeEnable := bool(m.GetWriteEnable())
-	_writeEnableErr := writeBuffer.WriteBit("writeEnable", (writeEnable))
+	_writeEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("writeEnable", (writeEnable))
 	if _writeEnableErr != nil {
 		return errors.Wrap(_writeEnableErr, "Error serializing 'writeEnable' field")
 	}
 
 	// Simple Field (readEnable)
 	readEnable := bool(m.GetReadEnable())
-	_readEnableErr := writeBuffer.WriteBit("readEnable", (readEnable))
+	_readEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("readEnable", (readEnable))
 	if _readEnableErr != nil {
 		return errors.Wrap(_readEnableErr, "Error serializing 'readEnable' field")
 	}
 
 	// Simple Field (communicationEnable)
 	communicationEnable := bool(m.GetCommunicationEnable())
-	_communicationEnableErr := writeBuffer.WriteBit("communicationEnable", (communicationEnable))
+	_communicationEnableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("communicationEnable", (communicationEnable))
 	if _communicationEnableErr != nil {
 		return errors.Wrap(_communicationEnableErr, "Error serializing 'communicationEnable' field")
 	}

@@ -160,7 +160,7 @@ func NLMInitializeRoutingTableParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (numberOfPorts)
-	_numberOfPorts, _numberOfPortsErr := readBuffer.ReadUint8("numberOfPorts", 8)
+	_numberOfPorts, _numberOfPortsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfPorts", 8)
 	if _numberOfPortsErr != nil {
 		return nil, errors.Wrap(_numberOfPortsErr, "Error parsing 'numberOfPorts' field of NLMInitializeRoutingTable")
 	}
@@ -229,7 +229,7 @@ func (m *_NLMInitializeRoutingTable) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (numberOfPorts)
 		numberOfPorts := uint8(m.GetNumberOfPorts())
-		_numberOfPortsErr := writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
+		_numberOfPortsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfPorts", 8, uint8((numberOfPorts)))
 		if _numberOfPortsErr != nil {
 			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
 		}

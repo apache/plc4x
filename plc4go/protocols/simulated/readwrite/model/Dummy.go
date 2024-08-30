@@ -116,7 +116,7 @@ func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dum
 	_ = currentPos
 
 	// Simple Field (dummy)
-	_dummy, _dummyErr := readBuffer.ReadUint16("dummy", 16)
+	_dummy, _dummyErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dummy", 16)
 	if _dummyErr != nil {
 		return nil, errors.Wrap(_dummyErr, "Error parsing 'dummy' field of Dummy")
 	}
@@ -151,7 +151,7 @@ func (m *_Dummy) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 	// Simple Field (dummy)
 	dummy := uint16(m.GetDummy())
-	_dummyErr := writeBuffer.WriteUint16("dummy", 16, uint16((dummy)))
+	_dummyErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dummy", 16, uint16((dummy)))
 	if _dummyErr != nil {
 		return errors.Wrap(_dummyErr, "Error serializing 'dummy' field")
 	}

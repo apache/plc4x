@@ -115,7 +115,7 @@ func SerialInterfaceAddressParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadByte("address")
+	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadByte("address")
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of SerialInterfaceAddress")
 	}
@@ -150,7 +150,7 @@ func (m *_SerialInterfaceAddress) SerializeWithWriteBuffer(ctx context.Context, 
 
 	// Simple Field (address)
 	address := byte(m.GetAddress())
-	_addressErr := writeBuffer.WriteByte("address", (address))
+	_addressErr := /*TODO: migrate me*/ writeBuffer.WriteByte("address", (address))
 	if _addressErr != nil {
 		return errors.Wrap(_addressErr, "Error serializing 'address' field")
 	}

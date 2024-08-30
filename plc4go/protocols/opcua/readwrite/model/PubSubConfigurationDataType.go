@@ -205,7 +205,7 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (noOfPublishedDataSets)
-	_noOfPublishedDataSets, _noOfPublishedDataSetsErr := readBuffer.ReadInt32("noOfPublishedDataSets", 32)
+	_noOfPublishedDataSets, _noOfPublishedDataSetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPublishedDataSets", 32)
 	if _noOfPublishedDataSetsErr != nil {
 		return nil, errors.Wrap(_noOfPublishedDataSetsErr, "Error parsing 'noOfPublishedDataSets' field of PubSubConfigurationDataType")
 	}
@@ -239,7 +239,7 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (noOfConnections)
-	_noOfConnections, _noOfConnectionsErr := readBuffer.ReadInt32("noOfConnections", 32)
+	_noOfConnections, _noOfConnectionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfConnections", 32)
 	if _noOfConnectionsErr != nil {
 		return nil, errors.Wrap(_noOfConnectionsErr, "Error parsing 'noOfConnections' field of PubSubConfigurationDataType")
 	}
@@ -275,7 +275,7 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of PubSubConfigurationDataType")
 		}
@@ -290,7 +290,7 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (enabled)
-	_enabled, _enabledErr := readBuffer.ReadBit("enabled")
+	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
 	if _enabledErr != nil {
 		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubConfigurationDataType")
 	}
@@ -334,7 +334,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfPublishedDataSets)
 		noOfPublishedDataSets := int32(m.GetNoOfPublishedDataSets())
-		_noOfPublishedDataSetsErr := writeBuffer.WriteInt32("noOfPublishedDataSets", 32, int32((noOfPublishedDataSets)))
+		_noOfPublishedDataSetsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfPublishedDataSets", 32, int32((noOfPublishedDataSets)))
 		if _noOfPublishedDataSetsErr != nil {
 			return errors.Wrap(_noOfPublishedDataSetsErr, "Error serializing 'noOfPublishedDataSets' field")
 		}
@@ -358,7 +358,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfConnections)
 		noOfConnections := int32(m.GetNoOfConnections())
-		_noOfConnectionsErr := writeBuffer.WriteInt32("noOfConnections", 32, int32((noOfConnections)))
+		_noOfConnectionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfConnections", 32, int32((noOfConnections)))
 		if _noOfConnectionsErr != nil {
 			return errors.Wrap(_noOfConnectionsErr, "Error serializing 'noOfConnections' field")
 		}
@@ -390,7 +390,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -398,7 +398,7 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (enabled)
 		enabled := bool(m.GetEnabled())
-		_enabledErr := writeBuffer.WriteBit("enabled", (enabled))
+		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
 		if _enabledErr != nil {
 			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
 		}

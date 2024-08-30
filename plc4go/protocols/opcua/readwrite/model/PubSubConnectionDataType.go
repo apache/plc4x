@@ -304,7 +304,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of PubSubConnectionDataType")
 		}
@@ -319,7 +319,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (enabled)
-	_enabled, _enabledErr := readBuffer.ReadBit("enabled")
+	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
 	if _enabledErr != nil {
 		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubConnectionDataType")
 	}
@@ -365,7 +365,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (noOfConnectionProperties)
-	_noOfConnectionProperties, _noOfConnectionPropertiesErr := readBuffer.ReadInt32("noOfConnectionProperties", 32)
+	_noOfConnectionProperties, _noOfConnectionPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfConnectionProperties", 32)
 	if _noOfConnectionPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfConnectionPropertiesErr, "Error parsing 'noOfConnectionProperties' field of PubSubConnectionDataType")
 	}
@@ -412,7 +412,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (noOfWriterGroups)
-	_noOfWriterGroups, _noOfWriterGroupsErr := readBuffer.ReadInt32("noOfWriterGroups", 32)
+	_noOfWriterGroups, _noOfWriterGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfWriterGroups", 32)
 	if _noOfWriterGroupsErr != nil {
 		return nil, errors.Wrap(_noOfWriterGroupsErr, "Error parsing 'noOfWriterGroups' field of PubSubConnectionDataType")
 	}
@@ -446,7 +446,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (noOfReaderGroups)
-	_noOfReaderGroups, _noOfReaderGroupsErr := readBuffer.ReadInt32("noOfReaderGroups", 32)
+	_noOfReaderGroups, _noOfReaderGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReaderGroups", 32)
 	if _noOfReaderGroupsErr != nil {
 		return nil, errors.Wrap(_noOfReaderGroupsErr, "Error parsing 'noOfReaderGroups' field of PubSubConnectionDataType")
 	}
@@ -544,7 +544,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -552,7 +552,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (enabled)
 		enabled := bool(m.GetEnabled())
-		_enabledErr := writeBuffer.WriteBit("enabled", (enabled))
+		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
 		if _enabledErr != nil {
 			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
 		}
@@ -595,7 +595,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfConnectionProperties)
 		noOfConnectionProperties := int32(m.GetNoOfConnectionProperties())
-		_noOfConnectionPropertiesErr := writeBuffer.WriteInt32("noOfConnectionProperties", 32, int32((noOfConnectionProperties)))
+		_noOfConnectionPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfConnectionProperties", 32, int32((noOfConnectionProperties)))
 		if _noOfConnectionPropertiesErr != nil {
 			return errors.Wrap(_noOfConnectionPropertiesErr, "Error serializing 'noOfConnectionProperties' field")
 		}
@@ -631,7 +631,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfWriterGroups)
 		noOfWriterGroups := int32(m.GetNoOfWriterGroups())
-		_noOfWriterGroupsErr := writeBuffer.WriteInt32("noOfWriterGroups", 32, int32((noOfWriterGroups)))
+		_noOfWriterGroupsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfWriterGroups", 32, int32((noOfWriterGroups)))
 		if _noOfWriterGroupsErr != nil {
 			return errors.Wrap(_noOfWriterGroupsErr, "Error serializing 'noOfWriterGroups' field")
 		}
@@ -655,7 +655,7 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (noOfReaderGroups)
 		noOfReaderGroups := int32(m.GetNoOfReaderGroups())
-		_noOfReaderGroupsErr := writeBuffer.WriteInt32("noOfReaderGroups", 32, int32((noOfReaderGroups)))
+		_noOfReaderGroupsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReaderGroups", 32, int32((noOfReaderGroups)))
 		if _noOfReaderGroupsErr != nil {
 			return errors.Wrap(_noOfReaderGroupsErr, "Error serializing 'noOfReaderGroups' field")
 		}

@@ -188,28 +188,28 @@ func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuf
 	_ = currentPos
 
 	// Implicit Field (byteCount) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	byteCount, _byteCountErr := readBuffer.ReadUint8("byteCount", 8)
+	byteCount, _byteCountErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("byteCount", 8)
 	_ = byteCount
 	if _byteCountErr != nil {
 		return nil, errors.Wrap(_byteCountErr, "Error parsing 'byteCount' field of ModbusPDUGetComEventLogResponse")
 	}
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint16("status", 16)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventLogResponse")
 	}
 	status := _status
 
 	// Simple Field (eventCount)
-	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
+	_eventCount, _eventCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventLogResponse")
 	}
 	eventCount := _eventCount
 
 	// Simple Field (messageCount)
-	_messageCount, _messageCountErr := readBuffer.ReadUint16("messageCount", 16)
+	_messageCount, _messageCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("messageCount", 16)
 	if _messageCountErr != nil {
 		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field of ModbusPDUGetComEventLogResponse")
 	}
@@ -257,28 +257,28 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 
 		// Implicit Field (byteCount) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		byteCount := uint8(uint8(uint8(len(m.GetEvents()))) + uint8(uint8(6)))
-		_byteCountErr := writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
+		_byteCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteCount", 8, uint8((byteCount)))
 		if _byteCountErr != nil {
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
 		// Simple Field (status)
 		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
+		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("status", 16, uint16((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
+		_eventCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
 		if _eventCountErr != nil {
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}
 
 		// Simple Field (messageCount)
 		messageCount := uint16(m.GetMessageCount())
-		_messageCountErr := writeBuffer.WriteUint16("messageCount", 16, uint16((messageCount)))
+		_messageCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("messageCount", 16, uint16((messageCount)))
 		if _messageCountErr != nil {
 			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
 		}

@@ -148,7 +148,7 @@ func NLMWhoIsRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer util
 	var destinationNetworkAddress *uint16 = nil
 	{
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("destinationNetworkAddress", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -197,7 +197,7 @@ func (m *_NLMWhoIsRouterToNetwork) SerializeWithWriteBuffer(ctx context.Context,
 		var destinationNetworkAddress *uint16 = nil
 		if m.GetDestinationNetworkAddress() != nil {
 			destinationNetworkAddress = m.GetDestinationNetworkAddress()
-			_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
+			_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
 			if _destinationNetworkAddressErr != nil {
 				return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 			}

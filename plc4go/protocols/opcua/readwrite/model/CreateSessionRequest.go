@@ -321,14 +321,14 @@ func CreateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (requestedSessionTimeout)
-	_requestedSessionTimeout, _requestedSessionTimeoutErr := readBuffer.ReadFloat64("requestedSessionTimeout", 64)
+	_requestedSessionTimeout, _requestedSessionTimeoutErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("requestedSessionTimeout", 64)
 	if _requestedSessionTimeoutErr != nil {
 		return nil, errors.Wrap(_requestedSessionTimeoutErr, "Error parsing 'requestedSessionTimeout' field of CreateSessionRequest")
 	}
 	requestedSessionTimeout := _requestedSessionTimeout
 
 	// Simple Field (maxResponseMessageSize)
-	_maxResponseMessageSize, _maxResponseMessageSizeErr := readBuffer.ReadUint32("maxResponseMessageSize", 32)
+	_maxResponseMessageSize, _maxResponseMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxResponseMessageSize", 32)
 	if _maxResponseMessageSizeErr != nil {
 		return nil, errors.Wrap(_maxResponseMessageSizeErr, "Error parsing 'maxResponseMessageSize' field of CreateSessionRequest")
 	}
@@ -459,14 +459,14 @@ func (m *_CreateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (requestedSessionTimeout)
 		requestedSessionTimeout := float64(m.GetRequestedSessionTimeout())
-		_requestedSessionTimeoutErr := writeBuffer.WriteFloat64("requestedSessionTimeout", 64, (requestedSessionTimeout))
+		_requestedSessionTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("requestedSessionTimeout", 64, (requestedSessionTimeout))
 		if _requestedSessionTimeoutErr != nil {
 			return errors.Wrap(_requestedSessionTimeoutErr, "Error serializing 'requestedSessionTimeout' field")
 		}
 
 		// Simple Field (maxResponseMessageSize)
 		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
+		_maxResponseMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
 		if _maxResponseMessageSizeErr != nil {
 			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
 		}

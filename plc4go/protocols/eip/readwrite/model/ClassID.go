@@ -153,14 +153,14 @@ func ClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (C
 	_ = currentPos
 
 	// Simple Field (format)
-	_format, _formatErr := readBuffer.ReadUint8("format", 2)
+	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("format", 2)
 	if _formatErr != nil {
 		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of ClassID")
 	}
 	format := _format
 
 	// Simple Field (segmentClass)
-	_segmentClass, _segmentClassErr := readBuffer.ReadUint8("segmentClass", 8)
+	_segmentClass, _segmentClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("segmentClass", 8)
 	if _segmentClassErr != nil {
 		return nil, errors.Wrap(_segmentClassErr, "Error parsing 'segmentClass' field of ClassID")
 	}
@@ -200,14 +200,14 @@ func (m *_ClassID) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 
 		// Simple Field (format)
 		format := uint8(m.GetFormat())
-		_formatErr := writeBuffer.WriteUint8("format", 2, uint8((format)))
+		_formatErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("format", 2, uint8((format)))
 		if _formatErr != nil {
 			return errors.Wrap(_formatErr, "Error serializing 'format' field")
 		}
 
 		// Simple Field (segmentClass)
 		segmentClass := uint8(m.GetSegmentClass())
-		_segmentClassErr := writeBuffer.WriteUint8("segmentClass", 8, uint8((segmentClass)))
+		_segmentClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("segmentClass", 8, uint8((segmentClass)))
 		if _segmentClassErr != nil {
 			return errors.Wrap(_segmentClassErr, "Error serializing 'segmentClass' field")
 		}

@@ -142,7 +142,7 @@ func IdentifyReplyCommandTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (unitType)
-	_unitType, _unitTypeErr := readBuffer.ReadString("unitType", uint32(64), utils.WithEncoding("UTF-8"))
+	_unitType, _unitTypeErr := /*TODO: migrate me*/ readBuffer.ReadString("unitType", uint32(64), utils.WithEncoding("UTF-8"))
 	if _unitTypeErr != nil {
 		return nil, errors.Wrap(_unitTypeErr, "Error parsing 'unitType' field of IdentifyReplyCommandType")
 	}
@@ -183,7 +183,7 @@ func (m *_IdentifyReplyCommandType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (unitType)
 		unitType := string(m.GetUnitType())
-		_unitTypeErr := writeBuffer.WriteString("unitType", uint32(64), (unitType), utils.WithEncoding("UTF-8)"))
+		_unitTypeErr := /*TODO: migrate me*/ writeBuffer.WriteString("unitType", uint32(64), (unitType), utils.WithEncoding("UTF-8)"))
 		if _unitTypeErr != nil {
 			return errors.Wrap(_unitTypeErr, "Error serializing 'unitType' field")
 		}

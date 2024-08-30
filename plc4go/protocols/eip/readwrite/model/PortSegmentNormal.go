@@ -153,14 +153,14 @@ func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint8("port", 4)
+	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint8("port", 4)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentNormal")
 	}
 	port := _port
 
 	// Simple Field (linkAddress)
-	_linkAddress, _linkAddressErr := readBuffer.ReadUint8("linkAddress", 8)
+	_linkAddress, _linkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("linkAddress", 8)
 	if _linkAddressErr != nil {
 		return nil, errors.Wrap(_linkAddressErr, "Error parsing 'linkAddress' field of PortSegmentNormal")
 	}
@@ -200,14 +200,14 @@ func (m *_PortSegmentNormal) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (port)
 		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
+		_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("port", 4, uint8((port)))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (linkAddress)
 		linkAddress := uint8(m.GetLinkAddress())
-		_linkAddressErr := writeBuffer.WriteUint8("linkAddress", 8, uint8((linkAddress)))
+		_linkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("linkAddress", 8, uint8((linkAddress)))
 		if _linkAddressErr != nil {
 			return errors.Wrap(_linkAddressErr, "Error serializing 'linkAddress' field")
 		}

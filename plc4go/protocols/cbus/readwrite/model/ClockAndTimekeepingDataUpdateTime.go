@@ -223,28 +223,28 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readB
 	_ = currentPos
 
 	// Simple Field (hours)
-	_hours, _hoursErr := readBuffer.ReadUint8("hours", 8)
+	_hours, _hoursErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hours", 8)
 	if _hoursErr != nil {
 		return nil, errors.Wrap(_hoursErr, "Error parsing 'hours' field of ClockAndTimekeepingDataUpdateTime")
 	}
 	hours := _hours
 
 	// Simple Field (minute)
-	_minute, _minuteErr := readBuffer.ReadUint8("minute", 8)
+	_minute, _minuteErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minute", 8)
 	if _minuteErr != nil {
 		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field of ClockAndTimekeepingDataUpdateTime")
 	}
 	minute := _minute
 
 	// Simple Field (second)
-	_second, _secondErr := readBuffer.ReadUint8("second", 8)
+	_second, _secondErr := /*TODO: migrate me*/ readBuffer.ReadUint8("second", 8)
 	if _secondErr != nil {
 		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field of ClockAndTimekeepingDataUpdateTime")
 	}
 	second := _second
 
 	// Simple Field (daylightSaving)
-	_daylightSaving, _daylightSavingErr := readBuffer.ReadByte("daylightSaving")
+	_daylightSaving, _daylightSavingErr := /*TODO: migrate me*/ readBuffer.ReadByte("daylightSaving")
 	if _daylightSavingErr != nil {
 		return nil, errors.Wrap(_daylightSavingErr, "Error parsing 'daylightSaving' field of ClockAndTimekeepingDataUpdateTime")
 	}
@@ -306,28 +306,28 @@ func (m *_ClockAndTimekeepingDataUpdateTime) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (hours)
 		hours := uint8(m.GetHours())
-		_hoursErr := writeBuffer.WriteUint8("hours", 8, uint8((hours)))
+		_hoursErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hours", 8, uint8((hours)))
 		if _hoursErr != nil {
 			return errors.Wrap(_hoursErr, "Error serializing 'hours' field")
 		}
 
 		// Simple Field (minute)
 		minute := uint8(m.GetMinute())
-		_minuteErr := writeBuffer.WriteUint8("minute", 8, uint8((minute)))
+		_minuteErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minute", 8, uint8((minute)))
 		if _minuteErr != nil {
 			return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 		}
 
 		// Simple Field (second)
 		second := uint8(m.GetSecond())
-		_secondErr := writeBuffer.WriteUint8("second", 8, uint8((second)))
+		_secondErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("second", 8, uint8((second)))
 		if _secondErr != nil {
 			return errors.Wrap(_secondErr, "Error serializing 'second' field")
 		}
 
 		// Simple Field (daylightSaving)
 		daylightSaving := byte(m.GetDaylightSaving())
-		_daylightSavingErr := writeBuffer.WriteByte("daylightSaving", (daylightSaving))
+		_daylightSavingErr := /*TODO: migrate me*/ writeBuffer.WriteByte("daylightSaving", (daylightSaving))
 		if _daylightSavingErr != nil {
 			return errors.Wrap(_daylightSavingErr, "Error serializing 'daylightSaving' field")
 		}

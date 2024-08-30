@@ -228,7 +228,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	_ = currentPos
 
 	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	functionId, _functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 	}
@@ -237,7 +237,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	}
 
 	// Const Field (numberMessageObj)
-	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
+	numberMessageObj, _numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numberMessageObj", 8)
 	if _numberMessageObjErr != nil {
 		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 	}
@@ -246,7 +246,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	}
 
 	// Const Field (variableSpec)
-	variableSpec, _variableSpecErr := readBuffer.ReadUint8("variableSpec", 8)
+	variableSpec, _variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("variableSpec", 8)
 	if _variableSpecErr != nil {
 		return nil, errors.Wrap(_variableSpecErr, "Error parsing 'variableSpec' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 	}
@@ -255,7 +255,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	}
 
 	// Const Field (length)
-	length, _lengthErr := readBuffer.ReadUint8("length", 8)
+	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("length", 8)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 	}
@@ -279,7 +279,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 		}
@@ -309,7 +309,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 		}
@@ -372,25 +372,25 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 		}
 
 		// Const Field (functionId)
-		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
+		_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
 		if _functionIdErr != nil {
 			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 		}
 
 		// Const Field (numberMessageObj)
-		_numberMessageObjErr := writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
+		_numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
 		if _numberMessageObjErr != nil {
 			return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
 		}
 
 		// Const Field (variableSpec)
-		_variableSpecErr := writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
+		_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
 		if _variableSpecErr != nil {
 			return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
 		}
 
 		// Const Field (length)
-		_lengthErr := writeBuffer.WriteUint8("length", 8, uint8(0x08))
+		_lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("length", 8, uint8(0x08))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -417,7 +417,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -445,7 +445,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

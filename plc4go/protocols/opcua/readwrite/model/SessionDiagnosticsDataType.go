@@ -687,7 +687,7 @@ func SessionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
+	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
 	if _noOfLocaleIdsErr != nil {
 		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of SessionDiagnosticsDataType")
 	}
@@ -721,49 +721,49 @@ func SessionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (actualSessionTimeout)
-	_actualSessionTimeout, _actualSessionTimeoutErr := readBuffer.ReadFloat64("actualSessionTimeout", 64)
+	_actualSessionTimeout, _actualSessionTimeoutErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("actualSessionTimeout", 64)
 	if _actualSessionTimeoutErr != nil {
 		return nil, errors.Wrap(_actualSessionTimeoutErr, "Error parsing 'actualSessionTimeout' field of SessionDiagnosticsDataType")
 	}
 	actualSessionTimeout := _actualSessionTimeout
 
 	// Simple Field (maxResponseMessageSize)
-	_maxResponseMessageSize, _maxResponseMessageSizeErr := readBuffer.ReadUint32("maxResponseMessageSize", 32)
+	_maxResponseMessageSize, _maxResponseMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxResponseMessageSize", 32)
 	if _maxResponseMessageSizeErr != nil {
 		return nil, errors.Wrap(_maxResponseMessageSizeErr, "Error parsing 'maxResponseMessageSize' field of SessionDiagnosticsDataType")
 	}
 	maxResponseMessageSize := _maxResponseMessageSize
 
 	// Simple Field (clientConnectionTime)
-	_clientConnectionTime, _clientConnectionTimeErr := readBuffer.ReadInt64("clientConnectionTime", 64)
+	_clientConnectionTime, _clientConnectionTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("clientConnectionTime", 64)
 	if _clientConnectionTimeErr != nil {
 		return nil, errors.Wrap(_clientConnectionTimeErr, "Error parsing 'clientConnectionTime' field of SessionDiagnosticsDataType")
 	}
 	clientConnectionTime := _clientConnectionTime
 
 	// Simple Field (clientLastContactTime)
-	_clientLastContactTime, _clientLastContactTimeErr := readBuffer.ReadInt64("clientLastContactTime", 64)
+	_clientLastContactTime, _clientLastContactTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("clientLastContactTime", 64)
 	if _clientLastContactTimeErr != nil {
 		return nil, errors.Wrap(_clientLastContactTimeErr, "Error parsing 'clientLastContactTime' field of SessionDiagnosticsDataType")
 	}
 	clientLastContactTime := _clientLastContactTime
 
 	// Simple Field (currentSubscriptionsCount)
-	_currentSubscriptionsCount, _currentSubscriptionsCountErr := readBuffer.ReadUint32("currentSubscriptionsCount", 32)
+	_currentSubscriptionsCount, _currentSubscriptionsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentSubscriptionsCount", 32)
 	if _currentSubscriptionsCountErr != nil {
 		return nil, errors.Wrap(_currentSubscriptionsCountErr, "Error parsing 'currentSubscriptionsCount' field of SessionDiagnosticsDataType")
 	}
 	currentSubscriptionsCount := _currentSubscriptionsCount
 
 	// Simple Field (currentMonitoredItemsCount)
-	_currentMonitoredItemsCount, _currentMonitoredItemsCountErr := readBuffer.ReadUint32("currentMonitoredItemsCount", 32)
+	_currentMonitoredItemsCount, _currentMonitoredItemsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentMonitoredItemsCount", 32)
 	if _currentMonitoredItemsCountErr != nil {
 		return nil, errors.Wrap(_currentMonitoredItemsCountErr, "Error parsing 'currentMonitoredItemsCount' field of SessionDiagnosticsDataType")
 	}
 	currentMonitoredItemsCount := _currentMonitoredItemsCount
 
 	// Simple Field (currentPublishRequestsInQueue)
-	_currentPublishRequestsInQueue, _currentPublishRequestsInQueueErr := readBuffer.ReadUint32("currentPublishRequestsInQueue", 32)
+	_currentPublishRequestsInQueue, _currentPublishRequestsInQueueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentPublishRequestsInQueue", 32)
 	if _currentPublishRequestsInQueueErr != nil {
 		return nil, errors.Wrap(_currentPublishRequestsInQueueErr, "Error parsing 'currentPublishRequestsInQueue' field of SessionDiagnosticsDataType")
 	}
@@ -783,7 +783,7 @@ func SessionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (unauthorizedRequestCount)
-	_unauthorizedRequestCount, _unauthorizedRequestCountErr := readBuffer.ReadUint32("unauthorizedRequestCount", 32)
+	_unauthorizedRequestCount, _unauthorizedRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("unauthorizedRequestCount", 32)
 	if _unauthorizedRequestCountErr != nil {
 		return nil, errors.Wrap(_unauthorizedRequestCountErr, "Error parsing 'unauthorizedRequestCount' field of SessionDiagnosticsDataType")
 	}
@@ -1289,7 +1289,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
+		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -1313,49 +1313,49 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (actualSessionTimeout)
 		actualSessionTimeout := float64(m.GetActualSessionTimeout())
-		_actualSessionTimeoutErr := writeBuffer.WriteFloat64("actualSessionTimeout", 64, (actualSessionTimeout))
+		_actualSessionTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("actualSessionTimeout", 64, (actualSessionTimeout))
 		if _actualSessionTimeoutErr != nil {
 			return errors.Wrap(_actualSessionTimeoutErr, "Error serializing 'actualSessionTimeout' field")
 		}
 
 		// Simple Field (maxResponseMessageSize)
 		maxResponseMessageSize := uint32(m.GetMaxResponseMessageSize())
-		_maxResponseMessageSizeErr := writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
+		_maxResponseMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxResponseMessageSize", 32, uint32((maxResponseMessageSize)))
 		if _maxResponseMessageSizeErr != nil {
 			return errors.Wrap(_maxResponseMessageSizeErr, "Error serializing 'maxResponseMessageSize' field")
 		}
 
 		// Simple Field (clientConnectionTime)
 		clientConnectionTime := int64(m.GetClientConnectionTime())
-		_clientConnectionTimeErr := writeBuffer.WriteInt64("clientConnectionTime", 64, int64((clientConnectionTime)))
+		_clientConnectionTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("clientConnectionTime", 64, int64((clientConnectionTime)))
 		if _clientConnectionTimeErr != nil {
 			return errors.Wrap(_clientConnectionTimeErr, "Error serializing 'clientConnectionTime' field")
 		}
 
 		// Simple Field (clientLastContactTime)
 		clientLastContactTime := int64(m.GetClientLastContactTime())
-		_clientLastContactTimeErr := writeBuffer.WriteInt64("clientLastContactTime", 64, int64((clientLastContactTime)))
+		_clientLastContactTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("clientLastContactTime", 64, int64((clientLastContactTime)))
 		if _clientLastContactTimeErr != nil {
 			return errors.Wrap(_clientLastContactTimeErr, "Error serializing 'clientLastContactTime' field")
 		}
 
 		// Simple Field (currentSubscriptionsCount)
 		currentSubscriptionsCount := uint32(m.GetCurrentSubscriptionsCount())
-		_currentSubscriptionsCountErr := writeBuffer.WriteUint32("currentSubscriptionsCount", 32, uint32((currentSubscriptionsCount)))
+		_currentSubscriptionsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentSubscriptionsCount", 32, uint32((currentSubscriptionsCount)))
 		if _currentSubscriptionsCountErr != nil {
 			return errors.Wrap(_currentSubscriptionsCountErr, "Error serializing 'currentSubscriptionsCount' field")
 		}
 
 		// Simple Field (currentMonitoredItemsCount)
 		currentMonitoredItemsCount := uint32(m.GetCurrentMonitoredItemsCount())
-		_currentMonitoredItemsCountErr := writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, uint32((currentMonitoredItemsCount)))
+		_currentMonitoredItemsCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentMonitoredItemsCount", 32, uint32((currentMonitoredItemsCount)))
 		if _currentMonitoredItemsCountErr != nil {
 			return errors.Wrap(_currentMonitoredItemsCountErr, "Error serializing 'currentMonitoredItemsCount' field")
 		}
 
 		// Simple Field (currentPublishRequestsInQueue)
 		currentPublishRequestsInQueue := uint32(m.GetCurrentPublishRequestsInQueue())
-		_currentPublishRequestsInQueueErr := writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, uint32((currentPublishRequestsInQueue)))
+		_currentPublishRequestsInQueueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("currentPublishRequestsInQueue", 32, uint32((currentPublishRequestsInQueue)))
 		if _currentPublishRequestsInQueueErr != nil {
 			return errors.Wrap(_currentPublishRequestsInQueueErr, "Error serializing 'currentPublishRequestsInQueue' field")
 		}
@@ -1374,7 +1374,7 @@ func (m *_SessionDiagnosticsDataType) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (unauthorizedRequestCount)
 		unauthorizedRequestCount := uint32(m.GetUnauthorizedRequestCount())
-		_unauthorizedRequestCountErr := writeBuffer.WriteUint32("unauthorizedRequestCount", 32, uint32((unauthorizedRequestCount)))
+		_unauthorizedRequestCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("unauthorizedRequestCount", 32, uint32((unauthorizedRequestCount)))
 		if _unauthorizedRequestCountErr != nil {
 			return errors.Wrap(_unauthorizedRequestCountErr, "Error serializing 'unauthorizedRequestCount' field")
 		}

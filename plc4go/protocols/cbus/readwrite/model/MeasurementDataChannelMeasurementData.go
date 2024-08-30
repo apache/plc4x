@@ -224,14 +224,14 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, r
 	_ = currentPos
 
 	// Simple Field (deviceId)
-	_deviceId, _deviceIdErr := readBuffer.ReadUint8("deviceId", 8)
+	_deviceId, _deviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("deviceId", 8)
 	if _deviceIdErr != nil {
 		return nil, errors.Wrap(_deviceIdErr, "Error parsing 'deviceId' field of MeasurementDataChannelMeasurementData")
 	}
 	deviceId := _deviceId
 
 	// Simple Field (channel)
-	_channel, _channelErr := readBuffer.ReadUint8("channel", 8)
+	_channel, _channelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("channel", 8)
 	if _channelErr != nil {
 		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of MeasurementDataChannelMeasurementData")
 	}
@@ -251,21 +251,21 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, r
 	}
 
 	// Simple Field (multiplier)
-	_multiplier, _multiplierErr := readBuffer.ReadInt8("multiplier", 8)
+	_multiplier, _multiplierErr := /*TODO: migrate me*/ readBuffer.ReadInt8("multiplier", 8)
 	if _multiplierErr != nil {
 		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of MeasurementDataChannelMeasurementData")
 	}
 	multiplier := _multiplier
 
 	// Simple Field (msb)
-	_msb, _msbErr := readBuffer.ReadUint8("msb", 8)
+	_msb, _msbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("msb", 8)
 	if _msbErr != nil {
 		return nil, errors.Wrap(_msbErr, "Error parsing 'msb' field of MeasurementDataChannelMeasurementData")
 	}
 	msb := _msb
 
 	// Simple Field (lsb)
-	_lsb, _lsbErr := readBuffer.ReadUint8("lsb", 8)
+	_lsb, _lsbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lsb", 8)
 	if _lsbErr != nil {
 		return nil, errors.Wrap(_lsbErr, "Error parsing 'lsb' field of MeasurementDataChannelMeasurementData")
 	}
@@ -319,14 +319,14 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (deviceId)
 		deviceId := uint8(m.GetDeviceId())
-		_deviceIdErr := writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
+		_deviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("deviceId", 8, uint8((deviceId)))
 		if _deviceIdErr != nil {
 			return errors.Wrap(_deviceIdErr, "Error serializing 'deviceId' field")
 		}
 
 		// Simple Field (channel)
 		channel := uint8(m.GetChannel())
-		_channelErr := writeBuffer.WriteUint8("channel", 8, uint8((channel)))
+		_channelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("channel", 8, uint8((channel)))
 		if _channelErr != nil {
 			return errors.Wrap(_channelErr, "Error serializing 'channel' field")
 		}
@@ -345,21 +345,21 @@ func (m *_MeasurementDataChannelMeasurementData) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (multiplier)
 		multiplier := int8(m.GetMultiplier())
-		_multiplierErr := writeBuffer.WriteInt8("multiplier", 8, int8((multiplier)))
+		_multiplierErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("multiplier", 8, int8((multiplier)))
 		if _multiplierErr != nil {
 			return errors.Wrap(_multiplierErr, "Error serializing 'multiplier' field")
 		}
 
 		// Simple Field (msb)
 		msb := uint8(m.GetMsb())
-		_msbErr := writeBuffer.WriteUint8("msb", 8, uint8((msb)))
+		_msbErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("msb", 8, uint8((msb)))
 		if _msbErr != nil {
 			return errors.Wrap(_msbErr, "Error serializing 'msb' field")
 		}
 
 		// Simple Field (lsb)
 		lsb := uint8(m.GetLsb())
-		_lsbErr := writeBuffer.WriteUint8("lsb", 8, uint8((lsb)))
+		_lsbErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lsb", 8, uint8((lsb)))
 		if _lsbErr != nil {
 			return errors.Wrap(_lsbErr, "Error serializing 'lsb' field")
 		}

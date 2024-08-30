@@ -209,28 +209,28 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsReadWriteRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsReadWriteRequest")
 	}
 	indexOffset := _indexOffset
 
 	// Simple Field (readLength)
-	_readLength, _readLengthErr := readBuffer.ReadUint32("readLength", 32)
+	_readLength, _readLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("readLength", 32)
 	if _readLengthErr != nil {
 		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field of AdsReadWriteRequest")
 	}
 	readLength := _readLength
 
 	// Implicit Field (writeLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	writeLength, _writeLengthErr := readBuffer.ReadUint32("writeLength", 32)
+	writeLength, _writeLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("writeLength", 32)
 	_ = writeLength
 	if _writeLengthErr != nil {
 		return nil, errors.Wrap(_writeLengthErr, "Error parsing 'writeLength' field of AdsReadWriteRequest")
@@ -306,28 +306,28 @@ func (m *_AdsReadWriteRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
+		_indexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
+		_indexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (readLength)
 		readLength := uint32(m.GetReadLength())
-		_readLengthErr := writeBuffer.WriteUint32("readLength", 32, uint32((readLength)))
+		_readLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("readLength", 32, uint32((readLength)))
 		if _readLengthErr != nil {
 			return errors.Wrap(_readLengthErr, "Error serializing 'readLength' field")
 		}
 
 		// Implicit Field (writeLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		writeLength := uint32(uint32((uint32(uint32(len(m.GetItems()))) * uint32((utils.InlineIf((bool((m.GetIndexGroup()) == (61570))), func() any { return uint32(uint32(16)) }, func() any { return uint32(uint32(12)) }).(uint32))))) + uint32(uint32(len(m.GetData()))))
-		_writeLengthErr := writeBuffer.WriteUint32("writeLength", 32, uint32((writeLength)))
+		_writeLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("writeLength", 32, uint32((writeLength)))
 		if _writeLengthErr != nil {
 			return errors.Wrap(_writeLengthErr, "Error serializing 'writeLength' field")
 		}

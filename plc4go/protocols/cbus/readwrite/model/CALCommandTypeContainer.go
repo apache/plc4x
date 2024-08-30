@@ -1772,7 +1772,7 @@ func CALCommandTypeContainerParse(ctx context.Context, theBytes []byte) (CALComm
 func CALCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CALCommandTypeContainer, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("CALCommandTypeContainer", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("CALCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading CALCommandTypeContainer")
 	}
@@ -1795,7 +1795,7 @@ func (e CALCommandTypeContainer) Serialize() ([]byte, error) {
 func (e CALCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("CALCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

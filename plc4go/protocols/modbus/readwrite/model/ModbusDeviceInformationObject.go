@@ -130,14 +130,14 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (objectId)
-	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)
+	_objectId, _objectIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectId", 8)
 	if _objectIdErr != nil {
 		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusDeviceInformationObject")
 	}
 	objectId := _objectId
 
 	// Implicit Field (objectLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	objectLength, _objectLengthErr := readBuffer.ReadUint8("objectLength", 8)
+	objectLength, _objectLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("objectLength", 8)
 	_ = objectLength
 	if _objectLengthErr != nil {
 		return nil, errors.Wrap(_objectLengthErr, "Error parsing 'objectLength' field of ModbusDeviceInformationObject")
@@ -179,14 +179,14 @@ func (m *_ModbusDeviceInformationObject) SerializeWithWriteBuffer(ctx context.Co
 
 	// Simple Field (objectId)
 	objectId := uint8(m.GetObjectId())
-	_objectIdErr := writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
+	_objectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
 	if _objectIdErr != nil {
 		return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
 	}
 
 	// Implicit Field (objectLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	objectLength := uint8(uint8(len(m.GetData())))
-	_objectLengthErr := writeBuffer.WriteUint8("objectLength", 8, uint8((objectLength)))
+	_objectLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectLength", 8, uint8((objectLength)))
 	if _objectLengthErr != nil {
 		return errors.Wrap(_objectLengthErr, "Error serializing 'objectLength' field")
 	}

@@ -184,7 +184,7 @@ func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (noOfNodesToDelete)
-	_noOfNodesToDelete, _noOfNodesToDeleteErr := readBuffer.ReadInt32("noOfNodesToDelete", 32)
+	_noOfNodesToDelete, _noOfNodesToDeleteErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToDelete", 32)
 	if _noOfNodesToDeleteErr != nil {
 		return nil, errors.Wrap(_noOfNodesToDeleteErr, "Error parsing 'noOfNodesToDelete' field of DeleteNodesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (noOfNodesToDelete)
 		noOfNodesToDelete := int32(m.GetNoOfNodesToDelete())
-		_noOfNodesToDeleteErr := writeBuffer.WriteInt32("noOfNodesToDelete", 32, int32((noOfNodesToDelete)))
+		_noOfNodesToDeleteErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToDelete", 32, int32((noOfNodesToDelete)))
 		if _noOfNodesToDeleteErr != nil {
 			return errors.Wrap(_noOfNodesToDeleteErr, "Error serializing 'noOfNodesToDelete' field")
 		}

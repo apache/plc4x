@@ -297,7 +297,7 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfSecurityGroupFolder)
-	_noOfSecurityGroupFolder, _noOfSecurityGroupFolderErr := readBuffer.ReadInt32("noOfSecurityGroupFolder", 32)
+	_noOfSecurityGroupFolder, _noOfSecurityGroupFolderErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityGroupFolder", 32)
 	if _noOfSecurityGroupFolderErr != nil {
 		return nil, errors.Wrap(_noOfSecurityGroupFolderErr, "Error parsing 'noOfSecurityGroupFolder' field of SecurityGroupDataType")
 	}
@@ -331,7 +331,7 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (keyLifetime)
-	_keyLifetime, _keyLifetimeErr := readBuffer.ReadFloat64("keyLifetime", 64)
+	_keyLifetime, _keyLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("keyLifetime", 64)
 	if _keyLifetimeErr != nil {
 		return nil, errors.Wrap(_keyLifetimeErr, "Error parsing 'keyLifetime' field of SecurityGroupDataType")
 	}
@@ -351,14 +351,14 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (maxFutureKeyCount)
-	_maxFutureKeyCount, _maxFutureKeyCountErr := readBuffer.ReadUint32("maxFutureKeyCount", 32)
+	_maxFutureKeyCount, _maxFutureKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxFutureKeyCount", 32)
 	if _maxFutureKeyCountErr != nil {
 		return nil, errors.Wrap(_maxFutureKeyCountErr, "Error parsing 'maxFutureKeyCount' field of SecurityGroupDataType")
 	}
 	maxFutureKeyCount := _maxFutureKeyCount
 
 	// Simple Field (maxPastKeyCount)
-	_maxPastKeyCount, _maxPastKeyCountErr := readBuffer.ReadUint32("maxPastKeyCount", 32)
+	_maxPastKeyCount, _maxPastKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxPastKeyCount", 32)
 	if _maxPastKeyCountErr != nil {
 		return nil, errors.Wrap(_maxPastKeyCountErr, "Error parsing 'maxPastKeyCount' field of SecurityGroupDataType")
 	}
@@ -378,7 +378,7 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfRolePermissions)
-	_noOfRolePermissions, _noOfRolePermissionsErr := readBuffer.ReadInt32("noOfRolePermissions", 32)
+	_noOfRolePermissions, _noOfRolePermissionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRolePermissions", 32)
 	if _noOfRolePermissionsErr != nil {
 		return nil, errors.Wrap(_noOfRolePermissionsErr, "Error parsing 'noOfRolePermissions' field of SecurityGroupDataType")
 	}
@@ -412,7 +412,7 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfGroupProperties)
-	_noOfGroupProperties, _noOfGroupPropertiesErr := readBuffer.ReadInt32("noOfGroupProperties", 32)
+	_noOfGroupProperties, _noOfGroupPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfGroupProperties", 32)
 	if _noOfGroupPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfGroupPropertiesErr, "Error parsing 'noOfGroupProperties' field of SecurityGroupDataType")
 	}
@@ -501,7 +501,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfSecurityGroupFolder)
 		noOfSecurityGroupFolder := int32(m.GetNoOfSecurityGroupFolder())
-		_noOfSecurityGroupFolderErr := writeBuffer.WriteInt32("noOfSecurityGroupFolder", 32, int32((noOfSecurityGroupFolder)))
+		_noOfSecurityGroupFolderErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSecurityGroupFolder", 32, int32((noOfSecurityGroupFolder)))
 		if _noOfSecurityGroupFolderErr != nil {
 			return errors.Wrap(_noOfSecurityGroupFolderErr, "Error serializing 'noOfSecurityGroupFolder' field")
 		}
@@ -525,7 +525,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (keyLifetime)
 		keyLifetime := float64(m.GetKeyLifetime())
-		_keyLifetimeErr := writeBuffer.WriteFloat64("keyLifetime", 64, (keyLifetime))
+		_keyLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("keyLifetime", 64, (keyLifetime))
 		if _keyLifetimeErr != nil {
 			return errors.Wrap(_keyLifetimeErr, "Error serializing 'keyLifetime' field")
 		}
@@ -544,14 +544,14 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (maxFutureKeyCount)
 		maxFutureKeyCount := uint32(m.GetMaxFutureKeyCount())
-		_maxFutureKeyCountErr := writeBuffer.WriteUint32("maxFutureKeyCount", 32, uint32((maxFutureKeyCount)))
+		_maxFutureKeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxFutureKeyCount", 32, uint32((maxFutureKeyCount)))
 		if _maxFutureKeyCountErr != nil {
 			return errors.Wrap(_maxFutureKeyCountErr, "Error serializing 'maxFutureKeyCount' field")
 		}
 
 		// Simple Field (maxPastKeyCount)
 		maxPastKeyCount := uint32(m.GetMaxPastKeyCount())
-		_maxPastKeyCountErr := writeBuffer.WriteUint32("maxPastKeyCount", 32, uint32((maxPastKeyCount)))
+		_maxPastKeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxPastKeyCount", 32, uint32((maxPastKeyCount)))
 		if _maxPastKeyCountErr != nil {
 			return errors.Wrap(_maxPastKeyCountErr, "Error serializing 'maxPastKeyCount' field")
 		}
@@ -570,7 +570,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRolePermissions)
 		noOfRolePermissions := int32(m.GetNoOfRolePermissions())
-		_noOfRolePermissionsErr := writeBuffer.WriteInt32("noOfRolePermissions", 32, int32((noOfRolePermissions)))
+		_noOfRolePermissionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRolePermissions", 32, int32((noOfRolePermissions)))
 		if _noOfRolePermissionsErr != nil {
 			return errors.Wrap(_noOfRolePermissionsErr, "Error serializing 'noOfRolePermissions' field")
 		}
@@ -594,7 +594,7 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfGroupProperties)
 		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
+		_noOfGroupPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
 		if _noOfGroupPropertiesErr != nil {
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}

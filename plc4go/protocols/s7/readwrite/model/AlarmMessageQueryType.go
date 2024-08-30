@@ -181,14 +181,14 @@ func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (functionId)
-	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessageQueryType")
 	}
 	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	_numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessageQueryType")
 	}
@@ -221,7 +221,7 @@ func AlarmMessageQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Const Field (dataLength)
-	dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
+	dataLength, _dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataLength", 16)
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of AlarmMessageQueryType")
 	}
@@ -289,14 +289,14 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (functionId)
 	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
+	_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (numberOfObjects)
 	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
+	_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 	if _numberOfObjectsErr != nil {
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 	}
@@ -326,7 +326,7 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 	}
 
 	// Const Field (dataLength)
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16(0xFFFF))
+	_dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16(0xFFFF))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}

@@ -176,21 +176,21 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	_ = currentPos
 
 	// Simple Field (arrayLengthSpecified)
-	_arrayLengthSpecified, _arrayLengthSpecifiedErr := readBuffer.ReadBit("arrayLengthSpecified")
+	_arrayLengthSpecified, _arrayLengthSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("arrayLengthSpecified")
 	if _arrayLengthSpecifiedErr != nil {
 		return nil, errors.Wrap(_arrayLengthSpecifiedErr, "Error parsing 'arrayLengthSpecified' field of Variant")
 	}
 	arrayLengthSpecified := _arrayLengthSpecified
 
 	// Simple Field (arrayDimensionsSpecified)
-	_arrayDimensionsSpecified, _arrayDimensionsSpecifiedErr := readBuffer.ReadBit("arrayDimensionsSpecified")
+	_arrayDimensionsSpecified, _arrayDimensionsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("arrayDimensionsSpecified")
 	if _arrayDimensionsSpecifiedErr != nil {
 		return nil, errors.Wrap(_arrayDimensionsSpecifiedErr, "Error parsing 'arrayDimensionsSpecified' field of Variant")
 	}
 	arrayDimensionsSpecified := _arrayDimensionsSpecified
 
 	// Discriminator Field (VariantType) (Used as input to a switch field)
-	VariantType, _VariantTypeErr := readBuffer.ReadUint8("VariantType", 6)
+	VariantType, _VariantTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("VariantType", 6)
 	if _VariantTypeErr != nil {
 		return nil, errors.Wrap(_VariantTypeErr, "Error parsing 'VariantType' field of Variant")
 	}
@@ -269,7 +269,7 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	var noOfArrayDimensions *int32 = nil
 	if arrayDimensionsSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt32("noOfArrayDimensions", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("noOfArrayDimensions", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -297,7 +297,7 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadBit("")
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'arrayDimensions' field of Variant")
 			}
@@ -331,21 +331,21 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 
 	// Simple Field (arrayLengthSpecified)
 	arrayLengthSpecified := bool(m.GetArrayLengthSpecified())
-	_arrayLengthSpecifiedErr := writeBuffer.WriteBit("arrayLengthSpecified", (arrayLengthSpecified))
+	_arrayLengthSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("arrayLengthSpecified", (arrayLengthSpecified))
 	if _arrayLengthSpecifiedErr != nil {
 		return errors.Wrap(_arrayLengthSpecifiedErr, "Error serializing 'arrayLengthSpecified' field")
 	}
 
 	// Simple Field (arrayDimensionsSpecified)
 	arrayDimensionsSpecified := bool(m.GetArrayDimensionsSpecified())
-	_arrayDimensionsSpecifiedErr := writeBuffer.WriteBit("arrayDimensionsSpecified", (arrayDimensionsSpecified))
+	_arrayDimensionsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("arrayDimensionsSpecified", (arrayDimensionsSpecified))
 	if _arrayDimensionsSpecifiedErr != nil {
 		return errors.Wrap(_arrayDimensionsSpecifiedErr, "Error serializing 'arrayDimensionsSpecified' field")
 	}
 
 	// Discriminator Field (VariantType) (Used as input to a switch field)
 	VariantType := uint8(child.GetVariantType())
-	_VariantTypeErr := writeBuffer.WriteUint8("VariantType", 6, uint8((VariantType)))
+	_VariantTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("VariantType", 6, uint8((VariantType)))
 
 	if _VariantTypeErr != nil {
 		return errors.Wrap(_VariantTypeErr, "Error serializing 'VariantType' field")
@@ -360,7 +360,7 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 	var noOfArrayDimensions *int32 = nil
 	if m.GetNoOfArrayDimensions() != nil {
 		noOfArrayDimensions = m.GetNoOfArrayDimensions()
-		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32(*(noOfArrayDimensions)))
+		_noOfArrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32(*(noOfArrayDimensions)))
 		if _noOfArrayDimensionsErr != nil {
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}
@@ -372,7 +372,7 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 	}
 	for _curItem, _element := range m.GetArrayDimensions() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteBit("", _element)
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
 		}

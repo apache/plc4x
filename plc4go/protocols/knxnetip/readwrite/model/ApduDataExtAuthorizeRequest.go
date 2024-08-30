@@ -155,7 +155,7 @@ func ApduDataExtAuthorizeRequestParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (level)
-	_level, _levelErr := readBuffer.ReadUint8("level", 8)
+	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("level", 8)
 	if _levelErr != nil {
 		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ApduDataExtAuthorizeRequest")
 	}
@@ -203,7 +203,7 @@ func (m *_ApduDataExtAuthorizeRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (level)
 		level := uint8(m.GetLevel())
-		_levelErr := writeBuffer.WriteUint8("level", 8, uint8((level)))
+		_levelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("level", 8, uint8((level)))
 		if _levelErr != nil {
 			return errors.Wrap(_levelErr, "Error serializing 'level' field")
 		}

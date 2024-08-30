@@ -175,28 +175,28 @@ func ChannelSecurityTokenParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (channelId)
-	_channelId, _channelIdErr := readBuffer.ReadUint32("channelId", 32)
+	_channelId, _channelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("channelId", 32)
 	if _channelIdErr != nil {
 		return nil, errors.Wrap(_channelIdErr, "Error parsing 'channelId' field of ChannelSecurityToken")
 	}
 	channelId := _channelId
 
 	// Simple Field (tokenId)
-	_tokenId, _tokenIdErr := readBuffer.ReadUint32("tokenId", 32)
+	_tokenId, _tokenIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("tokenId", 32)
 	if _tokenIdErr != nil {
 		return nil, errors.Wrap(_tokenIdErr, "Error parsing 'tokenId' field of ChannelSecurityToken")
 	}
 	tokenId := _tokenId
 
 	// Simple Field (createdAt)
-	_createdAt, _createdAtErr := readBuffer.ReadInt64("createdAt", 64)
+	_createdAt, _createdAtErr := /*TODO: migrate me*/ readBuffer.ReadInt64("createdAt", 64)
 	if _createdAtErr != nil {
 		return nil, errors.Wrap(_createdAtErr, "Error parsing 'createdAt' field of ChannelSecurityToken")
 	}
 	createdAt := _createdAt
 
 	// Simple Field (revisedLifetime)
-	_revisedLifetime, _revisedLifetimeErr := readBuffer.ReadUint32("revisedLifetime", 32)
+	_revisedLifetime, _revisedLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedLifetime", 32)
 	if _revisedLifetimeErr != nil {
 		return nil, errors.Wrap(_revisedLifetimeErr, "Error parsing 'revisedLifetime' field of ChannelSecurityToken")
 	}
@@ -238,28 +238,28 @@ func (m *_ChannelSecurityToken) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (channelId)
 		channelId := uint32(m.GetChannelId())
-		_channelIdErr := writeBuffer.WriteUint32("channelId", 32, uint32((channelId)))
+		_channelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("channelId", 32, uint32((channelId)))
 		if _channelIdErr != nil {
 			return errors.Wrap(_channelIdErr, "Error serializing 'channelId' field")
 		}
 
 		// Simple Field (tokenId)
 		tokenId := uint32(m.GetTokenId())
-		_tokenIdErr := writeBuffer.WriteUint32("tokenId", 32, uint32((tokenId)))
+		_tokenIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("tokenId", 32, uint32((tokenId)))
 		if _tokenIdErr != nil {
 			return errors.Wrap(_tokenIdErr, "Error serializing 'tokenId' field")
 		}
 
 		// Simple Field (createdAt)
 		createdAt := int64(m.GetCreatedAt())
-		_createdAtErr := writeBuffer.WriteInt64("createdAt", 64, int64((createdAt)))
+		_createdAtErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("createdAt", 64, int64((createdAt)))
 		if _createdAtErr != nil {
 			return errors.Wrap(_createdAtErr, "Error serializing 'createdAt' field")
 		}
 
 		// Simple Field (revisedLifetime)
 		revisedLifetime := uint32(m.GetRevisedLifetime())
-		_revisedLifetimeErr := writeBuffer.WriteUint32("revisedLifetime", 32, uint32((revisedLifetime)))
+		_revisedLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedLifetime", 32, uint32((revisedLifetime)))
 		if _revisedLifetimeErr != nil {
 			return errors.Wrap(_revisedLifetimeErr, "Error serializing 'revisedLifetime' field")
 		}

@@ -250,7 +250,7 @@ func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HistoryReadRequest")
 		}
@@ -265,14 +265,14 @@ func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (releaseContinuationPoints)
-	_releaseContinuationPoints, _releaseContinuationPointsErr := readBuffer.ReadBit("releaseContinuationPoints")
+	_releaseContinuationPoints, _releaseContinuationPointsErr := /*TODO: migrate me*/ readBuffer.ReadBit("releaseContinuationPoints")
 	if _releaseContinuationPointsErr != nil {
 		return nil, errors.Wrap(_releaseContinuationPointsErr, "Error parsing 'releaseContinuationPoints' field of HistoryReadRequest")
 	}
 	releaseContinuationPoints := _releaseContinuationPoints
 
 	// Simple Field (noOfNodesToRead)
-	_noOfNodesToRead, _noOfNodesToReadErr := readBuffer.ReadInt32("noOfNodesToRead", 32)
+	_noOfNodesToRead, _noOfNodesToReadErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRead", 32)
 	if _noOfNodesToReadErr != nil {
 		return nil, errors.Wrap(_noOfNodesToReadErr, "Error parsing 'noOfNodesToRead' field of HistoryReadRequest")
 	}
@@ -388,7 +388,7 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -396,14 +396,14 @@ func (m *_HistoryReadRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (releaseContinuationPoints)
 		releaseContinuationPoints := bool(m.GetReleaseContinuationPoints())
-		_releaseContinuationPointsErr := writeBuffer.WriteBit("releaseContinuationPoints", (releaseContinuationPoints))
+		_releaseContinuationPointsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("releaseContinuationPoints", (releaseContinuationPoints))
 		if _releaseContinuationPointsErr != nil {
 			return errors.Wrap(_releaseContinuationPointsErr, "Error serializing 'releaseContinuationPoints' field")
 		}
 
 		// Simple Field (noOfNodesToRead)
 		noOfNodesToRead := int32(m.GetNoOfNodesToRead())
-		_noOfNodesToReadErr := writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
+		_noOfNodesToReadErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToRead", 32, int32((noOfNodesToRead)))
 		if _noOfNodesToReadErr != nil {
 			return errors.Wrap(_noOfNodesToReadErr, "Error serializing 'noOfNodesToRead' field")
 		}

@@ -141,7 +141,7 @@ func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Const Field (messageStart)
-	messageStart, _messageStartErr := readBuffer.ReadUint8("messageStart", 8)
+	messageStart, _messageStartErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageStart", 8)
 	if _messageStartErr != nil {
 		return nil, errors.Wrap(_messageStartErr, "Error parsing 'messageStart' field of DF1Symbol")
 	}
@@ -150,7 +150,7 @@ func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType, _symbolTypeErr := readBuffer.ReadUint8("symbolType", 8)
+	symbolType, _symbolTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("symbolType", 8)
 	if _symbolTypeErr != nil {
 		return nil, errors.Wrap(_symbolTypeErr, "Error parsing 'symbolType' field of DF1Symbol")
 	}
@@ -201,14 +201,14 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Const Field (messageStart)
-	_messageStartErr := writeBuffer.WriteUint8("messageStart", 8, uint8(0x10))
+	_messageStartErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("messageStart", 8, uint8(0x10))
 	if _messageStartErr != nil {
 		return errors.Wrap(_messageStartErr, "Error serializing 'messageStart' field")
 	}
 
 	// Discriminator Field (symbolType) (Used as input to a switch field)
 	symbolType := uint8(child.GetSymbolType())
-	_symbolTypeErr := writeBuffer.WriteUint8("symbolType", 8, uint8((symbolType)))
+	_symbolTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("symbolType", 8, uint8((symbolType)))
 
 	if _symbolTypeErr != nil {
 		return errors.Wrap(_symbolTypeErr, "Error serializing 'symbolType' field")

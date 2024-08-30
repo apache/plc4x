@@ -197,7 +197,7 @@ func SetPublishingModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of SetPublishingModeRequest")
 		}
@@ -212,14 +212,14 @@ func SetPublishingModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (publishingEnabled)
-	_publishingEnabled, _publishingEnabledErr := readBuffer.ReadBit("publishingEnabled")
+	_publishingEnabled, _publishingEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("publishingEnabled")
 	if _publishingEnabledErr != nil {
 		return nil, errors.Wrap(_publishingEnabledErr, "Error parsing 'publishingEnabled' field of SetPublishingModeRequest")
 	}
 	publishingEnabled := _publishingEnabled
 
 	// Simple Field (noOfSubscriptionIds)
-	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := readBuffer.ReadInt32("noOfSubscriptionIds", 32)
+	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionIds", 32)
 	if _noOfSubscriptionIdsErr != nil {
 		return nil, errors.Wrap(_noOfSubscriptionIdsErr, "Error parsing 'noOfSubscriptionIds' field of SetPublishingModeRequest")
 	}
@@ -241,7 +241,7 @@ func SetPublishingModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subscriptionIds' field of SetPublishingModeRequest")
 			}
@@ -309,7 +309,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -317,14 +317,14 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (publishingEnabled)
 		publishingEnabled := bool(m.GetPublishingEnabled())
-		_publishingEnabledErr := writeBuffer.WriteBit("publishingEnabled", (publishingEnabled))
+		_publishingEnabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("publishingEnabled", (publishingEnabled))
 		if _publishingEnabledErr != nil {
 			return errors.Wrap(_publishingEnabledErr, "Error serializing 'publishingEnabled' field")
 		}
 
 		// Simple Field (noOfSubscriptionIds)
 		noOfSubscriptionIds := int32(m.GetNoOfSubscriptionIds())
-		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
+		_noOfSubscriptionIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
 		if _noOfSubscriptionIdsErr != nil {
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
@@ -335,7 +335,7 @@ func (m *_SetPublishingModeRequest) SerializeWithWriteBuffer(ctx context.Context
 		}
 		for _curItem, _element := range m.GetSubscriptionIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
 			}

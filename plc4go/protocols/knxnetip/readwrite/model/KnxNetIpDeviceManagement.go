@@ -142,7 +142,7 @@ func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetIpDeviceManagement")
 	}
@@ -181,7 +181,7 @@ func (m *_KnxNetIpDeviceManagement) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (version)
 		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
+		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("version", 8, uint8((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

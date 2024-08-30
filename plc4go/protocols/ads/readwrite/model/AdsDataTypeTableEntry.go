@@ -328,105 +328,105 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = startPos
 
 	// Simple Field (entryLength)
-	_entryLength, _entryLengthErr := readBuffer.ReadUint32("entryLength", 32)
+	_entryLength, _entryLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("entryLength", 32)
 	if _entryLengthErr != nil {
 		return nil, errors.Wrap(_entryLengthErr, "Error parsing 'entryLength' field of AdsDataTypeTableEntry")
 	}
 	entryLength := _entryLength
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint32("version", 32)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsDataTypeTableEntry")
 	}
 	version := _version
 
 	// Simple Field (hashValue)
-	_hashValue, _hashValueErr := readBuffer.ReadUint32("hashValue", 32)
+	_hashValue, _hashValueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("hashValue", 32)
 	if _hashValueErr != nil {
 		return nil, errors.Wrap(_hashValueErr, "Error parsing 'hashValue' field of AdsDataTypeTableEntry")
 	}
 	hashValue := _hashValue
 
 	// Simple Field (typeHashValue)
-	_typeHashValue, _typeHashValueErr := readBuffer.ReadUint32("typeHashValue", 32)
+	_typeHashValue, _typeHashValueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("typeHashValue", 32)
 	if _typeHashValueErr != nil {
 		return nil, errors.Wrap(_typeHashValueErr, "Error parsing 'typeHashValue' field of AdsDataTypeTableEntry")
 	}
 	typeHashValue := _typeHashValue
 
 	// Simple Field (size)
-	_size, _sizeErr := readBuffer.ReadUint32("size", 32)
+	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("size", 32)
 	if _sizeErr != nil {
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of AdsDataTypeTableEntry")
 	}
 	size := _size
 
 	// Simple Field (offset)
-	_offset, _offsetErr := readBuffer.ReadUint32("offset", 32)
+	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("offset", 32)
 	if _offsetErr != nil {
 		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of AdsDataTypeTableEntry")
 	}
 	offset := _offset
 
 	// Simple Field (dataType)
-	_dataType, _dataTypeErr := readBuffer.ReadUint32("dataType", 32)
+	_dataType, _dataTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataType", 32)
 	if _dataTypeErr != nil {
 		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of AdsDataTypeTableEntry")
 	}
 	dataType := _dataType
 
 	// Simple Field (flags)
-	_flags, _flagsErr := readBuffer.ReadUint32("flags", 32)
+	_flags, _flagsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("flags", 32)
 	if _flagsErr != nil {
 		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of AdsDataTypeTableEntry")
 	}
 	flags := _flags
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataTypeNameLength, _dataTypeNameLengthErr := readBuffer.ReadUint16("dataTypeNameLength", 16)
+	dataTypeNameLength, _dataTypeNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("dataTypeNameLength", 16)
 	_ = dataTypeNameLength
 	if _dataTypeNameLengthErr != nil {
 		return nil, errors.Wrap(_dataTypeNameLengthErr, "Error parsing 'dataTypeNameLength' field of AdsDataTypeTableEntry")
 	}
 
 	// Implicit Field (simpleTypeNameLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	simpleTypeNameLength, _simpleTypeNameLengthErr := readBuffer.ReadUint16("simpleTypeNameLength", 16)
+	simpleTypeNameLength, _simpleTypeNameLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("simpleTypeNameLength", 16)
 	_ = simpleTypeNameLength
 	if _simpleTypeNameLengthErr != nil {
 		return nil, errors.Wrap(_simpleTypeNameLengthErr, "Error parsing 'simpleTypeNameLength' field of AdsDataTypeTableEntry")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	commentLength, _commentLengthErr := readBuffer.ReadUint16("commentLength", 16)
+	commentLength, _commentLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("commentLength", 16)
 	_ = commentLength
 	if _commentLengthErr != nil {
 		return nil, errors.Wrap(_commentLengthErr, "Error parsing 'commentLength' field of AdsDataTypeTableEntry")
 	}
 
 	// Simple Field (arrayDimensions)
-	_arrayDimensions, _arrayDimensionsErr := readBuffer.ReadUint16("arrayDimensions", 16)
+	_arrayDimensions, _arrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("arrayDimensions", 16)
 	if _arrayDimensionsErr != nil {
 		return nil, errors.Wrap(_arrayDimensionsErr, "Error parsing 'arrayDimensions' field of AdsDataTypeTableEntry")
 	}
 	arrayDimensions := _arrayDimensions
 
 	// Simple Field (numChildren)
-	_numChildren, _numChildrenErr := readBuffer.ReadUint16("numChildren", 16)
+	_numChildren, _numChildrenErr := /*TODO: migrate me*/ readBuffer.ReadUint16("numChildren", 16)
 	if _numChildrenErr != nil {
 		return nil, errors.Wrap(_numChildrenErr, "Error parsing 'numChildren' field of AdsDataTypeTableEntry")
 	}
 	numChildren := _numChildren
 
 	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
+	_dataTypeName, _dataTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _dataTypeNameErr != nil {
 		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsDataTypeTableEntry")
 	}
 	dataTypeName := _dataTypeName
 
 	// Const Field (dataTypeNameTerminator)
-	dataTypeNameTerminator, _dataTypeNameTerminatorErr := readBuffer.ReadUint8("dataTypeNameTerminator", 8)
+	dataTypeNameTerminator, _dataTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataTypeNameTerminator", 8)
 	if _dataTypeNameTerminatorErr != nil {
 		return nil, errors.Wrap(_dataTypeNameTerminatorErr, "Error parsing 'dataTypeNameTerminator' field of AdsDataTypeTableEntry")
 	}
@@ -435,14 +435,14 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (simpleTypeName)
-	_simpleTypeName, _simpleTypeNameErr := readBuffer.ReadString("simpleTypeName", uint32((simpleTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
+	_simpleTypeName, _simpleTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("simpleTypeName", uint32((simpleTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _simpleTypeNameErr != nil {
 		return nil, errors.Wrap(_simpleTypeNameErr, "Error parsing 'simpleTypeName' field of AdsDataTypeTableEntry")
 	}
 	simpleTypeName := _simpleTypeName
 
 	// Const Field (simpleTypeNameTerminator)
-	simpleTypeNameTerminator, _simpleTypeNameTerminatorErr := readBuffer.ReadUint8("simpleTypeNameTerminator", 8)
+	simpleTypeNameTerminator, _simpleTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("simpleTypeNameTerminator", 8)
 	if _simpleTypeNameTerminatorErr != nil {
 		return nil, errors.Wrap(_simpleTypeNameTerminatorErr, "Error parsing 'simpleTypeNameTerminator' field of AdsDataTypeTableEntry")
 	}
@@ -451,14 +451,14 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (comment)
-	_comment, _commentErr := readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
+	_comment, _commentErr := /*TODO: migrate me*/ readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
 	if _commentErr != nil {
 		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsDataTypeTableEntry")
 	}
 	comment := _comment
 
 	// Const Field (commentTerminator)
-	commentTerminator, _commentTerminatorErr := readBuffer.ReadUint8("commentTerminator", 8)
+	commentTerminator, _commentTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commentTerminator", 8)
 	if _commentTerminatorErr != nil {
 		return nil, errors.Wrap(_commentTerminatorErr, "Error parsing 'commentTerminator' field of AdsDataTypeTableEntry")
 	}
@@ -570,130 +570,130 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (entryLength)
 	entryLength := uint32(m.GetEntryLength())
-	_entryLengthErr := writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
+	_entryLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("entryLength", 32, uint32((entryLength)))
 	if _entryLengthErr != nil {
 		return errors.Wrap(_entryLengthErr, "Error serializing 'entryLength' field")
 	}
 
 	// Simple Field (version)
 	version := uint32(m.GetVersion())
-	_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
+	_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("version", 32, uint32((version)))
 	if _versionErr != nil {
 		return errors.Wrap(_versionErr, "Error serializing 'version' field")
 	}
 
 	// Simple Field (hashValue)
 	hashValue := uint32(m.GetHashValue())
-	_hashValueErr := writeBuffer.WriteUint32("hashValue", 32, uint32((hashValue)))
+	_hashValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("hashValue", 32, uint32((hashValue)))
 	if _hashValueErr != nil {
 		return errors.Wrap(_hashValueErr, "Error serializing 'hashValue' field")
 	}
 
 	// Simple Field (typeHashValue)
 	typeHashValue := uint32(m.GetTypeHashValue())
-	_typeHashValueErr := writeBuffer.WriteUint32("typeHashValue", 32, uint32((typeHashValue)))
+	_typeHashValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("typeHashValue", 32, uint32((typeHashValue)))
 	if _typeHashValueErr != nil {
 		return errors.Wrap(_typeHashValueErr, "Error serializing 'typeHashValue' field")
 	}
 
 	// Simple Field (size)
 	size := uint32(m.GetSize())
-	_sizeErr := writeBuffer.WriteUint32("size", 32, uint32((size)))
+	_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("size", 32, uint32((size)))
 	if _sizeErr != nil {
 		return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 	}
 
 	// Simple Field (offset)
 	offset := uint32(m.GetOffset())
-	_offsetErr := writeBuffer.WriteUint32("offset", 32, uint32((offset)))
+	_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("offset", 32, uint32((offset)))
 	if _offsetErr != nil {
 		return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 	}
 
 	// Simple Field (dataType)
 	dataType := uint32(m.GetDataType())
-	_dataTypeErr := writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
+	_dataTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("dataType", 32, uint32((dataType)))
 	if _dataTypeErr != nil {
 		return errors.Wrap(_dataTypeErr, "Error serializing 'dataType' field")
 	}
 
 	// Simple Field (flags)
 	flags := uint32(m.GetFlags())
-	_flagsErr := writeBuffer.WriteUint32("flags", 32, uint32((flags)))
+	_flagsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("flags", 32, uint32((flags)))
 	if _flagsErr != nil {
 		return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
 	}
 
 	// Implicit Field (dataTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataTypeNameLength := uint16(uint16(len(m.GetDataTypeName())))
-	_dataTypeNameLengthErr := writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
+	_dataTypeNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataTypeNameLength", 16, uint16((dataTypeNameLength)))
 	if _dataTypeNameLengthErr != nil {
 		return errors.Wrap(_dataTypeNameLengthErr, "Error serializing 'dataTypeNameLength' field")
 	}
 
 	// Implicit Field (simpleTypeNameLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	simpleTypeNameLength := uint16(uint16(len(m.GetSimpleTypeName())))
-	_simpleTypeNameLengthErr := writeBuffer.WriteUint16("simpleTypeNameLength", 16, uint16((simpleTypeNameLength)))
+	_simpleTypeNameLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("simpleTypeNameLength", 16, uint16((simpleTypeNameLength)))
 	if _simpleTypeNameLengthErr != nil {
 		return errors.Wrap(_simpleTypeNameLengthErr, "Error serializing 'simpleTypeNameLength' field")
 	}
 
 	// Implicit Field (commentLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	commentLength := uint16(uint16(len(m.GetComment())))
-	_commentLengthErr := writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
+	_commentLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("commentLength", 16, uint16((commentLength)))
 	if _commentLengthErr != nil {
 		return errors.Wrap(_commentLengthErr, "Error serializing 'commentLength' field")
 	}
 
 	// Simple Field (arrayDimensions)
 	arrayDimensions := uint16(m.GetArrayDimensions())
-	_arrayDimensionsErr := writeBuffer.WriteUint16("arrayDimensions", 16, uint16((arrayDimensions)))
+	_arrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("arrayDimensions", 16, uint16((arrayDimensions)))
 	if _arrayDimensionsErr != nil {
 		return errors.Wrap(_arrayDimensionsErr, "Error serializing 'arrayDimensions' field")
 	}
 
 	// Simple Field (numChildren)
 	numChildren := uint16(m.GetNumChildren())
-	_numChildrenErr := writeBuffer.WriteUint16("numChildren", 16, uint16((numChildren)))
+	_numChildrenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("numChildren", 16, uint16((numChildren)))
 	if _numChildrenErr != nil {
 		return errors.Wrap(_numChildrenErr, "Error serializing 'numChildren' field")
 	}
 
 	// Simple Field (dataTypeName)
 	dataTypeName := string(m.GetDataTypeName())
-	_dataTypeNameErr := writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
+	_dataTypeNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("dataTypeName", uint32((uint16(len(m.GetDataTypeName())))*(8)), (dataTypeName), utils.WithEncoding("UTF-8)"))
 	if _dataTypeNameErr != nil {
 		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
 
 	// Const Field (dataTypeNameTerminator)
-	_dataTypeNameTerminatorErr := writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
+	_dataTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
 	if _dataTypeNameTerminatorErr != nil {
 		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
 	// Simple Field (simpleTypeName)
 	simpleTypeName := string(m.GetSimpleTypeName())
-	_simpleTypeNameErr := writeBuffer.WriteString("simpleTypeName", uint32((uint16(len(m.GetSimpleTypeName())))*(8)), (simpleTypeName), utils.WithEncoding("UTF-8)"))
+	_simpleTypeNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("simpleTypeName", uint32((uint16(len(m.GetSimpleTypeName())))*(8)), (simpleTypeName), utils.WithEncoding("UTF-8)"))
 	if _simpleTypeNameErr != nil {
 		return errors.Wrap(_simpleTypeNameErr, "Error serializing 'simpleTypeName' field")
 	}
 
 	// Const Field (simpleTypeNameTerminator)
-	_simpleTypeNameTerminatorErr := writeBuffer.WriteUint8("simpleTypeNameTerminator", 8, uint8(0x00))
+	_simpleTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("simpleTypeNameTerminator", 8, uint8(0x00))
 	if _simpleTypeNameTerminatorErr != nil {
 		return errors.Wrap(_simpleTypeNameTerminatorErr, "Error serializing 'simpleTypeNameTerminator' field")
 	}
 
 	// Simple Field (comment)
 	comment := string(m.GetComment())
-	_commentErr := writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
+	_commentErr := /*TODO: migrate me*/ writeBuffer.WriteString("comment", uint32((uint16(len(m.GetComment())))*(8)), (comment), utils.WithEncoding("UTF-8)"))
 	if _commentErr != nil {
 		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
 	}
 
 	// Const Field (commentTerminator)
-	_commentTerminatorErr := writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
+	_commentTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
 	if _commentTerminatorErr != nil {
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}

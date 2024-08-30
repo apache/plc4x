@@ -182,7 +182,7 @@ func LBusmonIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	_ = currentPos
 
 	// Simple Field (additionalInformationLength)
-	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
+	_additionalInformationLength, _additionalInformationLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field of LBusmonInd")
 	}
@@ -226,7 +226,7 @@ func LBusmonIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	var crc *uint8 = nil
 	if CastLDataFrame(dataFrame).GetNotAckFrame() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("crc", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("crc", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -276,7 +276,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.GetAdditionalInformationLength())
-		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
+		_additionalInformationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
 		if _additionalInformationLengthErr != nil {
 			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}
@@ -314,7 +314,7 @@ func (m *_LBusmonInd) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		var crc *uint8 = nil
 		if m.GetCrc() != nil {
 			crc = m.GetCrc()
-			_crcErr := writeBuffer.WriteUint8("crc", 8, uint8(*(crc)))
+			_crcErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("crc", 8, uint8(*(crc)))
 			if _crcErr != nil {
 				return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 			}

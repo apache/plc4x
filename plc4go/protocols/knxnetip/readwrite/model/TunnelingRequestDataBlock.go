@@ -133,21 +133,21 @@ func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, _structureLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of TunnelingRequestDataBlock")
 	}
 
 	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := readBuffer.ReadUint8("communicationChannelId", 8)
+	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
 	if _communicationChannelIdErr != nil {
 		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of TunnelingRequestDataBlock")
 	}
 	communicationChannelId := _communicationChannelId
 
 	// Simple Field (sequenceCounter)
-	_sequenceCounter, _sequenceCounterErr := readBuffer.ReadUint8("sequenceCounter", 8)
+	_sequenceCounter, _sequenceCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceCounter", 8)
 	if _sequenceCounterErr != nil {
 		return nil, errors.Wrap(_sequenceCounterErr, "Error parsing 'sequenceCounter' field of TunnelingRequestDataBlock")
 	}
@@ -156,7 +156,7 @@ func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer ut
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TunnelingRequestDataBlock")
 		}
@@ -201,21 +201,21 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
+	_structureLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (communicationChannelId)
 	communicationChannelId := uint8(m.GetCommunicationChannelId())
-	_communicationChannelIdErr := writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
+	_communicationChannelIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("communicationChannelId", 8, uint8((communicationChannelId)))
 	if _communicationChannelIdErr != nil {
 		return errors.Wrap(_communicationChannelIdErr, "Error serializing 'communicationChannelId' field")
 	}
 
 	// Simple Field (sequenceCounter)
 	sequenceCounter := uint8(m.GetSequenceCounter())
-	_sequenceCounterErr := writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
+	_sequenceCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceCounter", 8, uint8((sequenceCounter)))
 	if _sequenceCounterErr != nil {
 		return errors.Wrap(_sequenceCounterErr, "Error serializing 'sequenceCounter' field")
 	}
@@ -230,7 +230,7 @@ func (m *_TunnelingRequestDataBlock) SerializeWithWriteBuffer(ctx context.Contex
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

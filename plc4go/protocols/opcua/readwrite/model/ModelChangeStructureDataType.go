@@ -190,7 +190,7 @@ func ModelChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (verb)
-	_verb, _verbErr := readBuffer.ReadUint8("verb", 8)
+	_verb, _verbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("verb", 8)
 	if _verbErr != nil {
 		return nil, errors.Wrap(_verbErr, "Error parsing 'verb' field of ModelChangeStructureDataType")
 	}
@@ -255,7 +255,7 @@ func (m *_ModelChangeStructureDataType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (verb)
 		verb := uint8(m.GetVerb())
-		_verbErr := writeBuffer.WriteUint8("verb", 8, uint8((verb)))
+		_verbErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("verb", 8, uint8((verb)))
 		if _verbErr != nil {
 			return errors.Wrap(_verbErr, "Error serializing 'verb' field")
 		}

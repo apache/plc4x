@@ -229,7 +229,7 @@ func BACnetNodeTypeParse(ctx context.Context, theBytes []byte) (BACnetNodeType, 
 func BACnetNodeTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNodeType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("BACnetNodeType", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("BACnetNodeType", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetNodeType")
 	}
@@ -252,7 +252,7 @@ func (e BACnetNodeType) Serialize() ([]byte, error) {
 func (e BACnetNodeType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetNodeType", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

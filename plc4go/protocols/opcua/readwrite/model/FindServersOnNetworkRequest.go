@@ -206,21 +206,21 @@ func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (startingRecordId)
-	_startingRecordId, _startingRecordIdErr := readBuffer.ReadUint32("startingRecordId", 32)
+	_startingRecordId, _startingRecordIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("startingRecordId", 32)
 	if _startingRecordIdErr != nil {
 		return nil, errors.Wrap(_startingRecordIdErr, "Error parsing 'startingRecordId' field of FindServersOnNetworkRequest")
 	}
 	startingRecordId := _startingRecordId
 
 	// Simple Field (maxRecordsToReturn)
-	_maxRecordsToReturn, _maxRecordsToReturnErr := readBuffer.ReadUint32("maxRecordsToReturn", 32)
+	_maxRecordsToReturn, _maxRecordsToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxRecordsToReturn", 32)
 	if _maxRecordsToReturnErr != nil {
 		return nil, errors.Wrap(_maxRecordsToReturnErr, "Error parsing 'maxRecordsToReturn' field of FindServersOnNetworkRequest")
 	}
 	maxRecordsToReturn := _maxRecordsToReturn
 
 	// Simple Field (noOfServerCapabilityFilter)
-	_noOfServerCapabilityFilter, _noOfServerCapabilityFilterErr := readBuffer.ReadInt32("noOfServerCapabilityFilter", 32)
+	_noOfServerCapabilityFilter, _noOfServerCapabilityFilterErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerCapabilityFilter", 32)
 	if _noOfServerCapabilityFilterErr != nil {
 		return nil, errors.Wrap(_noOfServerCapabilityFilterErr, "Error parsing 'noOfServerCapabilityFilter' field of FindServersOnNetworkRequest")
 	}
@@ -302,21 +302,21 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (startingRecordId)
 		startingRecordId := uint32(m.GetStartingRecordId())
-		_startingRecordIdErr := writeBuffer.WriteUint32("startingRecordId", 32, uint32((startingRecordId)))
+		_startingRecordIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("startingRecordId", 32, uint32((startingRecordId)))
 		if _startingRecordIdErr != nil {
 			return errors.Wrap(_startingRecordIdErr, "Error serializing 'startingRecordId' field")
 		}
 
 		// Simple Field (maxRecordsToReturn)
 		maxRecordsToReturn := uint32(m.GetMaxRecordsToReturn())
-		_maxRecordsToReturnErr := writeBuffer.WriteUint32("maxRecordsToReturn", 32, uint32((maxRecordsToReturn)))
+		_maxRecordsToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxRecordsToReturn", 32, uint32((maxRecordsToReturn)))
 		if _maxRecordsToReturnErr != nil {
 			return errors.Wrap(_maxRecordsToReturnErr, "Error serializing 'maxRecordsToReturn' field")
 		}
 
 		// Simple Field (noOfServerCapabilityFilter)
 		noOfServerCapabilityFilter := int32(m.GetNoOfServerCapabilityFilter())
-		_noOfServerCapabilityFilterErr := writeBuffer.WriteInt32("noOfServerCapabilityFilter", 32, int32((noOfServerCapabilityFilter)))
+		_noOfServerCapabilityFilterErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerCapabilityFilter", 32, int32((noOfServerCapabilityFilter)))
 		if _noOfServerCapabilityFilterErr != nil {
 			return errors.Wrap(_noOfServerCapabilityFilterErr, "Error serializing 'noOfServerCapabilityFilter' field")
 		}

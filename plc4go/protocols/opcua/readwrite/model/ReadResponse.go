@@ -213,7 +213,7 @@ func ReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (noOfResults)
-	_noOfResults, _noOfResultsErr := readBuffer.ReadInt32("noOfResults", 32)
+	_noOfResults, _noOfResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfResults", 32)
 	if _noOfResultsErr != nil {
 		return nil, errors.Wrap(_noOfResultsErr, "Error parsing 'noOfResults' field of ReadResponse")
 	}
@@ -247,7 +247,7 @@ func ReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
+	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
 	if _noOfDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of ReadResponse")
 	}
@@ -329,7 +329,7 @@ func (m *_ReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfResults)
 		noOfResults := int32(m.GetNoOfResults())
-		_noOfResultsErr := writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
+		_noOfResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
 		if _noOfResultsErr != nil {
 			return errors.Wrap(_noOfResultsErr, "Error serializing 'noOfResults' field")
 		}
@@ -353,7 +353,7 @@ func (m *_ReadResponse) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
+		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

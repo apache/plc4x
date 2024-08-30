@@ -240,14 +240,14 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (urisVersion)
-	_urisVersion, _urisVersionErr := readBuffer.ReadUint32("urisVersion", 32)
+	_urisVersion, _urisVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("urisVersion", 32)
 	if _urisVersionErr != nil {
 		return nil, errors.Wrap(_urisVersionErr, "Error parsing 'urisVersion' field of SessionlessInvokeRequestType")
 	}
 	urisVersion := _urisVersion
 
 	// Simple Field (noOfNamespaceUris)
-	_noOfNamespaceUris, _noOfNamespaceUrisErr := readBuffer.ReadInt32("noOfNamespaceUris", 32)
+	_noOfNamespaceUris, _noOfNamespaceUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNamespaceUris", 32)
 	if _noOfNamespaceUrisErr != nil {
 		return nil, errors.Wrap(_noOfNamespaceUrisErr, "Error parsing 'noOfNamespaceUris' field of SessionlessInvokeRequestType")
 	}
@@ -281,7 +281,7 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32)
+	_noOfServerUris, _noOfServerUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerUris", 32)
 	if _noOfServerUrisErr != nil {
 		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of SessionlessInvokeRequestType")
 	}
@@ -315,7 +315,7 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
+	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
 	if _noOfLocaleIdsErr != nil {
 		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of SessionlessInvokeRequestType")
 	}
@@ -349,7 +349,7 @@ func SessionlessInvokeRequestTypeParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (serviceId)
-	_serviceId, _serviceIdErr := readBuffer.ReadUint32("serviceId", 32)
+	_serviceId, _serviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serviceId", 32)
 	if _serviceIdErr != nil {
 		return nil, errors.Wrap(_serviceIdErr, "Error parsing 'serviceId' field of SessionlessInvokeRequestType")
 	}
@@ -395,14 +395,14 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (urisVersion)
 		urisVersion := uint32(m.GetUrisVersion())
-		_urisVersionErr := writeBuffer.WriteUint32("urisVersion", 32, uint32((urisVersion)))
+		_urisVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("urisVersion", 32, uint32((urisVersion)))
 		if _urisVersionErr != nil {
 			return errors.Wrap(_urisVersionErr, "Error serializing 'urisVersion' field")
 		}
 
 		// Simple Field (noOfNamespaceUris)
 		noOfNamespaceUris := int32(m.GetNoOfNamespaceUris())
-		_noOfNamespaceUrisErr := writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
+		_noOfNamespaceUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
 		if _noOfNamespaceUrisErr != nil {
 			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
 		}
@@ -426,7 +426,7 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (noOfServerUris)
 		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
+		_noOfServerUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
 		if _noOfServerUrisErr != nil {
 			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
 		}
@@ -450,7 +450,7 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
+		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
@@ -474,7 +474,7 @@ func (m *_SessionlessInvokeRequestType) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (serviceId)
 		serviceId := uint32(m.GetServiceId())
-		_serviceIdErr := writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
+		_serviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
 		if _serviceIdErr != nil {
 			return errors.Wrap(_serviceIdErr, "Error serializing 'serviceId' field")
 		}

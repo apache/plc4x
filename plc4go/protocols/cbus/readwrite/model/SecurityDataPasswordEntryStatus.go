@@ -200,7 +200,7 @@ func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuf
 	_ = currentPos
 
 	// Simple Field (code)
-	_code, _codeErr := readBuffer.ReadByte("code")
+	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadByte("code")
 	if _codeErr != nil {
 		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of SecurityDataPasswordEntryStatus")
 	}
@@ -264,7 +264,7 @@ func (m *_SecurityDataPasswordEntryStatus) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (code)
 		code := byte(m.GetCode())
-		_codeErr := writeBuffer.WriteByte("code", (code))
+		_codeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("code", (code))
 		if _codeErr != nil {
 			return errors.Wrap(_codeErr, "Error serializing 'code' field")
 		}

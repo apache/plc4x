@@ -212,7 +212,7 @@ func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Contex
 	_ = currentPos
 
 	// Simple Field (sizeType)
-	_sizeType, _sizeTypeErr := readBuffer.ReadByte("sizeType")
+	_sizeType, _sizeTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("sizeType")
 	if _sizeTypeErr != nil {
 		return nil, errors.Wrap(_sizeTypeErr, "Error parsing 'sizeType' field of MediaTransportControlDataEnumerationsSize")
 	}
@@ -239,14 +239,14 @@ func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Contex
 	_ = isReserved
 
 	// Simple Field (start)
-	_start, _startErr := readBuffer.ReadUint8("start", 8)
+	_start, _startErr := /*TODO: migrate me*/ readBuffer.ReadUint8("start", 8)
 	if _startErr != nil {
 		return nil, errors.Wrap(_startErr, "Error parsing 'start' field of MediaTransportControlDataEnumerationsSize")
 	}
 	start := _start
 
 	// Simple Field (size)
-	_size, _sizeErr := readBuffer.ReadUint8("size", 8)
+	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("size", 8)
 	if _sizeErr != nil {
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of MediaTransportControlDataEnumerationsSize")
 	}
@@ -287,7 +287,7 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 
 		// Simple Field (sizeType)
 		sizeType := byte(m.GetSizeType())
-		_sizeTypeErr := writeBuffer.WriteByte("sizeType", (sizeType))
+		_sizeTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("sizeType", (sizeType))
 		if _sizeTypeErr != nil {
 			return errors.Wrap(_sizeTypeErr, "Error serializing 'sizeType' field")
 		}
@@ -318,14 +318,14 @@ func (m *_MediaTransportControlDataEnumerationsSize) SerializeWithWriteBuffer(ct
 
 		// Simple Field (start)
 		start := uint8(m.GetStart())
-		_startErr := writeBuffer.WriteUint8("start", 8, uint8((start)))
+		_startErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("start", 8, uint8((start)))
 		if _startErr != nil {
 			return errors.Wrap(_startErr, "Error serializing 'start' field")
 		}
 
 		// Simple Field (size)
 		size := uint8(m.GetSize())
-		_sizeErr := writeBuffer.WriteUint8("size", 8, uint8((size)))
+		_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("size", 8, uint8((size)))
 		if _sizeErr != nil {
 			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 		}

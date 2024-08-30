@@ -212,21 +212,21 @@ func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := readBuffer.ReadUint8("majorVersion", 8)
+	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("majorVersion", 8)
 	if _majorVersionErr != nil {
 		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of AdsReadDeviceInfoResponse")
 	}
 	majorVersion := _majorVersion
 
 	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := readBuffer.ReadUint8("minorVersion", 8)
+	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minorVersion", 8)
 	if _minorVersionErr != nil {
 		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of AdsReadDeviceInfoResponse")
 	}
 	minorVersion := _minorVersion
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint16("version", 16)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("version", 16)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsReadDeviceInfoResponse")
 	}
@@ -287,21 +287,21 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (majorVersion)
 		majorVersion := uint8(m.GetMajorVersion())
-		_majorVersionErr := writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
+		_majorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("majorVersion", 8, uint8((majorVersion)))
 		if _majorVersionErr != nil {
 			return errors.Wrap(_majorVersionErr, "Error serializing 'majorVersion' field")
 		}
 
 		// Simple Field (minorVersion)
 		minorVersion := uint8(m.GetMinorVersion())
-		_minorVersionErr := writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
+		_minorVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minorVersion", 8, uint8((minorVersion)))
 		if _minorVersionErr != nil {
 			return errors.Wrap(_minorVersionErr, "Error serializing 'minorVersion' field")
 		}
 
 		// Simple Field (version)
 		version := uint16(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint16("version", 16, uint16((version)))
+		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("version", 16, uint16((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

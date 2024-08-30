@@ -137,7 +137,7 @@ func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	// Peek Field (salType)
 	currentPos = positionAware.GetPos()
-	salType, _err := readBuffer.ReadByte("salType")
+	salType, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("salType")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'salType' field of MonitoredSAL")
 	}

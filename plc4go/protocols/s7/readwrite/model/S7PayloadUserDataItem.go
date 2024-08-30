@@ -191,7 +191,7 @@ func S7PayloadUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (dataLength)
-	_dataLength, _dataLengthErr := readBuffer.ReadUint16("dataLength", 16)
+	_dataLength, _dataLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dataLength", 16)
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of S7PayloadUserDataItem")
 	}
@@ -330,7 +330,7 @@ func (pm *_S7PayloadUserDataItem) SerializeParent(ctx context.Context, writeBuff
 
 	// Simple Field (dataLength)
 	dataLength := uint16(m.GetDataLength())
-	_dataLengthErr := writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
+	_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}

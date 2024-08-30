@@ -159,7 +159,7 @@ func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer uti
 	_ = currentPos
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint32("version", 32)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaAcknowledgeResponse")
 	}
@@ -212,7 +212,7 @@ func (m *_OpcuaAcknowledgeResponse) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (version)
 		version := uint32(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint32("version", 32, uint32((version)))
+		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("version", 32, uint32((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

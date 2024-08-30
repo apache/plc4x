@@ -156,14 +156,14 @@ func COTPPacketDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (eot)
-	_eot, _eotErr := readBuffer.ReadBit("eot")
+	_eot, _eotErr := /*TODO: migrate me*/ readBuffer.ReadBit("eot")
 	if _eotErr != nil {
 		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field of COTPPacketData")
 	}
 	eot := _eot
 
 	// Simple Field (tpduRef)
-	_tpduRef, _tpduRefErr := readBuffer.ReadUint8("tpduRef", 7)
+	_tpduRef, _tpduRefErr := /*TODO: migrate me*/ readBuffer.ReadUint8("tpduRef", 7)
 	if _tpduRefErr != nil {
 		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field of COTPPacketData")
 	}
@@ -205,14 +205,14 @@ func (m *_COTPPacketData) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (eot)
 		eot := bool(m.GetEot())
-		_eotErr := writeBuffer.WriteBit("eot", (eot))
+		_eotErr := /*TODO: migrate me*/ writeBuffer.WriteBit("eot", (eot))
 		if _eotErr != nil {
 			return errors.Wrap(_eotErr, "Error serializing 'eot' field")
 		}
 
 		// Simple Field (tpduRef)
 		tpduRef := uint8(m.GetTpduRef())
-		_tpduRefErr := writeBuffer.WriteUint8("tpduRef", 7, uint8((tpduRef)))
+		_tpduRefErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tpduRef", 7, uint8((tpduRef)))
 		if _tpduRefErr != nil {
 			return errors.Wrap(_tpduRefErr, "Error serializing 'tpduRef' field")
 		}

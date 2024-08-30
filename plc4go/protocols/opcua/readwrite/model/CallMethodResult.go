@@ -242,7 +242,7 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfInputArgumentResults)
-	_noOfInputArgumentResults, _noOfInputArgumentResultsErr := readBuffer.ReadInt32("noOfInputArgumentResults", 32)
+	_noOfInputArgumentResults, _noOfInputArgumentResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArgumentResults", 32)
 	if _noOfInputArgumentResultsErr != nil {
 		return nil, errors.Wrap(_noOfInputArgumentResultsErr, "Error parsing 'noOfInputArgumentResults' field of CallMethodResult")
 	}
@@ -276,7 +276,7 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfInputArgumentDiagnosticInfos)
-	_noOfInputArgumentDiagnosticInfos, _noOfInputArgumentDiagnosticInfosErr := readBuffer.ReadInt32("noOfInputArgumentDiagnosticInfos", 32)
+	_noOfInputArgumentDiagnosticInfos, _noOfInputArgumentDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArgumentDiagnosticInfos", 32)
 	if _noOfInputArgumentDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error parsing 'noOfInputArgumentDiagnosticInfos' field of CallMethodResult")
 	}
@@ -310,7 +310,7 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfOutputArguments)
-	_noOfOutputArguments, _noOfOutputArgumentsErr := readBuffer.ReadInt32("noOfOutputArguments", 32)
+	_noOfOutputArguments, _noOfOutputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOutputArguments", 32)
 	if _noOfOutputArgumentsErr != nil {
 		return nil, errors.Wrap(_noOfOutputArgumentsErr, "Error parsing 'noOfOutputArguments' field of CallMethodResult")
 	}
@@ -394,7 +394,7 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfInputArgumentResults)
 		noOfInputArgumentResults := int32(m.GetNoOfInputArgumentResults())
-		_noOfInputArgumentResultsErr := writeBuffer.WriteInt32("noOfInputArgumentResults", 32, int32((noOfInputArgumentResults)))
+		_noOfInputArgumentResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArgumentResults", 32, int32((noOfInputArgumentResults)))
 		if _noOfInputArgumentResultsErr != nil {
 			return errors.Wrap(_noOfInputArgumentResultsErr, "Error serializing 'noOfInputArgumentResults' field")
 		}
@@ -418,7 +418,7 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfInputArgumentDiagnosticInfos)
 		noOfInputArgumentDiagnosticInfos := int32(m.GetNoOfInputArgumentDiagnosticInfos())
-		_noOfInputArgumentDiagnosticInfosErr := writeBuffer.WriteInt32("noOfInputArgumentDiagnosticInfos", 32, int32((noOfInputArgumentDiagnosticInfos)))
+		_noOfInputArgumentDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArgumentDiagnosticInfos", 32, int32((noOfInputArgumentDiagnosticInfos)))
 		if _noOfInputArgumentDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
 		}
@@ -442,7 +442,7 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfOutputArguments)
 		noOfOutputArguments := int32(m.GetNoOfOutputArguments())
-		_noOfOutputArgumentsErr := writeBuffer.WriteInt32("noOfOutputArguments", 32, int32((noOfOutputArguments)))
+		_noOfOutputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOutputArguments", 32, int32((noOfOutputArguments)))
 		if _noOfOutputArgumentsErr != nil {
 			return errors.Wrap(_noOfOutputArgumentsErr, "Error serializing 'noOfOutputArguments' field")
 		}

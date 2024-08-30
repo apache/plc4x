@@ -184,7 +184,7 @@ func PublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (noOfSubscriptionAcknowledgements)
-	_noOfSubscriptionAcknowledgements, _noOfSubscriptionAcknowledgementsErr := readBuffer.ReadInt32("noOfSubscriptionAcknowledgements", 32)
+	_noOfSubscriptionAcknowledgements, _noOfSubscriptionAcknowledgementsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionAcknowledgements", 32)
 	if _noOfSubscriptionAcknowledgementsErr != nil {
 		return nil, errors.Wrap(_noOfSubscriptionAcknowledgementsErr, "Error parsing 'noOfSubscriptionAcknowledgements' field of PublishRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfSubscriptionAcknowledgements)
 		noOfSubscriptionAcknowledgements := int32(m.GetNoOfSubscriptionAcknowledgements())
-		_noOfSubscriptionAcknowledgementsErr := writeBuffer.WriteInt32("noOfSubscriptionAcknowledgements", 32, int32((noOfSubscriptionAcknowledgements)))
+		_noOfSubscriptionAcknowledgementsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSubscriptionAcknowledgements", 32, int32((noOfSubscriptionAcknowledgements)))
 		if _noOfSubscriptionAcknowledgementsErr != nil {
 			return errors.Wrap(_noOfSubscriptionAcknowledgementsErr, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}

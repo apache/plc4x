@@ -141,7 +141,7 @@ func MediaTransportControlDataSelectionNameParseWithBuffer(ctx context.Context, 
 	_ = currentPos
 
 	// Simple Field (selectionName)
-	_selectionName, _selectionNameErr := readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
+	_selectionName, _selectionNameErr := /*TODO: migrate me*/ readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
 	if _selectionNameErr != nil {
 		return nil, errors.Wrap(_selectionNameErr, "Error parsing 'selectionName' field of MediaTransportControlDataSelectionName")
 	}
@@ -180,7 +180,7 @@ func (m *_MediaTransportControlDataSelectionName) SerializeWithWriteBuffer(ctx c
 
 		// Simple Field (selectionName)
 		selectionName := string(m.GetSelectionName())
-		_selectionNameErr := writeBuffer.WriteString("selectionName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (selectionName), utils.WithEncoding("UTF-8)"))
+		_selectionNameErr := /*TODO: migrate me*/ writeBuffer.WriteString("selectionName", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (selectionName), utils.WithEncoding("UTF-8)"))
 		if _selectionNameErr != nil {
 			return errors.Wrap(_selectionNameErr, "Error serializing 'selectionName' field")
 		}

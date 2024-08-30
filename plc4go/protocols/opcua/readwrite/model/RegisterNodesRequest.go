@@ -184,7 +184,7 @@ func RegisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfNodesToRegister)
-	_noOfNodesToRegister, _noOfNodesToRegisterErr := readBuffer.ReadInt32("noOfNodesToRegister", 32)
+	_noOfNodesToRegister, _noOfNodesToRegisterErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRegister", 32)
 	if _noOfNodesToRegisterErr != nil {
 		return nil, errors.Wrap(_noOfNodesToRegisterErr, "Error parsing 'noOfNodesToRegister' field of RegisterNodesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_RegisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfNodesToRegister)
 		noOfNodesToRegister := int32(m.GetNoOfNodesToRegister())
-		_noOfNodesToRegisterErr := writeBuffer.WriteInt32("noOfNodesToRegister", 32, int32((noOfNodesToRegister)))
+		_noOfNodesToRegisterErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToRegister", 32, int32((noOfNodesToRegister)))
 		if _noOfNodesToRegisterErr != nil {
 			return errors.Wrap(_noOfNodesToRegisterErr, "Error serializing 'noOfNodesToRegister' field")
 		}

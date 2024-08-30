@@ -195,7 +195,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Const Field (protocolId)
-	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
+	protocolId, _protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
 		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field of S7Message")
 	}
@@ -204,7 +204,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := readBuffer.ReadUint8("messageType", 8)
+	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageType", 8)
 	if _messageTypeErr != nil {
 		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of S7Message")
 	}
@@ -212,7 +212,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7Message")
 		}
@@ -227,21 +227,21 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (tpduReference)
-	_tpduReference, _tpduReferenceErr := readBuffer.ReadUint16("tpduReference", 16)
+	_tpduReference, _tpduReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("tpduReference", 16)
 	if _tpduReferenceErr != nil {
 		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field of S7Message")
 	}
 	tpduReference := _tpduReference
 
 	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	parameterLength, _parameterLengthErr := readBuffer.ReadUint16("parameterLength", 16)
+	parameterLength, _parameterLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("parameterLength", 16)
 	_ = parameterLength
 	if _parameterLengthErr != nil {
 		return nil, errors.Wrap(_parameterLengthErr, "Error parsing 'parameterLength' field of S7Message")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	payloadLength, _payloadLengthErr := readBuffer.ReadUint16("payloadLength", 16)
+	payloadLength, _payloadLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("payloadLength", 16)
 	_ = payloadLength
 	if _payloadLengthErr != nil {
 		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of S7Message")
@@ -340,14 +340,14 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 	}
 
 	// Const Field (protocolId)
-	_protocolIdErr := writeBuffer.WriteUint8("protocolId", 8, uint8(0x32))
+	_protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolId", 8, uint8(0x32))
 	if _protocolIdErr != nil {
 		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)
 	messageType := uint8(child.GetMessageType())
-	_messageTypeErr := writeBuffer.WriteUint8("messageType", 8, uint8((messageType)))
+	_messageTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("messageType", 8, uint8((messageType)))
 
 	if _messageTypeErr != nil {
 		return errors.Wrap(_messageTypeErr, "Error serializing 'messageType' field")
@@ -363,7 +363,7 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *pm.reservedField0
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -371,21 +371,21 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (tpduReference)
 	tpduReference := uint16(m.GetTpduReference())
-	_tpduReferenceErr := writeBuffer.WriteUint16("tpduReference", 16, uint16((tpduReference)))
+	_tpduReferenceErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("tpduReference", 16, uint16((tpduReference)))
 	if _tpduReferenceErr != nil {
 		return errors.Wrap(_tpduReferenceErr, "Error serializing 'tpduReference' field")
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	parameterLength := uint16(utils.InlineIf(bool((m.GetParameter()) != (nil)), func() any { return uint16((m.GetParameter()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
-	_parameterLengthErr := writeBuffer.WriteUint16("parameterLength", 16, uint16((parameterLength)))
+	_parameterLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("parameterLength", 16, uint16((parameterLength)))
 	if _parameterLengthErr != nil {
 		return errors.Wrap(_parameterLengthErr, "Error serializing 'parameterLength' field")
 	}
 
 	// Implicit Field (payloadLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	payloadLength := uint16(utils.InlineIf(bool((m.GetPayload()) != (nil)), func() any { return uint16((m.GetPayload()).GetLengthInBytes(ctx)) }, func() any { return uint16(uint16(0)) }).(uint16))
-	_payloadLengthErr := writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
+	_payloadLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("payloadLength", 16, uint16((payloadLength)))
 	if _payloadLengthErr != nil {
 		return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 	}

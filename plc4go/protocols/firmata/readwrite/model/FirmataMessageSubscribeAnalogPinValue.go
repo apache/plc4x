@@ -159,7 +159,7 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, r
 	_ = currentPos
 
 	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 4)
+	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 4)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataMessageSubscribeAnalogPinValue")
 	}
@@ -168,7 +168,7 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, r
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataMessageSubscribeAnalogPinValue")
 		}
@@ -183,7 +183,7 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, r
 	}
 
 	// Simple Field (enable)
-	_enable, _enableErr := readBuffer.ReadBit("enable")
+	_enable, _enableErr := /*TODO: migrate me*/ readBuffer.ReadBit("enable")
 	if _enableErr != nil {
 		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of FirmataMessageSubscribeAnalogPinValue")
 	}
@@ -226,7 +226,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 4, uint8((pin)))
+		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 4, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
@@ -241,7 +241,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -249,7 +249,7 @@ func (m *_FirmataMessageSubscribeAnalogPinValue) SerializeWithWriteBuffer(ctx co
 
 		// Simple Field (enable)
 		enable := bool(m.GetEnable())
-		_enableErr := writeBuffer.WriteBit("enable", (enable))
+		_enableErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enable", (enable))
 		if _enableErr != nil {
 			return errors.Wrap(_enableErr, "Error serializing 'enable' field")
 		}

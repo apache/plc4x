@@ -221,7 +221,7 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Const Field (initiator)
-	initiator, _initiatorErr := readBuffer.ReadByte("initiator")
+	initiator, _initiatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("initiator")
 	if _initiatorErr != nil {
 		return nil, errors.Wrap(_initiatorErr, "Error parsing 'initiator' field of RequestCommand")
 	}
@@ -317,7 +317,7 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 
 		// Const Field (initiator)
-		_initiatorErr := writeBuffer.WriteByte("initiator", 0x5C)
+		_initiatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("initiator", 0x5C)
 		if _initiatorErr != nil {
 			return errors.Wrap(_initiatorErr, "Error serializing 'initiator' field")
 		}

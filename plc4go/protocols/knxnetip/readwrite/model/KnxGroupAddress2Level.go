@@ -153,14 +153,14 @@ func KnxGroupAddress2LevelParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (mainGroup)
-	_mainGroup, _mainGroupErr := readBuffer.ReadUint8("mainGroup", 5)
+	_mainGroup, _mainGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mainGroup", 5)
 	if _mainGroupErr != nil {
 		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxGroupAddress2Level")
 	}
 	mainGroup := _mainGroup
 
 	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := readBuffer.ReadUint16("subGroup", 11)
+	_subGroup, _subGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint16("subGroup", 11)
 	if _subGroupErr != nil {
 		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxGroupAddress2Level")
 	}
@@ -200,14 +200,14 @@ func (m *_KnxGroupAddress2Level) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (mainGroup)
 		mainGroup := uint8(m.GetMainGroup())
-		_mainGroupErr := writeBuffer.WriteUint8("mainGroup", 5, uint8((mainGroup)))
+		_mainGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("mainGroup", 5, uint8((mainGroup)))
 		if _mainGroupErr != nil {
 			return errors.Wrap(_mainGroupErr, "Error serializing 'mainGroup' field")
 		}
 
 		// Simple Field (subGroup)
 		subGroup := uint16(m.GetSubGroup())
-		_subGroupErr := writeBuffer.WriteUint16("subGroup", 11, uint16((subGroup)))
+		_subGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("subGroup", 11, uint16((subGroup)))
 		if _subGroupErr != nil {
 			return errors.Wrap(_subGroupErr, "Error serializing 'subGroup' field")
 		}

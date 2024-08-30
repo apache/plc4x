@@ -208,7 +208,7 @@ func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (noOfValues)
-	_noOfValues, _noOfValuesErr := readBuffer.ReadInt32("noOfValues", 32)
+	_noOfValues, _noOfValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfValues", 32)
 	if _noOfValuesErr != nil {
 		return nil, errors.Wrap(_noOfValuesErr, "Error parsing 'noOfValues' field of QueryDataSet")
 	}
@@ -301,7 +301,7 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfValues)
 		noOfValues := int32(m.GetNoOfValues())
-		_noOfValuesErr := writeBuffer.WriteInt32("noOfValues", 32, int32((noOfValues)))
+		_noOfValuesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfValues", 32, int32((noOfValues)))
 		if _noOfValuesErr != nil {
 			return errors.Wrap(_noOfValuesErr, "Error serializing 'noOfValues' field")
 		}

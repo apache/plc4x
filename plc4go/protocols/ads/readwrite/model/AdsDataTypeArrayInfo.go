@@ -145,14 +145,14 @@ func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (lowerBound)
-	_lowerBound, _lowerBoundErr := readBuffer.ReadUint32("lowerBound", 32)
+	_lowerBound, _lowerBoundErr := /*TODO: migrate me*/ readBuffer.ReadUint32("lowerBound", 32)
 	if _lowerBoundErr != nil {
 		return nil, errors.Wrap(_lowerBoundErr, "Error parsing 'lowerBound' field of AdsDataTypeArrayInfo")
 	}
 	lowerBound := _lowerBound
 
 	// Simple Field (numElements)
-	_numElements, _numElementsErr := readBuffer.ReadUint32("numElements", 32)
+	_numElements, _numElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("numElements", 32)
 	if _numElementsErr != nil {
 		return nil, errors.Wrap(_numElementsErr, "Error parsing 'numElements' field of AdsDataTypeArrayInfo")
 	}
@@ -193,14 +193,14 @@ func (m *_AdsDataTypeArrayInfo) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (lowerBound)
 	lowerBound := uint32(m.GetLowerBound())
-	_lowerBoundErr := writeBuffer.WriteUint32("lowerBound", 32, uint32((lowerBound)))
+	_lowerBoundErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("lowerBound", 32, uint32((lowerBound)))
 	if _lowerBoundErr != nil {
 		return errors.Wrap(_lowerBoundErr, "Error serializing 'lowerBound' field")
 	}
 
 	// Simple Field (numElements)
 	numElements := uint32(m.GetNumElements())
-	_numElementsErr := writeBuffer.WriteUint32("numElements", 32, uint32((numElements)))
+	_numElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numElements", 32, uint32((numElements)))
 	if _numElementsErr != nil {
 		return errors.Wrap(_numElementsErr, "Error serializing 'numElements' field")
 	}

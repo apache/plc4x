@@ -205,7 +205,7 @@ func PermissionTypeParse(ctx context.Context, theBytes []byte) (PermissionType, 
 func PermissionTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PermissionType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("PermissionType", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("PermissionType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading PermissionType")
 	}
@@ -228,7 +228,7 @@ func (e PermissionType) Serialize() ([]byte, error) {
 func (e PermissionType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("PermissionType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("PermissionType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

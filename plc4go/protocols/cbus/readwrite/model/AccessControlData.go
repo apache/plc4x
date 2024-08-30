@@ -198,14 +198,14 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = commandType
 
 	// Simple Field (networkId)
-	_networkId, _networkIdErr := readBuffer.ReadByte("networkId")
+	_networkId, _networkIdErr := /*TODO: migrate me*/ readBuffer.ReadByte("networkId")
 	if _networkIdErr != nil {
 		return nil, errors.Wrap(_networkIdErr, "Error parsing 'networkId' field of AccessControlData")
 	}
 	networkId := _networkId
 
 	// Simple Field (accessPointId)
-	_accessPointId, _accessPointIdErr := readBuffer.ReadByte("accessPointId")
+	_accessPointId, _accessPointIdErr := /*TODO: migrate me*/ readBuffer.ReadByte("accessPointId")
 	if _accessPointIdErr != nil {
 		return nil, errors.Wrap(_accessPointIdErr, "Error parsing 'accessPointId' field of AccessControlData")
 	}
@@ -286,14 +286,14 @@ func (pm *_AccessControlData) SerializeParent(ctx context.Context, writeBuffer u
 
 	// Simple Field (networkId)
 	networkId := byte(m.GetNetworkId())
-	_networkIdErr := writeBuffer.WriteByte("networkId", (networkId))
+	_networkIdErr := /*TODO: migrate me*/ writeBuffer.WriteByte("networkId", (networkId))
 	if _networkIdErr != nil {
 		return errors.Wrap(_networkIdErr, "Error serializing 'networkId' field")
 	}
 
 	// Simple Field (accessPointId)
 	accessPointId := byte(m.GetAccessPointId())
-	_accessPointIdErr := writeBuffer.WriteByte("accessPointId", (accessPointId))
+	_accessPointIdErr := /*TODO: migrate me*/ writeBuffer.WriteByte("accessPointId", (accessPointId))
 	if _accessPointIdErr != nil {
 		return errors.Wrap(_accessPointIdErr, "Error serializing 'accessPointId' field")
 	}

@@ -229,42 +229,42 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Implicit Field (itemLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	itemLength, _itemLengthErr := readBuffer.ReadUint8("itemLength", 8)
+	itemLength, _itemLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("itemLength", 8)
 	_ = itemLength
 	if _itemLengthErr != nil {
 		return nil, errors.Wrap(_itemLengthErr, "Error parsing 'itemLength' field of S7ParameterUserDataItemCPUFunctions")
 	}
 
 	// Simple Field (method)
-	_method, _methodErr := readBuffer.ReadUint8("method", 8)
+	_method, _methodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("method", 8)
 	if _methodErr != nil {
 		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	method := _method
 
 	// Simple Field (cpuFunctionType)
-	_cpuFunctionType, _cpuFunctionTypeErr := readBuffer.ReadUint8("cpuFunctionType", 4)
+	_cpuFunctionType, _cpuFunctionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionType", 4)
 	if _cpuFunctionTypeErr != nil {
 		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuFunctionType := _cpuFunctionType
 
 	// Simple Field (cpuFunctionGroup)
-	_cpuFunctionGroup, _cpuFunctionGroupErr := readBuffer.ReadUint8("cpuFunctionGroup", 4)
+	_cpuFunctionGroup, _cpuFunctionGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionGroup", 4)
 	if _cpuFunctionGroupErr != nil {
 		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuFunctionGroup := _cpuFunctionGroup
 
 	// Simple Field (cpuSubfunction)
-	_cpuSubfunction, _cpuSubfunctionErr := readBuffer.ReadUint8("cpuSubfunction", 8)
+	_cpuSubfunction, _cpuSubfunctionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuSubfunction", 8)
 	if _cpuSubfunctionErr != nil {
 		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field of S7ParameterUserDataItemCPUFunctions")
 	}
 	cpuSubfunction := _cpuSubfunction
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 8)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterUserDataItemCPUFunctions")
 	}
@@ -274,7 +274,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 	var dataUnitReferenceNumber *uint8 = nil
 	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("dataUnitReferenceNumber", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataUnitReferenceNumber", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -290,7 +290,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 	var lastDataUnit *uint8 = nil
 	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("lastDataUnit", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("lastDataUnit", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -306,7 +306,7 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 	var errorCode *uint16 = nil
 	if bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("errorCode", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("errorCode", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -358,42 +358,42 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 
 		// Implicit Field (itemLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		itemLength := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(2)))
-		_itemLengthErr := writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
+		_itemLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("itemLength", 8, uint8((itemLength)))
 		if _itemLengthErr != nil {
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
 		// Simple Field (method)
 		method := uint8(m.GetMethod())
-		_methodErr := writeBuffer.WriteUint8("method", 8, uint8((method)))
+		_methodErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("method", 8, uint8((method)))
 		if _methodErr != nil {
 			return errors.Wrap(_methodErr, "Error serializing 'method' field")
 		}
 
 		// Simple Field (cpuFunctionType)
 		cpuFunctionType := uint8(m.GetCpuFunctionType())
-		_cpuFunctionTypeErr := writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
+		_cpuFunctionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionType", 4, uint8((cpuFunctionType)))
 		if _cpuFunctionTypeErr != nil {
 			return errors.Wrap(_cpuFunctionTypeErr, "Error serializing 'cpuFunctionType' field")
 		}
 
 		// Simple Field (cpuFunctionGroup)
 		cpuFunctionGroup := uint8(m.GetCpuFunctionGroup())
-		_cpuFunctionGroupErr := writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
+		_cpuFunctionGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuFunctionGroup", 4, uint8((cpuFunctionGroup)))
 		if _cpuFunctionGroupErr != nil {
 			return errors.Wrap(_cpuFunctionGroupErr, "Error serializing 'cpuFunctionGroup' field")
 		}
 
 		// Simple Field (cpuSubfunction)
 		cpuSubfunction := uint8(m.GetCpuSubfunction())
-		_cpuSubfunctionErr := writeBuffer.WriteUint8("cpuSubfunction", 8, uint8((cpuSubfunction)))
+		_cpuSubfunctionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("cpuSubfunction", 8, uint8((cpuSubfunction)))
 		if _cpuSubfunctionErr != nil {
 			return errors.Wrap(_cpuSubfunctionErr, "Error serializing 'cpuSubfunction' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
+		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
@@ -402,7 +402,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var dataUnitReferenceNumber *uint8 = nil
 		if m.GetDataUnitReferenceNumber() != nil {
 			dataUnitReferenceNumber = m.GetDataUnitReferenceNumber()
-			_dataUnitReferenceNumberErr := writeBuffer.WriteUint8("dataUnitReferenceNumber", 8, uint8(*(dataUnitReferenceNumber)))
+			_dataUnitReferenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataUnitReferenceNumber", 8, uint8(*(dataUnitReferenceNumber)))
 			if _dataUnitReferenceNumberErr != nil {
 				return errors.Wrap(_dataUnitReferenceNumberErr, "Error serializing 'dataUnitReferenceNumber' field")
 			}
@@ -412,7 +412,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var lastDataUnit *uint8 = nil
 		if m.GetLastDataUnit() != nil {
 			lastDataUnit = m.GetLastDataUnit()
-			_lastDataUnitErr := writeBuffer.WriteUint8("lastDataUnit", 8, uint8(*(lastDataUnit)))
+			_lastDataUnitErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lastDataUnit", 8, uint8(*(lastDataUnit)))
 			if _lastDataUnitErr != nil {
 				return errors.Wrap(_lastDataUnitErr, "Error serializing 'lastDataUnit' field")
 			}
@@ -422,7 +422,7 @@ func (m *_S7ParameterUserDataItemCPUFunctions) SerializeWithWriteBuffer(ctx cont
 		var errorCode *uint16 = nil
 		if m.GetErrorCode() != nil {
 			errorCode = m.GetErrorCode()
-			_errorCodeErr := writeBuffer.WriteUint16("errorCode", 16, uint16(*(errorCode)))
+			_errorCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("errorCode", 16, uint16(*(errorCode)))
 			if _errorCodeErr != nil {
 				return errors.Wrap(_errorCodeErr, "Error serializing 'errorCode' field")
 			}

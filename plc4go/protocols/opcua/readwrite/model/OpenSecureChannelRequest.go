@@ -210,7 +210,7 @@ func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (clientProtocolVersion)
-	_clientProtocolVersion, _clientProtocolVersionErr := readBuffer.ReadUint32("clientProtocolVersion", 32)
+	_clientProtocolVersion, _clientProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientProtocolVersion", 32)
 	if _clientProtocolVersionErr != nil {
 		return nil, errors.Wrap(_clientProtocolVersionErr, "Error parsing 'clientProtocolVersion' field of OpenSecureChannelRequest")
 	}
@@ -256,7 +256,7 @@ func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (requestedLifetime)
-	_requestedLifetime, _requestedLifetimeErr := readBuffer.ReadUint32("requestedLifetime", 32)
+	_requestedLifetime, _requestedLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedLifetime", 32)
 	if _requestedLifetimeErr != nil {
 		return nil, errors.Wrap(_requestedLifetimeErr, "Error parsing 'requestedLifetime' field of OpenSecureChannelRequest")
 	}
@@ -312,7 +312,7 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (clientProtocolVersion)
 		clientProtocolVersion := uint32(m.GetClientProtocolVersion())
-		_clientProtocolVersionErr := writeBuffer.WriteUint32("clientProtocolVersion", 32, uint32((clientProtocolVersion)))
+		_clientProtocolVersionErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientProtocolVersion", 32, uint32((clientProtocolVersion)))
 		if _clientProtocolVersionErr != nil {
 			return errors.Wrap(_clientProtocolVersionErr, "Error serializing 'clientProtocolVersion' field")
 		}
@@ -355,7 +355,7 @@ func (m *_OpenSecureChannelRequest) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (requestedLifetime)
 		requestedLifetime := uint32(m.GetRequestedLifetime())
-		_requestedLifetimeErr := writeBuffer.WriteUint32("requestedLifetime", 32, uint32((requestedLifetime)))
+		_requestedLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedLifetime", 32, uint32((requestedLifetime)))
 		if _requestedLifetimeErr != nil {
 			return errors.Wrap(_requestedLifetimeErr, "Error serializing 'requestedLifetime' field")
 		}

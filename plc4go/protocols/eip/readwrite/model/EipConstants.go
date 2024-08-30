@@ -123,7 +123,7 @@ func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Const Field (eipUdpDiscoveryDefaultPort)
-	eipUdpDiscoveryDefaultPort, _eipUdpDiscoveryDefaultPortErr := readBuffer.ReadUint16("eipUdpDiscoveryDefaultPort", 16)
+	eipUdpDiscoveryDefaultPort, _eipUdpDiscoveryDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("eipUdpDiscoveryDefaultPort", 16)
 	if _eipUdpDiscoveryDefaultPortErr != nil {
 		return nil, errors.Wrap(_eipUdpDiscoveryDefaultPortErr, "Error parsing 'eipUdpDiscoveryDefaultPort' field of EipConstants")
 	}
@@ -132,7 +132,7 @@ func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Const Field (eipTcpDefaultPort)
-	eipTcpDefaultPort, _eipTcpDefaultPortErr := readBuffer.ReadUint16("eipTcpDefaultPort", 16)
+	eipTcpDefaultPort, _eipTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("eipTcpDefaultPort", 16)
 	if _eipTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_eipTcpDefaultPortErr, "Error parsing 'eipTcpDefaultPort' field of EipConstants")
 	}
@@ -166,13 +166,13 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Const Field (eipUdpDiscoveryDefaultPort)
-	_eipUdpDiscoveryDefaultPortErr := writeBuffer.WriteUint16("eipUdpDiscoveryDefaultPort", 16, uint16(44818))
+	_eipUdpDiscoveryDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("eipUdpDiscoveryDefaultPort", 16, uint16(44818))
 	if _eipUdpDiscoveryDefaultPortErr != nil {
 		return errors.Wrap(_eipUdpDiscoveryDefaultPortErr, "Error serializing 'eipUdpDiscoveryDefaultPort' field")
 	}
 
 	// Const Field (eipTcpDefaultPort)
-	_eipTcpDefaultPortErr := writeBuffer.WriteUint16("eipTcpDefaultPort", 16, uint16(44818))
+	_eipTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("eipTcpDefaultPort", 16, uint16(44818))
 	if _eipTcpDefaultPortErr != nil {
 		return errors.Wrap(_eipTcpDefaultPortErr, "Error serializing 'eipTcpDefaultPort' field")
 	}

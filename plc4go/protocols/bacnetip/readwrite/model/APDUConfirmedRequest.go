@@ -313,21 +313,21 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (segmentedMessage)
-	_segmentedMessage, _segmentedMessageErr := readBuffer.ReadBit("segmentedMessage")
+	_segmentedMessage, _segmentedMessageErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentedMessage")
 	if _segmentedMessageErr != nil {
 		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field of APDUConfirmedRequest")
 	}
 	segmentedMessage := _segmentedMessage
 
 	// Simple Field (moreFollows)
-	_moreFollows, _moreFollowsErr := readBuffer.ReadBit("moreFollows")
+	_moreFollows, _moreFollowsErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreFollows")
 	if _moreFollowsErr != nil {
 		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of APDUConfirmedRequest")
 	}
 	moreFollows := _moreFollows
 
 	// Simple Field (segmentedResponseAccepted)
-	_segmentedResponseAccepted, _segmentedResponseAcceptedErr := readBuffer.ReadBit("segmentedResponseAccepted")
+	_segmentedResponseAccepted, _segmentedResponseAcceptedErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentedResponseAccepted")
 	if _segmentedResponseAcceptedErr != nil {
 		return nil, errors.Wrap(_segmentedResponseAcceptedErr, "Error parsing 'segmentedResponseAccepted' field of APDUConfirmedRequest")
 	}
@@ -336,7 +336,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of APDUConfirmedRequest")
 		}
@@ -377,7 +377,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (invokeId)
-	_invokeId, _invokeIdErr := readBuffer.ReadUint8("invokeId", 8)
+	_invokeId, _invokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("invokeId", 8)
 	if _invokeIdErr != nil {
 		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of APDUConfirmedRequest")
 	}
@@ -387,7 +387,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var sequenceNumber *uint8 = nil
 	if segmentedMessage {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("sequenceNumber", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -403,7 +403,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var proposedWindowSize *uint8 = nil
 	if segmentedMessage {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("proposedWindowSize", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("proposedWindowSize", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -528,21 +528,21 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (segmentedMessage)
 		segmentedMessage := bool(m.GetSegmentedMessage())
-		_segmentedMessageErr := writeBuffer.WriteBit("segmentedMessage", (segmentedMessage))
+		_segmentedMessageErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentedMessage", (segmentedMessage))
 		if _segmentedMessageErr != nil {
 			return errors.Wrap(_segmentedMessageErr, "Error serializing 'segmentedMessage' field")
 		}
 
 		// Simple Field (moreFollows)
 		moreFollows := bool(m.GetMoreFollows())
-		_moreFollowsErr := writeBuffer.WriteBit("moreFollows", (moreFollows))
+		_moreFollowsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("moreFollows", (moreFollows))
 		if _moreFollowsErr != nil {
 			return errors.Wrap(_moreFollowsErr, "Error serializing 'moreFollows' field")
 		}
 
 		// Simple Field (segmentedResponseAccepted)
 		segmentedResponseAccepted := bool(m.GetSegmentedResponseAccepted())
-		_segmentedResponseAcceptedErr := writeBuffer.WriteBit("segmentedResponseAccepted", (segmentedResponseAccepted))
+		_segmentedResponseAcceptedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("segmentedResponseAccepted", (segmentedResponseAccepted))
 		if _segmentedResponseAcceptedErr != nil {
 			return errors.Wrap(_segmentedResponseAcceptedErr, "Error serializing 'segmentedResponseAccepted' field")
 		}
@@ -557,7 +557,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -589,7 +589,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (invokeId)
 		invokeId := uint8(m.GetInvokeId())
-		_invokeIdErr := writeBuffer.WriteUint8("invokeId", 8, uint8((invokeId)))
+		_invokeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("invokeId", 8, uint8((invokeId)))
 		if _invokeIdErr != nil {
 			return errors.Wrap(_invokeIdErr, "Error serializing 'invokeId' field")
 		}
@@ -598,7 +598,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		var sequenceNumber *uint8 = nil
 		if m.GetSequenceNumber() != nil {
 			sequenceNumber = m.GetSequenceNumber()
-			_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 8, uint8(*(sequenceNumber)))
+			_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 8, uint8(*(sequenceNumber)))
 			if _sequenceNumberErr != nil {
 				return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 			}
@@ -608,7 +608,7 @@ func (m *_APDUConfirmedRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 		var proposedWindowSize *uint8 = nil
 		if m.GetProposedWindowSize() != nil {
 			proposedWindowSize = m.GetProposedWindowSize()
-			_proposedWindowSizeErr := writeBuffer.WriteUint8("proposedWindowSize", 8, uint8(*(proposedWindowSize)))
+			_proposedWindowSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("proposedWindowSize", 8, uint8(*(proposedWindowSize)))
 			if _proposedWindowSizeErr != nil {
 				return errors.Wrap(_proposedWindowSizeErr, "Error serializing 'proposedWindowSize' field")
 			}

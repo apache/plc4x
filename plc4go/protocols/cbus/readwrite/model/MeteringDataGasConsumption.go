@@ -141,7 +141,7 @@ func MeteringDataGasConsumptionParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (mJ)
-	_mJ, _mJErr := readBuffer.ReadUint32("mJ", 32)
+	_mJ, _mJErr := /*TODO: migrate me*/ readBuffer.ReadUint32("mJ", 32)
 	if _mJErr != nil {
 		return nil, errors.Wrap(_mJErr, "Error parsing 'mJ' field of MeteringDataGasConsumption")
 	}
@@ -180,7 +180,7 @@ func (m *_MeteringDataGasConsumption) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (mJ)
 		mJ := uint32(m.GetMJ())
-		_mJErr := writeBuffer.WriteUint32("mJ", 32, uint32((mJ)))
+		_mJErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("mJ", 32, uint32((mJ)))
 		if _mJErr != nil {
 			return errors.Wrap(_mJErr, "Error serializing 'mJ' field")
 		}

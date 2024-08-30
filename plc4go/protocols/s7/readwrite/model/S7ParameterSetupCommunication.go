@@ -175,7 +175,7 @@ func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffe
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of S7ParameterSetupCommunication")
 		}
@@ -190,21 +190,21 @@ func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Simple Field (maxAmqCaller)
-	_maxAmqCaller, _maxAmqCallerErr := readBuffer.ReadUint16("maxAmqCaller", 16)
+	_maxAmqCaller, _maxAmqCallerErr := /*TODO: migrate me*/ readBuffer.ReadUint16("maxAmqCaller", 16)
 	if _maxAmqCallerErr != nil {
 		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field of S7ParameterSetupCommunication")
 	}
 	maxAmqCaller := _maxAmqCaller
 
 	// Simple Field (maxAmqCallee)
-	_maxAmqCallee, _maxAmqCalleeErr := readBuffer.ReadUint16("maxAmqCallee", 16)
+	_maxAmqCallee, _maxAmqCalleeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("maxAmqCallee", 16)
 	if _maxAmqCalleeErr != nil {
 		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field of S7ParameterSetupCommunication")
 	}
 	maxAmqCallee := _maxAmqCallee
 
 	// Simple Field (pduLength)
-	_pduLength, _pduLengthErr := readBuffer.ReadUint16("pduLength", 16)
+	_pduLength, _pduLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("pduLength", 16)
 	if _pduLengthErr != nil {
 		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field of S7ParameterSetupCommunication")
 	}
@@ -254,7 +254,7 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -262,21 +262,21 @@ func (m *_S7ParameterSetupCommunication) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (maxAmqCaller)
 		maxAmqCaller := uint16(m.GetMaxAmqCaller())
-		_maxAmqCallerErr := writeBuffer.WriteUint16("maxAmqCaller", 16, uint16((maxAmqCaller)))
+		_maxAmqCallerErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("maxAmqCaller", 16, uint16((maxAmqCaller)))
 		if _maxAmqCallerErr != nil {
 			return errors.Wrap(_maxAmqCallerErr, "Error serializing 'maxAmqCaller' field")
 		}
 
 		// Simple Field (maxAmqCallee)
 		maxAmqCallee := uint16(m.GetMaxAmqCallee())
-		_maxAmqCalleeErr := writeBuffer.WriteUint16("maxAmqCallee", 16, uint16((maxAmqCallee)))
+		_maxAmqCalleeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("maxAmqCallee", 16, uint16((maxAmqCallee)))
 		if _maxAmqCalleeErr != nil {
 			return errors.Wrap(_maxAmqCalleeErr, "Error serializing 'maxAmqCallee' field")
 		}
 
 		// Simple Field (pduLength)
 		pduLength := uint16(m.GetPduLength())
-		_pduLengthErr := writeBuffer.WriteUint16("pduLength", 16, uint16((pduLength)))
+		_pduLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("pduLength", 16, uint16((pduLength)))
 		if _pduLengthErr != nil {
 			return errors.Wrap(_pduLengthErr, "Error serializing 'pduLength' field")
 		}

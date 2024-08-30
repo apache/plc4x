@@ -154,7 +154,7 @@ func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of PanicStatus")
 	}
@@ -204,7 +204,7 @@ func (m *_PanicStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (status)
 	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
+	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}

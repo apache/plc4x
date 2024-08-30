@@ -149,7 +149,7 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ConnectedAddressItem")
 		}
@@ -164,7 +164,7 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (connectionId)
-	_connectionId, _connectionIdErr := readBuffer.ReadUint32("connectionId", 32)
+	_connectionId, _connectionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("connectionId", 32)
 	if _connectionIdErr != nil {
 		return nil, errors.Wrap(_connectionIdErr, "Error parsing 'connectionId' field of ConnectedAddressItem")
 	}
@@ -212,7 +212,7 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -220,7 +220,7 @@ func (m *_ConnectedAddressItem) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (connectionId)
 		connectionId := uint32(m.GetConnectionId())
-		_connectionIdErr := writeBuffer.WriteUint32("connectionId", 32, uint32((connectionId)))
+		_connectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("connectionId", 32, uint32((connectionId)))
 		if _connectionIdErr != nil {
 			return errors.Wrap(_connectionIdErr, "Error serializing 'connectionId' field")
 		}

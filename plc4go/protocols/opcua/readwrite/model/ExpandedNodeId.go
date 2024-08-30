@@ -183,14 +183,14 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (namespaceURISpecified)
-	_namespaceURISpecified, _namespaceURISpecifiedErr := readBuffer.ReadBit("namespaceURISpecified")
+	_namespaceURISpecified, _namespaceURISpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("namespaceURISpecified")
 	if _namespaceURISpecifiedErr != nil {
 		return nil, errors.Wrap(_namespaceURISpecifiedErr, "Error parsing 'namespaceURISpecified' field of ExpandedNodeId")
 	}
 	namespaceURISpecified := _namespaceURISpecified
 
 	// Simple Field (serverIndexSpecified)
-	_serverIndexSpecified, _serverIndexSpecifiedErr := readBuffer.ReadBit("serverIndexSpecified")
+	_serverIndexSpecified, _serverIndexSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverIndexSpecified")
 	if _serverIndexSpecifiedErr != nil {
 		return nil, errors.Wrap(_serverIndexSpecifiedErr, "Error parsing 'serverIndexSpecified' field of ExpandedNodeId")
 	}
@@ -240,7 +240,7 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	var serverIndex *uint32 = nil
 	if serverIndexSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("serverIndex", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("serverIndex", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -285,14 +285,14 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (namespaceURISpecified)
 	namespaceURISpecified := bool(m.GetNamespaceURISpecified())
-	_namespaceURISpecifiedErr := writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
+	_namespaceURISpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("namespaceURISpecified", (namespaceURISpecified))
 	if _namespaceURISpecifiedErr != nil {
 		return errors.Wrap(_namespaceURISpecifiedErr, "Error serializing 'namespaceURISpecified' field")
 	}
 
 	// Simple Field (serverIndexSpecified)
 	serverIndexSpecified := bool(m.GetServerIndexSpecified())
-	_serverIndexSpecifiedErr := writeBuffer.WriteBit("serverIndexSpecified", (serverIndexSpecified))
+	_serverIndexSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverIndexSpecified", (serverIndexSpecified))
 	if _serverIndexSpecifiedErr != nil {
 		return errors.Wrap(_serverIndexSpecifiedErr, "Error serializing 'serverIndexSpecified' field")
 	}
@@ -335,7 +335,7 @@ func (m *_ExpandedNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	var serverIndex *uint32 = nil
 	if m.GetServerIndex() != nil {
 		serverIndex = m.GetServerIndex()
-		_serverIndexErr := writeBuffer.WriteUint32("serverIndex", 32, uint32(*(serverIndex)))
+		_serverIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serverIndex", 32, uint32(*(serverIndex)))
 		if _serverIndexErr != nil {
 			return errors.Wrap(_serverIndexErr, "Error serializing 'serverIndex' field")
 		}

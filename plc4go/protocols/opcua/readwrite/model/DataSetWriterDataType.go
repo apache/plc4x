@@ -268,7 +268,7 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DataSetWriterDataType")
 		}
@@ -283,14 +283,14 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (enabled)
-	_enabled, _enabledErr := readBuffer.ReadBit("enabled")
+	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
 	if _enabledErr != nil {
 		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of DataSetWriterDataType")
 	}
 	enabled := _enabled
 
 	// Simple Field (dataSetWriterId)
-	_dataSetWriterId, _dataSetWriterIdErr := readBuffer.ReadUint16("dataSetWriterId", 16)
+	_dataSetWriterId, _dataSetWriterIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dataSetWriterId", 16)
 	if _dataSetWriterIdErr != nil {
 		return nil, errors.Wrap(_dataSetWriterIdErr, "Error parsing 'dataSetWriterId' field of DataSetWriterDataType")
 	}
@@ -310,7 +310,7 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (keyFrameCount)
-	_keyFrameCount, _keyFrameCountErr := readBuffer.ReadUint32("keyFrameCount", 32)
+	_keyFrameCount, _keyFrameCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("keyFrameCount", 32)
 	if _keyFrameCountErr != nil {
 		return nil, errors.Wrap(_keyFrameCountErr, "Error parsing 'keyFrameCount' field of DataSetWriterDataType")
 	}
@@ -330,7 +330,7 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfDataSetWriterProperties)
-	_noOfDataSetWriterProperties, _noOfDataSetWriterPropertiesErr := readBuffer.ReadInt32("noOfDataSetWriterProperties", 32)
+	_noOfDataSetWriterProperties, _noOfDataSetWriterPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataSetWriterProperties", 32)
 	if _noOfDataSetWriterPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error parsing 'noOfDataSetWriterProperties' field of DataSetWriterDataType")
 	}
@@ -452,7 +452,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -460,14 +460,14 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (enabled)
 		enabled := bool(m.GetEnabled())
-		_enabledErr := writeBuffer.WriteBit("enabled", (enabled))
+		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
 		if _enabledErr != nil {
 			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
 		}
 
 		// Simple Field (dataSetWriterId)
 		dataSetWriterId := uint16(m.GetDataSetWriterId())
-		_dataSetWriterIdErr := writeBuffer.WriteUint16("dataSetWriterId", 16, uint16((dataSetWriterId)))
+		_dataSetWriterIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("dataSetWriterId", 16, uint16((dataSetWriterId)))
 		if _dataSetWriterIdErr != nil {
 			return errors.Wrap(_dataSetWriterIdErr, "Error serializing 'dataSetWriterId' field")
 		}
@@ -486,7 +486,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (keyFrameCount)
 		keyFrameCount := uint32(m.GetKeyFrameCount())
-		_keyFrameCountErr := writeBuffer.WriteUint32("keyFrameCount", 32, uint32((keyFrameCount)))
+		_keyFrameCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("keyFrameCount", 32, uint32((keyFrameCount)))
 		if _keyFrameCountErr != nil {
 			return errors.Wrap(_keyFrameCountErr, "Error serializing 'keyFrameCount' field")
 		}
@@ -505,7 +505,7 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfDataSetWriterProperties)
 		noOfDataSetWriterProperties := int32(m.GetNoOfDataSetWriterProperties())
-		_noOfDataSetWriterPropertiesErr := writeBuffer.WriteInt32("noOfDataSetWriterProperties", 32, int32((noOfDataSetWriterProperties)))
+		_noOfDataSetWriterPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDataSetWriterProperties", 32, int32((noOfDataSetWriterProperties)))
 		if _noOfDataSetWriterPropertiesErr != nil {
 			return errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error serializing 'noOfDataSetWriterProperties' field")
 		}

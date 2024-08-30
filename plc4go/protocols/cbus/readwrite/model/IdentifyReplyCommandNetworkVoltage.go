@@ -180,14 +180,14 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	_ = currentPos
 
 	// Simple Field (volts)
-	_volts, _voltsErr := readBuffer.ReadString("volts", uint32(16), utils.WithEncoding("UTF-8"))
+	_volts, _voltsErr := /*TODO: migrate me*/ readBuffer.ReadString("volts", uint32(16), utils.WithEncoding("UTF-8"))
 	if _voltsErr != nil {
 		return nil, errors.Wrap(_voltsErr, "Error parsing 'volts' field of IdentifyReplyCommandNetworkVoltage")
 	}
 	volts := _volts
 
 	// Const Field (dot)
-	dot, _dotErr := readBuffer.ReadByte("dot")
+	dot, _dotErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("dot")
 	if _dotErr != nil {
 		return nil, errors.Wrap(_dotErr, "Error parsing 'dot' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -196,14 +196,14 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	}
 
 	// Simple Field (voltsDecimalPlace)
-	_voltsDecimalPlace, _voltsDecimalPlaceErr := readBuffer.ReadString("voltsDecimalPlace", uint32(16), utils.WithEncoding("UTF-8"))
+	_voltsDecimalPlace, _voltsDecimalPlaceErr := /*TODO: migrate me*/ readBuffer.ReadString("voltsDecimalPlace", uint32(16), utils.WithEncoding("UTF-8"))
 	if _voltsDecimalPlaceErr != nil {
 		return nil, errors.Wrap(_voltsDecimalPlaceErr, "Error parsing 'voltsDecimalPlace' field of IdentifyReplyCommandNetworkVoltage")
 	}
 	voltsDecimalPlace := _voltsDecimalPlace
 
 	// Const Field (v)
-	v, _vErr := readBuffer.ReadByte("v")
+	v, _vErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("v")
 	if _vErr != nil {
 		return nil, errors.Wrap(_vErr, "Error parsing 'v' field of IdentifyReplyCommandNetworkVoltage")
 	}
@@ -247,26 +247,26 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 
 		// Simple Field (volts)
 		volts := string(m.GetVolts())
-		_voltsErr := writeBuffer.WriteString("volts", uint32(16), (volts), utils.WithEncoding("UTF-8)"))
+		_voltsErr := /*TODO: migrate me*/ writeBuffer.WriteString("volts", uint32(16), (volts), utils.WithEncoding("UTF-8)"))
 		if _voltsErr != nil {
 			return errors.Wrap(_voltsErr, "Error serializing 'volts' field")
 		}
 
 		// Const Field (dot)
-		_dotErr := writeBuffer.WriteByte("dot", 0x2C)
+		_dotErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("dot", 0x2C)
 		if _dotErr != nil {
 			return errors.Wrap(_dotErr, "Error serializing 'dot' field")
 		}
 
 		// Simple Field (voltsDecimalPlace)
 		voltsDecimalPlace := string(m.GetVoltsDecimalPlace())
-		_voltsDecimalPlaceErr := writeBuffer.WriteString("voltsDecimalPlace", uint32(16), (voltsDecimalPlace), utils.WithEncoding("UTF-8)"))
+		_voltsDecimalPlaceErr := /*TODO: migrate me*/ writeBuffer.WriteString("voltsDecimalPlace", uint32(16), (voltsDecimalPlace), utils.WithEncoding("UTF-8)"))
 		if _voltsDecimalPlaceErr != nil {
 			return errors.Wrap(_voltsDecimalPlaceErr, "Error serializing 'voltsDecimalPlace' field")
 		}
 
 		// Const Field (v)
-		_vErr := writeBuffer.WriteByte("v", 0x56)
+		_vErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("v", 0x56)
 		if _vErr != nil {
 			return errors.Wrap(_vErr, "Error serializing 'v' field")
 		}

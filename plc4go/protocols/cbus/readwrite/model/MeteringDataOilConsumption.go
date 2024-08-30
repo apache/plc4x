@@ -141,7 +141,7 @@ func MeteringDataOilConsumptionParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (L)
-	_L, _LErr := readBuffer.ReadUint32("L", 32)
+	_L, _LErr := /*TODO: migrate me*/ readBuffer.ReadUint32("L", 32)
 	if _LErr != nil {
 		return nil, errors.Wrap(_LErr, "Error parsing 'L' field of MeteringDataOilConsumption")
 	}
@@ -180,7 +180,7 @@ func (m *_MeteringDataOilConsumption) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (L)
 		L := uint32(m.GetL())
-		_LErr := writeBuffer.WriteUint32("L", 32, uint32((L)))
+		_LErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("L", 32, uint32((L)))
 		if _LErr != nil {
 			return errors.Wrap(_LErr, "Error serializing 'L' field")
 		}

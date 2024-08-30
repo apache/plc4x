@@ -184,7 +184,7 @@ func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (noOfMethodsToCall)
-	_noOfMethodsToCall, _noOfMethodsToCallErr := readBuffer.ReadInt32("noOfMethodsToCall", 32)
+	_noOfMethodsToCall, _noOfMethodsToCallErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMethodsToCall", 32)
 	if _noOfMethodsToCallErr != nil {
 		return nil, errors.Wrap(_noOfMethodsToCallErr, "Error parsing 'noOfMethodsToCall' field of CallRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (noOfMethodsToCall)
 		noOfMethodsToCall := int32(m.GetNoOfMethodsToCall())
-		_noOfMethodsToCallErr := writeBuffer.WriteInt32("noOfMethodsToCall", 32, int32((noOfMethodsToCall)))
+		_noOfMethodsToCallErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfMethodsToCall", 32, int32((noOfMethodsToCall)))
 		if _noOfMethodsToCallErr != nil {
 			return errors.Wrap(_noOfMethodsToCallErr, "Error serializing 'noOfMethodsToCall' field")
 		}

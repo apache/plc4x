@@ -115,7 +115,7 @@ func DeadbandTypeParse(ctx context.Context, theBytes []byte) (DeadbandType, erro
 func DeadbandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeadbandType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint32("DeadbandType", 32)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("DeadbandType", 32)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading DeadbandType")
 	}
@@ -138,7 +138,7 @@ func (e DeadbandType) Serialize() ([]byte, error) {
 func (e DeadbandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint32("DeadbandType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint32("DeadbandType", 32, uint32(uint32(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

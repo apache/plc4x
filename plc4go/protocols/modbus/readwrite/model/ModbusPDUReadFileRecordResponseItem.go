@@ -130,14 +130,14 @@ func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Implicit Field (dataLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	dataLength, _dataLengthErr := readBuffer.ReadUint8("dataLength", 8)
+	dataLength, _dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataLength", 8)
 	_ = dataLength
 	if _dataLengthErr != nil {
 		return nil, errors.Wrap(_dataLengthErr, "Error parsing 'dataLength' field of ModbusPDUReadFileRecordResponseItem")
 	}
 
 	// Simple Field (referenceType)
-	_referenceType, _referenceTypeErr := readBuffer.ReadUint8("referenceType", 8)
+	_referenceType, _referenceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("referenceType", 8)
 	if _referenceTypeErr != nil {
 		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUReadFileRecordResponseItem")
 	}
@@ -179,14 +179,14 @@ func (m *_ModbusPDUReadFileRecordResponseItem) SerializeWithWriteBuffer(ctx cont
 
 	// Implicit Field (dataLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	dataLength := uint8(uint8(uint8(len(m.GetData()))) + uint8(uint8(1)))
-	_dataLengthErr := writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
+	_dataLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataLength", 8, uint8((dataLength)))
 	if _dataLengthErr != nil {
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
 	// Simple Field (referenceType)
 	referenceType := uint8(m.GetReferenceType())
-	_referenceTypeErr := writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
+	_referenceTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("referenceType", 8, uint8((referenceType)))
 	if _referenceTypeErr != nil {
 		return errors.Wrap(_referenceTypeErr, "Error serializing 'referenceType' field")
 	}

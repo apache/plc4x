@@ -123,7 +123,7 @@ func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Const Field (cr)
-	cr, _crErr := readBuffer.ReadByte("cr")
+	cr, _crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("cr")
 	if _crErr != nil {
 		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of ResponseTermination")
 	}
@@ -132,7 +132,7 @@ func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Const Field (lf)
-	lf, _lfErr := readBuffer.ReadByte("lf")
+	lf, _lfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("lf")
 	if _lfErr != nil {
 		return nil, errors.Wrap(_lfErr, "Error parsing 'lf' field of ResponseTermination")
 	}
@@ -166,13 +166,13 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 	}
 
 	// Const Field (cr)
-	_crErr := writeBuffer.WriteByte("cr", 0x0D)
+	_crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("cr", 0x0D)
 	if _crErr != nil {
 		return errors.Wrap(_crErr, "Error serializing 'cr' field")
 	}
 
 	// Const Field (lf)
-	_lfErr := writeBuffer.WriteByte("lf", 0x0A)
+	_lfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("lf", 0x0A)
 	if _lfErr != nil {
 		return errors.Wrap(_lfErr, "Error serializing 'lf' field")
 	}

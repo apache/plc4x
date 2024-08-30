@@ -197,42 +197,42 @@ func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (interfaceObjectType)
-	_interfaceObjectType, _interfaceObjectTypeErr := readBuffer.ReadUint16("interfaceObjectType", 16)
+	_interfaceObjectType, _interfaceObjectTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("interfaceObjectType", 16)
 	if _interfaceObjectTypeErr != nil {
 		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field of MPropReadCon")
 	}
 	interfaceObjectType := _interfaceObjectType
 
 	// Simple Field (objectInstance)
-	_objectInstance, _objectInstanceErr := readBuffer.ReadUint8("objectInstance", 8)
+	_objectInstance, _objectInstanceErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectInstance", 8)
 	if _objectInstanceErr != nil {
 		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field of MPropReadCon")
 	}
 	objectInstance := _objectInstance
 
 	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of MPropReadCon")
 	}
 	propertyId := _propertyId
 
 	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := readBuffer.ReadUint8("numberOfElements", 4)
+	_numberOfElements, _numberOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfElements", 4)
 	if _numberOfElementsErr != nil {
 		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of MPropReadCon")
 	}
 	numberOfElements := _numberOfElements
 
 	// Simple Field (startIndex)
-	_startIndex, _startIndexErr := readBuffer.ReadUint16("startIndex", 12)
+	_startIndex, _startIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startIndex", 12)
 	if _startIndexErr != nil {
 		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field of MPropReadCon")
 	}
 	startIndex := _startIndex
 
 	// Simple Field (data)
-	_data, _dataErr := readBuffer.ReadUint16("data", 16)
+	_data, _dataErr := /*TODO: migrate me*/ readBuffer.ReadUint16("data", 16)
 	if _dataErr != nil {
 		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MPropReadCon")
 	}
@@ -278,42 +278,42 @@ func (m *_MPropReadCon) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (interfaceObjectType)
 		interfaceObjectType := uint16(m.GetInterfaceObjectType())
-		_interfaceObjectTypeErr := writeBuffer.WriteUint16("interfaceObjectType", 16, uint16((interfaceObjectType)))
+		_interfaceObjectTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("interfaceObjectType", 16, uint16((interfaceObjectType)))
 		if _interfaceObjectTypeErr != nil {
 			return errors.Wrap(_interfaceObjectTypeErr, "Error serializing 'interfaceObjectType' field")
 		}
 
 		// Simple Field (objectInstance)
 		objectInstance := uint8(m.GetObjectInstance())
-		_objectInstanceErr := writeBuffer.WriteUint8("objectInstance", 8, uint8((objectInstance)))
+		_objectInstanceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectInstance", 8, uint8((objectInstance)))
 		if _objectInstanceErr != nil {
 			return errors.Wrap(_objectInstanceErr, "Error serializing 'objectInstance' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
+		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (numberOfElements)
 		numberOfElements := uint8(m.GetNumberOfElements())
-		_numberOfElementsErr := writeBuffer.WriteUint8("numberOfElements", 4, uint8((numberOfElements)))
+		_numberOfElementsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfElements", 4, uint8((numberOfElements)))
 		if _numberOfElementsErr != nil {
 			return errors.Wrap(_numberOfElementsErr, "Error serializing 'numberOfElements' field")
 		}
 
 		// Simple Field (startIndex)
 		startIndex := uint16(m.GetStartIndex())
-		_startIndexErr := writeBuffer.WriteUint16("startIndex", 12, uint16((startIndex)))
+		_startIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("startIndex", 12, uint16((startIndex)))
 		if _startIndexErr != nil {
 			return errors.Wrap(_startIndexErr, "Error serializing 'startIndex' field")
 		}
 
 		// Simple Field (data)
 		data := uint16(m.GetData())
-		_dataErr := writeBuffer.WriteUint16("data", 16, uint16((data)))
+		_dataErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("data", 16, uint16((data)))
 		if _dataErr != nil {
 			return errors.Wrap(_dataErr, "Error serializing 'data' field")
 		}

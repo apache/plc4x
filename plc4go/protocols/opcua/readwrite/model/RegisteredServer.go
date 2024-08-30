@@ -286,7 +286,7 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfServerNames)
-	_noOfServerNames, _noOfServerNamesErr := readBuffer.ReadInt32("noOfServerNames", 32)
+	_noOfServerNames, _noOfServerNamesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerNames", 32)
 	if _noOfServerNamesErr != nil {
 		return nil, errors.Wrap(_noOfServerNamesErr, "Error parsing 'noOfServerNames' field of RegisteredServer")
 	}
@@ -346,7 +346,7 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (noOfDiscoveryUrls)
-	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
+	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
 	if _noOfDiscoveryUrlsErr != nil {
 		return nil, errors.Wrap(_noOfDiscoveryUrlsErr, "Error parsing 'noOfDiscoveryUrls' field of RegisteredServer")
 	}
@@ -395,7 +395,7 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of RegisteredServer")
 		}
@@ -410,7 +410,7 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (isOnline)
-	_isOnline, _isOnlineErr := readBuffer.ReadBit("isOnline")
+	_isOnline, _isOnlineErr := /*TODO: migrate me*/ readBuffer.ReadBit("isOnline")
 	if _isOnlineErr != nil {
 		return nil, errors.Wrap(_isOnlineErr, "Error parsing 'isOnline' field of RegisteredServer")
 	}
@@ -483,7 +483,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfServerNames)
 		noOfServerNames := int32(m.GetNoOfServerNames())
-		_noOfServerNamesErr := writeBuffer.WriteInt32("noOfServerNames", 32, int32((noOfServerNames)))
+		_noOfServerNamesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerNames", 32, int32((noOfServerNames)))
 		if _noOfServerNamesErr != nil {
 			return errors.Wrap(_noOfServerNamesErr, "Error serializing 'noOfServerNames' field")
 		}
@@ -531,7 +531,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (noOfDiscoveryUrls)
 		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
+		_noOfDiscoveryUrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
 		if _noOfDiscoveryUrlsErr != nil {
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}
@@ -575,7 +575,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -583,7 +583,7 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (isOnline)
 		isOnline := bool(m.GetIsOnline())
-		_isOnlineErr := writeBuffer.WriteBit("isOnline", (isOnline))
+		_isOnlineErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isOnline", (isOnline))
 		if _isOnlineErr != nil {
 			return errors.Wrap(_isOnlineErr, "Error serializing 'isOnline' field")
 		}

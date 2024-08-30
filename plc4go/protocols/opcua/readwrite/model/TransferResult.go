@@ -179,7 +179,7 @@ func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 
 	// Simple Field (noOfAvailableSequenceNumbers)
-	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
+	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
 	if _noOfAvailableSequenceNumbersErr != nil {
 		return nil, errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error parsing 'noOfAvailableSequenceNumbers' field of TransferResult")
 	}
@@ -201,7 +201,7 @@ func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'availableSequenceNumbers' field of TransferResult")
 			}
@@ -259,7 +259,7 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (noOfAvailableSequenceNumbers)
 		noOfAvailableSequenceNumbers := int32(m.GetNoOfAvailableSequenceNumbers())
-		_noOfAvailableSequenceNumbersErr := writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
+		_noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
 		if _noOfAvailableSequenceNumbersErr != nil {
 			return errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
@@ -270,7 +270,7 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		}
 		for _curItem, _element := range m.GetAvailableSequenceNumbers() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'availableSequenceNumbers' field")
 			}

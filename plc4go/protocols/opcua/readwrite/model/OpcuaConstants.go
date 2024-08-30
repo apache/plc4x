@@ -115,7 +115,7 @@ func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Const Field (protocolVersion)
-	protocolVersion, _protocolVersionErr := readBuffer.ReadUint8("protocolVersion", 8)
+	protocolVersion, _protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("protocolVersion", 8)
 	if _protocolVersionErr != nil {
 		return nil, errors.Wrap(_protocolVersionErr, "Error parsing 'protocolVersion' field of OpcuaConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 	}
 
 	// Const Field (protocolVersion)
-	_protocolVersionErr := writeBuffer.WriteUint8("protocolVersion", 8, uint8(0))
+	_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersion", 8, uint8(0))
 	if _protocolVersionErr != nil {
 		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
 	}

@@ -177,7 +177,7 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Const Field (requestPathSize)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
+	requestPathSize, _requestPathSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of MultipleServiceRequest")
 	}
@@ -186,7 +186,7 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Const Field (requestPath)
-	requestPath, _requestPathErr := readBuffer.ReadUint32("requestPath", 32)
+	requestPath, _requestPathErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("requestPath", 32)
 	if _requestPathErr != nil {
 		return nil, errors.Wrap(_requestPathErr, "Error parsing 'requestPath' field of MultipleServiceRequest")
 	}
@@ -241,13 +241,13 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 		}
 
 		// Const Field (requestPathSize)
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8(0x02))
+		_requestPathSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("requestPathSize", 8, uint8(0x02))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
 		// Const Field (requestPath)
-		_requestPathErr := writeBuffer.WriteUint32("requestPath", 32, uint32(0x01240220))
+		_requestPathErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("requestPath", 32, uint32(0x01240220))
 		if _requestPathErr != nil {
 			return errors.Wrap(_requestPathErr, "Error serializing 'requestPath' field")
 		}

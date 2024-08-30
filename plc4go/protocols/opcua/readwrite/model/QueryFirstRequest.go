@@ -241,7 +241,7 @@ func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfNodeTypes)
-	_noOfNodeTypes, _noOfNodeTypesErr := readBuffer.ReadInt32("noOfNodeTypes", 32)
+	_noOfNodeTypes, _noOfNodeTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodeTypes", 32)
 	if _noOfNodeTypesErr != nil {
 		return nil, errors.Wrap(_noOfNodeTypesErr, "Error parsing 'noOfNodeTypes' field of QueryFirstRequest")
 	}
@@ -288,14 +288,14 @@ func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (maxDataSetsToReturn)
-	_maxDataSetsToReturn, _maxDataSetsToReturnErr := readBuffer.ReadUint32("maxDataSetsToReturn", 32)
+	_maxDataSetsToReturn, _maxDataSetsToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxDataSetsToReturn", 32)
 	if _maxDataSetsToReturnErr != nil {
 		return nil, errors.Wrap(_maxDataSetsToReturnErr, "Error parsing 'maxDataSetsToReturn' field of QueryFirstRequest")
 	}
 	maxDataSetsToReturn := _maxDataSetsToReturn
 
 	// Simple Field (maxReferencesToReturn)
-	_maxReferencesToReturn, _maxReferencesToReturnErr := readBuffer.ReadUint32("maxReferencesToReturn", 32)
+	_maxReferencesToReturn, _maxReferencesToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxReferencesToReturn", 32)
 	if _maxReferencesToReturnErr != nil {
 		return nil, errors.Wrap(_maxReferencesToReturnErr, "Error parsing 'maxReferencesToReturn' field of QueryFirstRequest")
 	}
@@ -364,7 +364,7 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfNodeTypes)
 		noOfNodeTypes := int32(m.GetNoOfNodeTypes())
-		_noOfNodeTypesErr := writeBuffer.WriteInt32("noOfNodeTypes", 32, int32((noOfNodeTypes)))
+		_noOfNodeTypesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodeTypes", 32, int32((noOfNodeTypes)))
 		if _noOfNodeTypesErr != nil {
 			return errors.Wrap(_noOfNodeTypesErr, "Error serializing 'noOfNodeTypes' field")
 		}
@@ -400,14 +400,14 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (maxDataSetsToReturn)
 		maxDataSetsToReturn := uint32(m.GetMaxDataSetsToReturn())
-		_maxDataSetsToReturnErr := writeBuffer.WriteUint32("maxDataSetsToReturn", 32, uint32((maxDataSetsToReturn)))
+		_maxDataSetsToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxDataSetsToReturn", 32, uint32((maxDataSetsToReturn)))
 		if _maxDataSetsToReturnErr != nil {
 			return errors.Wrap(_maxDataSetsToReturnErr, "Error serializing 'maxDataSetsToReturn' field")
 		}
 
 		// Simple Field (maxReferencesToReturn)
 		maxReferencesToReturn := uint32(m.GetMaxReferencesToReturn())
-		_maxReferencesToReturnErr := writeBuffer.WriteUint32("maxReferencesToReturn", 32, uint32((maxReferencesToReturn)))
+		_maxReferencesToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxReferencesToReturn", 32, uint32((maxReferencesToReturn)))
 		if _maxReferencesToReturnErr != nil {
 			return errors.Wrap(_maxReferencesToReturnErr, "Error serializing 'maxReferencesToReturn' field")
 		}

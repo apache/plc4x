@@ -142,7 +142,7 @@ func KnxNetIpTunnelingParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (version)
-	_version, _versionErr := readBuffer.ReadUint8("version", 8)
+	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("version", 8)
 	if _versionErr != nil {
 		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetIpTunneling")
 	}
@@ -181,7 +181,7 @@ func (m *_KnxNetIpTunneling) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (version)
 		version := uint8(m.GetVersion())
-		_versionErr := writeBuffer.WriteUint8("version", 8, uint8((version)))
+		_versionErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("version", 8, uint8((version)))
 		if _versionErr != nil {
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}

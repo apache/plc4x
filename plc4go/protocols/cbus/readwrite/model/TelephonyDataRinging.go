@@ -148,7 +148,7 @@ func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TelephonyDataRinging")
 		}
@@ -163,7 +163,7 @@ func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (number)
-	_number, _numberErr := readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
+	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
 	if _numberErr != nil {
 		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRinging")
 	}
@@ -211,7 +211,7 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -219,7 +219,7 @@ func (m *_TelephonyDataRinging) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (number)
 		number := string(m.GetNumber())
-		_numberErr := writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
+		_numberErr := /*TODO: migrate me*/ writeBuffer.WriteString("number", uint32(((m.GetCommandTypeContainer().NumBytes())-(2))*(8)), (number), utils.WithEncoding("UTF-8)"))
 		if _numberErr != nil {
 			return errors.Wrap(_numberErr, "Error serializing 'number' field")
 		}

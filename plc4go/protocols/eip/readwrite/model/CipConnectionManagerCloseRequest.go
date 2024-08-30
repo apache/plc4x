@@ -269,7 +269,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Simple Field (requestPathSize)
-	_requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
+	_requestPathSize, _requestPathSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("requestPathSize", 8)
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of CipConnectionManagerCloseRequest")
 	}
@@ -302,49 +302,49 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Simple Field (priority)
-	_priority, _priorityErr := readBuffer.ReadUint8("priority", 4)
+	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 4)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of CipConnectionManagerCloseRequest")
 	}
 	priority := _priority
 
 	// Simple Field (tickTime)
-	_tickTime, _tickTimeErr := readBuffer.ReadUint8("tickTime", 4)
+	_tickTime, _tickTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("tickTime", 4)
 	if _tickTimeErr != nil {
 		return nil, errors.Wrap(_tickTimeErr, "Error parsing 'tickTime' field of CipConnectionManagerCloseRequest")
 	}
 	tickTime := _tickTime
 
 	// Simple Field (timeoutTicks)
-	_timeoutTicks, _timeoutTicksErr := readBuffer.ReadUint8("timeoutTicks", 8)
+	_timeoutTicks, _timeoutTicksErr := /*TODO: migrate me*/ readBuffer.ReadUint8("timeoutTicks", 8)
 	if _timeoutTicksErr != nil {
 		return nil, errors.Wrap(_timeoutTicksErr, "Error parsing 'timeoutTicks' field of CipConnectionManagerCloseRequest")
 	}
 	timeoutTicks := _timeoutTicks
 
 	// Simple Field (connectionSerialNumber)
-	_connectionSerialNumber, _connectionSerialNumberErr := readBuffer.ReadUint16("connectionSerialNumber", 16)
+	_connectionSerialNumber, _connectionSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionSerialNumber", 16)
 	if _connectionSerialNumberErr != nil {
 		return nil, errors.Wrap(_connectionSerialNumberErr, "Error parsing 'connectionSerialNumber' field of CipConnectionManagerCloseRequest")
 	}
 	connectionSerialNumber := _connectionSerialNumber
 
 	// Simple Field (originatorVendorId)
-	_originatorVendorId, _originatorVendorIdErr := readBuffer.ReadUint16("originatorVendorId", 16)
+	_originatorVendorId, _originatorVendorIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("originatorVendorId", 16)
 	if _originatorVendorIdErr != nil {
 		return nil, errors.Wrap(_originatorVendorIdErr, "Error parsing 'originatorVendorId' field of CipConnectionManagerCloseRequest")
 	}
 	originatorVendorId := _originatorVendorId
 
 	// Simple Field (originatorSerialNumber)
-	_originatorSerialNumber, _originatorSerialNumberErr := readBuffer.ReadUint32("originatorSerialNumber", 32)
+	_originatorSerialNumber, _originatorSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originatorSerialNumber", 32)
 	if _originatorSerialNumberErr != nil {
 		return nil, errors.Wrap(_originatorSerialNumberErr, "Error parsing 'originatorSerialNumber' field of CipConnectionManagerCloseRequest")
 	}
 	originatorSerialNumber := _originatorSerialNumber
 
 	// Simple Field (connectionPathSize)
-	_connectionPathSize, _connectionPathSizeErr := readBuffer.ReadUint8("connectionPathSize", 8)
+	_connectionPathSize, _connectionPathSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("connectionPathSize", 8)
 	if _connectionPathSizeErr != nil {
 		return nil, errors.Wrap(_connectionPathSizeErr, "Error parsing 'connectionPathSize' field of CipConnectionManagerCloseRequest")
 	}
@@ -353,7 +353,7 @@ func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBu
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerCloseRequest")
 		}
@@ -432,7 +432,7 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (requestPathSize)
 		requestPathSize := uint8(m.GetRequestPathSize())
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
+		_requestPathSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
@@ -463,49 +463,49 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 4, uint8((priority)))
+		_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 4, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}
 
 		// Simple Field (tickTime)
 		tickTime := uint8(m.GetTickTime())
-		_tickTimeErr := writeBuffer.WriteUint8("tickTime", 4, uint8((tickTime)))
+		_tickTimeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tickTime", 4, uint8((tickTime)))
 		if _tickTimeErr != nil {
 			return errors.Wrap(_tickTimeErr, "Error serializing 'tickTime' field")
 		}
 
 		// Simple Field (timeoutTicks)
 		timeoutTicks := uint8(m.GetTimeoutTicks())
-		_timeoutTicksErr := writeBuffer.WriteUint8("timeoutTicks", 8, uint8((timeoutTicks)))
+		_timeoutTicksErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("timeoutTicks", 8, uint8((timeoutTicks)))
 		if _timeoutTicksErr != nil {
 			return errors.Wrap(_timeoutTicksErr, "Error serializing 'timeoutTicks' field")
 		}
 
 		// Simple Field (connectionSerialNumber)
 		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
+		_connectionSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
 		if _connectionSerialNumberErr != nil {
 			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
 		}
 
 		// Simple Field (originatorVendorId)
 		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
+		_originatorVendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
 		if _originatorVendorIdErr != nil {
 			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
 		}
 
 		// Simple Field (originatorSerialNumber)
 		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
+		_originatorSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
 		if _originatorSerialNumberErr != nil {
 			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
 		}
 
 		// Simple Field (connectionPathSize)
 		connectionPathSize := uint8(m.GetConnectionPathSize())
-		_connectionPathSizeErr := writeBuffer.WriteUint8("connectionPathSize", 8, uint8((connectionPathSize)))
+		_connectionPathSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("connectionPathSize", 8, uint8((connectionPathSize)))
 		if _connectionPathSizeErr != nil {
 			return errors.Wrap(_connectionPathSizeErr, "Error serializing 'connectionPathSize' field")
 		}
@@ -520,7 +520,7 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

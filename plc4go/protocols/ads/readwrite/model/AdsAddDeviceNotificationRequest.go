@@ -217,21 +217,21 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	_ = currentPos
 
 	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := readBuffer.ReadUint32("indexGroup", 32)
+	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
 	if _indexGroupErr != nil {
 		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsAddDeviceNotificationRequest")
 	}
 	indexGroup := _indexGroup
 
 	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := readBuffer.ReadUint32("indexOffset", 32)
+	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
 	if _indexOffsetErr != nil {
 		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsAddDeviceNotificationRequest")
 	}
 	indexOffset := _indexOffset
 
 	// Simple Field (length)
-	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsAddDeviceNotificationRequest")
 	}
@@ -251,14 +251,14 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	}
 
 	// Simple Field (maxDelayInMs)
-	_maxDelayInMs, _maxDelayInMsErr := readBuffer.ReadUint32("maxDelayInMs", 32)
+	_maxDelayInMs, _maxDelayInMsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxDelayInMs", 32)
 	if _maxDelayInMsErr != nil {
 		return nil, errors.Wrap(_maxDelayInMsErr, "Error parsing 'maxDelayInMs' field of AdsAddDeviceNotificationRequest")
 	}
 	maxDelayInMs := _maxDelayInMs
 
 	// Simple Field (cycleTimeInMs)
-	_cycleTimeInMs, _cycleTimeInMsErr := readBuffer.ReadUint32("cycleTimeInMs", 32)
+	_cycleTimeInMs, _cycleTimeInMsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cycleTimeInMs", 32)
 	if _cycleTimeInMsErr != nil {
 		return nil, errors.Wrap(_cycleTimeInMsErr, "Error parsing 'cycleTimeInMs' field of AdsAddDeviceNotificationRequest")
 	}
@@ -267,7 +267,7 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	var reservedField0 *uint64
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint64("reserved", 64)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("reserved", 64)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
@@ -284,7 +284,7 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	var reservedField1 *uint64
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint64("reserved", 64)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("reserved", 64)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
 		}
@@ -338,21 +338,21 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (indexGroup)
 		indexGroup := uint32(m.GetIndexGroup())
-		_indexGroupErr := writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
+		_indexGroupErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexGroup", 32, uint32((indexGroup)))
 		if _indexGroupErr != nil {
 			return errors.Wrap(_indexGroupErr, "Error serializing 'indexGroup' field")
 		}
 
 		// Simple Field (indexOffset)
 		indexOffset := uint32(m.GetIndexOffset())
-		_indexOffsetErr := writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
+		_indexOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("indexOffset", 32, uint32((indexOffset)))
 		if _indexOffsetErr != nil {
 			return errors.Wrap(_indexOffsetErr, "Error serializing 'indexOffset' field")
 		}
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
+		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
@@ -371,14 +371,14 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 
 		// Simple Field (maxDelayInMs)
 		maxDelayInMs := uint32(m.GetMaxDelayInMs())
-		_maxDelayInMsErr := writeBuffer.WriteUint32("maxDelayInMs", 32, uint32((maxDelayInMs)))
+		_maxDelayInMsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxDelayInMs", 32, uint32((maxDelayInMs)))
 		if _maxDelayInMsErr != nil {
 			return errors.Wrap(_maxDelayInMsErr, "Error serializing 'maxDelayInMs' field")
 		}
 
 		// Simple Field (cycleTimeInMs)
 		cycleTimeInMs := uint32(m.GetCycleTimeInMs())
-		_cycleTimeInMsErr := writeBuffer.WriteUint32("cycleTimeInMs", 32, uint32((cycleTimeInMs)))
+		_cycleTimeInMsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("cycleTimeInMs", 32, uint32((cycleTimeInMs)))
 		if _cycleTimeInMsErr != nil {
 			return errors.Wrap(_cycleTimeInMsErr, "Error serializing 'cycleTimeInMs' field")
 		}
@@ -393,7 +393,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -409,7 +409,7 @@ func (m *_AdsAddDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint64("reserved", 64, uint64(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

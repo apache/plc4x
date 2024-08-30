@@ -156,7 +156,7 @@ func S7ParameterUserDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Implicit Field (numItems) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
+	numItems, _numItemsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numItems", 8)
 	_ = numItems
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterUserData")
@@ -222,7 +222,7 @@ func (m *_S7ParameterUserData) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Implicit Field (numItems) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numItems := uint8(uint8(len(m.GetItems())))
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
+		_numItemsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

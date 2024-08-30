@@ -220,42 +220,42 @@ func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (eventId)
-	_eventId, _eventIdErr := readBuffer.ReadUint16("eventId", 16)
+	_eventId, _eventIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventId", 16)
 	if _eventIdErr != nil {
 		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of S7PayloadDiagnosticMessage")
 	}
 	eventId := _eventId
 
 	// Simple Field (priorityClass)
-	_priorityClass, _priorityClassErr := readBuffer.ReadUint8("priorityClass", 8)
+	_priorityClass, _priorityClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priorityClass", 8)
 	if _priorityClassErr != nil {
 		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of S7PayloadDiagnosticMessage")
 	}
 	priorityClass := _priorityClass
 
 	// Simple Field (obNumber)
-	_obNumber, _obNumberErr := readBuffer.ReadUint8("obNumber", 8)
+	_obNumber, _obNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("obNumber", 8)
 	if _obNumberErr != nil {
 		return nil, errors.Wrap(_obNumberErr, "Error parsing 'obNumber' field of S7PayloadDiagnosticMessage")
 	}
 	obNumber := _obNumber
 
 	// Simple Field (datId)
-	_datId, _datIdErr := readBuffer.ReadUint16("datId", 16)
+	_datId, _datIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("datId", 16)
 	if _datIdErr != nil {
 		return nil, errors.Wrap(_datIdErr, "Error parsing 'datId' field of S7PayloadDiagnosticMessage")
 	}
 	datId := _datId
 
 	// Simple Field (info1)
-	_info1, _info1Err := readBuffer.ReadUint16("info1", 16)
+	_info1, _info1Err := /*TODO: migrate me*/ readBuffer.ReadUint16("info1", 16)
 	if _info1Err != nil {
 		return nil, errors.Wrap(_info1Err, "Error parsing 'info1' field of S7PayloadDiagnosticMessage")
 	}
 	info1 := _info1
 
 	// Simple Field (info2)
-	_info2, _info2Err := readBuffer.ReadUint32("info2", 32)
+	_info2, _info2Err := /*TODO: migrate me*/ readBuffer.ReadUint32("info2", 32)
 	if _info2Err != nil {
 		return nil, errors.Wrap(_info2Err, "Error parsing 'info2' field of S7PayloadDiagnosticMessage")
 	}
@@ -313,42 +313,42 @@ func (m *_S7PayloadDiagnosticMessage) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (eventId)
 		eventId := uint16(m.GetEventId())
-		_eventIdErr := writeBuffer.WriteUint16("eventId", 16, uint16((eventId)))
+		_eventIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("eventId", 16, uint16((eventId)))
 		if _eventIdErr != nil {
 			return errors.Wrap(_eventIdErr, "Error serializing 'eventId' field")
 		}
 
 		// Simple Field (priorityClass)
 		priorityClass := uint8(m.GetPriorityClass())
-		_priorityClassErr := writeBuffer.WriteUint8("priorityClass", 8, uint8((priorityClass)))
+		_priorityClassErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priorityClass", 8, uint8((priorityClass)))
 		if _priorityClassErr != nil {
 			return errors.Wrap(_priorityClassErr, "Error serializing 'priorityClass' field")
 		}
 
 		// Simple Field (obNumber)
 		obNumber := uint8(m.GetObNumber())
-		_obNumberErr := writeBuffer.WriteUint8("obNumber", 8, uint8((obNumber)))
+		_obNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("obNumber", 8, uint8((obNumber)))
 		if _obNumberErr != nil {
 			return errors.Wrap(_obNumberErr, "Error serializing 'obNumber' field")
 		}
 
 		// Simple Field (datId)
 		datId := uint16(m.GetDatId())
-		_datIdErr := writeBuffer.WriteUint16("datId", 16, uint16((datId)))
+		_datIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("datId", 16, uint16((datId)))
 		if _datIdErr != nil {
 			return errors.Wrap(_datIdErr, "Error serializing 'datId' field")
 		}
 
 		// Simple Field (info1)
 		info1 := uint16(m.GetInfo1())
-		_info1Err := writeBuffer.WriteUint16("info1", 16, uint16((info1)))
+		_info1Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("info1", 16, uint16((info1)))
 		if _info1Err != nil {
 			return errors.Wrap(_info1Err, "Error serializing 'info1' field")
 		}
 
 		// Simple Field (info2)
 		info2 := uint32(m.GetInfo2())
-		_info2Err := writeBuffer.WriteUint32("info2", 32, uint32((info2)))
+		_info2Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("info2", 32, uint32((info2)))
 		if _info2Err != nil {
 			return errors.Wrap(_info2Err, "Error serializing 'info2' field")
 		}

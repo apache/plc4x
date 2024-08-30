@@ -123,7 +123,7 @@ func S7ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := readBuffer.ReadUint8("parameterType", 8)
+	parameterType, _parameterTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("parameterType", 8)
 	if _parameterTypeErr != nil {
 		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field of S7Parameter")
 	}
@@ -183,7 +183,7 @@ func (pm *_S7Parameter) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (parameterType) (Used as input to a switch field)
 	parameterType := uint8(child.GetParameterType())
-	_parameterTypeErr := writeBuffer.WriteUint8("parameterType", 8, uint8((parameterType)))
+	_parameterTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("parameterType", 8, uint8((parameterType)))
 
 	if _parameterTypeErr != nil {
 		return errors.Wrap(_parameterTypeErr, "Error serializing 'parameterType' field")

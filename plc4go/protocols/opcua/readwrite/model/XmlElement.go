@@ -127,7 +127,7 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Simple Field (length)
-	_length, _lengthErr := readBuffer.ReadInt32("length", 32)
+	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of XmlElement")
 	}
@@ -149,7 +149,7 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadString("", uint32(8), utils.WithEncoding("UTF-8"))
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadString("", uint32(8), utils.WithEncoding("UTF-8"))
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'value' field of XmlElement")
 			}
@@ -190,7 +190,7 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (length)
 	length := int32(m.GetLength())
-	_lengthErr := writeBuffer.WriteInt32("length", 32, int32((length)))
+	_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("length", 32, int32((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
@@ -201,7 +201,7 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 	for _curItem, _element := range m.GetValue() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteString("", uint32(8), _element, utils.WithEncoding("UTF-8)"))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(8), _element, utils.WithEncoding("UTF-8)"))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'value' field")
 		}

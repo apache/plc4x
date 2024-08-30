@@ -120,7 +120,7 @@ func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
-	controlType, _controlTypeErr := readBuffer.ReadUint8("controlType", 2)
+	controlType, _controlTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("controlType", 2)
 	if _controlTypeErr != nil {
 		return nil, errors.Wrap(_controlTypeErr, "Error parsing 'controlType' field of ApduControl")
 	}
@@ -174,7 +174,7 @@ func (pm *_ApduControl) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (controlType) (Used as input to a switch field)
 	controlType := uint8(child.GetControlType())
-	_controlTypeErr := writeBuffer.WriteUint8("controlType", 2, uint8((controlType)))
+	_controlTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("controlType", 2, uint8((controlType)))
 
 	if _controlTypeErr != nil {
 		return errors.Wrap(_controlTypeErr, "Error serializing 'controlType' field")

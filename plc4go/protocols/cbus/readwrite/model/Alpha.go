@@ -115,7 +115,7 @@ func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alp
 	_ = currentPos
 
 	// Simple Field (character)
-	_character, _characterErr := readBuffer.ReadByte("character")
+	_character, _characterErr := /*TODO: migrate me*/ readBuffer.ReadByte("character")
 	if _characterErr != nil {
 		return nil, errors.Wrap(_characterErr, "Error parsing 'character' field of Alpha")
 	}
@@ -155,7 +155,7 @@ func (m *_Alpha) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils
 
 	// Simple Field (character)
 	character := byte(m.GetCharacter())
-	_characterErr := writeBuffer.WriteByte("character", (character))
+	_characterErr := /*TODO: migrate me*/ writeBuffer.WriteByte("character", (character))
 	if _characterErr != nil {
 		return errors.Wrap(_characterErr, "Error serializing 'character' field")
 	}

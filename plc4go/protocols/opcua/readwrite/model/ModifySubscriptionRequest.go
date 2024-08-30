@@ -221,42 +221,42 @@ func ModifySubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of ModifySubscriptionRequest")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (requestedPublishingInterval)
-	_requestedPublishingInterval, _requestedPublishingIntervalErr := readBuffer.ReadFloat64("requestedPublishingInterval", 64)
+	_requestedPublishingInterval, _requestedPublishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("requestedPublishingInterval", 64)
 	if _requestedPublishingIntervalErr != nil {
 		return nil, errors.Wrap(_requestedPublishingIntervalErr, "Error parsing 'requestedPublishingInterval' field of ModifySubscriptionRequest")
 	}
 	requestedPublishingInterval := _requestedPublishingInterval
 
 	// Simple Field (requestedLifetimeCount)
-	_requestedLifetimeCount, _requestedLifetimeCountErr := readBuffer.ReadUint32("requestedLifetimeCount", 32)
+	_requestedLifetimeCount, _requestedLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedLifetimeCount", 32)
 	if _requestedLifetimeCountErr != nil {
 		return nil, errors.Wrap(_requestedLifetimeCountErr, "Error parsing 'requestedLifetimeCount' field of ModifySubscriptionRequest")
 	}
 	requestedLifetimeCount := _requestedLifetimeCount
 
 	// Simple Field (requestedMaxKeepAliveCount)
-	_requestedMaxKeepAliveCount, _requestedMaxKeepAliveCountErr := readBuffer.ReadUint32("requestedMaxKeepAliveCount", 32)
+	_requestedMaxKeepAliveCount, _requestedMaxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedMaxKeepAliveCount", 32)
 	if _requestedMaxKeepAliveCountErr != nil {
 		return nil, errors.Wrap(_requestedMaxKeepAliveCountErr, "Error parsing 'requestedMaxKeepAliveCount' field of ModifySubscriptionRequest")
 	}
 	requestedMaxKeepAliveCount := _requestedMaxKeepAliveCount
 
 	// Simple Field (maxNotificationsPerPublish)
-	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
+	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
 	if _maxNotificationsPerPublishErr != nil {
 		return nil, errors.Wrap(_maxNotificationsPerPublishErr, "Error parsing 'maxNotificationsPerPublish' field of ModifySubscriptionRequest")
 	}
 	maxNotificationsPerPublish := _maxNotificationsPerPublish
 
 	// Simple Field (priority)
-	_priority, _priorityErr := readBuffer.ReadUint8("priority", 8)
+	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 8)
 	if _priorityErr != nil {
 		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of ModifySubscriptionRequest")
 	}
@@ -313,42 +313,42 @@ func (m *_ModifySubscriptionRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (requestedPublishingInterval)
 		requestedPublishingInterval := float64(m.GetRequestedPublishingInterval())
-		_requestedPublishingIntervalErr := writeBuffer.WriteFloat64("requestedPublishingInterval", 64, (requestedPublishingInterval))
+		_requestedPublishingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("requestedPublishingInterval", 64, (requestedPublishingInterval))
 		if _requestedPublishingIntervalErr != nil {
 			return errors.Wrap(_requestedPublishingIntervalErr, "Error serializing 'requestedPublishingInterval' field")
 		}
 
 		// Simple Field (requestedLifetimeCount)
 		requestedLifetimeCount := uint32(m.GetRequestedLifetimeCount())
-		_requestedLifetimeCountErr := writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
+		_requestedLifetimeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedLifetimeCount", 32, uint32((requestedLifetimeCount)))
 		if _requestedLifetimeCountErr != nil {
 			return errors.Wrap(_requestedLifetimeCountErr, "Error serializing 'requestedLifetimeCount' field")
 		}
 
 		// Simple Field (requestedMaxKeepAliveCount)
 		requestedMaxKeepAliveCount := uint32(m.GetRequestedMaxKeepAliveCount())
-		_requestedMaxKeepAliveCountErr := writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
+		_requestedMaxKeepAliveCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedMaxKeepAliveCount", 32, uint32((requestedMaxKeepAliveCount)))
 		if _requestedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_requestedMaxKeepAliveCountErr, "Error serializing 'requestedMaxKeepAliveCount' field")
 		}
 
 		// Simple Field (maxNotificationsPerPublish)
 		maxNotificationsPerPublish := uint32(m.GetMaxNotificationsPerPublish())
-		_maxNotificationsPerPublishErr := writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
+		_maxNotificationsPerPublishErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxNotificationsPerPublish", 32, uint32((maxNotificationsPerPublish)))
 		if _maxNotificationsPerPublishErr != nil {
 			return errors.Wrap(_maxNotificationsPerPublishErr, "Error serializing 'maxNotificationsPerPublish' field")
 		}
 
 		// Simple Field (priority)
 		priority := uint8(m.GetPriority())
-		_priorityErr := writeBuffer.WriteUint8("priority", 8, uint8((priority)))
+		_priorityErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priority", 8, uint8((priority)))
 		if _priorityErr != nil {
 			return errors.Wrap(_priorityErr, "Error serializing 'priority' field")
 		}

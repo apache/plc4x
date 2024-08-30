@@ -175,28 +175,28 @@ func SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Simple Field (samplingInterval)
-	_samplingInterval, _samplingIntervalErr := readBuffer.ReadFloat64("samplingInterval", 64)
+	_samplingInterval, _samplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingInterval", 64)
 	if _samplingIntervalErr != nil {
 		return nil, errors.Wrap(_samplingIntervalErr, "Error parsing 'samplingInterval' field of SamplingIntervalDiagnosticsDataType")
 	}
 	samplingInterval := _samplingInterval
 
 	// Simple Field (monitoredItemCount)
-	_monitoredItemCount, _monitoredItemCountErr := readBuffer.ReadUint32("monitoredItemCount", 32)
+	_monitoredItemCount, _monitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemCount", 32)
 	if _monitoredItemCountErr != nil {
 		return nil, errors.Wrap(_monitoredItemCountErr, "Error parsing 'monitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
 	}
 	monitoredItemCount := _monitoredItemCount
 
 	// Simple Field (maxMonitoredItemCount)
-	_maxMonitoredItemCount, _maxMonitoredItemCountErr := readBuffer.ReadUint32("maxMonitoredItemCount", 32)
+	_maxMonitoredItemCount, _maxMonitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxMonitoredItemCount", 32)
 	if _maxMonitoredItemCountErr != nil {
 		return nil, errors.Wrap(_maxMonitoredItemCountErr, "Error parsing 'maxMonitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
 	}
 	maxMonitoredItemCount := _maxMonitoredItemCount
 
 	// Simple Field (disabledMonitoredItemCount)
-	_disabledMonitoredItemCount, _disabledMonitoredItemCountErr := readBuffer.ReadUint32("disabledMonitoredItemCount", 32)
+	_disabledMonitoredItemCount, _disabledMonitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("disabledMonitoredItemCount", 32)
 	if _disabledMonitoredItemCountErr != nil {
 		return nil, errors.Wrap(_disabledMonitoredItemCountErr, "Error parsing 'disabledMonitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
 	}
@@ -238,28 +238,28 @@ func (m *_SamplingIntervalDiagnosticsDataType) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (samplingInterval)
 		samplingInterval := float64(m.GetSamplingInterval())
-		_samplingIntervalErr := writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
+		_samplingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("samplingInterval", 64, (samplingInterval))
 		if _samplingIntervalErr != nil {
 			return errors.Wrap(_samplingIntervalErr, "Error serializing 'samplingInterval' field")
 		}
 
 		// Simple Field (monitoredItemCount)
 		monitoredItemCount := uint32(m.GetMonitoredItemCount())
-		_monitoredItemCountErr := writeBuffer.WriteUint32("monitoredItemCount", 32, uint32((monitoredItemCount)))
+		_monitoredItemCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("monitoredItemCount", 32, uint32((monitoredItemCount)))
 		if _monitoredItemCountErr != nil {
 			return errors.Wrap(_monitoredItemCountErr, "Error serializing 'monitoredItemCount' field")
 		}
 
 		// Simple Field (maxMonitoredItemCount)
 		maxMonitoredItemCount := uint32(m.GetMaxMonitoredItemCount())
-		_maxMonitoredItemCountErr := writeBuffer.WriteUint32("maxMonitoredItemCount", 32, uint32((maxMonitoredItemCount)))
+		_maxMonitoredItemCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxMonitoredItemCount", 32, uint32((maxMonitoredItemCount)))
 		if _maxMonitoredItemCountErr != nil {
 			return errors.Wrap(_maxMonitoredItemCountErr, "Error serializing 'maxMonitoredItemCount' field")
 		}
 
 		// Simple Field (disabledMonitoredItemCount)
 		disabledMonitoredItemCount := uint32(m.GetDisabledMonitoredItemCount())
-		_disabledMonitoredItemCountErr := writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, uint32((disabledMonitoredItemCount)))
+		_disabledMonitoredItemCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("disabledMonitoredItemCount", 32, uint32((disabledMonitoredItemCount)))
 		if _disabledMonitoredItemCountErr != nil {
 			return errors.Wrap(_disabledMonitoredItemCountErr, "Error serializing 'disabledMonitoredItemCount' field")
 		}

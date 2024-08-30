@@ -170,7 +170,7 @@ func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Cont
 	_ = currentPos
 
 	// Simple Field (state)
-	_state, _stateErr := readBuffer.ReadByte("state")
+	_state, _stateErr := /*TODO: migrate me*/ readBuffer.ReadByte("state")
 	if _stateErr != nil {
 		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of MediaTransportControlDataSourcePowerControl")
 	}
@@ -219,7 +219,7 @@ func (m *_MediaTransportControlDataSourcePowerControl) SerializeWithWriteBuffer(
 
 		// Simple Field (state)
 		state := byte(m.GetState())
-		_stateErr := writeBuffer.WriteByte("state", (state))
+		_stateErr := /*TODO: migrate me*/ writeBuffer.WriteByte("state", (state))
 		if _stateErr != nil {
 			return errors.Wrap(_stateErr, "Error serializing 'state' field")
 		}

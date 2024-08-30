@@ -134,7 +134,7 @@ func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (temperatureValue)
-	_temperatureValue, _temperatureValueErr := readBuffer.ReadInt16("temperatureValue", 16)
+	_temperatureValue, _temperatureValueErr := /*TODO: migrate me*/ readBuffer.ReadInt16("temperatureValue", 16)
 	if _temperatureValueErr != nil {
 		return nil, errors.Wrap(_temperatureValueErr, "Error parsing 'temperatureValue' field of HVACTemperature")
 	}
@@ -174,7 +174,7 @@ func (m *_HVACTemperature) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (temperatureValue)
 	temperatureValue := int16(m.GetTemperatureValue())
-	_temperatureValueErr := writeBuffer.WriteInt16("temperatureValue", 16, int16((temperatureValue)))
+	_temperatureValueErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("temperatureValue", 16, int16((temperatureValue)))
 	if _temperatureValueErr != nil {
 		return errors.Wrap(_temperatureValueErr, "Error serializing 'temperatureValue' field")
 	}

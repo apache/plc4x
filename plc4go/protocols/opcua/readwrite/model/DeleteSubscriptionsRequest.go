@@ -179,7 +179,7 @@ func DeleteSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfSubscriptionIds)
-	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := readBuffer.ReadInt32("noOfSubscriptionIds", 32)
+	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionIds", 32)
 	if _noOfSubscriptionIdsErr != nil {
 		return nil, errors.Wrap(_noOfSubscriptionIdsErr, "Error parsing 'noOfSubscriptionIds' field of DeleteSubscriptionsRequest")
 	}
@@ -201,7 +201,7 @@ func DeleteSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer u
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'subscriptionIds' field of DeleteSubscriptionsRequest")
 			}
@@ -259,7 +259,7 @@ func (m *_DeleteSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfSubscriptionIds)
 		noOfSubscriptionIds := int32(m.GetNoOfSubscriptionIds())
-		_noOfSubscriptionIdsErr := writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
+		_noOfSubscriptionIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSubscriptionIds", 32, int32((noOfSubscriptionIds)))
 		if _noOfSubscriptionIdsErr != nil {
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
@@ -270,7 +270,7 @@ func (m *_DeleteSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Conte
 		}
 		for _curItem, _element := range m.GetSubscriptionIds() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
 			}

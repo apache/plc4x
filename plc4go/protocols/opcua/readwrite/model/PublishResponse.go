@@ -275,14 +275,14 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of PublishResponse")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (noOfAvailableSequenceNumbers)
-	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
+	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
 	if _noOfAvailableSequenceNumbersErr != nil {
 		return nil, errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error parsing 'noOfAvailableSequenceNumbers' field of PublishResponse")
 	}
@@ -304,7 +304,7 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'availableSequenceNumbers' field of PublishResponse")
 			}
@@ -318,7 +318,7 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of PublishResponse")
 		}
@@ -333,7 +333,7 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (moreNotifications)
-	_moreNotifications, _moreNotificationsErr := readBuffer.ReadBit("moreNotifications")
+	_moreNotifications, _moreNotificationsErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreNotifications")
 	if _moreNotificationsErr != nil {
 		return nil, errors.Wrap(_moreNotificationsErr, "Error parsing 'moreNotifications' field of PublishResponse")
 	}
@@ -353,7 +353,7 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (noOfResults)
-	_noOfResults, _noOfResultsErr := readBuffer.ReadInt32("noOfResults", 32)
+	_noOfResults, _noOfResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfResults", 32)
 	if _noOfResultsErr != nil {
 		return nil, errors.Wrap(_noOfResultsErr, "Error parsing 'noOfResults' field of PublishResponse")
 	}
@@ -387,7 +387,7 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
+	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
 	if _noOfDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of PublishResponse")
 	}
@@ -475,14 +475,14 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (noOfAvailableSequenceNumbers)
 		noOfAvailableSequenceNumbers := int32(m.GetNoOfAvailableSequenceNumbers())
-		_noOfAvailableSequenceNumbersErr := writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
+		_noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAvailableSequenceNumbers", 32, int32((noOfAvailableSequenceNumbers)))
 		if _noOfAvailableSequenceNumbersErr != nil {
 			return errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
@@ -493,7 +493,7 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		}
 		for _curItem, _element := range m.GetAvailableSequenceNumbers() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'availableSequenceNumbers' field")
 			}
@@ -512,7 +512,7 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -520,7 +520,7 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (moreNotifications)
 		moreNotifications := bool(m.GetMoreNotifications())
-		_moreNotificationsErr := writeBuffer.WriteBit("moreNotifications", (moreNotifications))
+		_moreNotificationsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("moreNotifications", (moreNotifications))
 		if _moreNotificationsErr != nil {
 			return errors.Wrap(_moreNotificationsErr, "Error serializing 'moreNotifications' field")
 		}
@@ -539,7 +539,7 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfResults)
 		noOfResults := int32(m.GetNoOfResults())
-		_noOfResultsErr := writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
+		_noOfResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfResults", 32, int32((noOfResults)))
 		if _noOfResultsErr != nil {
 			return errors.Wrap(_noOfResultsErr, "Error serializing 'noOfResults' field")
 		}
@@ -563,7 +563,7 @@ func (m *_PublishResponse) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
+		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

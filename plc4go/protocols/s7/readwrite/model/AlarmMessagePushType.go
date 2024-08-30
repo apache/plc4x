@@ -165,14 +165,14 @@ func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (functionId)
-	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessagePushType")
 	}
 	functionId := _functionId
 
 	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	_numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessagePushType")
 	}
@@ -249,14 +249,14 @@ func (m *_AlarmMessagePushType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (functionId)
 	functionId := uint8(m.GetFunctionId())
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
+	_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (numberOfObjects)
 	numberOfObjects := uint8(m.GetNumberOfObjects())
-	_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
+	_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 	if _numberOfObjectsErr != nil {
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 	}

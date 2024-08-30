@@ -168,21 +168,21 @@ func SysexCommandPinStateResponseParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandPinStateResponse")
 	}
 	pin := _pin
 
 	// Simple Field (pinMode)
-	_pinMode, _pinModeErr := readBuffer.ReadUint8("pinMode", 8)
+	_pinMode, _pinModeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinMode", 8)
 	if _pinModeErr != nil {
 		return nil, errors.Wrap(_pinModeErr, "Error parsing 'pinMode' field of SysexCommandPinStateResponse")
 	}
 	pinMode := _pinMode
 
 	// Simple Field (pinState)
-	_pinState, _pinStateErr := readBuffer.ReadUint8("pinState", 8)
+	_pinState, _pinStateErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinState", 8)
 	if _pinStateErr != nil {
 		return nil, errors.Wrap(_pinStateErr, "Error parsing 'pinState' field of SysexCommandPinStateResponse")
 	}
@@ -223,21 +223,21 @@ func (m *_SysexCommandPinStateResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
+		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
 
 		// Simple Field (pinMode)
 		pinMode := uint8(m.GetPinMode())
-		_pinModeErr := writeBuffer.WriteUint8("pinMode", 8, uint8((pinMode)))
+		_pinModeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pinMode", 8, uint8((pinMode)))
 		if _pinModeErr != nil {
 			return errors.Wrap(_pinModeErr, "Error serializing 'pinMode' field")
 		}
 
 		// Simple Field (pinState)
 		pinState := uint8(m.GetPinState())
-		_pinStateErr := writeBuffer.WriteUint8("pinState", 8, uint8((pinState)))
+		_pinStateErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pinState", 8, uint8((pinState)))
 		if _pinStateErr != nil {
 			return errors.Wrap(_pinStateErr, "Error serializing 'pinState' field")
 		}

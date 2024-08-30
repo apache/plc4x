@@ -121,7 +121,7 @@ func TriggerControlLabelFlavourParse(ctx context.Context, theBytes []byte) (Trig
 func TriggerControlLabelFlavourParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelFlavour, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("TriggerControlLabelFlavour", 2)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("TriggerControlLabelFlavour", 2)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TriggerControlLabelFlavour")
 	}
@@ -144,7 +144,7 @@ func (e TriggerControlLabelFlavour) Serialize() ([]byte, error) {
 func (e TriggerControlLabelFlavour) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("TriggerControlLabelFlavour", 2, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TriggerControlLabelFlavour", 2, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

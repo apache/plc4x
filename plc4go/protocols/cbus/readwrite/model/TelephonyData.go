@@ -189,7 +189,7 @@ func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = commandType
 
 	// Simple Field (argument)
-	_argument, _argumentErr := readBuffer.ReadByte("argument")
+	_argument, _argumentErr := /*TODO: migrate me*/ readBuffer.ReadByte("argument")
 	if _argumentErr != nil {
 		return nil, errors.Wrap(_argumentErr, "Error parsing 'argument' field of TelephonyData")
 	}
@@ -278,7 +278,7 @@ func (pm *_TelephonyData) SerializeParent(ctx context.Context, writeBuffer utils
 
 	// Simple Field (argument)
 	argument := byte(m.GetArgument())
-	_argumentErr := writeBuffer.WriteByte("argument", (argument))
+	_argumentErr := /*TODO: migrate me*/ writeBuffer.WriteByte("argument", (argument))
 	if _argumentErr != nil {
 		return errors.Wrap(_argumentErr, "Error serializing 'argument' field")
 	}

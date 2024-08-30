@@ -156,14 +156,14 @@ func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Implicit Field (packetSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetSize, _packetSizeErr := readBuffer.ReadUint16("packetSize", 16)
+	packetSize, _packetSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetSize", 16)
 	_ = packetSize
 	if _packetSizeErr != nil {
 		return nil, errors.Wrap(_packetSizeErr, "Error parsing 'packetSize' field of ConnectedDataItem")
 	}
 
 	// Simple Field (sequenceCount)
-	_sequenceCount, _sequenceCountErr := readBuffer.ReadUint16("sequenceCount", 16)
+	_sequenceCount, _sequenceCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sequenceCount", 16)
 	if _sequenceCountErr != nil {
 		return nil, errors.Wrap(_sequenceCountErr, "Error parsing 'sequenceCount' field of ConnectedDataItem")
 	}
@@ -216,14 +216,14 @@ func (m *_ConnectedDataItem) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Implicit Field (packetSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		packetSize := uint16(uint16(m.GetService().GetLengthInBytes(ctx)) + uint16(uint16(2)))
-		_packetSizeErr := writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
+		_packetSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetSize", 16, uint16((packetSize)))
 		if _packetSizeErr != nil {
 			return errors.Wrap(_packetSizeErr, "Error serializing 'packetSize' field")
 		}
 
 		// Simple Field (sequenceCount)
 		sequenceCount := uint16(m.GetSequenceCount())
-		_sequenceCountErr := writeBuffer.WriteUint16("sequenceCount", 16, uint16((sequenceCount)))
+		_sequenceCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sequenceCount", 16, uint16((sequenceCount)))
 		if _sequenceCountErr != nil {
 			return errors.Wrap(_sequenceCountErr, "Error serializing 'sequenceCount' field")
 		}

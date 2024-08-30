@@ -180,7 +180,7 @@ func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context
 	_ = currentPos
 
 	// Const Field (meiType)
-	meiType, _meiTypeErr := readBuffer.ReadUint8("meiType", 8)
+	meiType, _meiTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("meiType", 8)
 	if _meiTypeErr != nil {
 		return nil, errors.Wrap(_meiTypeErr, "Error parsing 'meiType' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
@@ -202,7 +202,7 @@ func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context
 	}
 
 	// Simple Field (objectId)
-	_objectId, _objectIdErr := readBuffer.ReadUint8("objectId", 8)
+	_objectId, _objectIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectId", 8)
 	if _objectIdErr != nil {
 		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusPDUReadDeviceIdentificationRequest")
 	}
@@ -241,7 +241,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 		}
 
 		// Const Field (meiType)
-		_meiTypeErr := writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
+		_meiTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
 		if _meiTypeErr != nil {
 			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
 		}
@@ -260,7 +260,7 @@ func (m *_ModbusPDUReadDeviceIdentificationRequest) SerializeWithWriteBuffer(ctx
 
 		// Simple Field (objectId)
 		objectId := uint8(m.GetObjectId())
-		_objectIdErr := writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
+		_objectIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectId", 8, uint8((objectId)))
 		if _objectIdErr != nil {
 			return errors.Wrap(_objectIdErr, "Error serializing 'objectId' field")
 		}

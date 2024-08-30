@@ -171,14 +171,14 @@ func EventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := readBuffer.ReadUint32("clientHandle", 32)
+	_clientHandle, _clientHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientHandle", 32)
 	if _clientHandleErr != nil {
 		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of EventFieldList")
 	}
 	clientHandle := _clientHandle
 
 	// Simple Field (noOfEventFields)
-	_noOfEventFields, _noOfEventFieldsErr := readBuffer.ReadInt32("noOfEventFields", 32)
+	_noOfEventFields, _noOfEventFieldsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEventFields", 32)
 	if _noOfEventFieldsErr != nil {
 		return nil, errors.Wrap(_noOfEventFieldsErr, "Error parsing 'noOfEventFields' field of EventFieldList")
 	}
@@ -246,14 +246,14 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 		// Simple Field (clientHandle)
 		clientHandle := uint32(m.GetClientHandle())
-		_clientHandleErr := writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
+		_clientHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("clientHandle", 32, uint32((clientHandle)))
 		if _clientHandleErr != nil {
 			return errors.Wrap(_clientHandleErr, "Error serializing 'clientHandle' field")
 		}
 
 		// Simple Field (noOfEventFields)
 		noOfEventFields := int32(m.GetNoOfEventFields())
-		_noOfEventFieldsErr := writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
+		_noOfEventFieldsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfEventFields", 32, int32((noOfEventFields)))
 		if _noOfEventFieldsErr != nil {
 			return errors.Wrap(_noOfEventFieldsErr, "Error serializing 'noOfEventFields' field")
 		}

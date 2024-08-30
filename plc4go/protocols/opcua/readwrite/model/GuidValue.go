@@ -159,21 +159,21 @@ func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Simple Field (data1)
-	_data1, _data1Err := readBuffer.ReadUint32("data1", 32)
+	_data1, _data1Err := /*TODO: migrate me*/ readBuffer.ReadUint32("data1", 32)
 	if _data1Err != nil {
 		return nil, errors.Wrap(_data1Err, "Error parsing 'data1' field of GuidValue")
 	}
 	data1 := _data1
 
 	// Simple Field (data2)
-	_data2, _data2Err := readBuffer.ReadUint16("data2", 16)
+	_data2, _data2Err := /*TODO: migrate me*/ readBuffer.ReadUint16("data2", 16)
 	if _data2Err != nil {
 		return nil, errors.Wrap(_data2Err, "Error parsing 'data2' field of GuidValue")
 	}
 	data2 := _data2
 
 	// Simple Field (data3)
-	_data3, _data3Err := readBuffer.ReadUint16("data3", 16)
+	_data3, _data3Err := /*TODO: migrate me*/ readBuffer.ReadUint16("data3", 16)
 	if _data3Err != nil {
 		return nil, errors.Wrap(_data3Err, "Error parsing 'data3' field of GuidValue")
 	}
@@ -224,21 +224,21 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Simple Field (data1)
 	data1 := uint32(m.GetData1())
-	_data1Err := writeBuffer.WriteUint32("data1", 32, uint32((data1)))
+	_data1Err := /*TODO: migrate me*/ writeBuffer.WriteUint32("data1", 32, uint32((data1)))
 	if _data1Err != nil {
 		return errors.Wrap(_data1Err, "Error serializing 'data1' field")
 	}
 
 	// Simple Field (data2)
 	data2 := uint16(m.GetData2())
-	_data2Err := writeBuffer.WriteUint16("data2", 16, uint16((data2)))
+	_data2Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("data2", 16, uint16((data2)))
 	if _data2Err != nil {
 		return errors.Wrap(_data2Err, "Error serializing 'data2' field")
 	}
 
 	// Simple Field (data3)
 	data3 := uint16(m.GetData3())
-	_data3Err := writeBuffer.WriteUint16("data3", 16, uint16((data3)))
+	_data3Err := /*TODO: migrate me*/ writeBuffer.WriteUint16("data3", 16, uint16((data3)))
 	if _data3Err != nil {
 		return errors.Wrap(_data3Err, "Error serializing 'data3' field")
 	}

@@ -128,7 +128,7 @@ func ApduDataGroupValueReadParseWithBuffer(ctx context.Context, readBuffer utils
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 6)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ApduDataGroupValueRead")
 		}
@@ -185,7 +185,7 @@ func (m *_ApduDataGroupValueRead) SerializeWithWriteBuffer(ctx context.Context, 
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

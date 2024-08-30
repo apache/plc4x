@@ -174,7 +174,7 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Const Field (pipe)
-	pipe, _pipeErr := readBuffer.ReadByte("pipe")
+	pipe, _pipeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("pipe")
 	if _pipeErr != nil {
 		return nil, errors.Wrap(_pipeErr, "Error parsing 'pipe' field of RequestSmartConnectShortcut")
 	}
@@ -201,7 +201,7 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 	var secondPipe *byte = nil
 	if bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("secondPipe")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("secondPipe")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -248,7 +248,7 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 		}
 
 		// Const Field (pipe)
-		_pipeErr := writeBuffer.WriteByte("pipe", 0x7C)
+		_pipeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("pipe", 0x7C)
 		if _pipeErr != nil {
 			return errors.Wrap(_pipeErr, "Error serializing 'pipe' field")
 		}
@@ -257,7 +257,7 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 		var secondPipe *byte = nil
 		if m.GetSecondPipe() != nil {
 			secondPipe = m.GetSecondPipe()
-			_secondPipeErr := writeBuffer.WriteByte("secondPipe", *(secondPipe))
+			_secondPipeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("secondPipe", *(secondPipe))
 			if _secondPipeErr != nil {
 				return errors.Wrap(_secondPipeErr, "Error serializing 'secondPipe' field")
 			}

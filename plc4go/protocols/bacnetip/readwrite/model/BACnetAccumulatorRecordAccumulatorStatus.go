@@ -127,7 +127,7 @@ func BACnetAccumulatorRecordAccumulatorStatusParse(ctx context.Context, theBytes
 func BACnetAccumulatorRecordAccumulatorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecordAccumulatorStatus, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("BACnetAccumulatorRecordAccumulatorStatus", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetAccumulatorRecordAccumulatorStatus")
 	}
@@ -150,7 +150,7 @@ func (e BACnetAccumulatorRecordAccumulatorStatus) Serialize() ([]byte, error) {
 func (e BACnetAccumulatorRecordAccumulatorStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetAccumulatorRecordAccumulatorStatus", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

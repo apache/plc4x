@@ -184,7 +184,7 @@ func QueryNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of QueryNextRequest")
 		}
@@ -199,7 +199,7 @@ func QueryNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (releaseContinuationPoint)
-	_releaseContinuationPoint, _releaseContinuationPointErr := readBuffer.ReadBit("releaseContinuationPoint")
+	_releaseContinuationPoint, _releaseContinuationPointErr := /*TODO: migrate me*/ readBuffer.ReadBit("releaseContinuationPoint")
 	if _releaseContinuationPointErr != nil {
 		return nil, errors.Wrap(_releaseContinuationPointErr, "Error parsing 'releaseContinuationPoint' field of QueryNextRequest")
 	}
@@ -274,7 +274,7 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -282,7 +282,7 @@ func (m *_QueryNextRequest) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (releaseContinuationPoint)
 		releaseContinuationPoint := bool(m.GetReleaseContinuationPoint())
-		_releaseContinuationPointErr := writeBuffer.WriteBit("releaseContinuationPoint", (releaseContinuationPoint))
+		_releaseContinuationPointErr := /*TODO: migrate me*/ writeBuffer.WriteBit("releaseContinuationPoint", (releaseContinuationPoint))
 		if _releaseContinuationPointErr != nil {
 			return errors.Wrap(_releaseContinuationPointErr, "Error serializing 'releaseContinuationPoint' field")
 		}

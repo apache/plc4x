@@ -174,7 +174,7 @@ func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (minutesSinceSunday12AM)
-	_minutesSinceSunday12AM, _minutesSinceSunday12AMErr := readBuffer.ReadUint16("minutesSinceSunday12AM", 16)
+	_minutesSinceSunday12AM, _minutesSinceSunday12AMErr := /*TODO: migrate me*/ readBuffer.ReadUint16("minutesSinceSunday12AM", 16)
 	if _minutesSinceSunday12AMErr != nil {
 		return nil, errors.Wrap(_minutesSinceSunday12AMErr, "Error parsing 'minutesSinceSunday12AM' field of HVACStartTime")
 	}
@@ -234,7 +234,7 @@ func (m *_HVACStartTime) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (minutesSinceSunday12AM)
 	minutesSinceSunday12AM := uint16(m.GetMinutesSinceSunday12AM())
-	_minutesSinceSunday12AMErr := writeBuffer.WriteUint16("minutesSinceSunday12AM", 16, uint16((minutesSinceSunday12AM)))
+	_minutesSinceSunday12AMErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("minutesSinceSunday12AM", 16, uint16((minutesSinceSunday12AM)))
 	if _minutesSinceSunday12AMErr != nil {
 		return errors.Wrap(_minutesSinceSunday12AMErr, "Error serializing 'minutesSinceSunday12AM' field")
 	}

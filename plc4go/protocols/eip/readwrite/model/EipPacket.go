@@ -181,27 +181,27 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	_ = currentPos
 
 	// Discriminator Field (command) (Used as input to a switch field)
-	command, _commandErr := readBuffer.ReadUint16("command", 16)
+	command, _commandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("command", 16)
 	if _commandErr != nil {
 		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of EipPacket")
 	}
 
 	// Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	packetLength, _packetLengthErr := readBuffer.ReadUint16("packetLength", 16)
+	packetLength, _packetLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("packetLength", 16)
 	_ = packetLength
 	if _packetLengthErr != nil {
 		return nil, errors.Wrap(_packetLengthErr, "Error parsing 'packetLength' field of EipPacket")
 	}
 
 	// Simple Field (sessionHandle)
-	_sessionHandle, _sessionHandleErr := readBuffer.ReadUint32("sessionHandle", 32)
+	_sessionHandle, _sessionHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionHandle", 32)
 	if _sessionHandleErr != nil {
 		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of EipPacket")
 	}
 	sessionHandle := _sessionHandle
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint32("status", 32)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint32("status", 32)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of EipPacket")
 	}
@@ -214,7 +214,7 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	}
 
 	// Simple Field (options)
-	_options, _optionsErr := readBuffer.ReadUint32("options", 32)
+	_options, _optionsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("options", 32)
 	if _optionsErr != nil {
 		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of EipPacket")
 	}
@@ -287,7 +287,7 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Discriminator Field (command) (Used as input to a switch field)
 	command := uint16(child.GetCommand())
-	_commandErr := writeBuffer.WriteUint16("command", 16, uint16((command)))
+	_commandErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("command", 16, uint16((command)))
 
 	if _commandErr != nil {
 		return errors.Wrap(_commandErr, "Error serializing 'command' field")
@@ -295,21 +295,21 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Implicit Field (packetLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	packetLength := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(24)))
-	_packetLengthErr := writeBuffer.WriteUint16("packetLength", 16, uint16((packetLength)))
+	_packetLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("packetLength", 16, uint16((packetLength)))
 	if _packetLengthErr != nil {
 		return errors.Wrap(_packetLengthErr, "Error serializing 'packetLength' field")
 	}
 
 	// Simple Field (sessionHandle)
 	sessionHandle := uint32(m.GetSessionHandle())
-	_sessionHandleErr := writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
+	_sessionHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sessionHandle", 32, uint32((sessionHandle)))
 	if _sessionHandleErr != nil {
 		return errors.Wrap(_sessionHandleErr, "Error serializing 'sessionHandle' field")
 	}
 
 	// Simple Field (status)
 	status := uint32(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint32("status", 32, uint32((status)))
+	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("status", 32, uint32((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
@@ -322,7 +322,7 @@ func (pm *_EipPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 
 	// Simple Field (options)
 	options := uint32(m.GetOptions())
-	_optionsErr := writeBuffer.WriteUint32("options", 32, uint32((options)))
+	_optionsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("options", 32, uint32((options)))
 	if _optionsErr != nil {
 		return errors.Wrap(_optionsErr, "Error serializing 'options' field")
 	}

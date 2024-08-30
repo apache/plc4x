@@ -185,35 +185,35 @@ func ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx context.Context, readB
 	_ = currentPos
 
 	// Simple Field (yearHigh)
-	_yearHigh, _yearHighErr := readBuffer.ReadByte("yearHigh")
+	_yearHigh, _yearHighErr := /*TODO: migrate me*/ readBuffer.ReadByte("yearHigh")
 	if _yearHighErr != nil {
 		return nil, errors.Wrap(_yearHighErr, "Error parsing 'yearHigh' field of ClockAndTimekeepingDataUpdateDate")
 	}
 	yearHigh := _yearHigh
 
 	// Simple Field (yearLow)
-	_yearLow, _yearLowErr := readBuffer.ReadByte("yearLow")
+	_yearLow, _yearLowErr := /*TODO: migrate me*/ readBuffer.ReadByte("yearLow")
 	if _yearLowErr != nil {
 		return nil, errors.Wrap(_yearLowErr, "Error parsing 'yearLow' field of ClockAndTimekeepingDataUpdateDate")
 	}
 	yearLow := _yearLow
 
 	// Simple Field (month)
-	_month, _monthErr := readBuffer.ReadUint8("month", 8)
+	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
 	if _monthErr != nil {
 		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of ClockAndTimekeepingDataUpdateDate")
 	}
 	month := _month
 
 	// Simple Field (day)
-	_day, _dayErr := readBuffer.ReadUint8("day", 8)
+	_day, _dayErr := /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8)
 	if _dayErr != nil {
 		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of ClockAndTimekeepingDataUpdateDate")
 	}
 	day := _day
 
 	// Simple Field (dayOfWeek)
-	_dayOfWeek, _dayOfWeekErr := readBuffer.ReadUint8("dayOfWeek", 8)
+	_dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 8)
 	if _dayOfWeekErr != nil {
 		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of ClockAndTimekeepingDataUpdateDate")
 	}
@@ -256,35 +256,35 @@ func (m *_ClockAndTimekeepingDataUpdateDate) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (yearHigh)
 		yearHigh := byte(m.GetYearHigh())
-		_yearHighErr := writeBuffer.WriteByte("yearHigh", (yearHigh))
+		_yearHighErr := /*TODO: migrate me*/ writeBuffer.WriteByte("yearHigh", (yearHigh))
 		if _yearHighErr != nil {
 			return errors.Wrap(_yearHighErr, "Error serializing 'yearHigh' field")
 		}
 
 		// Simple Field (yearLow)
 		yearLow := byte(m.GetYearLow())
-		_yearLowErr := writeBuffer.WriteByte("yearLow", (yearLow))
+		_yearLowErr := /*TODO: migrate me*/ writeBuffer.WriteByte("yearLow", (yearLow))
 		if _yearLowErr != nil {
 			return errors.Wrap(_yearLowErr, "Error serializing 'yearLow' field")
 		}
 
 		// Simple Field (month)
 		month := uint8(m.GetMonth())
-		_monthErr := writeBuffer.WriteUint8("month", 8, uint8((month)))
+		_monthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("month", 8, uint8((month)))
 		if _monthErr != nil {
 			return errors.Wrap(_monthErr, "Error serializing 'month' field")
 		}
 
 		// Simple Field (day)
 		day := uint8(m.GetDay())
-		_dayErr := writeBuffer.WriteUint8("day", 8, uint8((day)))
+		_dayErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("day", 8, uint8((day)))
 		if _dayErr != nil {
 			return errors.Wrap(_dayErr, "Error serializing 'day' field")
 		}
 
 		// Simple Field (dayOfWeek)
 		dayOfWeek := uint8(m.GetDayOfWeek())
-		_dayOfWeekErr := writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
+		_dayOfWeekErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dayOfWeek", 8, uint8((dayOfWeek)))
 		if _dayOfWeekErr != nil {
 			return errors.Wrap(_dayOfWeekErr, "Error serializing 'dayOfWeek' field")
 		}

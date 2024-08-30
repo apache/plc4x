@@ -192,7 +192,7 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (actionSelector)
-	_actionSelector, _actionSelectorErr := readBuffer.ReadByte("actionSelector")
+	_actionSelector, _actionSelectorErr := /*TODO: migrate me*/ readBuffer.ReadByte("actionSelector")
 	if _actionSelectorErr != nil {
 		return nil, errors.Wrap(_actionSelectorErr, "Error parsing 'actionSelector' field of TriggerControlDataLabel")
 	}
@@ -274,7 +274,7 @@ func (m *_TriggerControlDataLabel) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (actionSelector)
 		actionSelector := byte(m.GetActionSelector())
-		_actionSelectorErr := writeBuffer.WriteByte("actionSelector", (actionSelector))
+		_actionSelectorErr := /*TODO: migrate me*/ writeBuffer.WriteByte("actionSelector", (actionSelector))
 		if _actionSelectorErr != nil {
 			return errors.Wrap(_actionSelectorErr, "Error serializing 'actionSelector' field")
 		}

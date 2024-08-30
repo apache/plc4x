@@ -189,7 +189,7 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (noOfElementResults)
-	_noOfElementResults, _noOfElementResultsErr := readBuffer.ReadInt32("noOfElementResults", 32)
+	_noOfElementResults, _noOfElementResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElementResults", 32)
 	if _noOfElementResultsErr != nil {
 		return nil, errors.Wrap(_noOfElementResultsErr, "Error parsing 'noOfElementResults' field of ContentFilterResult")
 	}
@@ -223,7 +223,7 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfElementDiagnosticInfos)
-	_noOfElementDiagnosticInfos, _noOfElementDiagnosticInfosErr := readBuffer.ReadInt32("noOfElementDiagnosticInfos", 32)
+	_noOfElementDiagnosticInfos, _noOfElementDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElementDiagnosticInfos", 32)
 	if _noOfElementDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfElementDiagnosticInfosErr, "Error parsing 'noOfElementDiagnosticInfos' field of ContentFilterResult")
 	}
@@ -292,7 +292,7 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfElementResults)
 		noOfElementResults := int32(m.GetNoOfElementResults())
-		_noOfElementResultsErr := writeBuffer.WriteInt32("noOfElementResults", 32, int32((noOfElementResults)))
+		_noOfElementResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElementResults", 32, int32((noOfElementResults)))
 		if _noOfElementResultsErr != nil {
 			return errors.Wrap(_noOfElementResultsErr, "Error serializing 'noOfElementResults' field")
 		}
@@ -316,7 +316,7 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfElementDiagnosticInfos)
 		noOfElementDiagnosticInfos := int32(m.GetNoOfElementDiagnosticInfos())
-		_noOfElementDiagnosticInfosErr := writeBuffer.WriteInt32("noOfElementDiagnosticInfos", 32, int32((noOfElementDiagnosticInfos)))
+		_noOfElementDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfElementDiagnosticInfos", 32, int32((noOfElementDiagnosticInfos)))
 		if _noOfElementDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfElementDiagnosticInfosErr, "Error serializing 'noOfElementDiagnosticInfos' field")
 		}

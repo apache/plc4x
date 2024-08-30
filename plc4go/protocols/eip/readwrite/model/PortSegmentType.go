@@ -120,7 +120,7 @@ func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Discriminator Field (extendedLinkAddress) (Used as input to a switch field)
-	extendedLinkAddress, _extendedLinkAddressErr := readBuffer.ReadBit("extendedLinkAddress")
+	extendedLinkAddress, _extendedLinkAddressErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("extendedLinkAddress")
 	if _extendedLinkAddressErr != nil {
 		return nil, errors.Wrap(_extendedLinkAddressErr, "Error parsing 'extendedLinkAddress' field of PortSegmentType")
 	}
@@ -170,7 +170,7 @@ func (pm *_PortSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 
 	// Discriminator Field (extendedLinkAddress) (Used as input to a switch field)
 	extendedLinkAddress := bool(child.GetExtendedLinkAddress())
-	_extendedLinkAddressErr := writeBuffer.WriteBit("extendedLinkAddress", (extendedLinkAddress))
+	_extendedLinkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteBit("extendedLinkAddress", (extendedLinkAddress))
 
 	if _extendedLinkAddressErr != nil {
 		return errors.Wrap(_extendedLinkAddressErr, "Error serializing 'extendedLinkAddress' field")

@@ -158,7 +158,7 @@ func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Simple Field (networkNumber)
-	_networkNumber, _networkNumberErr := readBuffer.ReadUint16("networkNumber", 16)
+	_networkNumber, _networkNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("networkNumber", 16)
 	if _networkNumberErr != nil {
 		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of NLMNetworkNumberIs")
 	}
@@ -167,7 +167,7 @@ func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NLMNetworkNumberIs")
 		}
@@ -182,7 +182,7 @@ func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (networkNumberConfigured)
-	_networkNumberConfigured, _networkNumberConfiguredErr := readBuffer.ReadBit("networkNumberConfigured")
+	_networkNumberConfigured, _networkNumberConfiguredErr := /*TODO: migrate me*/ readBuffer.ReadBit("networkNumberConfigured")
 	if _networkNumberConfiguredErr != nil {
 		return nil, errors.Wrap(_networkNumberConfiguredErr, "Error parsing 'networkNumberConfigured' field of NLMNetworkNumberIs")
 	}
@@ -225,7 +225,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (networkNumber)
 		networkNumber := uint16(m.GetNetworkNumber())
-		_networkNumberErr := writeBuffer.WriteUint16("networkNumber", 16, uint16((networkNumber)))
+		_networkNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("networkNumber", 16, uint16((networkNumber)))
 		if _networkNumberErr != nil {
 			return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 		}
@@ -240,7 +240,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -248,7 +248,7 @@ func (m *_NLMNetworkNumberIs) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (networkNumberConfigured)
 		networkNumberConfigured := bool(m.GetNetworkNumberConfigured())
-		_networkNumberConfiguredErr := writeBuffer.WriteBit("networkNumberConfigured", (networkNumberConfigured))
+		_networkNumberConfiguredErr := /*TODO: migrate me*/ writeBuffer.WriteBit("networkNumberConfigured", (networkNumberConfigured))
 		if _networkNumberConfiguredErr != nil {
 			return errors.Wrap(_networkNumberConfiguredErr, "Error serializing 'networkNumberConfigured' field")
 		}

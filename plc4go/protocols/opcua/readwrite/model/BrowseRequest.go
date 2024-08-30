@@ -219,14 +219,14 @@ func BrowseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 
 	// Simple Field (requestedMaxReferencesPerNode)
-	_requestedMaxReferencesPerNode, _requestedMaxReferencesPerNodeErr := readBuffer.ReadUint32("requestedMaxReferencesPerNode", 32)
+	_requestedMaxReferencesPerNode, _requestedMaxReferencesPerNodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedMaxReferencesPerNode", 32)
 	if _requestedMaxReferencesPerNodeErr != nil {
 		return nil, errors.Wrap(_requestedMaxReferencesPerNodeErr, "Error parsing 'requestedMaxReferencesPerNode' field of BrowseRequest")
 	}
 	requestedMaxReferencesPerNode := _requestedMaxReferencesPerNode
 
 	// Simple Field (noOfNodesToBrowse)
-	_noOfNodesToBrowse, _noOfNodesToBrowseErr := readBuffer.ReadInt32("noOfNodesToBrowse", 32)
+	_noOfNodesToBrowse, _noOfNodesToBrowseErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToBrowse", 32)
 	if _noOfNodesToBrowseErr != nil {
 		return nil, errors.Wrap(_noOfNodesToBrowseErr, "Error parsing 'noOfNodesToBrowse' field of BrowseRequest")
 	}
@@ -320,14 +320,14 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (requestedMaxReferencesPerNode)
 		requestedMaxReferencesPerNode := uint32(m.GetRequestedMaxReferencesPerNode())
-		_requestedMaxReferencesPerNodeErr := writeBuffer.WriteUint32("requestedMaxReferencesPerNode", 32, uint32((requestedMaxReferencesPerNode)))
+		_requestedMaxReferencesPerNodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestedMaxReferencesPerNode", 32, uint32((requestedMaxReferencesPerNode)))
 		if _requestedMaxReferencesPerNodeErr != nil {
 			return errors.Wrap(_requestedMaxReferencesPerNodeErr, "Error serializing 'requestedMaxReferencesPerNode' field")
 		}
 
 		// Simple Field (noOfNodesToBrowse)
 		noOfNodesToBrowse := int32(m.GetNoOfNodesToBrowse())
-		_noOfNodesToBrowseErr := writeBuffer.WriteInt32("noOfNodesToBrowse", 32, int32((noOfNodesToBrowse)))
+		_noOfNodesToBrowseErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNodesToBrowse", 32, int32((noOfNodesToBrowse)))
 		if _noOfNodesToBrowseErr != nil {
 			return errors.Wrap(_noOfNodesToBrowseErr, "Error serializing 'noOfNodesToBrowse' field")
 		}

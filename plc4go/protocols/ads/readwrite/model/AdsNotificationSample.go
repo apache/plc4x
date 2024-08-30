@@ -137,14 +137,14 @@ func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsNotificationSample")
 	}
 	notificationHandle := _notificationHandle
 
 	// Simple Field (sampleSize)
-	_sampleSize, _sampleSizeErr := readBuffer.ReadUint32("sampleSize", 32)
+	_sampleSize, _sampleSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sampleSize", 32)
 	if _sampleSizeErr != nil {
 		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field of AdsNotificationSample")
 	}
@@ -187,14 +187,14 @@ func (m *_AdsNotificationSample) SerializeWithWriteBuffer(ctx context.Context, w
 
 	// Simple Field (notificationHandle)
 	notificationHandle := uint32(m.GetNotificationHandle())
-	_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
+	_notificationHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
 	if _notificationHandleErr != nil {
 		return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 	}
 
 	// Simple Field (sampleSize)
 	sampleSize := uint32(m.GetSampleSize())
-	_sampleSizeErr := writeBuffer.WriteUint32("sampleSize", 32, uint32((sampleSize)))
+	_sampleSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sampleSize", 32, uint32((sampleSize)))
 	if _sampleSizeErr != nil {
 		return errors.Wrap(_sampleSizeErr, "Error serializing 'sampleSize' field")
 	}

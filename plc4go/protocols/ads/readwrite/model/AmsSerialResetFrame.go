@@ -165,42 +165,42 @@ func AmsSerialResetFrameParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (magicCookie)
-	_magicCookie, _magicCookieErr := readBuffer.ReadUint16("magicCookie", 16)
+	_magicCookie, _magicCookieErr := /*TODO: migrate me*/ readBuffer.ReadUint16("magicCookie", 16)
 	if _magicCookieErr != nil {
 		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field of AmsSerialResetFrame")
 	}
 	magicCookie := _magicCookie
 
 	// Simple Field (transmitterAddress)
-	_transmitterAddress, _transmitterAddressErr := readBuffer.ReadInt8("transmitterAddress", 8)
+	_transmitterAddress, _transmitterAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("transmitterAddress", 8)
 	if _transmitterAddressErr != nil {
 		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field of AmsSerialResetFrame")
 	}
 	transmitterAddress := _transmitterAddress
 
 	// Simple Field (receiverAddress)
-	_receiverAddress, _receiverAddressErr := readBuffer.ReadInt8("receiverAddress", 8)
+	_receiverAddress, _receiverAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("receiverAddress", 8)
 	if _receiverAddressErr != nil {
 		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field of AmsSerialResetFrame")
 	}
 	receiverAddress := _receiverAddress
 
 	// Simple Field (fragmentNumber)
-	_fragmentNumber, _fragmentNumberErr := readBuffer.ReadInt8("fragmentNumber", 8)
+	_fragmentNumber, _fragmentNumberErr := /*TODO: migrate me*/ readBuffer.ReadInt8("fragmentNumber", 8)
 	if _fragmentNumberErr != nil {
 		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field of AmsSerialResetFrame")
 	}
 	fragmentNumber := _fragmentNumber
 
 	// Simple Field (length)
-	_length, _lengthErr := readBuffer.ReadInt8("length", 8)
+	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadInt8("length", 8)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsSerialResetFrame")
 	}
 	length := _length
 
 	// Simple Field (crc)
-	_crc, _crcErr := readBuffer.ReadUint16("crc", 16)
+	_crc, _crcErr := /*TODO: migrate me*/ readBuffer.ReadUint16("crc", 16)
 	if _crcErr != nil {
 		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of AmsSerialResetFrame")
 	}
@@ -240,42 +240,42 @@ func (m *_AmsSerialResetFrame) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (magicCookie)
 	magicCookie := uint16(m.GetMagicCookie())
-	_magicCookieErr := writeBuffer.WriteUint16("magicCookie", 16, uint16((magicCookie)))
+	_magicCookieErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("magicCookie", 16, uint16((magicCookie)))
 	if _magicCookieErr != nil {
 		return errors.Wrap(_magicCookieErr, "Error serializing 'magicCookie' field")
 	}
 
 	// Simple Field (transmitterAddress)
 	transmitterAddress := int8(m.GetTransmitterAddress())
-	_transmitterAddressErr := writeBuffer.WriteInt8("transmitterAddress", 8, int8((transmitterAddress)))
+	_transmitterAddressErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("transmitterAddress", 8, int8((transmitterAddress)))
 	if _transmitterAddressErr != nil {
 		return errors.Wrap(_transmitterAddressErr, "Error serializing 'transmitterAddress' field")
 	}
 
 	// Simple Field (receiverAddress)
 	receiverAddress := int8(m.GetReceiverAddress())
-	_receiverAddressErr := writeBuffer.WriteInt8("receiverAddress", 8, int8((receiverAddress)))
+	_receiverAddressErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("receiverAddress", 8, int8((receiverAddress)))
 	if _receiverAddressErr != nil {
 		return errors.Wrap(_receiverAddressErr, "Error serializing 'receiverAddress' field")
 	}
 
 	// Simple Field (fragmentNumber)
 	fragmentNumber := int8(m.GetFragmentNumber())
-	_fragmentNumberErr := writeBuffer.WriteInt8("fragmentNumber", 8, int8((fragmentNumber)))
+	_fragmentNumberErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("fragmentNumber", 8, int8((fragmentNumber)))
 	if _fragmentNumberErr != nil {
 		return errors.Wrap(_fragmentNumberErr, "Error serializing 'fragmentNumber' field")
 	}
 
 	// Simple Field (length)
 	length := int8(m.GetLength())
-	_lengthErr := writeBuffer.WriteInt8("length", 8, int8((length)))
+	_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("length", 8, int8((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
 	// Simple Field (crc)
 	crc := uint16(m.GetCrc())
-	_crcErr := writeBuffer.WriteUint16("crc", 16, uint16((crc)))
+	_crcErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("crc", 16, uint16((crc)))
 	if _crcErr != nil {
 		return errors.Wrap(_crcErr, "Error serializing 'crc' field")
 	}

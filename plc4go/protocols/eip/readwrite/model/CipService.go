@@ -131,13 +131,13 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	_ = currentPos
 
 	// Discriminator Field (response) (Used as input to a switch field)
-	response, _responseErr := readBuffer.ReadBit("response")
+	response, _responseErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("response")
 	if _responseErr != nil {
 		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CipService")
 	}
 
 	// Discriminator Field (service) (Used as input to a switch field)
-	service, _serviceErr := readBuffer.ReadUint8("service", 7)
+	service, _serviceErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("service", 7)
 	if _serviceErr != nil {
 		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipService")
 	}
@@ -233,7 +233,7 @@ func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (response) (Used as input to a switch field)
 	response := bool(child.GetResponse())
-	_responseErr := writeBuffer.WriteBit("response", (response))
+	_responseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("response", (response))
 
 	if _responseErr != nil {
 		return errors.Wrap(_responseErr, "Error serializing 'response' field")
@@ -241,7 +241,7 @@ func (pm *_CipService) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (service) (Used as input to a switch field)
 	service := uint8(child.GetService())
-	_serviceErr := writeBuffer.WriteUint8("service", 7, uint8((service)))
+	_serviceErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("service", 7, uint8((service)))
 
 	if _serviceErr != nil {
 		return errors.Wrap(_serviceErr, "Error serializing 'service' field")

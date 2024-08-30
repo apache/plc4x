@@ -139,7 +139,7 @@ func ServerErrorReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Const Field (errorMarker)
-	errorMarker, _errorMarkerErr := readBuffer.ReadByte("errorMarker")
+	errorMarker, _errorMarkerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("errorMarker")
 	if _errorMarkerErr != nil {
 		return nil, errors.Wrap(_errorMarkerErr, "Error parsing 'errorMarker' field of ServerErrorReply")
 	}
@@ -181,7 +181,7 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 		}
 
 		// Const Field (errorMarker)
-		_errorMarkerErr := writeBuffer.WriteByte("errorMarker", 0x21)
+		_errorMarkerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("errorMarker", 0x21)
 		if _errorMarkerErr != nil {
 			return errors.Wrap(_errorMarkerErr, "Error serializing 'errorMarker' field")
 		}

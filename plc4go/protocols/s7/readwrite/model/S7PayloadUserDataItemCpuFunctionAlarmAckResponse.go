@@ -170,14 +170,14 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context
 	_ = currentPos
 
 	// Simple Field (functionId)
-	_functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 	}
 	functionId := _functionId
 
 	// Implicit Field (numberOfObjects) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numberOfObjects, _numberOfObjectsErr := readBuffer.ReadUint8("numberOfObjects", 8)
+	numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
 	_ = numberOfObjects
 	if _numberOfObjectsErr != nil {
 		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
@@ -199,7 +199,7 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'messageObjects' field of S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
 			}
@@ -244,14 +244,14 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 
 		// Simple Field (functionId)
 		functionId := uint8(m.GetFunctionId())
-		_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
+		_functionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8((functionId)))
 		if _functionIdErr != nil {
 			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		numberOfObjects := uint8(uint8(len(m.GetMessageObjects())))
-		_numberOfObjectsErr := writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
+		_numberOfObjectsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfObjects", 8, uint8((numberOfObjects)))
 		if _numberOfObjectsErr != nil {
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 		}
@@ -262,7 +262,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckResponse) SerializeWithWriteBu
 		}
 		for _curItem, _element := range m.GetMessageObjects() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
 			}

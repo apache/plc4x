@@ -140,7 +140,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	_ = currentPos
 
 	// Implicit Field (serviceNb) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	serviceNb, _serviceNbErr := readBuffer.ReadUint16("serviceNb", 16)
+	serviceNb, _serviceNbErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serviceNb", 16)
 	_ = serviceNb
 	if _serviceNbErr != nil {
 		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of Services")
@@ -162,7 +162,7 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint16("", 16)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("", 16)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'offsets' field of Services")
 			}
@@ -231,7 +231,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 	// Implicit Field (serviceNb) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	serviceNb := uint16(uint16(len(m.GetOffsets())))
-	_serviceNbErr := writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
+	_serviceNbErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serviceNb", 16, uint16((serviceNb)))
 	if _serviceNbErr != nil {
 		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 	}
@@ -242,7 +242,7 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 	}
 	for _curItem, _element := range m.GetOffsets() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint16("", 16, uint16(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
 		}

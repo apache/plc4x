@@ -180,7 +180,7 @@ func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (repeatType)
-	_repeatType, _repeatTypeErr := readBuffer.ReadByte("repeatType")
+	_repeatType, _repeatTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("repeatType")
 	if _repeatTypeErr != nil {
 		return nil, errors.Wrap(_repeatTypeErr, "Error parsing 'repeatType' field of MediaTransportControlDataRepeatOnOff")
 	}
@@ -234,7 +234,7 @@ func (m *_MediaTransportControlDataRepeatOnOff) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (repeatType)
 		repeatType := byte(m.GetRepeatType())
-		_repeatTypeErr := writeBuffer.WriteByte("repeatType", (repeatType))
+		_repeatTypeErr := /*TODO: migrate me*/ writeBuffer.WriteByte("repeatType", (repeatType))
 		if _repeatTypeErr != nil {
 			return errors.Wrap(_repeatTypeErr, "Error serializing 'repeatType' field")
 		}

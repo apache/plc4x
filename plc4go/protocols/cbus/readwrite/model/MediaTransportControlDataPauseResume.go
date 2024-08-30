@@ -170,7 +170,7 @@ func MediaTransportControlDataPauseResumeParseWithBuffer(ctx context.Context, re
 	_ = currentPos
 
 	// Simple Field (operation)
-	_operation, _operationErr := readBuffer.ReadByte("operation")
+	_operation, _operationErr := /*TODO: migrate me*/ readBuffer.ReadByte("operation")
 	if _operationErr != nil {
 		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataPauseResume")
 	}
@@ -219,7 +219,7 @@ func (m *_MediaTransportControlDataPauseResume) SerializeWithWriteBuffer(ctx con
 
 		// Simple Field (operation)
 		operation := byte(m.GetOperation())
-		_operationErr := writeBuffer.WriteByte("operation", (operation))
+		_operationErr := /*TODO: migrate me*/ writeBuffer.WriteByte("operation", (operation))
 		if _operationErr != nil {
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}

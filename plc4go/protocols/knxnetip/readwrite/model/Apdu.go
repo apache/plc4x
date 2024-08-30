@@ -153,20 +153,20 @@ func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataL
 	_ = currentPos
 
 	// Discriminator Field (control) (Used as input to a switch field)
-	control, _controlErr := readBuffer.ReadUint8("control", 1)
+	control, _controlErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("control", 1)
 	if _controlErr != nil {
 		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of Apdu")
 	}
 
 	// Simple Field (numbered)
-	_numbered, _numberedErr := readBuffer.ReadBit("numbered")
+	_numbered, _numberedErr := /*TODO: migrate me*/ readBuffer.ReadBit("numbered")
 	if _numberedErr != nil {
 		return nil, errors.Wrap(_numberedErr, "Error parsing 'numbered' field of Apdu")
 	}
 	numbered := _numbered
 
 	// Simple Field (counter)
-	_counter, _counterErr := readBuffer.ReadUint8("counter", 4)
+	_counter, _counterErr := /*TODO: migrate me*/ readBuffer.ReadUint8("counter", 4)
 	if _counterErr != nil {
 		return nil, errors.Wrap(_counterErr, "Error parsing 'counter' field of Apdu")
 	}
@@ -217,7 +217,7 @@ func (pm *_Apdu) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Discriminator Field (control) (Used as input to a switch field)
 	control := uint8(child.GetControl())
-	_controlErr := writeBuffer.WriteUint8("control", 1, uint8((control)))
+	_controlErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("control", 1, uint8((control)))
 
 	if _controlErr != nil {
 		return errors.Wrap(_controlErr, "Error serializing 'control' field")
@@ -225,14 +225,14 @@ func (pm *_Apdu) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 
 	// Simple Field (numbered)
 	numbered := bool(m.GetNumbered())
-	_numberedErr := writeBuffer.WriteBit("numbered", (numbered))
+	_numberedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("numbered", (numbered))
 	if _numberedErr != nil {
 		return errors.Wrap(_numberedErr, "Error serializing 'numbered' field")
 	}
 
 	// Simple Field (counter)
 	counter := uint8(m.GetCounter())
-	_counterErr := writeBuffer.WriteUint8("counter", 4, uint8((counter)))
+	_counterErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("counter", 4, uint8((counter)))
 	if _counterErr != nil {
 		return errors.Wrap(_counterErr, "Error serializing 'counter' field")
 	}

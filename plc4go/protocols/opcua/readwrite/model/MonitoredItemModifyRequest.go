@@ -153,7 +153,7 @@ func MonitoredItemModifyRequestParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (monitoredItemId)
-	_monitoredItemId, _monitoredItemIdErr := readBuffer.ReadUint32("monitoredItemId", 32)
+	_monitoredItemId, _monitoredItemIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemId", 32)
 	if _monitoredItemIdErr != nil {
 		return nil, errors.Wrap(_monitoredItemIdErr, "Error parsing 'monitoredItemId' field of MonitoredItemModifyRequest")
 	}
@@ -206,7 +206,7 @@ func (m *_MonitoredItemModifyRequest) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (monitoredItemId)
 		monitoredItemId := uint32(m.GetMonitoredItemId())
-		_monitoredItemIdErr := writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
+		_monitoredItemIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("monitoredItemId", 32, uint32((monitoredItemId)))
 		if _monitoredItemIdErr != nil {
 			return errors.Wrap(_monitoredItemIdErr, "Error serializing 'monitoredItemId' field")
 		}

@@ -166,7 +166,7 @@ func CancelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 
 	// Simple Field (requestHandle)
-	_requestHandle, _requestHandleErr := readBuffer.ReadUint32("requestHandle", 32)
+	_requestHandle, _requestHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestHandle", 32)
 	if _requestHandleErr != nil {
 		return nil, errors.Wrap(_requestHandleErr, "Error parsing 'requestHandle' field of CancelRequest")
 	}
@@ -218,7 +218,7 @@ func (m *_CancelRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (requestHandle)
 		requestHandle := uint32(m.GetRequestHandle())
-		_requestHandleErr := writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
+		_requestHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestHandle", 32, uint32((requestHandle)))
 		if _requestHandleErr != nil {
 			return errors.Wrap(_requestHandleErr, "Error serializing 'requestHandle' field")
 		}

@@ -147,7 +147,7 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Implicit Field (osDataLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	osDataLen, _osDataLenErr := readBuffer.ReadUint16("osDataLen", 16)
+	osDataLen, _osDataLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("osDataLen", 16)
 	_ = osDataLen
 	if _osDataLenErr != nil {
 		return nil, errors.Wrap(_osDataLenErr, "Error parsing 'osDataLen' field of AdsDiscoveryBlockOsData")
@@ -192,7 +192,7 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Implicit Field (osDataLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		osDataLen := uint16(uint16(len(m.GetOsData())))
-		_osDataLenErr := writeBuffer.WriteUint16("osDataLen", 16, uint16((osDataLen)))
+		_osDataLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("osDataLen", 16, uint16((osDataLen)))
 		if _osDataLenErr != nil {
 			return errors.Wrap(_osDataLenErr, "Error serializing 'osDataLen' field")
 		}

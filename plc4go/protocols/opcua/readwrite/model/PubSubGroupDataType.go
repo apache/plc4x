@@ -264,7 +264,7 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of PubSubGroupDataType")
 		}
@@ -279,7 +279,7 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (enabled)
-	_enabled, _enabledErr := readBuffer.ReadBit("enabled")
+	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
 	if _enabledErr != nil {
 		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubGroupDataType")
 	}
@@ -312,7 +312,7 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (noOfSecurityKeyServices)
-	_noOfSecurityKeyServices, _noOfSecurityKeyServicesErr := readBuffer.ReadInt32("noOfSecurityKeyServices", 32)
+	_noOfSecurityKeyServices, _noOfSecurityKeyServicesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityKeyServices", 32)
 	if _noOfSecurityKeyServicesErr != nil {
 		return nil, errors.Wrap(_noOfSecurityKeyServicesErr, "Error parsing 'noOfSecurityKeyServices' field of PubSubGroupDataType")
 	}
@@ -346,14 +346,14 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (maxNetworkMessageSize)
-	_maxNetworkMessageSize, _maxNetworkMessageSizeErr := readBuffer.ReadUint32("maxNetworkMessageSize", 32)
+	_maxNetworkMessageSize, _maxNetworkMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNetworkMessageSize", 32)
 	if _maxNetworkMessageSizeErr != nil {
 		return nil, errors.Wrap(_maxNetworkMessageSizeErr, "Error parsing 'maxNetworkMessageSize' field of PubSubGroupDataType")
 	}
 	maxNetworkMessageSize := _maxNetworkMessageSize
 
 	// Simple Field (noOfGroupProperties)
-	_noOfGroupProperties, _noOfGroupPropertiesErr := readBuffer.ReadInt32("noOfGroupProperties", 32)
+	_noOfGroupProperties, _noOfGroupPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfGroupProperties", 32)
 	if _noOfGroupPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfGroupPropertiesErr, "Error parsing 'noOfGroupProperties' field of PubSubGroupDataType")
 	}
@@ -448,7 +448,7 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -456,7 +456,7 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (enabled)
 		enabled := bool(m.GetEnabled())
-		_enabledErr := writeBuffer.WriteBit("enabled", (enabled))
+		_enabledErr := /*TODO: migrate me*/ writeBuffer.WriteBit("enabled", (enabled))
 		if _enabledErr != nil {
 			return errors.Wrap(_enabledErr, "Error serializing 'enabled' field")
 		}
@@ -487,7 +487,7 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (noOfSecurityKeyServices)
 		noOfSecurityKeyServices := int32(m.GetNoOfSecurityKeyServices())
-		_noOfSecurityKeyServicesErr := writeBuffer.WriteInt32("noOfSecurityKeyServices", 32, int32((noOfSecurityKeyServices)))
+		_noOfSecurityKeyServicesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSecurityKeyServices", 32, int32((noOfSecurityKeyServices)))
 		if _noOfSecurityKeyServicesErr != nil {
 			return errors.Wrap(_noOfSecurityKeyServicesErr, "Error serializing 'noOfSecurityKeyServices' field")
 		}
@@ -511,14 +511,14 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (maxNetworkMessageSize)
 		maxNetworkMessageSize := uint32(m.GetMaxNetworkMessageSize())
-		_maxNetworkMessageSizeErr := writeBuffer.WriteUint32("maxNetworkMessageSize", 32, uint32((maxNetworkMessageSize)))
+		_maxNetworkMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxNetworkMessageSize", 32, uint32((maxNetworkMessageSize)))
 		if _maxNetworkMessageSizeErr != nil {
 			return errors.Wrap(_maxNetworkMessageSizeErr, "Error serializing 'maxNetworkMessageSize' field")
 		}
 
 		// Simple Field (noOfGroupProperties)
 		noOfGroupProperties := int32(m.GetNoOfGroupProperties())
-		_noOfGroupPropertiesErr := writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
+		_noOfGroupPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfGroupProperties", 32, int32((noOfGroupProperties)))
 		if _noOfGroupPropertiesErr != nil {
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}

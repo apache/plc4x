@@ -146,7 +146,7 @@ func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Const Field (functionId)
-	functionId, _functionIdErr := readBuffer.ReadUint8("functionId", 8)
+	functionId, _functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
 	if _functionIdErr != nil {
 		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7DataAlarmMessage")
 	}
@@ -155,7 +155,7 @@ func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Const Field (numberMessageObj)
-	numberMessageObj, _numberMessageObjErr := readBuffer.ReadUint8("numberMessageObj", 8)
+	numberMessageObj, _numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("numberMessageObj", 8)
 	if _numberMessageObjErr != nil {
 		return nil, errors.Wrap(_numberMessageObjErr, "Error parsing 'numberMessageObj' field of S7DataAlarmMessage")
 	}
@@ -207,13 +207,13 @@ func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer 
 	}
 
 	// Const Field (functionId)
-	_functionIdErr := writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
+	_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
 	if _functionIdErr != nil {
 		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
 	}
 
 	// Const Field (numberMessageObj)
-	_numberMessageObjErr := writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
+	_numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
 	if _numberMessageObjErr != nil {
 		return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
 	}

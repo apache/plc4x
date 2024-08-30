@@ -208,7 +208,7 @@ func CallMethodRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	}
 
 	// Simple Field (noOfInputArguments)
-	_noOfInputArguments, _noOfInputArgumentsErr := readBuffer.ReadInt32("noOfInputArguments", 32)
+	_noOfInputArguments, _noOfInputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArguments", 32)
 	if _noOfInputArgumentsErr != nil {
 		return nil, errors.Wrap(_noOfInputArgumentsErr, "Error parsing 'noOfInputArguments' field of CallMethodRequest")
 	}
@@ -301,7 +301,7 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (noOfInputArguments)
 		noOfInputArguments := int32(m.GetNoOfInputArguments())
-		_noOfInputArgumentsErr := writeBuffer.WriteInt32("noOfInputArguments", 32, int32((noOfInputArguments)))
+		_noOfInputArgumentsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfInputArguments", 32, int32((noOfInputArguments)))
 		if _noOfInputArgumentsErr != nil {
 			return errors.Wrap(_noOfInputArgumentsErr, "Error serializing 'noOfInputArguments' field")
 		}

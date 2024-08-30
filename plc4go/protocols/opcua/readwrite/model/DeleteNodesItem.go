@@ -173,7 +173,7 @@ func DeleteNodesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DeleteNodesItem")
 		}
@@ -188,7 +188,7 @@ func DeleteNodesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (deleteTargetReferences)
-	_deleteTargetReferences, _deleteTargetReferencesErr := readBuffer.ReadBit("deleteTargetReferences")
+	_deleteTargetReferences, _deleteTargetReferencesErr := /*TODO: migrate me*/ readBuffer.ReadBit("deleteTargetReferences")
 	if _deleteTargetReferencesErr != nil {
 		return nil, errors.Wrap(_deleteTargetReferencesErr, "Error parsing 'deleteTargetReferences' field of DeleteNodesItem")
 	}
@@ -249,7 +249,7 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -257,7 +257,7 @@ func (m *_DeleteNodesItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 		// Simple Field (deleteTargetReferences)
 		deleteTargetReferences := bool(m.GetDeleteTargetReferences())
-		_deleteTargetReferencesErr := writeBuffer.WriteBit("deleteTargetReferences", (deleteTargetReferences))
+		_deleteTargetReferencesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("deleteTargetReferences", (deleteTargetReferences))
 		if _deleteTargetReferencesErr != nil {
 			return errors.Wrap(_deleteTargetReferencesErr, "Error serializing 'deleteTargetReferences' field")
 		}

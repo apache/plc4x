@@ -206,7 +206,7 @@ func ModifyMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of ModifyMonitoredItemsRequest")
 	}
@@ -226,7 +226,7 @@ func ModifyMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (noOfItemsToModify)
-	_noOfItemsToModify, _noOfItemsToModifyErr := readBuffer.ReadInt32("noOfItemsToModify", 32)
+	_noOfItemsToModify, _noOfItemsToModifyErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfItemsToModify", 32)
 	if _noOfItemsToModifyErr != nil {
 		return nil, errors.Wrap(_noOfItemsToModifyErr, "Error parsing 'noOfItemsToModify' field of ModifyMonitoredItemsRequest")
 	}
@@ -308,7 +308,7 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
@@ -327,7 +327,7 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfItemsToModify)
 		noOfItemsToModify := int32(m.GetNoOfItemsToModify())
-		_noOfItemsToModifyErr := writeBuffer.WriteInt32("noOfItemsToModify", 32, int32((noOfItemsToModify)))
+		_noOfItemsToModifyErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfItemsToModify", 32, int32((noOfItemsToModify)))
 		if _noOfItemsToModifyErr != nil {
 			return errors.Wrap(_noOfItemsToModifyErr, "Error serializing 'noOfItemsToModify' field")
 		}

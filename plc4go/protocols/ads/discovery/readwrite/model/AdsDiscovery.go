@@ -185,7 +185,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Const Field (header)
-	header, _headerErr := readBuffer.ReadUint32("header", 32)
+	header, _headerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("header", 32)
 	if _headerErr != nil {
 		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of AdsDiscovery")
 	}
@@ -194,7 +194,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (requestId)
-	_requestId, _requestIdErr := readBuffer.ReadUint32("requestId", 32)
+	_requestId, _requestIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestId", 32)
 	if _requestIdErr != nil {
 		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of AdsDiscovery")
 	}
@@ -240,7 +240,7 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Implicit Field (numBlocks) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	numBlocks, _numBlocksErr := readBuffer.ReadUint32("numBlocks", 32)
+	numBlocks, _numBlocksErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("numBlocks", 32)
 	_ = numBlocks
 	if _numBlocksErr != nil {
 		return nil, errors.Wrap(_numBlocksErr, "Error parsing 'numBlocks' field of AdsDiscovery")
@@ -305,14 +305,14 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 	}
 
 	// Const Field (header)
-	_headerErr := writeBuffer.WriteUint32("header", 32, uint32(0x71146603))
+	_headerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("header", 32, uint32(0x71146603))
 	if _headerErr != nil {
 		return errors.Wrap(_headerErr, "Error serializing 'header' field")
 	}
 
 	// Simple Field (requestId)
 	requestId := uint32(m.GetRequestId())
-	_requestIdErr := writeBuffer.WriteUint32("requestId", 32, uint32((requestId)))
+	_requestIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("requestId", 32, uint32((requestId)))
 	if _requestIdErr != nil {
 		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
 	}
@@ -355,7 +355,7 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (numBlocks) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	numBlocks := uint32(uint32(len(m.GetBlocks())))
-	_numBlocksErr := writeBuffer.WriteUint32("numBlocks", 32, uint32((numBlocks)))
+	_numBlocksErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numBlocks", 32, uint32((numBlocks)))
 	if _numBlocksErr != nil {
 		return errors.Wrap(_numBlocksErr, "Error serializing 'numBlocks' field")
 	}

@@ -208,7 +208,7 @@ func BrowseResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Simple Field (noOfReferences)
-	_noOfReferences, _noOfReferencesErr := readBuffer.ReadInt32("noOfReferences", 32)
+	_noOfReferences, _noOfReferencesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferences", 32)
 	if _noOfReferencesErr != nil {
 		return nil, errors.Wrap(_noOfReferencesErr, "Error parsing 'noOfReferences' field of BrowseResult")
 	}
@@ -301,7 +301,7 @@ func (m *_BrowseResult) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 		// Simple Field (noOfReferences)
 		noOfReferences := int32(m.GetNoOfReferences())
-		_noOfReferencesErr := writeBuffer.WriteInt32("noOfReferences", 32, int32((noOfReferences)))
+		_noOfReferencesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReferences", 32, int32((noOfReferences)))
 		if _noOfReferencesErr != nil {
 			return errors.Wrap(_noOfReferencesErr, "Error serializing 'noOfReferences' field")
 		}

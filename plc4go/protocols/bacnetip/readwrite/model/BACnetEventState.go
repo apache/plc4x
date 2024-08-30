@@ -139,7 +139,7 @@ func BACnetEventStateParse(ctx context.Context, theBytes []byte) (BACnetEventSta
 func BACnetEventStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventState, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("BACnetEventState", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("BACnetEventState", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetEventState")
 	}
@@ -162,7 +162,7 @@ func (e BACnetEventState) Serialize() ([]byte, error) {
 func (e BACnetEventState) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetEventState", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetEventState", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

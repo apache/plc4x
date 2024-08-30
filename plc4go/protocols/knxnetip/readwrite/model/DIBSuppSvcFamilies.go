@@ -132,14 +132,14 @@ func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Implicit Field (structureLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	structureLength, _structureLengthErr := readBuffer.ReadUint8("structureLength", 8)
+	structureLength, _structureLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("structureLength", 8)
 	_ = structureLength
 	if _structureLengthErr != nil {
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of DIBSuppSvcFamilies")
 	}
 
 	// Simple Field (descriptionType)
-	_descriptionType, _descriptionTypeErr := readBuffer.ReadUint8("descriptionType", 8)
+	_descriptionType, _descriptionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("descriptionType", 8)
 	if _descriptionTypeErr != nil {
 		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field of DIBSuppSvcFamilies")
 	}
@@ -196,14 +196,14 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Implicit Field (structureLength) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	structureLength := uint8(uint8(m.GetLengthInBytes(ctx)))
-	_structureLengthErr := writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
+	_structureLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("structureLength", 8, uint8((structureLength)))
 	if _structureLengthErr != nil {
 		return errors.Wrap(_structureLengthErr, "Error serializing 'structureLength' field")
 	}
 
 	// Simple Field (descriptionType)
 	descriptionType := uint8(m.GetDescriptionType())
-	_descriptionTypeErr := writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
+	_descriptionTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("descriptionType", 8, uint8((descriptionType)))
 	if _descriptionTypeErr != nil {
 		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}

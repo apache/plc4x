@@ -120,7 +120,7 @@ func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType, _additionalInformationTypeErr := readBuffer.ReadUint8("additionalInformationType", 8)
+	additionalInformationType, _additionalInformationTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("additionalInformationType", 8)
 	if _additionalInformationTypeErr != nil {
 		return nil, errors.Wrap(_additionalInformationTypeErr, "Error parsing 'additionalInformationType' field of CEMIAdditionalInformation")
 	}
@@ -170,7 +170,7 @@ func (pm *_CEMIAdditionalInformation) SerializeParent(ctx context.Context, write
 
 	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
 	additionalInformationType := uint8(child.GetAdditionalInformationType())
-	_additionalInformationTypeErr := writeBuffer.WriteUint8("additionalInformationType", 8, uint8((additionalInformationType)))
+	_additionalInformationTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalInformationType", 8, uint8((additionalInformationType)))
 
 	if _additionalInformationTypeErr != nil {
 		return errors.Wrap(_additionalInformationTypeErr, "Error serializing 'additionalInformationType' field")

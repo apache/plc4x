@@ -173,7 +173,7 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (valueLength)
-	_valueLength, _valueLengthErr := readBuffer.ReadUint16("valueLength", 16)
+	_valueLength, _valueLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("valueLength", 16)
 	if _valueLengthErr != nil {
 		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedQueryValueType")
 	}
@@ -195,7 +195,7 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of AssociatedQueryValueType")
 			}
@@ -262,7 +262,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 
 	// Simple Field (valueLength)
 	valueLength := uint16(m.GetValueLength())
-	_valueLengthErr := writeBuffer.WriteUint16("valueLength", 16, uint16((valueLength)))
+	_valueLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("valueLength", 16, uint16((valueLength)))
 	if _valueLengthErr != nil {
 		return errors.Wrap(_valueLengthErr, "Error serializing 'valueLength' field")
 	}
@@ -273,7 +273,7 @@ func (m *_AssociatedQueryValueType) SerializeWithWriteBuffer(ctx context.Context
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}

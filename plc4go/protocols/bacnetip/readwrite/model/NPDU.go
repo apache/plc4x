@@ -318,7 +318,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	_ = currentPos
 
 	// Simple Field (protocolVersionNumber)
-	_protocolVersionNumber, _protocolVersionNumberErr := readBuffer.ReadUint8("protocolVersionNumber", 8)
+	_protocolVersionNumber, _protocolVersionNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("protocolVersionNumber", 8)
 	if _protocolVersionNumberErr != nil {
 		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field of NPDU")
 	}
@@ -341,7 +341,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	var destinationNetworkAddress *uint16 = nil
 	if control.GetDestinationSpecified() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("destinationNetworkAddress", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -357,7 +357,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	var destinationLength *uint8 = nil
 	if control.GetDestinationSpecified() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("destinationLength", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("destinationLength", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -385,7 +385,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'destinationAddress' field of NPDU")
 			}
@@ -405,7 +405,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	var sourceNetworkAddress *uint16 = nil
 	if control.GetSourceSpecified() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("sourceNetworkAddress", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("sourceNetworkAddress", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -421,7 +421,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	var sourceLength *uint8 = nil
 	if control.GetSourceSpecified() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("sourceLength", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("sourceLength", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -449,7 +449,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint8("", 8)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'sourceAddress' field of NPDU")
 			}
@@ -469,7 +469,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	var hopCount *uint8 = nil
 	if control.GetDestinationSpecified() {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("hopCount", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hopCount", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -575,7 +575,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 
 	// Simple Field (protocolVersionNumber)
 	protocolVersionNumber := uint8(m.GetProtocolVersionNumber())
-	_protocolVersionNumberErr := writeBuffer.WriteUint8("protocolVersionNumber", 8, uint8((protocolVersionNumber)))
+	_protocolVersionNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersionNumber", 8, uint8((protocolVersionNumber)))
 	if _protocolVersionNumberErr != nil {
 		return errors.Wrap(_protocolVersionNumberErr, "Error serializing 'protocolVersionNumber' field")
 	}
@@ -596,7 +596,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var destinationNetworkAddress *uint16 = nil
 	if m.GetDestinationNetworkAddress() != nil {
 		destinationNetworkAddress = m.GetDestinationNetworkAddress()
-		_destinationNetworkAddressErr := writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
+		_destinationNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("destinationNetworkAddress", 16, uint16(*(destinationNetworkAddress)))
 		if _destinationNetworkAddressErr != nil {
 			return errors.Wrap(_destinationNetworkAddressErr, "Error serializing 'destinationNetworkAddress' field")
 		}
@@ -606,7 +606,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var destinationLength *uint8 = nil
 	if m.GetDestinationLength() != nil {
 		destinationLength = m.GetDestinationLength()
-		_destinationLengthErr := writeBuffer.WriteUint8("destinationLength", 8, uint8(*(destinationLength)))
+		_destinationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("destinationLength", 8, uint8(*(destinationLength)))
 		if _destinationLengthErr != nil {
 			return errors.Wrap(_destinationLengthErr, "Error serializing 'destinationLength' field")
 		}
@@ -618,7 +618,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	}
 	for _curItem, _element := range m.GetDestinationAddress() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
 		}
@@ -637,7 +637,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var sourceNetworkAddress *uint16 = nil
 	if m.GetSourceNetworkAddress() != nil {
 		sourceNetworkAddress = m.GetSourceNetworkAddress()
-		_sourceNetworkAddressErr := writeBuffer.WriteUint16("sourceNetworkAddress", 16, uint16(*(sourceNetworkAddress)))
+		_sourceNetworkAddressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourceNetworkAddress", 16, uint16(*(sourceNetworkAddress)))
 		if _sourceNetworkAddressErr != nil {
 			return errors.Wrap(_sourceNetworkAddressErr, "Error serializing 'sourceNetworkAddress' field")
 		}
@@ -647,7 +647,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var sourceLength *uint8 = nil
 	if m.GetSourceLength() != nil {
 		sourceLength = m.GetSourceLength()
-		_sourceLengthErr := writeBuffer.WriteUint8("sourceLength", 8, uint8(*(sourceLength)))
+		_sourceLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sourceLength", 8, uint8(*(sourceLength)))
 		if _sourceLengthErr != nil {
 			return errors.Wrap(_sourceLengthErr, "Error serializing 'sourceLength' field")
 		}
@@ -659,7 +659,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	}
 	for _curItem, _element := range m.GetSourceAddress() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteUint8("", 8, uint8(_element))
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
 		}
@@ -678,7 +678,7 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 	var hopCount *uint8 = nil
 	if m.GetHopCount() != nil {
 		hopCount = m.GetHopCount()
-		_hopCountErr := writeBuffer.WriteUint8("hopCount", 8, uint8(*(hopCount)))
+		_hopCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hopCount", 8, uint8(*(hopCount)))
 		if _hopCountErr != nil {
 			return errors.Wrap(_hopCountErr, "Error serializing 'hopCount' field")
 		}

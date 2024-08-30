@@ -175,28 +175,28 @@ func ApduDataExtPropertyValueReadParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (objectIndex)
-	_objectIndex, _objectIndexErr := readBuffer.ReadUint8("objectIndex", 8)
+	_objectIndex, _objectIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectIndex", 8)
 	if _objectIndexErr != nil {
 		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyValueRead")
 	}
 	objectIndex := _objectIndex
 
 	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := readBuffer.ReadUint8("propertyId", 8)
+	_propertyId, _propertyIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("propertyId", 8)
 	if _propertyIdErr != nil {
 		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyValueRead")
 	}
 	propertyId := _propertyId
 
 	// Simple Field (count)
-	_count, _countErr := readBuffer.ReadUint8("count", 4)
+	_count, _countErr := /*TODO: migrate me*/ readBuffer.ReadUint8("count", 4)
 	if _countErr != nil {
 		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of ApduDataExtPropertyValueRead")
 	}
 	count := _count
 
 	// Simple Field (index)
-	_index, _indexErr := readBuffer.ReadUint16("index", 12)
+	_index, _indexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("index", 12)
 	if _indexErr != nil {
 		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyValueRead")
 	}
@@ -240,28 +240,28 @@ func (m *_ApduDataExtPropertyValueRead) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (objectIndex)
 		objectIndex := uint8(m.GetObjectIndex())
-		_objectIndexErr := writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
+		_objectIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("objectIndex", 8, uint8((objectIndex)))
 		if _objectIndexErr != nil {
 			return errors.Wrap(_objectIndexErr, "Error serializing 'objectIndex' field")
 		}
 
 		// Simple Field (propertyId)
 		propertyId := uint8(m.GetPropertyId())
-		_propertyIdErr := writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
+		_propertyIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("propertyId", 8, uint8((propertyId)))
 		if _propertyIdErr != nil {
 			return errors.Wrap(_propertyIdErr, "Error serializing 'propertyId' field")
 		}
 
 		// Simple Field (count)
 		count := uint8(m.GetCount())
-		_countErr := writeBuffer.WriteUint8("count", 4, uint8((count)))
+		_countErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("count", 4, uint8((count)))
 		if _countErr != nil {
 			return errors.Wrap(_countErr, "Error serializing 'count' field")
 		}
 
 		// Simple Field (index)
 		index := uint16(m.GetIndex())
-		_indexErr := writeBuffer.WriteUint16("index", 12, uint16((index)))
+		_indexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("index", 12, uint16((index)))
 		if _indexErr != nil {
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}

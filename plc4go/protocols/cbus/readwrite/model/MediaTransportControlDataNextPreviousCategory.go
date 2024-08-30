@@ -170,7 +170,7 @@ func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(ctx context.Co
 	_ = currentPos
 
 	// Simple Field (operation)
-	_operation, _operationErr := readBuffer.ReadByte("operation")
+	_operation, _operationErr := /*TODO: migrate me*/ readBuffer.ReadByte("operation")
 	if _operationErr != nil {
 		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataNextPreviousCategory")
 	}
@@ -219,7 +219,7 @@ func (m *_MediaTransportControlDataNextPreviousCategory) SerializeWithWriteBuffe
 
 		// Simple Field (operation)
 		operation := byte(m.GetOperation())
-		_operationErr := writeBuffer.WriteByte("operation", (operation))
+		_operationErr := /*TODO: migrate me*/ writeBuffer.WriteByte("operation", (operation))
 		if _operationErr != nil {
 			return errors.Wrap(_operationErr, "Error serializing 'operation' field")
 		}

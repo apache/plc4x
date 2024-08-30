@@ -120,7 +120,7 @@ func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
-	dataSegmentType, _dataSegmentTypeErr := readBuffer.ReadUint8("dataSegmentType", 5)
+	dataSegmentType, _dataSegmentTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataSegmentType", 5)
 	if _dataSegmentTypeErr != nil {
 		return nil, errors.Wrap(_dataSegmentTypeErr, "Error parsing 'dataSegmentType' field of DataSegmentType")
 	}
@@ -168,7 +168,7 @@ func (pm *_DataSegmentType) SerializeParent(ctx context.Context, writeBuffer uti
 
 	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
 	dataSegmentType := uint8(child.GetDataSegmentType())
-	_dataSegmentTypeErr := writeBuffer.WriteUint8("dataSegmentType", 5, uint8((dataSegmentType)))
+	_dataSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("dataSegmentType", 5, uint8((dataSegmentType)))
 
 	if _dataSegmentTypeErr != nil {
 		return errors.Wrap(_dataSegmentTypeErr, "Error serializing 'dataSegmentType' field")

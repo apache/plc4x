@@ -182,21 +182,21 @@ func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint32("sequenceNumber", 32)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sequenceNumber", 32)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of NotificationMessage")
 	}
 	sequenceNumber := _sequenceNumber
 
 	// Simple Field (publishTime)
-	_publishTime, _publishTimeErr := readBuffer.ReadInt64("publishTime", 64)
+	_publishTime, _publishTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("publishTime", 64)
 	if _publishTimeErr != nil {
 		return nil, errors.Wrap(_publishTimeErr, "Error parsing 'publishTime' field of NotificationMessage")
 	}
 	publishTime := _publishTime
 
 	// Simple Field (noOfNotificationData)
-	_noOfNotificationData, _noOfNotificationDataErr := readBuffer.ReadInt32("noOfNotificationData", 32)
+	_noOfNotificationData, _noOfNotificationDataErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNotificationData", 32)
 	if _noOfNotificationDataErr != nil {
 		return nil, errors.Wrap(_noOfNotificationDataErr, "Error parsing 'noOfNotificationData' field of NotificationMessage")
 	}
@@ -265,21 +265,21 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint32(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
+		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sequenceNumber", 32, uint32((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}
 
 		// Simple Field (publishTime)
 		publishTime := int64(m.GetPublishTime())
-		_publishTimeErr := writeBuffer.WriteInt64("publishTime", 64, int64((publishTime)))
+		_publishTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("publishTime", 64, int64((publishTime)))
 		if _publishTimeErr != nil {
 			return errors.Wrap(_publishTimeErr, "Error serializing 'publishTime' field")
 		}
 
 		// Simple Field (noOfNotificationData)
 		noOfNotificationData := int32(m.GetNoOfNotificationData())
-		_noOfNotificationDataErr := writeBuffer.WriteInt32("noOfNotificationData", 32, int32((noOfNotificationData)))
+		_noOfNotificationDataErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNotificationData", 32, int32((noOfNotificationData)))
 		if _noOfNotificationDataErr != nil {
 			return errors.Wrap(_noOfNotificationDataErr, "Error serializing 'noOfNotificationData' field")
 		}

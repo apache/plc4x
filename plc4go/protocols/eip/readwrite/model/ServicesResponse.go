@@ -189,14 +189,14 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Implicit Field (serviceLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	serviceLen, _serviceLenErr := readBuffer.ReadUint16("serviceLen", 16)
+	serviceLen, _serviceLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serviceLen", 16)
 	_ = serviceLen
 	if _serviceLenErr != nil {
 		return nil, errors.Wrap(_serviceLenErr, "Error parsing 'serviceLen' field of ServicesResponse")
 	}
 
 	// Simple Field (encapsulationProtocol)
-	_encapsulationProtocol, _encapsulationProtocolErr := readBuffer.ReadUint16("encapsulationProtocol", 16)
+	_encapsulationProtocol, _encapsulationProtocolErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocol", 16)
 	if _encapsulationProtocolErr != nil {
 		return nil, errors.Wrap(_encapsulationProtocolErr, "Error parsing 'encapsulationProtocol' field of ServicesResponse")
 	}
@@ -205,7 +205,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ServicesResponse")
 		}
@@ -220,7 +220,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (supportsCIPEncapsulation)
-	_supportsCIPEncapsulation, _supportsCIPEncapsulationErr := readBuffer.ReadBit("supportsCIPEncapsulation")
+	_supportsCIPEncapsulation, _supportsCIPEncapsulationErr := /*TODO: migrate me*/ readBuffer.ReadBit("supportsCIPEncapsulation")
 	if _supportsCIPEncapsulationErr != nil {
 		return nil, errors.Wrap(_supportsCIPEncapsulationErr, "Error parsing 'supportsCIPEncapsulation' field of ServicesResponse")
 	}
@@ -229,7 +229,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	var reservedField1 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 12)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 12)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ServicesResponse")
 		}
@@ -244,7 +244,7 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (supportsUDP)
-	_supportsUDP, _supportsUDPErr := readBuffer.ReadBit("supportsUDP")
+	_supportsUDP, _supportsUDPErr := /*TODO: migrate me*/ readBuffer.ReadBit("supportsUDP")
 	if _supportsUDPErr != nil {
 		return nil, errors.Wrap(_supportsUDPErr, "Error parsing 'supportsUDP' field of ServicesResponse")
 	}
@@ -294,14 +294,14 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Implicit Field (serviceLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		serviceLen := uint16(uint16(uint16(m.GetLengthInBytes(ctx))) - uint16(uint16(4)))
-		_serviceLenErr := writeBuffer.WriteUint16("serviceLen", 16, uint16((serviceLen)))
+		_serviceLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serviceLen", 16, uint16((serviceLen)))
 		if _serviceLenErr != nil {
 			return errors.Wrap(_serviceLenErr, "Error serializing 'serviceLen' field")
 		}
 
 		// Simple Field (encapsulationProtocol)
 		encapsulationProtocol := uint16(m.GetEncapsulationProtocol())
-		_encapsulationProtocolErr := writeBuffer.WriteUint16("encapsulationProtocol", 16, uint16((encapsulationProtocol)))
+		_encapsulationProtocolErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("encapsulationProtocol", 16, uint16((encapsulationProtocol)))
 		if _encapsulationProtocolErr != nil {
 			return errors.Wrap(_encapsulationProtocolErr, "Error serializing 'encapsulationProtocol' field")
 		}
@@ -316,7 +316,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -324,7 +324,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (supportsCIPEncapsulation)
 		supportsCIPEncapsulation := bool(m.GetSupportsCIPEncapsulation())
-		_supportsCIPEncapsulationErr := writeBuffer.WriteBit("supportsCIPEncapsulation", (supportsCIPEncapsulation))
+		_supportsCIPEncapsulationErr := /*TODO: migrate me*/ writeBuffer.WriteBit("supportsCIPEncapsulation", (supportsCIPEncapsulation))
 		if _supportsCIPEncapsulationErr != nil {
 			return errors.Wrap(_supportsCIPEncapsulationErr, "Error serializing 'supportsCIPEncapsulation' field")
 		}
@@ -339,7 +339,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint16("reserved", 12, uint16(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 12, uint16(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -347,7 +347,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (supportsUDP)
 		supportsUDP := bool(m.GetSupportsUDP())
-		_supportsUDPErr := writeBuffer.WriteBit("supportsUDP", (supportsUDP))
+		_supportsUDPErr := /*TODO: migrate me*/ writeBuffer.WriteBit("supportsUDP", (supportsUDP))
 		if _supportsUDPErr != nil {
 			return errors.Wrap(_supportsUDPErr, "Error serializing 'supportsUDP' field")
 		}

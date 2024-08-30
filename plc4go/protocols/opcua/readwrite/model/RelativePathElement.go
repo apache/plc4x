@@ -195,7 +195,7 @@ func RelativePathElementParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 6)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of RelativePathElement")
 		}
@@ -210,14 +210,14 @@ func RelativePathElementParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (includeSubtypes)
-	_includeSubtypes, _includeSubtypesErr := readBuffer.ReadBit("includeSubtypes")
+	_includeSubtypes, _includeSubtypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubtypes")
 	if _includeSubtypesErr != nil {
 		return nil, errors.Wrap(_includeSubtypesErr, "Error parsing 'includeSubtypes' field of RelativePathElement")
 	}
 	includeSubtypes := _includeSubtypes
 
 	// Simple Field (isInverse)
-	_isInverse, _isInverseErr := readBuffer.ReadBit("isInverse")
+	_isInverse, _isInverseErr := /*TODO: migrate me*/ readBuffer.ReadBit("isInverse")
 	if _isInverseErr != nil {
 		return nil, errors.Wrap(_isInverseErr, "Error parsing 'isInverse' field of RelativePathElement")
 	}
@@ -293,7 +293,7 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -301,14 +301,14 @@ func (m *_RelativePathElement) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (includeSubtypes)
 		includeSubtypes := bool(m.GetIncludeSubtypes())
-		_includeSubtypesErr := writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
+		_includeSubtypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubtypes", (includeSubtypes))
 		if _includeSubtypesErr != nil {
 			return errors.Wrap(_includeSubtypesErr, "Error serializing 'includeSubtypes' field")
 		}
 
 		// Simple Field (isInverse)
 		isInverse := bool(m.GetIsInverse())
-		_isInverseErr := writeBuffer.WriteBit("isInverse", (isInverse))
+		_isInverseErr := /*TODO: migrate me*/ writeBuffer.WriteBit("isInverse", (isInverse))
 		if _isInverseErr != nil {
 			return errors.Wrap(_isInverseErr, "Error serializing 'isInverse' field")
 		}

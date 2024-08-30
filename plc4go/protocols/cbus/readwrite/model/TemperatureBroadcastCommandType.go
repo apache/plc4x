@@ -125,7 +125,7 @@ func TemperatureBroadcastCommandTypeParse(ctx context.Context, theBytes []byte) 
 func TemperatureBroadcastCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastCommandType, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("TemperatureBroadcastCommandType", 4)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("TemperatureBroadcastCommandType", 4)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading TemperatureBroadcastCommandType")
 	}
@@ -148,7 +148,7 @@ func (e TemperatureBroadcastCommandType) Serialize() ([]byte, error) {
 func (e TemperatureBroadcastCommandType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("TemperatureBroadcastCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("TemperatureBroadcastCommandType", 4, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

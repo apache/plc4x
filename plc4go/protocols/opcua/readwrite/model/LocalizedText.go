@@ -157,7 +157,7 @@ func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 6)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 6)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of LocalizedText")
 		}
@@ -172,14 +172,14 @@ func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 
 	// Simple Field (textSpecified)
-	_textSpecified, _textSpecifiedErr := readBuffer.ReadBit("textSpecified")
+	_textSpecified, _textSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("textSpecified")
 	if _textSpecifiedErr != nil {
 		return nil, errors.Wrap(_textSpecifiedErr, "Error parsing 'textSpecified' field of LocalizedText")
 	}
 	textSpecified := _textSpecified
 
 	// Simple Field (localeSpecified)
-	_localeSpecified, _localeSpecifiedErr := readBuffer.ReadBit("localeSpecified")
+	_localeSpecified, _localeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localeSpecified")
 	if _localeSpecifiedErr != nil {
 		return nil, errors.Wrap(_localeSpecifiedErr, "Error parsing 'localeSpecified' field of LocalizedText")
 	}
@@ -270,7 +270,7 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 6, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -278,14 +278,14 @@ func (m *_LocalizedText) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (textSpecified)
 	textSpecified := bool(m.GetTextSpecified())
-	_textSpecifiedErr := writeBuffer.WriteBit("textSpecified", (textSpecified))
+	_textSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("textSpecified", (textSpecified))
 	if _textSpecifiedErr != nil {
 		return errors.Wrap(_textSpecifiedErr, "Error serializing 'textSpecified' field")
 	}
 
 	// Simple Field (localeSpecified)
 	localeSpecified := bool(m.GetLocaleSpecified())
-	_localeSpecifiedErr := writeBuffer.WriteBit("localeSpecified", (localeSpecified))
+	_localeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("localeSpecified", (localeSpecified))
 	if _localeSpecifiedErr != nil {
 		return errors.Wrap(_localeSpecifiedErr, "Error serializing 'localeSpecified' field")
 	}

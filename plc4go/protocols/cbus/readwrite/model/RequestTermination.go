@@ -115,7 +115,7 @@ func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Const Field (cr)
-	cr, _crErr := readBuffer.ReadByte("cr")
+	cr, _crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("cr")
 	if _crErr != nil {
 		return nil, errors.Wrap(_crErr, "Error parsing 'cr' field of RequestTermination")
 	}
@@ -149,7 +149,7 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 	}
 
 	// Const Field (cr)
-	_crErr := writeBuffer.WriteByte("cr", 0x0D)
+	_crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("cr", 0x0D)
 	if _crErr != nil {
 		return errors.Wrap(_crErr, "Error serializing 'cr' field")
 	}

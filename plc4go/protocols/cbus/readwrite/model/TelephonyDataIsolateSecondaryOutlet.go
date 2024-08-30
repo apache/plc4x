@@ -170,7 +170,7 @@ func TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Simple Field (isolateStatus)
-	_isolateStatus, _isolateStatusErr := readBuffer.ReadByte("isolateStatus")
+	_isolateStatus, _isolateStatusErr := /*TODO: migrate me*/ readBuffer.ReadByte("isolateStatus")
 	if _isolateStatusErr != nil {
 		return nil, errors.Wrap(_isolateStatusErr, "Error parsing 'isolateStatus' field of TelephonyDataIsolateSecondaryOutlet")
 	}
@@ -219,7 +219,7 @@ func (m *_TelephonyDataIsolateSecondaryOutlet) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (isolateStatus)
 		isolateStatus := byte(m.GetIsolateStatus())
-		_isolateStatusErr := writeBuffer.WriteByte("isolateStatus", (isolateStatus))
+		_isolateStatusErr := /*TODO: migrate me*/ writeBuffer.WriteByte("isolateStatus", (isolateStatus))
 		if _isolateStatusErr != nil {
 			return errors.Wrap(_isolateStatusErr, "Error serializing 'isolateStatus' field")
 		}

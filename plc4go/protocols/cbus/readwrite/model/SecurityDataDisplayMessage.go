@@ -141,7 +141,7 @@ func SecurityDataDisplayMessageParseWithBuffer(ctx context.Context, readBuffer u
 	_ = currentPos
 
 	// Simple Field (message)
-	_message, _messageErr := readBuffer.ReadString("message", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
+	_message, _messageErr := /*TODO: migrate me*/ readBuffer.ReadString("message", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
 	if _messageErr != nil {
 		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of SecurityDataDisplayMessage")
 	}
@@ -180,7 +180,7 @@ func (m *_SecurityDataDisplayMessage) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (message)
 		message := string(m.GetMessage())
-		_messageErr := writeBuffer.WriteString("message", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (message), utils.WithEncoding("UTF-8)"))
+		_messageErr := /*TODO: migrate me*/ writeBuffer.WriteString("message", uint32(((m.GetCommandTypeContainer().NumBytes())-(1))*(8)), (message), utils.WithEncoding("UTF-8)"))
 		if _messageErr != nil {
 			return errors.Wrap(_messageErr, "Error serializing 'message' field")
 		}

@@ -224,7 +224,7 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Peek Field (raw)
 	currentPos = positionAware.GetPos()
-	raw, _err := readBuffer.ReadUint16("raw", 16)
+	raw, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("raw", 16)
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'raw' field of LevelInformation")
 	}

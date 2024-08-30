@@ -185,27 +185,27 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Simple Field (frameType)
-	_frameType, _frameTypeErr := readBuffer.ReadBit("frameType")
+	_frameType, _frameTypeErr := /*TODO: migrate me*/ readBuffer.ReadBit("frameType")
 	if _frameTypeErr != nil {
 		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field of LDataFrame")
 	}
 	frameType := _frameType
 
 	// Discriminator Field (polling) (Used as input to a switch field)
-	polling, _pollingErr := readBuffer.ReadBit("polling")
+	polling, _pollingErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("polling")
 	if _pollingErr != nil {
 		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field of LDataFrame")
 	}
 
 	// Simple Field (notRepeated)
-	_notRepeated, _notRepeatedErr := readBuffer.ReadBit("notRepeated")
+	_notRepeated, _notRepeatedErr := /*TODO: migrate me*/ readBuffer.ReadBit("notRepeated")
 	if _notRepeatedErr != nil {
 		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field of LDataFrame")
 	}
 	notRepeated := _notRepeated
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame, _notAckFrameErr := readBuffer.ReadBit("notAckFrame")
+	notAckFrame, _notAckFrameErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("notAckFrame")
 	if _notAckFrameErr != nil {
 		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field of LDataFrame")
 	}
@@ -224,14 +224,14 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (acknowledgeRequested)
-	_acknowledgeRequested, _acknowledgeRequestedErr := readBuffer.ReadBit("acknowledgeRequested")
+	_acknowledgeRequested, _acknowledgeRequestedErr := /*TODO: migrate me*/ readBuffer.ReadBit("acknowledgeRequested")
 	if _acknowledgeRequestedErr != nil {
 		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field of LDataFrame")
 	}
 	acknowledgeRequested := _acknowledgeRequested
 
 	// Simple Field (errorFlag)
-	_errorFlag, _errorFlagErr := readBuffer.ReadBit("errorFlag")
+	_errorFlag, _errorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("errorFlag")
 	if _errorFlagErr != nil {
 		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of LDataFrame")
 	}
@@ -284,14 +284,14 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Simple Field (frameType)
 	frameType := bool(m.GetFrameType())
-	_frameTypeErr := writeBuffer.WriteBit("frameType", (frameType))
+	_frameTypeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("frameType", (frameType))
 	if _frameTypeErr != nil {
 		return errors.Wrap(_frameTypeErr, "Error serializing 'frameType' field")
 	}
 
 	// Discriminator Field (polling) (Used as input to a switch field)
 	polling := bool(child.GetPolling())
-	_pollingErr := writeBuffer.WriteBit("polling", (polling))
+	_pollingErr := /*TODO: migrate me*/ writeBuffer.WriteBit("polling", (polling))
 
 	if _pollingErr != nil {
 		return errors.Wrap(_pollingErr, "Error serializing 'polling' field")
@@ -299,14 +299,14 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Simple Field (notRepeated)
 	notRepeated := bool(m.GetNotRepeated())
-	_notRepeatedErr := writeBuffer.WriteBit("notRepeated", (notRepeated))
+	_notRepeatedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("notRepeated", (notRepeated))
 	if _notRepeatedErr != nil {
 		return errors.Wrap(_notRepeatedErr, "Error serializing 'notRepeated' field")
 	}
 
 	// Discriminator Field (notAckFrame) (Used as input to a switch field)
 	notAckFrame := bool(child.GetNotAckFrame())
-	_notAckFrameErr := writeBuffer.WriteBit("notAckFrame", (notAckFrame))
+	_notAckFrameErr := /*TODO: migrate me*/ writeBuffer.WriteBit("notAckFrame", (notAckFrame))
 
 	if _notAckFrameErr != nil {
 		return errors.Wrap(_notAckFrameErr, "Error serializing 'notAckFrame' field")
@@ -326,14 +326,14 @@ func (pm *_LDataFrame) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Simple Field (acknowledgeRequested)
 	acknowledgeRequested := bool(m.GetAcknowledgeRequested())
-	_acknowledgeRequestedErr := writeBuffer.WriteBit("acknowledgeRequested", (acknowledgeRequested))
+	_acknowledgeRequestedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("acknowledgeRequested", (acknowledgeRequested))
 	if _acknowledgeRequestedErr != nil {
 		return errors.Wrap(_acknowledgeRequestedErr, "Error serializing 'acknowledgeRequested' field")
 	}
 
 	// Simple Field (errorFlag)
 	errorFlag := bool(m.GetErrorFlag())
-	_errorFlagErr := writeBuffer.WriteBit("errorFlag", (errorFlag))
+	_errorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("errorFlag", (errorFlag))
 	if _errorFlagErr != nil {
 		return errors.Wrap(_errorFlagErr, "Error serializing 'errorFlag' field")
 	}

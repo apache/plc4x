@@ -123,7 +123,7 @@ func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 4)
+	commandCode, _commandCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commandCode", 4)
 	if _commandCodeErr != nil {
 		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of FirmataCommand")
 	}
@@ -179,7 +179,7 @@ func (pm *_FirmataCommand) SerializeParent(ctx context.Context, writeBuffer util
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 4, uint8((commandCode)))
+	_commandCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("commandCode", 4, uint8((commandCode)))
 
 	if _commandCodeErr != nil {
 		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")

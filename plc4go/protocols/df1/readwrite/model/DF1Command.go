@@ -150,20 +150,20 @@ func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := readBuffer.ReadUint8("commandCode", 8)
+	commandCode, _commandCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commandCode", 8)
 	if _commandCodeErr != nil {
 		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of DF1Command")
 	}
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint8("status", 8)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1Command")
 	}
 	status := _status
 
 	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := readBuffer.ReadUint16("transactionCounter", 16)
+	_transactionCounter, _transactionCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionCounter", 16)
 	if _transactionCounterErr != nil {
 		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1Command")
 	}
@@ -214,7 +214,7 @@ func (pm *_DF1Command) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Discriminator Field (commandCode) (Used as input to a switch field)
 	commandCode := uint8(child.GetCommandCode())
-	_commandCodeErr := writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
+	_commandCodeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("commandCode", 8, uint8((commandCode)))
 
 	if _commandCodeErr != nil {
 		return errors.Wrap(_commandCodeErr, "Error serializing 'commandCode' field")
@@ -222,14 +222,14 @@ func (pm *_DF1Command) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 
 	// Simple Field (status)
 	status := uint8(m.GetStatus())
-	_statusErr := writeBuffer.WriteUint8("status", 8, uint8((status)))
+	_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("status", 8, uint8((status)))
 	if _statusErr != nil {
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
 	// Simple Field (transactionCounter)
 	transactionCounter := uint16(m.GetTransactionCounter())
-	_transactionCounterErr := writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
+	_transactionCounterErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("transactionCounter", 16, uint16((transactionCounter)))
 	if _transactionCounterErr != nil {
 		return errors.Wrap(_transactionCounterErr, "Error serializing 'transactionCounter' field")
 	}

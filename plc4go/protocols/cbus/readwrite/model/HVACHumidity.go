@@ -134,7 +134,7 @@ func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (humidityValue)
-	_humidityValue, _humidityValueErr := readBuffer.ReadUint16("humidityValue", 16)
+	_humidityValue, _humidityValueErr := /*TODO: migrate me*/ readBuffer.ReadUint16("humidityValue", 16)
 	if _humidityValueErr != nil {
 		return nil, errors.Wrap(_humidityValueErr, "Error parsing 'humidityValue' field of HVACHumidity")
 	}
@@ -174,7 +174,7 @@ func (m *_HVACHumidity) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (humidityValue)
 	humidityValue := uint16(m.GetHumidityValue())
-	_humidityValueErr := writeBuffer.WriteUint16("humidityValue", 16, uint16((humidityValue)))
+	_humidityValueErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("humidityValue", 16, uint16((humidityValue)))
 	if _humidityValueErr != nil {
 		return errors.Wrap(_humidityValueErr, "Error serializing 'humidityValue' field")
 	}

@@ -200,7 +200,7 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	_ = currentPos
 
 	// Simple Field (noOfNamespaceUris)
-	_noOfNamespaceUris, _noOfNamespaceUrisErr := readBuffer.ReadInt32("noOfNamespaceUris", 32)
+	_noOfNamespaceUris, _noOfNamespaceUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNamespaceUris", 32)
 	if _noOfNamespaceUrisErr != nil {
 		return nil, errors.Wrap(_noOfNamespaceUrisErr, "Error parsing 'noOfNamespaceUris' field of SessionlessInvokeResponseType")
 	}
@@ -234,7 +234,7 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := readBuffer.ReadInt32("noOfServerUris", 32)
+	_noOfServerUris, _noOfServerUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerUris", 32)
 	if _noOfServerUrisErr != nil {
 		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of SessionlessInvokeResponseType")
 	}
@@ -268,7 +268,7 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	}
 
 	// Simple Field (serviceId)
-	_serviceId, _serviceIdErr := readBuffer.ReadUint32("serviceId", 32)
+	_serviceId, _serviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serviceId", 32)
 	if _serviceIdErr != nil {
 		return nil, errors.Wrap(_serviceIdErr, "Error parsing 'serviceId' field of SessionlessInvokeResponseType")
 	}
@@ -311,7 +311,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (noOfNamespaceUris)
 		noOfNamespaceUris := int32(m.GetNoOfNamespaceUris())
-		_noOfNamespaceUrisErr := writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
+		_noOfNamespaceUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNamespaceUris", 32, int32((noOfNamespaceUris)))
 		if _noOfNamespaceUrisErr != nil {
 			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
 		}
@@ -335,7 +335,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (noOfServerUris)
 		noOfServerUris := int32(m.GetNoOfServerUris())
-		_noOfServerUrisErr := writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
+		_noOfServerUrisErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfServerUris", 32, int32((noOfServerUris)))
 		if _noOfServerUrisErr != nil {
 			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
 		}
@@ -359,7 +359,7 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 
 		// Simple Field (serviceId)
 		serviceId := uint32(m.GetServiceId())
-		_serviceIdErr := writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
+		_serviceIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("serviceId", 32, uint32((serviceId)))
 		if _serviceIdErr != nil {
 			return errors.Wrap(_serviceIdErr, "Error serializing 'serviceId' field")
 		}

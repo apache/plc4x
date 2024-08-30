@@ -213,7 +213,7 @@ func RegisterServer2ResponseParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (noOfConfigurationResults)
-	_noOfConfigurationResults, _noOfConfigurationResultsErr := readBuffer.ReadInt32("noOfConfigurationResults", 32)
+	_noOfConfigurationResults, _noOfConfigurationResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfConfigurationResults", 32)
 	if _noOfConfigurationResultsErr != nil {
 		return nil, errors.Wrap(_noOfConfigurationResultsErr, "Error parsing 'noOfConfigurationResults' field of RegisterServer2Response")
 	}
@@ -247,7 +247,7 @@ func RegisterServer2ResponseParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
+	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
 	if _noOfDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of RegisterServer2Response")
 	}
@@ -329,7 +329,7 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfConfigurationResults)
 		noOfConfigurationResults := int32(m.GetNoOfConfigurationResults())
-		_noOfConfigurationResultsErr := writeBuffer.WriteInt32("noOfConfigurationResults", 32, int32((noOfConfigurationResults)))
+		_noOfConfigurationResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfConfigurationResults", 32, int32((noOfConfigurationResults)))
 		if _noOfConfigurationResultsErr != nil {
 			return errors.Wrap(_noOfConfigurationResultsErr, "Error serializing 'noOfConfigurationResults' field")
 		}
@@ -353,7 +353,7 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfDiagnosticInfos)
 		noOfDiagnosticInfos := int32(m.GetNoOfDiagnosticInfos())
-		_noOfDiagnosticInfosErr := writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
+		_noOfDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiagnosticInfos", 32, int32((noOfDiagnosticInfos)))
 		if _noOfDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}

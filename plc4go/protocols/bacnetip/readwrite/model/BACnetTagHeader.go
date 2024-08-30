@@ -287,7 +287,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (tagNumber)
-	_tagNumber, _tagNumberErr := readBuffer.ReadUint8("tagNumber", 4)
+	_tagNumber, _tagNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("tagNumber", 4)
 	if _tagNumberErr != nil {
 		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field of BACnetTagHeader")
 	}
@@ -307,7 +307,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 
 	// Simple Field (lengthValueType)
-	_lengthValueType, _lengthValueTypeErr := readBuffer.ReadUint8("lengthValueType", 3)
+	_lengthValueType, _lengthValueTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lengthValueType", 3)
 	if _lengthValueTypeErr != nil {
 		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field of BACnetTagHeader")
 	}
@@ -317,7 +317,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var extTagNumber *uint8 = nil
 	if bool((tagNumber) == (15)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("extTagNumber", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extTagNumber", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -353,7 +353,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var extLength *uint8 = nil
 	if bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("extLength", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extLength", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -369,7 +369,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var extExtLength *uint16 = nil
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("extExtLength", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("extExtLength", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -385,7 +385,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	var extExtExtLength *uint32 = nil
 	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint32("extExtExtLength", 32)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("extExtExtLength", 32)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -441,7 +441,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (tagNumber)
 	tagNumber := uint8(m.GetTagNumber())
-	_tagNumberErr := writeBuffer.WriteUint8("tagNumber", 4, uint8((tagNumber)))
+	_tagNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("tagNumber", 4, uint8((tagNumber)))
 	if _tagNumberErr != nil {
 		return errors.Wrap(_tagNumberErr, "Error serializing 'tagNumber' field")
 	}
@@ -460,7 +460,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (lengthValueType)
 	lengthValueType := uint8(m.GetLengthValueType())
-	_lengthValueTypeErr := writeBuffer.WriteUint8("lengthValueType", 3, uint8((lengthValueType)))
+	_lengthValueTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("lengthValueType", 3, uint8((lengthValueType)))
 	if _lengthValueTypeErr != nil {
 		return errors.Wrap(_lengthValueTypeErr, "Error serializing 'lengthValueType' field")
 	}
@@ -469,7 +469,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extTagNumber *uint8 = nil
 	if m.GetExtTagNumber() != nil {
 		extTagNumber = m.GetExtTagNumber()
-		_extTagNumberErr := writeBuffer.WriteUint8("extTagNumber", 8, uint8(*(extTagNumber)))
+		_extTagNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extTagNumber", 8, uint8(*(extTagNumber)))
 		if _extTagNumberErr != nil {
 			return errors.Wrap(_extTagNumberErr, "Error serializing 'extTagNumber' field")
 		}
@@ -503,7 +503,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extLength *uint8 = nil
 	if m.GetExtLength() != nil {
 		extLength = m.GetExtLength()
-		_extLengthErr := writeBuffer.WriteUint8("extLength", 8, uint8(*(extLength)))
+		_extLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("extLength", 8, uint8(*(extLength)))
 		if _extLengthErr != nil {
 			return errors.Wrap(_extLengthErr, "Error serializing 'extLength' field")
 		}
@@ -513,7 +513,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extExtLength *uint16 = nil
 	if m.GetExtExtLength() != nil {
 		extExtLength = m.GetExtExtLength()
-		_extExtLengthErr := writeBuffer.WriteUint16("extExtLength", 16, uint16(*(extExtLength)))
+		_extExtLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("extExtLength", 16, uint16(*(extExtLength)))
 		if _extExtLengthErr != nil {
 			return errors.Wrap(_extExtLengthErr, "Error serializing 'extExtLength' field")
 		}
@@ -523,7 +523,7 @@ func (m *_BACnetTagHeader) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	var extExtExtLength *uint32 = nil
 	if m.GetExtExtExtLength() != nil {
 		extExtExtLength = m.GetExtExtExtLength()
-		_extExtExtLengthErr := writeBuffer.WriteUint32("extExtExtLength", 32, uint32(*(extExtExtLength)))
+		_extExtExtLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("extExtExtLength", 32, uint32(*(extExtExtLength)))
 		if _extExtExtLengthErr != nil {
 			return errors.Wrap(_extExtExtLengthErr, "Error serializing 'extExtExtLength' field")
 		}

@@ -225,14 +225,14 @@ func ArgumentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, i
 	}
 
 	// Simple Field (valueRank)
-	_valueRank, _valueRankErr := readBuffer.ReadInt32("valueRank", 32)
+	_valueRank, _valueRankErr := /*TODO: migrate me*/ readBuffer.ReadInt32("valueRank", 32)
 	if _valueRankErr != nil {
 		return nil, errors.Wrap(_valueRankErr, "Error parsing 'valueRank' field of Argument")
 	}
 	valueRank := _valueRank
 
 	// Simple Field (noOfArrayDimensions)
-	_noOfArrayDimensions, _noOfArrayDimensionsErr := readBuffer.ReadInt32("noOfArrayDimensions", 32)
+	_noOfArrayDimensions, _noOfArrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfArrayDimensions", 32)
 	if _noOfArrayDimensionsErr != nil {
 		return nil, errors.Wrap(_noOfArrayDimensionsErr, "Error parsing 'noOfArrayDimensions' field of Argument")
 	}
@@ -254,7 +254,7 @@ func ArgumentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, i
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadUint32("", 32)
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("", 32)
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'arrayDimensions' field of Argument")
 			}
@@ -340,14 +340,14 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 		// Simple Field (valueRank)
 		valueRank := int32(m.GetValueRank())
-		_valueRankErr := writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
+		_valueRankErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("valueRank", 32, int32((valueRank)))
 		if _valueRankErr != nil {
 			return errors.Wrap(_valueRankErr, "Error serializing 'valueRank' field")
 		}
 
 		// Simple Field (noOfArrayDimensions)
 		noOfArrayDimensions := int32(m.GetNoOfArrayDimensions())
-		_noOfArrayDimensionsErr := writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
+		_noOfArrayDimensionsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfArrayDimensions", 32, int32((noOfArrayDimensions)))
 		if _noOfArrayDimensionsErr != nil {
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}
@@ -358,7 +358,7 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		}
 		for _curItem, _element := range m.GetArrayDimensions() {
 			_ = _curItem
-			_elementErr := writeBuffer.WriteUint32("", 32, uint32(_element))
+			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
 			if _elementErr != nil {
 				return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
 			}

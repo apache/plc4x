@@ -230,7 +230,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	var reservedField0 *uint32
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint32("reserved", 24)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("reserved", 24)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerResponse")
 		}
@@ -245,56 +245,56 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	}
 
 	// Simple Field (otConnectionId)
-	_otConnectionId, _otConnectionIdErr := readBuffer.ReadUint32("otConnectionId", 32)
+	_otConnectionId, _otConnectionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("otConnectionId", 32)
 	if _otConnectionIdErr != nil {
 		return nil, errors.Wrap(_otConnectionIdErr, "Error parsing 'otConnectionId' field of CipConnectionManagerResponse")
 	}
 	otConnectionId := _otConnectionId
 
 	// Simple Field (toConnectionId)
-	_toConnectionId, _toConnectionIdErr := readBuffer.ReadUint32("toConnectionId", 32)
+	_toConnectionId, _toConnectionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("toConnectionId", 32)
 	if _toConnectionIdErr != nil {
 		return nil, errors.Wrap(_toConnectionIdErr, "Error parsing 'toConnectionId' field of CipConnectionManagerResponse")
 	}
 	toConnectionId := _toConnectionId
 
 	// Simple Field (connectionSerialNumber)
-	_connectionSerialNumber, _connectionSerialNumberErr := readBuffer.ReadUint16("connectionSerialNumber", 16)
+	_connectionSerialNumber, _connectionSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionSerialNumber", 16)
 	if _connectionSerialNumberErr != nil {
 		return nil, errors.Wrap(_connectionSerialNumberErr, "Error parsing 'connectionSerialNumber' field of CipConnectionManagerResponse")
 	}
 	connectionSerialNumber := _connectionSerialNumber
 
 	// Simple Field (originatorVendorId)
-	_originatorVendorId, _originatorVendorIdErr := readBuffer.ReadUint16("originatorVendorId", 16)
+	_originatorVendorId, _originatorVendorIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("originatorVendorId", 16)
 	if _originatorVendorIdErr != nil {
 		return nil, errors.Wrap(_originatorVendorIdErr, "Error parsing 'originatorVendorId' field of CipConnectionManagerResponse")
 	}
 	originatorVendorId := _originatorVendorId
 
 	// Simple Field (originatorSerialNumber)
-	_originatorSerialNumber, _originatorSerialNumberErr := readBuffer.ReadUint32("originatorSerialNumber", 32)
+	_originatorSerialNumber, _originatorSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originatorSerialNumber", 32)
 	if _originatorSerialNumberErr != nil {
 		return nil, errors.Wrap(_originatorSerialNumberErr, "Error parsing 'originatorSerialNumber' field of CipConnectionManagerResponse")
 	}
 	originatorSerialNumber := _originatorSerialNumber
 
 	// Simple Field (otApi)
-	_otApi, _otApiErr := readBuffer.ReadUint32("otApi", 32)
+	_otApi, _otApiErr := /*TODO: migrate me*/ readBuffer.ReadUint32("otApi", 32)
 	if _otApiErr != nil {
 		return nil, errors.Wrap(_otApiErr, "Error parsing 'otApi' field of CipConnectionManagerResponse")
 	}
 	otApi := _otApi
 
 	// Simple Field (toApi)
-	_toApi, _toApiErr := readBuffer.ReadUint32("toApi", 32)
+	_toApi, _toApiErr := /*TODO: migrate me*/ readBuffer.ReadUint32("toApi", 32)
 	if _toApiErr != nil {
 		return nil, errors.Wrap(_toApiErr, "Error parsing 'toApi' field of CipConnectionManagerResponse")
 	}
 	toApi := _toApi
 
 	// Implicit Field (replySize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	replySize, _replySizeErr := readBuffer.ReadUint8("replySize", 8)
+	replySize, _replySizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("replySize", 8)
 	_ = replySize
 	if _replySizeErr != nil {
 		return nil, errors.Wrap(_replySizeErr, "Error parsing 'replySize' field of CipConnectionManagerResponse")
@@ -303,7 +303,7 @@ func CipConnectionManagerResponseParseWithBuffer(ctx context.Context, readBuffer
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerResponse")
 		}
@@ -368,7 +368,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint32("reserved", 24, uint32(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint32("reserved", 24, uint32(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -376,56 +376,56 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (otConnectionId)
 		otConnectionId := uint32(m.GetOtConnectionId())
-		_otConnectionIdErr := writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
+		_otConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otConnectionId", 32, uint32((otConnectionId)))
 		if _otConnectionIdErr != nil {
 			return errors.Wrap(_otConnectionIdErr, "Error serializing 'otConnectionId' field")
 		}
 
 		// Simple Field (toConnectionId)
 		toConnectionId := uint32(m.GetToConnectionId())
-		_toConnectionIdErr := writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
+		_toConnectionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toConnectionId", 32, uint32((toConnectionId)))
 		if _toConnectionIdErr != nil {
 			return errors.Wrap(_toConnectionIdErr, "Error serializing 'toConnectionId' field")
 		}
 
 		// Simple Field (connectionSerialNumber)
 		connectionSerialNumber := uint16(m.GetConnectionSerialNumber())
-		_connectionSerialNumberErr := writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
+		_connectionSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("connectionSerialNumber", 16, uint16((connectionSerialNumber)))
 		if _connectionSerialNumberErr != nil {
 			return errors.Wrap(_connectionSerialNumberErr, "Error serializing 'connectionSerialNumber' field")
 		}
 
 		// Simple Field (originatorVendorId)
 		originatorVendorId := uint16(m.GetOriginatorVendorId())
-		_originatorVendorIdErr := writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
+		_originatorVendorIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("originatorVendorId", 16, uint16((originatorVendorId)))
 		if _originatorVendorIdErr != nil {
 			return errors.Wrap(_originatorVendorIdErr, "Error serializing 'originatorVendorId' field")
 		}
 
 		// Simple Field (originatorSerialNumber)
 		originatorSerialNumber := uint32(m.GetOriginatorSerialNumber())
-		_originatorSerialNumberErr := writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
+		_originatorSerialNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("originatorSerialNumber", 32, uint32((originatorSerialNumber)))
 		if _originatorSerialNumberErr != nil {
 			return errors.Wrap(_originatorSerialNumberErr, "Error serializing 'originatorSerialNumber' field")
 		}
 
 		// Simple Field (otApi)
 		otApi := uint32(m.GetOtApi())
-		_otApiErr := writeBuffer.WriteUint32("otApi", 32, uint32((otApi)))
+		_otApiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("otApi", 32, uint32((otApi)))
 		if _otApiErr != nil {
 			return errors.Wrap(_otApiErr, "Error serializing 'otApi' field")
 		}
 
 		// Simple Field (toApi)
 		toApi := uint32(m.GetToApi())
-		_toApiErr := writeBuffer.WriteUint32("toApi", 32, uint32((toApi)))
+		_toApiErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("toApi", 32, uint32((toApi)))
 		if _toApiErr != nil {
 			return errors.Wrap(_toApiErr, "Error serializing 'toApi' field")
 		}
 
 		// Implicit Field (replySize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		replySize := uint8(uint8(uint8(m.GetLengthInBytes(ctx))) - uint8(uint8(30)))
-		_replySizeErr := writeBuffer.WriteUint8("replySize", 8, uint8((replySize)))
+		_replySizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("replySize", 8, uint8((replySize)))
 		if _replySizeErr != nil {
 			return errors.Wrap(_replySizeErr, "Error serializing 'replySize' field")
 		}
@@ -440,7 +440,7 @@ func (m *_CipConnectionManagerResponse) SerializeWithWriteBuffer(ctx context.Con
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}

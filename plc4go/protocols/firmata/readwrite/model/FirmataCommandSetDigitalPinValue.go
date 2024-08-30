@@ -158,7 +158,7 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Simple Field (pin)
-	_pin, _pinErr := readBuffer.ReadUint8("pin", 8)
+	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
 	if _pinErr != nil {
 		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetDigitalPinValue")
 	}
@@ -167,7 +167,7 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBu
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of FirmataCommandSetDigitalPinValue")
 		}
@@ -182,7 +182,7 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Simple Field (on)
-	_on, _onErr := readBuffer.ReadBit("on")
+	_on, _onErr := /*TODO: migrate me*/ readBuffer.ReadBit("on")
 	if _onErr != nil {
 		return nil, errors.Wrap(_onErr, "Error parsing 'on' field of FirmataCommandSetDigitalPinValue")
 	}
@@ -225,7 +225,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (pin)
 		pin := uint8(m.GetPin())
-		_pinErr := writeBuffer.WriteUint8("pin", 8, uint8((pin)))
+		_pinErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pin", 8, uint8((pin)))
 		if _pinErr != nil {
 			return errors.Wrap(_pinErr, "Error serializing 'pin' field")
 		}
@@ -240,7 +240,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -248,7 +248,7 @@ func (m *_FirmataCommandSetDigitalPinValue) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (on)
 		on := bool(m.GetOn())
-		_onErr := writeBuffer.WriteBit("on", (on))
+		_onErr := /*TODO: migrate me*/ writeBuffer.WriteBit("on", (on))
 		if _onErr != nil {
 			return errors.Wrap(_onErr, "Error serializing 'on' field")
 		}

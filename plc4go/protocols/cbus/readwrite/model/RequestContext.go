@@ -115,7 +115,7 @@ func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (sendIdentifyRequestBefore)
-	_sendIdentifyRequestBefore, _sendIdentifyRequestBeforeErr := readBuffer.ReadBit("sendIdentifyRequestBefore")
+	_sendIdentifyRequestBefore, _sendIdentifyRequestBeforeErr := /*TODO: migrate me*/ readBuffer.ReadBit("sendIdentifyRequestBefore")
 	if _sendIdentifyRequestBeforeErr != nil {
 		return nil, errors.Wrap(_sendIdentifyRequestBeforeErr, "Error parsing 'sendIdentifyRequestBefore' field of RequestContext")
 	}
@@ -150,7 +150,7 @@ func (m *_RequestContext) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (sendIdentifyRequestBefore)
 	sendIdentifyRequestBefore := bool(m.GetSendIdentifyRequestBefore())
-	_sendIdentifyRequestBeforeErr := writeBuffer.WriteBit("sendIdentifyRequestBefore", (sendIdentifyRequestBefore))
+	_sendIdentifyRequestBeforeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sendIdentifyRequestBefore", (sendIdentifyRequestBefore))
 	if _sendIdentifyRequestBeforeErr != nil {
 		return errors.Wrap(_sendIdentifyRequestBeforeErr, "Error serializing 'sendIdentifyRequestBefore' field")
 	}

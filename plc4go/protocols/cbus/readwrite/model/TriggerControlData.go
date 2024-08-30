@@ -198,7 +198,7 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = commandType
 
 	// Simple Field (triggerGroup)
-	_triggerGroup, _triggerGroupErr := readBuffer.ReadByte("triggerGroup")
+	_triggerGroup, _triggerGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("triggerGroup")
 	if _triggerGroupErr != nil {
 		return nil, errors.Wrap(_triggerGroupErr, "Error parsing 'triggerGroup' field of TriggerControlData")
 	}
@@ -278,7 +278,7 @@ func (pm *_TriggerControlData) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Simple Field (triggerGroup)
 	triggerGroup := byte(m.GetTriggerGroup())
-	_triggerGroupErr := writeBuffer.WriteByte("triggerGroup", (triggerGroup))
+	_triggerGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("triggerGroup", (triggerGroup))
 	if _triggerGroupErr != nil {
 		return errors.Wrap(_triggerGroupErr, "Error serializing 'triggerGroup' field")
 	}

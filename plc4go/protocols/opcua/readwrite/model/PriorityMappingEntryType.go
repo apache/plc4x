@@ -201,14 +201,14 @@ func PriorityMappingEntryTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	}
 
 	// Simple Field (priorityValue_PCP)
-	_priorityValue_PCP, _priorityValue_PCPErr := readBuffer.ReadUint8("priorityValue_PCP", 8)
+	_priorityValue_PCP, _priorityValue_PCPErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priorityValue_PCP", 8)
 	if _priorityValue_PCPErr != nil {
 		return nil, errors.Wrap(_priorityValue_PCPErr, "Error parsing 'priorityValue_PCP' field of PriorityMappingEntryType")
 	}
 	priorityValue_PCP := _priorityValue_PCP
 
 	// Simple Field (priorityValue_DSCP)
-	_priorityValue_DSCP, _priorityValue_DSCPErr := readBuffer.ReadUint32("priorityValue_DSCP", 32)
+	_priorityValue_DSCP, _priorityValue_DSCPErr := /*TODO: migrate me*/ readBuffer.ReadUint32("priorityValue_DSCP", 32)
 	if _priorityValue_DSCPErr != nil {
 		return nil, errors.Wrap(_priorityValue_DSCPErr, "Error parsing 'priorityValue_DSCP' field of PriorityMappingEntryType")
 	}
@@ -274,14 +274,14 @@ func (m *_PriorityMappingEntryType) SerializeWithWriteBuffer(ctx context.Context
 
 		// Simple Field (priorityValue_PCP)
 		priorityValue_PCP := uint8(m.GetPriorityValue_PCP())
-		_priorityValue_PCPErr := writeBuffer.WriteUint8("priorityValue_PCP", 8, uint8((priorityValue_PCP)))
+		_priorityValue_PCPErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("priorityValue_PCP", 8, uint8((priorityValue_PCP)))
 		if _priorityValue_PCPErr != nil {
 			return errors.Wrap(_priorityValue_PCPErr, "Error serializing 'priorityValue_PCP' field")
 		}
 
 		// Simple Field (priorityValue_DSCP)
 		priorityValue_DSCP := uint32(m.GetPriorityValue_DSCP())
-		_priorityValue_DSCPErr := writeBuffer.WriteUint32("priorityValue_DSCP", 32, uint32((priorityValue_DSCP)))
+		_priorityValue_DSCPErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("priorityValue_DSCP", 32, uint32((priorityValue_DSCP)))
 		if _priorityValue_DSCPErr != nil {
 			return errors.Wrap(_priorityValue_DSCPErr, "Error serializing 'priorityValue_DSCP' field")
 		}

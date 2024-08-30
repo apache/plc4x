@@ -178,7 +178,7 @@ func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	_ = currentPos
 
 	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
+	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
 	if _groupErr != nil {
 		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataLabel")
 	}
@@ -261,7 +261,7 @@ func (m *_LightingDataLabel) SerializeWithWriteBuffer(ctx context.Context, write
 
 		// Simple Field (group)
 		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
+		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
 		if _groupErr != nil {
 			return errors.Wrap(_groupErr, "Error serializing 'group' field")
 		}

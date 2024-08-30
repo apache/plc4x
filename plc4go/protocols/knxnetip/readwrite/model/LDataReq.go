@@ -168,7 +168,7 @@ func LDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	_ = currentPos
 
 	// Simple Field (additionalInformationLength)
-	_additionalInformationLength, _additionalInformationLengthErr := readBuffer.ReadUint8("additionalInformationLength", 8)
+	_additionalInformationLength, _additionalInformationLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("additionalInformationLength", 8)
 	if _additionalInformationLengthErr != nil {
 		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field of LDataReq")
 	}
@@ -245,7 +245,7 @@ func (m *_LDataReq) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 
 		// Simple Field (additionalInformationLength)
 		additionalInformationLength := uint8(m.GetAdditionalInformationLength())
-		_additionalInformationLengthErr := writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
+		_additionalInformationLengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("additionalInformationLength", 8, uint8((additionalInformationLength)))
 		if _additionalInformationLengthErr != nil {
 			return errors.Wrap(_additionalInformationLengthErr, "Error serializing 'additionalInformationLength' field")
 		}

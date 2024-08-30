@@ -153,14 +153,14 @@ func UnsignedRationalNumberParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Simple Field (numerator)
-	_numerator, _numeratorErr := readBuffer.ReadUint32("numerator", 32)
+	_numerator, _numeratorErr := /*TODO: migrate me*/ readBuffer.ReadUint32("numerator", 32)
 	if _numeratorErr != nil {
 		return nil, errors.Wrap(_numeratorErr, "Error parsing 'numerator' field of UnsignedRationalNumber")
 	}
 	numerator := _numerator
 
 	// Simple Field (denominator)
-	_denominator, _denominatorErr := readBuffer.ReadUint32("denominator", 32)
+	_denominator, _denominatorErr := /*TODO: migrate me*/ readBuffer.ReadUint32("denominator", 32)
 	if _denominatorErr != nil {
 		return nil, errors.Wrap(_denominatorErr, "Error parsing 'denominator' field of UnsignedRationalNumber")
 	}
@@ -200,14 +200,14 @@ func (m *_UnsignedRationalNumber) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (numerator)
 		numerator := uint32(m.GetNumerator())
-		_numeratorErr := writeBuffer.WriteUint32("numerator", 32, uint32((numerator)))
+		_numeratorErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("numerator", 32, uint32((numerator)))
 		if _numeratorErr != nil {
 			return errors.Wrap(_numeratorErr, "Error serializing 'numerator' field")
 		}
 
 		// Simple Field (denominator)
 		denominator := uint32(m.GetDenominator())
-		_denominatorErr := writeBuffer.WriteUint32("denominator", 32, uint32((denominator)))
+		_denominatorErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("denominator", 32, uint32((denominator)))
 		if _denominatorErr != nil {
 			return errors.Wrap(_denominatorErr, "Error serializing 'denominator' field")
 		}

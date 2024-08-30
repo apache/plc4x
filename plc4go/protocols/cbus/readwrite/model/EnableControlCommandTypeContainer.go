@@ -358,7 +358,7 @@ func EnableControlCommandTypeContainerParse(ctx context.Context, theBytes []byte
 func EnableControlCommandTypeContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlCommandTypeContainer, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("EnableControlCommandTypeContainer", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("EnableControlCommandTypeContainer", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading EnableControlCommandTypeContainer")
 	}
@@ -381,7 +381,7 @@ func (e EnableControlCommandTypeContainer) Serialize() ([]byte, error) {
 func (e EnableControlCommandTypeContainer) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("EnableControlCommandTypeContainer", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

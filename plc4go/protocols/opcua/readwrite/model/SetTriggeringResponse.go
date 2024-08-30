@@ -271,7 +271,7 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfAddResults)
-	_noOfAddResults, _noOfAddResultsErr := readBuffer.ReadInt32("noOfAddResults", 32)
+	_noOfAddResults, _noOfAddResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAddResults", 32)
 	if _noOfAddResultsErr != nil {
 		return nil, errors.Wrap(_noOfAddResultsErr, "Error parsing 'noOfAddResults' field of SetTriggeringResponse")
 	}
@@ -305,7 +305,7 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfAddDiagnosticInfos)
-	_noOfAddDiagnosticInfos, _noOfAddDiagnosticInfosErr := readBuffer.ReadInt32("noOfAddDiagnosticInfos", 32)
+	_noOfAddDiagnosticInfos, _noOfAddDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAddDiagnosticInfos", 32)
 	if _noOfAddDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfAddDiagnosticInfosErr, "Error parsing 'noOfAddDiagnosticInfos' field of SetTriggeringResponse")
 	}
@@ -339,7 +339,7 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfRemoveResults)
-	_noOfRemoveResults, _noOfRemoveResultsErr := readBuffer.ReadInt32("noOfRemoveResults", 32)
+	_noOfRemoveResults, _noOfRemoveResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRemoveResults", 32)
 	if _noOfRemoveResultsErr != nil {
 		return nil, errors.Wrap(_noOfRemoveResultsErr, "Error parsing 'noOfRemoveResults' field of SetTriggeringResponse")
 	}
@@ -373,7 +373,7 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (noOfRemoveDiagnosticInfos)
-	_noOfRemoveDiagnosticInfos, _noOfRemoveDiagnosticInfosErr := readBuffer.ReadInt32("noOfRemoveDiagnosticInfos", 32)
+	_noOfRemoveDiagnosticInfos, _noOfRemoveDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRemoveDiagnosticInfos", 32)
 	if _noOfRemoveDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error parsing 'noOfRemoveDiagnosticInfos' field of SetTriggeringResponse")
 	}
@@ -459,7 +459,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfAddResults)
 		noOfAddResults := int32(m.GetNoOfAddResults())
-		_noOfAddResultsErr := writeBuffer.WriteInt32("noOfAddResults", 32, int32((noOfAddResults)))
+		_noOfAddResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAddResults", 32, int32((noOfAddResults)))
 		if _noOfAddResultsErr != nil {
 			return errors.Wrap(_noOfAddResultsErr, "Error serializing 'noOfAddResults' field")
 		}
@@ -483,7 +483,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfAddDiagnosticInfos)
 		noOfAddDiagnosticInfos := int32(m.GetNoOfAddDiagnosticInfos())
-		_noOfAddDiagnosticInfosErr := writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, int32((noOfAddDiagnosticInfos)))
+		_noOfAddDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfAddDiagnosticInfos", 32, int32((noOfAddDiagnosticInfos)))
 		if _noOfAddDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfAddDiagnosticInfosErr, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
@@ -507,7 +507,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRemoveResults)
 		noOfRemoveResults := int32(m.GetNoOfRemoveResults())
-		_noOfRemoveResultsErr := writeBuffer.WriteInt32("noOfRemoveResults", 32, int32((noOfRemoveResults)))
+		_noOfRemoveResultsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRemoveResults", 32, int32((noOfRemoveResults)))
 		if _noOfRemoveResultsErr != nil {
 			return errors.Wrap(_noOfRemoveResultsErr, "Error serializing 'noOfRemoveResults' field")
 		}
@@ -531,7 +531,7 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (noOfRemoveDiagnosticInfos)
 		noOfRemoveDiagnosticInfos := int32(m.GetNoOfRemoveDiagnosticInfos())
-		_noOfRemoveDiagnosticInfosErr := writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, int32((noOfRemoveDiagnosticInfos)))
+		_noOfRemoveDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfRemoveDiagnosticInfos", 32, int32((noOfRemoveDiagnosticInfos)))
 		if _noOfRemoveDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}

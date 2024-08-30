@@ -158,14 +158,14 @@ func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 
 	// Simple Field (dp)
-	_dp, _dpErr := readBuffer.ReadBit("dp")
+	_dp, _dpErr := /*TODO: migrate me*/ readBuffer.ReadBit("dp")
 	if _dpErr != nil {
 		return nil, errors.Wrap(_dpErr, "Error parsing 'dp' field of CBusHeader")
 	}
 	dp := _dp
 
 	// Simple Field (rc)
-	_rc, _rcErr := readBuffer.ReadUint8("rc", 2)
+	_rc, _rcErr := /*TODO: migrate me*/ readBuffer.ReadUint8("rc", 2)
 	if _rcErr != nil {
 		return nil, errors.Wrap(_rcErr, "Error parsing 'rc' field of CBusHeader")
 	}
@@ -228,14 +228,14 @@ func (m *_CBusHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Simple Field (dp)
 	dp := bool(m.GetDp())
-	_dpErr := writeBuffer.WriteBit("dp", (dp))
+	_dpErr := /*TODO: migrate me*/ writeBuffer.WriteBit("dp", (dp))
 	if _dpErr != nil {
 		return errors.Wrap(_dpErr, "Error serializing 'dp' field")
 	}
 
 	// Simple Field (rc)
 	rc := uint8(m.GetRc())
-	_rcErr := writeBuffer.WriteUint8("rc", 2, uint8((rc)))
+	_rcErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("rc", 2, uint8((rc)))
 	if _rcErr != nil {
 		return errors.Wrap(_rcErr, "Error serializing 'rc' field")
 	}

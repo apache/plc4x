@@ -156,14 +156,14 @@ func DF1UnprotectedReadRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadUint16("address", 16)
+	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of DF1UnprotectedReadRequest")
 	}
 	address := _address
 
 	// Simple Field (size)
-	_size, _sizeErr := readBuffer.ReadUint8("size", 8)
+	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("size", 8)
 	if _sizeErr != nil {
 		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of DF1UnprotectedReadRequest")
 	}
@@ -203,14 +203,14 @@ func (m *_DF1UnprotectedReadRequest) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (address)
 		address := uint16(m.GetAddress())
-		_addressErr := writeBuffer.WriteUint16("address", 16, uint16((address)))
+		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("address", 16, uint16((address)))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}
 
 		// Simple Field (size)
 		size := uint8(m.GetSize())
-		_sizeErr := writeBuffer.WriteUint8("size", 8, uint8((size)))
+		_sizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("size", 8, uint8((size)))
 		if _sizeErr != nil {
 			return errors.Wrap(_sizeErr, "Error serializing 'size' field")
 		}

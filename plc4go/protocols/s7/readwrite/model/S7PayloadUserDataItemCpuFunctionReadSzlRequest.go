@@ -178,7 +178,7 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx context.C
 	}
 
 	// Simple Field (szlIndex)
-	_szlIndex, _szlIndexErr := readBuffer.ReadUint16("szlIndex", 16)
+	_szlIndex, _szlIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("szlIndex", 16)
 	if _szlIndexErr != nil {
 		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field of S7PayloadUserDataItemCpuFunctionReadSzlRequest")
 	}
@@ -230,7 +230,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlRequest) SerializeWithWriteBuff
 
 		// Simple Field (szlIndex)
 		szlIndex := uint16(m.GetSzlIndex())
-		_szlIndexErr := writeBuffer.WriteUint16("szlIndex", 16, uint16((szlIndex)))
+		_szlIndexErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("szlIndex", 16, uint16((szlIndex)))
 		if _szlIndexErr != nil {
 			return errors.Wrap(_szlIndexErr, "Error serializing 'szlIndex' field")
 		}

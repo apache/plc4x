@@ -173,7 +173,7 @@ func CloseSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CloseSessionRequest")
 		}
@@ -188,7 +188,7 @@ func CloseSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (deleteSubscriptions)
-	_deleteSubscriptions, _deleteSubscriptionsErr := readBuffer.ReadBit("deleteSubscriptions")
+	_deleteSubscriptions, _deleteSubscriptionsErr := /*TODO: migrate me*/ readBuffer.ReadBit("deleteSubscriptions")
 	if _deleteSubscriptionsErr != nil {
 		return nil, errors.Wrap(_deleteSubscriptionsErr, "Error parsing 'deleteSubscriptions' field of CloseSessionRequest")
 	}
@@ -249,7 +249,7 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -257,7 +257,7 @@ func (m *_CloseSessionRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (deleteSubscriptions)
 		deleteSubscriptions := bool(m.GetDeleteSubscriptions())
-		_deleteSubscriptionsErr := writeBuffer.WriteBit("deleteSubscriptions", (deleteSubscriptions))
+		_deleteSubscriptionsErr := /*TODO: migrate me*/ writeBuffer.WriteBit("deleteSubscriptions", (deleteSubscriptions))
 		if _deleteSubscriptionsErr != nil {
 			return errors.Wrap(_deleteSubscriptionsErr, "Error serializing 'deleteSubscriptions' field")
 		}

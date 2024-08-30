@@ -184,7 +184,7 @@ func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfNetworkPaths)
-	_noOfNetworkPaths, _noOfNetworkPathsErr := readBuffer.ReadInt32("noOfNetworkPaths", 32)
+	_noOfNetworkPaths, _noOfNetworkPathsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNetworkPaths", 32)
 	if _noOfNetworkPathsErr != nil {
 		return nil, errors.Wrap(_noOfNetworkPathsErr, "Error parsing 'noOfNetworkPaths' field of NetworkGroupDataType")
 	}
@@ -264,7 +264,7 @@ func (m *_NetworkGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfNetworkPaths)
 		noOfNetworkPaths := int32(m.GetNoOfNetworkPaths())
-		_noOfNetworkPathsErr := writeBuffer.WriteInt32("noOfNetworkPaths", 32, int32((noOfNetworkPaths)))
+		_noOfNetworkPathsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfNetworkPaths", 32, int32((noOfNetworkPaths)))
 		if _noOfNetworkPathsErr != nil {
 			return errors.Wrap(_noOfNetworkPathsErr, "Error serializing 'noOfNetworkPaths' field")
 		}

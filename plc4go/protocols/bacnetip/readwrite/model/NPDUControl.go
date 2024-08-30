@@ -164,7 +164,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (messageTypeFieldPresent)
-	_messageTypeFieldPresent, _messageTypeFieldPresentErr := readBuffer.ReadBit("messageTypeFieldPresent")
+	_messageTypeFieldPresent, _messageTypeFieldPresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("messageTypeFieldPresent")
 	if _messageTypeFieldPresentErr != nil {
 		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field of NPDUControl")
 	}
@@ -173,7 +173,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
@@ -188,7 +188,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (destinationSpecified)
-	_destinationSpecified, _destinationSpecifiedErr := readBuffer.ReadBit("destinationSpecified")
+	_destinationSpecified, _destinationSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("destinationSpecified")
 	if _destinationSpecifiedErr != nil {
 		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field of NPDUControl")
 	}
@@ -197,7 +197,7 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	var reservedField1 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 1)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 1)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NPDUControl")
 		}
@@ -212,14 +212,14 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	}
 
 	// Simple Field (sourceSpecified)
-	_sourceSpecified, _sourceSpecifiedErr := readBuffer.ReadBit("sourceSpecified")
+	_sourceSpecified, _sourceSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourceSpecified")
 	if _sourceSpecifiedErr != nil {
 		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field of NPDUControl")
 	}
 	sourceSpecified := _sourceSpecified
 
 	// Simple Field (expectingReply)
-	_expectingReply, _expectingReplyErr := readBuffer.ReadBit("expectingReply")
+	_expectingReply, _expectingReplyErr := /*TODO: migrate me*/ readBuffer.ReadBit("expectingReply")
 	if _expectingReplyErr != nil {
 		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field of NPDUControl")
 	}
@@ -273,7 +273,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (messageTypeFieldPresent)
 	messageTypeFieldPresent := bool(m.GetMessageTypeFieldPresent())
-	_messageTypeFieldPresentErr := writeBuffer.WriteBit("messageTypeFieldPresent", (messageTypeFieldPresent))
+	_messageTypeFieldPresentErr := /*TODO: migrate me*/ writeBuffer.WriteBit("messageTypeFieldPresent", (messageTypeFieldPresent))
 	if _messageTypeFieldPresentErr != nil {
 		return errors.Wrap(_messageTypeFieldPresentErr, "Error serializing 'messageTypeFieldPresent' field")
 	}
@@ -288,7 +288,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -296,7 +296,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (destinationSpecified)
 	destinationSpecified := bool(m.GetDestinationSpecified())
-	_destinationSpecifiedErr := writeBuffer.WriteBit("destinationSpecified", (destinationSpecified))
+	_destinationSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("destinationSpecified", (destinationSpecified))
 	if _destinationSpecifiedErr != nil {
 		return errors.Wrap(_destinationSpecifiedErr, "Error serializing 'destinationSpecified' field")
 	}
@@ -311,7 +311,7 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField1
 		}
-		_err := writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 1, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -319,14 +319,14 @@ func (m *_NPDUControl) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (sourceSpecified)
 	sourceSpecified := bool(m.GetSourceSpecified())
-	_sourceSpecifiedErr := writeBuffer.WriteBit("sourceSpecified", (sourceSpecified))
+	_sourceSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourceSpecified", (sourceSpecified))
 	if _sourceSpecifiedErr != nil {
 		return errors.Wrap(_sourceSpecifiedErr, "Error serializing 'sourceSpecified' field")
 	}
 
 	// Simple Field (expectingReply)
 	expectingReply := bool(m.GetExpectingReply())
-	_expectingReplyErr := writeBuffer.WriteBit("expectingReply", (expectingReply))
+	_expectingReplyErr := /*TODO: migrate me*/ writeBuffer.WriteBit("expectingReply", (expectingReply))
 	if _expectingReplyErr != nil {
 		return errors.Wrap(_expectingReplyErr, "Error serializing 'expectingReply' field")
 	}

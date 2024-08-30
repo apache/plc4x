@@ -177,7 +177,7 @@ func AdsAddDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBu
 	}
 
 	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := readBuffer.ReadUint32("notificationHandle", 32)
+	_notificationHandle, _notificationHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationHandle", 32)
 	if _notificationHandleErr != nil {
 		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsAddDeviceNotificationResponse")
 	}
@@ -229,7 +229,7 @@ func (m *_AdsAddDeviceNotificationResponse) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (notificationHandle)
 		notificationHandle := uint32(m.GetNotificationHandle())
-		_notificationHandleErr := writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
+		_notificationHandleErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("notificationHandle", 32, uint32((notificationHandle)))
 		if _notificationHandleErr != nil {
 			return errors.Wrap(_notificationHandleErr, "Error serializing 'notificationHandle' field")
 		}

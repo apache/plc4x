@@ -204,56 +204,56 @@ func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	// Simple Field (expansion)
-	_expansion, _expansionErr := readBuffer.ReadBit("expansion")
+	_expansion, _expansionErr := /*TODO: migrate me*/ readBuffer.ReadBit("expansion")
 	if _expansionErr != nil {
 		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACZoneList")
 	}
 	expansion := _expansion
 
 	// Simple Field (zone6)
-	_zone6, _zone6Err := readBuffer.ReadBit("zone6")
+	_zone6, _zone6Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone6")
 	if _zone6Err != nil {
 		return nil, errors.Wrap(_zone6Err, "Error parsing 'zone6' field of HVACZoneList")
 	}
 	zone6 := _zone6
 
 	// Simple Field (zone5)
-	_zone5, _zone5Err := readBuffer.ReadBit("zone5")
+	_zone5, _zone5Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone5")
 	if _zone5Err != nil {
 		return nil, errors.Wrap(_zone5Err, "Error parsing 'zone5' field of HVACZoneList")
 	}
 	zone5 := _zone5
 
 	// Simple Field (zone4)
-	_zone4, _zone4Err := readBuffer.ReadBit("zone4")
+	_zone4, _zone4Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone4")
 	if _zone4Err != nil {
 		return nil, errors.Wrap(_zone4Err, "Error parsing 'zone4' field of HVACZoneList")
 	}
 	zone4 := _zone4
 
 	// Simple Field (zone3)
-	_zone3, _zone3Err := readBuffer.ReadBit("zone3")
+	_zone3, _zone3Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone3")
 	if _zone3Err != nil {
 		return nil, errors.Wrap(_zone3Err, "Error parsing 'zone3' field of HVACZoneList")
 	}
 	zone3 := _zone3
 
 	// Simple Field (zone2)
-	_zone2, _zone2Err := readBuffer.ReadBit("zone2")
+	_zone2, _zone2Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone2")
 	if _zone2Err != nil {
 		return nil, errors.Wrap(_zone2Err, "Error parsing 'zone2' field of HVACZoneList")
 	}
 	zone2 := _zone2
 
 	// Simple Field (zone1)
-	_zone1, _zone1Err := readBuffer.ReadBit("zone1")
+	_zone1, _zone1Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone1")
 	if _zone1Err != nil {
 		return nil, errors.Wrap(_zone1Err, "Error parsing 'zone1' field of HVACZoneList")
 	}
 	zone1 := _zone1
 
 	// Simple Field (zone0)
-	_zone0, _zone0Err := readBuffer.ReadBit("zone0")
+	_zone0, _zone0Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone0")
 	if _zone0Err != nil {
 		return nil, errors.Wrap(_zone0Err, "Error parsing 'zone0' field of HVACZoneList")
 	}
@@ -300,56 +300,56 @@ func (m *_HVACZoneList) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Simple Field (expansion)
 	expansion := bool(m.GetExpansion())
-	_expansionErr := writeBuffer.WriteBit("expansion", (expansion))
+	_expansionErr := /*TODO: migrate me*/ writeBuffer.WriteBit("expansion", (expansion))
 	if _expansionErr != nil {
 		return errors.Wrap(_expansionErr, "Error serializing 'expansion' field")
 	}
 
 	// Simple Field (zone6)
 	zone6 := bool(m.GetZone6())
-	_zone6Err := writeBuffer.WriteBit("zone6", (zone6))
+	_zone6Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone6", (zone6))
 	if _zone6Err != nil {
 		return errors.Wrap(_zone6Err, "Error serializing 'zone6' field")
 	}
 
 	// Simple Field (zone5)
 	zone5 := bool(m.GetZone5())
-	_zone5Err := writeBuffer.WriteBit("zone5", (zone5))
+	_zone5Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone5", (zone5))
 	if _zone5Err != nil {
 		return errors.Wrap(_zone5Err, "Error serializing 'zone5' field")
 	}
 
 	// Simple Field (zone4)
 	zone4 := bool(m.GetZone4())
-	_zone4Err := writeBuffer.WriteBit("zone4", (zone4))
+	_zone4Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone4", (zone4))
 	if _zone4Err != nil {
 		return errors.Wrap(_zone4Err, "Error serializing 'zone4' field")
 	}
 
 	// Simple Field (zone3)
 	zone3 := bool(m.GetZone3())
-	_zone3Err := writeBuffer.WriteBit("zone3", (zone3))
+	_zone3Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone3", (zone3))
 	if _zone3Err != nil {
 		return errors.Wrap(_zone3Err, "Error serializing 'zone3' field")
 	}
 
 	// Simple Field (zone2)
 	zone2 := bool(m.GetZone2())
-	_zone2Err := writeBuffer.WriteBit("zone2", (zone2))
+	_zone2Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone2", (zone2))
 	if _zone2Err != nil {
 		return errors.Wrap(_zone2Err, "Error serializing 'zone2' field")
 	}
 
 	// Simple Field (zone1)
 	zone1 := bool(m.GetZone1())
-	_zone1Err := writeBuffer.WriteBit("zone1", (zone1))
+	_zone1Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone1", (zone1))
 	if _zone1Err != nil {
 		return errors.Wrap(_zone1Err, "Error serializing 'zone1' field")
 	}
 
 	// Simple Field (zone0)
 	zone0 := bool(m.GetZone0())
-	_zone0Err := writeBuffer.WriteBit("zone0", (zone0))
+	_zone0Err := /*TODO: migrate me*/ writeBuffer.WriteBit("zone0", (zone0))
 	if _zone0Err != nil {
 		return errors.Wrap(_zone0Err, "Error serializing 'zone0' field")
 	}

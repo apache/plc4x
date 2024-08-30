@@ -217,7 +217,7 @@ func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context,
 	_ = currentPos
 
 	// Const Field (len)
-	len, _lenErr := readBuffer.ReadUint8("len", 8)
+	len, _lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("len", 8)
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
@@ -226,42 +226,42 @@ func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context,
 	}
 
 	// Simple Field (frameErrorFlag)
-	_frameErrorFlag, _frameErrorFlagErr := readBuffer.ReadBit("frameErrorFlag")
+	_frameErrorFlag, _frameErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("frameErrorFlag")
 	if _frameErrorFlagErr != nil {
 		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	frameErrorFlag := _frameErrorFlag
 
 	// Simple Field (bitErrorFlag)
-	_bitErrorFlag, _bitErrorFlagErr := readBuffer.ReadBit("bitErrorFlag")
+	_bitErrorFlag, _bitErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("bitErrorFlag")
 	if _bitErrorFlagErr != nil {
 		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	bitErrorFlag := _bitErrorFlag
 
 	// Simple Field (parityErrorFlag)
-	_parityErrorFlag, _parityErrorFlagErr := readBuffer.ReadBit("parityErrorFlag")
+	_parityErrorFlag, _parityErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("parityErrorFlag")
 	if _parityErrorFlagErr != nil {
 		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	parityErrorFlag := _parityErrorFlag
 
 	// Simple Field (unknownFlag)
-	_unknownFlag, _unknownFlagErr := readBuffer.ReadBit("unknownFlag")
+	_unknownFlag, _unknownFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("unknownFlag")
 	if _unknownFlagErr != nil {
 		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	unknownFlag := _unknownFlag
 
 	// Simple Field (lostFlag)
-	_lostFlag, _lostFlagErr := readBuffer.ReadBit("lostFlag")
+	_lostFlag, _lostFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("lostFlag")
 	if _lostFlagErr != nil {
 		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
 	lostFlag := _lostFlag
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadUint8("sequenceNumber", 3)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 3)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of CEMIAdditionalInformationBusmonitorInfo")
 	}
@@ -304,49 +304,49 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 		}
 
 		// Const Field (len)
-		_lenErr := writeBuffer.WriteUint8("len", 8, uint8(1))
+		_lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("len", 8, uint8(1))
 		if _lenErr != nil {
 			return errors.Wrap(_lenErr, "Error serializing 'len' field")
 		}
 
 		// Simple Field (frameErrorFlag)
 		frameErrorFlag := bool(m.GetFrameErrorFlag())
-		_frameErrorFlagErr := writeBuffer.WriteBit("frameErrorFlag", (frameErrorFlag))
+		_frameErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("frameErrorFlag", (frameErrorFlag))
 		if _frameErrorFlagErr != nil {
 			return errors.Wrap(_frameErrorFlagErr, "Error serializing 'frameErrorFlag' field")
 		}
 
 		// Simple Field (bitErrorFlag)
 		bitErrorFlag := bool(m.GetBitErrorFlag())
-		_bitErrorFlagErr := writeBuffer.WriteBit("bitErrorFlag", (bitErrorFlag))
+		_bitErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("bitErrorFlag", (bitErrorFlag))
 		if _bitErrorFlagErr != nil {
 			return errors.Wrap(_bitErrorFlagErr, "Error serializing 'bitErrorFlag' field")
 		}
 
 		// Simple Field (parityErrorFlag)
 		parityErrorFlag := bool(m.GetParityErrorFlag())
-		_parityErrorFlagErr := writeBuffer.WriteBit("parityErrorFlag", (parityErrorFlag))
+		_parityErrorFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("parityErrorFlag", (parityErrorFlag))
 		if _parityErrorFlagErr != nil {
 			return errors.Wrap(_parityErrorFlagErr, "Error serializing 'parityErrorFlag' field")
 		}
 
 		// Simple Field (unknownFlag)
 		unknownFlag := bool(m.GetUnknownFlag())
-		_unknownFlagErr := writeBuffer.WriteBit("unknownFlag", (unknownFlag))
+		_unknownFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("unknownFlag", (unknownFlag))
 		if _unknownFlagErr != nil {
 			return errors.Wrap(_unknownFlagErr, "Error serializing 'unknownFlag' field")
 		}
 
 		// Simple Field (lostFlag)
 		lostFlag := bool(m.GetLostFlag())
-		_lostFlagErr := writeBuffer.WriteBit("lostFlag", (lostFlag))
+		_lostFlagErr := /*TODO: migrate me*/ writeBuffer.WriteBit("lostFlag", (lostFlag))
 		if _lostFlagErr != nil {
 			return errors.Wrap(_lostFlagErr, "Error serializing 'lostFlag' field")
 		}
 
 		// Simple Field (sequenceNumber)
 		sequenceNumber := uint8(m.GetSequenceNumber())
-		_sequenceNumberErr := writeBuffer.WriteUint8("sequenceNumber", 3, uint8((sequenceNumber)))
+		_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("sequenceNumber", 3, uint8((sequenceNumber)))
 		if _sequenceNumberErr != nil {
 			return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 		}

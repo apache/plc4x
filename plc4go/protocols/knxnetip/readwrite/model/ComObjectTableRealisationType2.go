@@ -171,14 +171,14 @@ func ComObjectTableRealisationType2ParseWithBuffer(ctx context.Context, readBuff
 	_ = currentPos
 
 	// Simple Field (numEntries)
-	_numEntries, _numEntriesErr := readBuffer.ReadUint8("numEntries", 8)
+	_numEntries, _numEntriesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numEntries", 8)
 	if _numEntriesErr != nil {
 		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field of ComObjectTableRealisationType2")
 	}
 	numEntries := _numEntries
 
 	// Simple Field (ramFlagsTablePointer)
-	_ramFlagsTablePointer, _ramFlagsTablePointerErr := readBuffer.ReadUint8("ramFlagsTablePointer", 8)
+	_ramFlagsTablePointer, _ramFlagsTablePointerErr := /*TODO: migrate me*/ readBuffer.ReadUint8("ramFlagsTablePointer", 8)
 	if _ramFlagsTablePointerErr != nil {
 		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field of ComObjectTableRealisationType2")
 	}
@@ -246,14 +246,14 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (numEntries)
 		numEntries := uint8(m.GetNumEntries())
-		_numEntriesErr := writeBuffer.WriteUint8("numEntries", 8, uint8((numEntries)))
+		_numEntriesErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numEntries", 8, uint8((numEntries)))
 		if _numEntriesErr != nil {
 			return errors.Wrap(_numEntriesErr, "Error serializing 'numEntries' field")
 		}
 
 		// Simple Field (ramFlagsTablePointer)
 		ramFlagsTablePointer := uint8(m.GetRamFlagsTablePointer())
-		_ramFlagsTablePointerErr := writeBuffer.WriteUint8("ramFlagsTablePointer", 8, uint8((ramFlagsTablePointer)))
+		_ramFlagsTablePointerErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("ramFlagsTablePointer", 8, uint8((ramFlagsTablePointer)))
 		if _ramFlagsTablePointerErr != nil {
 			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}

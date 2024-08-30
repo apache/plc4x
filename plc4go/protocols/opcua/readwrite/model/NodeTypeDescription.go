@@ -202,7 +202,7 @@ func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NodeTypeDescription")
 		}
@@ -217,14 +217,14 @@ func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 
 	// Simple Field (includeSubTypes)
-	_includeSubTypes, _includeSubTypesErr := readBuffer.ReadBit("includeSubTypes")
+	_includeSubTypes, _includeSubTypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubTypes")
 	if _includeSubTypesErr != nil {
 		return nil, errors.Wrap(_includeSubTypesErr, "Error parsing 'includeSubTypes' field of NodeTypeDescription")
 	}
 	includeSubTypes := _includeSubTypes
 
 	// Simple Field (noOfDataToReturn)
-	_noOfDataToReturn, _noOfDataToReturnErr := readBuffer.ReadInt32("noOfDataToReturn", 32)
+	_noOfDataToReturn, _noOfDataToReturnErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataToReturn", 32)
 	if _noOfDataToReturnErr != nil {
 		return nil, errors.Wrap(_noOfDataToReturnErr, "Error parsing 'noOfDataToReturn' field of NodeTypeDescription")
 	}
@@ -314,7 +314,7 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -322,14 +322,14 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (includeSubTypes)
 		includeSubTypes := bool(m.GetIncludeSubTypes())
-		_includeSubTypesErr := writeBuffer.WriteBit("includeSubTypes", (includeSubTypes))
+		_includeSubTypesErr := /*TODO: migrate me*/ writeBuffer.WriteBit("includeSubTypes", (includeSubTypes))
 		if _includeSubTypesErr != nil {
 			return errors.Wrap(_includeSubTypesErr, "Error serializing 'includeSubTypes' field")
 		}
 
 		// Simple Field (noOfDataToReturn)
 		noOfDataToReturn := int32(m.GetNoOfDataToReturn())
-		_noOfDataToReturnErr := writeBuffer.WriteInt32("noOfDataToReturn", 32, int32((noOfDataToReturn)))
+		_noOfDataToReturnErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDataToReturn", 32, int32((noOfDataToReturn)))
 		if _noOfDataToReturnErr != nil {
 			return errors.Wrap(_noOfDataToReturnErr, "Error serializing 'noOfDataToReturn' field")
 		}

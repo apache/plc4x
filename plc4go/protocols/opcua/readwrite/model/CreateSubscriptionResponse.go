@@ -199,28 +199,28 @@ func CreateSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of CreateSubscriptionResponse")
 	}
 	subscriptionId := _subscriptionId
 
 	// Simple Field (revisedPublishingInterval)
-	_revisedPublishingInterval, _revisedPublishingIntervalErr := readBuffer.ReadFloat64("revisedPublishingInterval", 64)
+	_revisedPublishingInterval, _revisedPublishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedPublishingInterval", 64)
 	if _revisedPublishingIntervalErr != nil {
 		return nil, errors.Wrap(_revisedPublishingIntervalErr, "Error parsing 'revisedPublishingInterval' field of CreateSubscriptionResponse")
 	}
 	revisedPublishingInterval := _revisedPublishingInterval
 
 	// Simple Field (revisedLifetimeCount)
-	_revisedLifetimeCount, _revisedLifetimeCountErr := readBuffer.ReadUint32("revisedLifetimeCount", 32)
+	_revisedLifetimeCount, _revisedLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedLifetimeCount", 32)
 	if _revisedLifetimeCountErr != nil {
 		return nil, errors.Wrap(_revisedLifetimeCountErr, "Error parsing 'revisedLifetimeCount' field of CreateSubscriptionResponse")
 	}
 	revisedLifetimeCount := _revisedLifetimeCount
 
 	// Simple Field (revisedMaxKeepAliveCount)
-	_revisedMaxKeepAliveCount, _revisedMaxKeepAliveCountErr := readBuffer.ReadUint32("revisedMaxKeepAliveCount", 32)
+	_revisedMaxKeepAliveCount, _revisedMaxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedMaxKeepAliveCount", 32)
 	if _revisedMaxKeepAliveCountErr != nil {
 		return nil, errors.Wrap(_revisedMaxKeepAliveCountErr, "Error parsing 'revisedMaxKeepAliveCount' field of CreateSubscriptionResponse")
 	}
@@ -275,28 +275,28 @@ func (m *_CreateSubscriptionResponse) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
 
 		// Simple Field (revisedPublishingInterval)
 		revisedPublishingInterval := float64(m.GetRevisedPublishingInterval())
-		_revisedPublishingIntervalErr := writeBuffer.WriteFloat64("revisedPublishingInterval", 64, (revisedPublishingInterval))
+		_revisedPublishingIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("revisedPublishingInterval", 64, (revisedPublishingInterval))
 		if _revisedPublishingIntervalErr != nil {
 			return errors.Wrap(_revisedPublishingIntervalErr, "Error serializing 'revisedPublishingInterval' field")
 		}
 
 		// Simple Field (revisedLifetimeCount)
 		revisedLifetimeCount := uint32(m.GetRevisedLifetimeCount())
-		_revisedLifetimeCountErr := writeBuffer.WriteUint32("revisedLifetimeCount", 32, uint32((revisedLifetimeCount)))
+		_revisedLifetimeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedLifetimeCount", 32, uint32((revisedLifetimeCount)))
 		if _revisedLifetimeCountErr != nil {
 			return errors.Wrap(_revisedLifetimeCountErr, "Error serializing 'revisedLifetimeCount' field")
 		}
 
 		// Simple Field (revisedMaxKeepAliveCount)
 		revisedMaxKeepAliveCount := uint32(m.GetRevisedMaxKeepAliveCount())
-		_revisedMaxKeepAliveCountErr := writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, uint32((revisedMaxKeepAliveCount)))
+		_revisedMaxKeepAliveCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("revisedMaxKeepAliveCount", 32, uint32((revisedMaxKeepAliveCount)))
 		if _revisedMaxKeepAliveCountErr != nil {
 			return errors.Wrap(_revisedMaxKeepAliveCountErr, "Error serializing 'revisedMaxKeepAliveCount' field")
 		}

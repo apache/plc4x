@@ -174,28 +174,28 @@ func MediaTransportControlDataSetTrackParseWithBuffer(ctx context.Context, readB
 	_ = currentPos
 
 	// Simple Field (trackMSB)
-	_trackMSB, _trackMSBErr := readBuffer.ReadByte("trackMSB")
+	_trackMSB, _trackMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMSB")
 	if _trackMSBErr != nil {
 		return nil, errors.Wrap(_trackMSBErr, "Error parsing 'trackMSB' field of MediaTransportControlDataSetTrack")
 	}
 	trackMSB := _trackMSB
 
 	// Simple Field (trackMMSB)
-	_trackMMSB, _trackMMSBErr := readBuffer.ReadByte("trackMMSB")
+	_trackMMSB, _trackMMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMMSB")
 	if _trackMMSBErr != nil {
 		return nil, errors.Wrap(_trackMMSBErr, "Error parsing 'trackMMSB' field of MediaTransportControlDataSetTrack")
 	}
 	trackMMSB := _trackMMSB
 
 	// Simple Field (trackMLSB)
-	_trackMLSB, _trackMLSBErr := readBuffer.ReadByte("trackMLSB")
+	_trackMLSB, _trackMLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMLSB")
 	if _trackMLSBErr != nil {
 		return nil, errors.Wrap(_trackMLSBErr, "Error parsing 'trackMLSB' field of MediaTransportControlDataSetTrack")
 	}
 	trackMLSB := _trackMLSB
 
 	// Simple Field (trackLSB)
-	_trackLSB, _trackLSBErr := readBuffer.ReadByte("trackLSB")
+	_trackLSB, _trackLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackLSB")
 	if _trackLSBErr != nil {
 		return nil, errors.Wrap(_trackLSBErr, "Error parsing 'trackLSB' field of MediaTransportControlDataSetTrack")
 	}
@@ -237,28 +237,28 @@ func (m *_MediaTransportControlDataSetTrack) SerializeWithWriteBuffer(ctx contex
 
 		// Simple Field (trackMSB)
 		trackMSB := byte(m.GetTrackMSB())
-		_trackMSBErr := writeBuffer.WriteByte("trackMSB", (trackMSB))
+		_trackMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMSB", (trackMSB))
 		if _trackMSBErr != nil {
 			return errors.Wrap(_trackMSBErr, "Error serializing 'trackMSB' field")
 		}
 
 		// Simple Field (trackMMSB)
 		trackMMSB := byte(m.GetTrackMMSB())
-		_trackMMSBErr := writeBuffer.WriteByte("trackMMSB", (trackMMSB))
+		_trackMMSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMMSB", (trackMMSB))
 		if _trackMMSBErr != nil {
 			return errors.Wrap(_trackMMSBErr, "Error serializing 'trackMMSB' field")
 		}
 
 		// Simple Field (trackMLSB)
 		trackMLSB := byte(m.GetTrackMLSB())
-		_trackMLSBErr := writeBuffer.WriteByte("trackMLSB", (trackMLSB))
+		_trackMLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackMLSB", (trackMLSB))
 		if _trackMLSBErr != nil {
 			return errors.Wrap(_trackMLSBErr, "Error serializing 'trackMLSB' field")
 		}
 
 		// Simple Field (trackLSB)
 		trackLSB := byte(m.GetTrackLSB())
-		_trackLSBErr := writeBuffer.WriteByte("trackLSB", (trackLSB))
+		_trackLSBErr := /*TODO: migrate me*/ writeBuffer.WriteByte("trackLSB", (trackLSB))
 		if _trackLSBErr != nil {
 			return errors.Wrap(_trackLSBErr, "Error serializing 'trackLSB' field")
 		}

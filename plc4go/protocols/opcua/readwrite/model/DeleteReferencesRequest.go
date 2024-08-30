@@ -184,7 +184,7 @@ func DeleteReferencesRequestParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (noOfReferencesToDelete)
-	_noOfReferencesToDelete, _noOfReferencesToDeleteErr := readBuffer.ReadInt32("noOfReferencesToDelete", 32)
+	_noOfReferencesToDelete, _noOfReferencesToDeleteErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferencesToDelete", 32)
 	if _noOfReferencesToDeleteErr != nil {
 		return nil, errors.Wrap(_noOfReferencesToDeleteErr, "Error parsing 'noOfReferencesToDelete' field of DeleteReferencesRequest")
 	}
@@ -264,7 +264,7 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (noOfReferencesToDelete)
 		noOfReferencesToDelete := int32(m.GetNoOfReferencesToDelete())
-		_noOfReferencesToDeleteErr := writeBuffer.WriteInt32("noOfReferencesToDelete", 32, int32((noOfReferencesToDelete)))
+		_noOfReferencesToDeleteErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfReferencesToDelete", 32, int32((noOfReferencesToDelete)))
 		if _noOfReferencesToDeleteErr != nil {
 			return errors.Wrap(_noOfReferencesToDeleteErr, "Error serializing 'noOfReferencesToDelete' field")
 		}

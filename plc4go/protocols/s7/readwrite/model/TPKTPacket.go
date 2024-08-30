@@ -143,7 +143,7 @@ func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	_ = currentPos
 
 	// Const Field (protocolId)
-	protocolId, _protocolIdErr := readBuffer.ReadUint8("protocolId", 8)
+	protocolId, _protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("protocolId", 8)
 	if _protocolIdErr != nil {
 		return nil, errors.Wrap(_protocolIdErr, "Error parsing 'protocolId' field of TPKTPacket")
 	}
@@ -154,7 +154,7 @@ func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TPKTPacket")
 		}
@@ -169,7 +169,7 @@ func TPKTPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 
 	// Implicit Field (len) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	len, _lenErr := readBuffer.ReadUint16("len", 16)
+	len, _lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("len", 16)
 	_ = len
 	if _lenErr != nil {
 		return nil, errors.Wrap(_lenErr, "Error parsing 'len' field of TPKTPacket")
@@ -217,7 +217,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 	}
 
 	// Const Field (protocolId)
-	_protocolIdErr := writeBuffer.WriteUint8("protocolId", 8, uint8(0x03))
+	_protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolId", 8, uint8(0x03))
 	if _protocolIdErr != nil {
 		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
 	}
@@ -232,7 +232,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -240,7 +240,7 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 
 	// Implicit Field (len) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	len := uint16(uint16(m.GetPayload().GetLengthInBytes(ctx)) + uint16(uint16(4)))
-	_lenErr := writeBuffer.WriteUint16("len", 16, uint16((len)))
+	_lenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("len", 16, uint16((len)))
 	if _lenErr != nil {
 		return errors.Wrap(_lenErr, "Error serializing 'len' field")
 	}

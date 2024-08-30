@@ -177,7 +177,7 @@ func RedundantServerDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 	}
 
 	// Simple Field (serviceLevel)
-	_serviceLevel, _serviceLevelErr := readBuffer.ReadUint8("serviceLevel", 8)
+	_serviceLevel, _serviceLevelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("serviceLevel", 8)
 	if _serviceLevelErr != nil {
 		return nil, errors.Wrap(_serviceLevelErr, "Error parsing 'serviceLevel' field of RedundantServerDataType")
 	}
@@ -243,7 +243,7 @@ func (m *_RedundantServerDataType) SerializeWithWriteBuffer(ctx context.Context,
 
 		// Simple Field (serviceLevel)
 		serviceLevel := uint8(m.GetServiceLevel())
-		_serviceLevelErr := writeBuffer.WriteUint8("serviceLevel", 8, uint8((serviceLevel)))
+		_serviceLevelErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("serviceLevel", 8, uint8((serviceLevel)))
 		if _serviceLevelErr != nil {
 			return errors.Wrap(_serviceLevelErr, "Error serializing 'serviceLevel' field")
 		}

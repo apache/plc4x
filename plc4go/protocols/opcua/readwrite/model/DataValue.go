@@ -245,7 +245,7 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 2)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of DataValue")
 		}
@@ -260,42 +260,42 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 
 	// Simple Field (serverPicosecondsSpecified)
-	_serverPicosecondsSpecified, _serverPicosecondsSpecifiedErr := readBuffer.ReadBit("serverPicosecondsSpecified")
+	_serverPicosecondsSpecified, _serverPicosecondsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverPicosecondsSpecified")
 	if _serverPicosecondsSpecifiedErr != nil {
 		return nil, errors.Wrap(_serverPicosecondsSpecifiedErr, "Error parsing 'serverPicosecondsSpecified' field of DataValue")
 	}
 	serverPicosecondsSpecified := _serverPicosecondsSpecified
 
 	// Simple Field (sourcePicosecondsSpecified)
-	_sourcePicosecondsSpecified, _sourcePicosecondsSpecifiedErr := readBuffer.ReadBit("sourcePicosecondsSpecified")
+	_sourcePicosecondsSpecified, _sourcePicosecondsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourcePicosecondsSpecified")
 	if _sourcePicosecondsSpecifiedErr != nil {
 		return nil, errors.Wrap(_sourcePicosecondsSpecifiedErr, "Error parsing 'sourcePicosecondsSpecified' field of DataValue")
 	}
 	sourcePicosecondsSpecified := _sourcePicosecondsSpecified
 
 	// Simple Field (serverTimestampSpecified)
-	_serverTimestampSpecified, _serverTimestampSpecifiedErr := readBuffer.ReadBit("serverTimestampSpecified")
+	_serverTimestampSpecified, _serverTimestampSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverTimestampSpecified")
 	if _serverTimestampSpecifiedErr != nil {
 		return nil, errors.Wrap(_serverTimestampSpecifiedErr, "Error parsing 'serverTimestampSpecified' field of DataValue")
 	}
 	serverTimestampSpecified := _serverTimestampSpecified
 
 	// Simple Field (sourceTimestampSpecified)
-	_sourceTimestampSpecified, _sourceTimestampSpecifiedErr := readBuffer.ReadBit("sourceTimestampSpecified")
+	_sourceTimestampSpecified, _sourceTimestampSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourceTimestampSpecified")
 	if _sourceTimestampSpecifiedErr != nil {
 		return nil, errors.Wrap(_sourceTimestampSpecifiedErr, "Error parsing 'sourceTimestampSpecified' field of DataValue")
 	}
 	sourceTimestampSpecified := _sourceTimestampSpecified
 
 	// Simple Field (statusCodeSpecified)
-	_statusCodeSpecified, _statusCodeSpecifiedErr := readBuffer.ReadBit("statusCodeSpecified")
+	_statusCodeSpecified, _statusCodeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("statusCodeSpecified")
 	if _statusCodeSpecifiedErr != nil {
 		return nil, errors.Wrap(_statusCodeSpecifiedErr, "Error parsing 'statusCodeSpecified' field of DataValue")
 	}
 	statusCodeSpecified := _statusCodeSpecified
 
 	// Simple Field (valueSpecified)
-	_valueSpecified, _valueSpecifiedErr := readBuffer.ReadBit("valueSpecified")
+	_valueSpecified, _valueSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("valueSpecified")
 	if _valueSpecifiedErr != nil {
 		return nil, errors.Wrap(_valueSpecifiedErr, "Error parsing 'valueSpecified' field of DataValue")
 	}
@@ -349,7 +349,7 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var sourceTimestamp *int64 = nil
 	if sourceTimestampSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt64("sourceTimestamp", 64)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("sourceTimestamp", 64)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -365,7 +365,7 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var sourcePicoseconds *uint16 = nil
 	if sourcePicosecondsSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("sourcePicoseconds", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("sourcePicoseconds", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -381,7 +381,7 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var serverTimestamp *int64 = nil
 	if serverTimestampSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadInt64("serverTimestamp", 64)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("serverTimestamp", 64)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -397,7 +397,7 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var serverPicoseconds *uint16 = nil
 	if serverPicosecondsSpecified {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint16("serverPicoseconds", 16)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serverPicoseconds", 16)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -458,7 +458,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 2, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -466,42 +466,42 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Simple Field (serverPicosecondsSpecified)
 	serverPicosecondsSpecified := bool(m.GetServerPicosecondsSpecified())
-	_serverPicosecondsSpecifiedErr := writeBuffer.WriteBit("serverPicosecondsSpecified", (serverPicosecondsSpecified))
+	_serverPicosecondsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverPicosecondsSpecified", (serverPicosecondsSpecified))
 	if _serverPicosecondsSpecifiedErr != nil {
 		return errors.Wrap(_serverPicosecondsSpecifiedErr, "Error serializing 'serverPicosecondsSpecified' field")
 	}
 
 	// Simple Field (sourcePicosecondsSpecified)
 	sourcePicosecondsSpecified := bool(m.GetSourcePicosecondsSpecified())
-	_sourcePicosecondsSpecifiedErr := writeBuffer.WriteBit("sourcePicosecondsSpecified", (sourcePicosecondsSpecified))
+	_sourcePicosecondsSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourcePicosecondsSpecified", (sourcePicosecondsSpecified))
 	if _sourcePicosecondsSpecifiedErr != nil {
 		return errors.Wrap(_sourcePicosecondsSpecifiedErr, "Error serializing 'sourcePicosecondsSpecified' field")
 	}
 
 	// Simple Field (serverTimestampSpecified)
 	serverTimestampSpecified := bool(m.GetServerTimestampSpecified())
-	_serverTimestampSpecifiedErr := writeBuffer.WriteBit("serverTimestampSpecified", (serverTimestampSpecified))
+	_serverTimestampSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("serverTimestampSpecified", (serverTimestampSpecified))
 	if _serverTimestampSpecifiedErr != nil {
 		return errors.Wrap(_serverTimestampSpecifiedErr, "Error serializing 'serverTimestampSpecified' field")
 	}
 
 	// Simple Field (sourceTimestampSpecified)
 	sourceTimestampSpecified := bool(m.GetSourceTimestampSpecified())
-	_sourceTimestampSpecifiedErr := writeBuffer.WriteBit("sourceTimestampSpecified", (sourceTimestampSpecified))
+	_sourceTimestampSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("sourceTimestampSpecified", (sourceTimestampSpecified))
 	if _sourceTimestampSpecifiedErr != nil {
 		return errors.Wrap(_sourceTimestampSpecifiedErr, "Error serializing 'sourceTimestampSpecified' field")
 	}
 
 	// Simple Field (statusCodeSpecified)
 	statusCodeSpecified := bool(m.GetStatusCodeSpecified())
-	_statusCodeSpecifiedErr := writeBuffer.WriteBit("statusCodeSpecified", (statusCodeSpecified))
+	_statusCodeSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("statusCodeSpecified", (statusCodeSpecified))
 	if _statusCodeSpecifiedErr != nil {
 		return errors.Wrap(_statusCodeSpecifiedErr, "Error serializing 'statusCodeSpecified' field")
 	}
 
 	// Simple Field (valueSpecified)
 	valueSpecified := bool(m.GetValueSpecified())
-	_valueSpecifiedErr := writeBuffer.WriteBit("valueSpecified", (valueSpecified))
+	_valueSpecifiedErr := /*TODO: migrate me*/ writeBuffer.WriteBit("valueSpecified", (valueSpecified))
 	if _valueSpecifiedErr != nil {
 		return errors.Wrap(_valueSpecifiedErr, "Error serializing 'valueSpecified' field")
 	}
@@ -542,7 +542,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var sourceTimestamp *int64 = nil
 	if m.GetSourceTimestamp() != nil {
 		sourceTimestamp = m.GetSourceTimestamp()
-		_sourceTimestampErr := writeBuffer.WriteInt64("sourceTimestamp", 64, int64(*(sourceTimestamp)))
+		_sourceTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("sourceTimestamp", 64, int64(*(sourceTimestamp)))
 		if _sourceTimestampErr != nil {
 			return errors.Wrap(_sourceTimestampErr, "Error serializing 'sourceTimestamp' field")
 		}
@@ -552,7 +552,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var sourcePicoseconds *uint16 = nil
 	if m.GetSourcePicoseconds() != nil {
 		sourcePicoseconds = m.GetSourcePicoseconds()
-		_sourcePicosecondsErr := writeBuffer.WriteUint16("sourcePicoseconds", 16, uint16(*(sourcePicoseconds)))
+		_sourcePicosecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("sourcePicoseconds", 16, uint16(*(sourcePicoseconds)))
 		if _sourcePicosecondsErr != nil {
 			return errors.Wrap(_sourcePicosecondsErr, "Error serializing 'sourcePicoseconds' field")
 		}
@@ -562,7 +562,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var serverTimestamp *int64 = nil
 	if m.GetServerTimestamp() != nil {
 		serverTimestamp = m.GetServerTimestamp()
-		_serverTimestampErr := writeBuffer.WriteInt64("serverTimestamp", 64, int64(*(serverTimestamp)))
+		_serverTimestampErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("serverTimestamp", 64, int64(*(serverTimestamp)))
 		if _serverTimestampErr != nil {
 			return errors.Wrap(_serverTimestampErr, "Error serializing 'serverTimestamp' field")
 		}
@@ -572,7 +572,7 @@ func (m *_DataValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 	var serverPicoseconds *uint16 = nil
 	if m.GetServerPicoseconds() != nil {
 		serverPicoseconds = m.GetServerPicoseconds()
-		_serverPicosecondsErr := writeBuffer.WriteUint16("serverPicoseconds", 16, uint16(*(serverPicoseconds)))
+		_serverPicosecondsErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("serverPicoseconds", 16, uint16(*(serverPicoseconds)))
 		if _serverPicosecondsErr != nil {
 			return errors.Wrap(_serverPicosecondsErr, "Error serializing 'serverPicoseconds' field")
 		}

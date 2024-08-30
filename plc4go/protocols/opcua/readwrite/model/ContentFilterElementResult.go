@@ -213,7 +213,7 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfOperandStatusCodes)
-	_noOfOperandStatusCodes, _noOfOperandStatusCodesErr := readBuffer.ReadInt32("noOfOperandStatusCodes", 32)
+	_noOfOperandStatusCodes, _noOfOperandStatusCodesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOperandStatusCodes", 32)
 	if _noOfOperandStatusCodesErr != nil {
 		return nil, errors.Wrap(_noOfOperandStatusCodesErr, "Error parsing 'noOfOperandStatusCodes' field of ContentFilterElementResult")
 	}
@@ -247,7 +247,7 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (noOfOperandDiagnosticInfos)
-	_noOfOperandDiagnosticInfos, _noOfOperandDiagnosticInfosErr := readBuffer.ReadInt32("noOfOperandDiagnosticInfos", 32)
+	_noOfOperandDiagnosticInfos, _noOfOperandDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOperandDiagnosticInfos", 32)
 	if _noOfOperandDiagnosticInfosErr != nil {
 		return nil, errors.Wrap(_noOfOperandDiagnosticInfosErr, "Error parsing 'noOfOperandDiagnosticInfos' field of ContentFilterElementResult")
 	}
@@ -329,7 +329,7 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfOperandStatusCodes)
 		noOfOperandStatusCodes := int32(m.GetNoOfOperandStatusCodes())
-		_noOfOperandStatusCodesErr := writeBuffer.WriteInt32("noOfOperandStatusCodes", 32, int32((noOfOperandStatusCodes)))
+		_noOfOperandStatusCodesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOperandStatusCodes", 32, int32((noOfOperandStatusCodes)))
 		if _noOfOperandStatusCodesErr != nil {
 			return errors.Wrap(_noOfOperandStatusCodesErr, "Error serializing 'noOfOperandStatusCodes' field")
 		}
@@ -353,7 +353,7 @@ func (m *_ContentFilterElementResult) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (noOfOperandDiagnosticInfos)
 		noOfOperandDiagnosticInfos := int32(m.GetNoOfOperandDiagnosticInfos())
-		_noOfOperandDiagnosticInfosErr := writeBuffer.WriteInt32("noOfOperandDiagnosticInfos", 32, int32((noOfOperandDiagnosticInfos)))
+		_noOfOperandDiagnosticInfosErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfOperandDiagnosticInfos", 32, int32((noOfOperandDiagnosticInfos)))
 		if _noOfOperandDiagnosticInfosErr != nil {
 			return errors.Wrap(_noOfOperandDiagnosticInfosErr, "Error serializing 'noOfOperandDiagnosticInfos' field")
 		}

@@ -187,7 +187,7 @@ func BACnetLiftCarModeParse(ctx context.Context, theBytes []byte) (BACnetLiftCar
 func BACnetLiftCarModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarMode, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint16("BACnetLiftCarMode", 16)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("BACnetLiftCarMode", 16)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetLiftCarMode")
 	}
@@ -210,7 +210,7 @@ func (e BACnetLiftCarMode) Serialize() ([]byte, error) {
 func (e BACnetLiftCarMode) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint16("BACnetLiftCarMode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint16("BACnetLiftCarMode", 16, uint16(uint16(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

@@ -164,7 +164,7 @@ func ModificationInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Simple Field (modificationTime)
-	_modificationTime, _modificationTimeErr := readBuffer.ReadInt64("modificationTime", 64)
+	_modificationTime, _modificationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("modificationTime", 64)
 	if _modificationTimeErr != nil {
 		return nil, errors.Wrap(_modificationTimeErr, "Error parsing 'modificationTime' field of ModificationInfo")
 	}
@@ -231,7 +231,7 @@ func (m *_ModificationInfo) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (modificationTime)
 		modificationTime := int64(m.GetModificationTime())
-		_modificationTimeErr := writeBuffer.WriteInt64("modificationTime", 64, int64((modificationTime)))
+		_modificationTimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt64("modificationTime", 64, int64((modificationTime)))
 		if _modificationTimeErr != nil {
 			return errors.Wrap(_modificationTimeErr, "Error serializing 'modificationTime' field")
 		}

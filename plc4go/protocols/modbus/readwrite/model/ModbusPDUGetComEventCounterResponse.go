@@ -161,14 +161,14 @@ func ModbusPDUGetComEventCounterResponseParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Simple Field (status)
-	_status, _statusErr := readBuffer.ReadUint16("status", 16)
+	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
 	if _statusErr != nil {
 		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventCounterResponse")
 	}
 	status := _status
 
 	// Simple Field (eventCount)
-	_eventCount, _eventCountErr := readBuffer.ReadUint16("eventCount", 16)
+	_eventCount, _eventCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventCount", 16)
 	if _eventCountErr != nil {
 		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventCounterResponse")
 	}
@@ -208,14 +208,14 @@ func (m *_ModbusPDUGetComEventCounterResponse) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (status)
 		status := uint16(m.GetStatus())
-		_statusErr := writeBuffer.WriteUint16("status", 16, uint16((status)))
+		_statusErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("status", 16, uint16((status)))
 		if _statusErr != nil {
 			return errors.Wrap(_statusErr, "Error serializing 'status' field")
 		}
 
 		// Simple Field (eventCount)
 		eventCount := uint16(m.GetEventCount())
-		_eventCountErr := writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
+		_eventCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("eventCount", 16, uint16((eventCount)))
 		if _eventCountErr != nil {
 			return errors.Wrap(_eventCountErr, "Error serializing 'eventCount' field")
 		}

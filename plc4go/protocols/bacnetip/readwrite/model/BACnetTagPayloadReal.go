@@ -115,7 +115,7 @@ func BACnetTagPayloadRealParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = currentPos
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadReal")
 	}
@@ -150,7 +150,7 @@ func (m *_BACnetTagPayloadReal) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (value)
 	value := float32(m.GetValue())
-	_valueErr := writeBuffer.WriteFloat32("value", 32, (value))
+	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, (value))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

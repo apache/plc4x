@@ -155,7 +155,7 @@ func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (unknownTypeRest)
-	_unknownTypeRest, _unknownTypeRestErr := readBuffer.ReadUint8("unknownTypeRest", 4)
+	_unknownTypeRest, _unknownTypeRestErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unknownTypeRest", 4)
 	if _unknownTypeRestErr != nil {
 		return nil, errors.Wrap(_unknownTypeRestErr, "Error parsing 'unknownTypeRest' field of APDUUnknown")
 	}
@@ -203,7 +203,7 @@ func (m *_APDUUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 		// Simple Field (unknownTypeRest)
 		unknownTypeRest := uint8(m.GetUnknownTypeRest())
-		_unknownTypeRestErr := writeBuffer.WriteUint8("unknownTypeRest", 4, uint8((unknownTypeRest)))
+		_unknownTypeRestErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("unknownTypeRest", 4, uint8((unknownTypeRest)))
 		if _unknownTypeRestErr != nil {
 			return errors.Wrap(_unknownTypeRestErr, "Error serializing 'unknownTypeRest' field")
 		}

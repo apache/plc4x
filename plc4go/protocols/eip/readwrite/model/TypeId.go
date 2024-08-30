@@ -120,7 +120,7 @@ func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ty
 	_ = currentPos
 
 	// Discriminator Field (id) (Used as input to a switch field)
-	id, _idErr := readBuffer.ReadUint16("id", 16)
+	id, _idErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("id", 16)
 	if _idErr != nil {
 		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of TypeId")
 	}
@@ -176,7 +176,7 @@ func (pm *_TypeId) SerializeParent(ctx context.Context, writeBuffer utils.WriteB
 
 	// Discriminator Field (id) (Used as input to a switch field)
 	id := uint16(child.GetId())
-	_idErr := writeBuffer.WriteUint16("id", 16, uint16((id)))
+	_idErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("id", 16, uint16((id)))
 
 	if _idErr != nil {
 		return errors.Wrap(_idErr, "Error serializing 'id' field")

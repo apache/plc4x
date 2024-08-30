@@ -206,7 +206,7 @@ func CreateMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := readBuffer.ReadUint32("subscriptionId", 32)
+	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
 	if _subscriptionIdErr != nil {
 		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of CreateMonitoredItemsRequest")
 	}
@@ -226,7 +226,7 @@ func CreateMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (noOfItemsToCreate)
-	_noOfItemsToCreate, _noOfItemsToCreateErr := readBuffer.ReadInt32("noOfItemsToCreate", 32)
+	_noOfItemsToCreate, _noOfItemsToCreateErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfItemsToCreate", 32)
 	if _noOfItemsToCreateErr != nil {
 		return nil, errors.Wrap(_noOfItemsToCreateErr, "Error parsing 'noOfItemsToCreate' field of CreateMonitoredItemsRequest")
 	}
@@ -308,7 +308,7 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (subscriptionId)
 		subscriptionId := uint32(m.GetSubscriptionId())
-		_subscriptionIdErr := writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
+		_subscriptionIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("subscriptionId", 32, uint32((subscriptionId)))
 		if _subscriptionIdErr != nil {
 			return errors.Wrap(_subscriptionIdErr, "Error serializing 'subscriptionId' field")
 		}
@@ -327,7 +327,7 @@ func (m *_CreateMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfItemsToCreate)
 		noOfItemsToCreate := int32(m.GetNoOfItemsToCreate())
-		_noOfItemsToCreateErr := writeBuffer.WriteInt32("noOfItemsToCreate", 32, int32((noOfItemsToCreate)))
+		_noOfItemsToCreateErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfItemsToCreate", 32, int32((noOfItemsToCreate)))
 		if _noOfItemsToCreateErr != nil {
 			return errors.Wrap(_noOfItemsToCreateErr, "Error serializing 'noOfItemsToCreate' field")
 		}

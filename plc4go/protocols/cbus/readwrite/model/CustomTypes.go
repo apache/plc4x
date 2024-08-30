@@ -118,7 +118,7 @@ func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (customString)
-	_customString, _customStringErr := readBuffer.ReadString("customString", uint32((8)*(numBytes)), utils.WithEncoding("UTF-8"))
+	_customString, _customStringErr := /*TODO: migrate me*/ readBuffer.ReadString("customString", uint32((8)*(numBytes)), utils.WithEncoding("UTF-8"))
 	if _customStringErr != nil {
 		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomTypes")
 	}
@@ -154,7 +154,7 @@ func (m *_CustomTypes) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (customString)
 	customString := string(m.GetCustomString())
-	_customStringErr := writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), (customString), utils.WithEncoding("UTF-8)"))
+	_customStringErr := /*TODO: migrate me*/ writeBuffer.WriteString("customString", uint32((8)*(m.GetNumBytes())), (customString), utils.WithEncoding("UTF-8)"))
 	if _customStringErr != nil {
 		return errors.Wrap(_customStringErr, "Error serializing 'customString' field")
 	}

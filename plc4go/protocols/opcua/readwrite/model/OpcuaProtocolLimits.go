@@ -145,28 +145,28 @@ func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (receiveBufferSize)
-	_receiveBufferSize, _receiveBufferSizeErr := readBuffer.ReadUint32("receiveBufferSize", 32)
+	_receiveBufferSize, _receiveBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("receiveBufferSize", 32)
 	if _receiveBufferSizeErr != nil {
 		return nil, errors.Wrap(_receiveBufferSizeErr, "Error parsing 'receiveBufferSize' field of OpcuaProtocolLimits")
 	}
 	receiveBufferSize := _receiveBufferSize
 
 	// Simple Field (sendBufferSize)
-	_sendBufferSize, _sendBufferSizeErr := readBuffer.ReadUint32("sendBufferSize", 32)
+	_sendBufferSize, _sendBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sendBufferSize", 32)
 	if _sendBufferSizeErr != nil {
 		return nil, errors.Wrap(_sendBufferSizeErr, "Error parsing 'sendBufferSize' field of OpcuaProtocolLimits")
 	}
 	sendBufferSize := _sendBufferSize
 
 	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := readBuffer.ReadUint32("maxMessageSize", 32)
+	_maxMessageSize, _maxMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxMessageSize", 32)
 	if _maxMessageSizeErr != nil {
 		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of OpcuaProtocolLimits")
 	}
 	maxMessageSize := _maxMessageSize
 
 	// Simple Field (maxChunkCount)
-	_maxChunkCount, _maxChunkCountErr := readBuffer.ReadUint32("maxChunkCount", 32)
+	_maxChunkCount, _maxChunkCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxChunkCount", 32)
 	if _maxChunkCountErr != nil {
 		return nil, errors.Wrap(_maxChunkCountErr, "Error parsing 'maxChunkCount' field of OpcuaProtocolLimits")
 	}
@@ -204,28 +204,28 @@ func (m *_OpcuaProtocolLimits) SerializeWithWriteBuffer(ctx context.Context, wri
 
 	// Simple Field (receiveBufferSize)
 	receiveBufferSize := uint32(m.GetReceiveBufferSize())
-	_receiveBufferSizeErr := writeBuffer.WriteUint32("receiveBufferSize", 32, uint32((receiveBufferSize)))
+	_receiveBufferSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("receiveBufferSize", 32, uint32((receiveBufferSize)))
 	if _receiveBufferSizeErr != nil {
 		return errors.Wrap(_receiveBufferSizeErr, "Error serializing 'receiveBufferSize' field")
 	}
 
 	// Simple Field (sendBufferSize)
 	sendBufferSize := uint32(m.GetSendBufferSize())
-	_sendBufferSizeErr := writeBuffer.WriteUint32("sendBufferSize", 32, uint32((sendBufferSize)))
+	_sendBufferSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("sendBufferSize", 32, uint32((sendBufferSize)))
 	if _sendBufferSizeErr != nil {
 		return errors.Wrap(_sendBufferSizeErr, "Error serializing 'sendBufferSize' field")
 	}
 
 	// Simple Field (maxMessageSize)
 	maxMessageSize := uint32(m.GetMaxMessageSize())
-	_maxMessageSizeErr := writeBuffer.WriteUint32("maxMessageSize", 32, uint32((maxMessageSize)))
+	_maxMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxMessageSize", 32, uint32((maxMessageSize)))
 	if _maxMessageSizeErr != nil {
 		return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
 	}
 
 	// Simple Field (maxChunkCount)
 	maxChunkCount := uint32(m.GetMaxChunkCount())
-	_maxChunkCountErr := writeBuffer.WriteUint32("maxChunkCount", 32, uint32((maxChunkCount)))
+	_maxChunkCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("maxChunkCount", 32, uint32((maxChunkCount)))
 	if _maxChunkCountErr != nil {
 		return errors.Wrap(_maxChunkCountErr, "Error serializing 'maxChunkCount' field")
 	}

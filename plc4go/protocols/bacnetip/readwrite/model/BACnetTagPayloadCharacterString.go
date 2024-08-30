@@ -165,7 +165,7 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	_ = actualLengthInBit
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadString("value", uint32(actualLengthInBit), utils.WithEncoding("UTF-8"))
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(actualLengthInBit), utils.WithEncoding("UTF-8"))
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadCharacterString")
 	}
@@ -220,7 +220,7 @@ func (m *_BACnetTagPayloadCharacterString) SerializeWithWriteBuffer(ctx context.
 
 	// Simple Field (value)
 	value := string(m.GetValue())
-	_valueErr := writeBuffer.WriteString("value", uint32(m.GetActualLengthInBit()), (value), utils.WithEncoding("UTF-8)"))
+	_valueErr := /*TODO: migrate me*/ writeBuffer.WriteString("value", uint32(m.GetActualLengthInBit()), (value), utils.WithEncoding("UTF-8)"))
 	if _valueErr != nil {
 		return errors.Wrap(_valueErr, "Error serializing 'value' field")
 	}

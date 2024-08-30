@@ -125,14 +125,14 @@ func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	_ = currentPos
 
 	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := readBuffer.ReadInt32("sequenceNumber", 32)
+	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadInt32("sequenceNumber", 32)
 	if _sequenceNumberErr != nil {
 		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SequenceHeader")
 	}
 	sequenceNumber := _sequenceNumber
 
 	// Simple Field (requestId)
-	_requestId, _requestIdErr := readBuffer.ReadInt32("requestId", 32)
+	_requestId, _requestIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("requestId", 32)
 	if _requestIdErr != nil {
 		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of SequenceHeader")
 	}
@@ -168,14 +168,14 @@ func (m *_SequenceHeader) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 
 	// Simple Field (sequenceNumber)
 	sequenceNumber := int32(m.GetSequenceNumber())
-	_sequenceNumberErr := writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
+	_sequenceNumberErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("sequenceNumber", 32, int32((sequenceNumber)))
 	if _sequenceNumberErr != nil {
 		return errors.Wrap(_sequenceNumberErr, "Error serializing 'sequenceNumber' field")
 	}
 
 	// Simple Field (requestId)
 	requestId := int32(m.GetRequestId())
-	_requestIdErr := writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
+	_requestIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("requestId", 32, int32((requestId)))
 	if _requestIdErr != nil {
 		return errors.Wrap(_requestIdErr, "Error serializing 'requestId' field")
 	}

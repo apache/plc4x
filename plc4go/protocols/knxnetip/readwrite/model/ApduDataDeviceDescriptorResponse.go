@@ -155,7 +155,7 @@ func ApduDataDeviceDescriptorResponseParseWithBuffer(ctx context.Context, readBu
 	_ = currentPos
 
 	// Simple Field (descriptorType)
-	_descriptorType, _descriptorTypeErr := readBuffer.ReadUint8("descriptorType", 6)
+	_descriptorType, _descriptorTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("descriptorType", 6)
 	if _descriptorTypeErr != nil {
 		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field of ApduDataDeviceDescriptorResponse")
 	}
@@ -203,7 +203,7 @@ func (m *_ApduDataDeviceDescriptorResponse) SerializeWithWriteBuffer(ctx context
 
 		// Simple Field (descriptorType)
 		descriptorType := uint8(m.GetDescriptorType())
-		_descriptorTypeErr := writeBuffer.WriteUint8("descriptorType", 6, uint8((descriptorType)))
+		_descriptorTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("descriptorType", 6, uint8((descriptorType)))
 		if _descriptorTypeErr != nil {
 			return errors.Wrap(_descriptorTypeErr, "Error serializing 'descriptorType' field")
 		}

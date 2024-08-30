@@ -155,7 +155,7 @@ func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (numberOfSupportedKeyAlgorithms)
-	_numberOfSupportedKeyAlgorithms, _numberOfSupportedKeyAlgorithmsErr := readBuffer.ReadUint8("numberOfSupportedKeyAlgorithms", 8)
+	_numberOfSupportedKeyAlgorithms, _numberOfSupportedKeyAlgorithmsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfSupportedKeyAlgorithms", 8)
 	if _numberOfSupportedKeyAlgorithmsErr != nil {
 		return nil, errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error parsing 'numberOfSupportedKeyAlgorithms' field of NLMRequestMasterKey")
 	}
@@ -203,7 +203,7 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (numberOfSupportedKeyAlgorithms)
 		numberOfSupportedKeyAlgorithms := uint8(m.GetNumberOfSupportedKeyAlgorithms())
-		_numberOfSupportedKeyAlgorithmsErr := writeBuffer.WriteUint8("numberOfSupportedKeyAlgorithms", 8, uint8((numberOfSupportedKeyAlgorithms)))
+		_numberOfSupportedKeyAlgorithmsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numberOfSupportedKeyAlgorithms", 8, uint8((numberOfSupportedKeyAlgorithms)))
 		if _numberOfSupportedKeyAlgorithmsErr != nil {
 			return errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
 		}

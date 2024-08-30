@@ -183,14 +183,14 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	// Simple Field (port)
-	_port, _portErr := readBuffer.ReadUint8("port", 4)
+	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint8("port", 4)
 	if _portErr != nil {
 		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentExtended")
 	}
 	port := _port
 
 	// Simple Field (linkAddressSize)
-	_linkAddressSize, _linkAddressSizeErr := readBuffer.ReadUint8("linkAddressSize", 8)
+	_linkAddressSize, _linkAddressSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("linkAddressSize", 8)
 	if _linkAddressSizeErr != nil {
 		return nil, errors.Wrap(_linkAddressSizeErr, "Error parsing 'linkAddressSize' field of PortSegmentExtended")
 	}
@@ -202,7 +202,7 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = paddingByte
 
 	// Simple Field (address)
-	_address, _addressErr := readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), utils.WithEncoding("UTF-8"))
+	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), utils.WithEncoding("UTF-8"))
 	if _addressErr != nil {
 		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of PortSegmentExtended")
 	}
@@ -243,14 +243,14 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (port)
 		port := uint8(m.GetPort())
-		_portErr := writeBuffer.WriteUint8("port", 4, uint8((port)))
+		_portErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("port", 4, uint8((port)))
 		if _portErr != nil {
 			return errors.Wrap(_portErr, "Error serializing 'port' field")
 		}
 
 		// Simple Field (linkAddressSize)
 		linkAddressSize := uint8(m.GetLinkAddressSize())
-		_linkAddressSizeErr := writeBuffer.WriteUint8("linkAddressSize", 8, uint8((linkAddressSize)))
+		_linkAddressSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("linkAddressSize", 8, uint8((linkAddressSize)))
 		if _linkAddressSizeErr != nil {
 			return errors.Wrap(_linkAddressSizeErr, "Error serializing 'linkAddressSize' field")
 		}
@@ -263,7 +263,7 @@ func (m *_PortSegmentExtended) SerializeWithWriteBuffer(ctx context.Context, wri
 
 		// Simple Field (address)
 		address := string(m.GetAddress())
-		_addressErr := writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), (address), utils.WithEncoding("UTF-8)"))
+		_addressErr := /*TODO: migrate me*/ writeBuffer.WriteString("address", uint32(((m.GetLinkAddressSize())*(8))+((m.GetPaddingByte())*(8))), (address), utils.WithEncoding("UTF-8)"))
 		if _addressErr != nil {
 			return errors.Wrap(_addressErr, "Error serializing 'address' field")
 		}

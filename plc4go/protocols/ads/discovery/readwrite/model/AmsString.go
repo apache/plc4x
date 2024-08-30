@@ -123,14 +123,14 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	_ = currentPos
 
 	// Implicit Field (strLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	strLen, _strLenErr := readBuffer.ReadUint16("strLen", 16)
+	strLen, _strLenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("strLen", 16)
 	_ = strLen
 	if _strLenErr != nil {
 		return nil, errors.Wrap(_strLenErr, "Error parsing 'strLen' field of AmsString")
 	}
 
 	// Simple Field (text)
-	_text, _textErr := readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), utils.WithEncoding("UTF-8"))
+	_text, _textErr := /*TODO: migrate me*/ readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), utils.WithEncoding("UTF-8"))
 	if _textErr != nil {
 		return nil, errors.Wrap(_textErr, "Error parsing 'text' field of AmsString")
 	}
@@ -139,7 +139,7 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 8)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 8)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsString")
 		}
@@ -183,14 +183,14 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 
 	// Implicit Field (strLen) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	strLen := uint16(uint16(uint16(len(m.GetText()))) + uint16(uint16(1)))
-	_strLenErr := writeBuffer.WriteUint16("strLen", 16, uint16((strLen)))
+	_strLenErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("strLen", 16, uint16((strLen)))
 	if _strLenErr != nil {
 		return errors.Wrap(_strLenErr, "Error serializing 'strLen' field")
 	}
 
 	// Simple Field (text)
 	text := string(m.GetText())
-	_textErr := writeBuffer.WriteString("text", uint32((8)*((uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-(1))), (text), utils.WithEncoding("UTF-8)"))
+	_textErr := /*TODO: migrate me*/ writeBuffer.WriteString("text", uint32((8)*((uint16(uint16(len(m.GetText())))+uint16(uint16(1)))-(1))), (text), utils.WithEncoding("UTF-8)"))
 	if _textErr != nil {
 		return errors.Wrap(_textErr, "Error serializing 'text' field")
 	}
@@ -205,7 +205,7 @@ func (m *_AmsString) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 8, uint8(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}

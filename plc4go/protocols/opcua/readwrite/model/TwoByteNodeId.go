@@ -115,7 +115,7 @@ func TwoByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (identifier)
-	_identifier, _identifierErr := readBuffer.ReadUint8("identifier", 8)
+	_identifier, _identifierErr := /*TODO: migrate me*/ readBuffer.ReadUint8("identifier", 8)
 	if _identifierErr != nil {
 		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of TwoByteNodeId")
 	}
@@ -150,7 +150,7 @@ func (m *_TwoByteNodeId) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (identifier)
 	identifier := uint8(m.GetIdentifier())
-	_identifierErr := writeBuffer.WriteUint8("identifier", 8, uint8((identifier)))
+	_identifierErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("identifier", 8, uint8((identifier)))
 	if _identifierErr != nil {
 		return errors.Wrap(_identifierErr, "Error serializing 'identifier' field")
 	}

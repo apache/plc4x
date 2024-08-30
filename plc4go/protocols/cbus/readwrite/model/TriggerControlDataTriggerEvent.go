@@ -141,7 +141,7 @@ func TriggerControlDataTriggerEventParseWithBuffer(ctx context.Context, readBuff
 	_ = currentPos
 
 	// Simple Field (actionSelector)
-	_actionSelector, _actionSelectorErr := readBuffer.ReadByte("actionSelector")
+	_actionSelector, _actionSelectorErr := /*TODO: migrate me*/ readBuffer.ReadByte("actionSelector")
 	if _actionSelectorErr != nil {
 		return nil, errors.Wrap(_actionSelectorErr, "Error parsing 'actionSelector' field of TriggerControlDataTriggerEvent")
 	}
@@ -180,7 +180,7 @@ func (m *_TriggerControlDataTriggerEvent) SerializeWithWriteBuffer(ctx context.C
 
 		// Simple Field (actionSelector)
 		actionSelector := byte(m.GetActionSelector())
-		_actionSelectorErr := writeBuffer.WriteByte("actionSelector", (actionSelector))
+		_actionSelectorErr := /*TODO: migrate me*/ writeBuffer.WriteByte("actionSelector", (actionSelector))
 		if _actionSelectorErr != nil {
 			return errors.Wrap(_actionSelectorErr, "Error serializing 'actionSelector' field")
 		}

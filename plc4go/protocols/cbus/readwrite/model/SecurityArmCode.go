@@ -174,7 +174,7 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Simple Field (code)
-	_code, _codeErr := readBuffer.ReadUint8("code", 8)
+	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("code", 8)
 	if _codeErr != nil {
 		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of SecurityArmCode")
 	}
@@ -234,7 +234,7 @@ func (m *_SecurityArmCode) SerializeWithWriteBuffer(ctx context.Context, writeBu
 
 	// Simple Field (code)
 	code := uint8(m.GetCode())
-	_codeErr := writeBuffer.WriteUint8("code", 8, uint8((code)))
+	_codeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("code", 8, uint8((code)))
 	if _codeErr != nil {
 		return errors.Wrap(_codeErr, "Error serializing 'code' field")
 	}

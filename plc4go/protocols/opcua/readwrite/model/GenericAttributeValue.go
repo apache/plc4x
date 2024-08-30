@@ -153,7 +153,7 @@ func GenericAttributeValueParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := readBuffer.ReadUint32("attributeId", 32)
+	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
 	if _attributeIdErr != nil {
 		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of GenericAttributeValue")
 	}
@@ -206,7 +206,7 @@ func (m *_GenericAttributeValue) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (attributeId)
 		attributeId := uint32(m.GetAttributeId())
-		_attributeIdErr := writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
+		_attributeIdErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("attributeId", 32, uint32((attributeId)))
 		if _attributeIdErr != nil {
 			return errors.Wrap(_attributeIdErr, "Error serializing 'attributeId' field")
 		}

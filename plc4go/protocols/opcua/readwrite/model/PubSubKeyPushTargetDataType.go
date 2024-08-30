@@ -297,7 +297,7 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (noOfPushTargetFolder)
-	_noOfPushTargetFolder, _noOfPushTargetFolderErr := readBuffer.ReadInt32("noOfPushTargetFolder", 32)
+	_noOfPushTargetFolder, _noOfPushTargetFolderErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPushTargetFolder", 32)
 	if _noOfPushTargetFolderErr != nil {
 		return nil, errors.Wrap(_noOfPushTargetFolderErr, "Error parsing 'noOfPushTargetFolder' field of PubSubKeyPushTargetDataType")
 	}
@@ -370,21 +370,21 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (requestedKeyCount)
-	_requestedKeyCount, _requestedKeyCountErr := readBuffer.ReadUint16("requestedKeyCount", 16)
+	_requestedKeyCount, _requestedKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("requestedKeyCount", 16)
 	if _requestedKeyCountErr != nil {
 		return nil, errors.Wrap(_requestedKeyCountErr, "Error parsing 'requestedKeyCount' field of PubSubKeyPushTargetDataType")
 	}
 	requestedKeyCount := _requestedKeyCount
 
 	// Simple Field (retryInterval)
-	_retryInterval, _retryIntervalErr := readBuffer.ReadFloat64("retryInterval", 64)
+	_retryInterval, _retryIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("retryInterval", 64)
 	if _retryIntervalErr != nil {
 		return nil, errors.Wrap(_retryIntervalErr, "Error parsing 'retryInterval' field of PubSubKeyPushTargetDataType")
 	}
 	retryInterval := _retryInterval
 
 	// Simple Field (noOfPushTargetProperties)
-	_noOfPushTargetProperties, _noOfPushTargetPropertiesErr := readBuffer.ReadInt32("noOfPushTargetProperties", 32)
+	_noOfPushTargetProperties, _noOfPushTargetPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPushTargetProperties", 32)
 	if _noOfPushTargetPropertiesErr != nil {
 		return nil, errors.Wrap(_noOfPushTargetPropertiesErr, "Error parsing 'noOfPushTargetProperties' field of PubSubKeyPushTargetDataType")
 	}
@@ -418,7 +418,7 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	}
 
 	// Simple Field (noOfSecurityGroups)
-	_noOfSecurityGroups, _noOfSecurityGroupsErr := readBuffer.ReadInt32("noOfSecurityGroups", 32)
+	_noOfSecurityGroups, _noOfSecurityGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityGroups", 32)
 	if _noOfSecurityGroupsErr != nil {
 		return nil, errors.Wrap(_noOfSecurityGroupsErr, "Error parsing 'noOfSecurityGroups' field of PubSubKeyPushTargetDataType")
 	}
@@ -507,7 +507,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfPushTargetFolder)
 		noOfPushTargetFolder := int32(m.GetNoOfPushTargetFolder())
-		_noOfPushTargetFolderErr := writeBuffer.WriteInt32("noOfPushTargetFolder", 32, int32((noOfPushTargetFolder)))
+		_noOfPushTargetFolderErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfPushTargetFolder", 32, int32((noOfPushTargetFolder)))
 		if _noOfPushTargetFolderErr != nil {
 			return errors.Wrap(_noOfPushTargetFolderErr, "Error serializing 'noOfPushTargetFolder' field")
 		}
@@ -567,21 +567,21 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (requestedKeyCount)
 		requestedKeyCount := uint16(m.GetRequestedKeyCount())
-		_requestedKeyCountErr := writeBuffer.WriteUint16("requestedKeyCount", 16, uint16((requestedKeyCount)))
+		_requestedKeyCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("requestedKeyCount", 16, uint16((requestedKeyCount)))
 		if _requestedKeyCountErr != nil {
 			return errors.Wrap(_requestedKeyCountErr, "Error serializing 'requestedKeyCount' field")
 		}
 
 		// Simple Field (retryInterval)
 		retryInterval := float64(m.GetRetryInterval())
-		_retryIntervalErr := writeBuffer.WriteFloat64("retryInterval", 64, (retryInterval))
+		_retryIntervalErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("retryInterval", 64, (retryInterval))
 		if _retryIntervalErr != nil {
 			return errors.Wrap(_retryIntervalErr, "Error serializing 'retryInterval' field")
 		}
 
 		// Simple Field (noOfPushTargetProperties)
 		noOfPushTargetProperties := int32(m.GetNoOfPushTargetProperties())
-		_noOfPushTargetPropertiesErr := writeBuffer.WriteInt32("noOfPushTargetProperties", 32, int32((noOfPushTargetProperties)))
+		_noOfPushTargetPropertiesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfPushTargetProperties", 32, int32((noOfPushTargetProperties)))
 		if _noOfPushTargetPropertiesErr != nil {
 			return errors.Wrap(_noOfPushTargetPropertiesErr, "Error serializing 'noOfPushTargetProperties' field")
 		}
@@ -605,7 +605,7 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (noOfSecurityGroups)
 		noOfSecurityGroups := int32(m.GetNoOfSecurityGroups())
-		_noOfSecurityGroupsErr := writeBuffer.WriteInt32("noOfSecurityGroups", 32, int32((noOfSecurityGroups)))
+		_noOfSecurityGroupsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfSecurityGroups", 32, int32((noOfSecurityGroups)))
 		if _noOfSecurityGroupsErr != nil {
 			return errors.Wrap(_noOfSecurityGroupsErr, "Error serializing 'noOfSecurityGroups' field")
 		}

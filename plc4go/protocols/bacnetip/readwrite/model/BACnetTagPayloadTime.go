@@ -209,7 +209,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = wildcard
 
 	// Simple Field (hour)
-	_hour, _hourErr := readBuffer.ReadUint8("hour", 8)
+	_hour, _hourErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 8)
 	if _hourErr != nil {
 		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of BACnetTagPayloadTime")
 	}
@@ -221,7 +221,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = hourIsWildcard
 
 	// Simple Field (minute)
-	_minute, _minuteErr := readBuffer.ReadUint8("minute", 8)
+	_minute, _minuteErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minute", 8)
 	if _minuteErr != nil {
 		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field of BACnetTagPayloadTime")
 	}
@@ -233,7 +233,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = minuteIsWildcard
 
 	// Simple Field (second)
-	_second, _secondErr := readBuffer.ReadUint8("second", 8)
+	_second, _secondErr := /*TODO: migrate me*/ readBuffer.ReadUint8("second", 8)
 	if _secondErr != nil {
 		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field of BACnetTagPayloadTime")
 	}
@@ -245,7 +245,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	_ = secondIsWildcard
 
 	// Simple Field (fractional)
-	_fractional, _fractionalErr := readBuffer.ReadUint8("fractional", 8)
+	_fractional, _fractionalErr := /*TODO: migrate me*/ readBuffer.ReadUint8("fractional", 8)
 	if _fractionalErr != nil {
 		return nil, errors.Wrap(_fractionalErr, "Error parsing 'fractional' field of BACnetTagPayloadTime")
 	}
@@ -294,7 +294,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (hour)
 	hour := uint8(m.GetHour())
-	_hourErr := writeBuffer.WriteUint8("hour", 8, uint8((hour)))
+	_hourErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("hour", 8, uint8((hour)))
 	if _hourErr != nil {
 		return errors.Wrap(_hourErr, "Error serializing 'hour' field")
 	}
@@ -307,7 +307,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (minute)
 	minute := uint8(m.GetMinute())
-	_minuteErr := writeBuffer.WriteUint8("minute", 8, uint8((minute)))
+	_minuteErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("minute", 8, uint8((minute)))
 	if _minuteErr != nil {
 		return errors.Wrap(_minuteErr, "Error serializing 'minute' field")
 	}
@@ -320,7 +320,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (second)
 	second := uint8(m.GetSecond())
-	_secondErr := writeBuffer.WriteUint8("second", 8, uint8((second)))
+	_secondErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("second", 8, uint8((second)))
 	if _secondErr != nil {
 		return errors.Wrap(_secondErr, "Error serializing 'second' field")
 	}
@@ -333,7 +333,7 @@ func (m *_BACnetTagPayloadTime) SerializeWithWriteBuffer(ctx context.Context, wr
 
 	// Simple Field (fractional)
 	fractional := uint8(m.GetFractional())
-	_fractionalErr := writeBuffer.WriteUint8("fractional", 8, uint8((fractional)))
+	_fractionalErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fractional", 8, uint8((fractional)))
 	if _fractionalErr != nil {
 		return errors.Wrap(_fractionalErr, "Error serializing 'fractional' field")
 	}

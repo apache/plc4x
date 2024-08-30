@@ -143,7 +143,7 @@ func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Const Field (nullIndicator)
-	nullIndicator, _nullIndicatorErr := readBuffer.ReadUint32("nullIndicator", 32)
+	nullIndicator, _nullIndicatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("nullIndicator", 32)
 	if _nullIndicatorErr != nil {
 		return nil, errors.Wrap(_nullIndicatorErr, "Error parsing 'nullIndicator' field of RequestNull")
 	}
@@ -184,7 +184,7 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 		}
 
 		// Const Field (nullIndicator)
-		_nullIndicatorErr := writeBuffer.WriteUint32("nullIndicator", 32, uint32(0x6E756C6C))
+		_nullIndicatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("nullIndicator", 32, uint32(0x6E756C6C))
 		if _nullIndicatorErr != nil {
 			return errors.Wrap(_nullIndicatorErr, "Error serializing 'nullIndicator' field")
 		}

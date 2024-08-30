@@ -186,35 +186,35 @@ func DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, rea
 	_ = currentPos
 
 	// Simple Field (byteSize)
-	_byteSize, _byteSizeErr := readBuffer.ReadUint8("byteSize", 8)
+	_byteSize, _byteSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("byteSize", 8)
 	if _byteSizeErr != nil {
 		return nil, errors.Wrap(_byteSizeErr, "Error parsing 'byteSize' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	byteSize := _byteSize
 
 	// Simple Field (fileNumber)
-	_fileNumber, _fileNumberErr := readBuffer.ReadUint8("fileNumber", 8)
+	_fileNumber, _fileNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("fileNumber", 8)
 	if _fileNumberErr != nil {
 		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	fileNumber := _fileNumber
 
 	// Simple Field (fileType)
-	_fileType, _fileTypeErr := readBuffer.ReadUint8("fileType", 8)
+	_fileType, _fileTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("fileType", 8)
 	if _fileTypeErr != nil {
 		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	fileType := _fileType
 
 	// Simple Field (elementNumber)
-	_elementNumber, _elementNumberErr := readBuffer.ReadUint8("elementNumber", 8)
+	_elementNumber, _elementNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("elementNumber", 8)
 	if _elementNumberErr != nil {
 		return nil, errors.Wrap(_elementNumberErr, "Error parsing 'elementNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
 	elementNumber := _elementNumber
 
 	// Simple Field (subElementNumber)
-	_subElementNumber, _subElementNumberErr := readBuffer.ReadUint8("subElementNumber", 8)
+	_subElementNumber, _subElementNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subElementNumber", 8)
 	if _subElementNumberErr != nil {
 		return nil, errors.Wrap(_subElementNumberErr, "Error parsing 'subElementNumber' field of DF1RequestProtectedTypedLogicalRead")
 	}
@@ -257,35 +257,35 @@ func (m *_DF1RequestProtectedTypedLogicalRead) SerializeWithWriteBuffer(ctx cont
 
 		// Simple Field (byteSize)
 		byteSize := uint8(m.GetByteSize())
-		_byteSizeErr := writeBuffer.WriteUint8("byteSize", 8, uint8((byteSize)))
+		_byteSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("byteSize", 8, uint8((byteSize)))
 		if _byteSizeErr != nil {
 			return errors.Wrap(_byteSizeErr, "Error serializing 'byteSize' field")
 		}
 
 		// Simple Field (fileNumber)
 		fileNumber := uint8(m.GetFileNumber())
-		_fileNumberErr := writeBuffer.WriteUint8("fileNumber", 8, uint8((fileNumber)))
+		_fileNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fileNumber", 8, uint8((fileNumber)))
 		if _fileNumberErr != nil {
 			return errors.Wrap(_fileNumberErr, "Error serializing 'fileNumber' field")
 		}
 
 		// Simple Field (fileType)
 		fileType := uint8(m.GetFileType())
-		_fileTypeErr := writeBuffer.WriteUint8("fileType", 8, uint8((fileType)))
+		_fileTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("fileType", 8, uint8((fileType)))
 		if _fileTypeErr != nil {
 			return errors.Wrap(_fileTypeErr, "Error serializing 'fileType' field")
 		}
 
 		// Simple Field (elementNumber)
 		elementNumber := uint8(m.GetElementNumber())
-		_elementNumberErr := writeBuffer.WriteUint8("elementNumber", 8, uint8((elementNumber)))
+		_elementNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("elementNumber", 8, uint8((elementNumber)))
 		if _elementNumberErr != nil {
 			return errors.Wrap(_elementNumberErr, "Error serializing 'elementNumber' field")
 		}
 
 		// Simple Field (subElementNumber)
 		subElementNumber := uint8(m.GetSubElementNumber())
-		_subElementNumberErr := writeBuffer.WriteUint8("subElementNumber", 8, uint8((subElementNumber)))
+		_subElementNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("subElementNumber", 8, uint8((subElementNumber)))
 		if _subElementNumberErr != nil {
 			return errors.Wrap(_subElementNumberErr, "Error serializing 'subElementNumber' field")
 		}

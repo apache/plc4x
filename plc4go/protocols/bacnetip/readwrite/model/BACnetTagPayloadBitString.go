@@ -142,7 +142,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (unusedBits)
-	_unusedBits, _unusedBitsErr := readBuffer.ReadUint8("unusedBits", 8)
+	_unusedBits, _unusedBitsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unusedBits", 8)
 	if _unusedBitsErr != nil {
 		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field of BACnetTagPayloadBitString")
 	}
@@ -164,7 +164,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadBit("")
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'data' field of BACnetTagPayloadBitString")
 			}
@@ -191,7 +191,7 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 			arrayCtx := utils.CreateArrayContext(ctx, int(_numItems), int(_curItem))
 			_ = arrayCtx
 			_ = _curItem
-			_item, _err := readBuffer.ReadBit("")
+			_item, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("")
 			if _err != nil {
 				return nil, errors.Wrap(_err, "Error parsing 'unused' field of BACnetTagPayloadBitString")
 			}
@@ -234,7 +234,7 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 
 	// Simple Field (unusedBits)
 	unusedBits := uint8(m.GetUnusedBits())
-	_unusedBitsErr := writeBuffer.WriteUint8("unusedBits", 8, uint8((unusedBits)))
+	_unusedBitsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("unusedBits", 8, uint8((unusedBits)))
 	if _unusedBitsErr != nil {
 		return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
 	}
@@ -245,7 +245,7 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 	}
 	for _curItem, _element := range m.GetData() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteBit("", _element)
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'data' field")
 		}
@@ -260,7 +260,7 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 	}
 	for _curItem, _element := range m.GetUnused() {
 		_ = _curItem
-		_elementErr := writeBuffer.WriteBit("", _element)
+		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
 		if _elementErr != nil {
 			return errors.Wrap(_elementErr, "Error serializing 'unused' field")
 		}

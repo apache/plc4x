@@ -188,7 +188,7 @@ func EUInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 
 	// Simple Field (unitId)
-	_unitId, _unitIdErr := readBuffer.ReadInt32("unitId", 32)
+	_unitId, _unitIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("unitId", 32)
 	if _unitIdErr != nil {
 		return nil, errors.Wrap(_unitIdErr, "Error parsing 'unitId' field of EUInformation")
 	}
@@ -268,7 +268,7 @@ func (m *_EUInformation) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 		// Simple Field (unitId)
 		unitId := int32(m.GetUnitId())
-		_unitIdErr := writeBuffer.WriteInt32("unitId", 32, int32((unitId)))
+		_unitIdErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("unitId", 32, int32((unitId)))
 		if _unitIdErr != nil {
 			return errors.Wrap(_unitIdErr, "Error serializing 'unitId' field")
 		}

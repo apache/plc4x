@@ -235,7 +235,7 @@ func EndpointConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.
 	_ = currentPos
 
 	// Simple Field (operationTimeout)
-	_operationTimeout, _operationTimeoutErr := readBuffer.ReadInt32("operationTimeout", 32)
+	_operationTimeout, _operationTimeoutErr := /*TODO: migrate me*/ readBuffer.ReadInt32("operationTimeout", 32)
 	if _operationTimeoutErr != nil {
 		return nil, errors.Wrap(_operationTimeoutErr, "Error parsing 'operationTimeout' field of EndpointConfiguration")
 	}
@@ -244,7 +244,7 @@ func EndpointConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of EndpointConfiguration")
 		}
@@ -259,56 +259,56 @@ func EndpointConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (useBinaryEncoding)
-	_useBinaryEncoding, _useBinaryEncodingErr := readBuffer.ReadBit("useBinaryEncoding")
+	_useBinaryEncoding, _useBinaryEncodingErr := /*TODO: migrate me*/ readBuffer.ReadBit("useBinaryEncoding")
 	if _useBinaryEncodingErr != nil {
 		return nil, errors.Wrap(_useBinaryEncodingErr, "Error parsing 'useBinaryEncoding' field of EndpointConfiguration")
 	}
 	useBinaryEncoding := _useBinaryEncoding
 
 	// Simple Field (maxStringLength)
-	_maxStringLength, _maxStringLengthErr := readBuffer.ReadInt32("maxStringLength", 32)
+	_maxStringLength, _maxStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxStringLength", 32)
 	if _maxStringLengthErr != nil {
 		return nil, errors.Wrap(_maxStringLengthErr, "Error parsing 'maxStringLength' field of EndpointConfiguration")
 	}
 	maxStringLength := _maxStringLength
 
 	// Simple Field (maxByteStringLength)
-	_maxByteStringLength, _maxByteStringLengthErr := readBuffer.ReadInt32("maxByteStringLength", 32)
+	_maxByteStringLength, _maxByteStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxByteStringLength", 32)
 	if _maxByteStringLengthErr != nil {
 		return nil, errors.Wrap(_maxByteStringLengthErr, "Error parsing 'maxByteStringLength' field of EndpointConfiguration")
 	}
 	maxByteStringLength := _maxByteStringLength
 
 	// Simple Field (maxArrayLength)
-	_maxArrayLength, _maxArrayLengthErr := readBuffer.ReadInt32("maxArrayLength", 32)
+	_maxArrayLength, _maxArrayLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxArrayLength", 32)
 	if _maxArrayLengthErr != nil {
 		return nil, errors.Wrap(_maxArrayLengthErr, "Error parsing 'maxArrayLength' field of EndpointConfiguration")
 	}
 	maxArrayLength := _maxArrayLength
 
 	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := readBuffer.ReadInt32("maxMessageSize", 32)
+	_maxMessageSize, _maxMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxMessageSize", 32)
 	if _maxMessageSizeErr != nil {
 		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of EndpointConfiguration")
 	}
 	maxMessageSize := _maxMessageSize
 
 	// Simple Field (maxBufferSize)
-	_maxBufferSize, _maxBufferSizeErr := readBuffer.ReadInt32("maxBufferSize", 32)
+	_maxBufferSize, _maxBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxBufferSize", 32)
 	if _maxBufferSizeErr != nil {
 		return nil, errors.Wrap(_maxBufferSizeErr, "Error parsing 'maxBufferSize' field of EndpointConfiguration")
 	}
 	maxBufferSize := _maxBufferSize
 
 	// Simple Field (channelLifetime)
-	_channelLifetime, _channelLifetimeErr := readBuffer.ReadInt32("channelLifetime", 32)
+	_channelLifetime, _channelLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("channelLifetime", 32)
 	if _channelLifetimeErr != nil {
 		return nil, errors.Wrap(_channelLifetimeErr, "Error parsing 'channelLifetime' field of EndpointConfiguration")
 	}
 	channelLifetime := _channelLifetime
 
 	// Simple Field (securityTokenLifetime)
-	_securityTokenLifetime, _securityTokenLifetimeErr := readBuffer.ReadInt32("securityTokenLifetime", 32)
+	_securityTokenLifetime, _securityTokenLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("securityTokenLifetime", 32)
 	if _securityTokenLifetimeErr != nil {
 		return nil, errors.Wrap(_securityTokenLifetimeErr, "Error parsing 'securityTokenLifetime' field of EndpointConfiguration")
 	}
@@ -356,7 +356,7 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (operationTimeout)
 		operationTimeout := int32(m.GetOperationTimeout())
-		_operationTimeoutErr := writeBuffer.WriteInt32("operationTimeout", 32, int32((operationTimeout)))
+		_operationTimeoutErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("operationTimeout", 32, int32((operationTimeout)))
 		if _operationTimeoutErr != nil {
 			return errors.Wrap(_operationTimeoutErr, "Error serializing 'operationTimeout' field")
 		}
@@ -371,7 +371,7 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -379,56 +379,56 @@ func (m *_EndpointConfiguration) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (useBinaryEncoding)
 		useBinaryEncoding := bool(m.GetUseBinaryEncoding())
-		_useBinaryEncodingErr := writeBuffer.WriteBit("useBinaryEncoding", (useBinaryEncoding))
+		_useBinaryEncodingErr := /*TODO: migrate me*/ writeBuffer.WriteBit("useBinaryEncoding", (useBinaryEncoding))
 		if _useBinaryEncodingErr != nil {
 			return errors.Wrap(_useBinaryEncodingErr, "Error serializing 'useBinaryEncoding' field")
 		}
 
 		// Simple Field (maxStringLength)
 		maxStringLength := int32(m.GetMaxStringLength())
-		_maxStringLengthErr := writeBuffer.WriteInt32("maxStringLength", 32, int32((maxStringLength)))
+		_maxStringLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("maxStringLength", 32, int32((maxStringLength)))
 		if _maxStringLengthErr != nil {
 			return errors.Wrap(_maxStringLengthErr, "Error serializing 'maxStringLength' field")
 		}
 
 		// Simple Field (maxByteStringLength)
 		maxByteStringLength := int32(m.GetMaxByteStringLength())
-		_maxByteStringLengthErr := writeBuffer.WriteInt32("maxByteStringLength", 32, int32((maxByteStringLength)))
+		_maxByteStringLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("maxByteStringLength", 32, int32((maxByteStringLength)))
 		if _maxByteStringLengthErr != nil {
 			return errors.Wrap(_maxByteStringLengthErr, "Error serializing 'maxByteStringLength' field")
 		}
 
 		// Simple Field (maxArrayLength)
 		maxArrayLength := int32(m.GetMaxArrayLength())
-		_maxArrayLengthErr := writeBuffer.WriteInt32("maxArrayLength", 32, int32((maxArrayLength)))
+		_maxArrayLengthErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("maxArrayLength", 32, int32((maxArrayLength)))
 		if _maxArrayLengthErr != nil {
 			return errors.Wrap(_maxArrayLengthErr, "Error serializing 'maxArrayLength' field")
 		}
 
 		// Simple Field (maxMessageSize)
 		maxMessageSize := int32(m.GetMaxMessageSize())
-		_maxMessageSizeErr := writeBuffer.WriteInt32("maxMessageSize", 32, int32((maxMessageSize)))
+		_maxMessageSizeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("maxMessageSize", 32, int32((maxMessageSize)))
 		if _maxMessageSizeErr != nil {
 			return errors.Wrap(_maxMessageSizeErr, "Error serializing 'maxMessageSize' field")
 		}
 
 		// Simple Field (maxBufferSize)
 		maxBufferSize := int32(m.GetMaxBufferSize())
-		_maxBufferSizeErr := writeBuffer.WriteInt32("maxBufferSize", 32, int32((maxBufferSize)))
+		_maxBufferSizeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("maxBufferSize", 32, int32((maxBufferSize)))
 		if _maxBufferSizeErr != nil {
 			return errors.Wrap(_maxBufferSizeErr, "Error serializing 'maxBufferSize' field")
 		}
 
 		// Simple Field (channelLifetime)
 		channelLifetime := int32(m.GetChannelLifetime())
-		_channelLifetimeErr := writeBuffer.WriteInt32("channelLifetime", 32, int32((channelLifetime)))
+		_channelLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("channelLifetime", 32, int32((channelLifetime)))
 		if _channelLifetimeErr != nil {
 			return errors.Wrap(_channelLifetimeErr, "Error serializing 'channelLifetime' field")
 		}
 
 		// Simple Field (securityTokenLifetime)
 		securityTokenLifetime := int32(m.GetSecurityTokenLifetime())
-		_securityTokenLifetimeErr := writeBuffer.WriteInt32("securityTokenLifetime", 32, int32((securityTokenLifetime)))
+		_securityTokenLifetimeErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("securityTokenLifetime", 32, int32((securityTokenLifetime)))
 		if _securityTokenLifetimeErr != nil {
 			return errors.Wrap(_securityTokenLifetimeErr, "Error serializing 'securityTokenLifetime' field")
 		}

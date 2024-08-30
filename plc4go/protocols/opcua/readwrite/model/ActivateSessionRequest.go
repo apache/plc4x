@@ -259,7 +259,7 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (noOfClientSoftwareCertificates)
-	_noOfClientSoftwareCertificates, _noOfClientSoftwareCertificatesErr := readBuffer.ReadInt32("noOfClientSoftwareCertificates", 32)
+	_noOfClientSoftwareCertificates, _noOfClientSoftwareCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfClientSoftwareCertificates", 32)
 	if _noOfClientSoftwareCertificatesErr != nil {
 		return nil, errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error parsing 'noOfClientSoftwareCertificates' field of ActivateSessionRequest")
 	}
@@ -293,7 +293,7 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := readBuffer.ReadInt32("noOfLocaleIds", 32)
+	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
 	if _noOfLocaleIdsErr != nil {
 		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of ActivateSessionRequest")
 	}
@@ -416,7 +416,7 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfClientSoftwareCertificates)
 		noOfClientSoftwareCertificates := int32(m.GetNoOfClientSoftwareCertificates())
-		_noOfClientSoftwareCertificatesErr := writeBuffer.WriteInt32("noOfClientSoftwareCertificates", 32, int32((noOfClientSoftwareCertificates)))
+		_noOfClientSoftwareCertificatesErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfClientSoftwareCertificates", 32, int32((noOfClientSoftwareCertificates)))
 		if _noOfClientSoftwareCertificatesErr != nil {
 			return errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error serializing 'noOfClientSoftwareCertificates' field")
 		}
@@ -440,7 +440,7 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfLocaleIds)
 		noOfLocaleIds := int32(m.GetNoOfLocaleIds())
-		_noOfLocaleIdsErr := writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
+		_noOfLocaleIdsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfLocaleIds", 32, int32((noOfLocaleIds)))
 		if _noOfLocaleIdsErr != nil {
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}

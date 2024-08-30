@@ -120,7 +120,7 @@ func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Discriminator Field (pathSegment) (Used as input to a switch field)
-	pathSegment, _pathSegmentErr := readBuffer.ReadUint8("pathSegment", 3)
+	pathSegment, _pathSegmentErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("pathSegment", 3)
 	if _pathSegmentErr != nil {
 		return nil, errors.Wrap(_pathSegmentErr, "Error parsing 'pathSegment' field of PathSegment")
 	}
@@ -172,7 +172,7 @@ func (pm *_PathSegment) SerializeParent(ctx context.Context, writeBuffer utils.W
 
 	// Discriminator Field (pathSegment) (Used as input to a switch field)
 	pathSegment := uint8(child.GetPathSegment())
-	_pathSegmentErr := writeBuffer.WriteUint8("pathSegment", 3, uint8((pathSegment)))
+	_pathSegmentErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("pathSegment", 3, uint8((pathSegment)))
 
 	if _pathSegmentErr != nil {
 		return errors.Wrap(_pathSegmentErr, "Error serializing 'pathSegment' field")

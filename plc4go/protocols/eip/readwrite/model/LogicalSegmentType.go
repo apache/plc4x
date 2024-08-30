@@ -120,7 +120,7 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = currentPos
 
 	// Discriminator Field (logicalSegmentType) (Used as input to a switch field)
-	logicalSegmentType, _logicalSegmentTypeErr := readBuffer.ReadUint8("logicalSegmentType", 3)
+	logicalSegmentType, _logicalSegmentTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("logicalSegmentType", 3)
 	if _logicalSegmentTypeErr != nil {
 		return nil, errors.Wrap(_logicalSegmentTypeErr, "Error parsing 'logicalSegmentType' field of LogicalSegmentType")
 	}
@@ -172,7 +172,7 @@ func (pm *_LogicalSegmentType) SerializeParent(ctx context.Context, writeBuffer 
 
 	// Discriminator Field (logicalSegmentType) (Used as input to a switch field)
 	logicalSegmentType := uint8(child.GetLogicalSegmentType())
-	_logicalSegmentTypeErr := writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
+	_logicalSegmentTypeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("logicalSegmentType", 3, uint8((logicalSegmentType)))
 
 	if _logicalSegmentTypeErr != nil {
 		return errors.Wrap(_logicalSegmentTypeErr, "Error serializing 'logicalSegmentType' field")

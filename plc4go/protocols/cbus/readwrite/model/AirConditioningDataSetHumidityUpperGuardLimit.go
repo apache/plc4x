@@ -173,7 +173,7 @@ func AirConditioningDataSetHumidityUpperGuardLimitParseWithBuffer(ctx context.Co
 	_ = currentPos
 
 	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := readBuffer.ReadByte("zoneGroup")
+	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
 	if _zoneGroupErr != nil {
 		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetHumidityUpperGuardLimit")
 	}
@@ -254,7 +254,7 @@ func (m *_AirConditioningDataSetHumidityUpperGuardLimit) SerializeWithWriteBuffe
 
 		// Simple Field (zoneGroup)
 		zoneGroup := byte(m.GetZoneGroup())
-		_zoneGroupErr := writeBuffer.WriteByte("zoneGroup", (zoneGroup))
+		_zoneGroupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("zoneGroup", (zoneGroup))
 		if _zoneGroupErr != nil {
 			return errors.Wrap(_zoneGroupErr, "Error serializing 'zoneGroup' field")
 		}

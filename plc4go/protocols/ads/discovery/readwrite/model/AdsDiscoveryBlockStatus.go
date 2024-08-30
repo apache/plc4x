@@ -161,7 +161,7 @@ func AdsDiscoveryBlockStatusParseWithBuffer(ctx context.Context, readBuffer util
 	_ = currentPos
 
 	// Const Field (statusLength)
-	statusLength, _statusLengthErr := readBuffer.ReadUint16("statusLength", 16)
+	statusLength, _statusLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("statusLength", 16)
 	if _statusLengthErr != nil {
 		return nil, errors.Wrap(_statusLengthErr, "Error parsing 'statusLength' field of AdsDiscoveryBlockStatus")
 	}
@@ -214,7 +214,7 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 		}
 
 		// Const Field (statusLength)
-		_statusLengthErr := writeBuffer.WriteUint16("statusLength", 16, uint16(0x0004))
+		_statusLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("statusLength", 16, uint16(0x0004))
 		if _statusLengthErr != nil {
 			return errors.Wrap(_statusLengthErr, "Error serializing 'statusLength' field")
 		}

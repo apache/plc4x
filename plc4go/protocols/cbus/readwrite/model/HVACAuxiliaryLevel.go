@@ -181,7 +181,7 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField0 *bool
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadBit("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of HVACAuxiliaryLevel")
 		}
@@ -196,7 +196,7 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (fanMode)
-	_fanMode, _fanModeErr := readBuffer.ReadBit("fanMode")
+	_fanMode, _fanModeErr := /*TODO: migrate me*/ readBuffer.ReadBit("fanMode")
 	if _fanModeErr != nil {
 		return nil, errors.Wrap(_fanModeErr, "Error parsing 'fanMode' field of HVACAuxiliaryLevel")
 	}
@@ -213,7 +213,7 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	_ = isFanModeContinuous
 
 	// Simple Field (mode)
-	_mode, _modeErr := readBuffer.ReadUint8("mode", 6)
+	_mode, _modeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mode", 6)
 	if _modeErr != nil {
 		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACAuxiliaryLevel")
 	}
@@ -268,7 +268,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteBit("reserved", reserved)
+		_err := /*TODO: migrate me*/ writeBuffer.WriteBit("reserved", reserved)
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -276,7 +276,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Simple Field (fanMode)
 	fanMode := bool(m.GetFanMode())
-	_fanModeErr := writeBuffer.WriteBit("fanMode", (fanMode))
+	_fanModeErr := /*TODO: migrate me*/ writeBuffer.WriteBit("fanMode", (fanMode))
 	if _fanModeErr != nil {
 		return errors.Wrap(_fanModeErr, "Error serializing 'fanMode' field")
 	}
@@ -295,7 +295,7 @@ func (m *_HVACAuxiliaryLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 
 	// Simple Field (mode)
 	mode := uint8(m.GetMode())
-	_modeErr := writeBuffer.WriteUint8("mode", 6, uint8((mode)))
+	_modeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("mode", 6, uint8((mode)))
 	if _modeErr != nil {
 		return errors.Wrap(_modeErr, "Error serializing 'mode' field")
 	}

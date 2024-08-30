@@ -182,14 +182,14 @@ func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	// Simple Field (length)
-	_length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsDeviceNotificationRequest")
 	}
 	length := _length
 
 	// Simple Field (stamps)
-	_stamps, _stampsErr := readBuffer.ReadUint32("stamps", 32)
+	_stamps, _stampsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("stamps", 32)
 	if _stampsErr != nil {
 		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field of AdsDeviceNotificationRequest")
 	}
@@ -257,14 +257,14 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 
 		// Simple Field (length)
 		length := uint32(m.GetLength())
-		_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
+		_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
 		if _lengthErr != nil {
 			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 		}
 
 		// Simple Field (stamps)
 		stamps := uint32(m.GetStamps())
-		_stampsErr := writeBuffer.WriteUint32("stamps", 32, uint32((stamps)))
+		_stampsErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("stamps", 32, uint32((stamps)))
 		if _stampsErr != nil {
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}

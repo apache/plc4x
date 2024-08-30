@@ -202,7 +202,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 
 	// Peek Field (counts)
 	currentPos = positionAware.GetPos()
-	counts, _err := readBuffer.ReadByte("counts")
+	counts, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("counts")
 	if _err != nil {
 		return nil, errors.Wrap(_err, "Error parsing 'counts' field of MonitoredSALShortFormBasicMode")
 	}
@@ -213,7 +213,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 	var bridgeCount *uint8 = nil
 	if bool((counts) != (0x00)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("bridgeCount", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("bridgeCount", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -229,7 +229,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 	var networkNumber *uint8 = nil
 	if bool((counts) != (0x00)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadUint8("networkNumber", 8)
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("networkNumber", 8)
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -245,7 +245,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 	var noCounts *byte = nil
 	if bool((counts) == (0x00)) {
 		currentPos = positionAware.GetPos()
-		_val, _err := readBuffer.ReadByte("noCounts")
+		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("noCounts")
 		switch {
 		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
 			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
@@ -334,7 +334,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 		var bridgeCount *uint8 = nil
 		if m.GetBridgeCount() != nil {
 			bridgeCount = m.GetBridgeCount()
-			_bridgeCountErr := writeBuffer.WriteUint8("bridgeCount", 8, uint8(*(bridgeCount)))
+			_bridgeCountErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("bridgeCount", 8, uint8(*(bridgeCount)))
 			if _bridgeCountErr != nil {
 				return errors.Wrap(_bridgeCountErr, "Error serializing 'bridgeCount' field")
 			}
@@ -344,7 +344,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 		var networkNumber *uint8 = nil
 		if m.GetNetworkNumber() != nil {
 			networkNumber = m.GetNetworkNumber()
-			_networkNumberErr := writeBuffer.WriteUint8("networkNumber", 8, uint8(*(networkNumber)))
+			_networkNumberErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("networkNumber", 8, uint8(*(networkNumber)))
 			if _networkNumberErr != nil {
 				return errors.Wrap(_networkNumberErr, "Error serializing 'networkNumber' field")
 			}
@@ -354,7 +354,7 @@ func (m *_MonitoredSALShortFormBasicMode) SerializeWithWriteBuffer(ctx context.C
 		var noCounts *byte = nil
 		if m.GetNoCounts() != nil {
 			noCounts = m.GetNoCounts()
-			_noCountsErr := writeBuffer.WriteByte("noCounts", *(noCounts))
+			_noCountsErr := /*TODO: migrate me*/ writeBuffer.WriteByte("noCounts", *(noCounts))
 			if _noCountsErr != nil {
 				return errors.Wrap(_noCountsErr, "Error serializing 'noCounts' field")
 			}

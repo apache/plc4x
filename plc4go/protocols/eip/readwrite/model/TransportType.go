@@ -135,21 +135,21 @@ func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	// Simple Field (direction)
-	_direction, _directionErr := readBuffer.ReadBit("direction")
+	_direction, _directionErr := /*TODO: migrate me*/ readBuffer.ReadBit("direction")
 	if _directionErr != nil {
 		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of TransportType")
 	}
 	direction := _direction
 
 	// Simple Field (trigger)
-	_trigger, _triggerErr := readBuffer.ReadUint8("trigger", 3)
+	_trigger, _triggerErr := /*TODO: migrate me*/ readBuffer.ReadUint8("trigger", 3)
 	if _triggerErr != nil {
 		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of TransportType")
 	}
 	trigger := _trigger
 
 	// Simple Field (classTransport)
-	_classTransport, _classTransportErr := readBuffer.ReadUint8("classTransport", 4)
+	_classTransport, _classTransportErr := /*TODO: migrate me*/ readBuffer.ReadUint8("classTransport", 4)
 	if _classTransportErr != nil {
 		return nil, errors.Wrap(_classTransportErr, "Error parsing 'classTransport' field of TransportType")
 	}
@@ -186,21 +186,21 @@ func (m *_TransportType) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 
 	// Simple Field (direction)
 	direction := bool(m.GetDirection())
-	_directionErr := writeBuffer.WriteBit("direction", (direction))
+	_directionErr := /*TODO: migrate me*/ writeBuffer.WriteBit("direction", (direction))
 	if _directionErr != nil {
 		return errors.Wrap(_directionErr, "Error serializing 'direction' field")
 	}
 
 	// Simple Field (trigger)
 	trigger := uint8(m.GetTrigger())
-	_triggerErr := writeBuffer.WriteUint8("trigger", 3, uint8((trigger)))
+	_triggerErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("trigger", 3, uint8((trigger)))
 	if _triggerErr != nil {
 		return errors.Wrap(_triggerErr, "Error serializing 'trigger' field")
 	}
 
 	// Simple Field (classTransport)
 	classTransport := uint8(m.GetClassTransport())
-	_classTransportErr := writeBuffer.WriteUint8("classTransport", 4, uint8((classTransport)))
+	_classTransportErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("classTransport", 4, uint8((classTransport)))
 	if _classTransportErr != nil {
 		return errors.Wrap(_classTransportErr, "Error serializing 'classTransport' field")
 	}

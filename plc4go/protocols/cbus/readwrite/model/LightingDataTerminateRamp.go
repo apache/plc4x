@@ -140,7 +140,7 @@ func LightingDataTerminateRampParseWithBuffer(ctx context.Context, readBuffer ut
 	_ = currentPos
 
 	// Simple Field (group)
-	_group, _groupErr := readBuffer.ReadByte("group")
+	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
 	if _groupErr != nil {
 		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataTerminateRamp")
 	}
@@ -179,7 +179,7 @@ func (m *_LightingDataTerminateRamp) SerializeWithWriteBuffer(ctx context.Contex
 
 		// Simple Field (group)
 		group := byte(m.GetGroup())
-		_groupErr := writeBuffer.WriteByte("group", (group))
+		_groupErr := /*TODO: migrate me*/ writeBuffer.WriteByte("group", (group))
 		if _groupErr != nil {
 			return errors.Wrap(_groupErr, "Error serializing 'group' field")
 		}

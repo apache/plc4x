@@ -195,63 +195,63 @@ func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	_ = currentPos
 
 	// Simple Field (connect)
-	_connect, _connectErr := readBuffer.ReadBit("connect")
+	_connect, _connectErr := /*TODO: migrate me*/ readBuffer.ReadBit("connect")
 	if _connectErr != nil {
 		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field of CBusOptions")
 	}
 	connect := _connect
 
 	// Simple Field (smart)
-	_smart, _smartErr := readBuffer.ReadBit("smart")
+	_smart, _smartErr := /*TODO: migrate me*/ readBuffer.ReadBit("smart")
 	if _smartErr != nil {
 		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field of CBusOptions")
 	}
 	smart := _smart
 
 	// Simple Field (idmon)
-	_idmon, _idmonErr := readBuffer.ReadBit("idmon")
+	_idmon, _idmonErr := /*TODO: migrate me*/ readBuffer.ReadBit("idmon")
 	if _idmonErr != nil {
 		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field of CBusOptions")
 	}
 	idmon := _idmon
 
 	// Simple Field (exstat)
-	_exstat, _exstatErr := readBuffer.ReadBit("exstat")
+	_exstat, _exstatErr := /*TODO: migrate me*/ readBuffer.ReadBit("exstat")
 	if _exstatErr != nil {
 		return nil, errors.Wrap(_exstatErr, "Error parsing 'exstat' field of CBusOptions")
 	}
 	exstat := _exstat
 
 	// Simple Field (monitor)
-	_monitor, _monitorErr := readBuffer.ReadBit("monitor")
+	_monitor, _monitorErr := /*TODO: migrate me*/ readBuffer.ReadBit("monitor")
 	if _monitorErr != nil {
 		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field of CBusOptions")
 	}
 	monitor := _monitor
 
 	// Simple Field (monall)
-	_monall, _monallErr := readBuffer.ReadBit("monall")
+	_monall, _monallErr := /*TODO: migrate me*/ readBuffer.ReadBit("monall")
 	if _monallErr != nil {
 		return nil, errors.Wrap(_monallErr, "Error parsing 'monall' field of CBusOptions")
 	}
 	monall := _monall
 
 	// Simple Field (pun)
-	_pun, _punErr := readBuffer.ReadBit("pun")
+	_pun, _punErr := /*TODO: migrate me*/ readBuffer.ReadBit("pun")
 	if _punErr != nil {
 		return nil, errors.Wrap(_punErr, "Error parsing 'pun' field of CBusOptions")
 	}
 	pun := _pun
 
 	// Simple Field (pcn)
-	_pcn, _pcnErr := readBuffer.ReadBit("pcn")
+	_pcn, _pcnErr := /*TODO: migrate me*/ readBuffer.ReadBit("pcn")
 	if _pcnErr != nil {
 		return nil, errors.Wrap(_pcnErr, "Error parsing 'pcn' field of CBusOptions")
 	}
 	pcn := _pcn
 
 	// Simple Field (srchk)
-	_srchk, _srchkErr := readBuffer.ReadBit("srchk")
+	_srchk, _srchkErr := /*TODO: migrate me*/ readBuffer.ReadBit("srchk")
 	if _srchkErr != nil {
 		return nil, errors.Wrap(_srchkErr, "Error parsing 'srchk' field of CBusOptions")
 	}
@@ -294,63 +294,63 @@ func (m *_CBusOptions) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 
 	// Simple Field (connect)
 	connect := bool(m.GetConnect())
-	_connectErr := writeBuffer.WriteBit("connect", (connect))
+	_connectErr := /*TODO: migrate me*/ writeBuffer.WriteBit("connect", (connect))
 	if _connectErr != nil {
 		return errors.Wrap(_connectErr, "Error serializing 'connect' field")
 	}
 
 	// Simple Field (smart)
 	smart := bool(m.GetSmart())
-	_smartErr := writeBuffer.WriteBit("smart", (smart))
+	_smartErr := /*TODO: migrate me*/ writeBuffer.WriteBit("smart", (smart))
 	if _smartErr != nil {
 		return errors.Wrap(_smartErr, "Error serializing 'smart' field")
 	}
 
 	// Simple Field (idmon)
 	idmon := bool(m.GetIdmon())
-	_idmonErr := writeBuffer.WriteBit("idmon", (idmon))
+	_idmonErr := /*TODO: migrate me*/ writeBuffer.WriteBit("idmon", (idmon))
 	if _idmonErr != nil {
 		return errors.Wrap(_idmonErr, "Error serializing 'idmon' field")
 	}
 
 	// Simple Field (exstat)
 	exstat := bool(m.GetExstat())
-	_exstatErr := writeBuffer.WriteBit("exstat", (exstat))
+	_exstatErr := /*TODO: migrate me*/ writeBuffer.WriteBit("exstat", (exstat))
 	if _exstatErr != nil {
 		return errors.Wrap(_exstatErr, "Error serializing 'exstat' field")
 	}
 
 	// Simple Field (monitor)
 	monitor := bool(m.GetMonitor())
-	_monitorErr := writeBuffer.WriteBit("monitor", (monitor))
+	_monitorErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monitor", (monitor))
 	if _monitorErr != nil {
 		return errors.Wrap(_monitorErr, "Error serializing 'monitor' field")
 	}
 
 	// Simple Field (monall)
 	monall := bool(m.GetMonall())
-	_monallErr := writeBuffer.WriteBit("monall", (monall))
+	_monallErr := /*TODO: migrate me*/ writeBuffer.WriteBit("monall", (monall))
 	if _monallErr != nil {
 		return errors.Wrap(_monallErr, "Error serializing 'monall' field")
 	}
 
 	// Simple Field (pun)
 	pun := bool(m.GetPun())
-	_punErr := writeBuffer.WriteBit("pun", (pun))
+	_punErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pun", (pun))
 	if _punErr != nil {
 		return errors.Wrap(_punErr, "Error serializing 'pun' field")
 	}
 
 	// Simple Field (pcn)
 	pcn := bool(m.GetPcn())
-	_pcnErr := writeBuffer.WriteBit("pcn", (pcn))
+	_pcnErr := /*TODO: migrate me*/ writeBuffer.WriteBit("pcn", (pcn))
 	if _pcnErr != nil {
 		return errors.Wrap(_pcnErr, "Error serializing 'pcn' field")
 	}
 
 	// Simple Field (srchk)
 	srchk := bool(m.GetSrchk())
-	_srchkErr := writeBuffer.WriteBit("srchk", (srchk))
+	_srchkErr := /*TODO: migrate me*/ writeBuffer.WriteBit("srchk", (srchk))
 	if _srchkErr != nil {
 		return errors.Wrap(_srchkErr, "Error serializing 'srchk' field")
 	}

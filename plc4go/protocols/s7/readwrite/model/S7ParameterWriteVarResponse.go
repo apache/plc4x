@@ -146,7 +146,7 @@ func S7ParameterWriteVarResponseParseWithBuffer(ctx context.Context, readBuffer 
 	_ = currentPos
 
 	// Simple Field (numItems)
-	_numItems, _numItemsErr := readBuffer.ReadUint8("numItems", 8)
+	_numItems, _numItemsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numItems", 8)
 	if _numItemsErr != nil {
 		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterWriteVarResponse")
 	}
@@ -185,7 +185,7 @@ func (m *_S7ParameterWriteVarResponse) SerializeWithWriteBuffer(ctx context.Cont
 
 		// Simple Field (numItems)
 		numItems := uint8(m.GetNumItems())
-		_numItemsErr := writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
+		_numItemsErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("numItems", 8, uint8((numItems)))
 		if _numItemsErr != nil {
 			return errors.Wrap(_numItemsErr, "Error serializing 'numItems' field")
 		}

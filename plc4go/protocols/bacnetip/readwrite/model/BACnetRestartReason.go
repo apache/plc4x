@@ -157,7 +157,7 @@ func BACnetRestartReasonParse(ctx context.Context, theBytes []byte) (BACnetResta
 func BACnetRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRestartReason, error) {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	val, err := readBuffer.ReadUint8("BACnetRestartReason", 8)
+	val, err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("BACnetRestartReason", 8)
 	if err != nil {
 		return 0, errors.Wrap(err, "error reading BACnetRestartReason")
 	}
@@ -180,7 +180,7 @@ func (e BACnetRestartReason) Serialize() ([]byte, error) {
 func (e BACnetRestartReason) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.WriteBuffer) error {
 	log := zerolog.Ctx(ctx)
 	_ = log
-	return writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
+	return /*TODO: migrate me*/ writeBuffer.WriteUint8("BACnetRestartReason", 8, uint8(uint8(e)), utils.WithAdditionalStringRepresentation(e.PLC4XEnumName()))
 }
 
 // PLC4XEnumName returns the name that is used in code to identify this enum

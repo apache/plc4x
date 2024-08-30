@@ -256,7 +256,7 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	}
 
 	// Simple Field (blockStart)
-	_blockStart, _blockStartErr := readBuffer.ReadUint8("blockStart", 8)
+	_blockStart, _blockStartErr := /*TODO: migrate me*/ readBuffer.ReadUint8("blockStart", 8)
 	if _blockStartErr != nil {
 		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataStatusExtended")
 	}
@@ -391,7 +391,7 @@ func (m *_CALDataStatusExtended) SerializeWithWriteBuffer(ctx context.Context, w
 
 		// Simple Field (blockStart)
 		blockStart := uint8(m.GetBlockStart())
-		_blockStartErr := writeBuffer.WriteUint8("blockStart", 8, uint8((blockStart)))
+		_blockStartErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("blockStart", 8, uint8((blockStart)))
 		if _blockStartErr != nil {
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}

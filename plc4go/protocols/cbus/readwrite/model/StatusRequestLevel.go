@@ -162,7 +162,7 @@ func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField0 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
 		}
@@ -179,7 +179,7 @@ func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	var reservedField1 *byte
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadByte("reserved")
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("reserved")
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of StatusRequestLevel")
 		}
@@ -207,7 +207,7 @@ func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	}
 
 	// Simple Field (startingGroupAddressLabel)
-	_startingGroupAddressLabel, _startingGroupAddressLabelErr := readBuffer.ReadByte("startingGroupAddressLabel")
+	_startingGroupAddressLabel, _startingGroupAddressLabelErr := /*TODO: migrate me*/ readBuffer.ReadByte("startingGroupAddressLabel")
 	if _startingGroupAddressLabelErr != nil {
 		return nil, errors.Wrap(_startingGroupAddressLabelErr, "Error parsing 'startingGroupAddressLabel' field of StatusRequestLevel")
 	}
@@ -262,7 +262,7 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -278,7 +278,7 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField1
 			}
-			_err := writeBuffer.WriteByte("reserved", reserved)
+			_err := /*TODO: migrate me*/ writeBuffer.WriteByte("reserved", reserved)
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -298,7 +298,7 @@ func (m *_StatusRequestLevel) SerializeWithWriteBuffer(ctx context.Context, writ
 
 		// Simple Field (startingGroupAddressLabel)
 		startingGroupAddressLabel := byte(m.GetStartingGroupAddressLabel())
-		_startingGroupAddressLabelErr := writeBuffer.WriteByte("startingGroupAddressLabel", (startingGroupAddressLabel))
+		_startingGroupAddressLabelErr := /*TODO: migrate me*/ writeBuffer.WriteByte("startingGroupAddressLabel", (startingGroupAddressLabel))
 		if _startingGroupAddressLabelErr != nil {
 			return errors.Wrap(_startingGroupAddressLabelErr, "Error serializing 'startingGroupAddressLabel' field")
 		}

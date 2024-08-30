@@ -184,7 +184,7 @@ func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 
 	// Simple Field (noOfFilterOperands)
-	_noOfFilterOperands, _noOfFilterOperandsErr := readBuffer.ReadInt32("noOfFilterOperands", 32)
+	_noOfFilterOperands, _noOfFilterOperandsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfFilterOperands", 32)
 	if _noOfFilterOperandsErr != nil {
 		return nil, errors.Wrap(_noOfFilterOperandsErr, "Error parsing 'noOfFilterOperands' field of ContentFilterElement")
 	}
@@ -264,7 +264,7 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 
 		// Simple Field (noOfFilterOperands)
 		noOfFilterOperands := int32(m.GetNoOfFilterOperands())
-		_noOfFilterOperandsErr := writeBuffer.WriteInt32("noOfFilterOperands", 32, int32((noOfFilterOperands)))
+		_noOfFilterOperandsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfFilterOperands", 32, int32((noOfFilterOperands)))
 		if _noOfFilterOperandsErr != nil {
 			return errors.Wrap(_noOfFilterOperandsErr, "Error serializing 'noOfFilterOperands' field")
 		}

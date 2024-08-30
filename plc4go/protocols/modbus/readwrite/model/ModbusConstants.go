@@ -115,7 +115,7 @@ func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	_ = currentPos
 
 	// Const Field (modbusTcpDefaultPort)
-	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := readBuffer.ReadUint16("modbusTcpDefaultPort", 16)
+	modbusTcpDefaultPort, _modbusTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("modbusTcpDefaultPort", 16)
 	if _modbusTcpDefaultPortErr != nil {
 		return nil, errors.Wrap(_modbusTcpDefaultPortErr, "Error parsing 'modbusTcpDefaultPort' field of ModbusConstants")
 	}
@@ -149,7 +149,7 @@ func (m *_ModbusConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 	}
 
 	// Const Field (modbusTcpDefaultPort)
-	_modbusTcpDefaultPortErr := writeBuffer.WriteUint16("modbusTcpDefaultPort", 16, uint16(502))
+	_modbusTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("modbusTcpDefaultPort", 16, uint16(502))
 	if _modbusTcpDefaultPortErr != nil {
 		return errors.Wrap(_modbusTcpDefaultPortErr, "Error serializing 'modbusTcpDefaultPort' field")
 	}

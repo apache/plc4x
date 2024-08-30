@@ -161,7 +161,7 @@ func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer u
 	}
 
 	// Simple Field (reStrikeDelay)
-	_reStrikeDelay, _reStrikeDelayErr := readBuffer.ReadByte("reStrikeDelay")
+	_reStrikeDelay, _reStrikeDelayErr := /*TODO: migrate me*/ readBuffer.ReadByte("reStrikeDelay")
 	if _reStrikeDelayErr != nil {
 		return nil, errors.Wrap(_reStrikeDelayErr, "Error parsing 'reStrikeDelay' field of IdentifyReplyCommandDelays")
 	}
@@ -209,7 +209,7 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Conte
 
 		// Simple Field (reStrikeDelay)
 		reStrikeDelay := byte(m.GetReStrikeDelay())
-		_reStrikeDelayErr := writeBuffer.WriteByte("reStrikeDelay", (reStrikeDelay))
+		_reStrikeDelayErr := /*TODO: migrate me*/ writeBuffer.WriteByte("reStrikeDelay", (reStrikeDelay))
 		if _reStrikeDelayErr != nil {
 			return errors.Wrap(_reStrikeDelayErr, "Error serializing 'reStrikeDelay' field")
 		}

@@ -158,7 +158,7 @@ func TimeZoneDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	// Simple Field (offset)
-	_offset, _offsetErr := readBuffer.ReadInt16("offset", 16)
+	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadInt16("offset", 16)
 	if _offsetErr != nil {
 		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of TimeZoneDataType")
 	}
@@ -167,7 +167,7 @@ func TimeZoneDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	var reservedField0 *uint8
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint8("reserved", 7)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 7)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of TimeZoneDataType")
 		}
@@ -182,7 +182,7 @@ func TimeZoneDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 
 	// Simple Field (daylightSavingInOffset)
-	_daylightSavingInOffset, _daylightSavingInOffsetErr := readBuffer.ReadBit("daylightSavingInOffset")
+	_daylightSavingInOffset, _daylightSavingInOffsetErr := /*TODO: migrate me*/ readBuffer.ReadBit("daylightSavingInOffset")
 	if _daylightSavingInOffsetErr != nil {
 		return nil, errors.Wrap(_daylightSavingInOffsetErr, "Error parsing 'daylightSavingInOffset' field of TimeZoneDataType")
 	}
@@ -223,7 +223,7 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (offset)
 		offset := int16(m.GetOffset())
-		_offsetErr := writeBuffer.WriteInt16("offset", 16, int16((offset)))
+		_offsetErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("offset", 16, int16((offset)))
 		if _offsetErr != nil {
 			return errors.Wrap(_offsetErr, "Error serializing 'offset' field")
 		}
@@ -238,7 +238,7 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 				}).Msg("Overriding reserved field with unexpected value.")
 				reserved = *m.reservedField0
 			}
-			_err := writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
+			_err := /*TODO: migrate me*/ writeBuffer.WriteUint8("reserved", 7, uint8(reserved))
 			if _err != nil {
 				return errors.Wrap(_err, "Error serializing 'reserved' field")
 			}
@@ -246,7 +246,7 @@ func (m *_TimeZoneDataType) SerializeWithWriteBuffer(ctx context.Context, writeB
 
 		// Simple Field (daylightSavingInOffset)
 		daylightSavingInOffset := bool(m.GetDaylightSavingInOffset())
-		_daylightSavingInOffsetErr := writeBuffer.WriteBit("daylightSavingInOffset", (daylightSavingInOffset))
+		_daylightSavingInOffsetErr := /*TODO: migrate me*/ writeBuffer.WriteBit("daylightSavingInOffset", (daylightSavingInOffset))
 		if _daylightSavingInOffsetErr != nil {
 			return errors.Wrap(_daylightSavingInOffsetErr, "Error serializing 'daylightSavingInOffset' field")
 		}

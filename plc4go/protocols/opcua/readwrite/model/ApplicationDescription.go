@@ -304,7 +304,7 @@ func ApplicationDescriptionParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 
 	// Simple Field (noOfDiscoveryUrls)
-	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
+	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
 	if _noOfDiscoveryUrlsErr != nil {
 		return nil, errors.Wrap(_noOfDiscoveryUrlsErr, "Error parsing 'noOfDiscoveryUrls' field of ApplicationDescription")
 	}
@@ -449,7 +449,7 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Simple Field (noOfDiscoveryUrls)
 		noOfDiscoveryUrls := int32(m.GetNoOfDiscoveryUrls())
-		_noOfDiscoveryUrlsErr := writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
+		_noOfDiscoveryUrlsErr := /*TODO: migrate me*/ writeBuffer.WriteInt32("noOfDiscoveryUrls", 32, int32((noOfDiscoveryUrls)))
 		if _noOfDiscoveryUrlsErr != nil {
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}

@@ -126,7 +126,7 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	var reservedField0 *uint16
 	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
 	{
-		reserved, _err := readBuffer.ReadUint16("reserved", 16)
+		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
 		if _err != nil {
 			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsTCPPacket")
 		}
@@ -141,7 +141,7 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	// Implicit Field (length) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	length, _lengthErr := readBuffer.ReadUint32("length", 32)
+	length, _lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
 	_ = length
 	if _lengthErr != nil {
 		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsTCPPacket")
@@ -198,7 +198,7 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}).Msg("Overriding reserved field with unexpected value.")
 			reserved = *m.reservedField0
 		}
-		_err := writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
+		_err := /*TODO: migrate me*/ writeBuffer.WriteUint16("reserved", 16, uint16(reserved))
 		if _err != nil {
 			return errors.Wrap(_err, "Error serializing 'reserved' field")
 		}
@@ -206,7 +206,7 @@ func (m *_AmsTCPPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 
 	// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 	length := uint32(m.GetUserdata().GetLengthInBytes(ctx))
-	_lengthErr := writeBuffer.WriteUint32("length", 32, uint32((length)))
+	_lengthErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("length", 32, uint32((length)))
 	if _lengthErr != nil {
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}

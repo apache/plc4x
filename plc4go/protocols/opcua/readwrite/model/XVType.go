@@ -153,14 +153,14 @@ func XVTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ide
 	_ = currentPos
 
 	// Simple Field (x)
-	_x, _xErr := readBuffer.ReadFloat64("x", 64)
+	_x, _xErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("x", 64)
 	if _xErr != nil {
 		return nil, errors.Wrap(_xErr, "Error parsing 'x' field of XVType")
 	}
 	x := _x
 
 	// Simple Field (value)
-	_value, _valueErr := readBuffer.ReadFloat32("value", 32)
+	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
 	if _valueErr != nil {
 		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of XVType")
 	}
@@ -200,14 +200,14 @@ func (m *_XVType) SerializeWithWriteBuffer(ctx context.Context, writeBuffer util
 
 		// Simple Field (x)
 		x := float64(m.GetX())
-		_xErr := writeBuffer.WriteFloat64("x", 64, (x))
+		_xErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("x", 64, (x))
 		if _xErr != nil {
 			return errors.Wrap(_xErr, "Error serializing 'x' field")
 		}
 
 		// Simple Field (value)
 		value := float32(m.GetValue())
-		_valueErr := writeBuffer.WriteFloat32("value", 32, (value))
+		_valueErr := /*TODO: migrate me*/ writeBuffer.WriteFloat32("value", 32, (value))
 		if _valueErr != nil {
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}

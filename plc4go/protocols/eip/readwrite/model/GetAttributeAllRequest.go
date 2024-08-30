@@ -164,7 +164,7 @@ func GetAttributeAllRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	_ = currentPos
 
 	// Implicit Field (requestPathSize) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)
-	requestPathSize, _requestPathSizeErr := readBuffer.ReadUint8("requestPathSize", 8)
+	requestPathSize, _requestPathSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("requestPathSize", 8)
 	_ = requestPathSize
 	if _requestPathSizeErr != nil {
 		return nil, errors.Wrap(_requestPathSizeErr, "Error parsing 'requestPathSize' field of GetAttributeAllRequest")
@@ -232,7 +232,7 @@ func (m *_GetAttributeAllRequest) SerializeWithWriteBuffer(ctx context.Context, 
 
 		// Implicit Field (requestPathSize) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)
 		requestPathSize := uint8(uint8((uint8(m.GetClassSegment().GetLengthInBytes(ctx)) + uint8(m.GetInstanceSegment().GetLengthInBytes(ctx)))) / uint8(uint8(2)))
-		_requestPathSizeErr := writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
+		_requestPathSizeErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("requestPathSize", 8, uint8((requestPathSize)))
 		if _requestPathSizeErr != nil {
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
