@@ -277,7 +277,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 
 	// Validation
 	if !(bool(isObjectType) || bool(isObjectIdentifier)) {
-		return nil, errors.WithStack(utils.ParseValidationError{"either we need a objectType or a objectIdentifier"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "either we need a objectType or a objectIdentifier"})
 	}
 
 	// Simple Field (closingTag)

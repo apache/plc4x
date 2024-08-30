@@ -123,12 +123,12 @@ func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 
 	// Validation
 	if !(bool((requestContext) != (nil))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"requestContext required"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "requestContext required"})
 	}
 
 	// Validation
 	if !(bool((cBusOptions) != (nil))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"cBusOptions required"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "cBusOptions required"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

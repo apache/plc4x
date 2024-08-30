@@ -156,7 +156,7 @@ func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readB
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"ApplicationAddress1 has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "ApplicationAddress1 has exactly one byte"})
 	}
 
 	// Simple Field (value)

@@ -179,7 +179,7 @@ func BACnetApplicationTagParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"should be a application tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a application tag"})
 	}
 
 	// Virtual field

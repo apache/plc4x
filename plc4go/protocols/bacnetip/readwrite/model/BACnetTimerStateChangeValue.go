@@ -185,7 +185,7 @@ func BACnetTimerStateChangeValueParseWithBuffer(ctx context.Context, readBuffer 
 
 	// Validation
 	if !(bool((!(peekedIsContextTag))) || bool((bool(bool(peekedIsContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x6)))) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"unexpected opening or closing tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "unexpected opening or closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

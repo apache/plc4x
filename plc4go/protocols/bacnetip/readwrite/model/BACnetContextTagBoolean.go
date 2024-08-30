@@ -175,7 +175,7 @@ func BACnetContextTagBooleanParseWithBuffer(ctx context.Context, readBuffer util
 
 	// Validation
 	if !(bool((header.GetActualLength()) == (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"length field should be 1"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "length field should be 1"})
 	}
 
 	// Simple Field (value)

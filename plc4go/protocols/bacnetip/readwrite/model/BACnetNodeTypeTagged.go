@@ -143,12 +143,12 @@ func BACnetNodeTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (tagClass))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"tag class doesn't match"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "tag class doesn't match"})
 	}
 
 	// Validation
 	if !(bool((bool((header.GetTagClass()) == (TagClass_APPLICATION_TAGS)))) || bool((bool((header.GetActualTagNumber()) == (tagNumber))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
 	// Manual Field (value)

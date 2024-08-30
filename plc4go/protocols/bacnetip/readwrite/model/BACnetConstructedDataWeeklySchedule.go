@@ -236,7 +236,7 @@ func BACnetConstructedDataWeeklyScheduleParseWithBuffer(ctx context.Context, rea
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(weeklySchedule)) == (7)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"weeklySchedule should have exactly 7 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "weeklySchedule should have exactly 7 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWeeklySchedule"); closeErr != nil {

@@ -1272,7 +1272,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	${assertField.name} = _val
 			</#if>
 	if ${assertField.name} != ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)} {
-		return nil, errors.WithStack(utils.ParseAssertError{"${assertField.conditionExpression} doesn't match"})<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.WithStack(utils.ParseAssertError{Message:"${assertField.conditionExpression} doesn't match"})<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "padding">
@@ -1466,7 +1466,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if (!(${helper.toParseExpression(validationField, helper.boolTypeReference, validationField.getValidationExpression(), null)})) {
 		<#assign errorType="ParseValidationError">
 		<#if !validationField.shouldFail()><#assign errorType="ParseAssertError"></#if>
-		return nil, errors.WithStack(utils.${errorType}{${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/pkg/errors" />
+		return nil, errors.WithStack(utils.${errorType}{Message: ${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/pkg/errors" />
 	}
                 <#break>
             <#case "peek">

@@ -123,7 +123,7 @@ func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alp
 
 	// Validation
 	if !(bool((bool((character) >= (0x67)))) && bool((bool((character) <= (0x7A))))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"character not in alpha space"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "character not in alpha space"})
 	}
 
 	if closeErr := readBuffer.CloseContext("Alpha"); closeErr != nil {

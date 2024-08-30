@@ -201,7 +201,7 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 
 	// Validation
 	if !(bool((bool(bool((peekedTagNumber) == (4))) && bool(bool((propertyValue) != (nil))))) || bool(bool((peekedTagNumber) != (4)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 4"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "failure parsing field 4"})
 	}
 
 	// Optional Field (propertyAccessError) (Can be skipped, if a given expression evaluates to false)
@@ -228,12 +228,12 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 
 	// Validation
 	if !(bool((bool(bool((peekedTagNumber) == (5))) && bool(bool((propertyAccessError) != (nil))))) || bool(bool((peekedTagNumber) != (5)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"failure parsing field 5"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "failure parsing field 5"})
 	}
 
 	// Validation
 	if !(bool(bool((peekedTagNumber) == (4))) || bool(bool((peekedTagNumber) == (5)))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"should be either 4 or 5"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "should be either 4 or 5"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetReadAccessPropertyReadResult"); closeErr != nil {

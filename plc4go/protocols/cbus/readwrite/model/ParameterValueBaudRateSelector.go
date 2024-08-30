@@ -156,7 +156,7 @@ func ParameterValueBaudRateSelectorParseWithBuffer(ctx context.Context, readBuff
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"BaudRateSelector has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "BaudRateSelector has exactly one byte"})
 	}
 
 	// Simple Field (value)

@@ -236,7 +236,7 @@ func BACnetConstructedDataKeySetsParseWithBuffer(ctx context.Context, readBuffer
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(keySets)) == (2)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"keySets should have exactly 2 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "keySets should have exactly 2 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataKeySets"); closeErr != nil {

@@ -132,17 +132,17 @@ func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Validation
 	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"should be a context tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a context tag"})
 	}
 
 	// Validation
 	if !(bool((header.GetLengthValueType()) == (7))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"closing tag should have a value of 7"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "closing tag should have a value of 7"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClosingTag"); closeErr != nil {

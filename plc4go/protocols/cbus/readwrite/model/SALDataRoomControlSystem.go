@@ -124,7 +124,7 @@ func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer uti
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"ROOM_CONTROL_SYSTEM Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "ROOM_CONTROL_SYSTEM Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataRoomControlSystem"); closeErr != nil {

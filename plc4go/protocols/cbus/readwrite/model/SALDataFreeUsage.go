@@ -124,7 +124,7 @@ func SALDataFreeUsageParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"FREE_USAGE Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "FREE_USAGE Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataFreeUsage"); closeErr != nil {

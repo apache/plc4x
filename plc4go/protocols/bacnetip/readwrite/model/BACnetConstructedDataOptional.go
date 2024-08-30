@@ -130,7 +130,7 @@ func BACnetConstructedDataOptionalParseWithBuffer(ctx context.Context, readBuffe
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"An property identified by OPTIONAL should never occur in the wild"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "An property identified by OPTIONAL should never occur in the wild"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOptional"); closeErr != nil {

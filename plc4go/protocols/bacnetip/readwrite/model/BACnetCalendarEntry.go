@@ -166,7 +166,7 @@ func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Validation failed"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "Validation failed"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

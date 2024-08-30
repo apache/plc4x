@@ -501,7 +501,7 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(data)) == (16)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Either indexed access or lenght 16 expected"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "Either indexed access or lenght 16 expected"})
 	}
 
 	// Virtual field

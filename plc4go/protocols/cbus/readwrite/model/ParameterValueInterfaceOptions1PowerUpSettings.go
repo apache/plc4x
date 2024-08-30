@@ -143,7 +143,7 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.C
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"InterfaceOptions1PowerUpSettings has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions1PowerUpSettings has exactly one byte"})
 	}
 
 	// Simple Field (value)

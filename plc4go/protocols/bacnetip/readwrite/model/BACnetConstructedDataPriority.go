@@ -236,7 +236,7 @@ func BACnetConstructedDataPriorityParseWithBuffer(ctx context.Context, readBuffe
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(priority)) == (3)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"priority should have exactly 3 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "priority should have exactly 3 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriority"); closeErr != nil {

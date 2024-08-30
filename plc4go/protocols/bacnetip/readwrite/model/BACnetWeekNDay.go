@@ -96,7 +96,7 @@ func BACnetWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Unusable type. Exits only for consistency. Use BACnetWeekNDayTagged"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "Unusable type. Exits only for consistency. Use BACnetWeekNDayTagged"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetWeekNDay"); closeErr != nil {

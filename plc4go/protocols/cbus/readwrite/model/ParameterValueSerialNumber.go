@@ -156,7 +156,7 @@ func ParameterValueSerialNumberParseWithBuffer(ctx context.Context, readBuffer u
 
 	// Validation
 	if !(bool((numBytes) >= (4))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"SerialNumber has exactly four bytes"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "SerialNumber has exactly four bytes"})
 	}
 
 	// Simple Field (value)

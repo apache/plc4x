@@ -156,7 +156,7 @@ func ParameterValueInterfaceOptions3ParseWithBuffer(ctx context.Context, readBuf
 
 	// Validation
 	if !(bool((numBytes) >= (1))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"InterfaceOptions3 has exactly one byte"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions3 has exactly one byte"})
 	}
 
 	// Simple Field (value)

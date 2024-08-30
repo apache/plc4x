@@ -156,7 +156,7 @@ func ErrorReportingDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 
 	// Validation
 	if !(KnowsErrorReportingCommandTypeContainer(ctx, readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
 	// Simple Field (commandTypeContainer)

@@ -353,7 +353,7 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 
 	// Validation
 	if !(bool(bool(isUnitAddress) && bool(bool((*reservedByte) == (0x00)))) || bool(!(isUnitAddress))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"invalid unit address"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "invalid unit address"})
 	}
 
 	// Optional Field (replyNetwork) (Can be skipped, if a given expression evaluates to false)

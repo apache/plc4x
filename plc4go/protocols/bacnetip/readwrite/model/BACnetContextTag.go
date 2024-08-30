@@ -184,12 +184,12 @@ func BACnetContextTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Validation
 	if !(bool((header.GetActualTagNumber()) == (tagNumberArgument))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"tagnumber doesn't match"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
 	// Validation
 	if !(bool((header.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"should be a context tag"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a context tag"})
 	}
 
 	// Virtual field
@@ -204,7 +204,7 @@ func BACnetContextTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	// Validation
 	if !(bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))) {
-		return nil, errors.WithStack(utils.ParseAssertError{"length 6 and 7 reserved for opening and closing tag"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "length 6 and 7 reserved for opening and closing tag"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

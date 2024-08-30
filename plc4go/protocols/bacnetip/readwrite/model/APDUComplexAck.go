@@ -378,7 +378,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 
 	// Validation
 	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceAck) != (nil))))) || bool(segmentedMessage)) {
-		return nil, errors.WithStack(utils.ParseValidationError{"service ack should be set"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "service ack should be set"})
 	}
 
 	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)

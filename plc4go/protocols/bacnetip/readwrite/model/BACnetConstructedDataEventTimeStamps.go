@@ -287,7 +287,7 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, re
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(eventTimeStamps)) == (3)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"eventTimeStamps should have exactly 3 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "eventTimeStamps should have exactly 3 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventTimeStamps"); closeErr != nil {

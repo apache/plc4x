@@ -236,7 +236,7 @@ func BACnetConstructedDataValueSourceArrayParseWithBuffer(ctx context.Context, r
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(vtClassesSupported)) == (16)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"vtClassesSupported should have exactly 16 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "vtClassesSupported should have exactly 16 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSourceArray"); closeErr != nil {

@@ -444,7 +444,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 
 	// Validation
 	if !(bool((bool(!(segmentedMessage)) && bool(bool((serviceRequest) != (nil))))) || bool(segmentedMessage)) {
-		return nil, errors.WithStack(utils.ParseValidationError{"service request should be set"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 
 	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)

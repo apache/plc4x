@@ -236,7 +236,7 @@ func BACnetConstructedDataCommandTimeArrayParseWithBuffer(ctx context.Context, r
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(commandTimeArray)) == (16)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"commandTimeArray should have exactly 16 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "commandTimeArray should have exactly 16 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommandTimeArray"); closeErr != nil {

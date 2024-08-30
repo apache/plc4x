@@ -130,7 +130,7 @@ func BACnetConstructedDataLifeSafetyPointAllParseWithBuffer(ctx context.Context,
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"All should never occur in context of constructed data. If it does please report"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "All should never occur in context of constructed data. If it does please report"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyPointAll"); closeErr != nil {

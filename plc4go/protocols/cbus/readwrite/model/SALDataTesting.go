@@ -124,7 +124,7 @@ func SALDataTestingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 
 	// Validation
 	if !(bool((1) == (2))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"TESTING Not yet implemented"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "TESTING Not yet implemented"})
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTesting"); closeErr != nil {

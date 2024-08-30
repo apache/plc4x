@@ -287,7 +287,7 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(eventMessageTextsConfig)) == (3)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"eventMessageTextsConfig should have exactly 3 values"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "eventMessageTextsConfig should have exactly 3 values"})
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventMessageTextsConfig"); closeErr != nil {

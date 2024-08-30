@@ -215,7 +215,7 @@ func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(bool((startingGroupAddressLabel) == (0x00))) || bool(bool((startingGroupAddressLabel) == (0x20)))) || bool(bool((startingGroupAddressLabel) == (0x40)))) || bool(bool((startingGroupAddressLabel) == (0x60)))) || bool(bool((startingGroupAddressLabel) == (0x80)))) || bool(bool((startingGroupAddressLabel) == (0xA0)))) || bool(bool((startingGroupAddressLabel) == (0xC0)))) || bool(bool((startingGroupAddressLabel) == (0xE0)))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"invalid label"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "invalid label"})
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusRequestLevel"); closeErr != nil {

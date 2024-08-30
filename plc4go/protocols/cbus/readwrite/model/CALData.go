@@ -187,7 +187,7 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 
 	// Validation
 	if !(KnowsCALCommandTypeContainer(ctx, readBuffer)) {
-		return nil, errors.WithStack(utils.ParseAssertError{"no command type could be found"})
+		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
 	// Simple Field (commandTypeContainer)

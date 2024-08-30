@@ -202,7 +202,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer(ctx contex
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {
-		return nil, errors.WithStack(utils.ParseValidationError{"only application tags allowed"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "only application tags allowed"})
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

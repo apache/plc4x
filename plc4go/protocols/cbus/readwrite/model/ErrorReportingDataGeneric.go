@@ -291,7 +291,7 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 
 	// Validation
 	if !(bool(mostRecent) || bool(mostSevere)) {
-		return nil, errors.WithStack(utils.ParseValidationError{"Invalid Error condition"})
+		return nil, errors.WithStack(utils.ParseValidationError{Message: "Invalid Error condition"})
 	}
 
 	// Virtual field
