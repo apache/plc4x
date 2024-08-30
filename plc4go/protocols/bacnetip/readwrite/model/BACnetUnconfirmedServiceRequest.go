@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,17 +124,9 @@ func BACnetUnconfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (serviceChoice) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("serviceChoice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceChoice")
-	}
-	serviceChoice_temp, _serviceChoiceErr := BACnetUnconfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-	var serviceChoice BACnetUnconfirmedServiceChoice = serviceChoice_temp
-	if closeErr := readBuffer.CloseContext("serviceChoice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceChoice")
-	}
-	if _serviceChoiceErr != nil {
-		return nil, errors.Wrap(_serviceChoiceErr, "Error parsing 'serviceChoice' field of BACnetUnconfirmedServiceRequest")
+	serviceChoice, err := ReadDiscriminatorEnumField[BACnetUnconfirmedServiceChoice](ctx, "serviceChoice", "BACnetUnconfirmedServiceChoice", ReadEnum(BACnetUnconfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

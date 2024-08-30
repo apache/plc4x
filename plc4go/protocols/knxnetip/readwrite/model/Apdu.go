@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,10 +154,9 @@ func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataL
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (control) (Used as input to a switch field)
-	control, _controlErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("control", 1)
-	if _controlErr != nil {
-		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of Apdu")
+	control, err := ReadDiscriminatorField[uint8](ctx, "control", ReadUnsignedByte(readBuffer, 1))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'control' field"))
 	}
 
 	// Simple Field (numbered)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,10 +124,9 @@ func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (messageCode) (Used as input to a switch field)
-	messageCode, _messageCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageCode", 8)
-	if _messageCodeErr != nil {
-		return nil, errors.Wrap(_messageCodeErr, "Error parsing 'messageCode' field of CEMI")
+	messageCode, err := ReadDiscriminatorField[uint8](ctx, "messageCode", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageCode' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

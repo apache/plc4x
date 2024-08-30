@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (dataSegmentType) (Used as input to a switch field)
-	dataSegmentType, _dataSegmentTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("dataSegmentType", 5)
-	if _dataSegmentTypeErr != nil {
-		return nil, errors.Wrap(_dataSegmentTypeErr, "Error parsing 'dataSegmentType' field of DataSegmentType")
+	dataSegmentType, err := ReadDiscriminatorField[uint8](ctx, "dataSegmentType", ReadUnsignedByte(readBuffer, 5))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSegmentType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

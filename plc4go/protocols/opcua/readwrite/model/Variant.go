@@ -191,10 +191,9 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	}
 	arrayDimensionsSpecified := _arrayDimensionsSpecified
 
-	// Discriminator Field (VariantType) (Used as input to a switch field)
-	VariantType, _VariantTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("VariantType", 6)
-	if _VariantTypeErr != nil {
-		return nil, errors.Wrap(_VariantTypeErr, "Error parsing 'VariantType' field of Variant")
+	VariantType, err := ReadDiscriminatorField[uint8](ctx, "VariantType", ReadUnsignedByte(readBuffer, 6))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'VariantType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

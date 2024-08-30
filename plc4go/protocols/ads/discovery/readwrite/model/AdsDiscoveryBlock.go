@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,17 +121,9 @@ func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (blockType) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("blockType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for blockType")
-	}
-	blockType_temp, _blockTypeErr := AdsDiscoveryBlockTypeParseWithBuffer(ctx, readBuffer)
-	var blockType AdsDiscoveryBlockType = blockType_temp
-	if closeErr := readBuffer.CloseContext("blockType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for blockType")
-	}
-	if _blockTypeErr != nil {
-		return nil, errors.Wrap(_blockTypeErr, "Error parsing 'blockType' field of AdsDiscoveryBlock")
+	blockType, err := ReadDiscriminatorEnumField[AdsDiscoveryBlockType](ctx, "blockType", "AdsDiscoveryBlockType", ReadEnum(AdsDiscoveryBlockTypeByValue, ReadUnsignedShort(readBuffer, 16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

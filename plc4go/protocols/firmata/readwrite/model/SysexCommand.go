@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,10 +124,9 @@ func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType, _commandTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commandType", 8)
-	if _commandTypeErr != nil {
-		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field of SysexCommand")
+	commandType, err := ReadDiscriminatorField[uint8](ctx, "commandType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

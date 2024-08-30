@@ -149,10 +149,9 @@ func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_ = messageStart
 
-	// Discriminator Field (symbolType) (Used as input to a switch field)
-	symbolType, _symbolTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("symbolType", 8)
-	if _symbolTypeErr != nil {
-		return nil, errors.Wrap(_symbolTypeErr, "Error parsing 'symbolType' field of DF1Symbol")
+	symbolType, err := ReadDiscriminatorField[uint8](ctx, "symbolType", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

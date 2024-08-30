@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,16 +132,14 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (response) (Used as input to a switch field)
-	response, _responseErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("response")
-	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CipService")
+	response, err := ReadDiscriminatorField[bool](ctx, "response", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 
-	// Discriminator Field (service) (Used as input to a switch field)
-	service, _serviceErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("service", 7)
-	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of CipService")
+	service, err := ReadDiscriminatorField[uint8](ctx, "service", ReadUnsignedByte(readBuffer, 7))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'service' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (logicalSegmentType) (Used as input to a switch field)
-	logicalSegmentType, _logicalSegmentTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("logicalSegmentType", 3)
-	if _logicalSegmentTypeErr != nil {
-		return nil, errors.Wrap(_logicalSegmentTypeErr, "Error parsing 'logicalSegmentType' field of LogicalSegmentType")
+	logicalSegmentType, err := ReadDiscriminatorField[uint8](ctx, "logicalSegmentType", ReadUnsignedByte(readBuffer, 3))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalSegmentType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -125,10 +127,9 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (parameterType) (Used as input to a switch field)
-	parameterType, _parameterTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("parameterType", 8)
-	if _parameterTypeErr != nil {
-		return nil, errors.Wrap(_parameterTypeErr, "Error parsing 'parameterType' field of COTPParameter")
+	parameterType, err := ReadDiscriminatorField[uint8](ctx, "parameterType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterType' field"))
 	}
 
 	// Implicit Field (parameterLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

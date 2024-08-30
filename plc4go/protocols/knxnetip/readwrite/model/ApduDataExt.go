@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,10 +124,9 @@ func ApduDataExtParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (extApciType) (Used as input to a switch field)
-	extApciType, _extApciTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extApciType", 6)
-	if _extApciTypeErr != nil {
-		return nil, errors.Wrap(_extApciTypeErr, "Error parsing 'extApciType' field of ApduDataExt")
+	extApciType, err := ReadDiscriminatorField[uint8](ctx, "extApciType", ReadUnsignedByte(readBuffer, 6))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extApciType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

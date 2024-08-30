@@ -183,10 +183,9 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (commandType) (Used as input to a switch field)
-	commandType, _commandTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("commandType", 16)
-	if _commandTypeErr != nil {
-		return nil, errors.Wrap(_commandTypeErr, "Error parsing 'commandType' field of CIPEncapsulationPacket")
+	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
 	// Implicit Field (packetLen) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

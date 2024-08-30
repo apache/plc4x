@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (additionalInformationType) (Used as input to a switch field)
-	additionalInformationType, _additionalInformationTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("additionalInformationType", 8)
-	if _additionalInformationTypeErr != nil {
-		return nil, errors.Wrap(_additionalInformationTypeErr, "Error parsing 'additionalInformationType' field of CEMIAdditionalInformation")
+	additionalInformationType, err := ReadDiscriminatorField[uint8](ctx, "additionalInformationType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInformationType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

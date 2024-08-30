@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -127,16 +129,14 @@ func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (errorFlag) (Used as input to a switch field)
-	errorFlag, _errorFlagErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("errorFlag")
-	if _errorFlagErr != nil {
-		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of ModbusPDU")
+	errorFlag, err := ReadDiscriminatorField[bool](ctx, "errorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorFlag' field"))
 	}
 
-	// Discriminator Field (functionFlag) (Used as input to a switch field)
-	functionFlag, _functionFlagErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("functionFlag", 7)
-	if _functionFlagErr != nil {
-		return nil, errors.Wrap(_functionFlagErr, "Error parsing 'functionFlag' field of ModbusPDU")
+	functionFlag, err := ReadDiscriminatorField[uint8](ctx, "functionFlag", ReadUnsignedByte(readBuffer, 7))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionFlag' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

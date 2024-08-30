@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,10 +126,9 @@ func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageType", 4)
-	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of FirmataMessage")
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 4), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -137,17 +139,9 @@ func NodeIdTypeDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (nodeType) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("nodeType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeType")
-	}
-	nodeType_temp, _nodeTypeErr := NodeIdTypeParseWithBuffer(ctx, readBuffer)
-	var nodeType NodeIdType = nodeType_temp
-	if closeErr := readBuffer.CloseContext("nodeType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeType")
-	}
-	if _nodeTypeErr != nil {
-		return nil, errors.Wrap(_nodeTypeErr, "Error parsing 'nodeType' field of NodeIdTypeDefinition")
+	nodeType, err := ReadDiscriminatorEnumField[NodeIdType](ctx, "nodeType", "NodeIdType", ReadEnum(NodeIdTypeByValue, ReadUnsignedByte(readBuffer, 6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

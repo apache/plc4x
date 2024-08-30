@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,10 +182,9 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (command) (Used as input to a switch field)
-	command, _commandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("command", 16)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of EipPacket")
+	command, err := ReadDiscriminatorField[uint16](ctx, "command", ReadUnsignedShort(readBuffer, 16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
 	// Implicit Field (packetLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,10 +131,9 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(_structureLengthErr, "Error parsing 'structureLength' field of ConnectionRequestInformation")
 	}
 
-	// Discriminator Field (connectionType) (Used as input to a switch field)
-	connectionType, _connectionTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("connectionType", 8)
-	if _connectionTypeErr != nil {
-		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of ConnectionRequestInformation")
+	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

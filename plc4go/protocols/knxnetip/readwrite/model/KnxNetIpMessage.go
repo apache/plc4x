@@ -162,10 +162,9 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	_ = protocolVersion
 
-	// Discriminator Field (msgType) (Used as input to a switch field)
-	msgType, _msgTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("msgType", 16)
-	if _msgTypeErr != nil {
-		return nil, errors.Wrap(_msgTypeErr, "Error parsing 'msgType' field of KnxNetIpMessage")
+	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msgType' field"))
 	}
 
 	// Implicit Field (totalLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

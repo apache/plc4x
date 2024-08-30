@@ -864,24 +864,16 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			<#break>
 			<#case "discriminator">
 				<#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Discriminator Field (${discriminatorField.name}) (Used as input to a switch field)
-	<#if helper.isEnumField(field)>
-        <#assign namedField = field.asNamedField().orElseThrow()>
-	if pullErr := readBuffer.PullContext("${namedField.name}"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	${helper.getVariableName(field)}_temp, _${discriminatorField.name}Err := ${helper.getLanguageTypeNameForField(discriminatorField)}ParseWithBuffer(ctx, readBuffer)
-	var ${helper.getVariableName(field)} ${helper.getLanguageTypeNameForField(discriminatorField)} = ${helper.getVariableName(field)}_temp
-	if closeErr := readBuffer.CloseContext("${namedField.name}"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${namedField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	<#else>
-        <#assign simpleTypeReference = discriminatorField.type.asSimpleTypeReference().orElseThrow()>
-	${helper.getVariableName(field)}, _${discriminatorField.name}Err := ${helper.getReadBufferReadMethodCall(discriminatorField.name, simpleTypeReference, discriminatorField)}
-	</#if>
-	if _${discriminatorField.name}Err != nil {
-		return nil, errors.Wrap(_${discriminatorField.name}Err, "Error parsing '${discriminatorField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+				<#if typedField.type.isEnumTypeReference()>
+	${namedField.name},err := ReadDiscriminatorEnumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${typedField.type.asEnumTypeReference().orElseThrow().typeDefinition.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+				<#else>
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+				</#if>
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "enum">

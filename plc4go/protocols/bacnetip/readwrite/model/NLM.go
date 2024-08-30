@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,10 +145,9 @@ func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageType", 8)
-	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of NLM")
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
 	// Virtual field

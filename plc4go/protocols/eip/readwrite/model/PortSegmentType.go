@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (extendedLinkAddress) (Used as input to a switch field)
-	extendedLinkAddress, _extendedLinkAddressErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("extendedLinkAddress")
-	if _extendedLinkAddressErr != nil {
-		return nil, errors.Wrap(_extendedLinkAddressErr, "Error parsing 'extendedLinkAddress' field of PortSegmentType")
+	extendedLinkAddress, err := ReadDiscriminatorField[bool](ctx, "extendedLinkAddress", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedLinkAddress' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

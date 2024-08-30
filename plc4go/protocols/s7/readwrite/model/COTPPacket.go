@@ -173,10 +173,9 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(_headerLengthErr, "Error parsing 'headerLength' field of COTPPacket")
 	}
 
-	// Discriminator Field (tpduCode) (Used as input to a switch field)
-	tpduCode, _tpduCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("tpduCode", 8)
-	if _tpduCodeErr != nil {
-		return nil, errors.Wrap(_tpduCodeErr, "Error parsing 'tpduCode' field of COTPPacket")
+	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduCode' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

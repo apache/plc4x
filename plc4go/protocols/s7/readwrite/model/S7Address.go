@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (addressType) (Used as input to a switch field)
-	addressType, _addressTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("addressType", 8)
-	if _addressTypeErr != nil {
-		return nil, errors.Wrap(_addressTypeErr, "Error parsing 'addressType' field of S7Address")
+	addressType, err := ReadDiscriminatorField[uint8](ctx, "addressType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addressType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

@@ -422,7 +422,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
 
     public String getDataReaderCall(TypeReference typeReference) {
         emitDataReaderRequiredImports();
-        return getDataReaderCall(typeReference, "enumForValue");
+        return getDataReaderCall(typeReference, "ByValue");
     }
 
     public String getDataReaderCall(TypeReference typeReference, String resolverMethod) {
@@ -430,7 +430,7 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
         if (typeReference.isEnumTypeReference()) {
             final String languageTypeName = getLanguageTypeNameForTypeReference(typeReference);
             final SimpleTypeReference enumBaseTypeReference = getEnumBaseTypeReference(typeReference);
-            return "ReadEnum(" + languageTypeName + "::" + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
+            return "ReadEnum(" + languageTypeName + resolverMethod + ", " + getDataReaderCall(enumBaseTypeReference) + ")";
         } else if (typeReference.isArrayTypeReference()) {
             final ArrayTypeReference arrayTypeReference = typeReference.asArrayTypeReference().orElseThrow();
             return getDataReaderCall(arrayTypeReference.getElementTypeReference(), resolverMethod);

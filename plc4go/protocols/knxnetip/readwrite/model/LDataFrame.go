@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -191,10 +193,9 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	frameType := _frameType
 
-	// Discriminator Field (polling) (Used as input to a switch field)
-	polling, _pollingErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("polling")
-	if _pollingErr != nil {
-		return nil, errors.Wrap(_pollingErr, "Error parsing 'polling' field of LDataFrame")
+	polling, err := ReadDiscriminatorField[bool](ctx, "polling", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'polling' field"))
 	}
 
 	// Simple Field (notRepeated)
@@ -204,10 +205,9 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	}
 	notRepeated := _notRepeated
 
-	// Discriminator Field (notAckFrame) (Used as input to a switch field)
-	notAckFrame, _notAckFrameErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("notAckFrame")
-	if _notAckFrameErr != nil {
-		return nil, errors.Wrap(_notAckFrameErr, "Error parsing 'notAckFrame' field of LDataFrame")
+	notAckFrame, err := ReadDiscriminatorField[bool](ctx, "notAckFrame", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notAckFrame' field"))
 	}
 
 	// Simple Field (priority)

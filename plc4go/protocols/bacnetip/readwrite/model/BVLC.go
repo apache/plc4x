@@ -171,10 +171,9 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	}
 	_ = bacnetType
 
-	// Discriminator Field (bvlcFunction) (Used as input to a switch field)
-	bvlcFunction, _bvlcFunctionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("bvlcFunction", 8)
-	if _bvlcFunctionErr != nil {
-		return nil, errors.Wrap(_bvlcFunctionErr, "Error parsing 'bvlcFunction' field of BVLC")
+	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcFunction' field"))
 	}
 
 	// Implicit Field (bvlcLength) (Used for parsing, but its value is not stored as it's implicitly given by the objects content)

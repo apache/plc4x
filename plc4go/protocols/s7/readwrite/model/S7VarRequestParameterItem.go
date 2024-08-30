@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -119,10 +121,9 @@ func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (itemType) (Used as input to a switch field)
-	itemType, _itemTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("itemType", 8)
-	if _itemTypeErr != nil {
-		return nil, errors.Wrap(_itemTypeErr, "Error parsing 'itemType' field of S7VarRequestParameterItem")
+	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

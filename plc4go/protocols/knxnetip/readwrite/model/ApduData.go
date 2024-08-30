@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,10 +124,9 @@ func ApduDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (apciType) (Used as input to a switch field)
-	apciType, _apciTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("apciType", 4)
-	if _apciTypeErr != nil {
-		return nil, errors.Wrap(_apciTypeErr, "Error parsing 'apciType' field of ApduData")
+	apciType, err := ReadDiscriminatorField[uint8](ctx, "apciType", ReadUnsignedByte(readBuffer, 4))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apciType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

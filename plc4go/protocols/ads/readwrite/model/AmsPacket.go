@@ -320,17 +320,9 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	sourceAmsPort := _sourceAmsPort
 
-	// Discriminator Field (commandId) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("commandId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandId")
-	}
-	commandId_temp, _commandIdErr := CommandIdParseWithBuffer(ctx, readBuffer)
-	var commandId CommandId = commandId_temp
-	if closeErr := readBuffer.CloseContext("commandId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandId")
-	}
-	if _commandIdErr != nil {
-		return nil, errors.Wrap(_commandIdErr, "Error parsing 'commandId' field of AmsPacket")
+	commandId, err := ReadDiscriminatorEnumField[CommandId](ctx, "commandId", "CommandId", ReadEnum(CommandIdByValue, ReadUnsignedShort(readBuffer, 16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandId' field"))
 	}
 
 	initCommand, err := ReadConstField[bool](ctx, "initCommand", ReadBoolean(readBuffer), AmsPacket_INITCOMMAND)
@@ -375,10 +367,9 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_ = noReturn
 
-	// Discriminator Field (response) (Used as input to a switch field)
-	response, _responseErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadBit("response")
-	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of AmsPacket")
+	response, err := ReadDiscriminatorField[bool](ctx, "response", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 
 	broadcast, err := ReadConstField[bool](ctx, "broadcast", ReadBoolean(readBuffer), AmsPacket_BROADCAST)

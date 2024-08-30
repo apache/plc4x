@@ -24,8 +24,6 @@ import (
 	"math/big"
 	"time"
 
-	"github.com/rs/zerolog"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -89,8 +87,8 @@ func ReadString(readBuffer utils.ReadBuffer, bitLength uint32) DataReader[string
 	return NewDataReaderSimpleString(readBuffer, bitLength)
 }
 
-func ReadEnum[T any, I any](enumResolver func(I) (T, bool), dataReader DataReader[I], logger zerolog.Logger) *DataReaderEnumDefault[T, I] {
-	return NewDataReaderEnumDefault[T, I](enumResolver, dataReader, logger)
+func ReadEnum[T any, I any](enumResolver func(I) (T, bool), dataReader DataReader[I]) *DataReaderEnumDefault[T, I] {
+	return NewDataReaderEnumDefault[T, I](enumResolver, dataReader)
 }
 
 func ReadComplex[T any](complexSupplier func(context.Context, utils.ReadBuffer) (T, error), readBuffer utils.ReadBuffer) *DataReaderComplexDefault[T] {

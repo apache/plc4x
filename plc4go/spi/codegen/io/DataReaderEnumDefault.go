@@ -23,26 +23,21 @@ import (
 	"context"
 	"encoding/binary"
 
-	"github.com/pkg/errors"
-	"github.com/rs/zerolog"
-
 	"github.com/apache/plc4x/plc4go/spi/utils"
+	"github.com/pkg/errors"
 )
 
 type DataReaderEnumDefault[T any, I any] struct {
 	enumResolver func(I) (T, bool)
 	dataReader   DataReader[I]
-
-	log zerolog.Logger
 }
 
 var _ DataReaderEnum[string] = (*DataReaderEnumDefault[string, string])(nil)
 
-func NewDataReaderEnumDefault[T any, I any](enumResolver func(I) (T, bool), dataReader DataReader[I], logger zerolog.Logger) *DataReaderEnumDefault[T, I] {
+func NewDataReaderEnumDefault[T any, I any](enumResolver func(I) (T, bool), dataReader DataReader[I]) *DataReaderEnumDefault[T, I] {
 	return &DataReaderEnumDefault[T, I]{
 		enumResolver: enumResolver,
 		dataReader:   dataReader,
-		log:          logger,
 	}
 }
 
@@ -69,8 +64,8 @@ func (d *DataReaderEnumDefault[T, I]) Read(ctx context.Context, logicalName stri
 		return zero, errors.Wrap(err, "error reading raw data")
 	}
 	enumValue, ok := d.enumResolver(rawValue)
-	if !ok { //
-		d.log.Debug().Str("logicalName", logicalName).Interface("rawValue", rawValue).Msg("no enum value found")
+	if !ok { // TODO: decide if we want to log... maybe we always pass the context so we can extract that
+		//d.log.Debug().Str("logicalName", logicalName).Interface("rawValue", rawValue).Msg("no enum value found")
 	}
 	return enumValue, nil
 }

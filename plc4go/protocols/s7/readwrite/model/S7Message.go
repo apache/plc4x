@@ -202,10 +202,9 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_ = protocolId
 
-	// Discriminator Field (messageType) (Used as input to a switch field)
-	messageType, _messageTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("messageType", 8)
-	if _messageTypeErr != nil {
-		return nil, errors.Wrap(_messageTypeErr, "Error parsing 'messageType' field of S7Message")
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
 	var reservedField0 *uint16

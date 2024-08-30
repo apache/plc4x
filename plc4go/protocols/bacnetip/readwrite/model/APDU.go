@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,17 +124,9 @@ func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduL
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (apduType) (Used as input to a switch field)
-	if pullErr := readBuffer.PullContext("apduType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apduType")
-	}
-	apduType_temp, _apduTypeErr := ApduTypeParseWithBuffer(ctx, readBuffer)
-	var apduType ApduType = apduType_temp
-	if closeErr := readBuffer.CloseContext("apduType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apduType")
-	}
-	if _apduTypeErr != nil {
-		return nil, errors.Wrap(_apduTypeErr, "Error parsing 'apduType' field of APDU")
+	apduType, err := ReadDiscriminatorEnumField[ApduType](ctx, "apduType", "ApduType", ReadEnum(ApduTypeByValue, ReadUnsignedByte(readBuffer, 4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduType' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

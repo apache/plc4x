@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,10 +151,9 @@ func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Discriminator Field (commandCode) (Used as input to a switch field)
-	commandCode, _commandCodeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("commandCode", 8)
-	if _commandCodeErr != nil {
-		return nil, errors.Wrap(_commandCodeErr, "Error parsing 'commandCode' field of DF1Command")
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
 	// Simple Field (status)
