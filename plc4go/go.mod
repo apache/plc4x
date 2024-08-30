@@ -19,7 +19,8 @@
 
 module github.com/apache/plc4x/plc4go
 
-go 1.22
+go 1.23.0
+
 require (
 	github.com/IBM/netaddr v1.5.0
 	github.com/ajankovic/xdiff v0.0.1
