@@ -554,10 +554,10 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case BYTE:
                 return "WriteByte(writeBuffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 7) return "WriteUnsignedByte(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 15) return "WriteUnsignedShort(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 31) return "WriteUnsignedInt(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 63) return "WriteUnsignedLong(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "WriteUnsignedByte(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 16) return "WriteUnsignedShort(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "WriteUnsignedInt(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "WriteUnsignedLong(writeBuffer, " + sizeInBits + ")";
                 return "WriteUnsignedBigInteger(writeBuffer, " + sizeInBits + ")";
             case INT:
                 if (sizeInBits <= 8) return "WriteSignedByte(writeBuffer, " + sizeInBits + ")";

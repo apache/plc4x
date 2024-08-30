@@ -21,8 +21,8 @@ package fields
 
 import (
 	"context"
-	"github.com/pkg/errors"
 
+	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi"
@@ -45,7 +45,7 @@ func WriteByteArrayField[T any](ctx context.Context, logicalName string, value [
 	return NewFieldWriterArray[T](log).WriteByteArrayField(ctx, logicalName, value, dataWriter, writerArgs...)
 }
 
-func WriteChecksumField[T any](ctx context.Context, logicalName string, valueProducer func() (uint8, error), dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {
+func WriteChecksumField[T any](ctx context.Context, logicalName string, valueProducer func() (T, error), dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
 	value, err := valueProducer()
 	if err != nil {

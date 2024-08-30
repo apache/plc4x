@@ -856,7 +856,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}.${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}_${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)});
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1513,7 +1513,7 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#assign namedField = field.asNamedField().orElseThrow()>
 
 	// Checksum Field (checksum) (Calculated)
-	if err:= WriteChecksumField(ctx, "${namedField.name}", ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
+	if err:= WriteChecksumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
 		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#break>
