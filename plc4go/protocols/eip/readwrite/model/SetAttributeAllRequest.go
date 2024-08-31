@@ -126,8 +126,6 @@ func SetAttributeAllRequestParseWithBufferProducer(connected bool, serviceLen ui
 func SetAttributeAllRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeAllRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetAttributeAllRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetAttributeAllRequest")
 	}

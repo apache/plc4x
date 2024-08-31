@@ -117,8 +117,6 @@ func SecurityDataArmFailedClearedParseWithBufferProducer() func(ctx context.Cont
 func SecurityDataArmFailedClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedCleared, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataArmFailedCleared"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataArmFailedCleared")
 	}

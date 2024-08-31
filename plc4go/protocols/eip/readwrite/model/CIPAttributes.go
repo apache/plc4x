@@ -158,8 +158,6 @@ func CIPAttributesParseWithBufferProducer(packetLength uint16) func(ctx context.
 func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPAttributes, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPAttributes"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPAttributes")
 	}
@@ -232,19 +230,8 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_numberOfClassesErr, "Error serializing 'numberOfClasses' field")
 	}
 
-	// Array Field (classId)
-	if pushErr := writeBuffer.PushContext("classId", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for classId")
-	}
-	for _curItem, _element := range m.GetClassId() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'classId' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("classId", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for classId")
+	if err := WriteSimpleTypeArrayField(ctx, "classId", m.GetClassId(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'classId' field")
 	}
 
 	// Optional Field (numberAvailable) (Can be skipped, if the value is null)
@@ -267,9 +254,7 @@ func (m *_CIPAttributes) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		}
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 

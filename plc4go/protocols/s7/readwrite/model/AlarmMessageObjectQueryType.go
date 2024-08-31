@@ -208,8 +208,6 @@ func AlarmMessageObjectQueryTypeParseWithBufferProducer() func(ctx context.Conte
 func AlarmMessageObjectQueryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectQueryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectQueryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageObjectQueryType")
 	}

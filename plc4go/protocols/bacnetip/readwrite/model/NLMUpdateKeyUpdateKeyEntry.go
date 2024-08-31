@@ -136,8 +136,6 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBufferProducer() func(ctx context.Contex
 func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateKeyEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdateKeyEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMUpdateKeyUpdateKeyEntry")
 	}
@@ -202,9 +200,7 @@ func (m *_NLMUpdateKeyUpdateKeyEntry) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_keySizeErr, "Error serializing 'keySize' field")
 	}
 
-	// Array Field (key)
-	// Byte Array field (key)
-	if err := writeBuffer.WriteByteArray("key", m.GetKey()); err != nil {
+	if err := WriteByteArrayField(ctx, "key", m.GetKey(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'key' field")
 	}
 

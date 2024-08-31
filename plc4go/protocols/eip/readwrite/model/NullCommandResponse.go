@@ -131,8 +131,6 @@ func NullCommandResponseParseWithBufferProducer(response bool) func(ctx context.
 func NullCommandResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullCommandResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullCommandResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullCommandResponse")
 	}

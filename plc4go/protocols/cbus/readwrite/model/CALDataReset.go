@@ -117,8 +117,6 @@ func CALDataResetParseWithBufferProducer(requestContext RequestContext) func(ctx
 func CALDataResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataReset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataReset")
 	}

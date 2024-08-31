@@ -154,8 +154,6 @@ func AccessControlDataInvalidAccessRequestParseWithBufferProducer(commandTypeCon
 func AccessControlDataInvalidAccessRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataInvalidAccessRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataInvalidAccessRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataInvalidAccessRequest")
 	}
@@ -216,9 +214,7 @@ func (m *_AccessControlDataInvalidAccessRequest) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(_accessControlDirectionErr, "Error serializing 'accessControlDirection' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

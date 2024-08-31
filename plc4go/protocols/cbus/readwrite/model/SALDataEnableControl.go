@@ -143,8 +143,6 @@ func SALDataEnableControlParseWithBufferProducer(applicationId ApplicationId) fu
 func SALDataEnableControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataEnableControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataEnableControl")
 	}

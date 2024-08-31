@@ -153,8 +153,6 @@ func BACnetConstructedDataTimeSynchronizationRecipientsParseWithBufferProducer(t
 func BACnetConstructedDataTimeSynchronizationRecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataTimeSynchronizationRecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataTimeSynchronizationRecipients")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataTimeSynchronizationRecipients) SerializeWithWrite
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataTimeSynchronizationRecipients")
 		}
 
-		// Array Field (timeSynchronizationRecipients)
-		if pushErr := writeBuffer.PushContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for timeSynchronizationRecipients")
-		}
-		for _curItem, _element := range m.GetTimeSynchronizationRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTimeSynchronizationRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'timeSynchronizationRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("timeSynchronizationRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for timeSynchronizationRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "timeSynchronizationRecipients", m.GetTimeSynchronizationRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'timeSynchronizationRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataTimeSynchronizationRecipients"); popErr != nil {

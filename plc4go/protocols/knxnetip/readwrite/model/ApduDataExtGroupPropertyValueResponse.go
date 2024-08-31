@@ -118,8 +118,6 @@ func ApduDataExtGroupPropertyValueResponseParseWithBufferProducer(length uint8) 
 func ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtGroupPropertyValueResponse")
 	}

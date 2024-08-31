@@ -168,8 +168,6 @@ func BACnetConstructedDataProcessIdentifierFilterParseWithBufferProducer(tagNumb
 func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataProcessIdentifierFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataProcessIdentifierFilter")
 	}

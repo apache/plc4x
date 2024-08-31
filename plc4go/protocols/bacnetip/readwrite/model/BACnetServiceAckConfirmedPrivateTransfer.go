@@ -165,8 +165,6 @@ func BACnetServiceAckConfirmedPrivateTransferParseWithBufferProducer(serviceAckL
 func BACnetServiceAckConfirmedPrivateTransferParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckConfirmedPrivateTransfer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckConfirmedPrivateTransfer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckConfirmedPrivateTransfer")
 	}

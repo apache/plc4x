@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,8 +143,6 @@ func IdentifyReplyCommandMinimumLevelsParseWithBufferProducer(attribute Attribut
 func IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandMinimumLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandMinimumLevels")
 	}
@@ -187,9 +187,7 @@ func (m *_IdentifyReplyCommandMinimumLevels) SerializeWithWriteBuffer(ctx contex
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandMinimumLevels")
 		}
 
-		// Array Field (minimumLevels)
-		// Byte Array field (minimumLevels)
-		if err := writeBuffer.WriteByteArray("minimumLevels", m.GetMinimumLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "minimumLevels", m.GetMinimumLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'minimumLevels' field")
 		}
 

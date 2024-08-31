@@ -202,8 +202,6 @@ func MultipleServiceResponseParseWithBufferProducer(connected bool, serviceLen u
 func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MultipleServiceResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceResponse")
 	}
@@ -315,24 +313,11 @@ func (m *_MultipleServiceResponse) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 		}
 
-		// Array Field (offsets)
-		if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for offsets")
-		}
-		for _curItem, _element := range m.GetOffsets() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for offsets")
+		if err := WriteSimpleTypeArrayField(ctx, "offsets", m.GetOffsets(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'offsets' field")
 		}
 
-		// Array Field (servicesData)
-		// Byte Array field (servicesData)
-		if err := writeBuffer.WriteByteArray("servicesData", m.GetServicesData()); err != nil {
+		if err := WriteByteArrayField(ctx, "servicesData", m.GetServicesData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'servicesData' field")
 		}
 

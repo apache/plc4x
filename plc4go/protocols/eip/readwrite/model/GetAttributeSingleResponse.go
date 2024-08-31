@@ -126,8 +126,6 @@ func GetAttributeSingleResponseParseWithBufferProducer(connected bool, serviceLe
 func GetAttributeSingleResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeSingleResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetAttributeSingleResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetAttributeSingleResponse")
 	}

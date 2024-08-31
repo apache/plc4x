@@ -181,8 +181,6 @@ func QueryDataSetParseWithBufferProducer(identifier string) func(ctx context.Con
 func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryDataSet, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryDataSet"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryDataSet")
 	}
@@ -274,21 +272,8 @@ func (m *_QueryDataSet) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_noOfValuesErr, "Error serializing 'noOfValues' field")
 		}
 
-		// Array Field (values)
-		if pushErr := writeBuffer.PushContext("values", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for values")
-		}
-		for _curItem, _element := range m.GetValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'values' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("values", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for values")
+		if err := WriteComplexTypeArrayField(ctx, "values", m.GetValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'values' field")
 		}
 
 		if popErr := writeBuffer.PopContext("QueryDataSet"); popErr != nil {

@@ -123,8 +123,6 @@ func VariantNullParseWithBufferProducer() func(ctx context.Context, readBuffer u
 func VariantNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantNull")
 	}

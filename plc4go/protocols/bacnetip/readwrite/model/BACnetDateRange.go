@@ -124,8 +124,6 @@ func BACnetDateRangeParseWithBufferProducer() func(ctx context.Context, readBuff
 func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDateRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDateRange")
 	}

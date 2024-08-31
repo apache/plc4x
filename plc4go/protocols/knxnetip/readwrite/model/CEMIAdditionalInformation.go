@@ -124,8 +124,6 @@ func CEMIAdditionalInformationParseWithBufferProducer[T CEMIAdditionalInformatio
 func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformation")
 	}

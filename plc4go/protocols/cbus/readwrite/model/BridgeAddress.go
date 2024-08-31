@@ -114,8 +114,6 @@ func BridgeAddressParseWithBufferProducer() func(ctx context.Context, readBuffer
 func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BridgeAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BridgeAddress")
 	}

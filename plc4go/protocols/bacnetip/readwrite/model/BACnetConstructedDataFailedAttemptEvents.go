@@ -153,8 +153,6 @@ func BACnetConstructedDataFailedAttemptEventsParseWithBufferProducer(tagNumber u
 func BACnetConstructedDataFailedAttemptEventsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttemptEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataFailedAttemptEvents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataFailedAttemptEvents")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataFailedAttemptEvents) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataFailedAttemptEvents")
 		}
 
-		// Array Field (failedAttemptEvents)
-		if pushErr := writeBuffer.PushContext("failedAttemptEvents", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for failedAttemptEvents")
-		}
-		for _curItem, _element := range m.GetFailedAttemptEvents() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFailedAttemptEvents()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'failedAttemptEvents' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("failedAttemptEvents", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for failedAttemptEvents")
+		if err := WriteComplexTypeArrayField(ctx, "failedAttemptEvents", m.GetFailedAttemptEvents(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'failedAttemptEvents' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataFailedAttemptEvents"); popErr != nil {

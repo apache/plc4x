@@ -118,8 +118,6 @@ func ApduDataExtMemoryBitWriteParseWithBufferProducer(length uint8) func(ctx con
 func ApduDataExtMemoryBitWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtMemoryBitWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtMemoryBitWrite")
 	}

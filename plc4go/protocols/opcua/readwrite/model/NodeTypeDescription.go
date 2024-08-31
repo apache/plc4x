@@ -186,8 +186,6 @@ func NodeTypeDescriptionParseWithBufferProducer(identifier string) func(ctx cont
 func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeTypeDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeTypeDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeTypeDescription")
 	}
@@ -296,21 +294,8 @@ func (m *_NodeTypeDescription) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfDataToReturnErr, "Error serializing 'noOfDataToReturn' field")
 		}
 
-		// Array Field (dataToReturn)
-		if pushErr := writeBuffer.PushContext("dataToReturn", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataToReturn")
-		}
-		for _curItem, _element := range m.GetDataToReturn() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataToReturn()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataToReturn' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataToReturn", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataToReturn")
+		if err := WriteComplexTypeArrayField(ctx, "dataToReturn", m.GetDataToReturn(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataToReturn' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeTypeDescription"); popErr != nil {

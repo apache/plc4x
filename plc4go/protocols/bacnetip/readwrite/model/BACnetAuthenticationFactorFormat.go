@@ -138,8 +138,6 @@ func BACnetAuthenticationFactorFormatParseWithBufferProducer() func(ctx context.
 func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactorFormat"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactorFormat")
 	}

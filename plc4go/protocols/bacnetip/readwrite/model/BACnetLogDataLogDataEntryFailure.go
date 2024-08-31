@@ -139,8 +139,6 @@ func BACnetLogDataLogDataEntryFailureParseWithBufferProducer() func(ctx context.
 func BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryFailure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryFailure")
 	}

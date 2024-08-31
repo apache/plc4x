@@ -117,8 +117,6 @@ func MeteringDataMeasureElectricityParseWithBufferProducer() func(ctx context.Co
 func MeteringDataMeasureElectricityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureElectricity, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureElectricity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataMeasureElectricity")
 	}

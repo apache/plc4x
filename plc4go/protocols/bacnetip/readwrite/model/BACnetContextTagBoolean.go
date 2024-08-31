@@ -173,8 +173,6 @@ func BACnetContextTagBooleanParseWithBufferProducer(header BACnetTagHeader, tagN
 func BACnetContextTagBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagBoolean")
 	}

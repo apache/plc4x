@@ -148,8 +148,6 @@ func NLMParseWithBufferProducer[T NLM](apduLength uint16) func(ctx context.Conte
 func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLM"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLM")
 	}

@@ -139,8 +139,6 @@ func AirConditioningDataSetZoneGroupOffParseWithBufferProducer() func(ctx contex
 func AirConditioningDataSetZoneGroupOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetZoneGroupOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetZoneGroupOff")
 	}

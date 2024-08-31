@@ -118,8 +118,6 @@ func ApduDataExtGroupPropertyValueWriteParseWithBufferProducer(length uint8) fun
 func ApduDataExtGroupPropertyValueWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtGroupPropertyValueWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtGroupPropertyValueWrite")
 	}

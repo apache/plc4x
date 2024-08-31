@@ -149,8 +149,6 @@ func ModbusPDUWriteFileRecordResponseItemParseWithBufferProducer() func(ctx cont
 func ModbusPDUWriteFileRecordResponseItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordResponseItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteFileRecordResponseItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteFileRecordResponseItem")
 	}
@@ -241,9 +239,7 @@ func (m *_ModbusPDUWriteFileRecordResponseItem) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(_recordLengthErr, "Error serializing 'recordLength' field")
 	}
 
-	// Array Field (recordData)
-	// Byte Array field (recordData)
-	if err := writeBuffer.WriteByteArray("recordData", m.GetRecordData()); err != nil {
+	if err := WriteByteArrayField(ctx, "recordData", m.GetRecordData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'recordData' field")
 	}
 

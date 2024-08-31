@@ -139,8 +139,6 @@ func BACnetTimerStateChangeValueLightingCommandParseWithBufferProducer(objectTyp
 func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueLightingCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueLightingCommand")
 	}

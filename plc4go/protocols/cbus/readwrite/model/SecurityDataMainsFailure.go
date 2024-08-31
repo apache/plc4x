@@ -117,8 +117,6 @@ func SecurityDataMainsFailureParseWithBufferProducer() func(ctx context.Context,
 func SecurityDataMainsFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataMainsFailure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataMainsFailure")
 	}

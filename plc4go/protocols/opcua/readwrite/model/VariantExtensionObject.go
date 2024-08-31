@@ -166,8 +166,6 @@ func VariantExtensionObjectParseWithBufferProducer(arrayLengthSpecified bool) fu
 func VariantExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantExtensionObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantExtensionObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantExtensionObject")
 	}
@@ -226,21 +224,8 @@ func (m *_VariantExtensionObject) SerializeWithWriteBuffer(ctx context.Context, 
 			}
 		}
 
-		// Array Field (value)
-		if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		for _curItem, _element := range m.GetValue() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetValue()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'value' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
+		if err := WriteComplexTypeArrayField(ctx, "value", m.GetValue(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VariantExtensionObject"); popErr != nil {

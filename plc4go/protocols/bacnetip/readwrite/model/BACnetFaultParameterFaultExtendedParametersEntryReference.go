@@ -139,8 +139,6 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBufferPro
 func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryReference")
 	}

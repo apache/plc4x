@@ -139,8 +139,6 @@ func BACnetPropertyStatesLightningInProgressParseWithBufferProducer(peekedTagNum
 func BACnetPropertyStatesLightningInProgressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLightningInProgress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLightningInProgress")
 	}

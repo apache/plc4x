@@ -172,8 +172,6 @@ func AirConditioningDataSetHumidityLowerGuardLimitParseWithBufferProducer() func
 func AirConditioningDataSetHumidityLowerGuardLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHumidityLowerGuardLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHumidityLowerGuardLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetHumidityLowerGuardLimit")
 	}

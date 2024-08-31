@@ -154,8 +154,6 @@ func NLMRequestMasterKeyParseWithBufferProducer(apduLength uint16) func(ctx cont
 func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestMasterKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMRequestMasterKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMRequestMasterKey")
 	}
@@ -213,9 +211,7 @@ func (m *_NLMRequestMasterKey) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error serializing 'numberOfSupportedKeyAlgorithms' field")
 		}
 
-		// Array Field (encryptionAndSignatureAlgorithms)
-		// Byte Array field (encryptionAndSignatureAlgorithms)
-		if err := writeBuffer.WriteByteArray("encryptionAndSignatureAlgorithms", m.GetEncryptionAndSignatureAlgorithms()); err != nil {
+		if err := WriteByteArrayField(ctx, "encryptionAndSignatureAlgorithms", m.GetEncryptionAndSignatureAlgorithms(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'encryptionAndSignatureAlgorithms' field")
 		}
 

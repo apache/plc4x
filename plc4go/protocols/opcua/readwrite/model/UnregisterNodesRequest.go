@@ -170,8 +170,6 @@ func UnregisterNodesRequestParseWithBufferProducer(identifier string) func(ctx c
 func UnregisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UnregisterNodesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnregisterNodesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnregisterNodesRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_UnregisterNodesRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_noOfNodesToUnregisterErr, "Error serializing 'noOfNodesToUnregister' field")
 		}
 
-		// Array Field (nodesToUnregister)
-		if pushErr := writeBuffer.PushContext("nodesToUnregister", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToUnregister")
-		}
-		for _curItem, _element := range m.GetNodesToUnregister() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToUnregister()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToUnregister' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToUnregister", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToUnregister")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToUnregister", m.GetNodesToUnregister(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToUnregister' field")
 		}
 
 		if popErr := writeBuffer.PopContext("UnregisterNodesRequest"); popErr != nil {

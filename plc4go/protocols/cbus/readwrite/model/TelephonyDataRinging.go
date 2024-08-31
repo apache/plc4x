@@ -145,8 +145,6 @@ func TelephonyDataRingingParseWithBufferProducer(commandTypeContainer TelephonyC
 func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataRinging"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataRinging")
 	}

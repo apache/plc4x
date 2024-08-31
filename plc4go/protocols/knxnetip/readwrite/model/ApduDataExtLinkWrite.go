@@ -118,8 +118,6 @@ func ApduDataExtLinkWriteParseWithBufferProducer(length uint8) func(ctx context.
 func ApduDataExtLinkWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtLinkWrite")
 	}

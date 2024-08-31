@@ -153,8 +153,6 @@ func BACnetConstructedDataVirtualMACAddressTableParseWithBufferProducer(tagNumbe
 func BACnetConstructedDataVirtualMACAddressTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVirtualMACAddressTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataVirtualMACAddressTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataVirtualMACAddressTable")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataVirtualMACAddressTable) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataVirtualMACAddressTable")
 		}
 
-		// Array Field (virtualMacAddressTable)
-		if pushErr := writeBuffer.PushContext("virtualMacAddressTable", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for virtualMacAddressTable")
-		}
-		for _curItem, _element := range m.GetVirtualMacAddressTable() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetVirtualMacAddressTable()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'virtualMacAddressTable' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("virtualMacAddressTable", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for virtualMacAddressTable")
+		if err := WriteComplexTypeArrayField(ctx, "virtualMacAddressTable", m.GetVirtualMacAddressTable(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'virtualMacAddressTable' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataVirtualMACAddressTable"); popErr != nil {

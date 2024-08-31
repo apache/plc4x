@@ -146,8 +146,6 @@ func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, r
 func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1Symbol"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1Symbol")
 	}

@@ -128,8 +128,6 @@ func BACnetLiftGroupModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftGroupModeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLiftGroupModeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftGroupModeTagged")
 	}

@@ -139,8 +139,6 @@ func BACnetPriorityValueNullParseWithBufferProducer(objectTypeArgument BACnetObj
 func BACnetPriorityValueNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueNull")
 	}

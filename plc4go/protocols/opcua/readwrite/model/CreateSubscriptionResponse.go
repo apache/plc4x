@@ -185,8 +185,6 @@ func CreateSubscriptionResponseParseWithBufferProducer(identifier string) func(c
 func CreateSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSubscriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CreateSubscriptionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CreateSubscriptionResponse")
 	}

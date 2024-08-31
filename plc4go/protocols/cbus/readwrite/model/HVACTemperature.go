@@ -133,8 +133,6 @@ func HVACTemperatureParseWithBufferProducer() func(ctx context.Context, readBuff
 func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACTemperature"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACTemperature")
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,8 +143,6 @@ func IdentifyReplyCommandCurrentSenseLevelsParseWithBufferProducer(attribute Att
 func IdentifyReplyCommandCurrentSenseLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandCurrentSenseLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandCurrentSenseLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandCurrentSenseLevels")
 	}
@@ -187,9 +187,7 @@ func (m *_IdentifyReplyCommandCurrentSenseLevels) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandCurrentSenseLevels")
 		}
 
-		// Array Field (currentSenseLevels)
-		// Byte Array field (currentSenseLevels)
-		if err := writeBuffer.WriteByteArray("currentSenseLevels", m.GetCurrentSenseLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "currentSenseLevels", m.GetCurrentSenseLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'currentSenseLevels' field")
 		}
 

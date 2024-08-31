@@ -204,8 +204,6 @@ func PubSubConfigurationDataTypeParseWithBufferProducer(identifier string) func(
 func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConfigurationDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubConfigurationDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubConfigurationDataType")
 	}
@@ -285,21 +283,8 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfPublishedDataSetsErr, "Error serializing 'noOfPublishedDataSets' field")
 		}
 
-		// Array Field (publishedDataSets)
-		if pushErr := writeBuffer.PushContext("publishedDataSets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for publishedDataSets")
-		}
-		for _curItem, _element := range m.GetPublishedDataSets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPublishedDataSets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'publishedDataSets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("publishedDataSets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for publishedDataSets")
+		if err := WriteComplexTypeArrayField(ctx, "publishedDataSets", m.GetPublishedDataSets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'publishedDataSets' field")
 		}
 
 		// Simple Field (noOfConnections)
@@ -309,21 +294,8 @@ func (m *_PubSubConfigurationDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfConnectionsErr, "Error serializing 'noOfConnections' field")
 		}
 
-		// Array Field (connections)
-		if pushErr := writeBuffer.PushContext("connections", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connections")
-		}
-		for _curItem, _element := range m.GetConnections() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnections()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'connections' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("connections", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connections")
+		if err := WriteComplexTypeArrayField(ctx, "connections", m.GetConnections(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'connections' field")
 		}
 
 		// Reserved Field (reserved)

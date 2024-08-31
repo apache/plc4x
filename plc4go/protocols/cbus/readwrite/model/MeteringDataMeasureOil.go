@@ -117,8 +117,6 @@ func MeteringDataMeasureOilParseWithBufferProducer() func(ctx context.Context, r
 func MeteringDataMeasureOilParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOil, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataMeasureOil"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataMeasureOil")
 	}

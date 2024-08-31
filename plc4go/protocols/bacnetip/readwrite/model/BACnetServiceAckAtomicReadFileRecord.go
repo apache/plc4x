@@ -170,8 +170,6 @@ func BACnetServiceAckAtomicReadFileRecordParseWithBufferProducer() func(ctx cont
 func BACnetServiceAckAtomicReadFileRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFileRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicReadFileRecord")
 	}
@@ -250,21 +248,8 @@ func (m *_BACnetServiceAckAtomicReadFileRecord) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_returnedRecordCountErr, "Error serializing 'returnedRecordCount' field")
 		}
 
-		// Array Field (fileRecordData)
-		if pushErr := writeBuffer.PushContext("fileRecordData", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fileRecordData")
-		}
-		for _curItem, _element := range m.GetFileRecordData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFileRecordData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'fileRecordData' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("fileRecordData", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fileRecordData")
+		if err := WriteComplexTypeArrayField(ctx, "fileRecordData", m.GetFileRecordData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'fileRecordData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetServiceAckAtomicReadFileRecord"); popErr != nil {

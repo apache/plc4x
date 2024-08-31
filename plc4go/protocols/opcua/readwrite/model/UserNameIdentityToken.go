@@ -163,8 +163,6 @@ func UserNameIdentityTokenParseWithBufferProducer(identifier string) func(ctx co
 func UserNameIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserNameIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UserNameIdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UserNameIdentityToken")
 	}

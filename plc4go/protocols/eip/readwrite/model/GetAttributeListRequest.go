@@ -126,8 +126,6 @@ func GetAttributeListRequestParseWithBufferProducer(connected bool, serviceLen u
 func GetAttributeListRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeListRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetAttributeListRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetAttributeListRequest")
 	}

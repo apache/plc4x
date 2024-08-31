@@ -129,8 +129,6 @@ func AdsInvalidResponseParseWithBufferProducer() func(ctx context.Context, readB
 func AdsInvalidResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsInvalidResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsInvalidResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsInvalidResponse")
 	}

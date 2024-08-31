@@ -158,8 +158,6 @@ func BACnetAccessRuleParseWithBufferProducer() func(ctx context.Context, readBuf
 func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessRule, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessRule"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessRule")
 	}

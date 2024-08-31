@@ -204,8 +204,6 @@ func BACnetActionCommandParseWithBufferProducer() func(ctx context.Context, read
 func BACnetActionCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetActionCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetActionCommand")
 	}

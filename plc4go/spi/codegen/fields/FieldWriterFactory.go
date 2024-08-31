@@ -32,17 +32,17 @@ import (
 
 func WriteSimpleTypeArrayField[T any](ctx context.Context, logicalName string, value []T, dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
-	return NewFieldWriterArray[T](log).WriteSimpleTypeArrayField(ctx, logicalName, value, dataWriter, writerArgs...)
+	return NewFieldWriterArray[T, spi.Message](log).WriteSimpleTypeArrayField(ctx, logicalName, value, dataWriter, writerArgs...)
 }
 
-func WriteComplexTypeArrayField[T any](ctx context.Context, logicalName string, value []spi.Message, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
+func WriteComplexTypeArrayField[T spi.Message](ctx context.Context, logicalName string, value []T, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
-	return NewFieldWriterArray[spi.Message](log).WriteComplexTypeArrayField(ctx, logicalName, value, writeBuffer, writerArgs...)
+	return NewFieldWriterArray[any, T](log).WriteComplexTypeArrayField(ctx, logicalName, value, writeBuffer, writerArgs...)
 }
 
-func WriteByteArrayField[T any](ctx context.Context, logicalName string, value []byte, dataWriter io.DataWriter[[]byte], writerArgs ...utils.WithWriterArgs) error {
+func WriteByteArrayField(ctx context.Context, logicalName string, value []byte, dataWriter io.DataWriter[[]byte], writerArgs ...utils.WithWriterArgs) error {
 	log := *zerolog.Ctx(ctx)
-	return NewFieldWriterArray[T](log).WriteByteArrayField(ctx, logicalName, value, dataWriter, writerArgs...)
+	return NewFieldWriterArray[any, spi.Message](log).WriteByteArrayField(ctx, logicalName, value, dataWriter, writerArgs...)
 }
 
 func WriteChecksumField[T any](ctx context.Context, logicalName string, valueProducer func() (T, error), dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {

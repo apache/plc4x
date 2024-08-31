@@ -297,8 +297,6 @@ func BACnetWeekNDayTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetWeekNDayTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetWeekNDayTagged")
 	}

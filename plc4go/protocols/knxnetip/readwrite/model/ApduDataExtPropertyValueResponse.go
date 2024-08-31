@@ -187,8 +187,6 @@ func ApduDataExtPropertyValueResponseParseWithBufferProducer(length uint8) func(
 func ApduDataExtPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtPropertyValueResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtPropertyValueResponse")
 	}
@@ -285,9 +283,7 @@ func (m *_ApduDataExtPropertyValueResponse) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(_indexErr, "Error serializing 'index' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

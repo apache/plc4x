@@ -213,8 +213,6 @@ func BACnetServiceAckReadRangeParseWithBufferProducer(serviceAckLength uint32) f
 func BACnetServiceAckReadRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckReadRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckReadRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckReadRange")
 	}

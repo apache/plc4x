@@ -263,8 +263,6 @@ func BACnetTagPayloadDateParseWithBufferProducer() func(ctx context.Context, rea
 func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadDate")
 	}

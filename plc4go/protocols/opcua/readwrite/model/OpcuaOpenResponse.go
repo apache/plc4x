@@ -161,8 +161,6 @@ func OpcuaOpenResponseParseWithBufferProducer(totalLength uint32, response bool)
 func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaOpenResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaOpenResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaOpenResponse")
 	}

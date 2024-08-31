@@ -174,8 +174,6 @@ func AmsSerialFrameParseWithBufferProducer() func(ctx context.Context, readBuffe
 func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AmsSerialFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AmsSerialFrame")
 	}

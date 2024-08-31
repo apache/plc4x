@@ -118,8 +118,6 @@ func HistoryReadDetailsParseWithBufferProducer(identifier string) func(ctx conte
 func HistoryReadDetailsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryReadDetails, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryReadDetails"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryReadDetails")
 	}

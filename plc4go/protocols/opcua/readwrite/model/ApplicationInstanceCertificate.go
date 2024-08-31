@@ -92,8 +92,6 @@ func ApplicationInstanceCertificateParseWithBufferProducer() func(ctx context.Co
 func ApplicationInstanceCertificateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationInstanceCertificate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApplicationInstanceCertificate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApplicationInstanceCertificate")
 	}

@@ -127,8 +127,6 @@ func APDUParseWithBufferProducer[T APDU](apduLength uint16) func(ctx context.Con
 func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDU")
 	}

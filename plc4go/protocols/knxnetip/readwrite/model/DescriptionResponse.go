@@ -154,8 +154,6 @@ func DescriptionResponseParseWithBufferProducer() func(ctx context.Context, read
 func DescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DescriptionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DescriptionResponse")
 	}

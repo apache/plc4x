@@ -120,8 +120,6 @@ func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinitio
 func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ExtensionObjectDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ExtensionObjectDefinition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ExtensionObjectDefinition")
 	}

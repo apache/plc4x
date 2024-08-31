@@ -131,8 +131,6 @@ func ListServicesRequestParseWithBufferProducer(response bool) func(ctx context.
 func ListServicesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ListServicesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListServicesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListServicesRequest")
 	}

@@ -179,8 +179,6 @@ func AccessControlDataParseWithBufferProducer[T AccessControlData]() func(ctx co
 func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlData")
 	}

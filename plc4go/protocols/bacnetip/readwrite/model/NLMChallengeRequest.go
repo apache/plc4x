@@ -163,8 +163,6 @@ func NLMChallengeRequestParseWithBufferProducer(apduLength uint16) func(ctx cont
 func NLMChallengeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMChallengeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMChallengeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMChallengeRequest")
 	}

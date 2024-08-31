@@ -139,8 +139,6 @@ func BACnetPriorityValueBitStringParseWithBufferProducer(objectTypeArgument BACn
 func BACnetPriorityValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueBitString")
 	}

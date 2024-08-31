@@ -141,8 +141,6 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBufferProducer(param
 func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions1PowerUpSettings"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValueInterfaceOptions1PowerUpSettings")
 	}

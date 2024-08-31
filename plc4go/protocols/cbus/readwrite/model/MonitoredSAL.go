@@ -140,8 +140,6 @@ func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions
 func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSAL"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSAL")
 	}

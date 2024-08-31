@@ -170,8 +170,6 @@ func TelephonyDataParseWithBufferProducer[T TelephonyData]() func(ctx context.Co
 func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyData")
 	}

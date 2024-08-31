@@ -134,8 +134,6 @@ func KnxAddressParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxAddress")
 	}

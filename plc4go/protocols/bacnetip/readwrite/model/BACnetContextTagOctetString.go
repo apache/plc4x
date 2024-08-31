@@ -143,8 +143,6 @@ func BACnetContextTagOctetStringParseWithBufferProducer(header BACnetTagHeader, 
 func BACnetContextTagOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagOctetString")
 	}

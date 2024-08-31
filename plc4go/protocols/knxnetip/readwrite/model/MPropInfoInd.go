@@ -118,8 +118,6 @@ func MPropInfoIndParseWithBufferProducer(size uint16) func(ctx context.Context, 
 func MPropInfoIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MPropInfoInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MPropInfoInd")
 	}

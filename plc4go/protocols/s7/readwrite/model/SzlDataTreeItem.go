@@ -156,8 +156,6 @@ func SzlDataTreeItemParseWithBufferProducer() func(ctx context.Context, readBuff
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SzlDataTreeItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SzlDataTreeItem")
 	}
@@ -227,9 +225,7 @@ func (m *_SzlDataTreeItem) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_itemIndexErr, "Error serializing 'itemIndex' field")
 	}
 
-	// Array Field (mlfb)
-	// Byte Array field (mlfb)
-	if err := writeBuffer.WriteByteArray("mlfb", m.GetMlfb()); err != nil {
+	if err := WriteByteArrayField(ctx, "mlfb", m.GetMlfb(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'mlfb' field")
 	}
 

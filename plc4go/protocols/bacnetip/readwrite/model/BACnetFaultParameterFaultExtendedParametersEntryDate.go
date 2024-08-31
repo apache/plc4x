@@ -139,8 +139,6 @@ func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBufferProducer
 func BACnetFaultParameterFaultExtendedParametersEntryDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryDate")
 	}

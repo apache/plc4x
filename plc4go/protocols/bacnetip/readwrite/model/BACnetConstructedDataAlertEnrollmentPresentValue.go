@@ -168,8 +168,6 @@ func BACnetConstructedDataAlertEnrollmentPresentValueParseWithBufferProducer(tag
 func BACnetConstructedDataAlertEnrollmentPresentValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlertEnrollmentPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAlertEnrollmentPresentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAlertEnrollmentPresentValue")
 	}

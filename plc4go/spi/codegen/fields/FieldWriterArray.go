@@ -31,36 +31,37 @@ import (
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
-type FieldWriterArray[T any] struct {
+type FieldWriterArray[T any, C spi.Message] struct {
 	codegen.FieldCommons[T]
 
 	log zerolog.Logger
 }
 
-func NewFieldWriterArray[T any](logger zerolog.Logger) *FieldWriterArray[T] {
-	return &FieldWriterArray[T]{
+func NewFieldWriterArray[T any, C spi.Message](logger zerolog.Logger) *FieldWriterArray[T, C] {
+	return &FieldWriterArray[T, C]{
 		log: logger,
 	}
 }
 
-func (f *FieldWriterArray[T]) WriteByteArrayField(ctx context.Context, logicalName string, values []byte, dataWriter io.DataWriter[[]byte], writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterArray[_, _]) WriteByteArrayField(ctx context.Context, logicalName string, values []byte, dataWriter io.DataWriter[[]byte], writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
-	if values != nil {
+	if values != nil && len(values) > 0 {
 		return dataWriter.Write(ctx, logicalName, values, writerArgs...)
 	}
 	return nil
 }
 
-func (f *FieldWriterArray[T]) WriteSimpleTypeArrayField(ctx context.Context, logicalName string, values []T, dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterArray[T, _]) WriteSimpleTypeArrayField(ctx context.Context, logicalName string, values []T, dataWriter io.DataWriter[T], writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
 	return f.SwitchParseByteOrderIfNecessarySerializeWrapped(ctx, func(ctx context.Context) error {
-		if values != nil {
+		if values != nil && len(values) > 0 {
 			if err := dataWriter.PushContext(logicalName, utils.WithRenderAsList(true)); err != nil {
 				return errors.Wrap(err, "error pushing context for "+logicalName)
 			}
 			for curItem := 0; curItem < len(values); curItem++ {
 				value := values[curItem]
 				ctx := codegen.NewContextLastItem(ctx, curItem == len(values)-1)
+				ctx = utils.CreateArrayContext(ctx, len(values), curItem)
 				if err := dataWriter.Write(ctx, "value", value, writerArgs...); err != nil {
 					return errors.Wrapf(err, "error writing value %s for %v", logicalName, value)
 				}
@@ -73,16 +74,17 @@ func (f *FieldWriterArray[T]) WriteSimpleTypeArrayField(ctx context.Context, log
 	}, dataWriter, f.ExtractByteOrder(utils.UpcastWriterArgs(writerArgs...)...))
 }
 
-func (f *FieldWriterArray[T]) WriteComplexTypeArrayField(ctx context.Context, logicalName string, values []spi.Message, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
+func (f *FieldWriterArray[_, C]) WriteComplexTypeArrayField(ctx context.Context, logicalName string, values []C, writeBuffer utils.WriteBuffer, writerArgs ...utils.WithWriterArgs) error {
 	f.log.Debug().Str("logicalName", logicalName).Msg("write field")
 	return f.SwitchParseByteOrderIfNecessarySerializeWrapped(ctx, func(ctx context.Context) error {
-		if values != nil {
+		if values != nil && len(values) > 0 {
 			if err := writeBuffer.PushContext(logicalName, utils.WithRenderAsList(true)); err != nil {
 				return errors.Wrap(err, "error pushing context for "+logicalName)
 			}
 			for curItem := 0; curItem < len(values); curItem++ {
 				value := values[curItem]
 				ctx := codegen.NewContextLastItem(ctx, curItem == len(values)-1)
+				ctx = utils.CreateArrayContext(ctx, len(values), curItem)
 				if err := value.SerializeWithWriteBuffer(ctx, writeBuffer); err != nil {
 					return errors.Wrapf(err, "error writing value %v for %s", logicalName, value)
 				}

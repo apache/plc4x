@@ -178,8 +178,6 @@ func CipReadResponseParseWithBufferProducer(connected bool, serviceLen uint16) f
 func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipReadResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipReadResponse")
 	}

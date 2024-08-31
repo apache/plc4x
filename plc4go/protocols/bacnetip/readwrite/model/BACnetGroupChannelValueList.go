@@ -141,8 +141,6 @@ func BACnetGroupChannelValueListParseWithBufferProducer(tagNumber uint8) func(ct
 func BACnetGroupChannelValueListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetGroupChannelValueList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValueList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetGroupChannelValueList")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetGroupChannelValueList) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfEventSummaries)
-	if pushErr := writeBuffer.PushContext("listOfEventSummaries", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfEventSummaries")
-	}
-	for _curItem, _element := range m.GetListOfEventSummaries() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfEventSummaries()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfEventSummaries' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfEventSummaries", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfEventSummaries")
+	if err := WriteComplexTypeArrayField(ctx, "listOfEventSummaries", m.GetListOfEventSummaries(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfEventSummaries' field")
 	}
 
 	// Simple Field (closingTag)

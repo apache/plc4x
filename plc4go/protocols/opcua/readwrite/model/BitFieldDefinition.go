@@ -183,8 +183,6 @@ func BitFieldDefinitionParseWithBufferProducer(identifier string) func(ctx conte
 func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BitFieldDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BitFieldDefinition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BitFieldDefinition")
 	}

@@ -179,8 +179,6 @@ func VariantParseWithBufferProducer[T Variant]() func(ctx context.Context, readB
 func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Variant, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Variant"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Variant")
 	}
@@ -340,19 +338,8 @@ func (pm *_Variant) SerializeParent(ctx context.Context, writeBuffer utils.Write
 		}
 	}
 
-	// Array Field (arrayDimensions)
-	if pushErr := writeBuffer.PushContext("arrayDimensions", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for arrayDimensions")
-	}
-	for _curItem, _element := range m.GetArrayDimensions() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("arrayDimensions", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for arrayDimensions")
+	if err := WriteSimpleTypeArrayField(ctx, "arrayDimensions", m.GetArrayDimensions(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Variant"); popErr != nil {

@@ -122,8 +122,6 @@ func SysexCommandCapabilityQueryParseWithBufferProducer(response bool) func(ctx 
 func SysexCommandCapabilityQueryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandCapabilityQuery"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandCapabilityQuery")
 	}

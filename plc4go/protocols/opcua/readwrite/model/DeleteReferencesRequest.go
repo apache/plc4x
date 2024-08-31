@@ -170,8 +170,6 @@ func DeleteReferencesRequestParseWithBufferProducer(identifier string) func(ctx 
 func DeleteReferencesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteReferencesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteReferencesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteReferencesRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_DeleteReferencesRequest) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_noOfReferencesToDeleteErr, "Error serializing 'noOfReferencesToDelete' field")
 		}
 
-		// Array Field (referencesToDelete)
-		if pushErr := writeBuffer.PushContext("referencesToDelete", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencesToDelete")
-		}
-		for _curItem, _element := range m.GetReferencesToDelete() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencesToDelete()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencesToDelete' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencesToDelete", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencesToDelete")
+		if err := WriteComplexTypeArrayField(ctx, "referencesToDelete", m.GetReferencesToDelete(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencesToDelete' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteReferencesRequest"); popErr != nil {

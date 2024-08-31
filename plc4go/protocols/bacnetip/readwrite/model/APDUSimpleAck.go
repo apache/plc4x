@@ -157,8 +157,6 @@ func APDUSimpleAckParseWithBufferProducer(apduLength uint16) func(ctx context.Co
 func APDUSimpleAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSimpleAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUSimpleAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUSimpleAck")
 	}

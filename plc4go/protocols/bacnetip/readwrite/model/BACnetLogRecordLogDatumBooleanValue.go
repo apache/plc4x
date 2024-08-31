@@ -141,8 +141,6 @@ func BACnetLogRecordLogDatumBooleanValueParseWithBufferProducer(tagNumber uint8)
 func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBooleanValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBooleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumBooleanValue")
 	}

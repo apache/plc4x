@@ -144,8 +144,6 @@ func ClassSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer 
 func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ClassSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ClassSegment")
 	}

@@ -139,8 +139,6 @@ func BACnetPropertyStatesFileAccessMethodParseWithBufferProducer(peekedTagNumber
 func BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesFileAccessMethod"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesFileAccessMethod")
 	}

@@ -173,8 +173,6 @@ func NodeIdGuidParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func NodeIdGuidParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdGuid, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeIdGuid"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeIdGuid")
 	}
@@ -236,9 +234,7 @@ func (m *_NodeIdGuid) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 			return errors.Wrap(_namespaceIndexErr, "Error serializing 'namespaceIndex' field")
 		}
 
-		// Array Field (id)
-		// Byte Array field (id)
-		if err := writeBuffer.WriteByteArray("id", m.GetId()); err != nil {
+		if err := WriteByteArrayField(ctx, "id", m.GetId(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 		// Virtual field

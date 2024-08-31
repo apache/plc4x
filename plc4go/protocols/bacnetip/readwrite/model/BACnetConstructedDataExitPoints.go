@@ -153,8 +153,6 @@ func BACnetConstructedDataExitPointsParseWithBufferProducer(tagNumber uint8, obj
 func BACnetConstructedDataExitPointsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExitPoints, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExitPoints"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExitPoints")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataExitPoints) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataExitPoints")
 		}
 
-		// Array Field (exitPoints)
-		if pushErr := writeBuffer.PushContext("exitPoints", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for exitPoints")
-		}
-		for _curItem, _element := range m.GetExitPoints() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExitPoints()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'exitPoints' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("exitPoints", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for exitPoints")
+		if err := WriteComplexTypeArrayField(ctx, "exitPoints", m.GetExitPoints(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'exitPoints' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExitPoints"); popErr != nil {

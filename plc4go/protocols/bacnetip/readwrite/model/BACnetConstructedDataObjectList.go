@@ -187,8 +187,6 @@ func BACnetConstructedDataObjectListParseWithBufferProducer(tagNumber uint8, obj
 func BACnetConstructedDataObjectListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataObjectList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataObjectList")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataObjectList) SerializeWithWriteBuffer(ctx context.
 			}
 		}
 
-		// Array Field (objectList)
-		if pushErr := writeBuffer.PushContext("objectList", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objectList")
-		}
-		for _curItem, _element := range m.GetObjectList() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetObjectList()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'objectList' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("objectList", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objectList")
+		if err := WriteComplexTypeArrayField(ctx, "objectList", m.GetObjectList(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'objectList' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataObjectList"); popErr != nil {

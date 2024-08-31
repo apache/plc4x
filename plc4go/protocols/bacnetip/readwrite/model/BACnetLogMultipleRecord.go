@@ -124,8 +124,6 @@ func BACnetLogMultipleRecordParseWithBufferProducer() func(ctx context.Context, 
 func BACnetLogMultipleRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogMultipleRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogMultipleRecord")
 	}

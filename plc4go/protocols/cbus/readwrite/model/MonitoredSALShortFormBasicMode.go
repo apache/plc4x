@@ -199,8 +199,6 @@ func MonitoredSALShortFormBasicModeParseWithBufferProducer(cBusOptions CBusOptio
 func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredSALShortFormBasicMode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredSALShortFormBasicMode")
 	}

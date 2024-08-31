@@ -197,8 +197,6 @@ func NodeReferenceParseWithBufferProducer(identifier string) func(ctx context.Co
 func NodeReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeReference")
 	}
@@ -325,21 +323,8 @@ func (m *_NodeReference) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_noOfReferencedNodeIdsErr, "Error serializing 'noOfReferencedNodeIds' field")
 		}
 
-		// Array Field (referencedNodeIds)
-		if pushErr := writeBuffer.PushContext("referencedNodeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencedNodeIds")
-		}
-		for _curItem, _element := range m.GetReferencedNodeIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencedNodeIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencedNodeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencedNodeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencedNodeIds")
+		if err := WriteComplexTypeArrayField(ctx, "referencedNodeIds", m.GetReferencedNodeIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencedNodeIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NodeReference"); popErr != nil {

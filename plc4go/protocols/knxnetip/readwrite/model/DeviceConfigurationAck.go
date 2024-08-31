@@ -143,8 +143,6 @@ func DeviceConfigurationAckParseWithBufferProducer() func(ctx context.Context, r
 func DeviceConfigurationAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationAck")
 	}

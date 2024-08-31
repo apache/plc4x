@@ -227,8 +227,6 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBufferProducer() func(ctx conte
 func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterUserDataItemCPUFunctions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterUserDataItemCPUFunctions")
 	}

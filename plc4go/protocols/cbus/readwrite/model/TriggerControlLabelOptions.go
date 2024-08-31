@@ -141,8 +141,6 @@ func TriggerControlLabelOptionsParseWithBufferProducer() func(ctx context.Contex
 func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlLabelOptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlLabelOptions")
 	}

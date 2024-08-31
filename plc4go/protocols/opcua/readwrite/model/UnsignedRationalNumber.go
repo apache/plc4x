@@ -152,8 +152,6 @@ func UnsignedRationalNumberParseWithBufferProducer(identifier string) func(ctx c
 func UnsignedRationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UnsignedRationalNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnsignedRationalNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnsignedRationalNumber")
 	}

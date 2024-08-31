@@ -568,8 +568,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
                 if (sizeInBits <= 64) return "WriteSignedLong(writeBuffer, " + sizeInBits + ")";
                 return "WriteSignedBigInteger(writeBuffer, " + sizeInBits + ")";
             case FLOAT:
-                if (sizeInBits <= 32) return "writeFloat(writeBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "writeDouble(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "WriteFloat(writeBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 64) return "WriteDouble(writeBuffer, " + sizeInBits + ")";
                 return "WriteBigDecimal(writeBuffer, " + sizeInBits + ")";
             case STRING:
                 return "WriteString(writeBuffer, " + sizeInBits + ")";

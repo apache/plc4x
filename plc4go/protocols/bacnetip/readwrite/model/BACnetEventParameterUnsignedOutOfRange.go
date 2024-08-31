@@ -194,8 +194,6 @@ func BACnetEventParameterUnsignedOutOfRangeParseWithBufferProducer() func(ctx co
 func BACnetEventParameterUnsignedOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterUnsignedOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterUnsignedOutOfRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterUnsignedOutOfRange")
 	}

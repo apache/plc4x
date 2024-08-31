@@ -122,8 +122,6 @@ func ResponseTerminationParseWithBufferProducer() func(ctx context.Context, read
 func ResponseTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ResponseTermination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ResponseTermination")
 	}

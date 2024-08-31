@@ -114,8 +114,6 @@ func RelativeTimestampParseWithBufferProducer() func(ctx context.Context, readBu
 func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RelativeTimestamp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RelativeTimestamp")
 	}

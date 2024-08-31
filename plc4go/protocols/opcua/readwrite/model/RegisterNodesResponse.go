@@ -170,8 +170,6 @@ func RegisterNodesResponseParseWithBufferProducer(identifier string) func(ctx co
 func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterNodesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisterNodesResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisterNodesResponse")
 	}
@@ -245,21 +243,8 @@ func (m *_RegisterNodesResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfRegisteredNodeIdsErr, "Error serializing 'noOfRegisteredNodeIds' field")
 		}
 
-		// Array Field (registeredNodeIds)
-		if pushErr := writeBuffer.PushContext("registeredNodeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for registeredNodeIds")
-		}
-		for _curItem, _element := range m.GetRegisteredNodeIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRegisteredNodeIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'registeredNodeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("registeredNodeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for registeredNodeIds")
+		if err := WriteComplexTypeArrayField(ctx, "registeredNodeIds", m.GetRegisteredNodeIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'registeredNodeIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RegisterNodesResponse"); popErr != nil {

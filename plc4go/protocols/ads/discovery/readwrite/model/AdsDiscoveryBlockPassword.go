@@ -141,8 +141,6 @@ func AdsDiscoveryBlockPasswordParseWithBufferProducer() func(ctx context.Context
 func AdsDiscoveryBlockPasswordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockPassword"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockPassword")
 	}

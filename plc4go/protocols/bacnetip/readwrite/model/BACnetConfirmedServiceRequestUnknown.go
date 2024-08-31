@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,8 +147,6 @@ func BACnetConfirmedServiceRequestUnknownParseWithBufferProducer(serviceRequestP
 func BACnetConfirmedServiceRequestUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestUnknown"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestUnknown")
 	}
@@ -191,9 +191,7 @@ func (m *_BACnetConfirmedServiceRequestUnknown) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestUnknown")
 		}
 
-		// Array Field (unknownBytes)
-		// Byte Array field (unknownBytes)
-		if err := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes()); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownBytes", m.GetUnknownBytes(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownBytes' field")
 		}
 

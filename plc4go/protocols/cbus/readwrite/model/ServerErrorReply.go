@@ -138,8 +138,6 @@ func ServerErrorReplyParseWithBufferProducer(cBusOptions CBusOptions, requestCon
 func ServerErrorReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServerErrorReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServerErrorReply")
 	}

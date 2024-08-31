@@ -169,8 +169,6 @@ func CALDataStatusParseWithBufferProducer(commandTypeContainer CALCommandTypeCon
 func CALDataStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataStatus")
 	}
@@ -246,21 +244,8 @@ func (m *_CALDataStatus) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_blockStartErr, "Error serializing 'blockStart' field")
 		}
 
-		// Array Field (statusBytes)
-		if pushErr := writeBuffer.PushContext("statusBytes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for statusBytes")
-		}
-		for _curItem, _element := range m.GetStatusBytes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStatusBytes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'statusBytes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("statusBytes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for statusBytes")
+		if err := WriteComplexTypeArrayField(ctx, "statusBytes", m.GetStatusBytes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusBytes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CALDataStatus"); popErr != nil {

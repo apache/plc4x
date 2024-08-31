@@ -128,8 +128,6 @@ func BACnetDoorValueTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagC
 func BACnetDoorValueTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorValueTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDoorValueTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDoorValueTagged")
 	}

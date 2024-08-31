@@ -160,8 +160,6 @@ func ModbusPDUReadHoldingRegistersRequestParseWithBufferProducer(response bool) 
 func ModbusPDUReadHoldingRegistersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadHoldingRegistersRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadHoldingRegistersRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadHoldingRegistersRequest")
 	}

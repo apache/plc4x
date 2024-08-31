@@ -124,8 +124,6 @@ func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Contex
 func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PathSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PathSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PathSegment")
 	}

@@ -161,8 +161,6 @@ func VariantSByteParseWithBufferProducer(arrayLengthSpecified bool) func(ctx con
 func VariantSByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantSByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantSByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantSByte")
 	}
@@ -221,9 +219,7 @@ func (m *_VariantSByte) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

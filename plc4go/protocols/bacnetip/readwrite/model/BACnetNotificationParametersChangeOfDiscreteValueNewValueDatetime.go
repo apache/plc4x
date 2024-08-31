@@ -141,8 +141,6 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithB
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueDatetime")
 	}

@@ -257,8 +257,6 @@ func TrustListDataTypeParseWithBufferProducer(identifier string) func(ctx contex
 func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TrustListDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TrustListDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TrustListDataType")
 	}
@@ -363,21 +361,8 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfTrustedCertificatesErr, "Error serializing 'noOfTrustedCertificates' field")
 		}
 
-		// Array Field (trustedCertificates)
-		if pushErr := writeBuffer.PushContext("trustedCertificates", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trustedCertificates")
-		}
-		for _curItem, _element := range m.GetTrustedCertificates() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTrustedCertificates()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'trustedCertificates' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("trustedCertificates", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trustedCertificates")
+		if err := WriteComplexTypeArrayField(ctx, "trustedCertificates", m.GetTrustedCertificates(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'trustedCertificates' field")
 		}
 
 		// Simple Field (noOfTrustedCrls)
@@ -387,21 +372,8 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfTrustedCrlsErr, "Error serializing 'noOfTrustedCrls' field")
 		}
 
-		// Array Field (trustedCrls)
-		if pushErr := writeBuffer.PushContext("trustedCrls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for trustedCrls")
-		}
-		for _curItem, _element := range m.GetTrustedCrls() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTrustedCrls()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'trustedCrls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("trustedCrls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for trustedCrls")
+		if err := WriteComplexTypeArrayField(ctx, "trustedCrls", m.GetTrustedCrls(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'trustedCrls' field")
 		}
 
 		// Simple Field (noOfIssuerCertificates)
@@ -411,21 +383,8 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfIssuerCertificatesErr, "Error serializing 'noOfIssuerCertificates' field")
 		}
 
-		// Array Field (issuerCertificates)
-		if pushErr := writeBuffer.PushContext("issuerCertificates", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuerCertificates")
-		}
-		for _curItem, _element := range m.GetIssuerCertificates() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetIssuerCertificates()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'issuerCertificates' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("issuerCertificates", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuerCertificates")
+		if err := WriteComplexTypeArrayField(ctx, "issuerCertificates", m.GetIssuerCertificates(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuerCertificates' field")
 		}
 
 		// Simple Field (noOfIssuerCrls)
@@ -435,21 +394,8 @@ func (m *_TrustListDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfIssuerCrlsErr, "Error serializing 'noOfIssuerCrls' field")
 		}
 
-		// Array Field (issuerCrls)
-		if pushErr := writeBuffer.PushContext("issuerCrls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for issuerCrls")
-		}
-		for _curItem, _element := range m.GetIssuerCrls() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetIssuerCrls()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'issuerCrls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("issuerCrls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for issuerCrls")
+		if err := WriteComplexTypeArrayField(ctx, "issuerCrls", m.GetIssuerCrls(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'issuerCrls' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TrustListDataType"); popErr != nil {

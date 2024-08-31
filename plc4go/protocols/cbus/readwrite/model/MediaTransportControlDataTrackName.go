@@ -140,8 +140,6 @@ func MediaTransportControlDataTrackNameParseWithBufferProducer(commandTypeContai
 func MediaTransportControlDataTrackNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataTrackName, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataTrackName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataTrackName")
 	}

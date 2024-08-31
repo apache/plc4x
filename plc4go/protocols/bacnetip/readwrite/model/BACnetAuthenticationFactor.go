@@ -134,8 +134,6 @@ func BACnetAuthenticationFactorParseWithBufferProducer() func(ctx context.Contex
 func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAuthenticationFactor"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAuthenticationFactor")
 	}

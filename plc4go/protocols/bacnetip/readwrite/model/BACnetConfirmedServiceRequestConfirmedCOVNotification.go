@@ -186,8 +186,6 @@ func BACnetConfirmedServiceRequestConfirmedCOVNotificationParseWithBufferProduce
 func BACnetConfirmedServiceRequestConfirmedCOVNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestConfirmedCOVNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestConfirmedCOVNotification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestConfirmedCOVNotification")
 	}

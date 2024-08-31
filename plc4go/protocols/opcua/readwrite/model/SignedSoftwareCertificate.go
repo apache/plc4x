@@ -152,8 +152,6 @@ func SignedSoftwareCertificateParseWithBufferProducer(identifier string) func(ct
 func SignedSoftwareCertificateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SignedSoftwareCertificate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SignedSoftwareCertificate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SignedSoftwareCertificate")
 	}

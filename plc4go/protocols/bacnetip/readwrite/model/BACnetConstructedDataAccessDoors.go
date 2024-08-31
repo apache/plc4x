@@ -187,8 +187,6 @@ func BACnetConstructedDataAccessDoorsParseWithBufferProducer(tagNumber uint8, ob
 func BACnetConstructedDataAccessDoorsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoors, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessDoors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessDoors")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataAccessDoors) SerializeWithWriteBuffer(ctx context
 			}
 		}
 
-		// Array Field (accessDoors)
-		if pushErr := writeBuffer.PushContext("accessDoors", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessDoors")
-		}
-		for _curItem, _element := range m.GetAccessDoors() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAccessDoors()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'accessDoors' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("accessDoors", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessDoors")
+		if err := WriteComplexTypeArrayField(ctx, "accessDoors", m.GetAccessDoors(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessDoors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessDoors"); popErr != nil {

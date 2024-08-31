@@ -225,8 +225,6 @@ func ApplicationDescriptionParseWithBufferProducer(identifier string) func(ctx c
 func ApplicationDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ApplicationDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApplicationDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApplicationDescription")
 	}
@@ -390,21 +388,8 @@ func (m *_ApplicationDescription) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
-		// Array Field (discoveryUrls)
-		if pushErr := writeBuffer.PushContext("discoveryUrls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discoveryUrls")
-		}
-		for _curItem, _element := range m.GetDiscoveryUrls() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiscoveryUrls()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'discoveryUrls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("discoveryUrls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discoveryUrls")
+		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'discoveryUrls' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ApplicationDescription"); popErr != nil {

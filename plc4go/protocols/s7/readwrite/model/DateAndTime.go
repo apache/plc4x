@@ -185,8 +185,6 @@ func DateAndTimeParseWithBufferProducer() func(ctx context.Context, readBuffer u
 func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DateAndTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DateAndTime")
 	}

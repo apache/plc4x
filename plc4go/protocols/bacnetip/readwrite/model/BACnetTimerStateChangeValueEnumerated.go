@@ -139,8 +139,6 @@ func BACnetTimerStateChangeValueEnumeratedParseWithBufferProducer(objectTypeArgu
 func BACnetTimerStateChangeValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimerStateChangeValueEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimerStateChangeValueEnumerated")
 	}

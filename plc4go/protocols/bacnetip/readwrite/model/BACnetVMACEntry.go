@@ -128,8 +128,6 @@ func BACnetVMACEntryParseWithBufferProducer() func(ctx context.Context, readBuff
 func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetVMACEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetVMACEntry")
 	}

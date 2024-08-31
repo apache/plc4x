@@ -141,8 +141,6 @@ func KnxNetIpRoutingParseWithBufferProducer() func(ctx context.Context, readBuff
 func KnxNetIpRoutingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpRouting, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetIpRouting"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpRouting")
 	}

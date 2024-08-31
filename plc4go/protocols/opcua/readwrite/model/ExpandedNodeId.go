@@ -181,8 +181,6 @@ func ExpandedNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffe
 func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ExpandedNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ExpandedNodeId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ExpandedNodeId")
 	}

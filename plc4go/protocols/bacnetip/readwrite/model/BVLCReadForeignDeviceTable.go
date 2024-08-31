@@ -119,8 +119,6 @@ func BVLCReadForeignDeviceTableParseWithBufferProducer() func(ctx context.Contex
 func BVLCReadForeignDeviceTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCReadForeignDeviceTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCReadForeignDeviceTable")
 	}

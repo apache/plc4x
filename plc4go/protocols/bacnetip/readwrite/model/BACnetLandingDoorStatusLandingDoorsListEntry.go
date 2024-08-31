@@ -124,8 +124,6 @@ func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBufferProducer() func(
 func BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatusLandingDoorsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingDoorStatusLandingDoorsListEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingDoorStatusLandingDoorsListEntry")
 	}

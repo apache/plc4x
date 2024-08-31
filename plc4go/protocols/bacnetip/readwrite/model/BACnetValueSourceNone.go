@@ -139,8 +139,6 @@ func BACnetValueSourceNoneParseWithBufferProducer() func(ctx context.Context, re
 func BACnetValueSourceNoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceNone, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetValueSourceNone"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetValueSourceNone")
 	}

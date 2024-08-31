@@ -139,8 +139,6 @@ func BACnetLogDataLogDataEntryEnumeratedValueParseWithBufferProducer() func(ctx 
 func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryEnumeratedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryEnumeratedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryEnumeratedValue")
 	}

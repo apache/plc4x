@@ -124,8 +124,6 @@ func DataSegmentTypeParseWithBufferProducer[T DataSegmentType]() func(ctx contex
 func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSegmentType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSegmentType")
 	}

@@ -124,8 +124,6 @@ func AmsTCPPacketParseWithBufferProducer() func(ctx context.Context, readBuffer 
 func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AmsTCPPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AmsTCPPacket")
 	}

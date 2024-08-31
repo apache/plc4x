@@ -164,8 +164,6 @@ func BACnetConfirmedServiceRequestVTDataParseWithBufferProducer(serviceRequestLe
 func BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestVTData")
 	}

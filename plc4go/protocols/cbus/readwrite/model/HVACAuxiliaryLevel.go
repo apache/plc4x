@@ -178,8 +178,6 @@ func HVACAuxiliaryLevelParseWithBufferProducer() func(ctx context.Context, readB
 func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACAuxiliaryLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACAuxiliaryLevel")
 	}

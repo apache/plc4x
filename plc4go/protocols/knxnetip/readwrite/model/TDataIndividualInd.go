@@ -118,8 +118,6 @@ func TDataIndividualIndParseWithBufferProducer(size uint16) func(ctx context.Con
 func TDataIndividualIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TDataIndividualInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TDataIndividualInd")
 	}

@@ -160,8 +160,6 @@ func ModbusPDUWriteMultipleCoilsResponseParseWithBufferProducer(response bool) f
 func ModbusPDUWriteMultipleCoilsResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleCoilsResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUWriteMultipleCoilsResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUWriteMultipleCoilsResponse")
 	}

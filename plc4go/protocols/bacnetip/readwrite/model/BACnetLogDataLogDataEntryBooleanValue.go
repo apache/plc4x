@@ -139,8 +139,6 @@ func BACnetLogDataLogDataEntryBooleanValueParseWithBufferProducer() func(ctx con
 func BACnetLogDataLogDataEntryBooleanValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBooleanValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBooleanValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryBooleanValue")
 	}

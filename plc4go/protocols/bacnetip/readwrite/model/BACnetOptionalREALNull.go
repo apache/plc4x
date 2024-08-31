@@ -139,8 +139,6 @@ func BACnetOptionalREALNullParseWithBufferProducer() func(ctx context.Context, r
 func BACnetOptionalREALNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalREALNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalREALNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalREALNull")
 	}

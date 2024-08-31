@@ -172,8 +172,6 @@ func BACnetContextTagObjectIdentifierParseWithBufferProducer(tagNumberArgument u
 func BACnetContextTagObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagObjectIdentifier")
 	}

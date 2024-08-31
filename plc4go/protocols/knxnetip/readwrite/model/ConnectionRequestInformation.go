@@ -127,8 +127,6 @@ func ConnectionRequestInformationParseWithBufferProducer[T ConnectionRequestInfo
 func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionRequestInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionRequestInformation")
 	}

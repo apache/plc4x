@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -137,8 +138,6 @@ func BACnetTagPayloadEnumeratedParseWithBufferProducer(actualLength uint32) func
 func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadEnumerated")
 	}
@@ -184,9 +183,7 @@ func (m *_BACnetTagPayloadEnumerated) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadEnumerated")
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 	// Virtual field

@@ -196,8 +196,6 @@ func MPropReadConParseWithBufferProducer(size uint16) func(ctx context.Context, 
 func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MPropReadCon"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MPropReadCon")
 	}

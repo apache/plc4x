@@ -211,8 +211,6 @@ func SetTriggeringRequestParseWithBufferProducer(identifier string) func(ctx con
 func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetTriggeringRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetTriggeringRequest")
 	}
@@ -324,19 +322,8 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfLinksToAddErr, "Error serializing 'noOfLinksToAdd' field")
 		}
 
-		// Array Field (linksToAdd)
-		if pushErr := writeBuffer.PushContext("linksToAdd", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linksToAdd")
-		}
-		for _curItem, _element := range m.GetLinksToAdd() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'linksToAdd' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("linksToAdd", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linksToAdd")
+		if err := WriteSimpleTypeArrayField(ctx, "linksToAdd", m.GetLinksToAdd(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linksToAdd' field")
 		}
 
 		// Simple Field (noOfLinksToRemove)
@@ -346,19 +333,8 @@ func (m *_SetTriggeringRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfLinksToRemoveErr, "Error serializing 'noOfLinksToRemove' field")
 		}
 
-		// Array Field (linksToRemove)
-		if pushErr := writeBuffer.PushContext("linksToRemove", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for linksToRemove")
-		}
-		for _curItem, _element := range m.GetLinksToRemove() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'linksToRemove' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("linksToRemove", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for linksToRemove")
+		if err := WriteSimpleTypeArrayField(ctx, "linksToRemove", m.GetLinksToRemove(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'linksToRemove' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetTriggeringRequest"); popErr != nil {

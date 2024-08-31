@@ -170,8 +170,6 @@ func ContentFilterElementParseWithBufferProducer(identifier string) func(ctx con
 func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ContentFilterElement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ContentFilterElement")
 	}
@@ -245,21 +243,8 @@ func (m *_ContentFilterElement) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfFilterOperandsErr, "Error serializing 'noOfFilterOperands' field")
 		}
 
-		// Array Field (filterOperands)
-		if pushErr := writeBuffer.PushContext("filterOperands", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for filterOperands")
-		}
-		for _curItem, _element := range m.GetFilterOperands() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFilterOperands()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'filterOperands' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("filterOperands", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for filterOperands")
+		if err := WriteComplexTypeArrayField(ctx, "filterOperands", m.GetFilterOperands(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'filterOperands' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ContentFilterElement"); popErr != nil {

@@ -127,8 +127,6 @@ func BACnetUnconfirmedServiceRequestParseWithBufferProducer[T BACnetUnconfirmedS
 func BACnetUnconfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetUnconfirmedServiceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetUnconfirmedServiceRequest")
 	}

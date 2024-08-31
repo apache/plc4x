@@ -185,8 +185,6 @@ func DF1RequestProtectedTypedLogicalReadParseWithBufferProducer() func(ctx conte
 func DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1RequestProtectedTypedLogicalRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestProtectedTypedLogicalRead")
 	}

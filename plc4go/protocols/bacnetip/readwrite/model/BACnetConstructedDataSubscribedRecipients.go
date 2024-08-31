@@ -153,8 +153,6 @@ func BACnetConstructedDataSubscribedRecipientsParseWithBufferProducer(tagNumber 
 func BACnetConstructedDataSubscribedRecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubscribedRecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubscribedRecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubscribedRecipients")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataSubscribedRecipients) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSubscribedRecipients")
 		}
 
-		// Array Field (subscribedRecipients)
-		if pushErr := writeBuffer.PushContext("subscribedRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscribedRecipients")
-		}
-		for _curItem, _element := range m.GetSubscribedRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubscribedRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subscribedRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subscribedRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscribedRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "subscribedRecipients", m.GetSubscribedRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscribedRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubscribedRecipients"); popErr != nil {

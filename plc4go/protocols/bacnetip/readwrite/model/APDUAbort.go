@@ -168,8 +168,6 @@ func APDUAbortParseWithBufferProducer(apduLength uint16) func(ctx context.Contex
 func APDUAbortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUAbort, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUAbort"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUAbort")
 	}

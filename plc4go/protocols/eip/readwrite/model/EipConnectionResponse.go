@@ -161,8 +161,6 @@ func EipConnectionResponseParseWithBufferProducer(response bool) func(ctx contex
 func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EipConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EipConnectionResponse")
 	}

@@ -139,8 +139,6 @@ func BACnetHostAddressNullParseWithBufferProducer() func(ctx context.Context, re
 func BACnetHostAddressNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetHostAddressNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostAddressNull")
 	}

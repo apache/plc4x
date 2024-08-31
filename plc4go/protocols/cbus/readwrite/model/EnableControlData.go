@@ -153,8 +153,6 @@ func EnableControlDataParseWithBufferProducer() func(ctx context.Context, readBu
 func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EnableControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EnableControlData")
 	}

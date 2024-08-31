@@ -157,8 +157,6 @@ func AnsiExtendedSymbolSegmentParseWithBufferProducer() func(ctx context.Context
 func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AnsiExtendedSymbolSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AnsiExtendedSymbolSegment")
 	}

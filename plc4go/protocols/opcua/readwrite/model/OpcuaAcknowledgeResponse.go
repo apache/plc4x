@@ -158,8 +158,6 @@ func OpcuaAcknowledgeResponseParseWithBufferProducer(response bool) func(ctx con
 func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAcknowledgeResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaAcknowledgeResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaAcknowledgeResponse")
 	}

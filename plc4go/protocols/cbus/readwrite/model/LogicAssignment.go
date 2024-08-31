@@ -173,8 +173,6 @@ func LogicAssignmentParseWithBufferProducer() func(ctx context.Context, readBuff
 func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LogicAssignment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LogicAssignment")
 	}

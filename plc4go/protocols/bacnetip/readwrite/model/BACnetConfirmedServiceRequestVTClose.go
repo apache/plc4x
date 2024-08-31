@@ -149,8 +149,6 @@ func BACnetConfirmedServiceRequestVTCloseParseWithBufferProducer(serviceRequestP
 func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestVTClose"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestVTClose")
 	}
@@ -195,21 +193,8 @@ func (m *_BACnetConfirmedServiceRequestVTClose) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestVTClose")
 		}
 
-		// Array Field (listOfRemoteVtSessionIdentifiers)
-		if pushErr := writeBuffer.PushContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfRemoteVtSessionIdentifiers")
-		}
-		for _curItem, _element := range m.GetListOfRemoteVtSessionIdentifiers() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfRemoteVtSessionIdentifiers()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfRemoteVtSessionIdentifiers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfRemoteVtSessionIdentifiers")
+		if err := WriteComplexTypeArrayField(ctx, "listOfRemoteVtSessionIdentifiers", m.GetListOfRemoteVtSessionIdentifiers(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfRemoteVtSessionIdentifiers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestVTClose"); popErr != nil {

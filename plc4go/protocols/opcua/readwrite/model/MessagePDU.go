@@ -150,8 +150,6 @@ func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx con
 func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (MessagePDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MessagePDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MessagePDU")
 	}

@@ -170,8 +170,6 @@ func EventFieldListParseWithBufferProducer(identifier string) func(ctx context.C
 func EventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EventFieldList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EventFieldList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EventFieldList")
 	}
@@ -240,21 +238,8 @@ func (m *_EventFieldList) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_noOfEventFieldsErr, "Error serializing 'noOfEventFields' field")
 		}
 
-		// Array Field (eventFields)
-		if pushErr := writeBuffer.PushContext("eventFields", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventFields")
-		}
-		for _curItem, _element := range m.GetEventFields() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEventFields()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'eventFields' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("eventFields", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventFields")
+		if err := WriteComplexTypeArrayField(ctx, "eventFields", m.GetEventFields(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventFields' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EventFieldList"); popErr != nil {

@@ -124,8 +124,6 @@ func BACnetAddressBindingParseWithBufferProducer() func(ctx context.Context, rea
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAddressBinding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAddressBinding")
 	}

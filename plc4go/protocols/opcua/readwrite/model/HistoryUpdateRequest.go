@@ -170,8 +170,6 @@ func HistoryUpdateRequestParseWithBufferProducer(identifier string) func(ctx con
 func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryUpdateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryUpdateRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryUpdateRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_HistoryUpdateRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error serializing 'noOfHistoryUpdateDetails' field")
 		}
 
-		// Array Field (historyUpdateDetails)
-		if pushErr := writeBuffer.PushContext("historyUpdateDetails", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for historyUpdateDetails")
-		}
-		for _curItem, _element := range m.GetHistoryUpdateDetails() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetHistoryUpdateDetails()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'historyUpdateDetails' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("historyUpdateDetails", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for historyUpdateDetails")
+		if err := WriteComplexTypeArrayField(ctx, "historyUpdateDetails", m.GetHistoryUpdateDetails(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'historyUpdateDetails' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryUpdateRequest"); popErr != nil {

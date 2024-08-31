@@ -118,8 +118,6 @@ func MFuncPropCommandReqParseWithBufferProducer(size uint16) func(ctx context.Co
 func MFuncPropCommandReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MFuncPropCommandReq, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MFuncPropCommandReq"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MFuncPropCommandReq")
 	}

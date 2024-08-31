@@ -124,8 +124,6 @@ func CIPEncapsulationConnectionResponseParseWithBufferProducer() func(ctx contex
 func CIPEncapsulationConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationConnectionResponse")
 	}

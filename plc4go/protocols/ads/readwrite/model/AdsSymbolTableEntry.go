@@ -381,8 +381,6 @@ func AdsSymbolTableEntryParseWithBufferProducer() func(ctx context.Context, read
 func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsSymbolTableEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsSymbolTableEntry")
 	}
@@ -815,9 +813,7 @@ func (m *_AdsSymbolTableEntry) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}
 
-	// Array Field (rest)
-	// Byte Array field (rest)
-	if err := writeBuffer.WriteByteArray("rest", m.GetRest()); err != nil {
+	if err := WriteByteArrayField(ctx, "rest", m.GetRest(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'rest' field")
 	}
 

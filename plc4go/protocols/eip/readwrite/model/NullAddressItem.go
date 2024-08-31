@@ -125,8 +125,6 @@ func NullAddressItemParseWithBufferProducer() func(ctx context.Context, readBuff
 func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullAddressItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullAddressItem")
 	}

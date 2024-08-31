@@ -141,8 +141,6 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParseWithBu
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfDiscreteValueNewValueInteger")
 	}

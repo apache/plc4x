@@ -288,8 +288,6 @@ func PubSubConnectionDataTypeParseWithBufferProducer(identifier string) func(ctx
 func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConnectionDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubConnectionDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubConnectionDataType")
 	}
@@ -482,21 +480,8 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(_noOfConnectionPropertiesErr, "Error serializing 'noOfConnectionProperties' field")
 		}
 
-		// Array Field (connectionProperties)
-		if pushErr := writeBuffer.PushContext("connectionProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connectionProperties")
-		}
-		for _curItem, _element := range m.GetConnectionProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnectionProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'connectionProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("connectionProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connectionProperties")
+		if err := WriteComplexTypeArrayField(ctx, "connectionProperties", m.GetConnectionProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionProperties' field")
 		}
 
 		// Simple Field (transportSettings)
@@ -518,21 +503,8 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(_noOfWriterGroupsErr, "Error serializing 'noOfWriterGroups' field")
 		}
 
-		// Array Field (writerGroups)
-		if pushErr := writeBuffer.PushContext("writerGroups", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for writerGroups")
-		}
-		for _curItem, _element := range m.GetWriterGroups() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetWriterGroups()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'writerGroups' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("writerGroups", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for writerGroups")
+		if err := WriteComplexTypeArrayField(ctx, "writerGroups", m.GetWriterGroups(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'writerGroups' field")
 		}
 
 		// Simple Field (noOfReaderGroups)
@@ -542,21 +514,8 @@ func (m *_PubSubConnectionDataType) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(_noOfReaderGroupsErr, "Error serializing 'noOfReaderGroups' field")
 		}
 
-		// Array Field (readerGroups)
-		if pushErr := writeBuffer.PushContext("readerGroups", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for readerGroups")
-		}
-		for _curItem, _element := range m.GetReaderGroups() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReaderGroups()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'readerGroups' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("readerGroups", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for readerGroups")
+		if err := WriteComplexTypeArrayField(ctx, "readerGroups", m.GetReaderGroups(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'readerGroups' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubConnectionDataType"); popErr != nil {

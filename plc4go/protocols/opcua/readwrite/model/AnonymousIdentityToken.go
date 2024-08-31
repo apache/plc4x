@@ -118,8 +118,6 @@ func AnonymousIdentityTokenParseWithBufferProducer(identifier string) func(ctx c
 func AnonymousIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AnonymousIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AnonymousIdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AnonymousIdentityToken")
 	}

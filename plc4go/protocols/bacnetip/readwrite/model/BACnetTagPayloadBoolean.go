@@ -136,8 +136,6 @@ func BACnetTagPayloadBooleanParseWithBufferProducer(actualLength uint32) func(ct
 func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadBoolean")
 	}

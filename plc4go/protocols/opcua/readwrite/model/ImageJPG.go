@@ -92,8 +92,6 @@ func ImageJPGParseWithBufferProducer() func(ctx context.Context, readBuffer util
 func ImageJPGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageJPG, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImageJPG"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImageJPG")
 	}

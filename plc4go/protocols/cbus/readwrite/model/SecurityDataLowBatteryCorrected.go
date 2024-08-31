@@ -117,8 +117,6 @@ func SecurityDataLowBatteryCorrectedParseWithBufferProducer() func(ctx context.C
 func SecurityDataLowBatteryCorrectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCorrected, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataLowBatteryCorrected"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataLowBatteryCorrected")
 	}

@@ -189,8 +189,6 @@ func CipWriteRequestParseWithBufferProducer(connected bool, serviceLen uint16) f
 func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipWriteRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipWriteRequest")
 	}
@@ -266,9 +264,7 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
-		// Array Field (tag)
-		// Byte Array field (tag)
-		if err := writeBuffer.WriteByteArray("tag", m.GetTag()); err != nil {
+		if err := WriteByteArrayField(ctx, "tag", m.GetTag(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'tag' field")
 		}
 
@@ -291,9 +287,7 @@ func (m *_CipWriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(_elementNbErr, "Error serializing 'elementNb' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

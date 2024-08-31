@@ -187,8 +187,6 @@ func BACnetConstructedDataStructuredObjectListParseWithBufferProducer(tagNumber 
 func BACnetConstructedDataStructuredObjectListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStructuredObjectList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataStructuredObjectList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataStructuredObjectList")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataStructuredObjectList) SerializeWithWriteBuffer(ct
 			}
 		}
 
-		// Array Field (structuredObjectList)
-		if pushErr := writeBuffer.PushContext("structuredObjectList", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for structuredObjectList")
-		}
-		for _curItem, _element := range m.GetStructuredObjectList() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStructuredObjectList()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'structuredObjectList' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("structuredObjectList", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for structuredObjectList")
+		if err := WriteComplexTypeArrayField(ctx, "structuredObjectList", m.GetStructuredObjectList(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'structuredObjectList' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataStructuredObjectList"); popErr != nil {

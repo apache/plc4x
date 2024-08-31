@@ -170,8 +170,6 @@ func CallRequestParseWithBufferProducer(identifier string) func(ctx context.Cont
 func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CallRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CallRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_CallRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(_noOfMethodsToCallErr, "Error serializing 'noOfMethodsToCall' field")
 		}
 
-		// Array Field (methodsToCall)
-		if pushErr := writeBuffer.PushContext("methodsToCall", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for methodsToCall")
-		}
-		for _curItem, _element := range m.GetMethodsToCall() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMethodsToCall()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'methodsToCall' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("methodsToCall", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for methodsToCall")
+		if err := WriteComplexTypeArrayField(ctx, "methodsToCall", m.GetMethodsToCall(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'methodsToCall' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CallRequest"); popErr != nil {

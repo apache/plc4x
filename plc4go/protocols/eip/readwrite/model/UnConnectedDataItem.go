@@ -144,8 +144,6 @@ func UnConnectedDataItemParseWithBufferProducer() func(ctx context.Context, read
 func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnConnectedDataItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnConnectedDataItem")
 	}

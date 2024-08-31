@@ -145,8 +145,6 @@ func AdsDataTypeArrayInfoParseWithBufferProducer() func(ctx context.Context, rea
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDataTypeArrayInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDataTypeArrayInfo")
 	}

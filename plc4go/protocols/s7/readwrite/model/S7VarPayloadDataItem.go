@@ -146,8 +146,6 @@ func S7VarPayloadDataItemParseWithBufferProducer() func(ctx context.Context, rea
 func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7VarPayloadDataItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7VarPayloadDataItem")
 	}
@@ -241,9 +239,7 @@ func (m *_S7VarPayloadDataItem) SerializeWithWriteBuffer(ctx context.Context, wr
 		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
 	}
 
-	// Array Field (data)
-	// Byte Array field (data)
-	if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+	if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 

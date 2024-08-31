@@ -120,8 +120,6 @@ func RequestEmptyParseWithBufferProducer(cBusOptions CBusOptions) func(ctx conte
 func RequestEmptyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestEmpty, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestEmpty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestEmpty")
 	}

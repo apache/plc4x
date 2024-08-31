@@ -28,6 +28,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,8 +148,6 @@ func UnknownMessageParseWithBufferProducer(totalLength uint16) func(ctx context.
 func UnknownMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UnknownMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UnknownMessage")
 	}
@@ -190,9 +190,7 @@ func (m *_UnknownMessage) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for UnknownMessage")
 		}
 
-		// Array Field (unknownData)
-		// Byte Array field (unknownData)
-		if err := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData()); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownData", m.GetUnknownData(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 

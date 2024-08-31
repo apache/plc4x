@@ -170,8 +170,6 @@ func AddReferencesRequestParseWithBufferProducer(identifier string) func(ctx con
 func AddReferencesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddReferencesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddReferencesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddReferencesRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_AddReferencesRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfReferencesToAddErr, "Error serializing 'noOfReferencesToAdd' field")
 		}
 
-		// Array Field (referencesToAdd)
-		if pushErr := writeBuffer.PushContext("referencesToAdd", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencesToAdd")
-		}
-		for _curItem, _element := range m.GetReferencesToAdd() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencesToAdd()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencesToAdd' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencesToAdd", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencesToAdd")
+		if err := WriteComplexTypeArrayField(ctx, "referencesToAdd", m.GetReferencesToAdd(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencesToAdd' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AddReferencesRequest"); popErr != nil {

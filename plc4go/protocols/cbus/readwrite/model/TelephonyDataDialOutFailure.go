@@ -140,8 +140,6 @@ func TelephonyDataDialOutFailureParseWithBufferProducer() func(ctx context.Conte
 func TelephonyDataDialOutFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataDialOutFailure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataDialOutFailure")
 	}

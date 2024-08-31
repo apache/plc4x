@@ -139,8 +139,6 @@ func BACnetLandingCallStatusCommandDirectionParseWithBufferProducer() func(ctx c
 func BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLandingCallStatusCommandDirection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLandingCallStatusCommandDirection")
 	}

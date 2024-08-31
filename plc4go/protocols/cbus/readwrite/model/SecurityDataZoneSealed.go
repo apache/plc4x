@@ -140,8 +140,6 @@ func SecurityDataZoneSealedParseWithBufferProducer() func(ctx context.Context, r
 func SecurityDataZoneSealedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneSealed, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataZoneSealed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataZoneSealed")
 	}

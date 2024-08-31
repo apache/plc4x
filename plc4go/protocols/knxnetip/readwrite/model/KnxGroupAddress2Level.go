@@ -152,8 +152,6 @@ func KnxGroupAddress2LevelParseWithBufferProducer(numLevels uint8) func(ctx cont
 func KnxGroupAddress2LevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress2Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxGroupAddress2Level"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxGroupAddress2Level")
 	}

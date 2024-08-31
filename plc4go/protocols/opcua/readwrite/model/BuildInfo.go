@@ -196,8 +196,6 @@ func BuildInfoParseWithBufferProducer(identifier string) func(ctx context.Contex
 func BuildInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BuildInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BuildInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BuildInfo")
 	}

@@ -232,8 +232,6 @@ func ActivateSessionRequestParseWithBufferProducer(identifier string) func(ctx c
 func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ActivateSessionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ActivateSessionRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ActivateSessionRequest")
 	}
@@ -349,21 +347,8 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error serializing 'noOfClientSoftwareCertificates' field")
 		}
 
-		// Array Field (clientSoftwareCertificates)
-		if pushErr := writeBuffer.PushContext("clientSoftwareCertificates", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientSoftwareCertificates")
-		}
-		for _curItem, _element := range m.GetClientSoftwareCertificates() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetClientSoftwareCertificates()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'clientSoftwareCertificates' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("clientSoftwareCertificates", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientSoftwareCertificates")
+		if err := WriteComplexTypeArrayField(ctx, "clientSoftwareCertificates", m.GetClientSoftwareCertificates(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientSoftwareCertificates' field")
 		}
 
 		// Simple Field (noOfLocaleIds)
@@ -373,21 +358,8 @@ func (m *_ActivateSessionRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_noOfLocaleIdsErr, "Error serializing 'noOfLocaleIds' field")
 		}
 
-		// Array Field (localeIds)
-		if pushErr := writeBuffer.PushContext("localeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for localeIds")
-		}
-		for _curItem, _element := range m.GetLocaleIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLocaleIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'localeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("localeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for localeIds")
+		if err := WriteComplexTypeArrayField(ctx, "localeIds", m.GetLocaleIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'localeIds' field")
 		}
 
 		// Simple Field (userIdentityToken)

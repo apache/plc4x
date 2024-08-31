@@ -151,8 +151,6 @@ func CIPEncapsulationReadResponseParseWithBufferProducer(packetLen uint16) func(
 func CIPEncapsulationReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationReadResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationReadResponse")
 	}

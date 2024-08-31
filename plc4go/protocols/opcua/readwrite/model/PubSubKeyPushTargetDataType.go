@@ -283,8 +283,6 @@ func PubSubKeyPushTargetDataTypeParseWithBufferProducer(identifier string) func(
 func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubKeyPushTargetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubKeyPushTargetDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubKeyPushTargetDataType")
 	}
@@ -412,21 +410,8 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfPushTargetFolderErr, "Error serializing 'noOfPushTargetFolder' field")
 		}
 
-		// Array Field (pushTargetFolder)
-		if pushErr := writeBuffer.PushContext("pushTargetFolder", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pushTargetFolder")
-		}
-		for _curItem, _element := range m.GetPushTargetFolder() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPushTargetFolder()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'pushTargetFolder' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("pushTargetFolder", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pushTargetFolder")
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetFolder", m.GetPushTargetFolder(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'pushTargetFolder' field")
 		}
 
 		// Simple Field (endpointUrl)
@@ -486,21 +471,8 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfPushTargetPropertiesErr, "Error serializing 'noOfPushTargetProperties' field")
 		}
 
-		// Array Field (pushTargetProperties)
-		if pushErr := writeBuffer.PushContext("pushTargetProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for pushTargetProperties")
-		}
-		for _curItem, _element := range m.GetPushTargetProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPushTargetProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'pushTargetProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("pushTargetProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for pushTargetProperties")
+		if err := WriteComplexTypeArrayField(ctx, "pushTargetProperties", m.GetPushTargetProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'pushTargetProperties' field")
 		}
 
 		// Simple Field (noOfSecurityGroups)
@@ -510,21 +482,8 @@ func (m *_PubSubKeyPushTargetDataType) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfSecurityGroupsErr, "Error serializing 'noOfSecurityGroups' field")
 		}
 
-		// Array Field (securityGroups)
-		if pushErr := writeBuffer.PushContext("securityGroups", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityGroups")
-		}
-		for _curItem, _element := range m.GetSecurityGroups() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSecurityGroups()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'securityGroups' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("securityGroups", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityGroups")
+		if err := WriteComplexTypeArrayField(ctx, "securityGroups", m.GetSecurityGroups(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityGroups' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubKeyPushTargetDataType"); popErr != nil {

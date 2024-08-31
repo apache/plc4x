@@ -118,8 +118,6 @@ func QosDataTypeParseWithBufferProducer(identifier string) func(ctx context.Cont
 func QosDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QosDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QosDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QosDataType")
 	}

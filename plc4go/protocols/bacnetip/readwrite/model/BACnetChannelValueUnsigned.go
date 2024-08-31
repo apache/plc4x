@@ -139,8 +139,6 @@ func BACnetChannelValueUnsignedParseWithBufferProducer() func(ctx context.Contex
 func BACnetChannelValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueUnsigned")
 	}

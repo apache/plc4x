@@ -179,8 +179,6 @@ func TriggerControlDataParseWithBufferProducer[T TriggerControlData]() func(ctx 
 func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlData")
 	}

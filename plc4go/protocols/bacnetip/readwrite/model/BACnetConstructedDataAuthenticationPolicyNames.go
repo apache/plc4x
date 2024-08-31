@@ -187,8 +187,6 @@ func BACnetConstructedDataAuthenticationPolicyNamesParseWithBufferProducer(tagNu
 func BACnetConstructedDataAuthenticationPolicyNamesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationPolicyNames, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationPolicyNames"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthenticationPolicyNames")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataAuthenticationPolicyNames) SerializeWithWriteBuff
 			}
 		}
 
-		// Array Field (authenticationPolicyNames)
-		if pushErr := writeBuffer.PushContext("authenticationPolicyNames", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authenticationPolicyNames")
-		}
-		for _curItem, _element := range m.GetAuthenticationPolicyNames() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthenticationPolicyNames()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'authenticationPolicyNames' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("authenticationPolicyNames", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authenticationPolicyNames")
+		if err := WriteComplexTypeArrayField(ctx, "authenticationPolicyNames", m.GetAuthenticationPolicyNames(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationPolicyNames' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationPolicyNames"); popErr != nil {

@@ -188,8 +188,6 @@ func ServicesResponseParseWithBufferProducer() func(ctx context.Context, readBuf
 func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServicesResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServicesResponse")
 	}
@@ -328,9 +326,7 @@ func (m *_ServicesResponse) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_supportsUDPErr, "Error serializing 'supportsUDP' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

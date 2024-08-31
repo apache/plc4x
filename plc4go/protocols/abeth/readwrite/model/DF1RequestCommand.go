@@ -124,8 +124,6 @@ func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx co
 func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1RequestCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1RequestCommand")
 	}

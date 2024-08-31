@@ -139,8 +139,6 @@ func BACnetPriorityValueUnsignedParseWithBufferProducer(objectTypeArgument BACne
 func BACnetPriorityValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPriorityValueUnsigned"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPriorityValueUnsigned")
 	}

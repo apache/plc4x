@@ -132,8 +132,6 @@ func TunnelingRequestDataBlockParseWithBufferProducer() func(ctx context.Context
 func TunnelingRequestDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequestDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TunnelingRequestDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TunnelingRequestDataBlock")
 	}

@@ -146,8 +146,6 @@ func BACnetRouterEntryParseWithBufferProducer() func(ctx context.Context, readBu
 func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRouterEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRouterEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRouterEntry")
 	}

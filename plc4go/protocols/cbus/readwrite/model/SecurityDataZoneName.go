@@ -151,8 +151,6 @@ func SecurityDataZoneNameParseWithBufferProducer() func(ctx context.Context, rea
 func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataZoneName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataZoneName")
 	}

@@ -139,8 +139,6 @@ func BACnetChannelValueRealParseWithBufferProducer() func(ctx context.Context, r
 func BACnetChannelValueRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueReal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueReal")
 	}

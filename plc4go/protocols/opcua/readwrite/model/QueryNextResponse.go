@@ -181,8 +181,6 @@ func QueryNextResponseParseWithBufferProducer(identifier string) func(ctx contex
 func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryNextResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryNextResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryNextResponse")
 	}
@@ -262,21 +260,8 @@ func (m *_QueryNextResponse) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
 		}
 
-		// Array Field (queryDataSets)
-		if pushErr := writeBuffer.PushContext("queryDataSets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryDataSets")
-		}
-		for _curItem, _element := range m.GetQueryDataSets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetQueryDataSets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'queryDataSets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("queryDataSets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryDataSets")
+		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
 		// Simple Field (revisedContinuationPoint)

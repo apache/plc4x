@@ -141,8 +141,6 @@ func PortSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer u
 func PortSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortSegment")
 	}

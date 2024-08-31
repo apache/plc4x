@@ -114,8 +114,6 @@ func ModbusConstantsParseWithBufferProducer() func(ctx context.Context, readBuff
 func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusConstants")
 	}

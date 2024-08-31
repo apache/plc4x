@@ -152,8 +152,6 @@ func AdsWriteControlResponseParseWithBufferProducer() func(ctx context.Context, 
 func AdsWriteControlResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsWriteControlResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsWriteControlResponse")
 	}

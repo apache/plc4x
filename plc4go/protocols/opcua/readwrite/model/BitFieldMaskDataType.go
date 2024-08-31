@@ -92,8 +92,6 @@ func BitFieldMaskDataTypeParseWithBufferProducer() func(ctx context.Context, rea
 func BitFieldMaskDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BitFieldMaskDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BitFieldMaskDataType")
 	}

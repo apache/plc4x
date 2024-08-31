@@ -219,8 +219,6 @@ func S7PayloadDiagnosticMessageParseWithBufferProducer(cpuFunctionGroup uint8, c
 func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadDiagnosticMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadDiagnosticMessage")
 	}

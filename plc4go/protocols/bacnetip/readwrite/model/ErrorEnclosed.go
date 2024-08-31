@@ -137,8 +137,6 @@ func ErrorEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx context.Cont
 func ErrorEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ErrorEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorEnclosed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorEnclosed")
 	}

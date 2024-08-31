@@ -139,8 +139,6 @@ func BACnetPropertyStatesAccessCredentialDisableParseWithBufferProducer(peekedTa
 func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAccessCredentialDisable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAccessCredentialDisable")
 	}

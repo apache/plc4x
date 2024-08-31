@@ -203,8 +203,6 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBufferProducer(se
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestSubscribeCOVProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestSubscribeCOVProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestSubscribeCOVProperty")
 	}

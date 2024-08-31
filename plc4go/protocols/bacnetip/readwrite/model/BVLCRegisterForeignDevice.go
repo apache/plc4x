@@ -143,8 +143,6 @@ func BVLCRegisterForeignDeviceParseWithBufferProducer() func(ctx context.Context
 func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCRegisterForeignDevice"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCRegisterForeignDevice")
 	}

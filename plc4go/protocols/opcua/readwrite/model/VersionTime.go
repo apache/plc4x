@@ -92,8 +92,6 @@ func VersionTimeParseWithBufferProducer() func(ctx context.Context, readBuffer u
 func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VersionTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VersionTime")
 	}

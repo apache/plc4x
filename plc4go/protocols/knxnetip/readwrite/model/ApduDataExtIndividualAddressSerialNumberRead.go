@@ -118,8 +118,6 @@ func ApduDataExtIndividualAddressSerialNumberReadParseWithBufferProducer(length 
 func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtIndividualAddressSerialNumberRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtIndividualAddressSerialNumberRead")
 	}

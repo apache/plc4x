@@ -151,8 +151,6 @@ func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, reques
 func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALReply")
 	}

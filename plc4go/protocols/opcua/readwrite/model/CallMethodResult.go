@@ -228,8 +228,6 @@ func CallMethodResultParseWithBufferProducer(identifier string) func(ctx context
 func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallMethodResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CallMethodResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CallMethodResult")
 	}
@@ -327,21 +325,8 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_noOfInputArgumentResultsErr, "Error serializing 'noOfInputArgumentResults' field")
 		}
 
-		// Array Field (inputArgumentResults)
-		if pushErr := writeBuffer.PushContext("inputArgumentResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputArgumentResults")
-		}
-		for _curItem, _element := range m.GetInputArgumentResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetInputArgumentResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'inputArgumentResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("inputArgumentResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputArgumentResults")
+		if err := WriteComplexTypeArrayField(ctx, "inputArgumentResults", m.GetInputArgumentResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputArgumentResults' field")
 		}
 
 		// Simple Field (noOfInputArgumentDiagnosticInfos)
@@ -351,21 +336,8 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error serializing 'noOfInputArgumentDiagnosticInfos' field")
 		}
 
-		// Array Field (inputArgumentDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputArgumentDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetInputArgumentDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetInputArgumentDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'inputArgumentDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("inputArgumentDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputArgumentDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "inputArgumentDiagnosticInfos", m.GetInputArgumentDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputArgumentDiagnosticInfos' field")
 		}
 
 		// Simple Field (noOfOutputArguments)
@@ -375,21 +347,8 @@ func (m *_CallMethodResult) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_noOfOutputArgumentsErr, "Error serializing 'noOfOutputArguments' field")
 		}
 
-		// Array Field (outputArguments)
-		if pushErr := writeBuffer.PushContext("outputArguments", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for outputArguments")
-		}
-		for _curItem, _element := range m.GetOutputArguments() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetOutputArguments()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'outputArguments' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("outputArguments", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for outputArguments")
+		if err := WriteComplexTypeArrayField(ctx, "outputArguments", m.GetOutputArguments(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'outputArguments' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CallMethodResult"); popErr != nil {

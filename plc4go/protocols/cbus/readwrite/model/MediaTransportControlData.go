@@ -169,8 +169,6 @@ func MediaTransportControlDataParseWithBufferProducer[T MediaTransportControlDat
 func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlData")
 	}

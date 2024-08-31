@@ -124,8 +124,6 @@ func BACnetTimeValueParseWithBufferProducer() func(ctx context.Context, readBuff
 func BACnetTimeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimeValue")
 	}

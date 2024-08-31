@@ -458,8 +458,6 @@ func BACnetTagPayloadUnsignedIntegerParseWithBufferProducer(actualLength uint32)
 func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadUnsignedInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadUnsignedInteger")
 	}

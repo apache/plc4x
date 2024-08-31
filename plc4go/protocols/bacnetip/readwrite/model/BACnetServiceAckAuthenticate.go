@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,8 +146,6 @@ func BACnetServiceAckAuthenticateParseWithBufferProducer(serviceAckPayloadLength
 func BACnetServiceAckAuthenticateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAuthenticate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAuthenticate")
 	}
@@ -190,9 +190,7 @@ func (m *_BACnetServiceAckAuthenticate) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(pushErr, "Error pushing for BACnetServiceAckAuthenticate")
 		}
 
-		// Array Field (bytesOfRemovedService)
-		// Byte Array field (bytesOfRemovedService)
-		if err := writeBuffer.WriteByteArray("bytesOfRemovedService", m.GetBytesOfRemovedService()); err != nil {
+		if err := WriteByteArrayField(ctx, "bytesOfRemovedService", m.GetBytesOfRemovedService(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'bytesOfRemovedService' field")
 		}
 

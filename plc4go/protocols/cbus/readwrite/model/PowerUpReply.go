@@ -139,8 +139,6 @@ func PowerUpReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext
 func PowerUpReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PowerUpReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PowerUpReply")
 	}

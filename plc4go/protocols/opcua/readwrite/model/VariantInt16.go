@@ -161,8 +161,6 @@ func VariantInt16ParseWithBufferProducer(arrayLengthSpecified bool) func(ctx con
 func VariantInt16ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantInt16, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantInt16"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantInt16")
 	}
@@ -221,19 +219,8 @@ func (m *_VariantInt16) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			}
 		}
 
-		// Array Field (value)
-		if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		for _curItem, _element := range m.GetValue() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteInt16("", 16, int16(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'value' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
+		if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteSignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VariantInt16"); popErr != nil {

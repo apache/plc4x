@@ -141,8 +141,6 @@ func BACnetTimeStampsEnclosedParseWithBufferProducer(tagNumber uint8) func(ctx c
 func BACnetTimeStampsEnclosedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetTimeStampsEnclosed, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTimeStampsEnclosed"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTimeStampsEnclosed")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetTimeStampsEnclosed) SerializeWithWriteBuffer(ctx context.Context
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (timestamps)
-	if pushErr := writeBuffer.PushContext("timestamps", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for timestamps")
-	}
-	for _curItem, _element := range m.GetTimestamps() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTimestamps()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'timestamps' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("timestamps", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for timestamps")
+	if err := WriteComplexTypeArrayField(ctx, "timestamps", m.GetTimestamps(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestamps' field")
 	}
 
 	// Simple Field (closingTag)

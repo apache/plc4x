@@ -141,8 +141,6 @@ func BACnetSecurityKeySetKeyIdsParseWithBufferProducer(tagNumber uint8) func(ctx
 func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSecurityKeySetKeyIds, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSecurityKeySetKeyIds"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSecurityKeySetKeyIds")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetSecurityKeySetKeyIds) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (keyIds)
-	if pushErr := writeBuffer.PushContext("keyIds", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for keyIds")
-	}
-	for _curItem, _element := range m.GetKeyIds() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetKeyIds()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'keyIds' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("keyIds", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for keyIds")
+	if err := WriteComplexTypeArrayField(ctx, "keyIds", m.GetKeyIds(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'keyIds' field")
 	}
 
 	// Simple Field (closingTag)

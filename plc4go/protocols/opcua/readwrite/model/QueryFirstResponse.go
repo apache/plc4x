@@ -250,8 +250,6 @@ func QueryFirstResponseParseWithBufferProducer(identifier string) func(ctx conte
 func QueryFirstResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryFirstResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryFirstResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryFirstResponse")
 	}
@@ -361,21 +359,8 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_noOfQueryDataSetsErr, "Error serializing 'noOfQueryDataSets' field")
 		}
 
-		// Array Field (queryDataSets)
-		if pushErr := writeBuffer.PushContext("queryDataSets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for queryDataSets")
-		}
-		for _curItem, _element := range m.GetQueryDataSets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetQueryDataSets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'queryDataSets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("queryDataSets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for queryDataSets")
+		if err := WriteComplexTypeArrayField(ctx, "queryDataSets", m.GetQueryDataSets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'queryDataSets' field")
 		}
 
 		// Simple Field (continuationPoint)
@@ -397,21 +382,8 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_noOfParsingResultsErr, "Error serializing 'noOfParsingResults' field")
 		}
 
-		// Array Field (parsingResults)
-		if pushErr := writeBuffer.PushContext("parsingResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for parsingResults")
-		}
-		for _curItem, _element := range m.GetParsingResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParsingResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'parsingResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("parsingResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for parsingResults")
+		if err := WriteComplexTypeArrayField(ctx, "parsingResults", m.GetParsingResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'parsingResults' field")
 		}
 
 		// Simple Field (noOfDiagnosticInfos)
@@ -421,21 +393,8 @@ func (m *_QueryFirstResponse) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
 		// Simple Field (filterResult)

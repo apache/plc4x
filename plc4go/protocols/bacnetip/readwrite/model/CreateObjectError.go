@@ -152,8 +152,6 @@ func CreateObjectErrorParseWithBufferProducer(errorChoice BACnetConfirmedService
 func CreateObjectErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (CreateObjectError, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CreateObjectError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CreateObjectError")
 	}

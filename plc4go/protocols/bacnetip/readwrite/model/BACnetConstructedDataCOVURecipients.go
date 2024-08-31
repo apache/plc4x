@@ -153,8 +153,6 @@ func BACnetConstructedDataCOVURecipientsParseWithBufferProducer(tagNumber uint8,
 func BACnetConstructedDataCOVURecipientsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVURecipients, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCOVURecipients"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCOVURecipients")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataCOVURecipients) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCOVURecipients")
 		}
 
-		// Array Field (covuRecipients)
-		if pushErr := writeBuffer.PushContext("covuRecipients", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for covuRecipients")
-		}
-		for _curItem, _element := range m.GetCovuRecipients() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCovuRecipients()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'covuRecipients' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("covuRecipients", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for covuRecipients")
+		if err := WriteComplexTypeArrayField(ctx, "covuRecipients", m.GetCovuRecipients(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'covuRecipients' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCOVURecipients"); popErr != nil {

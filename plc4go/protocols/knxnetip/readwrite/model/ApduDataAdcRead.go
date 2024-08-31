@@ -118,8 +118,6 @@ func ApduDataAdcReadParseWithBufferProducer(dataLength uint8) func(ctx context.C
 func ApduDataAdcReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataAdcRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataAdcRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataAdcRead")
 	}

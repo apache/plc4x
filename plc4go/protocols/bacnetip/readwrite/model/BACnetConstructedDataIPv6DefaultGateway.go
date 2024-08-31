@@ -168,8 +168,6 @@ func BACnetConstructedDataIPv6DefaultGatewayParseWithBufferProducer(tagNumber ui
 func BACnetConstructedDataIPv6DefaultGatewayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DefaultGateway"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DefaultGateway")
 	}

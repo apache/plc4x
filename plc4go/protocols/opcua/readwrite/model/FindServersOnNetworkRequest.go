@@ -192,8 +192,6 @@ func FindServersOnNetworkRequestParseWithBufferProducer(identifier string) func(
 func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersOnNetworkRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FindServersOnNetworkRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FindServersOnNetworkRequest")
 	}
@@ -293,21 +291,8 @@ func (m *_FindServersOnNetworkRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfServerCapabilityFilterErr, "Error serializing 'noOfServerCapabilityFilter' field")
 		}
 
-		// Array Field (serverCapabilityFilter)
-		if pushErr := writeBuffer.PushContext("serverCapabilityFilter", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverCapabilityFilter")
-		}
-		for _curItem, _element := range m.GetServerCapabilityFilter() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerCapabilityFilter()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverCapabilityFilter' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverCapabilityFilter", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverCapabilityFilter")
+		if err := WriteComplexTypeArrayField(ctx, "serverCapabilityFilter", m.GetServerCapabilityFilter(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverCapabilityFilter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FindServersOnNetworkRequest"); popErr != nil {

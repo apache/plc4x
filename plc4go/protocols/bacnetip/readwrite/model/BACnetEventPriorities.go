@@ -157,8 +157,6 @@ func BACnetEventPrioritiesParseWithBufferProducer(tagNumber uint8) func(ctx cont
 func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventPriorities, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventPriorities"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventPriorities")
 	}

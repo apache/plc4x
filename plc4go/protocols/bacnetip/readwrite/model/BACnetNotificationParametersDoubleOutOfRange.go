@@ -196,8 +196,6 @@ func BACnetNotificationParametersDoubleOutOfRangeParseWithBufferProducer(peekedT
 func BACnetNotificationParametersDoubleOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersDoubleOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersDoubleOutOfRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersDoubleOutOfRange")
 	}

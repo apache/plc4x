@@ -118,8 +118,6 @@ func ApduDataExtFileStreamInfoReportParseWithBufferProducer(length uint8) func(c
 func ApduDataExtFileStreamInfoReportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtFileStreamInfoReport"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtFileStreamInfoReport")
 	}

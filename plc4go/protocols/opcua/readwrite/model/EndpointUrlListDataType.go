@@ -159,8 +159,6 @@ func EndpointUrlListDataTypeParseWithBufferProducer(identifier string) func(ctx 
 func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointUrlListDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EndpointUrlListDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EndpointUrlListDataType")
 	}
@@ -216,21 +214,8 @@ func (m *_EndpointUrlListDataType) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_noOfEndpointUrlListErr, "Error serializing 'noOfEndpointUrlList' field")
 		}
 
-		// Array Field (endpointUrlList)
-		if pushErr := writeBuffer.PushContext("endpointUrlList", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpointUrlList")
-		}
-		for _curItem, _element := range m.GetEndpointUrlList() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEndpointUrlList()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'endpointUrlList' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("endpointUrlList", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpointUrlList")
+		if err := WriteComplexTypeArrayField(ctx, "endpointUrlList", m.GetEndpointUrlList(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpointUrlList' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EndpointUrlListDataType"); popErr != nil {

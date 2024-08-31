@@ -158,8 +158,6 @@ func BACnetApplicationTagRealParseWithBufferProducer() func(ctx context.Context,
 func BACnetApplicationTagRealParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagReal, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagReal"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagReal")
 	}

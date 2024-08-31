@@ -141,8 +141,6 @@ func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBufferPr
 func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfBitstringListOfBitstringValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfBitstringListOfBitstringValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfBitstringListOfBitstringValues")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetEventParameterChangeOfBitstringListOfBitstringValues) SerializeW
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfBitstringValues)
-	if pushErr := writeBuffer.PushContext("listOfBitstringValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfBitstringValues")
-	}
-	for _curItem, _element := range m.GetListOfBitstringValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfBitstringValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfBitstringValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfBitstringValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfBitstringValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfBitstringValues", m.GetListOfBitstringValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfBitstringValues' field")
 	}
 
 	// Simple Field (closingTag)

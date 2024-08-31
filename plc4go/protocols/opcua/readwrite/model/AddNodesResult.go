@@ -152,8 +152,6 @@ func AddNodesResultParseWithBufferProducer(identifier string) func(ctx context.C
 func AddNodesResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddNodesResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddNodesResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddNodesResult")
 	}

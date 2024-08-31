@@ -139,8 +139,6 @@ func BACnetPropertyStatesActionParseWithBufferProducer(peekedTagNumber uint8) fu
 func BACnetPropertyStatesActionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesAction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesAction")
 	}

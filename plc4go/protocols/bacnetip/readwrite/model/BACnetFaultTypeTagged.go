@@ -128,8 +128,6 @@ func BACnetFaultTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagC
 func BACnetFaultTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetFaultTypeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultTypeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultTypeTagged")
 	}

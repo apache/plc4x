@@ -118,8 +118,6 @@ func FrameParseWithBufferProducer(identifier string) func(ctx context.Context, r
 func FrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Frame, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Frame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Frame")
 	}

@@ -180,8 +180,6 @@ func SecurityDataStatusReport1ParseWithBufferProducer() func(ctx context.Context
 func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataStatusReport1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataStatusReport1")
 	}
@@ -278,21 +276,8 @@ func (m *_SecurityDataStatusReport1) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_panicStatusErr, "Error serializing 'panicStatus' field")
 		}
 
-		// Array Field (zoneStatus)
-		if pushErr := writeBuffer.PushContext("zoneStatus", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for zoneStatus")
-		}
-		for _curItem, _element := range m.GetZoneStatus() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetZoneStatus()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'zoneStatus' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("zoneStatus", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for zoneStatus")
+		if err := WriteComplexTypeArrayField(ctx, "zoneStatus", m.GetZoneStatus(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'zoneStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityDataStatusReport1"); popErr != nil {

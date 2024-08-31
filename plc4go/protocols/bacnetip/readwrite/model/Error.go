@@ -124,8 +124,6 @@ func ErrorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Error"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Error")
 	}

@@ -124,8 +124,6 @@ func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestC
 func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusMessage")
 	}

@@ -118,8 +118,6 @@ func AccessControlDataRequestToExitParseWithBufferProducer() func(ctx context.Co
 func AccessControlDataRequestToExitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataRequestToExit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataRequestToExit")
 	}

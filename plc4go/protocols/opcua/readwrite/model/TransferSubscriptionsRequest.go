@@ -181,8 +181,6 @@ func TransferSubscriptionsRequestParseWithBufferProducer(identifier string) func
 func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransferSubscriptionsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TransferSubscriptionsRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TransferSubscriptionsRequest")
 	}
@@ -268,19 +266,8 @@ func (m *_TransferSubscriptionsRequest) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(_noOfSubscriptionIdsErr, "Error serializing 'noOfSubscriptionIds' field")
 		}
 
-		// Array Field (subscriptionIds)
-		if pushErr := writeBuffer.PushContext("subscriptionIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriptionIds")
-		}
-		for _curItem, _element := range m.GetSubscriptionIds() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subscriptionIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subscriptionIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriptionIds")
+		if err := WriteSimpleTypeArrayField(ctx, "subscriptionIds", m.GetSubscriptionIds(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionIds' field")
 		}
 
 		// Reserved Field (reserved)

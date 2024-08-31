@@ -143,8 +143,6 @@ func SALDataAudioAndVideoParseWithBufferProducer(applicationId ApplicationId) fu
 func SALDataAudioAndVideoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataAudioAndVideo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataAudioAndVideo")
 	}

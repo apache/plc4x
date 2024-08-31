@@ -168,8 +168,6 @@ func BACnetConstructedDataSecurityPDUTimeoutParseWithBufferProducer(tagNumber ui
 func BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityPDUTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSecurityPDUTimeout"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSecurityPDUTimeout")
 	}

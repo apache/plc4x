@@ -172,8 +172,6 @@ func BACnetEventParameterBufferReadyParseWithBufferProducer() func(ctx context.C
 func BACnetEventParameterBufferReadyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterBufferReady, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterBufferReady"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterBufferReady")
 	}

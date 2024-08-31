@@ -92,8 +92,6 @@ func TimeStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TimeString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TimeString")
 	}

@@ -152,8 +152,6 @@ func XVTypeParseWithBufferProducer(identifier string) func(ctx context.Context, 
 func XVTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (XVType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("XVType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for XVType")
 	}

@@ -162,8 +162,6 @@ func BACnetContextTagUnsignedIntegerParseWithBufferProducer(header BACnetTagHead
 func BACnetContextTagUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnsignedInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagUnsignedInteger")
 	}

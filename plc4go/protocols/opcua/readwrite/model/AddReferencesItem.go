@@ -201,8 +201,6 @@ func AddReferencesItemParseWithBufferProducer(identifier string) func(ctx contex
 func AddReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddReferencesItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AddReferencesItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AddReferencesItem")
 	}

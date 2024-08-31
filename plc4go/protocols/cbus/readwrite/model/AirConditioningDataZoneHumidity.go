@@ -172,8 +172,6 @@ func AirConditioningDataZoneHumidityParseWithBufferProducer() func(ctx context.C
 func AirConditioningDataZoneHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneHumidity, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataZoneHumidity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataZoneHumidity")
 	}

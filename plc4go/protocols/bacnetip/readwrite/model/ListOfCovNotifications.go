@@ -148,8 +148,6 @@ func ListOfCovNotificationsParseWithBufferProducer() func(ctx context.Context, r
 func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ListOfCovNotifications, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListOfCovNotifications"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListOfCovNotifications")
 	}
@@ -230,21 +228,8 @@ func (m *_ListOfCovNotifications) SerializeWithWriteBuffer(ctx context.Context, 
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfValues)
-	if pushErr := writeBuffer.PushContext("listOfValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfValues")
-	}
-	for _curItem, _element := range m.GetListOfValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfValues", m.GetListOfValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfValues' field")
 	}
 
 	// Simple Field (closingTag)

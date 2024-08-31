@@ -172,8 +172,6 @@ func S7ParameterSetupCommunicationParseWithBufferProducer(messageType uint8) fun
 func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterSetupCommunication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterSetupCommunication")
 	}

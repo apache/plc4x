@@ -170,8 +170,6 @@ func FindServersResponseParseWithBufferProducer(identifier string) func(ctx cont
 func FindServersResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FindServersResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FindServersResponse")
 	}
@@ -245,21 +243,8 @@ func (m *_FindServersResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfServersErr, "Error serializing 'noOfServers' field")
 		}
 
-		// Array Field (servers)
-		if pushErr := writeBuffer.PushContext("servers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for servers")
-		}
-		for _curItem, _element := range m.GetServers() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServers()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'servers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("servers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for servers")
+		if err := WriteComplexTypeArrayField(ctx, "servers", m.GetServers(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'servers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("FindServersResponse"); popErr != nil {

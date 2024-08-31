@@ -117,8 +117,6 @@ func TelephonyDataRejectIncomingCallParseWithBufferProducer() func(ctx context.C
 func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataRejectIncomingCall"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataRejectIncomingCall")
 	}

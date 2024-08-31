@@ -220,8 +220,6 @@ func AlarmMessageObjectPushTypeParseWithBufferProducer() func(ctx context.Contex
 func AlarmMessageObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectPushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectPushType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageObjectPushType")
 	}
@@ -401,21 +399,8 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_ackStateComingErr, "Error serializing 'ackStateComing' field")
 	}
 
-	// Array Field (AssociatedValues)
-	if pushErr := writeBuffer.PushContext("AssociatedValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for AssociatedValues")
-	}
-	for _curItem, _element := range m.GetAssociatedValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAssociatedValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'AssociatedValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("AssociatedValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for AssociatedValues")
+	if err := WriteComplexTypeArrayField(ctx, "AssociatedValues", m.GetAssociatedValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'AssociatedValues' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageObjectPushType"); popErr != nil {

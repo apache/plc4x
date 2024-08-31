@@ -122,8 +122,6 @@ func PowerUpParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PowerUp"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PowerUp")
 	}

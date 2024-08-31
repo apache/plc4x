@@ -139,8 +139,6 @@ func BACnetRecipientAddressParseWithBufferProducer() func(ctx context.Context, r
 func BACnetRecipientAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRecipientAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRecipientAddress")
 	}

@@ -141,8 +141,6 @@ func CloseSecureChannelResponseParseWithBufferProducer(identifier string) func(c
 func CloseSecureChannelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CloseSecureChannelResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CloseSecureChannelResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CloseSecureChannelResponse")
 	}

@@ -118,8 +118,6 @@ func CartesianCoordinatesParseWithBufferProducer(identifier string) func(ctx con
 func CartesianCoordinatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CartesianCoordinates, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CartesianCoordinates"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CartesianCoordinates")
 	}

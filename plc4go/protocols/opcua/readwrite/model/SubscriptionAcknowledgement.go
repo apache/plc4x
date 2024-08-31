@@ -152,8 +152,6 @@ func SubscriptionAcknowledgementParseWithBufferProducer(identifier string) func(
 func SubscriptionAcknowledgementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscriptionAcknowledgement, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SubscriptionAcknowledgement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SubscriptionAcknowledgement")
 	}

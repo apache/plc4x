@@ -144,8 +144,6 @@ func InstanceSegmentParseWithBufferProducer() func(ctx context.Context, readBuff
 func InstanceSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("InstanceSegment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for InstanceSegment")
 	}

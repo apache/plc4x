@@ -204,8 +204,6 @@ func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx
 func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Request"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Request")
 	}

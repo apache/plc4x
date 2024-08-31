@@ -128,8 +128,6 @@ func BACnetBinaryPVTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 func BACnetBinaryPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetBinaryPVTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetBinaryPVTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetBinaryPVTagged")
 	}

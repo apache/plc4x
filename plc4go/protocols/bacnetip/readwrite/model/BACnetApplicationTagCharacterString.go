@@ -158,8 +158,6 @@ func BACnetApplicationTagCharacterStringParseWithBufferProducer(header BACnetTag
 func BACnetApplicationTagCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagCharacterString")
 	}

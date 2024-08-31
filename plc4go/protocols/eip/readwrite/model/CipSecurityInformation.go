@@ -146,8 +146,6 @@ func CipSecurityInformationParseWithBufferProducer() func(ctx context.Context, r
 func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipSecurityInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipSecurityInformation")
 	}
@@ -203,19 +201,8 @@ func (m *_CipSecurityInformation) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(_itemLengthErr, "Error serializing 'itemLength' field")
 		}
 
-		// Array Field (todoImplement)
-		if pushErr := writeBuffer.PushContext("todoImplement", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for todoImplement")
-		}
-		for _curItem, _element := range m.GetTodoImplement() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'todoImplement' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("todoImplement", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for todoImplement")
+		if err := WriteSimpleTypeArrayField(ctx, "todoImplement", m.GetTodoImplement(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'todoImplement' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipSecurityInformation"); popErr != nil {

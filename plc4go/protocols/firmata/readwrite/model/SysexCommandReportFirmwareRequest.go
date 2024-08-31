@@ -122,8 +122,6 @@ func SysexCommandReportFirmwareRequestParseWithBufferProducer(response bool) fun
 func SysexCommandReportFirmwareRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandReportFirmwareRequest")
 	}

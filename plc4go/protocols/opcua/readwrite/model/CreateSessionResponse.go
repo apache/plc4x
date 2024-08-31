@@ -276,8 +276,6 @@ func CreateSessionResponseParseWithBufferProducer(identifier string) func(ctx co
 func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSessionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CreateSessionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CreateSessionResponse")
 	}
@@ -460,21 +458,8 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfServerEndpointsErr, "Error serializing 'noOfServerEndpoints' field")
 		}
 
-		// Array Field (serverEndpoints)
-		if pushErr := writeBuffer.PushContext("serverEndpoints", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverEndpoints")
-		}
-		for _curItem, _element := range m.GetServerEndpoints() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerEndpoints()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverEndpoints' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverEndpoints", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverEndpoints")
+		if err := WriteComplexTypeArrayField(ctx, "serverEndpoints", m.GetServerEndpoints(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverEndpoints' field")
 		}
 
 		// Simple Field (noOfServerSoftwareCertificates)
@@ -484,21 +469,8 @@ func (m *_CreateSessionResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfServerSoftwareCertificatesErr, "Error serializing 'noOfServerSoftwareCertificates' field")
 		}
 
-		// Array Field (serverSoftwareCertificates)
-		if pushErr := writeBuffer.PushContext("serverSoftwareCertificates", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverSoftwareCertificates")
-		}
-		for _curItem, _element := range m.GetServerSoftwareCertificates() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerSoftwareCertificates()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverSoftwareCertificates' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverSoftwareCertificates", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverSoftwareCertificates")
+		if err := WriteComplexTypeArrayField(ctx, "serverSoftwareCertificates", m.GetServerSoftwareCertificates(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverSoftwareCertificates' field")
 		}
 
 		// Simple Field (serverSignature)

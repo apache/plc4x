@@ -128,8 +128,6 @@ func BACnetPolarityTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagCl
 func BACnetPolarityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetPolarityTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPolarityTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPolarityTagged")
 	}

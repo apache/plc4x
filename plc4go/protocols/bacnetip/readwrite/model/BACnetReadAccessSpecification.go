@@ -148,8 +148,6 @@ func BACnetReadAccessSpecificationParseWithBufferProducer() func(ctx context.Con
 func BACnetReadAccessSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessSpecification, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetReadAccessSpecification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetReadAccessSpecification")
 	}
@@ -230,21 +228,8 @@ func (m *_BACnetReadAccessSpecification) SerializeWithWriteBuffer(ctx context.Co
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfPropertyReferences)
-	if pushErr := writeBuffer.PushContext("listOfPropertyReferences", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfPropertyReferences")
-	}
-	for _curItem, _element := range m.GetListOfPropertyReferences() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfPropertyReferences()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfPropertyReferences' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfPropertyReferences", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfPropertyReferences")
+	if err := WriteComplexTypeArrayField(ctx, "listOfPropertyReferences", m.GetListOfPropertyReferences(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfPropertyReferences' field")
 	}
 
 	// Simple Field (closingTag)

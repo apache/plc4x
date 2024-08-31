@@ -425,8 +425,6 @@ func BACnetEventParameterExtendedParametersParseWithBufferProducer(tagNumber uin
 func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterExtendedParameters"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterExtendedParameters")
 	}

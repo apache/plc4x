@@ -156,8 +156,6 @@ func BACnetCOVSubscriptionParseWithBufferProducer() func(ctx context.Context, re
 func BACnetCOVSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCOVSubscription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVSubscription")
 	}

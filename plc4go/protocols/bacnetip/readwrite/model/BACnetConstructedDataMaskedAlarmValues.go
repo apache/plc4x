@@ -153,8 +153,6 @@ func BACnetConstructedDataMaskedAlarmValuesParseWithBufferProducer(tagNumber uin
 func BACnetConstructedDataMaskedAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaskedAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataMaskedAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataMaskedAlarmValues")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataMaskedAlarmValues) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataMaskedAlarmValues")
 		}
 
-		// Array Field (maskedAlarmValues)
-		if pushErr := writeBuffer.PushContext("maskedAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for maskedAlarmValues")
-		}
-		for _curItem, _element := range m.GetMaskedAlarmValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMaskedAlarmValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'maskedAlarmValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("maskedAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for maskedAlarmValues")
+		if err := WriteComplexTypeArrayField(ctx, "maskedAlarmValues", m.GetMaskedAlarmValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'maskedAlarmValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataMaskedAlarmValues"); popErr != nil {

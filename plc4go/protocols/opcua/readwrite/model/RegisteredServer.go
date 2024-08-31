@@ -259,8 +259,6 @@ func RegisteredServerParseWithBufferProducer(identifier string) func(ctx context
 func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisteredServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisteredServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisteredServer")
 	}
@@ -394,21 +392,8 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_noOfServerNamesErr, "Error serializing 'noOfServerNames' field")
 		}
 
-		// Array Field (serverNames)
-		if pushErr := writeBuffer.PushContext("serverNames", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverNames")
-		}
-		for _curItem, _element := range m.GetServerNames() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerNames()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverNames' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverNames", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverNames")
+		if err := WriteComplexTypeArrayField(ctx, "serverNames", m.GetServerNames(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverNames' field")
 		}
 
 		// Simple Field (serverType)
@@ -442,21 +427,8 @@ func (m *_RegisteredServer) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(_noOfDiscoveryUrlsErr, "Error serializing 'noOfDiscoveryUrls' field")
 		}
 
-		// Array Field (discoveryUrls)
-		if pushErr := writeBuffer.PushContext("discoveryUrls", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for discoveryUrls")
-		}
-		for _curItem, _element := range m.GetDiscoveryUrls() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiscoveryUrls()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'discoveryUrls' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("discoveryUrls", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for discoveryUrls")
+		if err := WriteComplexTypeArrayField(ctx, "discoveryUrls", m.GetDiscoveryUrls(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'discoveryUrls' field")
 		}
 
 		// Simple Field (semaphoreFilePath)

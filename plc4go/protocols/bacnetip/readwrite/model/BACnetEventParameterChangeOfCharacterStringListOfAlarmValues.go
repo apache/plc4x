@@ -141,8 +141,6 @@ func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer
 func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfCharacterStringListOfAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfCharacterStringListOfAlarmValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfCharacterStringListOfAlarmValues")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetEventParameterChangeOfCharacterStringListOfAlarmValues) Serializ
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfAlarmValues)
-	if pushErr := writeBuffer.PushContext("listOfAlarmValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfAlarmValues")
-	}
-	for _curItem, _element := range m.GetListOfAlarmValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfAlarmValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfAlarmValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfAlarmValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfAlarmValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfAlarmValues", m.GetListOfAlarmValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfAlarmValues' field")
 	}
 
 	// Simple Field (closingTag)

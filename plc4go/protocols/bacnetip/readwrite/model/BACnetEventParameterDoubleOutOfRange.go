@@ -194,8 +194,6 @@ func BACnetEventParameterDoubleOutOfRangeParseWithBufferProducer() func(ctx cont
 func BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterDoubleOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterDoubleOutOfRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterDoubleOutOfRange")
 	}

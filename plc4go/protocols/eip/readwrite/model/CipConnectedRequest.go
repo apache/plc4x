@@ -163,8 +163,6 @@ func CipConnectedRequestParseWithBufferProducer(connected bool, serviceLen uint1
 func CipConnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipConnectedRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipConnectedRequest")
 	}
@@ -234,9 +232,7 @@ func (m *_CipConnectedRequest) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
 		}
 
-		// Array Field (pathSegments)
-		// Byte Array field (pathSegments)
-		if err := writeBuffer.WriteByteArray("pathSegments", m.GetPathSegments()); err != nil {
+		if err := WriteByteArrayField(ctx, "pathSegments", m.GetPathSegments(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'pathSegments' field")
 		}
 

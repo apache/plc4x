@@ -139,8 +139,6 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBufferPro
 func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyAccessResultAccessResultPropertyAccessError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyAccessResultAccessResultPropertyAccessError")
 	}

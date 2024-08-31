@@ -199,8 +199,6 @@ func SessionlessInvokeResponseTypeParseWithBufferProducer(identifier string) fun
 func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionlessInvokeResponseType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionlessInvokeResponseType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionlessInvokeResponseType")
 	}
@@ -274,21 +272,8 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_noOfNamespaceUrisErr, "Error serializing 'noOfNamespaceUris' field")
 		}
 
-		// Array Field (namespaceUris)
-		if pushErr := writeBuffer.PushContext("namespaceUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaceUris")
-		}
-		for _curItem, _element := range m.GetNamespaceUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNamespaceUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'namespaceUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("namespaceUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaceUris")
+		if err := WriteComplexTypeArrayField(ctx, "namespaceUris", m.GetNamespaceUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaceUris' field")
 		}
 
 		// Simple Field (noOfServerUris)
@@ -298,21 +283,8 @@ func (m *_SessionlessInvokeResponseType) SerializeWithWriteBuffer(ctx context.Co
 			return errors.Wrap(_noOfServerUrisErr, "Error serializing 'noOfServerUris' field")
 		}
 
-		// Array Field (serverUris)
-		if pushErr := writeBuffer.PushContext("serverUris", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for serverUris")
-		}
-		for _curItem, _element := range m.GetServerUris() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServerUris()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'serverUris' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("serverUris", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for serverUris")
+		if err := WriteComplexTypeArrayField(ctx, "serverUris", m.GetServerUris(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'serverUris' field")
 		}
 
 		// Simple Field (serviceId)

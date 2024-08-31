@@ -176,8 +176,6 @@ func MultipleServiceRequestParseWithBufferProducer(connected bool, serviceLen ui
 func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MultipleServiceRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MultipleServiceRequest")
 	}

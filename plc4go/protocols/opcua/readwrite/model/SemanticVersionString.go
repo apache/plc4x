@@ -92,8 +92,6 @@ func SemanticVersionStringParseWithBufferProducer() func(ctx context.Context, re
 func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SemanticVersionString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SemanticVersionString")
 	}

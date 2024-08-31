@@ -152,8 +152,6 @@ func DataTypeDescriptionParseWithBufferProducer(identifier string) func(ctx cont
 func DataTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataTypeDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataTypeDescription"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataTypeDescription")
 	}

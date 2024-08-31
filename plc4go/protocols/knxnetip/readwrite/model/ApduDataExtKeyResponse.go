@@ -118,8 +118,6 @@ func ApduDataExtKeyResponseParseWithBufferProducer(length uint8) func(ctx contex
 func ApduDataExtKeyResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtKeyResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtKeyResponse")
 	}

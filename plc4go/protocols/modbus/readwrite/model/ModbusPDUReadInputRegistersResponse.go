@@ -154,8 +154,6 @@ func ModbusPDUReadInputRegistersResponseParseWithBufferProducer(response bool) f
 func ModbusPDUReadInputRegistersResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadInputRegistersResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadInputRegistersResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadInputRegistersResponse")
 	}
@@ -211,9 +209,7 @@ func (m *_ModbusPDUReadInputRegistersResponse) SerializeWithWriteBuffer(ctx cont
 			return errors.Wrap(_byteCountErr, "Error serializing 'byteCount' field")
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

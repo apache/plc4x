@@ -187,8 +187,6 @@ func BACnetConstructedDataActionParseWithBufferProducer(tagNumber uint8, objectT
 func BACnetConstructedDataActionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAction"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAction")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataAction) SerializeWithWriteBuffer(ctx context.Cont
 			}
 		}
 
-		// Array Field (actionLists)
-		if pushErr := writeBuffer.PushContext("actionLists", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for actionLists")
-		}
-		for _curItem, _element := range m.GetActionLists() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActionLists()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'actionLists' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("actionLists", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for actionLists")
+		if err := WriteComplexTypeArrayField(ctx, "actionLists", m.GetActionLists(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'actionLists' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAction"); popErr != nil {

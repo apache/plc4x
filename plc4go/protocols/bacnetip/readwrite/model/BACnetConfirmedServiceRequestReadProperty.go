@@ -166,8 +166,6 @@ func BACnetConfirmedServiceRequestReadPropertyParseWithBufferProducer(serviceReq
 func BACnetConfirmedServiceRequestReadPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadProperty"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadProperty")
 	}

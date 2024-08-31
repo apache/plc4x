@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,8 +148,6 @@ func BACnetContextTagUnknownParseWithBufferProducer(actualLength uint32, tagNumb
 func BACnetContextTagUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagUnknown"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagUnknown")
 	}
@@ -192,9 +192,7 @@ func (m *_BACnetContextTagUnknown) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for BACnetContextTagUnknown")
 		}
 
-		// Array Field (unknownData)
-		// Byte Array field (unknownData)
-		if err := writeBuffer.WriteByteArray("unknownData", m.GetUnknownData()); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownData", m.GetUnknownData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownData' field")
 		}
 

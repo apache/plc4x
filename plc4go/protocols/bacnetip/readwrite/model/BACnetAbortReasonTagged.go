@@ -145,8 +145,6 @@ func BACnetAbortReasonTaggedParseWithBufferProducer(actualLength uint32) func(ct
 func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAbortReasonTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAbortReasonTagged")
 	}

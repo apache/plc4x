@@ -170,8 +170,6 @@ func ComObjectTableRealisationType2ParseWithBufferProducer(firmwareType Firmware
 func ComObjectTableRealisationType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType2, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ComObjectTableRealisationType2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTableRealisationType2")
 	}
@@ -240,21 +238,8 @@ func (m *_ComObjectTableRealisationType2) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_ramFlagsTablePointerErr, "Error serializing 'ramFlagsTablePointer' field")
 		}
 
-		// Array Field (comObjectDescriptors)
-		if pushErr := writeBuffer.PushContext("comObjectDescriptors", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for comObjectDescriptors")
-		}
-		for _curItem, _element := range m.GetComObjectDescriptors() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetComObjectDescriptors()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'comObjectDescriptors' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("comObjectDescriptors", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for comObjectDescriptors")
+		if err := WriteComplexTypeArrayField(ctx, "comObjectDescriptors", m.GetComObjectDescriptors(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'comObjectDescriptors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ComObjectTableRealisationType2"); popErr != nil {

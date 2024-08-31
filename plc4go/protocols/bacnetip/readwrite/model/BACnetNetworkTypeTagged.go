@@ -157,8 +157,6 @@ func BACnetNetworkTypeTaggedParseWithBufferProducer(tagNumber uint8, tagClass Ta
 func BACnetNetworkTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetNetworkTypeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNetworkTypeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNetworkTypeTagged")
 	}

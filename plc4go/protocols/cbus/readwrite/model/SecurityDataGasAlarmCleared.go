@@ -117,8 +117,6 @@ func SecurityDataGasAlarmClearedParseWithBufferProducer() func(ctx context.Conte
 func SecurityDataGasAlarmClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataGasAlarmCleared, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataGasAlarmCleared"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataGasAlarmCleared")
 	}

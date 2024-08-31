@@ -157,8 +157,6 @@ func ModbusAsciiADUParseWithBufferProducer(driverType DriverType, response bool)
 func ModbusAsciiADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusAsciiADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusAsciiADU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusAsciiADU")
 	}

@@ -227,8 +227,6 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBufferProducer(cp
 func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 	}

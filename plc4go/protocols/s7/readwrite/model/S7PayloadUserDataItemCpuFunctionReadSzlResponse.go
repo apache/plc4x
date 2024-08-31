@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,8 +155,6 @@ func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBufferProducer(data
 func S7PayloadUserDataItemCpuFunctionReadSzlResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCpuFunctionReadSzlResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 	}
@@ -197,9 +197,7 @@ func (m *_S7PayloadUserDataItemCpuFunctionReadSzlResponse) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionReadSzlResponse")
 		}
 
-		// Array Field (items)
-		// Byte Array field (items)
-		if err := writeBuffer.WriteByteArray("items", m.GetItems()); err != nil {
+		if err := WriteByteArrayField(ctx, "items", m.GetItems(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'items' field")
 		}
 

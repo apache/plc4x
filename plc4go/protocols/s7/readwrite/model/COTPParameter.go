@@ -130,8 +130,6 @@ func COTPParameterParseWithBufferProducer[T COTPParameter](rest uint8) func(ctx 
 func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameter")
 	}

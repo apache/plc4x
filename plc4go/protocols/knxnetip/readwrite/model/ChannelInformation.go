@@ -124,8 +124,6 @@ func ChannelInformationParseWithBufferProducer() func(ctx context.Context, readB
 func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ChannelInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ChannelInformation")
 	}

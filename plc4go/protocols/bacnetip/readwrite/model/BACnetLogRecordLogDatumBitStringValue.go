@@ -141,8 +141,6 @@ func BACnetLogRecordLogDatumBitStringValueParseWithBufferProducer(tagNumber uint
 func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumBitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumBitStringValue")
 	}

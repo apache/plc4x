@@ -281,8 +281,6 @@ func NLMUpdateKeyUpdateParseWithBufferProducer(apduLength uint16) func(ctx conte
 func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyUpdate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMUpdateKeyUpdate")
 	}
@@ -439,21 +437,8 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 			}
 		}
 
-		// Array Field (set1Keys)
-		if pushErr := writeBuffer.PushContext("set1Keys", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for set1Keys")
-		}
-		for _curItem, _element := range m.GetSet1Keys() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet1Keys()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'set1Keys' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("set1Keys", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for set1Keys")
+		if err := WriteComplexTypeArrayField(ctx, "set1Keys", m.GetSet1Keys(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'set1Keys' field")
 		}
 
 		// Optional Field (set2KeyRevision) (Can be skipped, if the value is null)
@@ -496,21 +481,8 @@ func (m *_NLMUpdateKeyUpdate) SerializeWithWriteBuffer(ctx context.Context, writ
 			}
 		}
 
-		// Array Field (set2Keys)
-		if pushErr := writeBuffer.PushContext("set2Keys", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for set2Keys")
-		}
-		for _curItem, _element := range m.GetSet2Keys() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSet2Keys()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'set2Keys' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("set2Keys", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for set2Keys")
+		if err := WriteComplexTypeArrayField(ctx, "set2Keys", m.GetSet2Keys(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'set2Keys' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMUpdateKeyUpdate"); popErr != nil {

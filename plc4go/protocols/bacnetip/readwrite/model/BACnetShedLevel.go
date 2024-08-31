@@ -156,8 +156,6 @@ func BACnetShedLevelParseWithBufferProducer[T BACnetShedLevel]() func(ctx contex
 func BACnetShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetShedLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetShedLevel")
 	}

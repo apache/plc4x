@@ -92,8 +92,6 @@ func SessionAuthenticationTokenParseWithBufferProducer() func(ctx context.Contex
 func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionAuthenticationToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionAuthenticationToken")
 	}

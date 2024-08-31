@@ -163,8 +163,6 @@ func ModificationInfoParseWithBufferProducer(identifier string) func(ctx context
 func ModificationInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ModificationInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModificationInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModificationInfo")
 	}

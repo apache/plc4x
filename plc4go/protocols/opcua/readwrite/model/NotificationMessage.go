@@ -181,8 +181,6 @@ func NotificationMessageParseWithBufferProducer(identifier string) func(ctx cont
 func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NotificationMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NotificationMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NotificationMessage")
 	}
@@ -264,21 +262,8 @@ func (m *_NotificationMessage) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfNotificationDataErr, "Error serializing 'noOfNotificationData' field")
 		}
 
-		// Array Field (notificationData)
-		if pushErr := writeBuffer.PushContext("notificationData", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for notificationData")
-		}
-		for _curItem, _element := range m.GetNotificationData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNotificationData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'notificationData' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("notificationData", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for notificationData")
+		if err := WriteComplexTypeArrayField(ctx, "notificationData", m.GetNotificationData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'notificationData' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NotificationMessage"); popErr != nil {

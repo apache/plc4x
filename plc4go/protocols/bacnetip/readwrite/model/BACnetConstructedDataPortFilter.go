@@ -187,8 +187,6 @@ func BACnetConstructedDataPortFilterParseWithBufferProducer(tagNumber uint8, obj
 func BACnetConstructedDataPortFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPortFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPortFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPortFilter")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataPortFilter) SerializeWithWriteBuffer(ctx context.
 			}
 		}
 
-		// Array Field (portFilter)
-		if pushErr := writeBuffer.PushContext("portFilter", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for portFilter")
-		}
-		for _curItem, _element := range m.GetPortFilter() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPortFilter()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'portFilter' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("portFilter", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for portFilter")
+		if err := WriteComplexTypeArrayField(ctx, "portFilter", m.GetPortFilter(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'portFilter' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPortFilter"); popErr != nil {

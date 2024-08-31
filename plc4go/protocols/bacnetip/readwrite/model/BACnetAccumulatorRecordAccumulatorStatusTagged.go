@@ -128,8 +128,6 @@ func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBufferProducer(tagNu
 func BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccumulatorRecordAccumulatorStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccumulatorRecordAccumulatorStatusTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccumulatorRecordAccumulatorStatusTagged")
 	}

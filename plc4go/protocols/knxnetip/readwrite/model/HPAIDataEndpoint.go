@@ -137,8 +137,6 @@ func HPAIDataEndpointParseWithBufferProducer() func(ctx context.Context, readBuf
 func HPAIDataEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIDataEndpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HPAIDataEndpoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HPAIDataEndpoint")
 	}

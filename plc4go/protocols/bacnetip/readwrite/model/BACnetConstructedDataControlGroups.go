@@ -187,8 +187,6 @@ func BACnetConstructedDataControlGroupsParseWithBufferProducer(tagNumber uint8, 
 func BACnetConstructedDataControlGroupsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlGroups, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataControlGroups"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataControlGroups")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataControlGroups) SerializeWithWriteBuffer(ctx conte
 			}
 		}
 
-		// Array Field (controlGroups)
-		if pushErr := writeBuffer.PushContext("controlGroups", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for controlGroups")
-		}
-		for _curItem, _element := range m.GetControlGroups() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetControlGroups()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'controlGroups' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("controlGroups", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for controlGroups")
+		if err := WriteComplexTypeArrayField(ctx, "controlGroups", m.GetControlGroups(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'controlGroups' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataControlGroups"); popErr != nil {

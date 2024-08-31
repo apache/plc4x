@@ -123,8 +123,6 @@ func ParameterValueParseWithBufferProducer[T ParameterValue](parameterType Param
 func ParameterValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValue")
 	}

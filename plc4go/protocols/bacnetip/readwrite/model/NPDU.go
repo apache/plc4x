@@ -316,8 +316,6 @@ func NPDUParseWithBufferProducer(npduLength uint16) func(ctx context.Context, re
 func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NPDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NPDU")
 	}
@@ -487,19 +485,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	}
 
-	// Array Field (destinationAddress)
-	if pushErr := writeBuffer.PushContext("destinationAddress", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for destinationAddress")
-	}
-	for _curItem, _element := range m.GetDestinationAddress() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'destinationAddress' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("destinationAddress", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for destinationAddress")
+	if err := WriteSimpleTypeArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 	}
 	// Virtual field
 	destinationLengthAddon := m.GetDestinationLengthAddon()
@@ -528,19 +515,8 @@ func (m *_NPDU) SerializeWithWriteBuffer(ctx context.Context, writeBuffer utils.
 		}
 	}
 
-	// Array Field (sourceAddress)
-	if pushErr := writeBuffer.PushContext("sourceAddress", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for sourceAddress")
-	}
-	for _curItem, _element := range m.GetSourceAddress() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'sourceAddress' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("sourceAddress", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for sourceAddress")
+	if err := WriteSimpleTypeArrayField(ctx, "sourceAddress", m.GetSourceAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'sourceAddress' field")
 	}
 	// Virtual field
 	sourceLengthAddon := m.GetSourceLengthAddon()

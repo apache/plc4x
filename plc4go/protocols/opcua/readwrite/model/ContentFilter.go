@@ -159,8 +159,6 @@ func ContentFilterParseWithBufferProducer(identifier string) func(ctx context.Co
 func ContentFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ContentFilter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ContentFilter")
 	}
@@ -216,21 +214,8 @@ func (m *_ContentFilter) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_noOfElementsErr, "Error serializing 'noOfElements' field")
 		}
 
-		// Array Field (elements)
-		if pushErr := writeBuffer.PushContext("elements", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for elements")
-		}
-		for _curItem, _element := range m.GetElements() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetElements()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'elements' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("elements", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for elements")
+		if err := WriteComplexTypeArrayField(ctx, "elements", m.GetElements(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'elements' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ContentFilter"); popErr != nil {

@@ -120,8 +120,6 @@ func AdsMultiRequestItemParseWithBufferProducer[T AdsMultiRequestItem](indexGrou
 func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsMultiRequestItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsMultiRequestItem")
 	}

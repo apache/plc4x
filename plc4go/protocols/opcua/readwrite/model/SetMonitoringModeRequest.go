@@ -187,8 +187,6 @@ func SetMonitoringModeRequestParseWithBufferProducer(identifier string) func(ctx
 func SetMonitoringModeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetMonitoringModeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetMonitoringModeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetMonitoringModeRequest")
 	}
@@ -293,19 +291,8 @@ func (m *_SetMonitoringModeRequest) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(_noOfMonitoredItemIdsErr, "Error serializing 'noOfMonitoredItemIds' field")
 		}
 
-		// Array Field (monitoredItemIds)
-		if pushErr := writeBuffer.PushContext("monitoredItemIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for monitoredItemIds")
-		}
-		for _curItem, _element := range m.GetMonitoredItemIds() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'monitoredItemIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("monitoredItemIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for monitoredItemIds")
+		if err := WriteSimpleTypeArrayField(ctx, "monitoredItemIds", m.GetMonitoredItemIds(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'monitoredItemIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetMonitoringModeRequest"); popErr != nil {

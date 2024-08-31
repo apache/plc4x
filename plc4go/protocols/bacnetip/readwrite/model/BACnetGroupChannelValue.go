@@ -136,8 +136,6 @@ func BACnetGroupChannelValueParseWithBufferProducer() func(ctx context.Context, 
 func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetGroupChannelValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetGroupChannelValue")
 	}

@@ -148,8 +148,6 @@ func IdentifyReplyCommandLogicalAssignmentParseWithBufferProducer(attribute Attr
 func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandLogicalAssignment"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandLogicalAssignment")
 	}
@@ -194,21 +192,8 @@ func (m *_IdentifyReplyCommandLogicalAssignment) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandLogicalAssignment")
 		}
 
-		// Array Field (logicAssigment)
-		if pushErr := writeBuffer.PushContext("logicAssigment", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logicAssigment")
-		}
-		for _curItem, _element := range m.GetLogicAssigment() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLogicAssigment()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'logicAssigment' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("logicAssigment", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logicAssigment")
+		if err := WriteComplexTypeArrayField(ctx, "logicAssigment", m.GetLogicAssigment(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'logicAssigment' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandLogicalAssignment"); popErr != nil {

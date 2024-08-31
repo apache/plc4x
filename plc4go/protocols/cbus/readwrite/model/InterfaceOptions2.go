@@ -149,8 +149,6 @@ func InterfaceOptions2ParseWithBufferProducer() func(ctx context.Context, readBu
 func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("InterfaceOptions2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for InterfaceOptions2")
 	}

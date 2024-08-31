@@ -141,8 +141,6 @@ func KnxNetIpDeviceManagementParseWithBufferProducer() func(ctx context.Context,
 func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetIpDeviceManagement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpDeviceManagement")
 	}

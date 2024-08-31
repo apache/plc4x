@@ -152,8 +152,6 @@ func RationalNumberParseWithBufferProducer(identifier string) func(ctx context.C
 func RationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RationalNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RationalNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RationalNumber")
 	}

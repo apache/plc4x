@@ -161,8 +161,6 @@ func VariantBooleanParseWithBufferProducer(arrayLengthSpecified bool) func(ctx c
 func VariantBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantBoolean"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantBoolean")
 	}
@@ -221,9 +219,7 @@ func (m *_VariantBoolean) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			}
 		}
 
-		// Array Field (value)
-		// Byte Array field (value)
-		if err := writeBuffer.WriteByteArray("value", m.GetValue()); err != nil {
+		if err := WriteByteArrayField(ctx, "value", m.GetValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 

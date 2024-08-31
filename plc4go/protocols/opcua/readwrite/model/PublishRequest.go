@@ -170,8 +170,6 @@ func PublishRequestParseWithBufferProducer(identifier string) func(ctx context.C
 func PublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PublishRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PublishRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_PublishRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_noOfSubscriptionAcknowledgementsErr, "Error serializing 'noOfSubscriptionAcknowledgements' field")
 		}
 
-		// Array Field (subscriptionAcknowledgements)
-		if pushErr := writeBuffer.PushContext("subscriptionAcknowledgements", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subscriptionAcknowledgements")
-		}
-		for _curItem, _element := range m.GetSubscriptionAcknowledgements() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubscriptionAcknowledgements()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subscriptionAcknowledgements' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subscriptionAcknowledgements", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subscriptionAcknowledgements")
+		if err := WriteComplexTypeArrayField(ctx, "subscriptionAcknowledgements", m.GetSubscriptionAcknowledgements(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'subscriptionAcknowledgements' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PublishRequest"); popErr != nil {

@@ -124,8 +124,6 @@ func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, r
 func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7Address"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7Address")
 	}

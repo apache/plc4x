@@ -168,8 +168,6 @@ func BVLCParseWithBufferProducer[T BVLC]() func(ctx context.Context, readBuffer 
 func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLC"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLC")
 	}

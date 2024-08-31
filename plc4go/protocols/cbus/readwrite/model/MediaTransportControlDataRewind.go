@@ -229,8 +229,6 @@ func MediaTransportControlDataRewindParseWithBufferProducer() func(ctx context.C
 func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataRewind"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataRewind")
 	}

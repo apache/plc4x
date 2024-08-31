@@ -161,8 +161,6 @@ func VariantDoubleParseWithBufferProducer(arrayLengthSpecified bool) func(ctx co
 func VariantDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("VariantDouble"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for VariantDouble")
 	}
@@ -221,19 +219,8 @@ func (m *_VariantDouble) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			}
 		}
 
-		// Array Field (value)
-		if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for value")
-		}
-		for _curItem, _element := range m.GetValue() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("", 64, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'value' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for value")
+		if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'value' field")
 		}
 
 		if popErr := writeBuffer.PopContext("VariantDouble"); popErr != nil {

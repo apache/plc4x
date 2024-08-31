@@ -141,8 +141,6 @@ func AdsDiscoveryBlockHostNameParseWithBufferProducer() func(ctx context.Context
 func AdsDiscoveryBlockHostNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockHostName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockHostName")
 	}

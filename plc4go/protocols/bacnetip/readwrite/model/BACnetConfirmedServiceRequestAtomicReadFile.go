@@ -153,8 +153,6 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBufferProducer(serviceR
 func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAtomicReadFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAtomicReadFile")
 	}

@@ -193,8 +193,6 @@ func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBufferProducer(
 func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCyclicServicesSubscribeRequest")
 	}
@@ -281,21 +279,8 @@ func (m *_S7PayloadUserDataItemCyclicServicesSubscribeRequest) SerializeWithWrit
 			return errors.Wrap(_timeFactorErr, "Error serializing 'timeFactor' field")
 		}
 
-		// Array Field (item)
-		if pushErr := writeBuffer.PushContext("item", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for item")
-		}
-		for _curItem, _element := range m.GetItem() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItem()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'item' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("item", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for item")
+		if err := WriteComplexTypeArrayField(ctx, "item", m.GetItem(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'item' field")
 		}
 
 		if popErr := writeBuffer.PopContext("S7PayloadUserDataItemCyclicServicesSubscribeRequest"); popErr != nil {

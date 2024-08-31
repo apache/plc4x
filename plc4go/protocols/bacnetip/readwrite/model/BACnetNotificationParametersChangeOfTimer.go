@@ -224,8 +224,6 @@ func BACnetNotificationParametersChangeOfTimerParseWithBufferProducer(peekedTagN
 func BACnetNotificationParametersChangeOfTimerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfTimer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfTimer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfTimer")
 	}

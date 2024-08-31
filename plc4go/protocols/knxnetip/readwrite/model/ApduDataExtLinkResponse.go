@@ -118,8 +118,6 @@ func ApduDataExtLinkResponseParseWithBufferProducer(length uint8) func(ctx conte
 func ApduDataExtLinkResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtLinkResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtLinkResponse")
 	}

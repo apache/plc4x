@@ -134,8 +134,6 @@ func SzlIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SzlId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SzlId")
 	}

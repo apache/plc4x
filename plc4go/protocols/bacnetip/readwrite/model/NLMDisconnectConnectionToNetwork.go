@@ -141,8 +141,6 @@ func NLMDisconnectConnectionToNetworkParseWithBufferProducer(apduLength uint16) 
 func NLMDisconnectConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMDisconnectConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMDisconnectConnectionToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMDisconnectConnectionToNetwork")
 	}

@@ -170,8 +170,6 @@ func AliasNameDataTypeParseWithBufferProducer(identifier string) func(ctx contex
 func AliasNameDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AliasNameDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AliasNameDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AliasNameDataType")
 	}
@@ -245,21 +243,8 @@ func (m *_AliasNameDataType) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfReferencedNodesErr, "Error serializing 'noOfReferencedNodes' field")
 		}
 
-		// Array Field (referencedNodes)
-		if pushErr := writeBuffer.PushContext("referencedNodes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for referencedNodes")
-		}
-		for _curItem, _element := range m.GetReferencedNodes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetReferencedNodes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'referencedNodes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("referencedNodes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for referencedNodes")
+		if err := WriteComplexTypeArrayField(ctx, "referencedNodes", m.GetReferencedNodes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'referencedNodes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AliasNameDataType"); popErr != nil {

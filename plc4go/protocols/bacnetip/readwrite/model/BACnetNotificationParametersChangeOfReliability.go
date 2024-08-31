@@ -185,8 +185,6 @@ func BACnetNotificationParametersChangeOfReliabilityParseWithBufferProducer(peek
 func BACnetNotificationParametersChangeOfReliabilityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersChangeOfReliability, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetNotificationParametersChangeOfReliability"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetNotificationParametersChangeOfReliability")
 	}

@@ -92,8 +92,6 @@ func StructureParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Structure"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Structure")
 	}

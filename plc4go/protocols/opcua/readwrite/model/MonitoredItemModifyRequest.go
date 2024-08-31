@@ -152,8 +152,6 @@ func MonitoredItemModifyRequestParseWithBufferProducer(identifier string) func(c
 func MonitoredItemModifyRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemModifyRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoredItemModifyRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoredItemModifyRequest")
 	}

@@ -159,8 +159,6 @@ func StatusRequestLevelParseWithBufferProducer() func(ctx context.Context, readB
 func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusRequestLevel"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequestLevel")
 	}

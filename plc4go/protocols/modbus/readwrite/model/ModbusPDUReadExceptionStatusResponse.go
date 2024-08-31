@@ -149,8 +149,6 @@ func ModbusPDUReadExceptionStatusResponseParseWithBufferProducer(response bool) 
 func ModbusPDUReadExceptionStatusResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadExceptionStatusResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadExceptionStatusResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadExceptionStatusResponse")
 	}

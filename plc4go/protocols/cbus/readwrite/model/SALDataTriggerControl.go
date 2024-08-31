@@ -143,8 +143,6 @@ func SALDataTriggerControlParseWithBufferProducer(applicationId ApplicationId) f
 func SALDataTriggerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataTriggerControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataTriggerControl")
 	}

@@ -153,8 +153,6 @@ func BACnetPropertyWriteDefinitionParseWithBufferProducer(objectTypeArgument BAC
 func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyWriteDefinition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyWriteDefinition")
 	}

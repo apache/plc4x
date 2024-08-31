@@ -139,8 +139,6 @@ func BACnetChannelValueBitStringParseWithBufferProducer() func(ctx context.Conte
 func BACnetChannelValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueBitString")
 	}

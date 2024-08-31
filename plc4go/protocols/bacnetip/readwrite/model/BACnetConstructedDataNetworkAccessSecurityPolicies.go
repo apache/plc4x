@@ -187,8 +187,6 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBufferProducer(t
 func BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkAccessSecurityPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataNetworkAccessSecurityPolicies")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataNetworkAccessSecurityPolicies) SerializeWithWrite
 			}
 		}
 
-		// Array Field (networkAccessSecurityPolicies)
-		if pushErr := writeBuffer.PushContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for networkAccessSecurityPolicies")
-		}
-		for _curItem, _element := range m.GetNetworkAccessSecurityPolicies() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNetworkAccessSecurityPolicies()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'networkAccessSecurityPolicies' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("networkAccessSecurityPolicies", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for networkAccessSecurityPolicies")
+		if err := WriteComplexTypeArrayField(ctx, "networkAccessSecurityPolicies", m.GetNetworkAccessSecurityPolicies(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'networkAccessSecurityPolicies' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataNetworkAccessSecurityPolicies"); popErr != nil {

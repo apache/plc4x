@@ -248,8 +248,6 @@ func PubSubGroupDataTypeParseWithBufferProducer(identifier string) func(ctx cont
 func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubGroupDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PubSubGroupDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PubSubGroupDataType")
 	}
@@ -412,21 +410,8 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfSecurityKeyServicesErr, "Error serializing 'noOfSecurityKeyServices' field")
 		}
 
-		// Array Field (securityKeyServices)
-		if pushErr := writeBuffer.PushContext("securityKeyServices", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityKeyServices")
-		}
-		for _curItem, _element := range m.GetSecurityKeyServices() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSecurityKeyServices()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'securityKeyServices' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("securityKeyServices", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityKeyServices")
+		if err := WriteComplexTypeArrayField(ctx, "securityKeyServices", m.GetSecurityKeyServices(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityKeyServices' field")
 		}
 
 		// Simple Field (maxNetworkMessageSize)
@@ -443,21 +428,8 @@ func (m *_PubSubGroupDataType) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}
 
-		// Array Field (groupProperties)
-		if pushErr := writeBuffer.PushContext("groupProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupProperties")
-		}
-		for _curItem, _element := range m.GetGroupProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetGroupProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'groupProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("groupProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupProperties")
+		if err := WriteComplexTypeArrayField(ctx, "groupProperties", m.GetGroupProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupProperties' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PubSubGroupDataType"); popErr != nil {

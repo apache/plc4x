@@ -158,8 +158,6 @@ func BACnetApplicationTagUnsignedIntegerParseWithBufferProducer(header BACnetTag
 func BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagUnsignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagUnsignedInteger"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagUnsignedInteger")
 	}

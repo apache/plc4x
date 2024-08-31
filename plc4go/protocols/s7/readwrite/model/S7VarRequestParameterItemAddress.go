@@ -144,8 +144,6 @@ func S7VarRequestParameterItemAddressParseWithBufferProducer() func(ctx context.
 func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7VarRequestParameterItemAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7VarRequestParameterItemAddress")
 	}

@@ -139,8 +139,6 @@ func BACnetChannelValueEnumeratedParseWithBufferProducer() func(ctx context.Cont
 func BACnetChannelValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueEnumerated")
 	}

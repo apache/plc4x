@@ -186,8 +186,6 @@ func BrowseNextRequestParseWithBufferProducer(identifier string) func(ctx contex
 func BrowseNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowseNextRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BrowseNextRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BrowseNextRequest")
 	}
@@ -296,21 +294,8 @@ func (m *_BrowseNextRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfContinuationPointsErr, "Error serializing 'noOfContinuationPoints' field")
 		}
 
-		// Array Field (continuationPoints)
-		if pushErr := writeBuffer.PushContext("continuationPoints", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for continuationPoints")
-		}
-		for _curItem, _element := range m.GetContinuationPoints() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetContinuationPoints()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'continuationPoints' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("continuationPoints", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for continuationPoints")
+		if err := WriteComplexTypeArrayField(ctx, "continuationPoints", m.GetContinuationPoints(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'continuationPoints' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowseNextRequest"); popErr != nil {

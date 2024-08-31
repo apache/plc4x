@@ -209,8 +209,6 @@ func SecurityDataArmSystemParseWithBufferProducer() func(ctx context.Context, re
 func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataArmSystem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataArmSystem")
 	}

@@ -194,8 +194,6 @@ func DeleteReferencesItemParseWithBufferProducer(identifier string) func(ctx con
 func DeleteReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteReferencesItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteReferencesItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteReferencesItem")
 	}

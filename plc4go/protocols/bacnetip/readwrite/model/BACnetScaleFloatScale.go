@@ -139,8 +139,6 @@ func BACnetScaleFloatScaleParseWithBufferProducer() func(ctx context.Context, re
 func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetScaleFloatScale"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetScaleFloatScale")
 	}

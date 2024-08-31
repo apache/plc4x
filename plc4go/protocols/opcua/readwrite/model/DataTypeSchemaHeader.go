@@ -246,8 +246,6 @@ func DataTypeSchemaHeaderParseWithBufferProducer(identifier string) func(ctx con
 func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataTypeSchemaHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataTypeSchemaHeader"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataTypeSchemaHeader")
 	}
@@ -339,21 +337,8 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfNamespacesErr, "Error serializing 'noOfNamespaces' field")
 		}
 
-		// Array Field (namespaces)
-		if pushErr := writeBuffer.PushContext("namespaces", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for namespaces")
-		}
-		for _curItem, _element := range m.GetNamespaces() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNamespaces()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'namespaces' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("namespaces", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for namespaces")
+		if err := WriteComplexTypeArrayField(ctx, "namespaces", m.GetNamespaces(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'namespaces' field")
 		}
 
 		// Simple Field (noOfStructureDataTypes)
@@ -363,21 +348,8 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfStructureDataTypesErr, "Error serializing 'noOfStructureDataTypes' field")
 		}
 
-		// Array Field (structureDataTypes)
-		if pushErr := writeBuffer.PushContext("structureDataTypes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for structureDataTypes")
-		}
-		for _curItem, _element := range m.GetStructureDataTypes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetStructureDataTypes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'structureDataTypes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("structureDataTypes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for structureDataTypes")
+		if err := WriteComplexTypeArrayField(ctx, "structureDataTypes", m.GetStructureDataTypes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'structureDataTypes' field")
 		}
 
 		// Simple Field (noOfEnumDataTypes)
@@ -387,21 +359,8 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfEnumDataTypesErr, "Error serializing 'noOfEnumDataTypes' field")
 		}
 
-		// Array Field (enumDataTypes)
-		if pushErr := writeBuffer.PushContext("enumDataTypes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for enumDataTypes")
-		}
-		for _curItem, _element := range m.GetEnumDataTypes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEnumDataTypes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'enumDataTypes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("enumDataTypes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for enumDataTypes")
+		if err := WriteComplexTypeArrayField(ctx, "enumDataTypes", m.GetEnumDataTypes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'enumDataTypes' field")
 		}
 
 		// Simple Field (noOfSimpleDataTypes)
@@ -411,21 +370,8 @@ func (m *_DataTypeSchemaHeader) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfSimpleDataTypesErr, "Error serializing 'noOfSimpleDataTypes' field")
 		}
 
-		// Array Field (simpleDataTypes)
-		if pushErr := writeBuffer.PushContext("simpleDataTypes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for simpleDataTypes")
-		}
-		for _curItem, _element := range m.GetSimpleDataTypes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSimpleDataTypes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'simpleDataTypes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("simpleDataTypes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for simpleDataTypes")
+		if err := WriteComplexTypeArrayField(ctx, "simpleDataTypes", m.GetSimpleDataTypes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'simpleDataTypes' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DataTypeSchemaHeader"); popErr != nil {

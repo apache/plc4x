@@ -144,8 +144,6 @@ func StatusByteParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusByte"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusByte")
 	}

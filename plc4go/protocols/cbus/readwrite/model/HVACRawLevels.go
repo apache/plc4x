@@ -133,8 +133,6 @@ func HVACRawLevelsParseWithBufferProducer() func(ctx context.Context, readBuffer
 func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACRawLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACRawLevels")
 	}

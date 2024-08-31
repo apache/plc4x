@@ -138,8 +138,6 @@ func BACnetActionListParseWithBufferProducer() func(ctx context.Context, readBuf
 func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetActionList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetActionList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetActionList")
 	}
@@ -202,21 +200,8 @@ func (m *_BACnetActionList) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
 	}
 
-	// Array Field (action)
-	if pushErr := writeBuffer.PushContext("action", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for action")
-	}
-	for _curItem, _element := range m.GetAction() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAction()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'action' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("action", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for action")
+	if err := WriteComplexTypeArrayField(ctx, "action", m.GetAction(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'action' field")
 	}
 
 	// Simple Field (innerClosingTag)

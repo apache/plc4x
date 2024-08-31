@@ -189,8 +189,6 @@ func GroupObjectDescriptorRealisationType1ParseWithBufferProducer() func(ctx con
 func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GroupObjectDescriptorRealisationType1"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GroupObjectDescriptorRealisationType1")
 	}

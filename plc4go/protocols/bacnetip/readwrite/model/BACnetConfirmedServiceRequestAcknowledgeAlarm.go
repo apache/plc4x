@@ -197,8 +197,6 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBufferProducer(servic
 func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAcknowledgeAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestAcknowledgeAlarm"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestAcknowledgeAlarm")
 	}

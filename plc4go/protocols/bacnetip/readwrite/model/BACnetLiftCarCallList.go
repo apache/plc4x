@@ -114,8 +114,6 @@ func BACnetLiftCarCallListParseWithBufferProducer() func(ctx context.Context, re
 func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLiftCarCallList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftCarCallList")
 	}

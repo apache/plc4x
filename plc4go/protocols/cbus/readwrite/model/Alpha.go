@@ -114,8 +114,6 @@ func AlphaParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Alpha"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Alpha")
 	}

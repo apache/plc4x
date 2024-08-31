@@ -166,8 +166,6 @@ func COTPPacketConnectionResponseParseWithBufferProducer(cotpLen uint16) func(ct
 func COTPPacketConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPPacketConnectionResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacketConnectionResponse")
 	}

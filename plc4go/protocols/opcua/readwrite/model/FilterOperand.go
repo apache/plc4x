@@ -118,8 +118,6 @@ func FilterOperandParseWithBufferProducer(identifier string) func(ctx context.Co
 func FilterOperandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FilterOperand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FilterOperand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FilterOperand")
 	}

@@ -168,8 +168,6 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBufferProducer(tagN
 func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataBACnetIPv6MulticastAddress")
 	}

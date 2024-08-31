@@ -170,8 +170,6 @@ func WriteRequestParseWithBufferProducer(identifier string) func(ctx context.Con
 func WriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriteRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriteRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_WriteRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_noOfNodesToWriteErr, "Error serializing 'noOfNodesToWrite' field")
 		}
 
-		// Array Field (nodesToWrite)
-		if pushErr := writeBuffer.PushContext("nodesToWrite", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToWrite")
-		}
-		for _curItem, _element := range m.GetNodesToWrite() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToWrite()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToWrite' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToWrite", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToWrite")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToWrite", m.GetNodesToWrite(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToWrite' field")
 		}
 
 		if popErr := writeBuffer.PopContext("WriteRequest"); popErr != nil {

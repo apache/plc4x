@@ -161,8 +161,6 @@ func BACnetFaultParameterFaultStateParseWithBufferProducer() func(ctx context.Co
 func BACnetFaultParameterFaultStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultState, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultState"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultState")
 	}

@@ -153,8 +153,6 @@ func BACnetConstructedDataActiveCOVSubscriptionsParseWithBufferProducer(tagNumbe
 func BACnetConstructedDataActiveCOVSubscriptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveCOVSubscriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataActiveCOVSubscriptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataActiveCOVSubscriptions")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataActiveCOVSubscriptions) SerializeWithWriteBuffer(
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataActiveCOVSubscriptions")
 		}
 
-		// Array Field (activeCOVSubscriptions)
-		if pushErr := writeBuffer.PushContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for activeCOVSubscriptions")
-		}
-		for _curItem, _element := range m.GetActiveCOVSubscriptions() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetActiveCOVSubscriptions()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'activeCOVSubscriptions' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("activeCOVSubscriptions", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for activeCOVSubscriptions")
+		if err := WriteComplexTypeArrayField(ctx, "activeCOVSubscriptions", m.GetActiveCOVSubscriptions(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'activeCOVSubscriptions' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataActiveCOVSubscriptions"); popErr != nil {

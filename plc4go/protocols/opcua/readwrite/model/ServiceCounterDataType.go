@@ -152,8 +152,6 @@ func ServiceCounterDataTypeParseWithBufferProducer(identifier string) func(ctx c
 func ServiceCounterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServiceCounterDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServiceCounterDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServiceCounterDataType")
 	}

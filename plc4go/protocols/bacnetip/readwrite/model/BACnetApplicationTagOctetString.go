@@ -139,8 +139,6 @@ func BACnetApplicationTagOctetStringParseWithBufferProducer(header BACnetTagHead
 func BACnetApplicationTagOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagOctetString")
 	}

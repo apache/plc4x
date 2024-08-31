@@ -120,8 +120,6 @@ func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType Firmwa
 func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ComObjectTable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ComObjectTable")
 	}

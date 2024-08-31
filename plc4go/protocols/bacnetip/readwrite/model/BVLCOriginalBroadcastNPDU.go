@@ -146,8 +146,6 @@ func BVLCOriginalBroadcastNPDUParseWithBufferProducer(bvlcPayloadLength uint16) 
 func BVLCOriginalBroadcastNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCOriginalBroadcastNPDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCOriginalBroadcastNPDU")
 	}

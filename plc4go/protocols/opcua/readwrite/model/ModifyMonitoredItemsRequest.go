@@ -192,8 +192,6 @@ func ModifyMonitoredItemsRequestParseWithBufferProducer(identifier string) func(
 func ModifyMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ModifyMonitoredItemsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModifyMonitoredItemsRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModifyMonitoredItemsRequest")
 	}
@@ -298,21 +296,8 @@ func (m *_ModifyMonitoredItemsRequest) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_noOfItemsToModifyErr, "Error serializing 'noOfItemsToModify' field")
 		}
 
-		// Array Field (itemsToModify)
-		if pushErr := writeBuffer.PushContext("itemsToModify", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for itemsToModify")
-		}
-		for _curItem, _element := range m.GetItemsToModify() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetItemsToModify()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'itemsToModify' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("itemsToModify", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for itemsToModify")
+		if err := WriteComplexTypeArrayField(ctx, "itemsToModify", m.GetItemsToModify(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'itemsToModify' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModifyMonitoredItemsRequest"); popErr != nil {

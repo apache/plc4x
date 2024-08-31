@@ -176,8 +176,6 @@ func BACnetConfirmedServiceRequestReadRangeRangeParseWithBufferProducer[T BACnet
 func BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRange")
 	}

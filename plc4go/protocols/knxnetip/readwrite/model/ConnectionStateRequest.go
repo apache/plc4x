@@ -159,8 +159,6 @@ func ConnectionStateRequestParseWithBufferProducer() func(ctx context.Context, r
 func ConnectionStateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionStateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectionStateRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectionStateRequest")
 	}

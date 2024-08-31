@@ -139,8 +139,6 @@ func ServicesParseWithBufferProducer(servicesLen uint16) func(ctx context.Contex
 func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Services"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Services")
 	}
@@ -199,36 +197,12 @@ func (m *_Services) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 		return errors.Wrap(_serviceNbErr, "Error serializing 'serviceNb' field")
 	}
 
-	// Array Field (offsets)
-	if pushErr := writeBuffer.PushContext("offsets", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for offsets")
-	}
-	for _curItem, _element := range m.GetOffsets() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'offsets' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("offsets", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for offsets")
+	if err := WriteSimpleTypeArrayField(ctx, "offsets", m.GetOffsets(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'offsets' field")
 	}
 
-	// Array Field (services)
-	if pushErr := writeBuffer.PushContext("services", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for services")
-	}
-	for _curItem, _element := range m.GetServices() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServices()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'services' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("services", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for services")
+	if err := WriteComplexTypeArrayField(ctx, "services", m.GetServices(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'services' field")
 	}
 
 	if popErr := writeBuffer.PopContext("Services"); popErr != nil {

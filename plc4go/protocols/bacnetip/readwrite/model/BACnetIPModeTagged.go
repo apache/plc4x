@@ -128,8 +128,6 @@ func BACnetIPModeTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClas
 func BACnetIPModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetIPModeTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetIPModeTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetIPModeTagged")
 	}

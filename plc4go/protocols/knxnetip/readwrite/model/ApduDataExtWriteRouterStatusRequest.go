@@ -118,8 +118,6 @@ func ApduDataExtWriteRouterStatusRequestParseWithBufferProducer(length uint8) fu
 func ApduDataExtWriteRouterStatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRouterStatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtWriteRouterStatusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtWriteRouterStatusRequest")
 	}

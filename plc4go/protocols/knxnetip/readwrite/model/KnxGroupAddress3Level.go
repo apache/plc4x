@@ -163,8 +163,6 @@ func KnxGroupAddress3LevelParseWithBufferProducer(numLevels uint8) func(ctx cont
 func KnxGroupAddress3LevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxGroupAddress3Level"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxGroupAddress3Level")
 	}

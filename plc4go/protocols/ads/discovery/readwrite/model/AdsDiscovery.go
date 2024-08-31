@@ -185,8 +185,6 @@ func AdsDiscoveryParseWithBufferProducer() func(ctx context.Context, readBuffer 
 func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscovery"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscovery")
 	}
@@ -317,21 +315,8 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_numBlocksErr, "Error serializing 'numBlocks' field")
 	}
 
-	// Array Field (blocks)
-	if pushErr := writeBuffer.PushContext("blocks", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for blocks")
-	}
-	for _curItem, _element := range m.GetBlocks() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetBlocks()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'blocks' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("blocks", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for blocks")
+	if err := WriteComplexTypeArrayField(ctx, "blocks", m.GetBlocks(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'blocks' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsDiscovery"); popErr != nil {

@@ -152,8 +152,6 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBufferProduce
 func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadRangeRangeByPosition")
 	}

@@ -229,8 +229,6 @@ func MediaTransportControlDataFastForwardParseWithBufferProducer() func(ctx cont
 func MediaTransportControlDataFastForwardParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataFastForward"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataFastForward")
 	}

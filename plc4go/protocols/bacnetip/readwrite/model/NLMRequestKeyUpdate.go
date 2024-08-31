@@ -207,8 +207,6 @@ func NLMRequestKeyUpdateParseWithBufferProducer(apduLength uint16) func(ctx cont
 func NLMRequestKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestKeyUpdate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMRequestKeyUpdate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMRequestKeyUpdate")
 	}

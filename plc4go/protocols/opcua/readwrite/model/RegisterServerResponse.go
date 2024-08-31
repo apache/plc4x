@@ -141,8 +141,6 @@ func RegisterServerResponseParseWithBufferProducer(identifier string) func(ctx c
 func RegisterServerResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterServerResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisterServerResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisterServerResponse")
 	}

@@ -186,8 +186,6 @@ func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() f
 func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CIPEncapsulationPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CIPEncapsulationPacket")
 	}
@@ -307,19 +305,8 @@ func (pm *_CIPEncapsulationPacket) SerializeParent(ctx context.Context, writeBuf
 		return errors.Wrap(_statusErr, "Error serializing 'status' field")
 	}
 
-	// Array Field (senderContext)
-	if pushErr := writeBuffer.PushContext("senderContext", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for senderContext")
-	}
-	for _curItem, _element := range m.GetSenderContext() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'senderContext' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("senderContext", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for senderContext")
+	if err := WriteSimpleTypeArrayField(ctx, "senderContext", m.GetSenderContext(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'senderContext' field")
 	}
 
 	// Simple Field (options)

@@ -216,8 +216,6 @@ func CEMIAdditionalInformationBusmonitorInfoParseWithBufferProducer() func(ctx c
 func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CEMIAdditionalInformationBusmonitorInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CEMIAdditionalInformationBusmonitorInfo")
 	}

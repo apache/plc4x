@@ -124,8 +124,6 @@ func PortSegmentTypeParseWithBufferProducer[T PortSegmentType]() func(ctx contex
 func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PortSegmentType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PortSegmentType")
 	}

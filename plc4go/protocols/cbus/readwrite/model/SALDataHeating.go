@@ -143,8 +143,6 @@ func SALDataHeatingParseWithBufferProducer(applicationId ApplicationId) func(ctx
 func SALDataHeatingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataHeating"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataHeating")
 	}

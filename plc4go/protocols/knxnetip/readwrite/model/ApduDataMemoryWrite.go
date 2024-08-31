@@ -118,8 +118,6 @@ func ApduDataMemoryWriteParseWithBufferProducer(dataLength uint8) func(ctx conte
 func ApduDataMemoryWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataMemoryWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataMemoryWrite")
 	}

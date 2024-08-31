@@ -143,8 +143,6 @@ func BVLCResultParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func BVLCResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCResult")
 	}

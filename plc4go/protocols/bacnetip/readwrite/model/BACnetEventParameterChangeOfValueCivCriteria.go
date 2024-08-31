@@ -179,8 +179,6 @@ func BACnetEventParameterChangeOfValueCivCriteriaParseWithBufferProducer[T BACne
 func BACnetEventParameterChangeOfValueCivCriteriaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteria, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfValueCivCriteria"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfValueCivCriteria")
 	}

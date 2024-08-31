@@ -118,8 +118,6 @@ func AccessControlDataAccessPointLeftOpenParseWithBufferProducer() func(ctx cont
 func AccessControlDataAccessPointLeftOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataAccessPointLeftOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AccessControlDataAccessPointLeftOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AccessControlDataAccessPointLeftOpen")
 	}

@@ -146,8 +146,6 @@ func AdsDiscoveryBlockVersionParseWithBufferProducer() func(ctx context.Context,
 func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockVersion"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockVersion")
 	}
@@ -203,9 +201,7 @@ func (m *_AdsDiscoveryBlockVersion) SerializeWithWriteBuffer(ctx context.Context
 			return errors.Wrap(_versionDataLenErr, "Error serializing 'versionDataLen' field")
 		}
 
-		// Array Field (versionData)
-		// Byte Array field (versionData)
-		if err := writeBuffer.WriteByteArray("versionData", m.GetVersionData()); err != nil {
+		if err := WriteByteArrayField(ctx, "versionData", m.GetVersionData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'versionData' field")
 		}
 

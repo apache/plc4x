@@ -232,8 +232,6 @@ func CALReplyLongParseWithBufferProducer(cBusOptions CBusOptions, requestContext
 func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyLong, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALReplyLong"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALReplyLong")
 	}

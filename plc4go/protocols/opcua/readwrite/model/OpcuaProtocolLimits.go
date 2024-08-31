@@ -144,8 +144,6 @@ func OpcuaProtocolLimitsParseWithBufferProducer() func(ctx context.Context, read
 func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaProtocolLimits"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaProtocolLimits")
 	}

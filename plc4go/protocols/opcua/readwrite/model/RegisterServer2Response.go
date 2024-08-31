@@ -199,8 +199,6 @@ func RegisterServer2ResponseParseWithBufferProducer(identifier string) func(ctx 
 func RegisterServer2ResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterServer2Response, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RegisterServer2Response"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RegisterServer2Response")
 	}
@@ -286,21 +284,8 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_noOfConfigurationResultsErr, "Error serializing 'noOfConfigurationResults' field")
 		}
 
-		// Array Field (configurationResults)
-		if pushErr := writeBuffer.PushContext("configurationResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for configurationResults")
-		}
-		for _curItem, _element := range m.GetConfigurationResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConfigurationResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'configurationResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("configurationResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for configurationResults")
+		if err := WriteComplexTypeArrayField(ctx, "configurationResults", m.GetConfigurationResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'configurationResults' field")
 		}
 
 		// Simple Field (noOfDiagnosticInfos)
@@ -310,21 +295,8 @@ func (m *_RegisterServer2Response) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_noOfDiagnosticInfosErr, "Error serializing 'noOfDiagnosticInfos' field")
 		}
 
-		// Array Field (diagnosticInfos)
-		if pushErr := writeBuffer.PushContext("diagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for diagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'diagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("diagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for diagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "diagnosticInfos", m.GetDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'diagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RegisterServer2Response"); popErr != nil {

@@ -218,8 +218,6 @@ func QuantityDimensionParseWithBufferProducer(identifier string) func(ctx contex
 func QuantityDimensionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QuantityDimension, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QuantityDimension"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QuantityDimension")
 	}

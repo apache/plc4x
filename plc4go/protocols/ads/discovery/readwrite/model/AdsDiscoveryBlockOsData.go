@@ -146,8 +146,6 @@ func AdsDiscoveryBlockOsDataParseWithBufferProducer() func(ctx context.Context, 
 func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockOsData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockOsData")
 	}
@@ -203,9 +201,7 @@ func (m *_AdsDiscoveryBlockOsData) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(_osDataLenErr, "Error serializing 'osDataLen' field")
 		}
 
-		// Array Field (osData)
-		// Byte Array field (osData)
-		if err := writeBuffer.WriteByteArray("osData", m.GetOsData()); err != nil {
+		if err := WriteByteArrayField(ctx, "osData", m.GetOsData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'osData' field")
 		}
 

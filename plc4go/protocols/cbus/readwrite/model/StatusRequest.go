@@ -137,8 +137,6 @@ func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Co
 func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusRequest")
 	}

@@ -194,8 +194,6 @@ func BACnetEventParameterChangeOfLifeSavetyParseWithBufferProducer() func(ctx co
 func BACnetEventParameterChangeOfLifeSavetyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfLifeSavety, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfLifeSavety"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfLifeSavety")
 	}

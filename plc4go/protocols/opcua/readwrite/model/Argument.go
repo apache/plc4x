@@ -198,8 +198,6 @@ func ArgumentParseWithBufferProducer(identifier string) func(ctx context.Context
 func ArgumentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Argument, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Argument"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Argument")
 	}
@@ -310,19 +308,8 @@ func (m *_Argument) SerializeWithWriteBuffer(ctx context.Context, writeBuffer ut
 			return errors.Wrap(_noOfArrayDimensionsErr, "Error serializing 'noOfArrayDimensions' field")
 		}
 
-		// Array Field (arrayDimensions)
-		if pushErr := writeBuffer.PushContext("arrayDimensions", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for arrayDimensions")
-		}
-		for _curItem, _element := range m.GetArrayDimensions() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'arrayDimensions' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("arrayDimensions", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for arrayDimensions")
+		if err := WriteSimpleTypeArrayField(ctx, "arrayDimensions", m.GetArrayDimensions(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'arrayDimensions' field")
 		}
 
 		// Simple Field (description)

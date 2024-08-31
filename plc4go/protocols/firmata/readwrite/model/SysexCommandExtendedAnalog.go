@@ -122,8 +122,6 @@ func SysexCommandExtendedAnalogParseWithBufferProducer(response bool) func(ctx c
 func SysexCommandExtendedAnalogParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedAnalog"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandExtendedAnalog")
 	}

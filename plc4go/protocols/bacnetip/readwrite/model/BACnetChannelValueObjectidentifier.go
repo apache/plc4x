@@ -139,8 +139,6 @@ func BACnetChannelValueObjectidentifierParseWithBufferProducer() func(ctx contex
 func BACnetChannelValueObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetChannelValueObjectidentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetChannelValueObjectidentifier")
 	}

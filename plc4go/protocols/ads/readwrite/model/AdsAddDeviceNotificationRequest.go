@@ -216,8 +216,6 @@ func AdsAddDeviceNotificationRequestParseWithBufferProducer() func(ctx context.C
 func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsAddDeviceNotificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsAddDeviceNotificationRequest")
 	}

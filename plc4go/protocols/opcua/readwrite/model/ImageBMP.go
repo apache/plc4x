@@ -92,8 +92,6 @@ func ImageBMPParseWithBufferProducer() func(ctx context.Context, readBuffer util
 func ImageBMPParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageBMP, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImageBMP"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImageBMP")
 	}

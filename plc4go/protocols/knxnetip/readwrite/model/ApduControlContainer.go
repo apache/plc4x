@@ -144,8 +144,6 @@ func ApduControlContainerParseWithBufferProducer(dataLength uint8) func(ctx cont
 func ApduControlContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduControlContainer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduControlContainer")
 	}

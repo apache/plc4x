@@ -233,8 +233,6 @@ func ModbusPDUReadDeviceIdentificationResponseParseWithBufferProducer(response b
 func ModbusPDUReadDeviceIdentificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadDeviceIdentificationResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadDeviceIdentificationResponse")
 	}
@@ -382,21 +380,8 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 			return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 		}
 
-		// Array Field (objects)
-		if pushErr := writeBuffer.PushContext("objects", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for objects")
-		}
-		for _curItem, _element := range m.GetObjects() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetObjects()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'objects' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("objects", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for objects")
+		if err := WriteComplexTypeArrayField(ctx, "objects", m.GetObjects(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'objects' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadDeviceIdentificationResponse"); popErr != nil {

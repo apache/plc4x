@@ -170,8 +170,6 @@ func BVLCForwardedNPDUParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx
 func BVLCForwardedNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCForwardedNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCForwardedNPDU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCForwardedNPDU")
 	}
@@ -226,19 +224,8 @@ func (m *_BVLCForwardedNPDU) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(pushErr, "Error pushing for BVLCForwardedNPDU")
 		}
 
-		// Array Field (ip)
-		if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ip")
-		}
-		for _curItem, _element := range m.GetIp() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ip")
+		if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'ip' field")
 		}
 
 		// Simple Field (port)

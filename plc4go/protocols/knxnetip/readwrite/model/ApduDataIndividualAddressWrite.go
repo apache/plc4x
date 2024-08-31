@@ -118,8 +118,6 @@ func ApduDataIndividualAddressWriteParseWithBufferProducer(dataLength uint8) fun
 func ApduDataIndividualAddressWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataIndividualAddressWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataIndividualAddressWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataIndividualAddressWrite")
 	}

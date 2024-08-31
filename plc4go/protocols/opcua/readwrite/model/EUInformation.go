@@ -174,8 +174,6 @@ func EUInformationParseWithBufferProducer(identifier string) func(ctx context.Co
 func EUInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EUInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EUInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EUInformation")
 	}

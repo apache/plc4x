@@ -187,8 +187,6 @@ func BACnetConstructedDataPositiveAccessRulesParseWithBufferProducer(tagNumber u
 func BACnetConstructedDataPositiveAccessRulesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPositiveAccessRules, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataPositiveAccessRules"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataPositiveAccessRules")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataPositiveAccessRules) SerializeWithWriteBuffer(ctx
 			}
 		}
 
-		// Array Field (positiveAccessRules)
-		if pushErr := writeBuffer.PushContext("positiveAccessRules", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for positiveAccessRules")
-		}
-		for _curItem, _element := range m.GetPositiveAccessRules() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPositiveAccessRules()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'positiveAccessRules' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("positiveAccessRules", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for positiveAccessRules")
+		if err := WriteComplexTypeArrayField(ctx, "positiveAccessRules", m.GetPositiveAccessRules(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'positiveAccessRules' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataPositiveAccessRules"); popErr != nil {

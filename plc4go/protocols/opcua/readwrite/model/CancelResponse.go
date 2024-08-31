@@ -152,8 +152,6 @@ func CancelResponseParseWithBufferProducer(identifier string) func(ctx context.C
 func CancelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CancelResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CancelResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CancelResponse")
 	}

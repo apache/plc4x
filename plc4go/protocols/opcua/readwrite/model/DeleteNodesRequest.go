@@ -170,8 +170,6 @@ func DeleteNodesRequestParseWithBufferProducer(identifier string) func(ctx conte
 func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteNodesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeleteNodesRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeleteNodesRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_DeleteNodesRequest) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_noOfNodesToDeleteErr, "Error serializing 'noOfNodesToDelete' field")
 		}
 
-		// Array Field (nodesToDelete)
-		if pushErr := writeBuffer.PushContext("nodesToDelete", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToDelete")
-		}
-		for _curItem, _element := range m.GetNodesToDelete() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToDelete()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToDelete' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToDelete", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToDelete")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToDelete", m.GetNodesToDelete(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToDelete' field")
 		}
 
 		if popErr := writeBuffer.PopContext("DeleteNodesRequest"); popErr != nil {

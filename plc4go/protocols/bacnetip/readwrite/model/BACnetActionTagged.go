@@ -128,8 +128,6 @@ func BACnetActionTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClas
 func BACnetActionTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetActionTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetActionTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetActionTagged")
 	}

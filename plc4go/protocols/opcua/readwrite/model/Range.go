@@ -152,8 +152,6 @@ func RangeParseWithBufferProducer(identifier string) func(ctx context.Context, r
 func RangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Range, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Range"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Range")
 	}

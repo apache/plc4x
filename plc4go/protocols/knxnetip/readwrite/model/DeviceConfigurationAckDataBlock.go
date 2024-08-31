@@ -137,8 +137,6 @@ func DeviceConfigurationAckDataBlockParseWithBufferProducer() func(ctx context.C
 func DeviceConfigurationAckDataBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAckDataBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DeviceConfigurationAckDataBlock"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DeviceConfigurationAckDataBlock")
 	}

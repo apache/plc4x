@@ -181,8 +181,6 @@ func AdsDeviceNotificationRequestParseWithBufferProducer() func(ctx context.Cont
 func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDeviceNotificationRequest")
 	}
@@ -251,21 +249,8 @@ func (m *_AdsDeviceNotificationRequest) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(_stampsErr, "Error serializing 'stamps' field")
 		}
 
-		// Array Field (adsStampHeaders)
-		if pushErr := writeBuffer.PushContext("adsStampHeaders", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for adsStampHeaders")
-		}
-		for _curItem, _element := range m.GetAdsStampHeaders() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdsStampHeaders()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'adsStampHeaders' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("adsStampHeaders", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for adsStampHeaders")
+		if err := WriteComplexTypeArrayField(ctx, "adsStampHeaders", m.GetAdsStampHeaders(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'adsStampHeaders' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AdsDeviceNotificationRequest"); popErr != nil {

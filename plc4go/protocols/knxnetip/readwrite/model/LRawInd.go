@@ -118,8 +118,6 @@ func LRawIndParseWithBufferProducer(size uint16) func(ctx context.Context, readB
 func LRawIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LRawInd"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LRawInd")
 	}

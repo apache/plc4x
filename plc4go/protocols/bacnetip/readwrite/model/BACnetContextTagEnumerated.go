@@ -162,8 +162,6 @@ func BACnetContextTagEnumeratedParseWithBufferProducer(header BACnetTagHeader, t
 func BACnetContextTagEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetContextTagEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetContextTagEnumerated")
 	}

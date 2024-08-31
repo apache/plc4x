@@ -802,8 +802,6 @@ func ${type.name}ParseWithBufferProducer<#if type.isDiscriminatedParentTypeDefin
 func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("${type.name}"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
@@ -816,7 +814,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	<#assign reservedFieldIndex=0>
 	<#list type.fields as field>
 		<#switch field.typeName>
-			<#case "array">
+			<#case "array">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
 				<#assign arrayField = field.asArrayField().orElseThrow()>
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
@@ -1212,46 +1210,22 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
         <#assign reservedFieldIndex=0>
 		<#list type.fields as field>
 			<#switch field.typeName>
-				<#case "array">
+				<#case "array">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
 					<#assign arrayField = field.asArrayField().orElseThrow()>
-					<#assign arrayElementType = arrayField.type.elementTypeReference>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Array Field (${arrayField.name})
-					<#if arrayElementType.isByteBased()>
-	// Byte Array field (${arrayField.name})
-	if err := writeBuffer.WriteByteArray("${arrayField.name}", m.Get${arrayField.name?cap_first}()); err != nil {
-		return errors.Wrap(err, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
+					<#if arrayField.type.elementTypeReference.isByteBased()>${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/io\"")}
+	if err := WriteByteArrayField(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}(), WriteByteArray(writeBuffer, 8)${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	}
+					<#elseif arrayField.type.elementTypeReference.isSimpleTypeReference()>
+	if err := WriteSimpleTypeArrayField(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}(), ${helper.getDataWriterCall(arrayField.type.elementTypeReference, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					<#else>
-	if pushErr := writeBuffer.PushContext("${arrayField.name}", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-						<#if arrayElementType.isComplexTypeReference() && (helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true))>
-	itemCount := uint16(len(m.Get${arrayField.name?cap_first}()))
-	var curItem uint16 = 0
-					</#if>
-	for _curItem, _element := range m.Get${arrayField.name?cap_first}() {
-	                <#-- TODO: find a way to do this nicer -->
-		_ = _curItem
-						<#if arrayElementType.isSimpleTypeReference()>
-							<#assign simpleTypeReference = arrayElementType.asSimpleTypeReference().orElseThrow()>
-		_elementErr := ${helper.getWriteBufferWriteMethodCall("", simpleTypeReference, "_element", arrayField)}
-						<#else>
-						<#assign complexTypeReference = arrayElementType>
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.Get${arrayField.name?cap_first}()), _curItem)
-        <#-- TODO: find a way to do this nicer -->
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-					</#if>
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing '${arrayField.name}' field")<@emitImport import="github.com/pkg/errors" />
-		}
-						<#if helper.needsVariable(arrayField, "curItem", true) || helper.needsVariable(arrayField, "lastItem", true)>
-		curItem++
-					</#if>
-	}
-	if popErr := writeBuffer.PopContext("${arrayField.name}", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ${arrayField.name}")<@emitImport import="github.com/pkg/errors" />
+	if err := WriteComplexTypeArrayField(ctx, "${namedField.name}", m.Get${namedField.name?cap_first}(), writeBuffer${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
 					</#if>
 					<#break>
@@ -1260,11 +1234,9 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#assign typedField = field.asTypedField().orElseThrow()>
 					<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Checksum Field (checksum) (Calculated)
-	if err:= WriteChecksumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
+	if err := WriteChecksumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.toSerializationExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});err != nil{
 		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-					<#break>
 					<#break>
 				<#case "const">
 					<#assign constField = field.asConstField().orElseThrow()>

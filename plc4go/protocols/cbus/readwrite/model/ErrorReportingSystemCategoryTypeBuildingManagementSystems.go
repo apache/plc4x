@@ -142,8 +142,6 @@ func ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBufferPro
 func ErrorReportingSystemCategoryTypeBuildingManagementSystemsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeBuildingManagementSystems, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeBuildingManagementSystems"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorReportingSystemCategoryTypeBuildingManagementSystems")
 	}

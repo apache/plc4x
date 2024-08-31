@@ -140,8 +140,6 @@ func TriggerControlDataTriggerEventParseWithBufferProducer() func(ctx context.Co
 func TriggerControlDataTriggerEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerEvent"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlDataTriggerEvent")
 	}

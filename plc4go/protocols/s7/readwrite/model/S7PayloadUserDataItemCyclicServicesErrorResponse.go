@@ -130,8 +130,6 @@ func S7PayloadUserDataItemCyclicServicesErrorResponseParseWithBufferProducer(cpu
 func S7PayloadUserDataItemCyclicServicesErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesErrorResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadUserDataItemCyclicServicesErrorResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadUserDataItemCyclicServicesErrorResponse")
 	}

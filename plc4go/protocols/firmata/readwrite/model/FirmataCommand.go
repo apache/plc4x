@@ -127,8 +127,6 @@ func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func
 func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommand")
 	}

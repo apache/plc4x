@@ -156,8 +156,6 @@ func BACnetHostAddressParseWithBufferProducer[T BACnetHostAddress]() func(ctx co
 func BACnetHostAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetHostAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetHostAddress")
 	}

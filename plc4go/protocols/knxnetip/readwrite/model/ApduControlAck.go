@@ -118,8 +118,6 @@ func ApduControlAckParseWithBufferProducer() func(ctx context.Context, readBuffe
 func ApduControlAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduControlAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduControlAck")
 	}

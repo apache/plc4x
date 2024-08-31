@@ -139,8 +139,6 @@ func BACnetOptionalCharacterStringNullParseWithBufferProducer() func(ctx context
 func BACnetOptionalCharacterStringNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalCharacterStringNull"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalCharacterStringNull")
 	}

@@ -133,8 +133,6 @@ func ApplicationAddress2ParseWithBufferProducer() func(ctx context.Context, read
 func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApplicationAddress2"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApplicationAddress2")
 	}

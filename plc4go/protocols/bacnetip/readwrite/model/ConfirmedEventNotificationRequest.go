@@ -242,8 +242,6 @@ func ConfirmedEventNotificationRequestParseWithBufferProducer() func(ctx context
 func ConfirmedEventNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConfirmedEventNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConfirmedEventNotificationRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConfirmedEventNotificationRequest")
 	}

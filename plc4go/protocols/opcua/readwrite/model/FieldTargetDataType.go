@@ -207,8 +207,6 @@ func FieldTargetDataTypeParseWithBufferProducer(identifier string) func(ctx cont
 func FieldTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FieldTargetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FieldTargetDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FieldTargetDataType")
 	}

@@ -152,8 +152,6 @@ func NLMICouldBeRouterToNetworkParseWithBufferProducer(apduLength uint16) func(c
 func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMICouldBeRouterToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMICouldBeRouterToNetwork")
 	}

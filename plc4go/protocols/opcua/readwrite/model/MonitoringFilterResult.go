@@ -118,8 +118,6 @@ func MonitoringFilterResultParseWithBufferProducer(identifier string) func(ctx c
 func MonitoringFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoringFilterResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MonitoringFilterResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MonitoringFilterResult")
 	}

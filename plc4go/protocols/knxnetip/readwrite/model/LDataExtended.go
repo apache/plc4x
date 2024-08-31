@@ -211,8 +211,6 @@ func LDataExtendedParseWithBufferProducer() func(ctx context.Context, readBuffer
 func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LDataExtended"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LDataExtended")
 	}
@@ -324,9 +322,7 @@ func (m *_LDataExtended) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
-		// Array Field (destinationAddress)
-		// Byte Array field (destinationAddress)
-		if err := writeBuffer.WriteByteArray("destinationAddress", m.GetDestinationAddress()); err != nil {
+		if err := WriteByteArrayField(ctx, "destinationAddress", m.GetDestinationAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'destinationAddress' field")
 		}
 

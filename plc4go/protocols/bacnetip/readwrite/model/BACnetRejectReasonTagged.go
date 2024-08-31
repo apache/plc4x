@@ -145,8 +145,6 @@ func BACnetRejectReasonTaggedParseWithBufferProducer(actualLength uint32) func(c
 func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRejectReasonTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRejectReasonTagged")
 	}

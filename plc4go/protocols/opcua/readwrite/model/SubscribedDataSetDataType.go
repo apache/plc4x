@@ -118,8 +118,6 @@ func SubscribedDataSetDataTypeParseWithBufferProducer(identifier string) func(ct
 func SubscribedDataSetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscribedDataSetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SubscribedDataSetDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SubscribedDataSetDataType")
 	}

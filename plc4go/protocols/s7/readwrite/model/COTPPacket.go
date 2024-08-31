@@ -166,8 +166,6 @@ func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx co
 func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPPacket"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPPacket")
 	}
@@ -272,21 +270,8 @@ func (pm *_COTPPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wr
 		return errors.Wrap(_typeSwitchErr, "Error serializing sub-type field")
 	}
 
-	// Array Field (parameters)
-	if pushErr := writeBuffer.PushContext("parameters", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for parameters")
-	}
-	for _curItem, _element := range m.GetParameters() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetParameters()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'parameters' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("parameters", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for parameters")
+	if err := WriteComplexTypeArrayField(ctx, "parameters", m.GetParameters(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'parameters' field")
 	}
 
 	// Optional Field (payload) (Can be skipped, if the value is null)

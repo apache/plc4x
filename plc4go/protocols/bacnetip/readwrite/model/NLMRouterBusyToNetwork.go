@@ -143,8 +143,6 @@ func NLMRouterBusyToNetworkParseWithBufferProducer(apduLength uint16) func(ctx c
 func NLMRouterBusyToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterBusyToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMRouterBusyToNetwork"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMRouterBusyToNetwork")
 	}
@@ -189,19 +187,8 @@ func (m *_NLMRouterBusyToNetwork) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for NLMRouterBusyToNetwork")
 		}
 
-		// Array Field (destinationNetworkAddresses)
-		if pushErr := writeBuffer.PushContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for destinationNetworkAddresses")
-		}
-		for _curItem, _element := range m.GetDestinationNetworkAddresses() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'destinationNetworkAddresses' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("destinationNetworkAddresses", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for destinationNetworkAddresses")
+		if err := WriteSimpleTypeArrayField(ctx, "destinationNetworkAddresses", m.GetDestinationNetworkAddresses(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'destinationNetworkAddresses' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMRouterBusyToNetwork"); popErr != nil {

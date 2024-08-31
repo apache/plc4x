@@ -222,8 +222,6 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBufferProducer() func(ctx context
 func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ClockAndTimekeepingDataUpdateTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ClockAndTimekeepingDataUpdateTime")
 	}

@@ -114,8 +114,6 @@ func RequestTerminationParseWithBufferProducer() func(ctx context.Context, readB
 func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestTermination"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestTermination")
 	}

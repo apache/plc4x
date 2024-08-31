@@ -120,8 +120,6 @@ func SALDataFreeUsageParseWithBufferProducer(applicationId ApplicationId) func(c
 func SALDataFreeUsageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataFreeUsage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataFreeUsage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataFreeUsage")
 	}

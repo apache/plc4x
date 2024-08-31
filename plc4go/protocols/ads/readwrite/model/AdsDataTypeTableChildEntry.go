@@ -326,8 +326,6 @@ func AdsDataTypeTableChildEntryParseWithBufferProducer() func(ctx context.Contex
 func AdsDataTypeTableChildEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableChildEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDataTypeTableChildEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDataTypeTableChildEntry")
 	}
@@ -624,43 +622,15 @@ func (m *_AdsDataTypeTableChildEntry) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
 	}
 
-	// Array Field (arrayInfo)
-	if pushErr := writeBuffer.PushContext("arrayInfo", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for arrayInfo")
-	}
-	for _curItem, _element := range m.GetArrayInfo() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetArrayInfo()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'arrayInfo' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("arrayInfo", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for arrayInfo")
+	if err := WriteComplexTypeArrayField(ctx, "arrayInfo", m.GetArrayInfo(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'arrayInfo' field")
 	}
 
-	// Array Field (children)
-	if pushErr := writeBuffer.PushContext("children", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for children")
-	}
-	for _curItem, _element := range m.GetChildren() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetChildren()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'children' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("children", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for children")
+	if err := WriteComplexTypeArrayField(ctx, "children", m.GetChildren(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'children' field")
 	}
 
-	// Array Field (rest)
-	// Byte Array field (rest)
-	if err := writeBuffer.WriteByteArray("rest", m.GetRest()); err != nil {
+	if err := WriteByteArrayField(ctx, "rest", m.GetRest(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
 		return errors.Wrap(err, "Error serializing 'rest' field")
 	}
 

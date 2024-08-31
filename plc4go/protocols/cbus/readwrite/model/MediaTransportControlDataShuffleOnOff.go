@@ -169,8 +169,6 @@ func MediaTransportControlDataShuffleOnOffParseWithBufferProducer() func(ctx con
 func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataShuffleOnOff"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataShuffleOnOff")
 	}

@@ -201,8 +201,6 @@ func DIBDeviceInfoParseWithBufferProducer() func(ctx context.Context, readBuffer
 func DIBDeviceInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBDeviceInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DIBDeviceInfo"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DIBDeviceInfo")
 	}
@@ -357,9 +355,7 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_projectInstallationIdentifierErr, "Error serializing 'projectInstallationIdentifier' field")
 	}
 
-	// Array Field (knxNetIpDeviceSerialNumber)
-	// Byte Array field (knxNetIpDeviceSerialNumber)
-	if err := writeBuffer.WriteByteArray("knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber()); err != nil {
+	if err := WriteByteArrayField(ctx, "knxNetIpDeviceSerialNumber", m.GetKnxNetIpDeviceSerialNumber(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'knxNetIpDeviceSerialNumber' field")
 	}
 
@@ -387,9 +383,7 @@ func (m *_DIBDeviceInfo) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 		return errors.Wrap(_knxNetIpDeviceMacAddressErr, "Error serializing 'knxNetIpDeviceMacAddress' field")
 	}
 
-	// Array Field (deviceFriendlyName)
-	// Byte Array field (deviceFriendlyName)
-	if err := writeBuffer.WriteByteArray("deviceFriendlyName", m.GetDeviceFriendlyName()); err != nil {
+	if err := WriteByteArrayField(ctx, "deviceFriendlyName", m.GetDeviceFriendlyName(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'deviceFriendlyName' field")
 	}
 

@@ -141,8 +141,6 @@ func BACnetSpecialEventListOfTimeValuesParseWithBufferProducer(tagNumber uint8) 
 func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetSpecialEventListOfTimeValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventListOfTimeValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventListOfTimeValues")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetSpecialEventListOfTimeValues) SerializeWithWriteBuffer(ctx conte
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfTimeValues)
-	if pushErr := writeBuffer.PushContext("listOfTimeValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfTimeValues")
-	}
-	for _curItem, _element := range m.GetListOfTimeValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfTimeValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfTimeValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfTimeValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfTimeValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfTimeValues", m.GetListOfTimeValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfTimeValues' field")
 	}
 
 	// Simple Field (closingTag)

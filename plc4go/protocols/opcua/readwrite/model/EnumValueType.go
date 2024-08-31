@@ -163,8 +163,6 @@ func EnumValueTypeParseWithBufferProducer(identifier string) func(ctx context.Co
 func EnumValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EnumValueType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EnumValueType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EnumValueType")
 	}

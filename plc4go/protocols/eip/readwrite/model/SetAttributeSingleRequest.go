@@ -126,8 +126,6 @@ func SetAttributeSingleRequestParseWithBufferProducer(connected bool, serviceLen
 func SetAttributeSingleRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeSingleRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetAttributeSingleRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetAttributeSingleRequest")
 	}

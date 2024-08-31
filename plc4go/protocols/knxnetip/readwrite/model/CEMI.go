@@ -127,8 +127,6 @@ func CEMIParseWithBufferProducer[T CEMI](size uint16) func(ctx context.Context, 
 func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CEMI"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CEMI")
 	}

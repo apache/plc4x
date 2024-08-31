@@ -174,8 +174,6 @@ func PriorityMappingEntryTypeParseWithBufferProducer(identifier string) func(ctx
 func PriorityMappingEntryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PriorityMappingEntryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PriorityMappingEntryType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PriorityMappingEntryType")
 	}

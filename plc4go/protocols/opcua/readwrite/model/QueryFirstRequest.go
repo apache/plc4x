@@ -214,8 +214,6 @@ func QueryFirstRequestParseWithBufferProducer(identifier string) func(ctx contex
 func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryFirstRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QueryFirstRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QueryFirstRequest")
 	}
@@ -325,21 +323,8 @@ func (m *_QueryFirstRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfNodeTypesErr, "Error serializing 'noOfNodeTypes' field")
 		}
 
-		// Array Field (nodeTypes)
-		if pushErr := writeBuffer.PushContext("nodeTypes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodeTypes")
-		}
-		for _curItem, _element := range m.GetNodeTypes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodeTypes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodeTypes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodeTypes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodeTypes")
+		if err := WriteComplexTypeArrayField(ctx, "nodeTypes", m.GetNodeTypes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodeTypes' field")
 		}
 
 		// Simple Field (filter)

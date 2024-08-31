@@ -118,8 +118,6 @@ func DataSetReaderMessageDataTypeParseWithBufferProducer(identifier string) func
 func DataSetReaderMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetReaderMessageDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSetReaderMessageDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSetReaderMessageDataType")
 	}

@@ -170,8 +170,6 @@ func SecurityDataParseWithBufferProducer[T SecurityData]() func(ctx context.Cont
 func SecurityDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityData")
 	}

@@ -198,8 +198,6 @@ func AdsReadDeviceInfoResponseParseWithBufferProducer() func(ctx context.Context
 func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsReadDeviceInfoResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadDeviceInfoResponse")
 	}
@@ -299,9 +297,7 @@ func (m *_AdsReadDeviceInfoResponse) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_versionErr, "Error serializing 'version' field")
 		}
 
-		// Array Field (device)
-		// Byte Array field (device)
-		if err := writeBuffer.WriteByteArray("device", m.GetDevice()); err != nil {
+		if err := WriteByteArrayField(ctx, "device", m.GetDevice(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'device' field")
 		}
 

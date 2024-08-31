@@ -129,8 +129,6 @@ func AdsReadStateRequestParseWithBufferProducer() func(ctx context.Context, read
 func AdsReadStateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsReadStateRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsReadStateRequest")
 	}

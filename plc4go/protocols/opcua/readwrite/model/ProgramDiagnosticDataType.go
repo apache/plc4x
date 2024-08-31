@@ -276,8 +276,6 @@ func ProgramDiagnosticDataTypeParseWithBufferProducer(identifier string) func(ct
 func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ProgramDiagnosticDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ProgramDiagnosticDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ProgramDiagnosticDataType")
 	}
@@ -455,21 +453,8 @@ func (m *_ProgramDiagnosticDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_noOfLastMethodInputArgumentsErr, "Error serializing 'noOfLastMethodInputArguments' field")
 		}
 
-		// Array Field (lastMethodInputArguments)
-		if pushErr := writeBuffer.PushContext("lastMethodInputArguments", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastMethodInputArguments")
-		}
-		for _curItem, _element := range m.GetLastMethodInputArguments() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLastMethodInputArguments()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'lastMethodInputArguments' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("lastMethodInputArguments", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastMethodInputArguments")
+		if err := WriteComplexTypeArrayField(ctx, "lastMethodInputArguments", m.GetLastMethodInputArguments(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodInputArguments' field")
 		}
 
 		// Simple Field (noOfLastMethodOutputArguments)
@@ -479,21 +464,8 @@ func (m *_ProgramDiagnosticDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_noOfLastMethodOutputArgumentsErr, "Error serializing 'noOfLastMethodOutputArguments' field")
 		}
 
-		// Array Field (lastMethodOutputArguments)
-		if pushErr := writeBuffer.PushContext("lastMethodOutputArguments", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for lastMethodOutputArguments")
-		}
-		for _curItem, _element := range m.GetLastMethodOutputArguments() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLastMethodOutputArguments()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'lastMethodOutputArguments' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("lastMethodOutputArguments", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for lastMethodOutputArguments")
+		if err := WriteComplexTypeArrayField(ctx, "lastMethodOutputArguments", m.GetLastMethodOutputArguments(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'lastMethodOutputArguments' field")
 		}
 
 		// Simple Field (lastMethodCallTime)

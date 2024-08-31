@@ -142,8 +142,6 @@ func ErrorReportingSystemCategoryTypeSupportUnitsParseWithBufferProducer(errorRe
 func ErrorReportingSystemCategoryTypeSupportUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeSupportUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ErrorReportingSystemCategoryTypeSupportUnits"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ErrorReportingSystemCategoryTypeSupportUnits")
 	}

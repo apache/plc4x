@@ -166,8 +166,6 @@ func AdsTableSizesParseWithBufferProducer() func(ctx context.Context, readBuffer
 func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsTableSizes"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsTableSizes")
 	}

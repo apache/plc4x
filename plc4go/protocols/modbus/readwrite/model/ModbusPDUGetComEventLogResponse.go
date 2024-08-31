@@ -187,8 +187,6 @@ func ModbusPDUGetComEventLogResponseParseWithBufferProducer(response bool) func(
 func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUGetComEventLogResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUGetComEventLogResponse")
 	}
@@ -283,9 +281,7 @@ func (m *_ModbusPDUGetComEventLogResponse) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_messageCountErr, "Error serializing 'messageCount' field")
 		}
 
-		// Array Field (events)
-		// Byte Array field (events)
-		if err := writeBuffer.WriteByteArray("events", m.GetEvents()); err != nil {
+		if err := WriteByteArrayField(ctx, "events", m.GetEvents(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'events' field")
 		}
 

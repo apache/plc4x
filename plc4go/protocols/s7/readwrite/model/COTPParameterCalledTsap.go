@@ -141,8 +141,6 @@ func COTPParameterCalledTsapParseWithBufferProducer(rest uint8) func(ctx context
 func COTPParameterCalledTsapParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCalledTsap, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameterCalledTsap"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterCalledTsap")
 	}

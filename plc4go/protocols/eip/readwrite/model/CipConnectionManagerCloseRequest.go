@@ -268,8 +268,6 @@ func CipConnectionManagerCloseRequestParseWithBufferProducer(connected bool, ser
 func CipConnectionManagerCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipConnectionManagerCloseRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipConnectionManagerCloseRequest")
 	}
@@ -476,21 +474,8 @@ func (m *_CipConnectionManagerCloseRequest) SerializeWithWriteBuffer(ctx context
 			}
 		}
 
-		// Array Field (connectionPaths)
-		if pushErr := writeBuffer.PushContext("connectionPaths", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for connectionPaths")
-		}
-		for _curItem, _element := range m.GetConnectionPaths() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetConnectionPaths()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'connectionPaths' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("connectionPaths", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for connectionPaths")
+		if err := WriteComplexTypeArrayField(ctx, "connectionPaths", m.GetConnectionPaths(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'connectionPaths' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CipConnectionManagerCloseRequest"); popErr != nil {

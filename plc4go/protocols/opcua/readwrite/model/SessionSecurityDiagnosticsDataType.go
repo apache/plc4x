@@ -247,8 +247,6 @@ func SessionSecurityDiagnosticsDataTypeParseWithBufferProducer(identifier string
 func SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionSecurityDiagnosticsDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SessionSecurityDiagnosticsDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SessionSecurityDiagnosticsDataType")
 	}
@@ -376,21 +374,8 @@ func (m *_SessionSecurityDiagnosticsDataType) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_noOfClientUserIdHistoryErr, "Error serializing 'noOfClientUserIdHistory' field")
 		}
 
-		// Array Field (clientUserIdHistory)
-		if pushErr := writeBuffer.PushContext("clientUserIdHistory", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for clientUserIdHistory")
-		}
-		for _curItem, _element := range m.GetClientUserIdHistory() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetClientUserIdHistory()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'clientUserIdHistory' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("clientUserIdHistory", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for clientUserIdHistory")
+		if err := WriteComplexTypeArrayField(ctx, "clientUserIdHistory", m.GetClientUserIdHistory(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'clientUserIdHistory' field")
 		}
 
 		// Simple Field (authenticationMechanism)

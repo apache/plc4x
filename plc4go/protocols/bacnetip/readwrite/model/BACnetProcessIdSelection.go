@@ -156,8 +156,6 @@ func BACnetProcessIdSelectionParseWithBufferProducer[T BACnetProcessIdSelection]
 func BACnetProcessIdSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProcessIdSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetProcessIdSelection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetProcessIdSelection")
 	}

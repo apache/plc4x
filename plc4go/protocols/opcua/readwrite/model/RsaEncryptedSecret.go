@@ -92,8 +92,6 @@ func RsaEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readB
 func RsaEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RsaEncryptedSecret"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RsaEncryptedSecret")
 	}

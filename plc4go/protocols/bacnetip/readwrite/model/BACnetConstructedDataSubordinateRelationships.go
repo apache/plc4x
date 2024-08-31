@@ -187,8 +187,6 @@ func BACnetConstructedDataSubordinateRelationshipsParseWithBufferProducer(tagNum
 func BACnetConstructedDataSubordinateRelationshipsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubordinateRelationships, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateRelationships"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubordinateRelationships")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataSubordinateRelationships) SerializeWithWriteBuffe
 			}
 		}
 
-		// Array Field (subordinateRelationships)
-		if pushErr := writeBuffer.PushContext("subordinateRelationships", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subordinateRelationships")
-		}
-		for _curItem, _element := range m.GetSubordinateRelationships() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubordinateRelationships()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subordinateRelationships' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subordinateRelationships", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subordinateRelationships")
+		if err := WriteComplexTypeArrayField(ctx, "subordinateRelationships", m.GetSubordinateRelationships(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'subordinateRelationships' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateRelationships"); popErr != nil {

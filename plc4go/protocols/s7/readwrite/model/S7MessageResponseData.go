@@ -156,8 +156,6 @@ func S7MessageResponseDataParseWithBufferProducer() func(ctx context.Context, re
 func S7MessageResponseDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7MessageResponseData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageResponseData")
 	}

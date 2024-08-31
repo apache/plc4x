@@ -139,8 +139,6 @@ func BACnetOptionalUnsignedValueParseWithBufferProducer() func(ctx context.Conte
 func BACnetOptionalUnsignedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsignedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetOptionalUnsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetOptionalUnsignedValue")
 	}

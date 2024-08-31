@@ -141,8 +141,6 @@ func BACnetLiftCarCallListFloorListParseWithBufferProducer(tagNumber uint8) func
 func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLiftCarCallListFloorList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLiftCarCallListFloorList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftCarCallListFloorList")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetLiftCarCallListFloorList) SerializeWithWriteBuffer(ctx context.C
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (floorNumbers)
-	if pushErr := writeBuffer.PushContext("floorNumbers", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for floorNumbers")
-	}
-	for _curItem, _element := range m.GetFloorNumbers() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorNumbers()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'floorNumbers' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("floorNumbers", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for floorNumbers")
+	if err := WriteComplexTypeArrayField(ctx, "floorNumbers", m.GetFloorNumbers(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'floorNumbers' field")
 	}
 
 	// Simple Field (closingTag)

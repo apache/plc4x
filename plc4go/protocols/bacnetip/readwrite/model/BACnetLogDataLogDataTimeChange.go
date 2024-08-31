@@ -141,8 +141,6 @@ func BACnetLogDataLogDataTimeChangeParseWithBufferProducer(tagNumber uint8) func
 func BACnetLogDataLogDataTimeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogDataTimeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataTimeChange"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataTimeChange")
 	}

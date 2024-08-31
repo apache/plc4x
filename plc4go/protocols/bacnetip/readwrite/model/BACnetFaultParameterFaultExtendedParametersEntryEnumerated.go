@@ -139,8 +139,6 @@ func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBufferPr
 func BACnetFaultParameterFaultExtendedParametersEntryEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultExtendedParametersEntryEnumerated"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultExtendedParametersEntryEnumerated")
 	}

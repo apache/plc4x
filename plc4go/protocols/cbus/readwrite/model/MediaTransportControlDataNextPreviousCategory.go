@@ -169,8 +169,6 @@ func MediaTransportControlDataNextPreviousCategoryParseWithBufferProducer() func
 func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataNextPreviousCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataNextPreviousCategory"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataNextPreviousCategory")
 	}

@@ -157,8 +157,6 @@ func BACnetLiftCarDriveStatusTaggedParseWithBufferProducer(tagNumber uint8, tagC
 func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetLiftCarDriveStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLiftCarDriveStatusTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLiftCarDriveStatusTagged")
 	}

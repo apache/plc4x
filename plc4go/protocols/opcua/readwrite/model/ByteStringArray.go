@@ -126,8 +126,6 @@ func ByteStringArrayParseWithBufferProducer() func(ctx context.Context, readBuff
 func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ByteStringArray"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ByteStringArray")
 	}
@@ -179,19 +177,8 @@ func (m *_ByteStringArray) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(_arrayLengthErr, "Error serializing 'arrayLength' field")
 	}
 
-	// Array Field (value)
-	if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	for _curItem, _element := range m.GetValue() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'value' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
+	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ByteStringArray"); popErr != nil {

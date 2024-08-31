@@ -139,8 +139,6 @@ func BACnetValueSourceAddressParseWithBufferProducer() func(ctx context.Context,
 func BACnetValueSourceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetValueSourceAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetValueSourceAddress")
 	}

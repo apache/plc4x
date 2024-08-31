@@ -150,8 +150,6 @@ func BVLCReadBroadcastDistributionTableAckParseWithBufferProducer(bvlcPayloadLen
 func BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCReadBroadcastDistributionTableAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCReadBroadcastDistributionTableAck")
 	}
@@ -194,21 +192,8 @@ func (m *_BVLCReadBroadcastDistributionTableAck) SerializeWithWriteBuffer(ctx co
 			return errors.Wrap(pushErr, "Error pushing for BVLCReadBroadcastDistributionTableAck")
 		}
 
-		// Array Field (table)
-		if pushErr := writeBuffer.PushContext("table", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for table")
-		}
-		for _curItem, _element := range m.GetTable() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTable()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'table' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("table", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for table")
+		if err := WriteComplexTypeArrayField(ctx, "table", m.GetTable(), writeBuffer, codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'table' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BVLCReadBroadcastDistributionTableAck"); popErr != nil {

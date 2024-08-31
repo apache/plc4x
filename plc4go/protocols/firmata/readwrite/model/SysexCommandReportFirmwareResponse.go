@@ -167,8 +167,6 @@ func SysexCommandReportFirmwareResponseParseWithBufferProducer(response bool) fu
 func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandReportFirmwareResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandReportFirmwareResponse")
 	}

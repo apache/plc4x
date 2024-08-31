@@ -184,8 +184,6 @@ func CycServiceItemAnyTypeParseWithBufferProducer() func(ctx context.Context, re
 func CycServiceItemAnyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemAnyType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CycServiceItemAnyType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CycServiceItemAnyType")
 	}

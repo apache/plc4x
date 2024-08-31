@@ -141,8 +141,6 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuf
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification) Seria
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfCovSubscriptionSpecificationEntry)
-	if pushErr := writeBuffer.PushContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfCovSubscriptionSpecificationEntry")
-	}
-	for _curItem, _element := range m.GetListOfCovSubscriptionSpecificationEntry() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfCovSubscriptionSpecificationEntry()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfCovSubscriptionSpecificationEntry' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfCovSubscriptionSpecificationEntry", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfCovSubscriptionSpecificationEntry")
+	if err := WriteComplexTypeArrayField(ctx, "listOfCovSubscriptionSpecificationEntry", m.GetListOfCovSubscriptionSpecificationEntry(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfCovSubscriptionSpecificationEntry' field")
 	}
 
 	// Simple Field (closingTag)

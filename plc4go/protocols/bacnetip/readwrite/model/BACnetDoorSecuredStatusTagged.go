@@ -128,8 +128,6 @@ func BACnetDoorSecuredStatusTaggedParseWithBufferProducer(tagNumber uint8, tagCl
 func BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetDoorSecuredStatusTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDoorSecuredStatusTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDoorSecuredStatusTagged")
 	}

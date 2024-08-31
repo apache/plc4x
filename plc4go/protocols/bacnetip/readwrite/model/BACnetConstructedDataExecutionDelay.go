@@ -187,8 +187,6 @@ func BACnetConstructedDataExecutionDelayParseWithBufferProducer(tagNumber uint8,
 func BACnetConstructedDataExecutionDelayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExecutionDelay, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExecutionDelay"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExecutionDelay")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataExecutionDelay) SerializeWithWriteBuffer(ctx cont
 			}
 		}
 
-		// Array Field (executionDelay)
-		if pushErr := writeBuffer.PushContext("executionDelay", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for executionDelay")
-		}
-		for _curItem, _element := range m.GetExecutionDelay() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExecutionDelay()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'executionDelay' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("executionDelay", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for executionDelay")
+		if err := WriteComplexTypeArrayField(ctx, "executionDelay", m.GetExecutionDelay(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'executionDelay' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExecutionDelay"); popErr != nil {

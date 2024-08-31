@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -114,8 +116,6 @@ func IPAddressParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 func IPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IPAddress"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IPAddress")
 	}
@@ -154,9 +154,7 @@ func (m *_IPAddress) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(pushErr, "Error pushing for IPAddress")
 	}
 
-	// Array Field (addr)
-	// Byte Array field (addr)
-	if err := writeBuffer.WriteByteArray("addr", m.GetAddr()); err != nil {
+	if err := WriteByteArrayField(ctx, "addr", m.GetAddr(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'addr' field")
 	}
 

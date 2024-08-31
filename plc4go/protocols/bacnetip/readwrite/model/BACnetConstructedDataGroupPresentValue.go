@@ -153,8 +153,6 @@ func BACnetConstructedDataGroupPresentValueParseWithBufferProducer(tagNumber uin
 func BACnetConstructedDataGroupPresentValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupPresentValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataGroupPresentValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataGroupPresentValue")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataGroupPresentValue) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataGroupPresentValue")
 		}
 
-		// Array Field (presentValue)
-		if pushErr := writeBuffer.PushContext("presentValue", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for presentValue")
-		}
-		for _curItem, _element := range m.GetPresentValue() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPresentValue()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'presentValue' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("presentValue", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for presentValue")
+		if err := WriteComplexTypeArrayField(ctx, "presentValue", m.GetPresentValue(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'presentValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataGroupPresentValue"); popErr != nil {

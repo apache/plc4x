@@ -252,8 +252,6 @@ func DataSetWriterDataTypeParseWithBufferProducer(identifier string) func(ctx co
 func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetWriterDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DataSetWriterDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DataSetWriterDataType")
 	}
@@ -436,21 +434,8 @@ func (m *_DataSetWriterDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error serializing 'noOfDataSetWriterProperties' field")
 		}
 
-		// Array Field (dataSetWriterProperties)
-		if pushErr := writeBuffer.PushContext("dataSetWriterProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataSetWriterProperties")
-		}
-		for _curItem, _element := range m.GetDataSetWriterProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataSetWriterProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataSetWriterProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataSetWriterProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataSetWriterProperties")
+		if err := WriteComplexTypeArrayField(ctx, "dataSetWriterProperties", m.GetDataSetWriterProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataSetWriterProperties' field")
 		}
 
 		// Simple Field (transportSettings)

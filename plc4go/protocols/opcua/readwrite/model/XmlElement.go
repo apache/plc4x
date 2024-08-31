@@ -126,8 +126,6 @@ func XmlElementParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (XmlElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("XmlElement"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for XmlElement")
 	}
@@ -179,19 +177,8 @@ func (m *_XmlElement) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(_lengthErr, "Error serializing 'length' field")
 	}
 
-	// Array Field (value)
-	if pushErr := writeBuffer.PushContext("value", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for value")
-	}
-	for _curItem, _element := range m.GetValue() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteString("", uint32(8), _element, utils.WithEncoding("UTF-8)"))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'value' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("value", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for value")
+	if err := WriteSimpleTypeArrayField(ctx, "value", m.GetValue(), WriteString(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'value' field")
 	}
 
 	if popErr := writeBuffer.PopContext("XmlElement"); popErr != nil {

@@ -153,8 +153,6 @@ func BACnetConstructedDataEscalatorFaultSignalsParseWithBufferProducer(tagNumber
 func BACnetConstructedDataEscalatorFaultSignalsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEscalatorFaultSignals, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEscalatorFaultSignals"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEscalatorFaultSignals")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataEscalatorFaultSignals) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEscalatorFaultSignals")
 		}
 
-		// Array Field (faultSignals)
-		if pushErr := writeBuffer.PushContext("faultSignals", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for faultSignals")
-		}
-		for _curItem, _element := range m.GetFaultSignals() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFaultSignals()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'faultSignals' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("faultSignals", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for faultSignals")
+		if err := WriteComplexTypeArrayField(ctx, "faultSignals", m.GetFaultSignals(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'faultSignals' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEscalatorFaultSignals"); popErr != nil {

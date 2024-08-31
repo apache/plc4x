@@ -159,8 +159,6 @@ func NLMInitializeRoutingTableAckParseWithBufferProducer(apduLength uint16) func
 func NLMInitializeRoutingTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitializeRoutingTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTableAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitializeRoutingTableAck")
 	}
@@ -218,21 +216,8 @@ func (m *_NLMInitializeRoutingTableAck) SerializeWithWriteBuffer(ctx context.Con
 			return errors.Wrap(_numberOfPortsErr, "Error serializing 'numberOfPorts' field")
 		}
 
-		// Array Field (portMappings)
-		if pushErr := writeBuffer.PushContext("portMappings", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for portMappings")
-		}
-		for _curItem, _element := range m.GetPortMappings() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetPortMappings()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'portMappings' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("portMappings", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for portMappings")
+		if err := WriteComplexTypeArrayField(ctx, "portMappings", m.GetPortMappings(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'portMappings' field")
 		}
 
 		if popErr := writeBuffer.PopContext("NLMInitializeRoutingTableAck"); popErr != nil {

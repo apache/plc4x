@@ -143,8 +143,6 @@ func SALDataMediaTransportParseWithBufferProducer(applicationId ApplicationId) f
 func SALDataMediaTransportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMediaTransport, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SALDataMediaTransport"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SALDataMediaTransport")
 	}

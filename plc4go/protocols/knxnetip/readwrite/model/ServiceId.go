@@ -124,8 +124,6 @@ func ServiceIdParseWithBufferProducer[T ServiceId]() func(ctx context.Context, r
 func ServiceIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServiceId, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServiceId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServiceId")
 	}

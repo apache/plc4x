@@ -172,8 +172,6 @@ func BACnetEventParameterChangeOfCharacterStringParseWithBufferProducer() func(c
 func BACnetEventParameterChangeOfCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameterChangeOfCharacterString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameterChangeOfCharacterString")
 	}

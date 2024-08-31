@@ -127,8 +127,6 @@ func SysexCommandParseWithBufferProducer[T SysexCommand](response bool) func(ctx
 func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommand")
 	}

@@ -151,8 +151,6 @@ func CALDataIdentifyReplyParseWithBufferProducer(commandTypeContainer CALCommand
 func CALDataIdentifyReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALDataIdentifyReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALDataIdentifyReply")
 	}

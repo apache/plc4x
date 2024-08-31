@@ -141,8 +141,6 @@ func KnxNetIpTunnelingParseWithBufferProducer() func(ctx context.Context, readBu
 func KnxNetIpTunnelingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpTunneling, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetIpTunneling"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetIpTunneling")
 	}

@@ -157,8 +157,6 @@ func BACnetRestartReasonTaggedParseWithBufferProducer(tagNumber uint8, tagClass 
 func BACnetRestartReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRestartReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRestartReasonTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRestartReasonTagged")
 	}

@@ -198,8 +198,6 @@ func AxisInformationParseWithBufferProducer(identifier string) func(ctx context.
 func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AxisInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AxisInformation"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AxisInformation")
 	}
@@ -327,19 +325,8 @@ func (m *_AxisInformation) SerializeWithWriteBuffer(ctx context.Context, writeBu
 			return errors.Wrap(_noOfAxisStepsErr, "Error serializing 'noOfAxisSteps' field")
 		}
 
-		// Array Field (axisSteps)
-		if pushErr := writeBuffer.PushContext("axisSteps", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for axisSteps")
-		}
-		for _curItem, _element := range m.GetAxisSteps() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteFloat64("", 64, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'axisSteps' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("axisSteps", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for axisSteps")
+		if err := WriteSimpleTypeArrayField(ctx, "axisSteps", m.GetAxisSteps(), WriteDouble(writeBuffer, 64)); err != nil {
+			return errors.Wrap(err, "Error serializing 'axisSteps' field")
 		}
 
 		if popErr := writeBuffer.PopContext("AxisInformation"); popErr != nil {

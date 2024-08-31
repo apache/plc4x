@@ -194,8 +194,6 @@ func AggregateConfigurationParseWithBufferProducer(identifier string) func(ctx c
 func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AggregateConfiguration, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AggregateConfiguration"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AggregateConfiguration")
 	}

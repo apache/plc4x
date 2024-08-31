@@ -149,8 +149,6 @@ func ModbusPDUErrorParseWithBufferProducer(response bool) func(ctx context.Conte
 func ModbusPDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUError"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUError")
 	}

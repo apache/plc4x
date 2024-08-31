@@ -187,8 +187,6 @@ func BACnetConstructedDataIPv6DNSServerParseWithBufferProducer(tagNumber uint8, 
 func BACnetConstructedDataIPv6DNSServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6DNSServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6DNSServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6DNSServer")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataIPv6DNSServer) SerializeWithWriteBuffer(ctx conte
 			}
 		}
 
-		// Array Field (ipv6DnsServer)
-		if pushErr := writeBuffer.PushContext("ipv6DnsServer", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipv6DnsServer")
-		}
-		for _curItem, _element := range m.GetIpv6DnsServer() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetIpv6DnsServer()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ipv6DnsServer' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ipv6DnsServer", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipv6DnsServer")
+		if err := WriteComplexTypeArrayField(ctx, "ipv6DnsServer", m.GetIpv6DnsServer(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipv6DnsServer' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPv6DNSServer"); popErr != nil {

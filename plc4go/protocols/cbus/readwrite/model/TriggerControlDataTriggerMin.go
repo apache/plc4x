@@ -117,8 +117,6 @@ func TriggerControlDataTriggerMinParseWithBufferProducer() func(ctx context.Cont
 func TriggerControlDataTriggerMinParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMin"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlDataTriggerMin")
 	}

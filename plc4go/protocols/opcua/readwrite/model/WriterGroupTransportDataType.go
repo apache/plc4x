@@ -118,8 +118,6 @@ func WriterGroupTransportDataTypeParseWithBufferProducer(identifier string) func
 func WriterGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriterGroupTransportDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriterGroupTransportDataType")
 	}

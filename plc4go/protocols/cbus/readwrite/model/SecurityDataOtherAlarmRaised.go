@@ -117,8 +117,6 @@ func SecurityDataOtherAlarmRaisedParseWithBufferProducer() func(ctx context.Cont
 func SecurityDataOtherAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataOtherAlarmRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataOtherAlarmRaised"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataOtherAlarmRaised")
 	}

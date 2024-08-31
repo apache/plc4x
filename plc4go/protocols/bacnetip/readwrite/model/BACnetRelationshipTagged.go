@@ -157,8 +157,6 @@ func BACnetRelationshipTaggedParseWithBufferProducer(tagNumber uint8, tagClass T
 func BACnetRelationshipTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetRelationshipTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetRelationshipTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetRelationshipTagged")
 	}

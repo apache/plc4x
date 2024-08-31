@@ -156,8 +156,6 @@ func BACnetClientCOVParseWithBufferProducer[T BACnetClientCOV]() func(ctx contex
 func BACnetClientCOVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOV, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetClientCOV"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClientCOV")
 	}

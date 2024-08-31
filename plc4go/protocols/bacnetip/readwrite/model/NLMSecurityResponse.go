@@ -176,8 +176,6 @@ func NLMSecurityResponseParseWithBufferProducer(apduLength uint16) func(ctx cont
 func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMSecurityResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMSecurityResponse")
 	}
@@ -266,9 +264,7 @@ func (m *_NLMSecurityResponse) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_originalTimestampErr, "Error serializing 'originalTimestamp' field")
 		}
 
-		// Array Field (variableParameters)
-		// Byte Array field (variableParameters)
-		if err := writeBuffer.WriteByteArray("variableParameters", m.GetVariableParameters()); err != nil {
+		if err := WriteByteArrayField(ctx, "variableParameters", m.GetVariableParameters(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'variableParameters' field")
 		}
 

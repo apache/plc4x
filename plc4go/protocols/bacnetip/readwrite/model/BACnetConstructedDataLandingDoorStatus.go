@@ -187,8 +187,6 @@ func BACnetConstructedDataLandingDoorStatusParseWithBufferProducer(tagNumber uin
 func BACnetConstructedDataLandingDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataLandingDoorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataLandingDoorStatus")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataLandingDoorStatus) SerializeWithWriteBuffer(ctx c
 			}
 		}
 
-		// Array Field (landingDoorStatus)
-		if pushErr := writeBuffer.PushContext("landingDoorStatus", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for landingDoorStatus")
-		}
-		for _curItem, _element := range m.GetLandingDoorStatus() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLandingDoorStatus()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'landingDoorStatus' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("landingDoorStatus", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for landingDoorStatus")
+		if err := WriteComplexTypeArrayField(ctx, "landingDoorStatus", m.GetLandingDoorStatus(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'landingDoorStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataLandingDoorStatus"); popErr != nil {

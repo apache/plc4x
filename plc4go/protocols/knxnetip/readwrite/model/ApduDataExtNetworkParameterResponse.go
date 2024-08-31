@@ -118,8 +118,6 @@ func ApduDataExtNetworkParameterResponseParseWithBufferProducer(length uint8) fu
 func ApduDataExtNetworkParameterResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtNetworkParameterResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtNetworkParameterResponse")
 	}

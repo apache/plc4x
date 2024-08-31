@@ -119,8 +119,6 @@ func RoutingIndicationParseWithBufferProducer() func(ctx context.Context, readBu
 func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RoutingIndication"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RoutingIndication")
 	}

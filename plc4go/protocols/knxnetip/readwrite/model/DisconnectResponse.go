@@ -154,8 +154,6 @@ func DisconnectResponseParseWithBufferProducer() func(ctx context.Context, readB
 func DisconnectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DisconnectResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DisconnectResponse")
 	}

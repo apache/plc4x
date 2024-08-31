@@ -152,8 +152,6 @@ func NLMUpdateKeyDistributionKeyParseWithBufferProducer(apduLength uint16) func(
 func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMUpdateKeyDistributionKey"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMUpdateKeyDistributionKey")
 	}

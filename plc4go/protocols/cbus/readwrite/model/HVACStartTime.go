@@ -173,8 +173,6 @@ func HVACStartTimeParseWithBufferProducer() func(ctx context.Context, readBuffer
 func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HVACStartTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HVACStartTime")
 	}

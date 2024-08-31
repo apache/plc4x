@@ -117,8 +117,6 @@ func SecurityDataLineCutAlarmRaisedParseWithBufferProducer() func(ctx context.Co
 func SecurityDataLineCutAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLineCutAlarmRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataLineCutAlarmRaised"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataLineCutAlarmRaised")
 	}

@@ -139,8 +139,6 @@ func BACnetCalendarEntryDateParseWithBufferProducer() func(ctx context.Context, 
 func BACnetCalendarEntryDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetCalendarEntryDate"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetCalendarEntryDate")
 	}

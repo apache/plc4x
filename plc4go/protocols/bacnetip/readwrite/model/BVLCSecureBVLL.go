@@ -28,6 +28,8 @@ import (
 	"github.com/rs/zerolog"
 
 	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,8 +148,6 @@ func BVLCSecureBVLLParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx co
 func BVLCSecureBVLLParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCSecureBVLL"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCSecureBVLL")
 	}
@@ -190,9 +190,7 @@ func (m *_BVLCSecureBVLL) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for BVLCSecureBVLL")
 		}
 
-		// Array Field (securityWrapper)
-		// Byte Array field (securityWrapper)
-		if err := writeBuffer.WriteByteArray("securityWrapper", m.GetSecurityWrapper()); err != nil {
+		if err := WriteByteArrayField(ctx, "securityWrapper", m.GetSecurityWrapper(), WriteByteArray(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'securityWrapper' field")
 		}
 

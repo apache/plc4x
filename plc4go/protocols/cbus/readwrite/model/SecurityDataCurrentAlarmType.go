@@ -117,8 +117,6 @@ func SecurityDataCurrentAlarmTypeParseWithBufferProducer() func(ctx context.Cont
 func SecurityDataCurrentAlarmTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataCurrentAlarmType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataCurrentAlarmType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataCurrentAlarmType")
 	}

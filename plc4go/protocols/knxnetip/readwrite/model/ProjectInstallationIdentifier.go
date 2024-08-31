@@ -124,8 +124,6 @@ func ProjectInstallationIdentifierParseWithBufferProducer() func(ctx context.Con
 func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ProjectInstallationIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ProjectInstallationIdentifier")
 	}

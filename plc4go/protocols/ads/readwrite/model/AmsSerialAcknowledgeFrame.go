@@ -164,8 +164,6 @@ func AmsSerialAcknowledgeFrameParseWithBufferProducer() func(ctx context.Context
 func AmsSerialAcknowledgeFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialAcknowledgeFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AmsSerialAcknowledgeFrame"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AmsSerialAcknowledgeFrame")
 	}

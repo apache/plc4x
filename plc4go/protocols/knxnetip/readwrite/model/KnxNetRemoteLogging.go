@@ -141,8 +141,6 @@ func KnxNetRemoteLoggingParseWithBufferProducer() func(ctx context.Context, read
 func KnxNetRemoteLoggingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetRemoteLogging, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("KnxNetRemoteLogging"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for KnxNetRemoteLogging")
 	}

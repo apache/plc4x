@@ -192,8 +192,6 @@ func BrowseRequestParseWithBufferProducer(identifier string) func(ctx context.Co
 func BrowseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BrowseRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BrowseRequest")
 	}
@@ -298,21 +296,8 @@ func (m *_BrowseRequest) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_noOfNodesToBrowseErr, "Error serializing 'noOfNodesToBrowse' field")
 		}
 
-		// Array Field (nodesToBrowse)
-		if pushErr := writeBuffer.PushContext("nodesToBrowse", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for nodesToBrowse")
-		}
-		for _curItem, _element := range m.GetNodesToBrowse() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetNodesToBrowse()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'nodesToBrowse' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("nodesToBrowse", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for nodesToBrowse")
+		if err := WriteComplexTypeArrayField(ctx, "nodesToBrowse", m.GetNodesToBrowse(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'nodesToBrowse' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BrowseRequest"); popErr != nil {

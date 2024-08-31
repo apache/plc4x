@@ -199,8 +199,6 @@ func ParsingResultParseWithBufferProducer(identifier string) func(ctx context.Co
 func ParsingResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ParsingResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParsingResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParsingResult")
 	}
@@ -286,21 +284,8 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_noOfDataStatusCodesErr, "Error serializing 'noOfDataStatusCodes' field")
 		}
 
-		// Array Field (dataStatusCodes)
-		if pushErr := writeBuffer.PushContext("dataStatusCodes", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataStatusCodes")
-		}
-		for _curItem, _element := range m.GetDataStatusCodes() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataStatusCodes()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataStatusCodes' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataStatusCodes", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataStatusCodes")
+		if err := WriteComplexTypeArrayField(ctx, "dataStatusCodes", m.GetDataStatusCodes(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataStatusCodes' field")
 		}
 
 		// Simple Field (noOfDataDiagnosticInfos)
@@ -310,21 +295,8 @@ func (m *_ParsingResult) SerializeWithWriteBuffer(ctx context.Context, writeBuff
 			return errors.Wrap(_noOfDataDiagnosticInfosErr, "Error serializing 'noOfDataDiagnosticInfos' field")
 		}
 
-		// Array Field (dataDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("dataDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetDataDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "dataDiagnosticInfos", m.GetDataDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataDiagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ParsingResult"); popErr != nil {

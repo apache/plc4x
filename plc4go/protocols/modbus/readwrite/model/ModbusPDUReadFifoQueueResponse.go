@@ -157,8 +157,6 @@ func ModbusPDUReadFifoQueueResponseParseWithBufferProducer(response bool) func(c
 func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ModbusPDUReadFifoQueueResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ModbusPDUReadFifoQueueResponse")
 	}
@@ -227,19 +225,8 @@ func (m *_ModbusPDUReadFifoQueueResponse) SerializeWithWriteBuffer(ctx context.C
 			return errors.Wrap(_fifoCountErr, "Error serializing 'fifoCount' field")
 		}
 
-		// Array Field (fifoValue)
-		if pushErr := writeBuffer.PushContext("fifoValue", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for fifoValue")
-		}
-		for _curItem, _element := range m.GetFifoValue() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint16("", 16, uint16(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'fifoValue' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("fifoValue", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for fifoValue")
+		if err := WriteSimpleTypeArrayField(ctx, "fifoValue", m.GetFifoValue(), WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'fifoValue' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ModbusPDUReadFifoQueueResponse"); popErr != nil {

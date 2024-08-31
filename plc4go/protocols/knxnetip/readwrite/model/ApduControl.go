@@ -124,8 +124,6 @@ func ApduControlParseWithBufferProducer[T ApduControl]() func(ctx context.Contex
 func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduControl")
 	}

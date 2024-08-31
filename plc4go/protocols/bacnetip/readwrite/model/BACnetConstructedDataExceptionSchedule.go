@@ -187,8 +187,6 @@ func BACnetConstructedDataExceptionScheduleParseWithBufferProducer(tagNumber uin
 func BACnetConstructedDataExceptionScheduleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExceptionSchedule, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataExceptionSchedule"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataExceptionSchedule")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataExceptionSchedule) SerializeWithWriteBuffer(ctx c
 			}
 		}
 
-		// Array Field (exceptionSchedule)
-		if pushErr := writeBuffer.PushContext("exceptionSchedule", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for exceptionSchedule")
-		}
-		for _curItem, _element := range m.GetExceptionSchedule() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetExceptionSchedule()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'exceptionSchedule' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("exceptionSchedule", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for exceptionSchedule")
+		if err := WriteComplexTypeArrayField(ctx, "exceptionSchedule", m.GetExceptionSchedule(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'exceptionSchedule' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataExceptionSchedule"); popErr != nil {

@@ -154,8 +154,6 @@ func IdentifyReplyCommandDelaysParseWithBufferProducer(attribute Attribute, numB
 func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandDelays"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandDelays")
 	}
@@ -206,9 +204,7 @@ func (m *_IdentifyReplyCommandDelays) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandDelays")
 		}
 
-		// Array Field (terminalLevels)
-		// Byte Array field (terminalLevels)
-		if err := writeBuffer.WriteByteArray("terminalLevels", m.GetTerminalLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "terminalLevels", m.GetTerminalLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
 		}
 

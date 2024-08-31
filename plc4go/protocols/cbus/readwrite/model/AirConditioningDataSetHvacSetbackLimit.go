@@ -172,8 +172,6 @@ func AirConditioningDataSetHvacSetbackLimitParseWithBufferProducer() func(ctx co
 func AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AirConditioningDataSetHvacSetbackLimit"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AirConditioningDataSetHvacSetbackLimit")
 	}

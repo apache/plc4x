@@ -140,8 +140,6 @@ func MeteringDataOtherWaterConsumptionParseWithBufferProducer() func(ctx context
 func MeteringDataOtherWaterConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOtherWaterConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeteringDataOtherWaterConsumption"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeteringDataOtherWaterConsumption")
 	}

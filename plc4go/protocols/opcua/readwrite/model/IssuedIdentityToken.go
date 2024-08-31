@@ -152,8 +152,6 @@ func IssuedIdentityTokenParseWithBufferProducer(identifier string) func(ctx cont
 func IssuedIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (IssuedIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IssuedIdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IssuedIdentityToken")
 	}

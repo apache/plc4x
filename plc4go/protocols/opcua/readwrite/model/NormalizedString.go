@@ -92,8 +92,6 @@ func NormalizedStringParseWithBufferProducer() func(ctx context.Context, readBuf
 func NormalizedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NormalizedString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NormalizedString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NormalizedString")
 	}

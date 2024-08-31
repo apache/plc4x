@@ -152,8 +152,6 @@ func RepublishResponseParseWithBufferProducer(identifier string) func(ctx contex
 func RepublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RepublishResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RepublishResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RepublishResponse")
 	}

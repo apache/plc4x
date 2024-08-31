@@ -154,8 +154,6 @@ func ParameterValueInterfaceOptions3ParseWithBufferProducer(parameterType Parame
 func ParameterValueInterfaceOptions3ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions3, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ParameterValueInterfaceOptions3"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ParameterValueInterfaceOptions3")
 	}
@@ -223,9 +221,7 @@ func (m *_ParameterValueInterfaceOptions3) SerializeWithWriteBuffer(ctx context.
 			return errors.Wrap(_valueErr, "Error serializing 'value' field")
 		}
 
-		// Array Field (data)
-		// Byte Array field (data)
-		if err := writeBuffer.WriteByteArray("data", m.GetData()); err != nil {
+		if err := WriteByteArrayField(ctx, "data", m.GetData(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 

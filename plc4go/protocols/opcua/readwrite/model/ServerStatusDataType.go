@@ -196,8 +196,6 @@ func ServerStatusDataTypeParseWithBufferProducer(identifier string) func(ctx con
 func ServerStatusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServerStatusDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ServerStatusDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ServerStatusDataType")
 	}

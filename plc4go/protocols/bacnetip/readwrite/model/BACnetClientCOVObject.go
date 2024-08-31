@@ -139,8 +139,6 @@ func BACnetClientCOVObjectParseWithBufferProducer() func(ctx context.Context, re
 func BACnetClientCOVObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetClientCOVObject"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetClientCOVObject")
 	}

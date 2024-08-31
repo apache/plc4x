@@ -173,8 +173,6 @@ func CBusCommandParseWithBufferProducer[T CBusCommand](cBusOptions CBusOptions) 
 func CBusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommand")
 	}

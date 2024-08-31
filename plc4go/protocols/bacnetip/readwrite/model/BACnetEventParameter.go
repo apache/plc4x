@@ -156,8 +156,6 @@ func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(
 func BACnetEventParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventParameter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventParameter")
 	}

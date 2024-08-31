@@ -136,8 +136,6 @@ func AlarmMessageAckResponseTypeParseWithBufferProducer() func(ctx context.Conte
 func AlarmMessageAckResponseTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckResponseType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageAckResponseType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageAckResponseType")
 	}
@@ -202,19 +200,8 @@ func (m *_AlarmMessageAckResponseType) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(_numberOfObjectsErr, "Error serializing 'numberOfObjects' field")
 	}
 
-	// Array Field (messageObjects)
-	if pushErr := writeBuffer.PushContext("messageObjects", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for messageObjects")
-	}
-	for _curItem, _element := range m.GetMessageObjects() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'messageObjects' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("messageObjects", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for messageObjects")
+	if err := WriteSimpleTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageObjects' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AlarmMessageAckResponseType"); popErr != nil {

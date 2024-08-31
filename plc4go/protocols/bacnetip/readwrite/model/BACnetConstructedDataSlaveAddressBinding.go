@@ -153,8 +153,6 @@ func BACnetConstructedDataSlaveAddressBindingParseWithBufferProducer(tagNumber u
 func BACnetConstructedDataSlaveAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSlaveAddressBinding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSlaveAddressBinding")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataSlaveAddressBinding) SerializeWithWriteBuffer(ctx
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataSlaveAddressBinding")
 		}
 
-		// Array Field (slaveAddressBinding)
-		if pushErr := writeBuffer.PushContext("slaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for slaveAddressBinding")
-		}
-		for _curItem, _element := range m.GetSlaveAddressBinding() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSlaveAddressBinding()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'slaveAddressBinding' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("slaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for slaveAddressBinding")
+		if err := WriteComplexTypeArrayField(ctx, "slaveAddressBinding", m.GetSlaveAddressBinding(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'slaveAddressBinding' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSlaveAddressBinding"); popErr != nil {

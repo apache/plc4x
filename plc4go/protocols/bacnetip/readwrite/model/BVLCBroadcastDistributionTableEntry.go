@@ -138,8 +138,6 @@ func BVLCBroadcastDistributionTableEntryParseWithBufferProducer() func(ctx conte
 func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BVLCBroadcastDistributionTableEntry"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BVLCBroadcastDistributionTableEntry")
 	}
@@ -190,19 +188,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(pushErr, "Error pushing for BVLCBroadcastDistributionTableEntry")
 	}
 
-	// Array Field (ip)
-	if pushErr := writeBuffer.PushContext("ip", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for ip")
-	}
-	for _curItem, _element := range m.GetIp() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'ip' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("ip", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for ip")
+	if err := WriteSimpleTypeArrayField(ctx, "ip", m.GetIp(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'ip' field")
 	}
 
 	// Simple Field (port)
@@ -212,19 +199,8 @@ func (m *_BVLCBroadcastDistributionTableEntry) SerializeWithWriteBuffer(ctx cont
 		return errors.Wrap(_portErr, "Error serializing 'port' field")
 	}
 
-	// Array Field (broadcastDistributionMap)
-	if pushErr := writeBuffer.PushContext("broadcastDistributionMap", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for broadcastDistributionMap")
-	}
-	for _curItem, _element := range m.GetBroadcastDistributionMap() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'broadcastDistributionMap' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("broadcastDistributionMap", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for broadcastDistributionMap")
+	if err := WriteSimpleTypeArrayField(ctx, "broadcastDistributionMap", m.GetBroadcastDistributionMap(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'broadcastDistributionMap' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BVLCBroadcastDistributionTableEntry"); popErr != nil {

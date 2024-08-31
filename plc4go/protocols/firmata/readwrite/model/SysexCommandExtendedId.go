@@ -147,8 +147,6 @@ func SysexCommandExtendedIdParseWithBufferProducer(response bool) func(ctx conte
 func SysexCommandExtendedIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedId, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandExtendedId"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandExtendedId")
 	}
@@ -191,19 +189,8 @@ func (m *_SysexCommandExtendedId) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for SysexCommandExtendedId")
 		}
 
-		// Array Field (id)
-		if pushErr := writeBuffer.PushContext("id", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for id")
-		}
-		for _curItem, _element := range m.GetId() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteInt8("", 8, int8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'id' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("id", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for id")
+		if err := WriteSimpleTypeArrayField(ctx, "id", m.GetId(), WriteSignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'id' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SysexCommandExtendedId"); popErr != nil {

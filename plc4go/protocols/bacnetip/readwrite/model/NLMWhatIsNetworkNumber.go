@@ -118,8 +118,6 @@ func NLMWhatIsNetworkNumberParseWithBufferProducer(apduLength uint16) func(ctx c
 func NLMWhatIsNetworkNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMWhatIsNetworkNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMWhatIsNetworkNumber"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMWhatIsNetworkNumber")
 	}

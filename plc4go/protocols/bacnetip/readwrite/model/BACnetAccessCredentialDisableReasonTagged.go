@@ -157,8 +157,6 @@ func BACnetAccessCredentialDisableReasonTaggedParseWithBufferProducer(tagNumber 
 func BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessCredentialDisableReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessCredentialDisableReasonTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessCredentialDisableReasonTagged")
 	}

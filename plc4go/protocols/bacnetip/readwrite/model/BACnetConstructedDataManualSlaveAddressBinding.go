@@ -153,8 +153,6 @@ func BACnetConstructedDataManualSlaveAddressBindingParseWithBufferProducer(tagNu
 func BACnetConstructedDataManualSlaveAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManualSlaveAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataManualSlaveAddressBinding"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataManualSlaveAddressBinding")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataManualSlaveAddressBinding) SerializeWithWriteBuff
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataManualSlaveAddressBinding")
 		}
 
-		// Array Field (manualSlaveAddressBinding)
-		if pushErr := writeBuffer.PushContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for manualSlaveAddressBinding")
-		}
-		for _curItem, _element := range m.GetManualSlaveAddressBinding() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetManualSlaveAddressBinding()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'manualSlaveAddressBinding' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("manualSlaveAddressBinding", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for manualSlaveAddressBinding")
+		if err := WriteComplexTypeArrayField(ctx, "manualSlaveAddressBinding", m.GetManualSlaveAddressBinding(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'manualSlaveAddressBinding' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataManualSlaveAddressBinding"); popErr != nil {

@@ -124,8 +124,6 @@ func BACnetAssignedAccessRightsParseWithBufferProducer() func(ctx context.Contex
 func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAssignedAccessRights"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAssignedAccessRights")
 	}

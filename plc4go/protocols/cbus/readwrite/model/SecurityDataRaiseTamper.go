@@ -117,8 +117,6 @@ func SecurityDataRaiseTamperParseWithBufferProducer() func(ctx context.Context, 
 func SecurityDataRaiseTamperParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataRaiseTamper"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataRaiseTamper")
 	}

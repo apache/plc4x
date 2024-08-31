@@ -163,8 +163,6 @@ func BACnetEventLogRecordLogDatumNotificationParseWithBufferProducer(tagNumber u
 func BACnetEventLogRecordLogDatumNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventLogRecordLogDatumNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecordLogDatumNotification"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventLogRecordLogDatumNotification")
 	}

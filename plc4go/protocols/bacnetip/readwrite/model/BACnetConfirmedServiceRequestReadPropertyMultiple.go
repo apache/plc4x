@@ -149,8 +149,6 @@ func BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBufferProducer(se
 func BACnetConfirmedServiceRequestReadPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConfirmedServiceRequestReadPropertyMultiple")
 	}
@@ -195,21 +193,8 @@ func (m *_BACnetConfirmedServiceRequestReadPropertyMultiple) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for BACnetConfirmedServiceRequestReadPropertyMultiple")
 		}
 
-		// Array Field (data)
-		if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for data")
-		}
-		for _curItem, _element := range m.GetData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'data' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for data")
+		if err := WriteComplexTypeArrayField(ctx, "data", m.GetData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'data' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConfirmedServiceRequestReadPropertyMultiple"); popErr != nil {

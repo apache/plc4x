@@ -174,8 +174,6 @@ func EndpointTypeParseWithBufferProducer(identifier string) func(ctx context.Con
 func EndpointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EndpointType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EndpointType")
 	}

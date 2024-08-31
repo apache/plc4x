@@ -124,8 +124,6 @@ func QualifiedNameParseWithBufferProducer() func(ctx context.Context, readBuffer
 func QualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (QualifiedName, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("QualifiedName"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for QualifiedName")
 	}

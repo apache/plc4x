@@ -165,8 +165,6 @@ func TransferResultParseWithBufferProducer(identifier string) func(ctx context.C
 func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransferResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TransferResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TransferResult")
 	}
@@ -240,19 +238,8 @@ func (m *_TransferResult) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error serializing 'noOfAvailableSequenceNumbers' field")
 		}
 
-		// Array Field (availableSequenceNumbers)
-		if pushErr := writeBuffer.PushContext("availableSequenceNumbers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for availableSequenceNumbers")
-		}
-		for _curItem, _element := range m.GetAvailableSequenceNumbers() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint32("", 32, uint32(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'availableSequenceNumbers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("availableSequenceNumbers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for availableSequenceNumbers")
+		if err := WriteSimpleTypeArrayField(ctx, "availableSequenceNumbers", m.GetAvailableSequenceNumbers(), WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'availableSequenceNumbers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TransferResult"); popErr != nil {

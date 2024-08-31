@@ -145,8 +145,6 @@ func S7ParameterReadVarResponseParseWithBufferProducer(messageType uint8) func(c
 func S7ParameterReadVarResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7ParameterReadVarResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7ParameterReadVarResponse")
 	}

@@ -139,8 +139,6 @@ func BACnetPropertyStatesRestartReasonParseWithBufferProducer(peekedTagNumber ui
 func BACnetPropertyStatesRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesRestartReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesRestartReason"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesRestartReason")
 	}

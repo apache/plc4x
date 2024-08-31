@@ -92,8 +92,6 @@ func ImagePNGParseWithBufferProducer() func(ctx context.Context, readBuffer util
 func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ImagePNG"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ImagePNG")
 	}

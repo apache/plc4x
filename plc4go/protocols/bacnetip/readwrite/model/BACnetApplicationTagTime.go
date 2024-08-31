@@ -139,8 +139,6 @@ func BACnetApplicationTagTimeParseWithBufferProducer() func(ctx context.Context,
 func BACnetApplicationTagTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetApplicationTagTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetApplicationTagTime")
 	}

@@ -157,8 +157,6 @@ func S7MessageObjectResponseParseWithBufferProducer(cpuFunctionType uint8) func(
 func S7MessageObjectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7MessageObjectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7MessageObjectResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7MessageObjectResponse")
 	}

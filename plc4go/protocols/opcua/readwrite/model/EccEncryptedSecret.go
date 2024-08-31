@@ -92,8 +92,6 @@ func EccEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readB
 func EccEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EccEncryptedSecret"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EccEncryptedSecret")
 	}

@@ -131,8 +131,6 @@ func EipDisconnectRequestParseWithBufferProducer(response bool) func(ctx context
 func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipDisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EipDisconnectRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EipDisconnectRequest")
 	}

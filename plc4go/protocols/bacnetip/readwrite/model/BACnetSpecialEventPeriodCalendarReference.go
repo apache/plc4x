@@ -139,8 +139,6 @@ func BACnetSpecialEventPeriodCalendarReferenceParseWithBufferProducer() func(ctx
 func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetSpecialEventPeriodCalendarReference"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetSpecialEventPeriodCalendarReference")
 	}

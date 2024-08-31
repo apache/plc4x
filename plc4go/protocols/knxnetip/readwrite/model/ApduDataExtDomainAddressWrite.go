@@ -118,8 +118,6 @@ func ApduDataExtDomainAddressWriteParseWithBufferProducer(length uint8) func(ctx
 func ApduDataExtDomainAddressWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressWrite"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtDomainAddressWrite")
 	}

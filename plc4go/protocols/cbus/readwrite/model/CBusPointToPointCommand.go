@@ -169,8 +169,6 @@ func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](c
 func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusPointToPointCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusPointToPointCommand")
 	}

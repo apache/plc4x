@@ -163,8 +163,6 @@ func BACnetServiceAckGetAlarmSummaryParseWithBufferProducer(serviceAckLength uin
 func BACnetServiceAckGetAlarmSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetAlarmSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckGetAlarmSummary"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckGetAlarmSummary")
 	}

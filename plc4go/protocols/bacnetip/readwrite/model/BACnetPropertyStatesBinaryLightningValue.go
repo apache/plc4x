@@ -139,8 +139,6 @@ func BACnetPropertyStatesBinaryLightningValueParseWithBufferProducer(peekedTagNu
 func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesBinaryLightningValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesBinaryLightningValue")
 	}

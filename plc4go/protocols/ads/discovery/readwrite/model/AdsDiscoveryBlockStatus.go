@@ -160,8 +160,6 @@ func AdsDiscoveryBlockStatusParseWithBufferProducer() func(ctx context.Context, 
 func AdsDiscoveryBlockStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryBlockStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryBlockStatus")
 	}

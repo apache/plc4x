@@ -155,8 +155,6 @@ func DF1UnprotectedReadRequestParseWithBufferProducer() func(ctx context.Context
 func DF1UnprotectedReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1UnprotectedReadRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1UnprotectedReadRequest")
 	}

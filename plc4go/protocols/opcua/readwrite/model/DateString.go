@@ -92,8 +92,6 @@ func DateStringParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DateString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DateString")
 	}

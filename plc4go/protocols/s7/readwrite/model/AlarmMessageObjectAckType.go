@@ -181,8 +181,6 @@ func AlarmMessageObjectAckTypeParseWithBufferProducer() func(ctx context.Context
 func AlarmMessageObjectAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageObjectAckType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AlarmMessageObjectAckType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AlarmMessageObjectAckType")
 	}

@@ -146,8 +146,6 @@ func FirmataCommandSysexParseWithBufferProducer(response bool) func(ctx context.
 func FirmataCommandSysexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataCommandSysex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataCommandSysex")
 	}

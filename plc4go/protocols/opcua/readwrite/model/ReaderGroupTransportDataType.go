@@ -118,8 +118,6 @@ func ReaderGroupTransportDataTypeParseWithBufferProducer(identifier string) func
 func ReaderGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReaderGroupTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ReaderGroupTransportDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ReaderGroupTransportDataType")
 	}

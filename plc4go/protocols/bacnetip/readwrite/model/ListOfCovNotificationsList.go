@@ -141,8 +141,6 @@ func ListOfCovNotificationsListParseWithBufferProducer(tagNumber uint8) func(ctx
 func ListOfCovNotificationsListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (ListOfCovNotificationsList, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListOfCovNotificationsList"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListOfCovNotificationsList")
 	}
@@ -206,21 +204,8 @@ func (m *_ListOfCovNotificationsList) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (specifications)
-	if pushErr := writeBuffer.PushContext("specifications", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for specifications")
-	}
-	for _curItem, _element := range m.GetSpecifications() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSpecifications()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'specifications' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("specifications", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for specifications")
+	if err := WriteComplexTypeArrayField(ctx, "specifications", m.GetSpecifications(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'specifications' field")
 	}
 
 	// Simple Field (closingTag)

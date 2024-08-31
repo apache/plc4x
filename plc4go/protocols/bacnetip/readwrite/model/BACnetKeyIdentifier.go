@@ -124,8 +124,6 @@ func BACnetKeyIdentifierParseWithBufferProducer() func(ctx context.Context, read
 func BACnetKeyIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetKeyIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetKeyIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetKeyIdentifier")
 	}

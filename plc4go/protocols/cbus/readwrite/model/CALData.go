@@ -189,8 +189,6 @@ func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) fu
 func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CALData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CALData")
 	}

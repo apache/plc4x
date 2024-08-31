@@ -140,8 +140,6 @@ func SecurityDataArmReadyNotReadyParseWithBufferProducer() func(ctx context.Cont
 func SecurityDataArmReadyNotReadyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmReadyNotReady, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataArmReadyNotReady"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataArmReadyNotReady")
 	}

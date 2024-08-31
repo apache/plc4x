@@ -124,8 +124,6 @@ func BACnetEventLogRecordParseWithBufferProducer() func(ctx context.Context, rea
 func BACnetEventLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetEventLogRecord"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetEventLogRecord")
 	}

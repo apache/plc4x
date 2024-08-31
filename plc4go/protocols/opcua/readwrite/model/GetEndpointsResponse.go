@@ -170,8 +170,6 @@ func GetEndpointsResponseParseWithBufferProducer(identifier string) func(ctx con
 func GetEndpointsResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GetEndpointsResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetEndpointsResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetEndpointsResponse")
 	}
@@ -245,21 +243,8 @@ func (m *_GetEndpointsResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_noOfEndpointsErr, "Error serializing 'noOfEndpoints' field")
 		}
 
-		// Array Field (endpoints)
-		if pushErr := writeBuffer.PushContext("endpoints", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for endpoints")
-		}
-		for _curItem, _element := range m.GetEndpoints() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEndpoints()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'endpoints' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("endpoints", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for endpoints")
+		if err := WriteComplexTypeArrayField(ctx, "endpoints", m.GetEndpoints(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'endpoints' field")
 		}
 
 		if popErr := writeBuffer.PopContext("GetEndpointsResponse"); popErr != nil {

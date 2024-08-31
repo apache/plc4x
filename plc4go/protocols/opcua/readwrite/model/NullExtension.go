@@ -118,8 +118,6 @@ func NullExtensionParseWithBufferProducer(identifier string) func(ctx context.Co
 func NullExtensionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NullExtension, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NullExtension"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NullExtension")
 	}

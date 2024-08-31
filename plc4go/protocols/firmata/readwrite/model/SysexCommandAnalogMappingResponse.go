@@ -122,8 +122,6 @@ func SysexCommandAnalogMappingResponseParseWithBufferProducer(response bool) fun
 func SysexCommandAnalogMappingResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandAnalogMappingResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandAnalogMappingResponse")
 	}

@@ -181,8 +181,6 @@ func CallMethodRequestParseWithBufferProducer(identifier string) func(ctx contex
 func CallMethodRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallMethodRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CallMethodRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CallMethodRequest")
 	}
@@ -274,21 +272,8 @@ func (m *_CallMethodRequest) SerializeWithWriteBuffer(ctx context.Context, write
 			return errors.Wrap(_noOfInputArgumentsErr, "Error serializing 'noOfInputArguments' field")
 		}
 
-		// Array Field (inputArguments)
-		if pushErr := writeBuffer.PushContext("inputArguments", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for inputArguments")
-		}
-		for _curItem, _element := range m.GetInputArguments() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetInputArguments()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'inputArguments' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("inputArguments", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for inputArguments")
+		if err := WriteComplexTypeArrayField(ctx, "inputArguments", m.GetInputArguments(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'inputArguments' field")
 		}
 
 		if popErr := writeBuffer.PopContext("CallMethodRequest"); popErr != nil {

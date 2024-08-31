@@ -128,8 +128,6 @@ func LDataFrameACKParseWithBufferProducer() func(ctx context.Context, readBuffer
 func LDataFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LDataFrameACK"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LDataFrameACK")
 	}

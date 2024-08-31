@@ -114,8 +114,6 @@ func BACnetTagPayloadDoubleParseWithBufferProducer() func(ctx context.Context, r
 func BACnetTagPayloadDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadDouble"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadDouble")
 	}

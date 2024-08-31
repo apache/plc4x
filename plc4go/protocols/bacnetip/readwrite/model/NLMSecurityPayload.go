@@ -154,8 +154,6 @@ func NLMSecurityPayloadParseWithBufferProducer(apduLength uint16) func(ctx conte
 func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMSecurityPayload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMSecurityPayload")
 	}
@@ -213,9 +211,7 @@ func (m *_NLMSecurityPayload) SerializeWithWriteBuffer(ctx context.Context, writ
 			return errors.Wrap(_payloadLengthErr, "Error serializing 'payloadLength' field")
 		}
 
-		// Array Field (payload)
-		// Byte Array field (payload)
-		if err := writeBuffer.WriteByteArray("payload", m.GetPayload()); err != nil {
+		if err := WriteByteArrayField(ctx, "payload", m.GetPayload(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'payload' field")
 		}
 

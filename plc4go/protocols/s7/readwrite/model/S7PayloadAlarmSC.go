@@ -153,8 +153,6 @@ func S7PayloadAlarmSCParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunction
 func S7PayloadAlarmSCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadAlarmSC, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("S7PayloadAlarmSC"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for S7PayloadAlarmSC")
 	}

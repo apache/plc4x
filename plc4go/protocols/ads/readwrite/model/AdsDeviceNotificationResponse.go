@@ -129,8 +129,6 @@ func AdsDeviceNotificationResponseParseWithBufferProducer() func(ctx context.Con
 func AdsDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDeviceNotificationResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDeviceNotificationResponse")
 	}

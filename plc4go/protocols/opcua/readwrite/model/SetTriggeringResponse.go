@@ -257,8 +257,6 @@ func SetTriggeringResponseParseWithBufferProducer(identifier string) func(ctx co
 func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SetTriggeringResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SetTriggeringResponse")
 	}
@@ -368,21 +366,8 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfAddResultsErr, "Error serializing 'noOfAddResults' field")
 		}
 
-		// Array Field (addResults)
-		if pushErr := writeBuffer.PushContext("addResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addResults")
-		}
-		for _curItem, _element := range m.GetAddResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAddResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'addResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("addResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addResults")
+		if err := WriteComplexTypeArrayField(ctx, "addResults", m.GetAddResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'addResults' field")
 		}
 
 		// Simple Field (noOfAddDiagnosticInfos)
@@ -392,21 +377,8 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfAddDiagnosticInfosErr, "Error serializing 'noOfAddDiagnosticInfos' field")
 		}
 
-		// Array Field (addDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("addDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for addDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetAddDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAddDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'addDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("addDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for addDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "addDiagnosticInfos", m.GetAddDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'addDiagnosticInfos' field")
 		}
 
 		// Simple Field (noOfRemoveResults)
@@ -416,21 +388,8 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfRemoveResultsErr, "Error serializing 'noOfRemoveResults' field")
 		}
 
-		// Array Field (removeResults)
-		if pushErr := writeBuffer.PushContext("removeResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for removeResults")
-		}
-		for _curItem, _element := range m.GetRemoveResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRemoveResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'removeResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("removeResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for removeResults")
+		if err := WriteComplexTypeArrayField(ctx, "removeResults", m.GetRemoveResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'removeResults' field")
 		}
 
 		// Simple Field (noOfRemoveDiagnosticInfos)
@@ -440,21 +399,8 @@ func (m *_SetTriggeringResponse) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error serializing 'noOfRemoveDiagnosticInfos' field")
 		}
 
-		// Array Field (removeDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for removeDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetRemoveDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRemoveDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'removeDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("removeDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for removeDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "removeDiagnosticInfos", m.GetRemoveDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'removeDiagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SetTriggeringResponse"); popErr != nil {

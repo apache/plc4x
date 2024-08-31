@@ -178,8 +178,6 @@ func GetAttributeAllResponseParseWithBufferProducer(connected bool, serviceLen u
 func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeAllResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GetAttributeAllResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GetAttributeAllResponse")
 	}

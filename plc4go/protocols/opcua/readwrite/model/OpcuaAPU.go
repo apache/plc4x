@@ -119,8 +119,6 @@ func OpcuaAPUParseWithBufferProducer(response bool) func(ctx context.Context, re
 func OpcuaAPUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAPU, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaAPU"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaAPU")
 	}

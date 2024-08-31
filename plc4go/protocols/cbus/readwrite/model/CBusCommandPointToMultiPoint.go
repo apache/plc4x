@@ -139,8 +139,6 @@ func CBusCommandPointToMultiPointParseWithBufferProducer(cBusOptions CBusOptions
 func CBusCommandPointToMultiPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CBusCommandPointToMultiPoint"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CBusCommandPointToMultiPoint")
 	}

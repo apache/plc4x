@@ -187,8 +187,6 @@ func BACnetConstructedDataIPDNSServerParseWithBufferProducer(tagNumber uint8, ob
 func BACnetConstructedDataIPDNSServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDNSServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPDNSServer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPDNSServer")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataIPDNSServer) SerializeWithWriteBuffer(ctx context
 			}
 		}
 
-		// Array Field (ipDnsServer)
-		if pushErr := writeBuffer.PushContext("ipDnsServer", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for ipDnsServer")
-		}
-		for _curItem, _element := range m.GetIpDnsServer() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetIpDnsServer()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'ipDnsServer' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("ipDnsServer", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for ipDnsServer")
+		if err := WriteComplexTypeArrayField(ctx, "ipDnsServer", m.GetIpDnsServer(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'ipDnsServer' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataIPDNSServer"); popErr != nil {

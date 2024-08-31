@@ -169,8 +169,6 @@ func MediaTransportControlDataSourcePowerControlParseWithBufferProducer() func(c
 func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSourcePowerControl"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataSourcePowerControl")
 	}

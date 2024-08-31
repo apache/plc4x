@@ -171,8 +171,6 @@ func NodeIdNumericParseWithBufferProducer() func(ctx context.Context, readBuffer
 func NodeIdNumericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdNumeric, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NodeIdNumeric"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NodeIdNumeric")
 	}

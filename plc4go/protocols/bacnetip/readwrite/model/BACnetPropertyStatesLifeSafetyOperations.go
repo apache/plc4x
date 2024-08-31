@@ -139,8 +139,6 @@ func BACnetPropertyStatesLifeSafetyOperationsParseWithBufferProducer(peekedTagNu
 func BACnetPropertyStatesLifeSafetyOperationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyOperations, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLifeSafetyOperations"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLifeSafetyOperations")
 	}

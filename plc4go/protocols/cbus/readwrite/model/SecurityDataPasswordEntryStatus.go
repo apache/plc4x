@@ -199,8 +199,6 @@ func SecurityDataPasswordEntryStatusParseWithBufferProducer() func(ctx context.C
 func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityDataPasswordEntryStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityDataPasswordEntryStatus")
 	}

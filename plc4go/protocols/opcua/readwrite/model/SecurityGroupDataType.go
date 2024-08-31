@@ -283,8 +283,6 @@ func SecurityGroupDataTypeParseWithBufferProducer(identifier string) func(ctx co
 func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SecurityGroupDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SecurityGroupDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SecurityGroupDataType")
 	}
@@ -412,21 +410,8 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfSecurityGroupFolderErr, "Error serializing 'noOfSecurityGroupFolder' field")
 		}
 
-		// Array Field (securityGroupFolder)
-		if pushErr := writeBuffer.PushContext("securityGroupFolder", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for securityGroupFolder")
-		}
-		for _curItem, _element := range m.GetSecurityGroupFolder() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSecurityGroupFolder()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'securityGroupFolder' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("securityGroupFolder", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for securityGroupFolder")
+		if err := WriteComplexTypeArrayField(ctx, "securityGroupFolder", m.GetSecurityGroupFolder(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'securityGroupFolder' field")
 		}
 
 		// Simple Field (keyLifetime)
@@ -481,21 +466,8 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfRolePermissionsErr, "Error serializing 'noOfRolePermissions' field")
 		}
 
-		// Array Field (rolePermissions)
-		if pushErr := writeBuffer.PushContext("rolePermissions", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for rolePermissions")
-		}
-		for _curItem, _element := range m.GetRolePermissions() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetRolePermissions()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'rolePermissions' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("rolePermissions", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for rolePermissions")
+		if err := WriteComplexTypeArrayField(ctx, "rolePermissions", m.GetRolePermissions(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'rolePermissions' field")
 		}
 
 		// Simple Field (noOfGroupProperties)
@@ -505,21 +477,8 @@ func (m *_SecurityGroupDataType) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_noOfGroupPropertiesErr, "Error serializing 'noOfGroupProperties' field")
 		}
 
-		// Array Field (groupProperties)
-		if pushErr := writeBuffer.PushContext("groupProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for groupProperties")
-		}
-		for _curItem, _element := range m.GetGroupProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetGroupProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'groupProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("groupProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for groupProperties")
+		if err := WriteComplexTypeArrayField(ctx, "groupProperties", m.GetGroupProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'groupProperties' field")
 		}
 
 		if popErr := writeBuffer.PopContext("SecurityGroupDataType"); popErr != nil {

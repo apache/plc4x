@@ -158,8 +158,6 @@ func GuidValueParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GuidValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GuidValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GuidValue")
 	}
@@ -243,15 +241,11 @@ func (m *_GuidValue) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 		return errors.Wrap(_data3Err, "Error serializing 'data3' field")
 	}
 
-	// Array Field (data4)
-	// Byte Array field (data4)
-	if err := writeBuffer.WriteByteArray("data4", m.GetData4()); err != nil {
+	if err := WriteByteArrayField(ctx, "data4", m.GetData4(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data4' field")
 	}
 
-	// Array Field (data5)
-	// Byte Array field (data5)
-	if err := writeBuffer.WriteByteArray("data5", m.GetData5()); err != nil {
+	if err := WriteByteArrayField(ctx, "data5", m.GetData5(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'data5' field")
 	}
 

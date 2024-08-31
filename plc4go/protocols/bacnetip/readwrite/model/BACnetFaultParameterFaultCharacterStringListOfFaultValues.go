@@ -141,8 +141,6 @@ func BACnetFaultParameterFaultCharacterStringListOfFaultValuesParseWithBufferPro
 func BACnetFaultParameterFaultCharacterStringListOfFaultValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultCharacterStringListOfFaultValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetFaultParameterFaultCharacterStringListOfFaultValues"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetFaultParameterFaultCharacterStringListOfFaultValues")
 	}
@@ -206,21 +204,8 @@ func (m *_BACnetFaultParameterFaultCharacterStringListOfFaultValues) SerializeWi
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (listOfFaultValues)
-	if pushErr := writeBuffer.PushContext("listOfFaultValues", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for listOfFaultValues")
-	}
-	for _curItem, _element := range m.GetListOfFaultValues() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfFaultValues()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'listOfFaultValues' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("listOfFaultValues", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for listOfFaultValues")
+	if err := WriteComplexTypeArrayField(ctx, "listOfFaultValues", m.GetListOfFaultValues(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'listOfFaultValues' field")
 	}
 
 	// Simple Field (closingTag)

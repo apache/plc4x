@@ -152,8 +152,6 @@ func MemberIDParseWithBufferProducer() func(ctx context.Context, readBuffer util
 func MemberIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MemberID"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MemberID")
 	}

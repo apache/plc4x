@@ -117,8 +117,6 @@ func MediaTransportControlDataStopParseWithBufferProducer() func(ctx context.Con
 func MediaTransportControlDataStopParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataStop, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataStop"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataStop")
 	}

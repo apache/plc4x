@@ -153,8 +153,6 @@ func BACnetTagPayloadObjectIdentifierParseWithBufferProducer() func(ctx context.
 func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadObjectIdentifier"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadObjectIdentifier")
 	}

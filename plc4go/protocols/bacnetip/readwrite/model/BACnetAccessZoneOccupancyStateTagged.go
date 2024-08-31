@@ -157,8 +157,6 @@ func BACnetAccessZoneOccupancyStateTaggedParseWithBufferProducer(tagNumber uint8
 func BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetAccessZoneOccupancyStateTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetAccessZoneOccupancyStateTagged"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetAccessZoneOccupancyStateTagged")
 	}

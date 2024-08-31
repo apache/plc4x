@@ -152,8 +152,6 @@ func SemanticChangeStructureDataTypeParseWithBufferProducer(identifier string) f
 func SemanticChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SemanticChangeStructureDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SemanticChangeStructureDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SemanticChangeStructureDataType")
 	}

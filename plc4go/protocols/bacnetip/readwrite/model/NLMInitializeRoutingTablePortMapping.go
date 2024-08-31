@@ -146,8 +146,6 @@ func NLMInitializeRoutingTablePortMappingParseWithBufferProducer() func(ctx cont
 func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NLMInitializeRoutingTablePortMapping"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NLMInitializeRoutingTablePortMapping")
 	}
@@ -225,9 +223,7 @@ func (m *_NLMInitializeRoutingTablePortMapping) SerializeWithWriteBuffer(ctx con
 		return errors.Wrap(_portInfoLengthErr, "Error serializing 'portInfoLength' field")
 	}
 
-	// Array Field (portInfo)
-	// Byte Array field (portInfo)
-	if err := writeBuffer.WriteByteArray("portInfo", m.GetPortInfo()); err != nil {
+	if err := WriteByteArrayField(ctx, "portInfo", m.GetPortInfo(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'portInfo' field")
 	}
 

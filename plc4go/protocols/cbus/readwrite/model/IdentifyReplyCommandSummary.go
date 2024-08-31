@@ -163,8 +163,6 @@ func IdentifyReplyCommandSummaryParseWithBufferProducer(attribute Attribute, num
 func IdentifyReplyCommandSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandSummary"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandSummary")
 	}

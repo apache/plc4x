@@ -114,8 +114,6 @@ func AdsDiscoveryConstantsParseWithBufferProducer() func(ctx context.Context, re
 func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AdsDiscoveryConstants"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AdsDiscoveryConstants")
 	}

@@ -139,8 +139,6 @@ func BACnetPropertyStatesLiftCarDoorCommandParseWithBufferProducer(peekedTagNumb
 func BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDoorCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetPropertyStatesLiftCarDoorCommand"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetPropertyStatesLiftCarDoorCommand")
 	}

@@ -223,8 +223,6 @@ func BACnetConstructedDataEventTimeStampsParseWithBufferProducer(tagNumber uint8
 func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventTimeStamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventTimeStamps"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventTimeStamps")
 	}
@@ -331,21 +329,8 @@ func (m *_BACnetConstructedDataEventTimeStamps) SerializeWithWriteBuffer(ctx con
 			}
 		}
 
-		// Array Field (eventTimeStamps)
-		if pushErr := writeBuffer.PushContext("eventTimeStamps", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for eventTimeStamps")
-		}
-		for _curItem, _element := range m.GetEventTimeStamps() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetEventTimeStamps()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'eventTimeStamps' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("eventTimeStamps", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for eventTimeStamps")
+		if err := WriteComplexTypeArrayField(ctx, "eventTimeStamps", m.GetEventTimeStamps(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'eventTimeStamps' field")
 		}
 		// Virtual field
 		toOffnormal := m.GetToOffnormal()

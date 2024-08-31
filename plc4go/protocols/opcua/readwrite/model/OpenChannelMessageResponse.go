@@ -174,8 +174,6 @@ func OpenChannelMessageResponseParseWithBufferProducer(response bool) func(ctx c
 func OpenChannelMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpenChannelMessageResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpenChannelMessageResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpenChannelMessageResponse")
 	}

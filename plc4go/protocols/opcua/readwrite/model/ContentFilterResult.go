@@ -188,8 +188,6 @@ func ContentFilterResultParseWithBufferProducer(identifier string) func(ctx cont
 func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ContentFilterResult"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ContentFilterResult")
 	}
@@ -257,21 +255,8 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfElementResultsErr, "Error serializing 'noOfElementResults' field")
 		}
 
-		// Array Field (elementResults)
-		if pushErr := writeBuffer.PushContext("elementResults", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for elementResults")
-		}
-		for _curItem, _element := range m.GetElementResults() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetElementResults()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'elementResults' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("elementResults", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for elementResults")
+		if err := WriteComplexTypeArrayField(ctx, "elementResults", m.GetElementResults(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'elementResults' field")
 		}
 
 		// Simple Field (noOfElementDiagnosticInfos)
@@ -281,21 +266,8 @@ func (m *_ContentFilterResult) SerializeWithWriteBuffer(ctx context.Context, wri
 			return errors.Wrap(_noOfElementDiagnosticInfosErr, "Error serializing 'noOfElementDiagnosticInfos' field")
 		}
 
-		// Array Field (elementDiagnosticInfos)
-		if pushErr := writeBuffer.PushContext("elementDiagnosticInfos", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for elementDiagnosticInfos")
-		}
-		for _curItem, _element := range m.GetElementDiagnosticInfos() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetElementDiagnosticInfos()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'elementDiagnosticInfos' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("elementDiagnosticInfos", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for elementDiagnosticInfos")
+		if err := WriteComplexTypeArrayField(ctx, "elementDiagnosticInfos", m.GetElementDiagnosticInfos(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'elementDiagnosticInfos' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ContentFilterResult"); popErr != nil {

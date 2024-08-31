@@ -223,8 +223,6 @@ func MeasurementDataChannelMeasurementDataParseWithBufferProducer() func(ctx con
 func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MeasurementDataChannelMeasurementData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MeasurementDataChannelMeasurementData")
 	}

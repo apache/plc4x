@@ -236,8 +236,6 @@ func PublishedVariableDataTypeParseWithBufferProducer(identifier string) func(ct
 func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishedVariableDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PublishedVariableDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PublishedVariableDataType")
 	}
@@ -399,21 +397,8 @@ func (m *_PublishedVariableDataType) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(_noOfMetaDataPropertiesErr, "Error serializing 'noOfMetaDataProperties' field")
 		}
 
-		// Array Field (metaDataProperties)
-		if pushErr := writeBuffer.PushContext("metaDataProperties", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for metaDataProperties")
-		}
-		for _curItem, _element := range m.GetMetaDataProperties() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetMetaDataProperties()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'metaDataProperties' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("metaDataProperties", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for metaDataProperties")
+		if err := WriteComplexTypeArrayField(ctx, "metaDataProperties", m.GetMetaDataProperties(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'metaDataProperties' field")
 		}
 
 		if popErr := writeBuffer.PopContext("PublishedVariableDataType"); popErr != nil {

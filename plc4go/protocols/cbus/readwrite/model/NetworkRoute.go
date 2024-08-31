@@ -131,8 +131,6 @@ func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer 
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("NetworkRoute"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for NetworkRoute")
 	}
@@ -189,21 +187,8 @@ func (m *_NetworkRoute) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(_networkPCIErr, "Error serializing 'networkPCI' field")
 	}
 
-	// Array Field (additionalBridgeAddresses)
-	if pushErr := writeBuffer.PushContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for additionalBridgeAddresses")
-	}
-	for _curItem, _element := range m.GetAdditionalBridgeAddresses() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAdditionalBridgeAddresses()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'additionalBridgeAddresses' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("additionalBridgeAddresses", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for additionalBridgeAddresses")
+	if err := WriteComplexTypeArrayField(ctx, "additionalBridgeAddresses", m.GetAdditionalBridgeAddresses(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'additionalBridgeAddresses' field")
 	}
 
 	if popErr := writeBuffer.PopContext("NetworkRoute"); popErr != nil {

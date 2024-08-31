@@ -168,8 +168,6 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBufferProducer(tagNumber uint
 func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6PrefixLength"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6PrefixLength")
 	}

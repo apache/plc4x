@@ -184,8 +184,6 @@ func StateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.R
 func StateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (State, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("State"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for State")
 	}

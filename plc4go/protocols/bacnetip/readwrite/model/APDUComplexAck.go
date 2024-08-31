@@ -278,8 +278,6 @@ func APDUComplexAckParseWithBufferProducer(apduLength uint16) func(ctx context.C
 func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUComplexAck"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUComplexAck")
 	}
@@ -496,9 +494,7 @@ func (m *_APDUComplexAck) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_segmentReductionErr, "Error serializing 'segmentReduction' field")
 		}
 
-		// Array Field (segment)
-		// Byte Array field (segment)
-		if err := writeBuffer.WriteByteArray("segment", m.GetSegment()); err != nil {
+		if err := WriteByteArrayField(ctx, "segment", m.GetSegment(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'segment' field")
 		}
 

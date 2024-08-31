@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -117,8 +119,6 @@ func BACnetTagPayloadOctetStringParseWithBufferProducer(actualLength uint32) fun
 func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadOctetString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadOctetString")
 	}
@@ -158,9 +158,7 @@ func (m *_BACnetTagPayloadOctetString) SerializeWithWriteBuffer(ctx context.Cont
 		return errors.Wrap(pushErr, "Error pushing for BACnetTagPayloadOctetString")
 	}
 
-	// Array Field (octets)
-	// Byte Array field (octets)
-	if err := writeBuffer.WriteByteArray("octets", m.GetOctets()); err != nil {
+	if err := WriteByteArrayField(ctx, "octets", m.GetOctets(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'octets' field")
 	}
 

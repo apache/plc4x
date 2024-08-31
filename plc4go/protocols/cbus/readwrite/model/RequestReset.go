@@ -174,8 +174,6 @@ func RequestResetParseWithBufferProducer(cBusOptions CBusOptions) func(ctx conte
 func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RequestReset"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RequestReset")
 	}

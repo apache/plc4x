@@ -187,8 +187,6 @@ func BACnetConstructedDataCarDoorStatusParseWithBufferProducer(tagNumber uint8, 
 func BACnetConstructedDataCarDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCarDoorStatus"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCarDoorStatus")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataCarDoorStatus) SerializeWithWriteBuffer(ctx conte
 			}
 		}
 
-		// Array Field (carDoorStatus)
-		if pushErr := writeBuffer.PushContext("carDoorStatus", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for carDoorStatus")
-		}
-		for _curItem, _element := range m.GetCarDoorStatus() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCarDoorStatus()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'carDoorStatus' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("carDoorStatus", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for carDoorStatus")
+		if err := WriteComplexTypeArrayField(ctx, "carDoorStatus", m.GetCarDoorStatus(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'carDoorStatus' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCarDoorStatus"); popErr != nil {

@@ -117,8 +117,6 @@ func TriggerControlDataTriggerMaxParseWithBufferProducer() func(ctx context.Cont
 func TriggerControlDataTriggerMaxParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TriggerControlDataTriggerMax"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TriggerControlDataTriggerMax")
 	}

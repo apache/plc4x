@@ -152,8 +152,6 @@ func GenericAttributeValueParseWithBufferProducer(identifier string) func(ctx co
 func GenericAttributeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GenericAttributeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("GenericAttributeValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for GenericAttributeValue")
 	}

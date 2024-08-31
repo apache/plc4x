@@ -168,8 +168,6 @@ func BACnetConstructedDataIPv6ZoneIndexParseWithBufferProducer(tagNumber uint8, 
 func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6ZoneIndex"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6ZoneIndex")
 	}

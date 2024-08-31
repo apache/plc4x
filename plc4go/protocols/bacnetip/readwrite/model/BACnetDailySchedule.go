@@ -138,8 +138,6 @@ func BACnetDailyScheduleParseWithBufferProducer() func(ctx context.Context, read
 func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDailySchedule, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetDailySchedule"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetDailySchedule")
 	}
@@ -202,21 +200,8 @@ func (m *_BACnetDailySchedule) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(_openingTagErr, "Error serializing 'openingTag' field")
 	}
 
-	// Array Field (daySchedule)
-	if pushErr := writeBuffer.PushContext("daySchedule", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for daySchedule")
-	}
-	for _curItem, _element := range m.GetDaySchedule() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDaySchedule()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'daySchedule' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("daySchedule", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for daySchedule")
+	if err := WriteComplexTypeArrayField(ctx, "daySchedule", m.GetDaySchedule(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'daySchedule' field")
 	}
 
 	// Simple Field (closingTag)

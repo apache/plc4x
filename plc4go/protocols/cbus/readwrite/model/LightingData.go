@@ -159,8 +159,6 @@ func LightingDataParseWithBufferProducer[T LightingData]() func(ctx context.Cont
 func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LightingData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LightingData")
 	}

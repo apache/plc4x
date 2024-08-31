@@ -131,8 +131,6 @@ func DIBSuppSvcFamiliesParseWithBufferProducer() func(ctx context.Context, readB
 func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DIBSuppSvcFamilies"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DIBSuppSvcFamilies")
 	}
@@ -197,21 +195,8 @@ func (m *_DIBSuppSvcFamilies) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(_descriptionTypeErr, "Error serializing 'descriptionType' field")
 	}
 
-	// Array Field (serviceIds)
-	if pushErr := writeBuffer.PushContext("serviceIds", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for serviceIds")
-	}
-	for _curItem, _element := range m.GetServiceIds() {
-		_ = _curItem
-		arrayCtx := utils.CreateArrayContext(ctx, len(m.GetServiceIds()), _curItem)
-		_ = arrayCtx
-		_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'serviceIds' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("serviceIds", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for serviceIds")
+	if err := WriteComplexTypeArrayField(ctx, "serviceIds", m.GetServiceIds(), writeBuffer); err != nil {
+		return errors.Wrap(err, "Error serializing 'serviceIds' field")
 	}
 
 	if popErr := writeBuffer.PopContext("DIBSuppSvcFamilies"); popErr != nil {

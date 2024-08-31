@@ -152,8 +152,6 @@ func BACnetServiceAckAtomicReadFileParseWithBufferProducer(serviceAckLength uint
 func BACnetServiceAckAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckAtomicReadFile"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckAtomicReadFile")
 	}

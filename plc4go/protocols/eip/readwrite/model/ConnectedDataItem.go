@@ -155,8 +155,6 @@ func ConnectedDataItemParseWithBufferProducer() func(ctx context.Context, readBu
 func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectedDataItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectedDataItem")
 	}

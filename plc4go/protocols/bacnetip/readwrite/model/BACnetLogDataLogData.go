@@ -167,8 +167,6 @@ func BACnetLogDataLogDataParseWithBufferProducer(tagNumber uint8) func(ctx conte
 func BACnetLogDataLogDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogDataLogData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogData")
 	}
@@ -237,21 +235,8 @@ func (m *_BACnetLogDataLogData) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_innerOpeningTagErr, "Error serializing 'innerOpeningTag' field")
 		}
 
-		// Array Field (logData)
-		if pushErr := writeBuffer.PushContext("logData", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for logData")
-		}
-		for _curItem, _element := range m.GetLogData() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetLogData()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'logData' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("logData", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for logData")
+		if err := WriteComplexTypeArrayField(ctx, "logData", m.GetLogData(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'logData' field")
 		}
 
 		// Simple Field (innerClosingTag)

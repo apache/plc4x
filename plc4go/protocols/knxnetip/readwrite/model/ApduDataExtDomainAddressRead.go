@@ -118,8 +118,6 @@ func ApduDataExtDomainAddressReadParseWithBufferProducer(length uint8) func(ctx 
 func ApduDataExtDomainAddressReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ApduDataExtDomainAddressRead"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ApduDataExtDomainAddressRead")
 	}

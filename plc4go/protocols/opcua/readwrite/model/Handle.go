@@ -92,8 +92,6 @@ func HandleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.
 func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Handle"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Handle")
 	}

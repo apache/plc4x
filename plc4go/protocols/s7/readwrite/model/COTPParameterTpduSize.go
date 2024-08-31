@@ -141,8 +141,6 @@ func COTPParameterTpduSizeParseWithBufferProducer(rest uint8) func(ctx context.C
 func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("COTPParameterTpduSize"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for COTPParameterTpduSize")
 	}

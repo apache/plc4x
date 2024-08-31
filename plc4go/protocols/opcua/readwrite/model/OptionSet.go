@@ -152,8 +152,6 @@ func OptionSetParseWithBufferProducer(identifier string) func(ctx context.Contex
 func OptionSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OptionSet, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OptionSet"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OptionSet")
 	}

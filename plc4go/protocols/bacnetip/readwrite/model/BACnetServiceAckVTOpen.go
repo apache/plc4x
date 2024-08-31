@@ -141,8 +141,6 @@ func BACnetServiceAckVTOpenParseWithBufferProducer(serviceAckLength uint32) func
 func BACnetServiceAckVTOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetServiceAckVTOpen"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetServiceAckVTOpen")
 	}

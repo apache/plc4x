@@ -126,8 +126,6 @@ func PascalByteStringParseWithBufferProducer() func(ctx context.Context, readBuf
 func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PascalByteString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("PascalByteString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for PascalByteString")
 	}
@@ -179,9 +177,7 @@ func (m *_PascalByteString) SerializeWithWriteBuffer(ctx context.Context, writeB
 		return errors.Wrap(_stringLengthErr, "Error serializing 'stringLength' field")
 	}
 
-	// Array Field (stringValue)
-	// Byte Array field (stringValue)
-	if err := writeBuffer.WriteByteArray("stringValue", m.GetStringValue()); err != nil {
+	if err := WriteByteArrayField(ctx, "stringValue", m.GetStringValue(), WriteByteArray(writeBuffer, 8)); err != nil {
 		return errors.Wrap(err, "Error serializing 'stringValue' field")
 	}
 

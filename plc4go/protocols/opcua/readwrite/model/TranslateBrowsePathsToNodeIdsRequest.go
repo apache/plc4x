@@ -170,8 +170,6 @@ func TranslateBrowsePathsToNodeIdsRequestParseWithBufferProducer(identifier stri
 func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TranslateBrowsePathsToNodeIdsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TranslateBrowsePathsToNodeIdsRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TranslateBrowsePathsToNodeIdsRequest")
 	}
@@ -245,21 +243,8 @@ func (m *_TranslateBrowsePathsToNodeIdsRequest) SerializeWithWriteBuffer(ctx con
 			return errors.Wrap(_noOfBrowsePathsErr, "Error serializing 'noOfBrowsePaths' field")
 		}
 
-		// Array Field (browsePaths)
-		if pushErr := writeBuffer.PushContext("browsePaths", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for browsePaths")
-		}
-		for _curItem, _element := range m.GetBrowsePaths() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetBrowsePaths()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'browsePaths' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("browsePaths", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for browsePaths")
+		if err := WriteComplexTypeArrayField(ctx, "browsePaths", m.GetBrowsePaths(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'browsePaths' field")
 		}
 
 		if popErr := writeBuffer.PopContext("TranslateBrowsePathsToNodeIdsRequest"); popErr != nil {

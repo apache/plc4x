@@ -168,8 +168,6 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBufferProducer(tagNum
 func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataIPv6AutoAddressingEnable"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataIPv6AutoAddressingEnable")
 	}

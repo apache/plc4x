@@ -160,8 +160,6 @@ func EncodedReplyParseWithBufferProducer[T EncodedReply](cBusOptions CBusOptions
 func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("EncodedReply"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for EncodedReply")
 	}

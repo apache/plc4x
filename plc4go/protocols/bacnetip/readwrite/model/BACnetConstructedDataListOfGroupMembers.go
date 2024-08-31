@@ -153,8 +153,6 @@ func BACnetConstructedDataListOfGroupMembersParseWithBufferProducer(tagNumber ui
 func BACnetConstructedDataListOfGroupMembersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataListOfGroupMembers, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataListOfGroupMembers"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataListOfGroupMembers")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataListOfGroupMembers) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataListOfGroupMembers")
 		}
 
-		// Array Field (listOfGroupMembers)
-		if pushErr := writeBuffer.PushContext("listOfGroupMembers", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for listOfGroupMembers")
-		}
-		for _curItem, _element := range m.GetListOfGroupMembers() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetListOfGroupMembers()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'listOfGroupMembers' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("listOfGroupMembers", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for listOfGroupMembers")
+		if err := WriteComplexTypeArrayField(ctx, "listOfGroupMembers", m.GetListOfGroupMembers(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'listOfGroupMembers' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataListOfGroupMembers"); popErr != nil {

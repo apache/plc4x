@@ -187,8 +187,6 @@ func BACnetConstructedDataKeySetsParseWithBufferProducer(tagNumber uint8, object
 func BACnetConstructedDataKeySetsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataKeySets, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataKeySets"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataKeySets")
 	}
@@ -277,21 +275,8 @@ func (m *_BACnetConstructedDataKeySets) SerializeWithWriteBuffer(ctx context.Con
 			}
 		}
 
-		// Array Field (keySets)
-		if pushErr := writeBuffer.PushContext("keySets", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for keySets")
-		}
-		for _curItem, _element := range m.GetKeySets() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetKeySets()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'keySets' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("keySets", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for keySets")
+		if err := WriteComplexTypeArrayField(ctx, "keySets", m.GetKeySets(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'keySets' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataKeySets"); popErr != nil {

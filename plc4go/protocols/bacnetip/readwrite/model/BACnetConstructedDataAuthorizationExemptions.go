@@ -153,8 +153,6 @@ func BACnetConstructedDataAuthorizationExemptionsParseWithBufferProducer(tagNumb
 func BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationExemptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthorizationExemptions"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthorizationExemptions")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataAuthorizationExemptions) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAuthorizationExemptions")
 		}
 
-		// Array Field (authorizationExemption)
-		if pushErr := writeBuffer.PushContext("authorizationExemption", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authorizationExemption")
-		}
-		for _curItem, _element := range m.GetAuthorizationExemption() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthorizationExemption()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'authorizationExemption' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("authorizationExemption", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authorizationExemption")
+		if err := WriteComplexTypeArrayField(ctx, "authorizationExemption", m.GetAuthorizationExemption(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'authorizationExemption' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthorizationExemptions"); popErr != nil {

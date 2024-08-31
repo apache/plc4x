@@ -153,8 +153,6 @@ func BACnetConstructedDataCredentialsParseWithBufferProducer(tagNumber uint8, ob
 func BACnetConstructedDataCredentialsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCredentials, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataCredentials"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataCredentials")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataCredentials) SerializeWithWriteBuffer(ctx context
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataCredentials")
 		}
 
-		// Array Field (credentials)
-		if pushErr := writeBuffer.PushContext("credentials", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for credentials")
-		}
-		for _curItem, _element := range m.GetCredentials() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetCredentials()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'credentials' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("credentials", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for credentials")
+		if err := WriteComplexTypeArrayField(ctx, "credentials", m.GetCredentials(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'credentials' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataCredentials"); popErr != nil {

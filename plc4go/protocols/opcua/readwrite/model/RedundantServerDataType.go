@@ -163,8 +163,6 @@ func RedundantServerDataTypeParseWithBufferProducer(identifier string) func(ctx 
 func RedundantServerDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RedundantServerDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RedundantServerDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RedundantServerDataType")
 	}

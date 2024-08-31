@@ -143,8 +143,6 @@ func ExtensiblePayloadParseWithBufferProducer(extensible bool, byteCount uint32)
 func ExtensiblePayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (ExtensiblePayload, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ExtensiblePayload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ExtensiblePayload")
 	}

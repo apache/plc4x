@@ -114,8 +114,6 @@ func StatusCodeParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("StatusCode"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for StatusCode")
 	}

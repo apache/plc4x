@@ -159,8 +159,6 @@ func FirmataMessageSubscribeAnalogPinValueParseWithBufferProducer(response bool)
 func FirmataMessageSubscribeAnalogPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeAnalogPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("FirmataMessageSubscribeAnalogPinValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for FirmataMessageSubscribeAnalogPinValue")
 	}

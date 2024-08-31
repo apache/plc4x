@@ -118,8 +118,6 @@ func WriterGroupMessageDataTypeParseWithBufferProducer(identifier string) func(c
 func WriterGroupMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupMessageDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("WriterGroupMessageDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for WriterGroupMessageDataType")
 	}

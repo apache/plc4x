@@ -159,8 +159,6 @@ func HistoryDataParseWithBufferProducer(identifier string) func(ctx context.Cont
 func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("HistoryData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for HistoryData")
 	}
@@ -216,21 +214,8 @@ func (m *_HistoryData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(_noOfDataValuesErr, "Error serializing 'noOfDataValues' field")
 		}
 
-		// Array Field (dataValues)
-		if pushErr := writeBuffer.PushContext("dataValues", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for dataValues")
-		}
-		for _curItem, _element := range m.GetDataValues() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetDataValues()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'dataValues' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("dataValues", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for dataValues")
+		if err := WriteComplexTypeArrayField(ctx, "dataValues", m.GetDataValues(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'dataValues' field")
 		}
 
 		if popErr := writeBuffer.PopContext("HistoryData"); popErr != nil {

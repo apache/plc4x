@@ -186,8 +186,6 @@ func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLeng
 func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("DF1ResponseMessage"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for DF1ResponseMessage")
 	}

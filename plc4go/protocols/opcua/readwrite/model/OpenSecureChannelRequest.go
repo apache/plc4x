@@ -196,8 +196,6 @@ func OpenSecureChannelRequestParseWithBufferProducer(identifier string) func(ctx
 func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpenSecureChannelRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpenSecureChannelRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpenSecureChannelRequest")
 	}

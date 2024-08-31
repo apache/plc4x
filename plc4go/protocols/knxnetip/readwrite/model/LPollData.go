@@ -180,8 +180,6 @@ func LPollDataParseWithBufferProducer() func(ctx context.Context, readBuffer uti
 func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("LPollData"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for LPollData")
 	}
@@ -254,9 +252,7 @@ func (m *_LPollData) SerializeWithWriteBuffer(ctx context.Context, writeBuffer u
 			return errors.Wrap(_sourceAddressErr, "Error serializing 'sourceAddress' field")
 		}
 
-		// Array Field (targetAddress)
-		// Byte Array field (targetAddress)
-		if err := writeBuffer.WriteByteArray("targetAddress", m.GetTargetAddress()); err != nil {
+		if err := WriteByteArrayField(ctx, "targetAddress", m.GetTargetAddress(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'targetAddress' field")
 		}
 

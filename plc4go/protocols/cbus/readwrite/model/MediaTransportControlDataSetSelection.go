@@ -151,8 +151,6 @@ func MediaTransportControlDataSetSelectionParseWithBufferProducer() func(ctx con
 func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("MediaTransportControlDataSetSelection"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for MediaTransportControlDataSetSelection")
 	}

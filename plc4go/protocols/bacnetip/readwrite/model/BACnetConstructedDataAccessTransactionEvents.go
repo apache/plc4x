@@ -153,8 +153,6 @@ func BACnetConstructedDataAccessTransactionEventsParseWithBufferProducer(tagNumb
 func BACnetConstructedDataAccessTransactionEventsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessTransactionEvents, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAccessTransactionEvents"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAccessTransactionEvents")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataAccessTransactionEvents) SerializeWithWriteBuffer
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataAccessTransactionEvents")
 		}
 
-		// Array Field (accessTransactionEvents)
-		if pushErr := writeBuffer.PushContext("accessTransactionEvents", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for accessTransactionEvents")
-		}
-		for _curItem, _element := range m.GetAccessTransactionEvents() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAccessTransactionEvents()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'accessTransactionEvents' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("accessTransactionEvents", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for accessTransactionEvents")
+		if err := WriteComplexTypeArrayField(ctx, "accessTransactionEvents", m.GetAccessTransactionEvents(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'accessTransactionEvents' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAccessTransactionEvents"); popErr != nil {

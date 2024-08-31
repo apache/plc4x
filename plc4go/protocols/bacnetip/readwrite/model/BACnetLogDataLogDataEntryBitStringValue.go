@@ -139,8 +139,6 @@ func BACnetLogDataLogDataEntryBitStringValueParseWithBufferProducer() func(ctx c
 func BACnetLogDataLogDataEntryBitStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogDataLogDataEntryBitStringValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogDataLogDataEntryBitStringValue")
 	}

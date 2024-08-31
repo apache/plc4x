@@ -145,8 +145,6 @@ func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32
 func PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (Payload, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Payload"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Payload")
 	}

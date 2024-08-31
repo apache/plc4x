@@ -92,8 +92,6 @@ func CounterParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("Counter"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for Counter")
 	}

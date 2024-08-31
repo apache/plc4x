@@ -141,8 +141,6 @@ func X509IdentityTokenParseWithBufferProducer(identifier string) func(ctx contex
 func X509IdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (X509IdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("X509IdentityToken"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for X509IdentityToken")
 	}

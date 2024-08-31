@@ -153,8 +153,6 @@ func BACnetConstructedDataEventLogLogBufferParseWithBufferProducer(tagNumber uin
 func BACnetConstructedDataEventLogLogBufferParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventLogLogBuffer, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataEventLogLogBuffer"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataEventLogLogBuffer")
 	}
@@ -200,21 +198,8 @@ func (m *_BACnetConstructedDataEventLogLogBuffer) SerializeWithWriteBuffer(ctx c
 			return errors.Wrap(pushErr, "Error pushing for BACnetConstructedDataEventLogLogBuffer")
 		}
 
-		// Array Field (floorText)
-		if pushErr := writeBuffer.PushContext("floorText", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for floorText")
-		}
-		for _curItem, _element := range m.GetFloorText() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetFloorText()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'floorText' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("floorText", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for floorText")
+		if err := WriteComplexTypeArrayField(ctx, "floorText", m.GetFloorText(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'floorText' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataEventLogLogBuffer"); popErr != nil {

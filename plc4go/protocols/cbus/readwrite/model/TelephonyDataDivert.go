@@ -140,8 +140,6 @@ func TelephonyDataDivertParseWithBufferProducer(commandTypeContainer TelephonyCo
 func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("TelephonyDataDivert"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for TelephonyDataDivert")
 	}

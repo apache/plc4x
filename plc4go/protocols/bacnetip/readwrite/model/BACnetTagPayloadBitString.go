@@ -141,8 +141,6 @@ func BACnetTagPayloadBitStringParseWithBufferProducer(actualLength uint32) func(
 func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetTagPayloadBitString"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetTagPayloadBitString")
 	}
@@ -201,34 +199,12 @@ func (m *_BACnetTagPayloadBitString) SerializeWithWriteBuffer(ctx context.Contex
 		return errors.Wrap(_unusedBitsErr, "Error serializing 'unusedBits' field")
 	}
 
-	// Array Field (data)
-	if pushErr := writeBuffer.PushContext("data", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for data")
-	}
-	for _curItem, _element := range m.GetData() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'data' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("data", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for data")
+	if err := WriteSimpleTypeArrayField(ctx, "data", m.GetData(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'data' field")
 	}
 
-	// Array Field (unused)
-	if pushErr := writeBuffer.PushContext("unused", utils.WithRenderAsList(true)); pushErr != nil {
-		return errors.Wrap(pushErr, "Error pushing for unused")
-	}
-	for _curItem, _element := range m.GetUnused() {
-		_ = _curItem
-		_elementErr := /*TODO: migrate me*/ writeBuffer.WriteBit("", _element)
-		if _elementErr != nil {
-			return errors.Wrap(_elementErr, "Error serializing 'unused' field")
-		}
-	}
-	if popErr := writeBuffer.PopContext("unused", utils.WithRenderAsList(true)); popErr != nil {
-		return errors.Wrap(popErr, "Error popping for unused")
+	if err := WriteSimpleTypeArrayField(ctx, "unused", m.GetUnused(), WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'unused' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BACnetTagPayloadBitString"); popErr != nil {

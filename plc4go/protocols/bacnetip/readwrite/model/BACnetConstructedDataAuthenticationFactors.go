@@ -187,8 +187,6 @@ func BACnetConstructedDataAuthenticationFactorsParseWithBufferProducer(tagNumber
 func BACnetConstructedDataAuthenticationFactorsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthenticationFactors, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataAuthenticationFactors"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataAuthenticationFactors")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataAuthenticationFactors) SerializeWithWriteBuffer(c
 			}
 		}
 
-		// Array Field (authenticationFactors)
-		if pushErr := writeBuffer.PushContext("authenticationFactors", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for authenticationFactors")
-		}
-		for _curItem, _element := range m.GetAuthenticationFactors() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetAuthenticationFactors()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'authenticationFactors' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("authenticationFactors", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for authenticationFactors")
+		if err := WriteComplexTypeArrayField(ctx, "authenticationFactors", m.GetAuthenticationFactors(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'authenticationFactors' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataAuthenticationFactors"); popErr != nil {

@@ -146,8 +146,6 @@ func ConnectedAddressItemParseWithBufferProducer() func(ctx context.Context, rea
 func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ConnectedAddressItem"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ConnectedAddressItem")
 	}

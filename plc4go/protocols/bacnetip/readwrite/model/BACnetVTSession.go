@@ -134,8 +134,6 @@ func BACnetVTSessionParseWithBufferProducer() func(ctx context.Context, readBuff
 func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetVTSession"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetVTSession")
 	}

@@ -141,8 +141,6 @@ func BACnetLogRecordLogDatumUnsignedValueParseWithBufferProducer(tagNumber uint8
 func BACnetLogRecordLogDatumUnsignedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumUnsignedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetLogRecordLogDatumUnsignedValue"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetLogRecordLogDatumUnsignedValue")
 	}

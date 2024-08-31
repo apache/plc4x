@@ -163,8 +163,6 @@ func RepublishRequestParseWithBufferProducer(identifier string) func(ctx context
 func RepublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RepublishRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("RepublishRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for RepublishRequest")
 	}

@@ -122,8 +122,6 @@ func SysexCommandSysexRealtimeParseWithBufferProducer(response bool) func(ctx co
 func SysexCommandSysexRealtimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexRealtime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("SysexCommandSysexRealtime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for SysexCommandSysexRealtime")
 	}

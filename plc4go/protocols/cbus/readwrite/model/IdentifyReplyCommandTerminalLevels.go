@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,8 +143,6 @@ func IdentifyReplyCommandTerminalLevelsParseWithBufferProducer(attribute Attribu
 func IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("IdentifyReplyCommandTerminalLevels"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for IdentifyReplyCommandTerminalLevels")
 	}
@@ -187,9 +187,7 @@ func (m *_IdentifyReplyCommandTerminalLevels) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(pushErr, "Error pushing for IdentifyReplyCommandTerminalLevels")
 		}
 
-		// Array Field (terminalLevels)
-		// Byte Array field (terminalLevels)
-		if err := writeBuffer.WriteByteArray("terminalLevels", m.GetTerminalLevels()); err != nil {
+		if err := WriteByteArrayField(ctx, "terminalLevels", m.GetTerminalLevels(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'terminalLevels' field")
 		}
 

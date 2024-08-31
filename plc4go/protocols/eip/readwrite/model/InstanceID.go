@@ -152,8 +152,6 @@ func InstanceIDParseWithBufferProducer() func(ctx context.Context, readBuffer ut
 func InstanceIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceID, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("InstanceID"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for InstanceID")
 	}

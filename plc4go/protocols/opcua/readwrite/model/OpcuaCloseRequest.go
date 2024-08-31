@@ -158,8 +158,6 @@ func OpcuaCloseRequestParseWithBufferProducer(response bool) func(ctx context.Co
 func OpcuaCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaCloseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("OpcuaCloseRequest"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for OpcuaCloseRequest")
 	}

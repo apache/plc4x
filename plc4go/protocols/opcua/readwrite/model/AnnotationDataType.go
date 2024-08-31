@@ -163,8 +163,6 @@ func AnnotationDataTypeParseWithBufferProducer(identifier string) func(ctx conte
 func AnnotationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AnnotationDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("AnnotationDataType"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for AnnotationDataType")
 	}

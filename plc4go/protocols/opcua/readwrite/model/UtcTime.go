@@ -92,8 +92,6 @@ func UtcTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils
 func UtcTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("UtcTime"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for UtcTime")
 	}

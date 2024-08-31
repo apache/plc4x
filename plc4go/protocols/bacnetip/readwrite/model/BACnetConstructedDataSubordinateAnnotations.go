@@ -187,8 +187,6 @@ func BACnetConstructedDataSubordinateAnnotationsParseWithBufferProducer(tagNumbe
 func BACnetConstructedDataSubordinateAnnotationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSubordinateAnnotations, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("BACnetConstructedDataSubordinateAnnotations"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for BACnetConstructedDataSubordinateAnnotations")
 	}
@@ -272,21 +270,8 @@ func (m *_BACnetConstructedDataSubordinateAnnotations) SerializeWithWriteBuffer(
 			}
 		}
 
-		// Array Field (subordinateAnnotations)
-		if pushErr := writeBuffer.PushContext("subordinateAnnotations", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for subordinateAnnotations")
-		}
-		for _curItem, _element := range m.GetSubordinateAnnotations() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetSubordinateAnnotations()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'subordinateAnnotations' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("subordinateAnnotations", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for subordinateAnnotations")
+		if err := WriteComplexTypeArrayField(ctx, "subordinateAnnotations", m.GetSubordinateAnnotations(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'subordinateAnnotations' field")
 		}
 
 		if popErr := writeBuffer.PopContext("BACnetConstructedDataSubordinateAnnotations"); popErr != nil {

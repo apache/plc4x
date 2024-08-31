@@ -310,8 +310,6 @@ func CipIdentityParseWithBufferProducer() func(ctx context.Context, readBuffer u
 func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipIdentity, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("CipIdentity"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for CipIdentity")
 	}
@@ -478,19 +476,8 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(_socketAddressPortErr, "Error serializing 'socketAddressPort' field")
 		}
 
-		// Array Field (socketAddressAddress)
-		if pushErr := writeBuffer.PushContext("socketAddressAddress", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for socketAddressAddress")
-		}
-		for _curItem, _element := range m.GetSocketAddressAddress() {
-			_ = _curItem
-			_elementErr := /*TODO: migrate me*/ writeBuffer.WriteUint8("", 8, uint8(_element))
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'socketAddressAddress' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("socketAddressAddress", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for socketAddressAddress")
+		if err := WriteSimpleTypeArrayField(ctx, "socketAddressAddress", m.GetSocketAddressAddress(), WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'socketAddressAddress' field")
 		}
 
 		// Const Field (zeroes1)

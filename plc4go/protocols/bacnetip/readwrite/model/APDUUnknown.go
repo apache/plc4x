@@ -154,8 +154,6 @@ func APDUUnknownParseWithBufferProducer(apduLength uint16) func(ctx context.Cont
 func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("APDUUnknown"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for APDUUnknown")
 	}
@@ -213,9 +211,7 @@ func (m *_APDUUnknown) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(_unknownTypeRestErr, "Error serializing 'unknownTypeRest' field")
 		}
 
-		// Array Field (unknownBytes)
-		// Byte Array field (unknownBytes)
-		if err := writeBuffer.WriteByteArray("unknownBytes", m.GetUnknownBytes()); err != nil {
+		if err := WriteByteArrayField(ctx, "unknownBytes", m.GetUnknownBytes(), WriteByteArray(writeBuffer, 8)); err != nil {
 			return errors.Wrap(err, "Error serializing 'unknownBytes' field")
 		}
 

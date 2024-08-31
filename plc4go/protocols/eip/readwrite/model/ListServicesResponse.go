@@ -164,8 +164,6 @@ func ListServicesResponseParseWithBufferProducer(response bool) func(ctx context
 func ListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ListServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
-	log := zerolog.Ctx(ctx)
-	_ = log
 	if pullErr := readBuffer.PullContext("ListServicesResponse"); pullErr != nil {
 		return nil, errors.Wrap(pullErr, "Error pulling for ListServicesResponse")
 	}
@@ -221,21 +219,8 @@ func (m *_ListServicesResponse) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(_typeIdCountErr, "Error serializing 'typeIdCount' field")
 		}
 
-		// Array Field (typeIds)
-		if pushErr := writeBuffer.PushContext("typeIds", utils.WithRenderAsList(true)); pushErr != nil {
-			return errors.Wrap(pushErr, "Error pushing for typeIds")
-		}
-		for _curItem, _element := range m.GetTypeIds() {
-			_ = _curItem
-			arrayCtx := utils.CreateArrayContext(ctx, len(m.GetTypeIds()), _curItem)
-			_ = arrayCtx
-			_elementErr := writeBuffer.WriteSerializable(arrayCtx, _element)
-			if _elementErr != nil {
-				return errors.Wrap(_elementErr, "Error serializing 'typeIds' field")
-			}
-		}
-		if popErr := writeBuffer.PopContext("typeIds", utils.WithRenderAsList(true)); popErr != nil {
-			return errors.Wrap(popErr, "Error popping for typeIds")
+		if err := WriteComplexTypeArrayField(ctx, "typeIds", m.GetTypeIds(), writeBuffer); err != nil {
+			return errors.Wrap(err, "Error serializing 'typeIds' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ListServicesResponse"); popErr != nil {
