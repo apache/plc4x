@@ -181,10 +181,10 @@ func BACnetConstructedDataBinaryInputInterfaceValueParseWithBuffer(ctx context.C
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := interfaceValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetOptionalBinaryPV](ctx, "actualValue", (*BACnetOptionalBinaryPV)(nil), interfaceValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryInputInterfaceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryInputInterfaceValue")

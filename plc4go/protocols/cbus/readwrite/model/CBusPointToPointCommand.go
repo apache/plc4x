@@ -186,10 +186,10 @@ func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer util
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_isDirect := bool((bridgeAddressCountPeek & 0x00FF) == (0x0000))
-	isDirect := bool(_isDirect)
-	_ = isDirect
+	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDirect' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointCommandChildSerializeRequirement interface {

@@ -163,10 +163,10 @@ func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numElements' field"))
 	}
 
-	// Virtual field
-	_upperBound := uint32(lowerBound) + uint32(numElements)
-	upperBound := uint32(_upperBound)
-	_ = upperBound
+	upperBound, err := ReadVirtualField[uint32](ctx, "upperBound", (*uint32)(nil), uint32(lowerBound)+uint32(numElements), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'upperBound' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("AdsDataTypeArrayInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDataTypeArrayInfo")

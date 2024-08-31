@@ -176,15 +176,15 @@ func BACnetConstructedDataVendorNameParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	vendorName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "vendorName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	vendorName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "vendorName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorName' field"))
 	}
 
-	// Virtual field
-	_actualValue := vendorName
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), vendorName)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorName")

@@ -185,10 +185,10 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
-	// Virtual field
-	_isUnknownId := bool((value) == (BACnetVendorId_UNKNOWN_VENDOR))
-	isUnknownId := bool(_isUnknownId)
-	_ = isUnknownId
+	isUnknownId, err := ReadVirtualField[bool](ctx, "isUnknownId", (*bool)(nil), bool((value) == (BACnetVendorId_UNKNOWN_VENDOR)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnknownId' field"))
+	}
 
 	unknownId, err := ReadManualField[uint32](ctx, "unknownId", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)))
 	if err != nil {

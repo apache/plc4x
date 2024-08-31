@@ -181,10 +181,10 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultSubordinateRelationship' field"))
 	}
 
-	// Virtual field
-	_actualValue := defaultSubordinateRelationship
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetRelationshipTagged](ctx, "actualValue", (*BACnetRelationshipTagged)(nil), defaultSubordinateRelationship)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultSubordinateRelationship"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultSubordinateRelationship")

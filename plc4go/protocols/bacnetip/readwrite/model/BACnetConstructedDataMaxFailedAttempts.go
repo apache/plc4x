@@ -176,15 +176,15 @@ func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maxFailedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxFailedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	maxFailedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxFailedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxFailedAttempts' field"))
 	}
 
-	// Virtual field
-	_actualValue := maxFailedAttempts
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxFailedAttempts)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxFailedAttempts"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxFailedAttempts")

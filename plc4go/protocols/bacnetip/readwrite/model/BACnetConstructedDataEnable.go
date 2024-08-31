@@ -176,15 +176,15 @@ func BACnetConstructedDataEnableParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	enable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "enable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	enable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "enable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
 
-	// Virtual field
-	_actualValue := enable
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), enable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEnable")

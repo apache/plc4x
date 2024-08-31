@@ -176,15 +176,15 @@ func BACnetConstructedDataDeviceMaxInfoFramesParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maxInfoFrames, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxInfoFrames", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	maxInfoFrames, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxInfoFrames", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxInfoFrames' field"))
 	}
 
-	// Virtual field
-	_actualValue := maxInfoFrames
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxInfoFrames)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDeviceMaxInfoFrames"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDeviceMaxInfoFrames")

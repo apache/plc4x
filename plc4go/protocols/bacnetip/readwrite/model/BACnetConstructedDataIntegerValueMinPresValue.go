@@ -176,15 +176,15 @@ func BACnetConstructedDataIntegerValueMinPresValueParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minPresValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "minPresValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	minPresValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "minPresValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minPresValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := minPresValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagSignedInteger](ctx, "actualValue", (*BACnetApplicationTagSignedInteger)(nil), minPresValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegerValueMinPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegerValueMinPresValue")

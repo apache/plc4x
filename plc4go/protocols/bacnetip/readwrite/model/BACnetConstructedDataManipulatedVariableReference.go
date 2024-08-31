@@ -181,10 +181,10 @@ func BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manipulatedVariableReference' field"))
 	}
 
-	// Virtual field
-	_actualValue := manipulatedVariableReference
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectPropertyReference](ctx, "actualValue", (*BACnetObjectPropertyReference)(nil), manipulatedVariableReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataManipulatedVariableReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataManipulatedVariableReference")

@@ -176,15 +176,15 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	occupancyUpperLimitEnforced, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyUpperLimitEnforced", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	occupancyUpperLimitEnforced, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyUpperLimitEnforced", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyUpperLimitEnforced' field"))
 	}
 
-	// Virtual field
-	_actualValue := occupancyUpperLimitEnforced
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), occupancyUpperLimitEnforced)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyUpperLimitEnforced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyUpperLimitEnforced")

@@ -209,7 +209,7 @@ func BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(ctx context.C
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
 
-	exceedingValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "exceedingValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	exceedingValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "exceedingValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceedingValue' field"))
 	}
@@ -219,12 +219,12 @@ func BACnetNotificationParametersUnsignedOutOfRangeParseWithBuffer(ctx context.C
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusFlags' field"))
 	}
 
-	deadband, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "deadband", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	deadband, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "deadband", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}
 
-	exceededLimit, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "exceededLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	exceededLimit, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "exceededLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceededLimit' field"))
 	}

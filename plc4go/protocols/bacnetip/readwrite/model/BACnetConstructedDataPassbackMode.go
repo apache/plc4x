@@ -181,10 +181,10 @@ func BACnetConstructedDataPassbackModeParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'passbackMode' field"))
 	}
 
-	// Virtual field
-	_actualValue := passbackMode
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessPassbackModeTagged](ctx, "actualValue", (*BACnetAccessPassbackModeTagged)(nil), passbackMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassbackMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassbackMode")

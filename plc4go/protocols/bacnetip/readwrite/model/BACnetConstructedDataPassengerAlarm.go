@@ -176,15 +176,15 @@ func BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	passengerAlarm, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "passengerAlarm", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	passengerAlarm, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "passengerAlarm", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'passengerAlarm' field"))
 	}
 
-	// Virtual field
-	_actualValue := passengerAlarm
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), passengerAlarm)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPassengerAlarm"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPassengerAlarm")

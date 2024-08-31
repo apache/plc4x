@@ -176,15 +176,15 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6MulticastAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6MulticastAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	ipv6MulticastAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6MulticastAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6MulticastAddress' field"))
 	}
 
-	// Virtual field
-	_actualValue := ipv6MulticastAddress
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), ipv6MulticastAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPv6MulticastAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPv6MulticastAddress")

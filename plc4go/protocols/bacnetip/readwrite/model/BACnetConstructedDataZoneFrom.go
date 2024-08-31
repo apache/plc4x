@@ -181,10 +181,10 @@ func BACnetConstructedDataZoneFromParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneFrom' field"))
 	}
 
-	// Virtual field
-	_actualValue := zoneFrom
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), zoneFrom)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataZoneFrom"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataZoneFrom")

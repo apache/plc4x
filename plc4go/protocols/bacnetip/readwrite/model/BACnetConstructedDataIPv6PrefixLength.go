@@ -176,15 +176,15 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6PrefixLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	ipv6PrefixLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6PrefixLength' field"))
 	}
 
-	// Virtual field
-	_actualValue := ipv6PrefixLength
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), ipv6PrefixLength)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6PrefixLength"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6PrefixLength")

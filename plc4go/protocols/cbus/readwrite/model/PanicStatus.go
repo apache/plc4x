@@ -166,20 +166,20 @@ func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
-	// Virtual field
-	_isNoPanic := bool((status) == (0x00))
-	isNoPanic := bool(_isNoPanic)
-	_ = isNoPanic
+	isNoPanic, err := ReadVirtualField[bool](ctx, "isNoPanic", (*bool)(nil), bool((status) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoPanic' field"))
+	}
 
-	// Virtual field
-	_isReserved := bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE)))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
-	// Virtual field
-	_isPanicCurrentlyActive := bool((status) > (0xFE))
-	isPanicCurrentlyActive := bool(_isPanicCurrentlyActive)
-	_ = isPanicCurrentlyActive
+	isPanicCurrentlyActive, err := ReadVirtualField[bool](ctx, "isPanicCurrentlyActive", (*bool)(nil), bool((status) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPanicCurrentlyActive' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("PanicStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PanicStatus")

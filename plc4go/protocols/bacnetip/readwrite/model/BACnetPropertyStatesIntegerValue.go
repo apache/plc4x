@@ -147,7 +147,7 @@ func BACnetPropertyStatesIntegerValueParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	integerValue, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	integerValue, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}

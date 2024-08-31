@@ -181,10 +181,10 @@ func BACnetConstructedDataLastCommandTimeParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCommandTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastCommandTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetTimeStamp](ctx, "actualValue", (*BACnetTimeStamp)(nil), lastCommandTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCommandTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCommandTime")

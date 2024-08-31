@@ -197,15 +197,15 @@ func LevelInformationNormalParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pair2' field"))
 	}
 
-	// Virtual field
-	_actualLevel := pair2.NibbleValue()<<uint8(4) | pair1.NibbleValue()
-	actualLevel := uint8(_actualLevel)
-	_ = actualLevel
+	actualLevel, err := ReadVirtualField[uint8](ctx, "actualLevel", (*uint8)(nil), pair2.NibbleValue()<<uint8(4)|pair1.NibbleValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLevel' field"))
+	}
 
-	// Virtual field
-	_actualLevelInPercent := float32(float32(float32(100))*float32((float32(actualLevel)+float32(float32(2))))) / float32(float32(255))
-	actualLevelInPercent := float32(_actualLevelInPercent)
-	_ = actualLevelInPercent
+	actualLevelInPercent, err := ReadVirtualField[float32](ctx, "actualLevelInPercent", (*float32)(nil), float32(float32(float32(100))*float32((float32(actualLevel)+float32(float32(2)))))/float32(float32(255)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLevelInPercent' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("LevelInformationNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LevelInformationNormal")

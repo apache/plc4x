@@ -165,7 +165,7 @@ func BACnetServiceAckGetEventInformationParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfEventSummaries' field"))
 	}
 
-	moreEvents, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "moreEvents", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	moreEvents, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "moreEvents", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreEvents' field"))
 	}

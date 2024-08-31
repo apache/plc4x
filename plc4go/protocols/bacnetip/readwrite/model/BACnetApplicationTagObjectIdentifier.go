@@ -181,15 +181,15 @@ func BACnetApplicationTagObjectIdentifierParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_objectType := payload.GetObjectType()
-	objectType := BACnetObjectType(_objectType)
-	_ = objectType
+	objectType, err := ReadVirtualField[BACnetObjectType](ctx, "objectType", (*BACnetObjectType)(nil), payload.GetObjectType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
+	}
 
-	// Virtual field
-	_instanceNumber := payload.GetInstanceNumber()
-	instanceNumber := uint32(_instanceNumber)
-	_ = instanceNumber
+	instanceNumber, err := ReadVirtualField[uint32](ctx, "instanceNumber", (*uint32)(nil), payload.GetInstanceNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceNumber' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagObjectIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagObjectIdentifier")

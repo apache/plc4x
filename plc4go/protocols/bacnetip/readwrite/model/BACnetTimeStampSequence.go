@@ -147,7 +147,7 @@ func BACnetTimeStampSequenceParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sequenceNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	sequenceNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}

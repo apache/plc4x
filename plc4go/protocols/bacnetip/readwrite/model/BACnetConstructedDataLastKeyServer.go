@@ -181,10 +181,10 @@ func BACnetConstructedDataLastKeyServerParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastKeyServer' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastKeyServer
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAddressBinding](ctx, "actualValue", (*BACnetAddressBinding)(nil), lastKeyServer)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastKeyServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastKeyServer")

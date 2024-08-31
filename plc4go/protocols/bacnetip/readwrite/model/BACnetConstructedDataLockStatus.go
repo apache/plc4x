@@ -181,10 +181,10 @@ func BACnetConstructedDataLockStatusParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockStatus' field"))
 	}
 
-	// Virtual field
-	_actualValue := lockStatus
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLockStatusTagged](ctx, "actualValue", (*BACnetLockStatusTagged)(nil), lockStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockStatus")

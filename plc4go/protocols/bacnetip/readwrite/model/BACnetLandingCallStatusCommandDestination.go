@@ -147,7 +147,7 @@ func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	destination, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	destination, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destination' field"))
 	}

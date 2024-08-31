@@ -176,15 +176,15 @@ func BACnetConstructedDataCalendarPresentValueParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	presentValue, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "presentValue", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	presentValue, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "presentValue", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := presentValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), presentValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCalendarPresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCalendarPresentValue")

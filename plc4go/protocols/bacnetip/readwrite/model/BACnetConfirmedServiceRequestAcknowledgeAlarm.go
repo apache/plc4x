@@ -205,12 +205,12 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	acknowledgingProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "acknowledgingProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	acknowledgingProcessIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "acknowledgingProcessIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgingProcessIdentifier' field"))
 	}
 
-	eventObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	eventObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "eventObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventObjectIdentifier' field"))
 	}
@@ -225,7 +225,7 @@ func BACnetConfirmedServiceRequestAcknowledgeAlarmParseWithBuffer(ctx context.Co
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	acknowledgmentSource, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "acknowledgmentSource", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	acknowledgmentSource, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "acknowledgmentSource", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgmentSource' field"))
 	}

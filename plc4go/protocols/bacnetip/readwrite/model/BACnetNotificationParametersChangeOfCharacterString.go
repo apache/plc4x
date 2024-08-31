@@ -198,7 +198,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(ctx cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
 
-	changedValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "changedValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	changedValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "changedValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changedValue' field"))
 	}
@@ -208,7 +208,7 @@ func BACnetNotificationParametersChangeOfCharacterStringParseWithBuffer(ctx cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusFlags' field"))
 	}
 
-	alarmValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "alarmValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	alarmValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "alarmValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValue' field"))
 	}

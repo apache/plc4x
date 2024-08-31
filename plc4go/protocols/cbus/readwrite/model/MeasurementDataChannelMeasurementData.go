@@ -261,15 +261,15 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lsb' field"))
 	}
 
-	// Virtual field
-	_rawValue := msb<<uint16(8) | lsb
-	rawValue := uint16(_rawValue)
-	_ = rawValue
+	rawValue, err := ReadVirtualField[uint16](ctx, "rawValue", (*uint16)(nil), msb<<uint16(8)|lsb)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawValue' field"))
+	}
 
-	// Virtual field
-	_value := float64(float64(rawValue)*float64(multiplier)) * float64(float64(10))
-	value := float64(_value)
-	_ = value
+	value, err := ReadVirtualField[float64](ctx, "value", (*float64)(nil), float64(float64(rawValue)*float64(multiplier))*float64(float64(10)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("MeasurementDataChannelMeasurementData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeasurementDataChannelMeasurementData")

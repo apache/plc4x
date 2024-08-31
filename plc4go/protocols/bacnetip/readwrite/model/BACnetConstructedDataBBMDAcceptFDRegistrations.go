@@ -176,15 +176,15 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bbmdAcceptFDRegistrations, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	bbmdAcceptFDRegistrations, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdAcceptFDRegistrations' field"))
 	}
 
-	// Virtual field
-	_actualValue := bbmdAcceptFDRegistrations
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), bbmdAcceptFDRegistrations)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBBMDAcceptFDRegistrations"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBBMDAcceptFDRegistrations")

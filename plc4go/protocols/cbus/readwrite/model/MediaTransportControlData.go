@@ -187,10 +187,10 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := MediaTransportControlCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[MediaTransportControlCommandType](ctx, "commandType", (*MediaTransportControlCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	mediaLinkGroup, err := ReadSimpleField(ctx, "mediaLinkGroup", ReadByte(readBuffer, 8))
 	if err != nil {

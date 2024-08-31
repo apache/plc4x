@@ -176,15 +176,15 @@ func BACnetConstructedDataMinimumOutputParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minimumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	minimumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOutput' field"))
 	}
 
-	// Virtual field
-	_actualValue := minimumOutput
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), minimumOutput)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMinimumOutput"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMinimumOutput")

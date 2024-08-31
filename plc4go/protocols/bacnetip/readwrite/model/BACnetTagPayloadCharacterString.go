@@ -160,10 +160,10 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encoding' field"))
 	}
 
-	// Virtual field
-	_actualLengthInBit := uint16(uint16(actualLength)*uint16(uint16(8))) - uint16(uint16(8))
-	actualLengthInBit := uint16(_actualLengthInBit)
-	_ = actualLengthInBit
+	actualLengthInBit, err := ReadVirtualField[uint16](ctx, "actualLengthInBit", (*uint16)(nil), uint16(uint16(actualLength)*uint16(uint16(8)))-uint16(uint16(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLengthInBit' field"))
+	}
 
 	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(actualLengthInBit)), codegen.WithEncoding("UTF-8"))
 	if err != nil {

@@ -181,10 +181,10 @@ func BACnetConstructedDataSilencedParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'silenced' field"))
 	}
 
-	// Virtual field
-	_actualValue := silenced
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetSilencedStateTagged](ctx, "actualValue", (*BACnetSilencedStateTagged)(nil), silenced)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSilenced"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSilenced")

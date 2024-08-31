@@ -181,10 +181,10 @@ func BACnetConstructedDataValueChangeTimeParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueChangeTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := valueChangeTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), valueChangeTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueChangeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueChangeTime")

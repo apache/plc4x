@@ -466,80 +466,80 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_isUint8 := bool((actualLength) == (1))
-	isUint8 := bool(_isUint8)
-	_ = isUint8
+	isUint8, err := ReadVirtualField[bool](ctx, "isUint8", (*bool)(nil), bool((actualLength) == (1)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint8' field"))
+	}
 
 	valueUint8, err := ReadOptionalField[uint8](ctx, "valueUint8", ReadUnsignedByte(readBuffer, uint8(8)), isUint8)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint8' field"))
 	}
 
-	// Virtual field
-	_isUint16 := bool((actualLength) == (2))
-	isUint16 := bool(_isUint16)
-	_ = isUint16
+	isUint16, err := ReadVirtualField[bool](ctx, "isUint16", (*bool)(nil), bool((actualLength) == (2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint16' field"))
+	}
 
 	valueUint16, err := ReadOptionalField[uint16](ctx, "valueUint16", ReadUnsignedShort(readBuffer, uint8(16)), isUint16)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint16' field"))
 	}
 
-	// Virtual field
-	_isUint24 := bool((actualLength) == (3))
-	isUint24 := bool(_isUint24)
-	_ = isUint24
+	isUint24, err := ReadVirtualField[bool](ctx, "isUint24", (*bool)(nil), bool((actualLength) == (3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint24' field"))
+	}
 
 	valueUint24, err := ReadOptionalField[uint32](ctx, "valueUint24", ReadUnsignedInt(readBuffer, uint8(24)), isUint24)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint24' field"))
 	}
 
-	// Virtual field
-	_isUint32 := bool((actualLength) == (4))
-	isUint32 := bool(_isUint32)
-	_ = isUint32
+	isUint32, err := ReadVirtualField[bool](ctx, "isUint32", (*bool)(nil), bool((actualLength) == (4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint32' field"))
+	}
 
 	valueUint32, err := ReadOptionalField[uint32](ctx, "valueUint32", ReadUnsignedInt(readBuffer, uint8(32)), isUint32)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint32' field"))
 	}
 
-	// Virtual field
-	_isUint40 := bool((actualLength) == (5))
-	isUint40 := bool(_isUint40)
-	_ = isUint40
+	isUint40, err := ReadVirtualField[bool](ctx, "isUint40", (*bool)(nil), bool((actualLength) == (5)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint40' field"))
+	}
 
 	valueUint40, err := ReadOptionalField[uint64](ctx, "valueUint40", ReadUnsignedLong(readBuffer, uint8(40)), isUint40)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint40' field"))
 	}
 
-	// Virtual field
-	_isUint48 := bool((actualLength) == (6))
-	isUint48 := bool(_isUint48)
-	_ = isUint48
+	isUint48, err := ReadVirtualField[bool](ctx, "isUint48", (*bool)(nil), bool((actualLength) == (6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint48' field"))
+	}
 
 	valueUint48, err := ReadOptionalField[uint64](ctx, "valueUint48", ReadUnsignedLong(readBuffer, uint8(48)), isUint48)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint48' field"))
 	}
 
-	// Virtual field
-	_isUint56 := bool((actualLength) == (7))
-	isUint56 := bool(_isUint56)
-	_ = isUint56
+	isUint56, err := ReadVirtualField[bool](ctx, "isUint56", (*bool)(nil), bool((actualLength) == (7)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint56' field"))
+	}
 
 	valueUint56, err := ReadOptionalField[uint64](ctx, "valueUint56", ReadUnsignedLong(readBuffer, uint8(56)), isUint56)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueUint56' field"))
 	}
 
-	// Virtual field
-	_isUint64 := bool((actualLength) == (8))
-	isUint64 := bool(_isUint64)
-	_ = isUint64
+	isUint64, err := ReadVirtualField[bool](ctx, "isUint64", (*bool)(nil), bool((actualLength) == (8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint64' field"))
+	}
 
 	valueUint64, err := ReadOptionalField[uint64](ctx, "valueUint64", ReadUnsignedLong(readBuffer, uint8(64)), isUint64)
 	if err != nil {
@@ -551,8 +551,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "unmapped integer length"})
 	}
 
-	// Virtual field
-	_actualValue := utils.InlineIf(isUint8, func() any { return uint64((*valueUint8)) }, func() any {
+	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), utils.InlineIf(isUint8, func() any { return uint64((*valueUint8)) }, func() any {
 		return uint64((utils.InlineIf(isUint16, func() any { return uint64((*valueUint16)) }, func() any {
 			return uint64((utils.InlineIf(isUint24, func() any { return uint64((*valueUint24)) }, func() any {
 				return uint64((utils.InlineIf(isUint32, func() any { return uint64((*valueUint32)) }, func() any {
@@ -564,9 +563,10 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 				}).(uint64)))
 			}).(uint64)))
 		}).(uint64)))
-	}).(uint64)
-	actualValue := uint64(_actualValue)
-	_ = actualValue
+	}).(uint64))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadUnsignedInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadUnsignedInteger")

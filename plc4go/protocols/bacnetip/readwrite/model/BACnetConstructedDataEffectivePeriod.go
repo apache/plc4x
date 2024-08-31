@@ -181,10 +181,10 @@ func BACnetConstructedDataEffectivePeriodParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateRange' field"))
 	}
 
-	// Virtual field
-	_actualValue := dateRange
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateRange](ctx, "actualValue", (*BACnetDateRange)(nil), dateRange)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEffectivePeriod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEffectivePeriod")

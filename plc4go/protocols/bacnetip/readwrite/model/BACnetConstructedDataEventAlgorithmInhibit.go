@@ -176,15 +176,15 @@ func BACnetConstructedDataEventAlgorithmInhibitParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eventAlgorithmInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	eventAlgorithmInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventAlgorithmInhibit' field"))
 	}
 
-	// Virtual field
-	_actualValue := eventAlgorithmInhibit
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), eventAlgorithmInhibit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventAlgorithmInhibit")

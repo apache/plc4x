@@ -181,10 +181,10 @@ func BACnetConstructedDataCommandParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	// Virtual field
-	_actualValue := command
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetNetworkPortCommandTagged](ctx, "actualValue", (*BACnetNetworkPortCommandTagged)(nil), command)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCommand")

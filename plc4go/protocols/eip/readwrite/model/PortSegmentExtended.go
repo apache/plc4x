@@ -200,10 +200,10 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkAddressSize' field"))
 	}
 
-	// Virtual field
-	_paddingByte := uint8(linkAddressSize) % uint8(uint8(2))
-	paddingByte := uint8(_paddingByte)
-	_ = paddingByte
+	paddingByte, err := ReadVirtualField[uint8](ctx, "paddingByte", (*uint8)(nil), uint8(linkAddressSize)%uint8(uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paddingByte' field"))
+	}
 
 	address, err := ReadSimpleField(ctx, "address", ReadString(readBuffer, uint32(int32((int32(linkAddressSize)*int32(int32(8))))+int32((int32(paddingByte)*int32(int32(8)))))))
 	if err != nil {

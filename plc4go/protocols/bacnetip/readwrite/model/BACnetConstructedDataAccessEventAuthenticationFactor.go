@@ -181,10 +181,10 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(ctx con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventAuthenticationFactor' field"))
 	}
 
-	// Virtual field
-	_actualValue := accessEventAuthenticationFactor
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAuthenticationFactor](ctx, "actualValue", (*BACnetAuthenticationFactor)(nil), accessEventAuthenticationFactor)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventAuthenticationFactor"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventAuthenticationFactor")

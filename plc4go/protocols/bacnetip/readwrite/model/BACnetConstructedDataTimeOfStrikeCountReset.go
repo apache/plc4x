@@ -181,10 +181,10 @@ func BACnetConstructedDataTimeOfStrikeCountResetParseWithBuffer(ctx context.Cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeOfStrikeCountReset' field"))
 	}
 
-	// Virtual field
-	_actualValue := timeOfStrikeCountReset
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), timeOfStrikeCountReset)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfStrikeCountReset"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfStrikeCountReset")

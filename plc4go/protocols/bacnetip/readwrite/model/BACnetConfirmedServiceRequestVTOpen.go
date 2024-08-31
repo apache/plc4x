@@ -166,7 +166,7 @@ func BACnetConfirmedServiceRequestVTOpenParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtClass' field"))
 	}
 
-	localVtSessionIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	localVtSessionIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localVtSessionIdentifier' field"))
 	}

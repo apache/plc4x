@@ -187,15 +187,15 @@ func BACnetApplicationTagParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a application tag"})
 	}
 
-	// Virtual field
-	_actualTagNumber := header.GetActualTagNumber()
-	actualTagNumber := uint8(_actualTagNumber)
-	_ = actualTagNumber
+	actualTagNumber, err := ReadVirtualField[uint8](ctx, "actualTagNumber", (*uint8)(nil), header.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualTagNumber' field"))
+	}
 
-	// Virtual field
-	_actualLength := header.GetActualLength()
-	actualLength := uint32(_actualLength)
-	_ = actualLength
+	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), header.GetActualLength())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetApplicationTagChildSerializeRequirement interface {

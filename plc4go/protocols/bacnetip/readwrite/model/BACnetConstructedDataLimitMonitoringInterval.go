@@ -176,15 +176,15 @@ func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	limitMonitoringInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "limitMonitoringInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	limitMonitoringInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "limitMonitoringInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limitMonitoringInterval' field"))
 	}
 
-	// Virtual field
-	_actualValue := limitMonitoringInterval
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), limitMonitoringInterval)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitMonitoringInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLimitMonitoringInterval")

@@ -181,10 +181,10 @@ func BACnetConstructedDataProgramStateParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programState' field"))
 	}
 
-	// Virtual field
-	_actualValue := programState
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetProgramStateTagged](ctx, "actualValue", (*BACnetProgramStateTagged)(nil), programState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProgramState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProgramState")

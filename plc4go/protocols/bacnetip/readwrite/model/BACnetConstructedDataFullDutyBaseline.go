@@ -176,15 +176,15 @@ func BACnetConstructedDataFullDutyBaselineParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fullDutyBaseLine, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "fullDutyBaseLine", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	fullDutyBaseLine, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "fullDutyBaseLine", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fullDutyBaseLine' field"))
 	}
 
-	// Virtual field
-	_actualValue := fullDutyBaseLine
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), fullDutyBaseLine)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFullDutyBaseline"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFullDutyBaseline")

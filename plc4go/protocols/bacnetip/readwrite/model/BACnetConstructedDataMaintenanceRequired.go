@@ -181,10 +181,10 @@ func BACnetConstructedDataMaintenanceRequiredParseWithBuffer(ctx context.Context
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenanceRequired' field"))
 	}
 
-	// Virtual field
-	_actualValue := maintenanceRequired
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetMaintenanceTagged](ctx, "actualValue", (*BACnetMaintenanceTagged)(nil), maintenanceRequired)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaintenanceRequired")

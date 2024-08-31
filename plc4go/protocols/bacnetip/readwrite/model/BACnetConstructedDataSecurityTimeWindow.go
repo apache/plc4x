@@ -176,15 +176,15 @@ func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	securityTimeWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	securityTimeWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityTimeWindow' field"))
 	}
 
-	// Virtual field
-	_actualValue := securityTimeWindow
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), securityTimeWindow)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecurityTimeWindow"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecurityTimeWindow")

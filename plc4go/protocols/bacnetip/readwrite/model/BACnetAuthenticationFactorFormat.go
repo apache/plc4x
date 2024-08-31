@@ -160,7 +160,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 		vendorId = *_vendorId
 	}
 
-	_vendorFormat, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	_vendorFormat, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorFormat' field"))
 	}

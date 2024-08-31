@@ -181,10 +181,10 @@ func BACnetConstructedDataReasonForHaltParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programError' field"))
 	}
 
-	// Virtual field
-	_actualValue := programError
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetProgramErrorTagged](ctx, "actualValue", (*BACnetProgramErrorTagged)(nil), programError)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReasonForHalt"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReasonForHalt")

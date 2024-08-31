@@ -149,7 +149,7 @@ func BACnetServiceAckAtomicWriteFileParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fileStartPosition, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	fileStartPosition, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartPosition' field"))
 	}

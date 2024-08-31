@@ -181,10 +181,10 @@ func BACnetConstructedDataLastRestartReasonParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastRestartReason' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastRestartReason
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetRestartReasonTagged](ctx, "actualValue", (*BACnetRestartReasonTagged)(nil), lastRestartReason)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastRestartReason"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastRestartReason")

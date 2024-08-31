@@ -265,55 +265,55 @@ func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_writeGroup := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	writeGroup := bool(_writeGroup)
-	_ = writeGroup
+	writeGroup, err := ReadVirtualField[bool](ctx, "writeGroup", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeGroup' field"))
+	}
 
-	// Virtual field
-	_subscribeCovPropertyMultiple := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	subscribeCovPropertyMultiple := bool(_subscribeCovPropertyMultiple)
-	_ = subscribeCovPropertyMultiple
+	subscribeCovPropertyMultiple, err := ReadVirtualField[bool](ctx, "subscribeCovPropertyMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovPropertyMultiple' field"))
+	}
 
-	// Virtual field
-	_confirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	confirmedCovNotificationMultiple := bool(_confirmedCovNotificationMultiple)
-	_ = confirmedCovNotificationMultiple
+	confirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "confirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmedCovNotificationMultiple' field"))
+	}
 
-	// Virtual field
-	_unconfirmedCovNotificationMultiple := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
-	unconfirmedCovNotificationMultiple := bool(_unconfirmedCovNotificationMultiple)
-	_ = unconfirmedCovNotificationMultiple
+	unconfirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "unconfirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unconfirmedCovNotificationMultiple' field"))
+	}
 
-	// Virtual field
-	_whoIs := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
-	whoIs := bool(_whoIs)
-	_ = whoIs
+	whoIs, err := ReadVirtualField[bool](ctx, "whoIs", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'whoIs' field"))
+	}
 
-	// Virtual field
-	_readRange := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
-	readRange := bool(_readRange)
-	_ = readRange
+	readRange, err := ReadVirtualField[bool](ctx, "readRange", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readRange' field"))
+	}
 
-	// Virtual field
-	_utcTimeSynchronization := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
-	utcTimeSynchronization := bool(_utcTimeSynchronization)
-	_ = utcTimeSynchronization
+	utcTimeSynchronization, err := ReadVirtualField[bool](ctx, "utcTimeSynchronization", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcTimeSynchronization' field"))
+	}
 
-	// Virtual field
-	_lifeSafetyOperation := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool)
-	lifeSafetyOperation := bool(_lifeSafetyOperation)
-	_ = lifeSafetyOperation
+	lifeSafetyOperation, err := ReadVirtualField[bool](ctx, "lifeSafetyOperation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyOperation' field"))
+	}
 
-	// Virtual field
-	_subscribeCovProperty := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool)
-	subscribeCovProperty := bool(_subscribeCovProperty)
-	_ = subscribeCovProperty
+	subscribeCovProperty, err := ReadVirtualField[bool](ctx, "subscribeCovProperty", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovProperty' field"))
+	}
 
-	// Virtual field
-	_getEventInformation := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool)
-	getEventInformation := bool(_getEventInformation)
-	_ = getEventInformation
+	getEventInformation, err := ReadVirtualField[bool](ctx, "getEventInformation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'getEventInformation' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServicesSupportedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServicesSupportedTagged")

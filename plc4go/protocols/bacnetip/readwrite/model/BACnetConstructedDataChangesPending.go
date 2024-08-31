@@ -176,15 +176,15 @@ func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changesPending' field"))
 	}
 
-	// Virtual field
-	_actualValue := changesPending
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), changesPending)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangesPending"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangesPending")

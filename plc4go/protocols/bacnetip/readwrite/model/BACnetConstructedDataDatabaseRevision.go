@@ -176,15 +176,15 @@ func BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	databaseRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	databaseRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'databaseRevision' field"))
 	}
 
-	// Virtual field
-	_actualValue := databaseRevision
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), databaseRevision)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDatabaseRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDatabaseRevision")

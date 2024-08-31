@@ -196,30 +196,30 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fanMode' field"))
 	}
 
-	// Virtual field
-	_isFanModeAutomatic := !(fanMode)
-	isFanModeAutomatic := bool(_isFanModeAutomatic)
-	_ = isFanModeAutomatic
+	isFanModeAutomatic, err := ReadVirtualField[bool](ctx, "isFanModeAutomatic", (*bool)(nil), !(fanMode))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanModeAutomatic' field"))
+	}
 
-	// Virtual field
-	_isFanModeContinuous := fanMode
-	isFanModeContinuous := bool(_isFanModeContinuous)
-	_ = isFanModeContinuous
+	isFanModeContinuous, err := ReadVirtualField[bool](ctx, "isFanModeContinuous", (*bool)(nil), fanMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanModeContinuous' field"))
+	}
 
 	mode, err := ReadSimpleField(ctx, "mode", ReadUnsignedByte(readBuffer, uint8(6)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
 
-	// Virtual field
-	_isFanSpeedAtDefaultSpeed := bool((mode) == (0x00))
-	isFanSpeedAtDefaultSpeed := bool(_isFanSpeedAtDefaultSpeed)
-	_ = isFanSpeedAtDefaultSpeed
+	isFanSpeedAtDefaultSpeed, err := ReadVirtualField[bool](ctx, "isFanSpeedAtDefaultSpeed", (*bool)(nil), bool((mode) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFanSpeedAtDefaultSpeed' field"))
+	}
 
-	// Virtual field
-	_speedSettings := mode
-	speedSettings := uint8(_speedSettings)
-	_ = speedSettings
+	speedSettings, err := ReadVirtualField[uint8](ctx, "speedSettings", (*uint8)(nil), mode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'speedSettings' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACAuxiliaryLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACAuxiliaryLevel")

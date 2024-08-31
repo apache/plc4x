@@ -149,7 +149,7 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueDoubleParseWithBuffer(ctx 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}

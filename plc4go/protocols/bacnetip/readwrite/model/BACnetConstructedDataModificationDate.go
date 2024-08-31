@@ -181,10 +181,10 @@ func BACnetConstructedDataModificationDateParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modificationDate' field"))
 	}
 
-	// Virtual field
-	_actualValue := modificationDate
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), modificationDate)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataModificationDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataModificationDate")

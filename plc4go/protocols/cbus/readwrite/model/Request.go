@@ -252,10 +252,10 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_actualPeek := CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) }))
-	actualPeek := RequestType(_actualPeek)
-	_ = actualPeek
+	actualPeek, err := ReadVirtualField[RequestType](ctx, "actualPeek", (*RequestType)(nil), CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualPeek' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type RequestChildSerializeRequirement interface {

@@ -177,10 +177,10 @@ func AirConditioningDataParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := AirConditioningCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[AirConditioningCommandType](ctx, "commandType", (*AirConditioningCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type AirConditioningDataChildSerializeRequirement interface {

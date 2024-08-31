@@ -181,10 +181,10 @@ func BACnetConstructedDataLoggingRecordParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'loggingRecord' field"))
 	}
 
-	// Virtual field
-	_actualValue := loggingRecord
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAccumulatorRecord](ctx, "actualValue", (*BACnetAccumulatorRecord)(nil), loggingRecord)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingRecord")

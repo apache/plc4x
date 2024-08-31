@@ -176,15 +176,15 @@ func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slaveProxyEnable' field"))
 	}
 
-	// Virtual field
-	_actualValue := slaveProxyEnable
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), slaveProxyEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSlaveProxyEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSlaveProxyEnable")

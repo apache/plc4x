@@ -176,15 +176,15 @@ func BACnetConstructedDataVarianceValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	varianceValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "varianceValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	varianceValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "varianceValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'varianceValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := varianceValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), varianceValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVarianceValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVarianceValue")

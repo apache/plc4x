@@ -147,12 +147,12 @@ func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'formatType' field"))
 	}
 
-	formatClass, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "formatClass", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	formatClass, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "formatClass", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'formatClass' field"))
 	}
 
-	value, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "value", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	value, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "value", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

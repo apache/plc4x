@@ -192,20 +192,20 @@ func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'repeatType' field"))
 	}
 
-	// Virtual field
-	_isOff := bool((repeatType) == (0x00))
-	isOff := bool(_isOff)
-	_ = isOff
+	isOff, err := ReadVirtualField[bool](ctx, "isOff", (*bool)(nil), bool((repeatType) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOff' field"))
+	}
 
-	// Virtual field
-	_isRepeatCurrent := bool(bool((repeatType) > (0x00))) && bool(bool((repeatType) <= (0xFE)))
-	isRepeatCurrent := bool(_isRepeatCurrent)
-	_ = isRepeatCurrent
+	isRepeatCurrent, err := ReadVirtualField[bool](ctx, "isRepeatCurrent", (*bool)(nil), bool(bool((repeatType) > (0x00))) && bool(bool((repeatType) <= (0xFE))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatCurrent' field"))
+	}
 
-	// Virtual field
-	_isRepeatTracks := bool((repeatType) >= (0xFE))
-	isRepeatTracks := bool(_isRepeatTracks)
-	_ = isRepeatTracks
+	isRepeatTracks, err := ReadVirtualField[bool](ctx, "isRepeatTracks", (*bool)(nil), bool((repeatType) >= (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatTracks' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataRepeatOnOff"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataRepeatOnOff")

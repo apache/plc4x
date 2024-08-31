@@ -201,10 +201,10 @@ func BACnetNotificationParametersParseWithBuffer(ctx context.Context, readBuffer
 	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
-	_ = peekedTagNumber
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetNotificationParametersChildSerializeRequirement interface {

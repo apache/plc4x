@@ -171,10 +171,10 @@ func BACnetApplicationTagUnsignedIntegerParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_actualValue := payload.GetActualValue()
-	actualValue := uint64(_actualValue)
-	_ = actualValue
+	actualValue, err := ReadVirtualField[uint64](ctx, "actualValue", (*uint64)(nil), payload.GetActualValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagUnsignedInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagUnsignedInteger")

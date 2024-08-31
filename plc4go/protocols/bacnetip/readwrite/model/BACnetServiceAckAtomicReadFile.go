@@ -160,7 +160,7 @@ func BACnetServiceAckAtomicReadFileParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	endOfFile, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	endOfFile, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endOfFile' field"))
 	}

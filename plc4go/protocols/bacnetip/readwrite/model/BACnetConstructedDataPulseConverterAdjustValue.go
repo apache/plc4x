@@ -176,15 +176,15 @@ func BACnetConstructedDataPulseConverterAdjustValueParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	adjustValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "adjustValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	adjustValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "adjustValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adjustValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := adjustValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), adjustValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPulseConverterAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPulseConverterAdjustValue")

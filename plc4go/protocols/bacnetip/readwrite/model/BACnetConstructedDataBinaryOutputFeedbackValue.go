@@ -181,10 +181,10 @@ func BACnetConstructedDataBinaryOutputFeedbackValueParseWithBuffer(ctx context.C
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := feedbackValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetBinaryPVTagged](ctx, "actualValue", (*BACnetBinaryPVTagged)(nil), feedbackValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputFeedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryOutputFeedbackValue")

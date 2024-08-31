@@ -176,15 +176,15 @@ func BACnetConstructedDataProfileLocationParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	profileLocation, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "profileLocation", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	profileLocation, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "profileLocation", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'profileLocation' field"))
 	}
 
-	// Virtual field
-	_actualValue := profileLocation
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), profileLocation)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProfileLocation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProfileLocation")

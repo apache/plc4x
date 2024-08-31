@@ -176,15 +176,15 @@ func BACnetConstructedDataIPDHCPLeaseTimeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipDhcpLeaseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipDhcpLeaseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	ipDhcpLeaseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipDhcpLeaseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDhcpLeaseTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := ipDhcpLeaseTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), ipDhcpLeaseTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDHCPLeaseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDHCPLeaseTime")

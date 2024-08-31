@@ -176,15 +176,15 @@ func BACnetConstructedDataOccupancyCountEnableParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	occupancyCountEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyCountEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	occupancyCountEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyCountEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyCountEnable' field"))
 	}
 
-	// Virtual field
-	_actualValue := occupancyCountEnable
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), occupancyCountEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOccupancyCountEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOccupancyCountEnable")

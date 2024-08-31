@@ -176,10 +176,10 @@ func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_isAlpha := bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A))))
-	isAlpha := bool(_isAlpha)
-	_ = isAlpha
+	isAlpha, err := ReadVirtualField[bool](ctx, "isAlpha", (*bool)(nil), bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAlpha' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyOrConfirmationChildSerializeRequirement interface {

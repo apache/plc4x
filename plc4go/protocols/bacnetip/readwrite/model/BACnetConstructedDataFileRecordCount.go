@@ -176,15 +176,15 @@ func BACnetConstructedDataFileRecordCountParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	recordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	recordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordCount' field"))
 	}
 
-	// Virtual field
-	_actualValue := recordCount
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), recordCount)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileRecordCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileRecordCount")

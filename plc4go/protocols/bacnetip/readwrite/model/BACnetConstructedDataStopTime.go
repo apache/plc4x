@@ -181,10 +181,10 @@ func BACnetConstructedDataStopTimeParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stopTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := stopTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), stopTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataStopTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataStopTime")

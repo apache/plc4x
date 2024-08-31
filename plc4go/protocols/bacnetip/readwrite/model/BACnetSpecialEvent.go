@@ -152,7 +152,7 @@ func BACnetSpecialEventParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfTimeValues' field"))
 	}
 
-	eventPriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "eventPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	eventPriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "eventPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventPriority' field"))
 	}

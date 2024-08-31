@@ -154,7 +154,7 @@ func BACnetEventParameterChangeOfBitstringListOfBitstringValuesParseWithBuffer(c
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	listOfBitstringValues, err := ReadTerminatedArrayField[BACnetApplicationTagBitString](ctx, "listOfBitstringValues", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	listOfBitstringValues, err := ReadTerminatedArrayField[BACnetApplicationTagBitString](ctx, "listOfBitstringValues", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfBitstringValues' field"))
 	}

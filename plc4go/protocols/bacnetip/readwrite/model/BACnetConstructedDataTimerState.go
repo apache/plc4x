@@ -181,10 +181,10 @@ func BACnetConstructedDataTimerStateParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerState' field"))
 	}
 
-	// Virtual field
-	_actualValue := timerState
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetTimerStateTagged](ctx, "actualValue", (*BACnetTimerStateTagged)(nil), timerState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimerState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimerState")

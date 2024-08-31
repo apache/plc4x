@@ -185,12 +185,12 @@ func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	groupNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	groupNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupNumber' field"))
 	}
 
-	writePriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	writePriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writePriority' field"))
 	}
@@ -200,7 +200,7 @@ func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeList' field"))
 	}
 
-	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inhibitDelay' field"))
 	}

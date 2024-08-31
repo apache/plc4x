@@ -182,15 +182,15 @@ func MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
 
-	// Virtual field
-	_isSetThePreviousTrack := bool((operation) == (0x00))
-	isSetThePreviousTrack := bool(_isSetThePreviousTrack)
-	_ = isSetThePreviousTrack
+	isSetThePreviousTrack, err := ReadVirtualField[bool](ctx, "isSetThePreviousTrack", (*bool)(nil), bool((operation) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetThePreviousTrack' field"))
+	}
 
-	// Virtual field
-	_isSetTheNextTrack := bool((operation) != (0x00))
-	isSetTheNextTrack := bool(_isSetTheNextTrack)
-	_ = isSetTheNextTrack
+	isSetTheNextTrack, err := ReadVirtualField[bool](ctx, "isSetTheNextTrack", (*bool)(nil), bool((operation) != (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetTheNextTrack' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataNextPreviousTrack"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataNextPreviousTrack")

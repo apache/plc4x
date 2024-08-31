@@ -176,15 +176,15 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommandDefaultPriority' field"))
 	}
 
-	// Virtual field
-	_actualValue := lightingCommandDefaultPriority
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lightingCommandDefaultPriority)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommandDefaultPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommandDefaultPriority")

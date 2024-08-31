@@ -268,10 +268,10 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_isUnitAddress := bool((terminatingByte & 0xff) == (0x00))
-	isUnitAddress := bool(_isUnitAddress)
-	_ = isUnitAddress
+	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnitAddress' field"))
+	}
 
 	_unitAddress, err := ReadOptionalField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer), isUnitAddress)
 	if err != nil {

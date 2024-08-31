@@ -177,10 +177,10 @@ func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := MeasurementCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[MeasurementCommandType](ctx, "commandType", (*MeasurementCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MeasurementDataChildSerializeRequirement interface {

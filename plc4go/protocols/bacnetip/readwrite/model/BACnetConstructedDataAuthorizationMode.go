@@ -181,10 +181,10 @@ func BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationMode' field"))
 	}
 
-	// Virtual field
-	_actualValue := authorizationMode
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAuthorizationModeTagged](ctx, "actualValue", (*BACnetAuthorizationModeTagged)(nil), authorizationMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAuthorizationMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAuthorizationMode")

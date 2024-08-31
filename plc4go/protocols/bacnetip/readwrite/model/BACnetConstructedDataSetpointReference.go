@@ -181,10 +181,10 @@ func BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpointReference' field"))
 	}
 
-	// Virtual field
-	_actualValue := setpointReference
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetSetpointReference](ctx, "actualValue", (*BACnetSetpointReference)(nil), setpointReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSetpointReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSetpointReference")

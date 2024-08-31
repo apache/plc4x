@@ -147,7 +147,7 @@ func BACnetRecipientDeviceParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deviceValue, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	deviceValue, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceValue' field"))
 	}

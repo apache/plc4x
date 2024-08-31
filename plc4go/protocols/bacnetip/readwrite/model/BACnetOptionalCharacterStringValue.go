@@ -147,7 +147,7 @@ func BACnetOptionalCharacterStringValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	characterstring, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterstring", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	characterstring, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterstring", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterstring' field"))
 	}

@@ -140,7 +140,7 @@ func ReadUnknownField[T any](ctx context.Context, logicalName string, dataReader
 	return NewFieldReaderUnknown[T](log).ReadUnknownField(ctx, logicalName, dataReader, readerArgs...)
 }
 
-func ReadVirtualField[T any](ctx context.Context, logicalName string, klass T, valueExpression any, readerArgs ...utils.WithReaderArgs) (T, error) {
+func ReadVirtualField[T any](ctx context.Context, logicalName string, klass any, valueExpression any, readerArgs ...utils.WithReaderArgs) (T, error) {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldReaderVirtual[T](log).ReadVirtualField(ctx, logicalName, klass, valueExpression, readerArgs...)
 }

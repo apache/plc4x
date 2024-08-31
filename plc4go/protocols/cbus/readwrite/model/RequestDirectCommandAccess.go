@@ -215,10 +215,10 @@ func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
 
-	// Virtual field
-	_calDataDecoded := calData
-	calDataDecoded := _calDataDecoded
-	_ = calDataDecoded
+	calDataDecoded, err := ReadVirtualField[CALData](ctx, "calDataDecoded", (*CALData)(nil), calData)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calDataDecoded' field"))
+	}
 
 	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
 	if err != nil {

@@ -181,10 +181,10 @@ func BACnetConstructedDataThreatLevelParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'threatLevel' field"))
 	}
 
-	// Virtual field
-	_actualValue := threatLevel
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessThreatLevel](ctx, "actualValue", (*BACnetAccessThreatLevel)(nil), threatLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataThreatLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataThreatLevel")

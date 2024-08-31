@@ -176,15 +176,15 @@ func BACnetConstructedDataAccessEventTagParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	accessEventTag, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	accessEventTag, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventTag' field"))
 	}
 
-	// Virtual field
-	_actualValue := accessEventTag
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), accessEventTag)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventTag"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventTag")

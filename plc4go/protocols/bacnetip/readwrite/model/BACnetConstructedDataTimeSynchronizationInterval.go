@@ -176,15 +176,15 @@ func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronization' field"))
 	}
 
-	// Virtual field
-	_actualValue := timeSynchronization
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), timeSynchronization)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeSynchronizationInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeSynchronizationInterval")

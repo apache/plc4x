@@ -346,7 +346,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfWriterGroups' field"))
 	}
 
-	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfWriterGroups))
+	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer((string)("15609")), readBuffer), uint64(noOfWriterGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writerGroups' field"))
 	}
@@ -356,7 +356,7 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReaderGroups' field"))
 	}
 
-	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfReaderGroups))
+	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer((string)("15609")), readBuffer), uint64(noOfReaderGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readerGroups' field"))
 	}

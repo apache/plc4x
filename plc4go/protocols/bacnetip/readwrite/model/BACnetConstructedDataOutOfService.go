@@ -176,15 +176,15 @@ func BACnetConstructedDataOutOfServiceParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	outOfService, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "outOfService", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	outOfService, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "outOfService", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outOfService' field"))
 	}
 
-	// Virtual field
-	_actualValue := outOfService
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), outOfService)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOutOfService"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOutOfService")

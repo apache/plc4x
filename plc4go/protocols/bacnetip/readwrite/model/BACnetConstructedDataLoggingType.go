@@ -181,10 +181,10 @@ func BACnetConstructedDataLoggingTypeParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'loggingType' field"))
 	}
 
-	// Virtual field
-	_actualValue := loggingType
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLoggingTypeTagged](ctx, "actualValue", (*BACnetLoggingTypeTagged)(nil), loggingType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoggingType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoggingType")

@@ -176,15 +176,15 @@ func BACnetConstructedDataInstantaneousPowerParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	instantaneousPower, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "instantaneousPower", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	instantaneousPower, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "instantaneousPower", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instantaneousPower' field"))
 	}
 
-	// Virtual field
-	_actualValue := instantaneousPower
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), instantaneousPower)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstantaneousPower"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstantaneousPower")

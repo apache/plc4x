@@ -182,15 +182,15 @@ func TelephonyDataIsolateSecondaryOutletParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isolateStatus' field"))
 	}
 
-	// Virtual field
-	_isBehaveNormal := bool((isolateStatus) == (0x00))
-	isBehaveNormal := bool(_isBehaveNormal)
-	_ = isBehaveNormal
+	isBehaveNormal, err := ReadVirtualField[bool](ctx, "isBehaveNormal", (*bool)(nil), bool((isolateStatus) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBehaveNormal' field"))
+	}
 
-	// Virtual field
-	_isToBeIsolated := bool((isolateStatus) == (0x01))
-	isToBeIsolated := bool(_isToBeIsolated)
-	_ = isToBeIsolated
+	isToBeIsolated, err := ReadVirtualField[bool](ctx, "isToBeIsolated", (*bool)(nil), bool((isolateStatus) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isToBeIsolated' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataIsolateSecondaryOutlet"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataIsolateSecondaryOutlet")

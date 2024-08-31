@@ -183,12 +183,12 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
 
-	maximumApduLengthAcceptedLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maximumApduLengthAcceptedLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	maximumApduLengthAcceptedLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maximumApduLengthAcceptedLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumApduLengthAcceptedLength' field"))
 	}

@@ -185,15 +185,15 @@ func BACnetLimitEnableTaggedParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_lowLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	lowLimitEnable := bool(_lowLimitEnable)
-	_ = lowLimitEnable
+	lowLimitEnable, err := ReadVirtualField[bool](ctx, "lowLimitEnable", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimitEnable' field"))
+	}
 
-	// Virtual field
-	_highLimitEnable := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	highLimitEnable := bool(_highLimitEnable)
-	_ = highLimitEnable
+	highLimitEnable, err := ReadVirtualField[bool](ctx, "highLimitEnable", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimitEnable' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLimitEnableTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLimitEnableTagged")

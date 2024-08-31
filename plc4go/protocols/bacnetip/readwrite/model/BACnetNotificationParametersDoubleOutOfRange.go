@@ -209,7 +209,7 @@ func BACnetNotificationParametersDoubleOutOfRangeParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
 
-	exceedingValue, err := ReadSimpleField[BACnetContextTagDouble](ctx, "exceedingValue", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	exceedingValue, err := ReadSimpleField[BACnetContextTagDouble](ctx, "exceedingValue", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceedingValue' field"))
 	}
@@ -219,12 +219,12 @@ func BACnetNotificationParametersDoubleOutOfRangeParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusFlags' field"))
 	}
 
-	deadband, err := ReadSimpleField[BACnetContextTagDouble](ctx, "deadband", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	deadband, err := ReadSimpleField[BACnetContextTagDouble](ctx, "deadband", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}
 
-	exceededLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "exceededLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	exceededLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "exceededLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceededLimit' field"))
 	}

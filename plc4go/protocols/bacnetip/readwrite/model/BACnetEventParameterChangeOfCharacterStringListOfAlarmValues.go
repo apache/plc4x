@@ -154,7 +154,7 @@ func BACnetEventParameterChangeOfCharacterStringListOfAlarmValuesParseWithBuffer
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	listOfAlarmValues, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "listOfAlarmValues", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	listOfAlarmValues, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "listOfAlarmValues", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfAlarmValues' field"))
 	}

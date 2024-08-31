@@ -176,15 +176,15 @@ func BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	doorOpenTooLongTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorOpenTooLongTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	doorOpenTooLongTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorOpenTooLongTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorOpenTooLongTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := doorOpenTooLongTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), doorOpenTooLongTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorOpenTooLongTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorOpenTooLongTime")

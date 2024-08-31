@@ -176,15 +176,15 @@ func BACnetConstructedDataBitMaskParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
+	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitString' field"))
 	}
 
-	// Virtual field
-	_actualValue := bitString
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBitString](ctx, "actualValue", (*BACnetApplicationTagBitString)(nil), bitString)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBitMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBitMask")

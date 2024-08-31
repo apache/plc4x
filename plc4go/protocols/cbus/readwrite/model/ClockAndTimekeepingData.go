@@ -188,10 +188,10 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := ClockAndTimekeepingCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[ClockAndTimekeepingCommandType](ctx, "commandType", (*ClockAndTimekeepingCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
 	if err != nil {

@@ -176,15 +176,15 @@ func BACnetConstructedDataProportionalConstantParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	proportionalConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "proportionalConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	proportionalConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "proportionalConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proportionalConstant' field"))
 	}
 
-	// Virtual field
-	_actualValue := proportionalConstant
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), proportionalConstant)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProportionalConstant"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProportionalConstant")

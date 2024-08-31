@@ -207,22 +207,22 @@ func BACnetEventParameterDoubleOutOfRangeParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	timeDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}
 
-	lowLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "lowLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	lowLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "lowLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}
 
-	highLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "highLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	highLimit, err := ReadSimpleField[BACnetContextTagDouble](ctx, "highLimit", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimit' field"))
 	}
 
-	deadband, err := ReadSimpleField[BACnetContextTagDouble](ctx, "deadband", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer[BACnetContextTagDouble]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
+	deadband, err := ReadSimpleField[BACnetContextTagDouble](ctx, "deadband", ReadComplex[BACnetContextTagDouble](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_DOUBLE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}

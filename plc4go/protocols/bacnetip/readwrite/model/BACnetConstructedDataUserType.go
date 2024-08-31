@@ -181,10 +181,10 @@ func BACnetConstructedDataUserTypeParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userType' field"))
 	}
 
-	// Virtual field
-	_actualValue := userType
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetAccessUserTypeTagged](ctx, "actualValue", (*BACnetAccessUserTypeTagged)(nil), userType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserType")

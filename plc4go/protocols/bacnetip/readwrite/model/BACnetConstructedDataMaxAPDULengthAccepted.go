@@ -176,15 +176,15 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maxApduLengthAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxApduLengthAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	maxApduLengthAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxApduLengthAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxApduLengthAccepted' field"))
 	}
 
-	// Virtual field
-	_actualValue := maxApduLengthAccepted
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxApduLengthAccepted)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxAPDULengthAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxAPDULengthAccepted")

@@ -242,45 +242,45 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_nibble1 := (raw & 0xF000) >> uint8(12)
-	nibble1 := uint8(_nibble1)
-	_ = nibble1
+	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble1' field"))
+	}
 
-	// Virtual field
-	_nibble2 := (raw & 0x0F00) >> uint8(8)
-	nibble2 := uint8(_nibble2)
-	_ = nibble2
+	nibble2, err := ReadVirtualField[uint8](ctx, "nibble2", (*uint8)(nil), (raw&0x0F00)>>uint8(8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble2' field"))
+	}
 
-	// Virtual field
-	_nibble3 := (raw & 0x00F0) >> uint8(4)
-	nibble3 := uint8(_nibble3)
-	_ = nibble3
+	nibble3, err := ReadVirtualField[uint8](ctx, "nibble3", (*uint8)(nil), (raw&0x00F0)>>uint8(4))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble3' field"))
+	}
 
-	// Virtual field
-	_nibble4 := (raw & 0x000F) >> uint8(0)
-	nibble4 := uint8(_nibble4)
-	_ = nibble4
+	nibble4, err := ReadVirtualField[uint8](ctx, "nibble4", (*uint8)(nil), (raw&0x000F)>>uint8(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nibble4' field"))
+	}
 
-	// Virtual field
-	_isAbsent := bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0)))
-	isAbsent := bool(_isAbsent)
-	_ = isAbsent
+	isAbsent, err := ReadVirtualField[bool](ctx, "isAbsent", (*bool)(nil), bool(bool(bool(bool((nibble1) == (0x0))) && bool(bool((nibble2) == (0x0)))) && bool(bool((nibble3) == (0x0)))) && bool(bool((nibble4) == (0x0))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAbsent' field"))
+	}
 
-	// Virtual field
-	_isCorruptedByNoise := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC))))))))
-	isCorruptedByNoise := bool(_isCorruptedByNoise)
-	_ = isCorruptedByNoise
+	isCorruptedByNoise, err := ReadVirtualField[bool](ctx, "isCorruptedByNoise", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) < (0x5)))) || bool((bool((nibble1) == (0x8))))) || bool((bool((nibble1) == (0xC)))))) || bool((bool(bool((bool((nibble2) < (0x5)))) || bool((bool((nibble2) == (0x8))))) || bool((bool((nibble2) == (0xC))))))) || bool((bool(bool((bool((nibble3) < (0x5)))) || bool((bool((nibble3) == (0x8))))) || bool((bool((nibble3) == (0xC))))))) || bool((bool(bool((bool((nibble4) < (0x5)))) || bool((bool((nibble4) == (0x8))))) || bool((bool((nibble4) == (0xC)))))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoise' field"))
+	}
 
-	// Virtual field
-	_isCorruptedByNoiseOrLevelsDiffer := bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC))))))))
-	isCorruptedByNoiseOrLevelsDiffer := bool(_isCorruptedByNoiseOrLevelsDiffer)
-	_ = isCorruptedByNoiseOrLevelsDiffer
+	isCorruptedByNoiseOrLevelsDiffer, err := ReadVirtualField[bool](ctx, "isCorruptedByNoiseOrLevelsDiffer", (*bool)(nil), bool(!(isAbsent)) && bool((bool(bool(bool((bool(bool((bool((nibble1) == (0x7)))) || bool((bool((nibble1) == (0xB))))) || bool((bool((nibble1) > (0xC)))))) || bool((bool(bool((bool((nibble2) == (0x7)))) || bool((bool((nibble2) == (0xB))))) || bool((bool((nibble2) > (0xC))))))) || bool((bool(bool((bool((nibble3) == (0x7)))) || bool((bool((nibble3) == (0xB))))) || bool((bool((nibble3) > (0xC))))))) || bool((bool(bool((bool((nibble4) == (0x7)))) || bool((bool((nibble4) == (0xB))))) || bool((bool((nibble4) > (0xC)))))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorruptedByNoiseOrLevelsDiffer' field"))
+	}
 
-	// Virtual field
-	_isCorrupted := bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer)
-	isCorrupted := bool(_isCorrupted)
-	_ = isCorrupted
+	isCorrupted, err := ReadVirtualField[bool](ctx, "isCorrupted", (*bool)(nil), bool(isCorruptedByNoise) || bool(isCorruptedByNoiseOrLevelsDiffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCorrupted' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type LevelInformationChildSerializeRequirement interface {

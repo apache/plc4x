@@ -181,10 +181,10 @@ func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifierFilter' field"))
 	}
 
-	// Virtual field
-	_actualValue := processIdentifierFilter
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetProcessIdSelection](ctx, "actualValue", (*BACnetProcessIdSelection)(nil), processIdentifierFilter)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProcessIdentifierFilter"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProcessIdentifierFilter")

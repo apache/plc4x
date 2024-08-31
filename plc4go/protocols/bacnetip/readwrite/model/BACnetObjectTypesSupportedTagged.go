@@ -265,55 +265,55 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_timeValue := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	timeValue := bool(_timeValue)
-	_ = timeValue
+	timeValue, err := ReadVirtualField[bool](ctx, "timeValue", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
+	}
 
-	// Virtual field
-	_notificationForwarder := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	notificationForwarder := bool(_notificationForwarder)
-	_ = notificationForwarder
+	notificationForwarder, err := ReadVirtualField[bool](ctx, "notificationForwarder", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationForwarder' field"))
+	}
 
-	// Virtual field
-	_alertEnrollment := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	alertEnrollment := bool(_alertEnrollment)
-	_ = alertEnrollment
+	alertEnrollment, err := ReadVirtualField[bool](ctx, "alertEnrollment", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alertEnrollment' field"))
+	}
 
-	// Virtual field
-	_channel := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
-	channel := bool(_channel)
-	_ = channel
+	channel, err := ReadVirtualField[bool](ctx, "channel", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channel' field"))
+	}
 
-	// Virtual field
-	_lightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
-	lightingOutput := bool(_lightingOutput)
-	_ = lightingOutput
+	lightingOutput, err := ReadVirtualField[bool](ctx, "lightingOutput", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingOutput' field"))
+	}
 
-	// Virtual field
-	_binaryLightingOutput := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
-	binaryLightingOutput := bool(_binaryLightingOutput)
-	_ = binaryLightingOutput
+	binaryLightingOutput, err := ReadVirtualField[bool](ctx, "binaryLightingOutput", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryLightingOutput' field"))
+	}
 
-	// Virtual field
-	_networkPort := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
-	networkPort := bool(_networkPort)
-	_ = networkPort
+	networkPort, err := ReadVirtualField[bool](ctx, "networkPort", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPort' field"))
+	}
 
-	// Virtual field
-	_elevatorGroup := utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool)
-	elevatorGroup := bool(_elevatorGroup)
-	_ = elevatorGroup
+	elevatorGroup, err := ReadVirtualField[bool](ctx, "elevatorGroup", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elevatorGroup' field"))
+	}
 
-	// Virtual field
-	_escalator := utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool)
-	escalator := bool(_escalator)
-	_ = escalator
+	escalator, err := ReadVirtualField[bool](ctx, "escalator", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalator' field"))
+	}
 
-	// Virtual field
-	_lift := utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool)
-	lift := bool(_lift)
-	_ = lift
+	lift, err := ReadVirtualField[bool](ctx, "lift", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lift' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetObjectTypesSupportedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetObjectTypesSupportedTagged")

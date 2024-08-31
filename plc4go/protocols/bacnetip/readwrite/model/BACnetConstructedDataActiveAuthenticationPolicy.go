@@ -176,15 +176,15 @@ func BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	activeAuthenticationPolicy, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	activeAuthenticationPolicy, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeAuthenticationPolicy' field"))
 	}
 
-	// Virtual field
-	_actualValue := activeAuthenticationPolicy
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), activeAuthenticationPolicy)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataActiveAuthenticationPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataActiveAuthenticationPolicy")

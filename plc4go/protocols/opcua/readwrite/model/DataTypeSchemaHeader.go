@@ -269,7 +269,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStructureDataTypes' field"))
 	}
 
-	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfStructureDataTypes))
+	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer((string)("14525")), readBuffer), uint64(noOfStructureDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDataTypes' field"))
 	}
@@ -279,7 +279,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEnumDataTypes' field"))
 	}
 
-	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfEnumDataTypes))
+	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer((string)("14525")), readBuffer), uint64(noOfEnumDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumDataTypes' field"))
 	}
@@ -289,7 +289,7 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSimpleDataTypes' field"))
 	}
 
-	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfSimpleDataTypes))
+	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer((string)("14525")), readBuffer), uint64(noOfSimpleDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleDataTypes' field"))
 	}

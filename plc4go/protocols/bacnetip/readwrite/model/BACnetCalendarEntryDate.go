@@ -147,7 +147,7 @@ func BACnetCalendarEntryDateParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dateValue, err := ReadSimpleField[BACnetContextTagDate](ctx, "dateValue", ReadComplex[BACnetContextTagDate](BACnetContextTagParseWithBufferProducer[BACnetContextTagDate]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_DATE)), readBuffer))
+	dateValue, err := ReadSimpleField[BACnetContextTagDate](ctx, "dateValue", ReadComplex[BACnetContextTagDate](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_DATE)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}

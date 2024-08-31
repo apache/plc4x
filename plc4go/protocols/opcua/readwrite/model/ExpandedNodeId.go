@@ -204,10 +204,10 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Virtual field
-	_identifier := nodeId.GetIdentifier()
-	identifier := fmt.Sprintf("%v", _identifier)
-	_ = identifier
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), nodeId.GetIdentifier())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
+	}
 
 	_namespaceURI, err := ReadOptionalField[PascalString](ctx, "namespaceURI", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), namespaceURISpecified)
 	if err != nil {

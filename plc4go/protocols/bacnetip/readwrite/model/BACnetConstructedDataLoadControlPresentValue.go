@@ -181,10 +181,10 @@ func BACnetConstructedDataLoadControlPresentValueParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := presentValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetShedStateTagged](ctx, "actualValue", (*BACnetShedStateTagged)(nil), presentValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoadControlPresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoadControlPresentValue")

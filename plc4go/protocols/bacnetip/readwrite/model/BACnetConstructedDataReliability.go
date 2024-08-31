@@ -181,10 +181,10 @@ func BACnetConstructedDataReliabilityParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reliability' field"))
 	}
 
-	// Virtual field
-	_actualValue := reliability
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetReliabilityTagged](ctx, "actualValue", (*BACnetReliabilityTagged)(nil), reliability)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliability"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliability")

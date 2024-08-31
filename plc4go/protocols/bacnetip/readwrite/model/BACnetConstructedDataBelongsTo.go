@@ -181,10 +181,10 @@ func BACnetConstructedDataBelongsToParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'belongsTo' field"))
 	}
 
-	// Virtual field
-	_actualValue := belongsTo
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), belongsTo)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBelongsTo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBelongsTo")

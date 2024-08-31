@@ -207,15 +207,15 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := CALCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[CALCommandType](ctx, "commandType", (*CALCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
-	// Virtual field
-	_sendIdentifyRequestBefore := utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool)
-	sendIdentifyRequestBefore := bool(_sendIdentifyRequestBefore)
-	_ = sendIdentifyRequestBefore
+	sendIdentifyRequestBefore, err := ReadVirtualField[bool](ctx, "sendIdentifyRequestBefore", (*bool)(nil), utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CALDataChildSerializeRequirement interface {

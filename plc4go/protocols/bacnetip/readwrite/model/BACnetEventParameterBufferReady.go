@@ -185,12 +185,12 @@ func BACnetEventParameterBufferReadyParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	notificationThreshold, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationThreshold", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	notificationThreshold, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "notificationThreshold", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationThreshold' field"))
 	}
 
-	previousNotificationCount, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotificationCount", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	previousNotificationCount, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotificationCount", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'previousNotificationCount' field"))
 	}

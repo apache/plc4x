@@ -176,15 +176,15 @@ func BACnetConstructedDataElevatorGroupParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	elevatorGroup, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	elevatorGroup, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elevatorGroup' field"))
 	}
 
-	// Virtual field
-	_actualValue := elevatorGroup
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagObjectIdentifier](ctx, "actualValue", (*BACnetApplicationTagObjectIdentifier)(nil), elevatorGroup)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElevatorGroup"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElevatorGroup")

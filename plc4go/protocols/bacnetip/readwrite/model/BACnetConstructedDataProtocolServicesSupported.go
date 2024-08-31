@@ -181,10 +181,10 @@ func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx context.C
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolServicesSupported' field"))
 	}
 
-	// Virtual field
-	_actualValue := protocolServicesSupported
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetServicesSupportedTagged](ctx, "actualValue", (*BACnetServicesSupportedTagged)(nil), protocolServicesSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolServicesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolServicesSupported")

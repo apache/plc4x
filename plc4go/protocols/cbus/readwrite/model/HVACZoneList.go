@@ -251,10 +251,10 @@ func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone0' field"))
 	}
 
-	// Virtual field
-	_unswitchedZone := zone0
-	unswitchedZone := bool(_unswitchedZone)
-	_ = unswitchedZone
+	unswitchedZone, err := ReadVirtualField[bool](ctx, "unswitchedZone", (*bool)(nil), zone0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unswitchedZone' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACZoneList"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACZoneList")

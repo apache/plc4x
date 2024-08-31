@@ -176,15 +176,15 @@ func BACnetConstructedDataDatePatternValuePresentValueParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	presentValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "presentValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	presentValue, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "presentValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := presentValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDate](ctx, "actualValue", (*BACnetApplicationTagDate)(nil), presentValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDatePatternValuePresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDatePatternValuePresentValue")

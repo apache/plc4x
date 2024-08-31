@@ -146,10 +146,10 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawValue' field"))
 	}
 
-	// Virtual field
-	_valueInPercent := float32(rawValue) / float32(float32(32767))
-	valueInPercent := float32(_valueInPercent)
-	_ = valueInPercent
+	valueInPercent, err := ReadVirtualField[float32](ctx, "valueInPercent", (*float32)(nil), float32(rawValue)/float32(float32(32767)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInPercent' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACRawLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACRawLevels")

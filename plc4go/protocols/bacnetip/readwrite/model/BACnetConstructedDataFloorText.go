@@ -195,12 +195,12 @@ func BACnetConstructedDataFloorTextParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
-	_ = zero
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -209,7 +209,7 @@ func BACnetConstructedDataFloorTextParseWithBuffer(ctx context.Context, readBuff
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	floorText, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "floorText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	floorText, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "floorText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
 	}

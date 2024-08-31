@@ -161,7 +161,7 @@ func BACnetConstructedDataMultiStateInputFaultValuesParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	faultValues, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "faultValues", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	faultValues, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "faultValues", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultValues' field"))
 	}

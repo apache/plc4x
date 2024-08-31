@@ -181,10 +181,10 @@ func BACnetConstructedDataSegmentationSupportedParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentationSupported' field"))
 	}
 
-	// Virtual field
-	_actualValue := segmentationSupported
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetSegmentationTagged](ctx, "actualValue", (*BACnetSegmentationTagged)(nil), segmentationSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSegmentationSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSegmentationSupported")

@@ -176,15 +176,15 @@ func BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	autoSlaveDiscovery, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	autoSlaveDiscovery, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'autoSlaveDiscovery' field"))
 	}
 
-	// Virtual field
-	_actualValue := autoSlaveDiscovery
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), autoSlaveDiscovery)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAutoSlaveDiscovery"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAutoSlaveDiscovery")

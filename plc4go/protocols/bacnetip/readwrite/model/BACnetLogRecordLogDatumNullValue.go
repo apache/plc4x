@@ -149,7 +149,7 @@ func BACnetLogRecordLogDatumNullValueParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nullValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "nullValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(7)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	nullValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "nullValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer((uint8)(uint8(7)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}

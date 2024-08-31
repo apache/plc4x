@@ -181,10 +181,10 @@ func BACnetConstructedDataLightingCommandParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommand' field"))
 	}
 
-	// Virtual field
-	_actualValue := lightingCommand
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLightingCommand](ctx, "actualValue", (*BACnetLightingCommand)(nil), lightingCommand)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLightingCommand"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLightingCommand")

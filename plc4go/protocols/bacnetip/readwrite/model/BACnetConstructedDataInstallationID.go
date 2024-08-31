@@ -176,15 +176,15 @@ func BACnetConstructedDataInstallationIDParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	installationId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "installationId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	installationId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "installationId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'installationId' field"))
 	}
 
-	// Virtual field
-	_actualValue := installationId
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), installationId)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInstallationID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInstallationID")

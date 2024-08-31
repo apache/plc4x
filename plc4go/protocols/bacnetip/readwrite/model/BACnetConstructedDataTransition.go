@@ -181,10 +181,10 @@ func BACnetConstructedDataTransitionParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transition' field"))
 	}
 
-	// Virtual field
-	_actualValue := transition
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLightingTransitionTagged](ctx, "actualValue", (*BACnetLightingTransitionTagged)(nil), transition)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTransition")

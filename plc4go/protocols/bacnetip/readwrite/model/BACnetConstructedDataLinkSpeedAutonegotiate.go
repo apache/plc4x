@@ -176,15 +176,15 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	linkSpeedAutonegotiate, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	linkSpeedAutonegotiate, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeedAutonegotiate' field"))
 	}
 
-	// Virtual field
-	_actualValue := linkSpeedAutonegotiate
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), linkSpeedAutonegotiate)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLinkSpeedAutonegotiate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLinkSpeedAutonegotiate")

@@ -147,7 +147,7 @@ func BACnetShedLevelAmountParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	amount, err := ReadSimpleField[BACnetContextTagReal](ctx, "amount", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	amount, err := ReadSimpleField[BACnetContextTagReal](ctx, "amount", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amount' field"))
 	}

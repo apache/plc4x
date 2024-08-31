@@ -176,15 +176,15 @@ func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maxSegmentsAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxSegmentsAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	maxSegmentsAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxSegmentsAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxSegmentsAccepted' field"))
 	}
 
-	// Virtual field
-	_actualValue := maxSegmentsAccepted
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), maxSegmentsAccepted)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMaxSegmentsAccepted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMaxSegmentsAccepted")

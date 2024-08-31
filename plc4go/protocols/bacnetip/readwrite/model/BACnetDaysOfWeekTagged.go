@@ -235,40 +235,40 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_monday := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	monday := bool(_monday)
-	_ = monday
+	monday, err := ReadVirtualField[bool](ctx, "monday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monday' field"))
+	}
 
-	// Virtual field
-	_tuesday := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	tuesday := bool(_tuesday)
-	_ = tuesday
+	tuesday, err := ReadVirtualField[bool](ctx, "tuesday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tuesday' field"))
+	}
 
-	// Virtual field
-	_wednesday := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	wednesday := bool(_wednesday)
-	_ = wednesday
+	wednesday, err := ReadVirtualField[bool](ctx, "wednesday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'wednesday' field"))
+	}
 
-	// Virtual field
-	_thursday := utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool)
-	thursday := bool(_thursday)
-	_ = thursday
+	thursday, err := ReadVirtualField[bool](ctx, "thursday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'thursday' field"))
+	}
 
-	// Virtual field
-	_friday := utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool)
-	friday := bool(_friday)
-	_ = friday
+	friday, err := ReadVirtualField[bool](ctx, "friday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'friday' field"))
+	}
 
-	// Virtual field
-	_saturday := utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool)
-	saturday := bool(_saturday)
-	_ = saturday
+	saturday, err := ReadVirtualField[bool](ctx, "saturday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'saturday' field"))
+	}
 
-	// Virtual field
-	_sunday := utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool)
-	sunday := bool(_sunday)
-	_ = sunday
+	sunday, err := ReadVirtualField[bool](ctx, "sunday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sunday' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDaysOfWeekTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDaysOfWeekTagged")

@@ -238,20 +238,20 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommand' field"))
 	}
 
-	// Virtual field
-	_cbusCommandDecoded := cbusCommand
-	cbusCommandDecoded := _cbusCommandDecoded
-	_ = cbusCommandDecoded
+	cbusCommandDecoded, err := ReadVirtualField[CBusCommand](ctx, "cbusCommandDecoded", (*CBusCommand)(nil), cbusCommand)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommandDecoded' field"))
+	}
 
 	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 
-	// Virtual field
-	_chksumDecoded := chksum
-	chksumDecoded := _chksumDecoded
-	_ = chksumDecoded
+	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
+	}
 
 	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
 	if err != nil {

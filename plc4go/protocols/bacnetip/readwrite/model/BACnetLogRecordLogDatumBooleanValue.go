@@ -149,7 +149,7 @@ func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	booleanValue, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	booleanValue, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}

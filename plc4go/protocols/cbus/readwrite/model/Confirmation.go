@@ -184,10 +184,10 @@ func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmationType' field"))
 	}
 
-	// Virtual field
-	_isSuccess := bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL))
-	isSuccess := bool(_isSuccess)
-	_ = isSuccess
+	isSuccess, err := ReadVirtualField[bool](ctx, "isSuccess", (*bool)(nil), bool((confirmationType) == (ConfirmationType_CONFIRMATION_SUCCESSFUL)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSuccess' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("Confirmation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Confirmation")

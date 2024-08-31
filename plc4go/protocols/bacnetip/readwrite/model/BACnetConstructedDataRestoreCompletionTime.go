@@ -176,15 +176,15 @@ func BACnetConstructedDataRestoreCompletionTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	completionTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "completionTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	completionTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "completionTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'completionTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := completionTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), completionTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRestoreCompletionTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRestoreCompletionTime")

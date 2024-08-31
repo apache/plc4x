@@ -171,30 +171,30 @@ func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	networkNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
-	_ = zero
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 
-	// Virtual field
-	_isLocalNetwork := bool((networkNumber.GetActualValue()) == (zero))
-	isLocalNetwork := bool(_isLocalNetwork)
-	_ = isLocalNetwork
+	isLocalNetwork, err := ReadVirtualField[bool](ctx, "isLocalNetwork", (*bool)(nil), bool((networkNumber.GetActualValue()) == (zero)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLocalNetwork' field"))
+	}
 
-	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
 
-	// Virtual field
-	_isBroadcast := bool((macAddress.GetActualLength()) == (0))
-	isBroadcast := bool(_isBroadcast)
-	_ = isBroadcast
+	isBroadcast, err := ReadVirtualField[bool](ctx, "isBroadcast", (*bool)(nil), bool((macAddress.GetActualLength()) == (0)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBroadcast' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAddress")

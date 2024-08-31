@@ -241,15 +241,15 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'damperState' field"))
 	}
 
-	// Virtual field
-	_isDamperStateClosed := !(damperState)
-	isDamperStateClosed := bool(_isDamperStateClosed)
-	_ = isDamperStateClosed
+	isDamperStateClosed, err := ReadVirtualField[bool](ctx, "isDamperStateClosed", (*bool)(nil), !(damperState))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDamperStateClosed' field"))
+	}
 
-	// Virtual field
-	_isDamperStateOpen := damperState
-	isDamperStateOpen := bool(_isDamperStateOpen)
-	_ = isDamperStateOpen
+	isDamperStateOpen, err := ReadVirtualField[bool](ctx, "isDamperStateOpen", (*bool)(nil), damperState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDamperStateOpen' field"))
+	}
 
 	fanActive, err := ReadSimpleField(ctx, "fanActive", ReadBoolean(readBuffer))
 	if err != nil {

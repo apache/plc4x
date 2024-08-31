@@ -181,10 +181,10 @@ func BACnetConstructedDataSchedulePresentValueParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := presentValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetConstructedDataElement](ctx, "actualValue", (*BACnetConstructedDataElement)(nil), presentValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSchedulePresentValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSchedulePresentValue")

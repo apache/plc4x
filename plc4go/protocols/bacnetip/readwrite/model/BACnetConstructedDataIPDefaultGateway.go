@@ -176,15 +176,15 @@ func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDefaultGateway' field"))
 	}
 
-	// Virtual field
-	_actualValue := ipDefaultGateway
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagOctetString](ctx, "actualValue", (*BACnetApplicationTagOctetString)(nil), ipDefaultGateway)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPDefaultGateway"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPDefaultGateway")

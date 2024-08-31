@@ -176,15 +176,15 @@ func BACnetConstructedDataAccessZoneAdjustValueParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	adjustValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "adjustValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	adjustValue, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "adjustValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adjustValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := adjustValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagSignedInteger](ctx, "actualValue", (*BACnetApplicationTagSignedInteger)(nil), adjustValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessZoneAdjustValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessZoneAdjustValue")

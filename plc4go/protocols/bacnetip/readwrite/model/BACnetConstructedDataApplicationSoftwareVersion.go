@@ -176,15 +176,15 @@ func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	applicationSoftwareVersion, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	applicationSoftwareVersion, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationSoftwareVersion' field"))
 	}
 
-	// Virtual field
-	_actualValue := applicationSoftwareVersion
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), applicationSoftwareVersion)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataApplicationSoftwareVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataApplicationSoftwareVersion")

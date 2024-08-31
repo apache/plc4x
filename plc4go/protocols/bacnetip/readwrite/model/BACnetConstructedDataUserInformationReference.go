@@ -176,15 +176,15 @@ func BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userInformationReference, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	userInformationReference, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userInformationReference' field"))
 	}
 
-	// Virtual field
-	_actualValue := userInformationReference
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), userInformationReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserInformationReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserInformationReference")

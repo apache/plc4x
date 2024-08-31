@@ -171,10 +171,10 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := EnableControlCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[EnableControlCommandType](ctx, "commandType", (*EnableControlCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	enableNetworkVariable, err := ReadSimpleField(ctx, "enableNetworkVariable", ReadByte(readBuffer, 8))
 	if err != nil {

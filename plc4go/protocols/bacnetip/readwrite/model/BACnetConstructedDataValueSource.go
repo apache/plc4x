@@ -181,10 +181,10 @@ func BACnetConstructedDataValueSourceParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSource' field"))
 	}
 
-	// Virtual field
-	_actualValue := valueSource
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetValueSource](ctx, "actualValue", (*BACnetValueSource)(nil), valueSource)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueSource"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueSource")

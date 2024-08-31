@@ -182,10 +182,10 @@ func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		encodingMask = *_encodingMask
 	}
 
-	// Virtual field
-	_identifier := typeId.GetIdentifier()
-	identifier := fmt.Sprintf("%v", _identifier)
-	_ = identifier
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), typeId.GetIdentifier())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
+	}
 
 	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)(identifier)), readBuffer))
 	if err != nil {

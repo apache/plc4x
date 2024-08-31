@@ -149,7 +149,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	characterValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	characterValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterValue' field"))
 	}

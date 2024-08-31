@@ -349,10 +349,10 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 
-	// Virtual field
-	_destinationLengthAddon := utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*destinationLength)))) }, func() any { return uint16(uint16(0)) }).(uint16)
-	destinationLengthAddon := uint16(_destinationLengthAddon)
-	_ = destinationLengthAddon
+	destinationLengthAddon, err := ReadVirtualField[uint16](ctx, "destinationLengthAddon", (*uint16)(nil), utils.InlineIf(control.GetDestinationSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*destinationLength)))) }, func() any { return uint16(uint16(0)) }).(uint16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationLengthAddon' field"))
+	}
 
 	sourceNetworkAddress, err := ReadOptionalField[uint16](ctx, "sourceNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetSourceSpecified())
 	if err != nil {
@@ -369,20 +369,20 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
 
-	// Virtual field
-	_sourceLengthAddon := utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*sourceLength)))) }, func() any { return uint16(uint16(0)) }).(uint16)
-	sourceLengthAddon := uint16(_sourceLengthAddon)
-	_ = sourceLengthAddon
+	sourceLengthAddon, err := ReadVirtualField[uint16](ctx, "sourceLengthAddon", (*uint16)(nil), utils.InlineIf(control.GetSourceSpecified(), func() any { return uint16((uint16(uint16(3)) + uint16((*sourceLength)))) }, func() any { return uint16(uint16(0)) }).(uint16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceLengthAddon' field"))
+	}
 
 	hopCount, err := ReadOptionalField[uint8](ctx, "hopCount", ReadUnsignedByte(readBuffer, uint8(8)), control.GetDestinationSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hopCount' field"))
 	}
 
-	// Virtual field
-	_payloadSubtraction := uint16(uint16(2)) + uint16((uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon)) + uint16((utils.InlineIf((control.GetDestinationSpecified()), func() any { return uint16(uint16(1)) }, func() any { return uint16(uint16(0)) }).(uint16)))))
-	payloadSubtraction := uint16(_payloadSubtraction)
-	_ = payloadSubtraction
+	payloadSubtraction, err := ReadVirtualField[uint16](ctx, "payloadSubtraction", (*uint16)(nil), uint16(uint16(2))+uint16((uint16(uint16(sourceLengthAddon)+uint16(destinationLengthAddon))+uint16((utils.InlineIf((control.GetDestinationSpecified()), func() any { return uint16(uint16(1)) }, func() any { return uint16(uint16(0)) }).(uint16))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadSubtraction' field"))
+	}
 
 	_nlm, err := ReadOptionalField[NLM](ctx, "nlm", ReadComplex[NLM](NLMParseWithBufferProducer[NLM]((uint16)(uint16(npduLength)-uint16(payloadSubtraction))), readBuffer), control.GetMessageTypeFieldPresent())
 	if err != nil {

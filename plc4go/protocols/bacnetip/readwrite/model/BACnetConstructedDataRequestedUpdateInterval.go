@@ -176,15 +176,15 @@ func BACnetConstructedDataRequestedUpdateIntervalParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestedUpdateInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "requestedUpdateInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	requestedUpdateInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "requestedUpdateInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedUpdateInterval' field"))
 	}
 
-	// Virtual field
-	_actualValue := requestedUpdateInterval
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), requestedUpdateInterval)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataRequestedUpdateInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataRequestedUpdateInterval")

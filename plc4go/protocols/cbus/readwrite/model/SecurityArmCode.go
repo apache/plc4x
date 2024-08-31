@@ -186,30 +186,30 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
 
-	// Virtual field
-	_isDisarmed := bool((code) == (0x00))
-	isDisarmed := bool(_isDisarmed)
-	_ = isDisarmed
+	isDisarmed, err := ReadVirtualField[bool](ctx, "isDisarmed", (*bool)(nil), bool((code) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDisarmed' field"))
+	}
 
-	// Virtual field
-	_isFullyArmed := bool((code) == (0x01))
-	isFullyArmed := bool(_isFullyArmed)
-	_ = isFullyArmed
+	isFullyArmed, err := ReadVirtualField[bool](ctx, "isFullyArmed", (*bool)(nil), bool((code) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFullyArmed' field"))
+	}
 
-	// Virtual field
-	_isPartiallyArmed := bool((code) == (0x02))
-	isPartiallyArmed := bool(_isPartiallyArmed)
-	_ = isPartiallyArmed
+	isPartiallyArmed, err := ReadVirtualField[bool](ctx, "isPartiallyArmed", (*bool)(nil), bool((code) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPartiallyArmed' field"))
+	}
 
-	// Virtual field
-	_isArmSubtype := bool(bool((code) >= (0x03))) && bool(bool((code) <= (0x7F)))
-	isArmSubtype := bool(_isArmSubtype)
-	_ = isArmSubtype
+	isArmSubtype, err := ReadVirtualField[bool](ctx, "isArmSubtype", (*bool)(nil), bool(bool((code) >= (0x03))) && bool(bool((code) <= (0x7F))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmSubtype' field"))
+	}
 
-	// Virtual field
-	_isReserved := bool((code) > (0x7F))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool((code) > (0x7F)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("SecurityArmCode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityArmCode")

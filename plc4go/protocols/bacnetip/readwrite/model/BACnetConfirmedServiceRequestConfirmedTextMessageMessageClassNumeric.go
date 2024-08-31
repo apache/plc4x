@@ -149,7 +149,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWi
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numericValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	numericValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericValue' field"))
 	}

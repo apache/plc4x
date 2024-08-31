@@ -132,12 +132,12 @@ func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	multiplier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "multiplier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	multiplier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "multiplier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplier' field"))
 	}
 
-	moduloDivide, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "moduloDivide", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	moduloDivide, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "moduloDivide", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moduloDivide' field"))
 	}

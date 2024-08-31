@@ -166,20 +166,20 @@ func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
-	// Virtual field
-	_isNoTamper := bool((status) == (0x00))
-	isNoTamper := bool(_isNoTamper)
-	_ = isNoTamper
+	isNoTamper, err := ReadVirtualField[bool](ctx, "isNoTamper", (*bool)(nil), bool((status) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoTamper' field"))
+	}
 
-	// Virtual field
-	_isReserved := bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE)))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
-	// Virtual field
-	_isTamperActive := bool((status) > (0xFE))
-	isTamperActive := bool(_isTamperActive)
-	_ = isTamperActive
+	isTamperActive, err := ReadVirtualField[bool](ctx, "isTamperActive", (*bool)(nil), bool((status) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isTamperActive' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("TamperStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TamperStatus")

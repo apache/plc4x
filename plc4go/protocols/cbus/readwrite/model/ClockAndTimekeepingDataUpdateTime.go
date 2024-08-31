@@ -250,25 +250,25 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSaving' field"))
 	}
 
-	// Virtual field
-	_isNoDaylightSavings := bool((daylightSaving) == (0x00))
-	isNoDaylightSavings := bool(_isNoDaylightSavings)
-	_ = isNoDaylightSavings
+	isNoDaylightSavings, err := ReadVirtualField[bool](ctx, "isNoDaylightSavings", (*bool)(nil), bool((daylightSaving) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoDaylightSavings' field"))
+	}
 
-	// Virtual field
-	_isAdvancedBy1Hour := bool((daylightSaving) == (0x01))
-	isAdvancedBy1Hour := bool(_isAdvancedBy1Hour)
-	_ = isAdvancedBy1Hour
+	isAdvancedBy1Hour, err := ReadVirtualField[bool](ctx, "isAdvancedBy1Hour", (*bool)(nil), bool((daylightSaving) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAdvancedBy1Hour' field"))
+	}
 
-	// Virtual field
-	_isReserved := bool(bool((daylightSaving) > (0x01))) && bool(bool((daylightSaving) <= (0xFE)))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((daylightSaving) > (0x01))) && bool(bool((daylightSaving) <= (0xFE))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
-	// Virtual field
-	_isUnknown := bool((daylightSaving) > (0xFE))
-	isUnknown := bool(_isUnknown)
-	_ = isUnknown
+	isUnknown, err := ReadVirtualField[bool](ctx, "isUnknown", (*bool)(nil), bool((daylightSaving) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnknown' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("ClockAndTimekeepingDataUpdateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClockAndTimekeepingDataUpdateTime")

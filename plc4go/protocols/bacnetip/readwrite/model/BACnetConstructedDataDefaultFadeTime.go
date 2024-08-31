@@ -176,15 +176,15 @@ func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	defaultFadeTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultFadeTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	defaultFadeTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultFadeTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultFadeTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := defaultFadeTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), defaultFadeTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDefaultFadeTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDefaultFadeTime")

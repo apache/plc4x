@@ -181,10 +181,10 @@ func BACnetConstructedDataScheduleDefaultParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scheduleDefault' field"))
 	}
 
-	// Virtual field
-	_actualValue := scheduleDefault
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetConstructedDataElement](ctx, "actualValue", (*BACnetConstructedDataElement)(nil), scheduleDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScheduleDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScheduleDefault")

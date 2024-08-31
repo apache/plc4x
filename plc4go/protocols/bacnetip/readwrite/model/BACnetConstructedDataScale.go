@@ -181,10 +181,10 @@ func BACnetConstructedDataScaleParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scale' field"))
 	}
 
-	// Virtual field
-	_actualValue := scale
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetScale](ctx, "actualValue", (*BACnetScale)(nil), scale)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataScale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataScale")

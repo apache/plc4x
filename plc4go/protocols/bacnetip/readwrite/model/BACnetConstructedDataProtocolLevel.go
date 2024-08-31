@@ -181,10 +181,10 @@ func BACnetConstructedDataProtocolLevelParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolLevel' field"))
 	}
 
-	// Virtual field
-	_actualValue := protocolLevel
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetProtocolLevelTagged](ctx, "actualValue", (*BACnetProtocolLevelTagged)(nil), protocolLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolLevel")

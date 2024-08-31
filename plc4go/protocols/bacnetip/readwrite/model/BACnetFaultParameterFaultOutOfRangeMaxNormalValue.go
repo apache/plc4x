@@ -200,10 +200,10 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer(ctx contex
 	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
-	_ = peekedTagNumber
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_APPLICATION_TAGS))) {

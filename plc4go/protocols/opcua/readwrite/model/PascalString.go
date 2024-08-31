@@ -150,10 +150,10 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 	_ = sLength
 
-	// Virtual field
-	_stringLength := PascalLengthToUtf8Length(ctx, sLength)
-	stringLength := int32(_stringLength)
-	_ = stringLength
+	stringLength, err := ReadVirtualField[int32](ctx, "stringLength", (*int32)(nil), PascalLengthToUtf8Length(ctx, sLength))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringLength' field"))
+	}
 
 	stringValue, err := ReadSimpleField(ctx, "stringValue", ReadString(readBuffer, uint32(int32(stringLength)*int32(int32(8)))))
 	if err != nil {

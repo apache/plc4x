@@ -181,10 +181,10 @@ func BACnetConstructedDataIntegralConstantUnitsParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'units' field"))
 	}
 
-	// Virtual field
-	_actualValue := units
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetEngineeringUnitsTagged](ctx, "actualValue", (*BACnetEngineeringUnitsTagged)(nil), units)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIntegralConstantUnits"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIntegralConstantUnits")

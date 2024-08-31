@@ -181,10 +181,10 @@ func BACnetConstructedDataGroupModeParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupMode' field"))
 	}
 
-	// Virtual field
-	_actualValue := groupMode
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLiftGroupModeTagged](ctx, "actualValue", (*BACnetLiftGroupModeTagged)(nil), groupMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataGroupMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataGroupMode")

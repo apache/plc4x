@@ -176,15 +176,15 @@ func BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	changeIfStateCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "changeIfStateCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	changeIfStateCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "changeIfStateCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeIfStateCount' field"))
 	}
 
-	// Virtual field
-	_actualValue := changeIfStateCount
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), changeIfStateCount)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataChangeOfStateCount"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataChangeOfStateCount")

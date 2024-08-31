@@ -176,15 +176,15 @@ func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	doorExtendedPulseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorExtendedPulseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	doorExtendedPulseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorExtendedPulseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorExtendedPulseTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := doorExtendedPulseTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), doorExtendedPulseTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorExtendedPulseTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorExtendedPulseTime")

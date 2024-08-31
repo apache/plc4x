@@ -176,15 +176,15 @@ func BACnetConstructedDataLastNotifyRecordParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lastNotifyRecord, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastNotifyRecord", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	lastNotifyRecord, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastNotifyRecord", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastNotifyRecord' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastNotifyRecord
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lastNotifyRecord)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastNotifyRecord"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastNotifyRecord")

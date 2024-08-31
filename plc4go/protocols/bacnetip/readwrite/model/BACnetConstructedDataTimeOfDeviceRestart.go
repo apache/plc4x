@@ -181,10 +181,10 @@ func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx context.Context
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeOfDeviceRestart' field"))
 	}
 
-	// Virtual field
-	_actualValue := timeOfDeviceRestart
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetTimeStamp](ctx, "actualValue", (*BACnetTimeStamp)(nil), timeOfDeviceRestart)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataTimeOfDeviceRestart"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataTimeOfDeviceRestart")

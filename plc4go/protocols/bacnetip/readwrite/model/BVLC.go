@@ -193,10 +193,10 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	}
 	_ = bvlcLength
 
-	// Virtual field
-	_bvlcPayloadLength := uint16(bvlcLength) - uint16(uint16(4))
-	bvlcPayloadLength := uint16(_bvlcPayloadLength)
-	_ = bvlcPayloadLength
+	bvlcPayloadLength, err := ReadVirtualField[uint16](ctx, "bvlcPayloadLength", (*uint16)(nil), uint16(bvlcLength)-uint16(uint16(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcPayloadLength' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BVLCChildSerializeRequirement interface {

@@ -222,35 +222,35 @@ func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'armMode' field"))
 	}
 
-	// Virtual field
-	_isReserved := bool(bool((armMode) == (0x00))) || bool((bool(bool((armMode) >= (0x05))) && bool(bool((armMode) <= (0xFE)))))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((armMode) == (0x00))) || bool((bool(bool((armMode) >= (0x05))) && bool(bool((armMode) <= (0xFE))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
-	// Virtual field
-	_isArmToAwayMode := bool((armMode) == (0x01))
-	isArmToAwayMode := bool(_isArmToAwayMode)
-	_ = isArmToAwayMode
+	isArmToAwayMode, err := ReadVirtualField[bool](ctx, "isArmToAwayMode", (*bool)(nil), bool((armMode) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmToAwayMode' field"))
+	}
 
-	// Virtual field
-	_isArmToNightMode := bool((armMode) == (0x02))
-	isArmToNightMode := bool(_isArmToNightMode)
-	_ = isArmToNightMode
+	isArmToNightMode, err := ReadVirtualField[bool](ctx, "isArmToNightMode", (*bool)(nil), bool((armMode) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmToNightMode' field"))
+	}
 
-	// Virtual field
-	_isArmToDayMode := bool((armMode) == (0x03))
-	isArmToDayMode := bool(_isArmToDayMode)
-	_ = isArmToDayMode
+	isArmToDayMode, err := ReadVirtualField[bool](ctx, "isArmToDayMode", (*bool)(nil), bool((armMode) == (0x03)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmToDayMode' field"))
+	}
 
-	// Virtual field
-	_isArmToVacationMode := bool((armMode) == (0x04))
-	isArmToVacationMode := bool(_isArmToVacationMode)
-	_ = isArmToVacationMode
+	isArmToVacationMode, err := ReadVirtualField[bool](ctx, "isArmToVacationMode", (*bool)(nil), bool((armMode) == (0x04)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmToVacationMode' field"))
+	}
 
-	// Virtual field
-	_isArmToHighestLevelOfProtection := bool((armMode) > (0xFE))
-	isArmToHighestLevelOfProtection := bool(_isArmToHighestLevelOfProtection)
-	_ = isArmToHighestLevelOfProtection
+	isArmToHighestLevelOfProtection, err := ReadVirtualField[bool](ctx, "isArmToHighestLevelOfProtection", (*bool)(nil), bool((armMode) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmToHighestLevelOfProtection' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataArmSystem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataArmSystem")

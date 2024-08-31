@@ -181,10 +181,10 @@ func BACnetConstructedDataClientCOVIncrementParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}
 
-	// Virtual field
-	_actualValue := covIncrement
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetClientCOV](ctx, "actualValue", (*BACnetClientCOV)(nil), covIncrement)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataClientCOVIncrement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataClientCOVIncrement")

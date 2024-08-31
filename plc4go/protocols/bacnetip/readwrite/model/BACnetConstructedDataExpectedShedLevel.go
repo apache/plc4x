@@ -181,10 +181,10 @@ func BACnetConstructedDataExpectedShedLevelParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expectedShedLevel' field"))
 	}
 
-	// Virtual field
-	_actualValue := expectedShedLevel
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetShedLevel](ctx, "actualValue", (*BACnetShedLevel)(nil), expectedShedLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataExpectedShedLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataExpectedShedLevel")

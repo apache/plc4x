@@ -181,10 +181,10 @@ func BACnetConstructedDataAccessEventCredentialParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventCredential' field"))
 	}
 
-	// Virtual field
-	_actualValue := accessEventCredential
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), accessEventCredential)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccessEventCredential"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccessEventCredential")

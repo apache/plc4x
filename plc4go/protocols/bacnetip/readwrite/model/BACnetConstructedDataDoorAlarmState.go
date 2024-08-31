@@ -181,10 +181,10 @@ func BACnetConstructedDataDoorAlarmStateParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorAlarmState' field"))
 	}
 
-	// Virtual field
-	_actualValue := doorAlarmState
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDoorAlarmStateTagged](ctx, "actualValue", (*BACnetDoorAlarmStateTagged)(nil), doorAlarmState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDoorAlarmState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDoorAlarmState")

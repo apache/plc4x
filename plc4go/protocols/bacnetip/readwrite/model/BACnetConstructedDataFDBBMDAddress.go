@@ -181,10 +181,10 @@ func BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fDBBMDAddress' field"))
 	}
 
-	// Virtual field
-	_actualValue := fDBBMDAddress
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetHostNPort](ctx, "actualValue", (*BACnetHostNPort)(nil), fDBBMDAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDBBMDAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDBBMDAddress")

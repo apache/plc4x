@@ -197,10 +197,10 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := AccessControlCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[AccessControlCommandType](ctx, "commandType", (*AccessControlCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	networkId, err := ReadSimpleField(ctx, "networkId", ReadByte(readBuffer, 8))
 	if err != nil {

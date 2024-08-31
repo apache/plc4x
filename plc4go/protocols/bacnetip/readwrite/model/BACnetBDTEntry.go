@@ -139,7 +139,7 @@ func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdAddress' field"))
 	}
 
-	_broadcastMask, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
+	_broadcastMask, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'broadcastMask' field"))
 	}

@@ -197,15 +197,15 @@ func BACnetContextTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "should be a context tag"})
 	}
 
-	// Virtual field
-	_tagNumber := header.GetTagNumber()
-	tagNumber := uint8(_tagNumber)
-	_ = tagNumber
+	tagNumber, err := ReadVirtualField[uint8](ctx, "tagNumber", (*uint8)(nil), header.GetTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagNumber' field"))
+	}
 
-	// Virtual field
-	_actualLength := header.GetActualLength()
-	actualLength := uint32(_actualLength)
-	_ = actualLength
+	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), header.GetActualLength())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
+	}
 
 	// Validation
 	if !(bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))) {

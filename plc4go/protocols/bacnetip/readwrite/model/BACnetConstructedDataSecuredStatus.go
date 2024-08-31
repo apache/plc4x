@@ -181,10 +181,10 @@ func BACnetConstructedDataSecuredStatusParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securedStatus' field"))
 	}
 
-	// Virtual field
-	_actualValue := securedStatus
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDoorSecuredStatusTagged](ctx, "actualValue", (*BACnetDoorSecuredStatusTagged)(nil), securedStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataSecuredStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataSecuredStatus")

@@ -176,7 +176,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_deviceInstanceRangeLowLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	_deviceInstanceRangeLowLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeLowLimit' field"))
 	}
@@ -185,7 +185,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 		deviceInstanceRangeLowLimit = *_deviceInstanceRangeLowLimit
 	}
 
-	_deviceInstanceRangeHighLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), bool((deviceInstanceRangeLowLimit) != (nil)))
+	_deviceInstanceRangeHighLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), bool((deviceInstanceRangeLowLimit) != (nil)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeHighLimit' field"))
 	}

@@ -132,7 +132,7 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	floorNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	floorNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumber' field"))
 	}

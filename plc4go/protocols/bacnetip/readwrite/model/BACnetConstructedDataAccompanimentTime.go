@@ -176,15 +176,15 @@ func BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	accompanimentTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	accompanimentTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accompanimentTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := accompanimentTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), accompanimentTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAccompanimentTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAccompanimentTime")

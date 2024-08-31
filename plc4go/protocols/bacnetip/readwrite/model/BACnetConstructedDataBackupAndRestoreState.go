@@ -181,10 +181,10 @@ func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupAndRestoreState' field"))
 	}
 
-	// Virtual field
-	_actualValue := backupAndRestoreState
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetBackupStateTagged](ctx, "actualValue", (*BACnetBackupStateTagged)(nil), backupAndRestoreState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupAndRestoreState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupAndRestoreState")

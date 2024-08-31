@@ -181,10 +181,10 @@ func BACnetConstructedDataOperationDirectionParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationDirection' field"))
 	}
 
-	// Virtual field
-	_actualValue := operationDirection
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetEscalatorOperationDirectionTagged](ctx, "actualValue", (*BACnetEscalatorOperationDirectionTagged)(nil), operationDirection)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationDirection")

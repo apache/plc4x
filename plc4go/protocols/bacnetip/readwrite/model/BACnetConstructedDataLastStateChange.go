@@ -181,10 +181,10 @@ func BACnetConstructedDataLastStateChangeParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastStateChange' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastStateChange
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetTimerTransitionTagged](ctx, "actualValue", (*BACnetTimerTransitionTagged)(nil), lastStateChange)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastStateChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastStateChange")

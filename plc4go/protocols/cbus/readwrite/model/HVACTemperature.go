@@ -146,10 +146,10 @@ func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureValue' field"))
 	}
 
-	// Virtual field
-	_temperatureInCelcius := float32(temperatureValue) / float32(float32(256))
-	temperatureInCelcius := float32(_temperatureInCelcius)
-	_ = temperatureInCelcius
+	temperatureInCelcius, err := ReadVirtualField[float32](ctx, "temperatureInCelcius", (*float32)(nil), float32(temperatureValue)/float32(float32(256)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureInCelcius' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACTemperature"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACTemperature")

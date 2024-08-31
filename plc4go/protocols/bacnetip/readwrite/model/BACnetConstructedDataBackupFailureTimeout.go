@@ -176,15 +176,15 @@ func BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	backupFailureTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	backupFailureTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupFailureTimeout' field"))
 	}
 
-	// Virtual field
-	_actualValue := backupFailureTimeout
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), backupFailureTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBackupFailureTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBackupFailureTimeout")

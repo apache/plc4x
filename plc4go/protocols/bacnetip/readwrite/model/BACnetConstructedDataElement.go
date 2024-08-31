@@ -241,25 +241,25 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
-	_ = peekedTagNumber
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 
-	// Virtual field
-	_isApplicationTag := bool((peekedTagHeader.GetTagClass()) == (TagClass_APPLICATION_TAGS))
-	isApplicationTag := bool(_isApplicationTag)
-	_ = isApplicationTag
+	isApplicationTag, err := ReadVirtualField[bool](ctx, "isApplicationTag", (*bool)(nil), bool((peekedTagHeader.GetTagClass()) == (TagClass_APPLICATION_TAGS)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isApplicationTag' field"))
+	}
 
-	// Virtual field
-	_isConstructedData := bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.GetLengthValueType()) == (0x6)))
-	isConstructedData := bool(_isConstructedData)
-	_ = isConstructedData
+	isConstructedData, err := ReadVirtualField[bool](ctx, "isConstructedData", (*bool)(nil), bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.GetLengthValueType()) == (0x6))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isConstructedData' field"))
+	}
 
-	// Virtual field
-	_isContextTag := bool(!(isConstructedData)) && bool(!(isApplicationTag))
-	isContextTag := bool(_isContextTag)
-	_ = isContextTag
+	isContextTag, err := ReadVirtualField[bool](ctx, "isContextTag", (*bool)(nil), bool(!(isConstructedData)) && bool(!(isApplicationTag)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isContextTag' field"))
+	}
 
 	// Validation
 	if !(bool(!(isContextTag)) || bool((bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {

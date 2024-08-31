@@ -176,15 +176,15 @@ func BACnetConstructedDataAnalogInputFaultHighLimitParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	faultHighLimit, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "faultHighLimit", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	faultHighLimit, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "faultHighLimit", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultHighLimit' field"))
 	}
 
-	// Virtual field
-	_actualValue := faultHighLimit
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), faultHighLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogInputFaultHighLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogInputFaultHighLimit")

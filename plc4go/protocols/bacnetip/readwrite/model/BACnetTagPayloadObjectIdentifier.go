@@ -171,10 +171,10 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
-	// Virtual field
-	_isProprietary := bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
+	isProprietary, err := ReadVirtualField[bool](ctx, "isProprietary", (*bool)(nil), bool((objectType) == (BACnetObjectType_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
+	}
 
 	instanceNumber, err := ReadSimpleField(ctx, "instanceNumber", ReadUnsignedInt(readBuffer, uint8(22)))
 	if err != nil {

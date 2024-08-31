@@ -176,15 +176,15 @@ func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	apduSegmentTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduSegmentTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	apduSegmentTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduSegmentTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduSegmentTimeout' field"))
 	}
 
-	// Virtual field
-	_actualValue := apduSegmentTimeout
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), apduSegmentTimeout)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAPDUSegmentTimeout"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAPDUSegmentTimeout")

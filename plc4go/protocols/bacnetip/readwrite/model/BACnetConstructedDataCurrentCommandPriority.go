@@ -181,10 +181,10 @@ func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx context.Cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentCommandPriority' field"))
 	}
 
-	// Virtual field
-	_actualValue := currentCommandPriority
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetOptionalUnsigned](ctx, "actualValue", (*BACnetOptionalUnsigned)(nil), currentCommandPriority)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCurrentCommandPriority"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCurrentCommandPriority")

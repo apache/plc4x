@@ -181,10 +181,10 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx context.Co
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventAlgorithmInhibitRef' field"))
 	}
 
-	// Virtual field
-	_actualValue := eventAlgorithmInhibitRef
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectPropertyReference](ctx, "actualValue", (*BACnetObjectPropertyReference)(nil), eventAlgorithmInhibitRef)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventAlgorithmInhibitRef"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventAlgorithmInhibitRef")

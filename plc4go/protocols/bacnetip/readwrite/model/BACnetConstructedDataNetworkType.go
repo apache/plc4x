@@ -181,10 +181,10 @@ func BACnetConstructedDataNetworkTypeParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkType' field"))
 	}
 
-	// Virtual field
-	_actualValue := networkType
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetNetworkTypeTagged](ctx, "actualValue", (*BACnetNetworkTypeTagged)(nil), networkType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkType")

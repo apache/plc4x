@@ -165,7 +165,7 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTime' field"))
 	}
 
-	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}

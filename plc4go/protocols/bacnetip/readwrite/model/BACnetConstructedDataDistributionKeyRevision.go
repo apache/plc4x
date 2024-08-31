@@ -176,15 +176,15 @@ func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'distributionKeyRevision' field"))
 	}
 
-	// Virtual field
-	_actualValue := distributionKeyRevision
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), distributionKeyRevision)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDistributionKeyRevision"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDistributionKeyRevision")

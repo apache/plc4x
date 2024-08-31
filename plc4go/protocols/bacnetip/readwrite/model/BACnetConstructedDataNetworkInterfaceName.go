@@ -176,15 +176,15 @@ func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterfaceName' field"))
 	}
 
-	// Virtual field
-	_actualValue := networkInterfaceName
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), networkInterfaceName)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkInterfaceName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkInterfaceName")

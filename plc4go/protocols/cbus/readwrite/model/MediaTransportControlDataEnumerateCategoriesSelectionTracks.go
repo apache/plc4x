@@ -213,25 +213,25 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumerateType' field"))
 	}
 
-	// Virtual field
-	_isListCategories := bool((enumerateType) == (0x00))
-	isListCategories := bool(_isListCategories)
-	_ = isListCategories
+	isListCategories, err := ReadVirtualField[bool](ctx, "isListCategories", (*bool)(nil), bool((enumerateType) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListCategories' field"))
+	}
 
-	// Virtual field
-	_isListSelections := bool((enumerateType) == (0x01))
-	isListSelections := bool(_isListSelections)
-	_ = isListSelections
+	isListSelections, err := ReadVirtualField[bool](ctx, "isListSelections", (*bool)(nil), bool((enumerateType) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListSelections' field"))
+	}
 
-	// Virtual field
-	_isListTracks := bool((enumerateType) == (0x02))
-	isListTracks := bool(_isListTracks)
-	_ = isListTracks
+	isListTracks, err := ReadVirtualField[bool](ctx, "isListTracks", (*bool)(nil), bool((enumerateType) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListTracks' field"))
+	}
 
-	// Virtual field
-	_isReserved := bool(bool(!(isListCategories)) && bool(!(isListSelections))) && bool(!(isListTracks))
-	isReserved := bool(_isReserved)
-	_ = isReserved
+	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool(!(isListCategories)) && bool(!(isListSelections))) && bool(!(isListTracks)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
+	}
 
 	start, err := ReadSimpleField(ctx, "start", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {

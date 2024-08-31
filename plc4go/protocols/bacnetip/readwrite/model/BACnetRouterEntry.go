@@ -154,12 +154,12 @@ func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	networkNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
 
-	macAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "macAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	macAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "macAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
@@ -169,7 +169,7 @@ func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
-	_performanceIndex, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
+	_performanceIndex, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performanceIndex' field"))
 	}

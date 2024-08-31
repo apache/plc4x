@@ -160,10 +160,10 @@ func BACnetServiceAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
 
-	// Virtual field
-	_serviceAckPayloadLength := utils.InlineIf((bool((serviceAckLength) > (0))), func() any { return uint32((uint32(serviceAckLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32)
-	serviceAckPayloadLength := uint32(_serviceAckPayloadLength)
-	_ = serviceAckPayloadLength
+	serviceAckPayloadLength, err := ReadVirtualField[uint32](ctx, "serviceAckPayloadLength", (*uint32)(nil), utils.InlineIf((bool((serviceAckLength) > (0))), func() any { return uint32((uint32(serviceAckLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceAckPayloadLength' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetServiceAckChildSerializeRequirement interface {

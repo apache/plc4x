@@ -195,20 +195,20 @@ func BACnetEventTransitionBitsTaggedParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_toOffnormal := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	toOffnormal := bool(_toOffnormal)
-	_ = toOffnormal
+	toOffnormal, err := ReadVirtualField[bool](ctx, "toOffnormal", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
+	}
 
-	// Virtual field
-	_toFault := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	toFault := bool(_toFault)
-	_ = toFault
+	toFault, err := ReadVirtualField[bool](ctx, "toFault", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
+	}
 
-	// Virtual field
-	_toNormal := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	toNormal := bool(_toNormal)
-	_ = toNormal
+	toNormal, err := ReadVirtualField[bool](ctx, "toNormal", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTransitionBitsTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventTransitionBitsTagged")

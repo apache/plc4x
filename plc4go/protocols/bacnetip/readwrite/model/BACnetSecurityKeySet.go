@@ -152,7 +152,7 @@ func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	keyRevision, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "keyRevision", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	keyRevision, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "keyRevision", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyRevision' field"))
 	}

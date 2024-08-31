@@ -176,15 +176,15 @@ func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	elapsedActiveTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "elapsedActiveTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	elapsedActiveTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "elapsedActiveTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elapsedActiveTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := elapsedActiveTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), elapsedActiveTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataElapsedActiveTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataElapsedActiveTime")

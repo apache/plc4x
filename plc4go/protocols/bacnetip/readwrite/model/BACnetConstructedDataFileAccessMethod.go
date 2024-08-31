@@ -181,10 +181,10 @@ func BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileAccessMethod' field"))
 	}
 
-	// Virtual field
-	_actualValue := fileAccessMethod
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetFileAccessMethodTagged](ctx, "actualValue", (*BACnetFileAccessMethodTagged)(nil), fileAccessMethod)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFileAccessMethod"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFileAccessMethod")

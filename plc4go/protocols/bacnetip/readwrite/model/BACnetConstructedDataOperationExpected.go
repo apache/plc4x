@@ -181,10 +181,10 @@ func BACnetConstructedDataOperationExpectedParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyOperations' field"))
 	}
 
-	// Virtual field
-	_actualValue := lifeSafetyOperations
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLifeSafetyOperationTagged](ctx, "actualValue", (*BACnetLifeSafetyOperationTagged)(nil), lifeSafetyOperations)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataOperationExpected"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataOperationExpected")

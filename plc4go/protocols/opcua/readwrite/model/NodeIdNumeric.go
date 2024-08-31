@@ -189,10 +189,10 @@ func NodeIdNumericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
 
-	// Virtual field
-	_identifier := id
-	identifier := fmt.Sprintf("%v", _identifier)
-	_ = identifier
+	identifier, err := ReadVirtualField[string](ctx, "identifier", (*string)(nil), id)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("NodeIdNumeric"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdNumeric")

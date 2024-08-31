@@ -176,15 +176,15 @@ func BACnetConstructedDataIPv6DHCPLeaseTimeRemainingParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6DhcpLeaseTimeRemaining, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6DhcpLeaseTimeRemaining", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	ipv6DhcpLeaseTimeRemaining, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6DhcpLeaseTimeRemaining", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6DhcpLeaseTimeRemaining' field"))
 	}
 
-	// Virtual field
-	_actualValue := ipv6DhcpLeaseTimeRemaining
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), ipv6DhcpLeaseTimeRemaining)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6DHCPLeaseTimeRemaining"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6DHCPLeaseTimeRemaining")

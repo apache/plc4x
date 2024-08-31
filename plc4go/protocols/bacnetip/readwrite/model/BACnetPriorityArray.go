@@ -380,12 +380,12 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
-	_ = zero
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -399,100 +399,100 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
-	// Virtual field
-	_priorityValue01 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (0)), func() any { return CastBACnetPriorityValue(data[0]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue01 := _priorityValue01
-	_ = priorityValue01
+	priorityValue01, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue01", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (0)), func() any { return CastBACnetPriorityValue(data[0]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue01' field"))
+	}
 
-	// Virtual field
-	_priorityValue02 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (1)), func() any { return CastBACnetPriorityValue(data[1]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue02 := _priorityValue02
-	_ = priorityValue02
+	priorityValue02, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue02", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (1)), func() any { return CastBACnetPriorityValue(data[1]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue02' field"))
+	}
 
-	// Virtual field
-	_priorityValue03 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (2)), func() any { return CastBACnetPriorityValue(data[2]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue03 := _priorityValue03
-	_ = priorityValue03
+	priorityValue03, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue03", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (2)), func() any { return CastBACnetPriorityValue(data[2]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue03' field"))
+	}
 
-	// Virtual field
-	_priorityValue04 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (3)), func() any { return CastBACnetPriorityValue(data[3]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue04 := _priorityValue04
-	_ = priorityValue04
+	priorityValue04, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue04", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (3)), func() any { return CastBACnetPriorityValue(data[3]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue04' field"))
+	}
 
-	// Virtual field
-	_priorityValue05 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (4)), func() any { return CastBACnetPriorityValue(data[4]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue05 := _priorityValue05
-	_ = priorityValue05
+	priorityValue05, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue05", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (4)), func() any { return CastBACnetPriorityValue(data[4]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue05' field"))
+	}
 
-	// Virtual field
-	_priorityValue06 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (5)), func() any { return CastBACnetPriorityValue(data[5]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue06 := _priorityValue06
-	_ = priorityValue06
+	priorityValue06, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue06", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (5)), func() any { return CastBACnetPriorityValue(data[5]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue06' field"))
+	}
 
-	// Virtual field
-	_priorityValue07 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (6)), func() any { return CastBACnetPriorityValue(data[6]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue07 := _priorityValue07
-	_ = priorityValue07
+	priorityValue07, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue07", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (6)), func() any { return CastBACnetPriorityValue(data[6]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue07' field"))
+	}
 
-	// Virtual field
-	_priorityValue08 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (7)), func() any { return CastBACnetPriorityValue(data[7]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue08 := _priorityValue08
-	_ = priorityValue08
+	priorityValue08, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue08", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (7)), func() any { return CastBACnetPriorityValue(data[7]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue08' field"))
+	}
 
-	// Virtual field
-	_priorityValue09 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (8)), func() any { return CastBACnetPriorityValue(data[8]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue09 := _priorityValue09
-	_ = priorityValue09
+	priorityValue09, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue09", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (8)), func() any { return CastBACnetPriorityValue(data[8]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue09' field"))
+	}
 
-	// Virtual field
-	_priorityValue10 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (9)), func() any { return CastBACnetPriorityValue(data[9]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue10 := _priorityValue10
-	_ = priorityValue10
+	priorityValue10, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue10", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (9)), func() any { return CastBACnetPriorityValue(data[9]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue10' field"))
+	}
 
-	// Virtual field
-	_priorityValue11 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (10)), func() any { return CastBACnetPriorityValue(data[10]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue11 := _priorityValue11
-	_ = priorityValue11
+	priorityValue11, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue11", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (10)), func() any { return CastBACnetPriorityValue(data[10]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue11' field"))
+	}
 
-	// Virtual field
-	_priorityValue12 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (11)), func() any { return CastBACnetPriorityValue(data[11]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue12 := _priorityValue12
-	_ = priorityValue12
+	priorityValue12, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue12", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (11)), func() any { return CastBACnetPriorityValue(data[11]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue12' field"))
+	}
 
-	// Virtual field
-	_priorityValue13 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (12)), func() any { return CastBACnetPriorityValue(data[12]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue13 := _priorityValue13
-	_ = priorityValue13
+	priorityValue13, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue13", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (12)), func() any { return CastBACnetPriorityValue(data[12]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue13' field"))
+	}
 
-	// Virtual field
-	_priorityValue14 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (13)), func() any { return CastBACnetPriorityValue(data[13]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue14 := _priorityValue14
-	_ = priorityValue14
+	priorityValue14, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue14", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (13)), func() any { return CastBACnetPriorityValue(data[13]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue14' field"))
+	}
 
-	// Virtual field
-	_priorityValue15 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (14)), func() any { return CastBACnetPriorityValue(data[14]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue15 := _priorityValue15
-	_ = priorityValue15
+	priorityValue15, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue15", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (14)), func() any { return CastBACnetPriorityValue(data[14]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue15' field"))
+	}
 
-	// Virtual field
-	_priorityValue16 := CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (15)), func() any { return CastBACnetPriorityValue(data[15]) }, func() any { return CastBACnetPriorityValue(nil) }))
-	priorityValue16 := _priorityValue16
-	_ = priorityValue16
+	priorityValue16, err := ReadVirtualField[BACnetPriorityValue](ctx, "priorityValue16", (*BACnetPriorityValue)(nil), CastBACnetPriorityValue(utils.InlineIf(bool((len(data)) > (15)), func() any { return CastBACnetPriorityValue(data[15]) }, func() any { return CastBACnetPriorityValue(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue16' field"))
+	}
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(data)) == (16)))) {
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "Either indexed access or lenght 16 expected"})
 	}
 
-	// Virtual field
-	_isIndexedAccess := bool((len(data)) == (1))
-	isIndexedAccess := bool(_isIndexedAccess)
-	_ = isIndexedAccess
+	isIndexedAccess, err := ReadVirtualField[bool](ctx, "isIndexedAccess", (*bool)(nil), bool((len(data)) == (1)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isIndexedAccess' field"))
+	}
 
-	// Virtual field
-	_indexEntry := priorityValue01
-	indexEntry := _indexEntry
-	_ = indexEntry
+	indexEntry, err := ReadVirtualField[BACnetPriorityValue](ctx, "indexEntry", (*BACnetPriorityValue)(nil), priorityValue01)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexEntry' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetPriorityArray")

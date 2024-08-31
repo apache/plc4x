@@ -175,10 +175,10 @@ func BACnetContextTagCharacterStringParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_value := payload.GetValue()
-	value := fmt.Sprintf("%v", _value)
-	_ = value
+	value, err := ReadVirtualField[string](ctx, "value", (*string)(nil), payload.GetValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagCharacterString")

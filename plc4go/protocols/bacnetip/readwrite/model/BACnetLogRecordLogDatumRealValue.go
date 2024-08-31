@@ -149,7 +149,7 @@ func BACnetLogRecordLogDatumRealValueParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	realValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "realValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	realValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "realValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}

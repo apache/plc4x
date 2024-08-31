@@ -181,10 +181,10 @@ func BACnetConstructedDataNetworkNumberQualityParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumberQuality' field"))
 	}
 
-	// Virtual field
-	_actualValue := networkNumberQuality
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetNetworkNumberQualityTagged](ctx, "actualValue", (*BACnetNetworkNumberQualityTagged)(nil), networkNumberQuality)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNetworkNumberQuality"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNetworkNumberQuality")

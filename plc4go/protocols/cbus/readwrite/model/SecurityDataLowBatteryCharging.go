@@ -182,15 +182,15 @@ func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startStop' field"))
 	}
 
-	// Virtual field
-	_chargeStopped := bool((startStop) == (0x00))
-	chargeStopped := bool(_chargeStopped)
-	_ = chargeStopped
+	chargeStopped, err := ReadVirtualField[bool](ctx, "chargeStopped", (*bool)(nil), bool((startStop) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chargeStopped' field"))
+	}
 
-	// Virtual field
-	_chargeStarted := bool((startStop) > (0xFE))
-	chargeStarted := bool(_chargeStarted)
-	_ = chargeStarted
+	chargeStarted, err := ReadVirtualField[bool](ctx, "chargeStarted", (*bool)(nil), bool((startStop) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chargeStarted' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataLowBatteryCharging"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataLowBatteryCharging")

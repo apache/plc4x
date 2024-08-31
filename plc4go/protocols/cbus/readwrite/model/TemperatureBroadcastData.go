@@ -181,10 +181,10 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := TemperatureBroadcastCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[TemperatureBroadcastCommandType](ctx, "commandType", (*TemperatureBroadcastCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	temperatureGroup, err := ReadSimpleField(ctx, "temperatureGroup", ReadByte(readBuffer, 8))
 	if err != nil {
@@ -196,10 +196,10 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureByte' field"))
 	}
 
-	// Virtual field
-	_temperatureInCelsius := float32(temperatureByte) / float32(float32(4))
-	temperatureInCelsius := float32(_temperatureInCelsius)
-	_ = temperatureInCelsius
+	temperatureInCelsius, err := ReadVirtualField[float32](ctx, "temperatureInCelsius", (*float32)(nil), float32(temperatureByte)/float32(float32(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureInCelsius' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("TemperatureBroadcastData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TemperatureBroadcastData")

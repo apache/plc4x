@@ -147,7 +147,7 @@ func BACnetClientCOVNoneParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	defaultIncrement, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	defaultIncrement, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultIncrement' field"))
 	}

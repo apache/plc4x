@@ -195,20 +195,20 @@ func BACnetLogStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_logDisabled := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	logDisabled := bool(_logDisabled)
-	_ = logDisabled
+	logDisabled, err := ReadVirtualField[bool](ctx, "logDisabled", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logDisabled' field"))
+	}
 
-	// Virtual field
-	_bufferPurged := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	bufferPurged := bool(_bufferPurged)
-	_ = bufferPurged
+	bufferPurged, err := ReadVirtualField[bool](ctx, "bufferPurged", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bufferPurged' field"))
+	}
 
-	// Virtual field
-	_logInterrupted := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	logInterrupted := bool(_logInterrupted)
-	_ = logInterrupted
+	logInterrupted, err := ReadVirtualField[bool](ctx, "logInterrupted", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logInterrupted' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogStatusTagged")

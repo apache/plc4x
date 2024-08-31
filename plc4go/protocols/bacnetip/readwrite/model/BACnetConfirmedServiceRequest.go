@@ -160,10 +160,10 @@ func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceChoice' field"))
 	}
 
-	// Virtual field
-	_serviceRequestPayloadLength := utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32)
-	serviceRequestPayloadLength := uint32(_serviceRequestPayloadLength)
-	_ = serviceRequestPayloadLength
+	serviceRequestPayloadLength, err := ReadVirtualField[uint32](ctx, "serviceRequestPayloadLength", (*uint32)(nil), utils.InlineIf((bool((serviceRequestLength) > (0))), func() any { return uint32((uint32(serviceRequestLength) - uint32(uint32(1)))) }, func() any { return uint32(uint32(0)) }).(uint32))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequestPayloadLength' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetConfirmedServiceRequestChildSerializeRequirement interface {

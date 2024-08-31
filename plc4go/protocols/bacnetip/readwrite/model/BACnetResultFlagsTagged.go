@@ -195,20 +195,20 @@ func BACnetResultFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_firstItem := utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool)
-	firstItem := bool(_firstItem)
-	_ = firstItem
+	firstItem, err := ReadVirtualField[bool](ctx, "firstItem", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (0))), func() any { return bool(payload.GetData()[0]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstItem' field"))
+	}
 
-	// Virtual field
-	_lastItem := utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool)
-	lastItem := bool(_lastItem)
-	_ = lastItem
+	lastItem, err := ReadVirtualField[bool](ctx, "lastItem", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastItem' field"))
+	}
 
-	// Virtual field
-	_moreItems := utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool)
-	moreItems := bool(_moreItems)
-	_ = moreItems
+	moreItems, err := ReadVirtualField[bool](ctx, "moreItems", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreItems' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetResultFlagsTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetResultFlagsTagged")

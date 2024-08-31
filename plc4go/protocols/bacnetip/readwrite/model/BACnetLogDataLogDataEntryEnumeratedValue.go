@@ -147,7 +147,7 @@ func BACnetLogDataLogDataEntryEnumeratedValueParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	enumeratedValue, err := ReadSimpleField[BACnetContextTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetContextTagEnumerated](BACnetContextTagParseWithBufferProducer[BACnetContextTagEnumerated]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_ENUMERATED)), readBuffer))
+	enumeratedValue, err := ReadSimpleField[BACnetContextTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetContextTagEnumerated](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_ENUMERATED)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}

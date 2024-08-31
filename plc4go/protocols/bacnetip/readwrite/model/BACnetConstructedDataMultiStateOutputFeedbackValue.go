@@ -176,15 +176,15 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	feedbackValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "feedbackValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	feedbackValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "feedbackValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := feedbackValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), feedbackValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMultiStateOutputFeedbackValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMultiStateOutputFeedbackValue")

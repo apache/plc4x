@@ -181,10 +181,10 @@ func BACnetConstructedDataEscalatorModeParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalatorMode' field"))
 	}
 
-	// Virtual field
-	_actualValue := escalatorMode
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetEscalatorModeTagged](ctx, "actualValue", (*BACnetEscalatorModeTagged)(nil), escalatorMode)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEscalatorMode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEscalatorMode")

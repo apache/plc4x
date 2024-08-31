@@ -181,10 +181,10 @@ func BACnetConstructedDataEventStateParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventState' field"))
 	}
 
-	// Virtual field
-	_actualValue := eventState
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetEventStateTagged](ctx, "actualValue", (*BACnetEventStateTagged)(nil), eventState)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataEventState"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataEventState")

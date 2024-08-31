@@ -181,10 +181,10 @@ func BACnetConstructedDataVendorIdentifierParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorIdentifier' field"))
 	}
 
-	// Virtual field
-	_actualValue := vendorIdentifier
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetVendorIdTagged](ctx, "actualValue", (*BACnetVendorIdTagged)(nil), vendorIdentifier)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataVendorIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataVendorIdentifier")

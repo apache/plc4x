@@ -181,10 +181,10 @@ func BACnetConstructedDataBinaryOutputRelinquishDefaultParseWithBuffer(ctx conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetBinaryPVTagged](ctx, "actualValue", (*BACnetBinaryPVTagged)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBinaryOutputRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBinaryOutputRelinquishDefault")

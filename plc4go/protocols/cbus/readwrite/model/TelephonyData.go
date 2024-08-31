@@ -188,10 +188,10 @@ func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := TelephonyCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[TelephonyCommandType](ctx, "commandType", (*TelephonyCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
 	if err != nil {

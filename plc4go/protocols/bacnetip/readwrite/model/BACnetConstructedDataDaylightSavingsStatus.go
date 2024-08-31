@@ -176,15 +176,15 @@ func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	daylightSavingsStatus, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "daylightSavingsStatus", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	daylightSavingsStatus, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "daylightSavingsStatus", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSavingsStatus' field"))
 	}
 
-	// Virtual field
-	_actualValue := daylightSavingsStatus
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), daylightSavingsStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDaylightSavingsStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDaylightSavingsStatus")

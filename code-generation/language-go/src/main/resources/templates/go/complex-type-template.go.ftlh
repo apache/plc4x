@@ -1067,23 +1067,19 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign unknownField = field.asUnknownField().orElseThrow()>
 				<#assign typedField = field.asTypedField().orElseThrow()>
 
-	if _, err := read${field.typeName?cap_first}Field("unknown", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)}); err!=nil{
+	if _, err := Read${field.typeName?cap_first}Field(ctx, "unknown", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)}); err!=nil{
 			return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "virtual">
 				<#assign virtualField = field.asVirtualField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Virtual field
-	_${virtualField.name} := ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments, true)}
-			<#if virtualField.type.isStringTypeReference() || typeRef.isVstringTypeReference()>
-	${virtualField.name} := fmt.Sprintf("%v", _${virtualField.name})<@emitImport import="fmt" />
-			<#elseif virtualField.type.isSimpleTypeReference() || virtualField.type.isEnumTypeReference()>
-	${virtualField.name} := ${helper.getLanguageTypeNameForTypeReference(virtualField.type)}(_${virtualField.name})
-			<#else>
-	${virtualField.name} := _${virtualField.name}
-			</#if>
-	_ = ${virtualField.name}
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", (*${helper.getLanguageTypeNameForField(field)})(nil), ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+	}
 				<#break>
             <#case "validation">
                 <#assign validationField = field.asValidationField().orElseThrow()>

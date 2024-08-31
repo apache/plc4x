@@ -231,12 +231,12 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
-	_ = zero
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -250,20 +250,20 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventMessageTextsConfig' field"))
 	}
 
-	// Virtual field
-	_toOffnormalTextConfig := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[0]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
-	toOffnormalTextConfig := _toOffnormalTextConfig
-	_ = toOffnormalTextConfig
+	toOffnormalTextConfig, err := ReadVirtualField[BACnetOptionalCharacterString](ctx, "toOffnormalTextConfig", (*BACnetOptionalCharacterString)(nil), CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[0]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormalTextConfig' field"))
+	}
 
-	// Virtual field
-	_toFaultTextConfig := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
-	toFaultTextConfig := _toFaultTextConfig
-	_ = toFaultTextConfig
+	toFaultTextConfig, err := ReadVirtualField[BACnetOptionalCharacterString](ctx, "toFaultTextConfig", (*BACnetOptionalCharacterString)(nil), CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFaultTextConfig' field"))
+	}
 
-	// Virtual field
-	_toNormalTextConfig := CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) }))
-	toNormalTextConfig := _toNormalTextConfig
-	_ = toNormalTextConfig
+	toNormalTextConfig, err := ReadVirtualField[BACnetOptionalCharacterString](ctx, "toNormalTextConfig", (*BACnetOptionalCharacterString)(nil), CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormalTextConfig' field"))
+	}
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(eventMessageTextsConfig)) == (3)))) {

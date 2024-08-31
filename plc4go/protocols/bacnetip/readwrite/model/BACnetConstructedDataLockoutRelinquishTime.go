@@ -176,15 +176,15 @@ func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lockoutRelinquishTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lockoutRelinquishTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	lockoutRelinquishTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lockoutRelinquishTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockoutRelinquishTime' field"))
 	}
 
-	// Virtual field
-	_actualValue := lockoutRelinquishTime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lockoutRelinquishTime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLockoutRelinquishTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLockoutRelinquishTime")

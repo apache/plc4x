@@ -181,10 +181,10 @@ func BACnetConstructedDataNodeTypeParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeType' field"))
 	}
 
-	// Virtual field
-	_actualValue := nodeType
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetNodeTypeTagged](ctx, "actualValue", (*BACnetNodeTypeTagged)(nil), nodeType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNodeType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNodeType")

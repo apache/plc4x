@@ -181,10 +181,10 @@ func BACnetConstructedDataMemberStatusFlagsParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusFlags' field"))
 	}
 
-	// Virtual field
-	_actualValue := statusFlags
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetStatusFlagsTagged](ctx, "actualValue", (*BACnetStatusFlagsTagged)(nil), statusFlags)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataMemberStatusFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataMemberStatusFlags")

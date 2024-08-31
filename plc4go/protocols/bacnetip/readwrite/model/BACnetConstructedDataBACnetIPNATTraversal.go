@@ -176,15 +176,15 @@ func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetIPNATTraversal, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	bacnetIPNATTraversal, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIPNATTraversal' field"))
 	}
 
-	// Virtual field
-	_actualValue := bacnetIPNATTraversal
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), bacnetIPNATTraversal)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPNATTraversal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPNATTraversal")

@@ -197,20 +197,20 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := TriggerControlCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[TriggerControlCommandType](ctx, "commandType", (*TriggerControlCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	triggerGroup, err := ReadSimpleField(ctx, "triggerGroup", ReadByte(readBuffer, 8))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggerGroup' field"))
 	}
 
-	// Virtual field
-	_isUnused := bool((triggerGroup) > (0xFE))
-	isUnused := bool(_isUnused)
-	_ = isUnused
+	isUnused, err := ReadVirtualField[bool](ctx, "isUnused", (*bool)(nil), bool((triggerGroup) > (0xFE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnused' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type TriggerControlDataChildSerializeRequirement interface {

@@ -176,15 +176,15 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maintenanceRequired, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	maintenanceRequired, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenanceRequired' field"))
 	}
 
-	// Virtual field
-	_actualValue := maintenanceRequired
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), maintenanceRequired)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLifeSafetyZoneMaintenanceRequired"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")

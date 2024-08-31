@@ -146,10 +146,10 @@ func ApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 
-	// Virtual field
-	_isWildcard := bool((address) == (0xFF))
-	isWildcard := bool(_isWildcard)
-	_ = isWildcard
+	isWildcard, err := ReadVirtualField[bool](ctx, "isWildcard", (*bool)(nil), bool((address) == (0xFF)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isWildcard' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("ApplicationAddress1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApplicationAddress1")

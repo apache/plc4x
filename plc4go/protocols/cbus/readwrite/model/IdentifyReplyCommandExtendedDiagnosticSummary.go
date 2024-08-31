@@ -410,10 +410,10 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx context.Co
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltage' field"))
 	}
 
-	// Virtual field
-	_networkVoltageInVolts := float32(networkVoltage) / float32(float32(6.375))
-	networkVoltageInVolts := float32(_networkVoltageInVolts)
-	_ = networkVoltageInVolts
+	networkVoltageInVolts, err := ReadVirtualField[float32](ctx, "networkVoltageInVolts", (*float32)(nil), float32(networkVoltage)/float32(float32(6.375)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageInVolts' field"))
+	}
 
 	unitInLearnMode, err := ReadSimpleField(ctx, "unitInLearnMode", ReadBoolean(readBuffer))
 	if err != nil {

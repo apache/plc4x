@@ -186,30 +186,30 @@ func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minutesSinceSunday12AM' field"))
 	}
 
-	// Virtual field
-	_hoursSinceSunday12AM := float32(minutesSinceSunday12AM) / float32(float32(60))
-	hoursSinceSunday12AM := float32(_hoursSinceSunday12AM)
-	_ = hoursSinceSunday12AM
+	hoursSinceSunday12AM, err := ReadVirtualField[float32](ctx, "hoursSinceSunday12AM", (*float32)(nil), float32(minutesSinceSunday12AM)/float32(float32(60)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hoursSinceSunday12AM' field"))
+	}
 
-	// Virtual field
-	_daysSinceSunday12AM := float32(hoursSinceSunday12AM) / float32(float32(24))
-	daysSinceSunday12AM := float32(_daysSinceSunday12AM)
-	_ = daysSinceSunday12AM
+	daysSinceSunday12AM, err := ReadVirtualField[float32](ctx, "daysSinceSunday12AM", (*float32)(nil), float32(hoursSinceSunday12AM)/float32(float32(24)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daysSinceSunday12AM' field"))
+	}
 
-	// Virtual field
-	_dayOfWeek := uint8(daysSinceSunday12AM) + uint8(uint8(1))
-	dayOfWeek := uint8(_dayOfWeek)
-	_ = dayOfWeek
+	dayOfWeek, err := ReadVirtualField[uint8](ctx, "dayOfWeek", (*uint8)(nil), uint8(daysSinceSunday12AM)+uint8(uint8(1)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfWeek' field"))
+	}
 
-	// Virtual field
-	_hour := uint8(hoursSinceSunday12AM) % uint8(uint8(24))
-	hour := uint8(_hour)
-	_ = hour
+	hour, err := ReadVirtualField[uint8](ctx, "hour", (*uint8)(nil), uint8(hoursSinceSunday12AM)%uint8(uint8(24)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hour' field"))
+	}
 
-	// Virtual field
-	_minute := uint8(minutesSinceSunday12AM) % uint8(uint8(60))
-	minute := uint8(_minute)
-	_ = minute
+	minute, err := ReadVirtualField[uint8](ctx, "minute", (*uint8)(nil), uint8(minutesSinceSunday12AM)%uint8(uint8(60)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minute' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACStartTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACStartTime")

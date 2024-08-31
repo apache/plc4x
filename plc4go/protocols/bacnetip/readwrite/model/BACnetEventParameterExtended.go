@@ -201,7 +201,7 @@ func BACnetEventParameterExtendedParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
 
-	extendedEventType, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedEventType", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	extendedEventType, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedEventType", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedEventType' field"))
 	}

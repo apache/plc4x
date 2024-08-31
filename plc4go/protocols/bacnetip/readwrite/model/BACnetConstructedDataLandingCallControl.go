@@ -181,10 +181,10 @@ func BACnetConstructedDataLandingCallControlParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingCallControl' field"))
 	}
 
-	// Virtual field
-	_actualValue := landingCallControl
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLandingCallStatus](ctx, "actualValue", (*BACnetLandingCallStatus)(nil), landingCallControl)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLandingCallControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLandingCallControl")

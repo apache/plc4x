@@ -176,15 +176,15 @@ func BACnetConstructedDataAnalogOutputRelinquishDefaultParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagReal](ctx, "actualValue", (*BACnetApplicationTagReal)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAnalogOutputRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAnalogOutputRelinquishDefault")

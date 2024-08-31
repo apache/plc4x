@@ -181,10 +181,10 @@ func BACnetConstructedDataDateTimeValueRelinquishDefaultParseWithBuffer(ctx cont
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}
 
-	// Virtual field
-	_actualValue := relinquishDefault
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDateTime](ctx, "actualValue", (*BACnetDateTime)(nil), relinquishDefault)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataDateTimeValueRelinquishDefault"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataDateTimeValueRelinquishDefault")

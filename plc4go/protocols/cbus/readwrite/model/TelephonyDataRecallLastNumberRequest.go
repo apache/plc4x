@@ -182,15 +182,15 @@ func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recallLastNumberType' field"))
 	}
 
-	// Virtual field
-	_isNumberOfLastOutgoingCall := bool((recallLastNumberType) == (0x01))
-	isNumberOfLastOutgoingCall := bool(_isNumberOfLastOutgoingCall)
-	_ = isNumberOfLastOutgoingCall
+	isNumberOfLastOutgoingCall, err := ReadVirtualField[bool](ctx, "isNumberOfLastOutgoingCall", (*bool)(nil), bool((recallLastNumberType) == (0x01)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastOutgoingCall' field"))
+	}
 
-	// Virtual field
-	_isNumberOfLastIncomingCall := bool((recallLastNumberType) == (0x02))
-	isNumberOfLastIncomingCall := bool(_isNumberOfLastIncomingCall)
-	_ = isNumberOfLastIncomingCall
+	isNumberOfLastIncomingCall, err := ReadVirtualField[bool](ctx, "isNumberOfLastIncomingCall", (*bool)(nil), bool((recallLastNumberType) == (0x02)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastIncomingCall' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataRecallLastNumberRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRecallLastNumberRequest")

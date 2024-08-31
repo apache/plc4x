@@ -186,15 +186,15 @@ func CBusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 
-	// Virtual field
-	_isDeviceManagement := header.GetDp()
-	isDeviceManagement := bool(_isDeviceManagement)
-	_ = isDeviceManagement
+	isDeviceManagement, err := ReadVirtualField[bool](ctx, "isDeviceManagement", (*bool)(nil), header.GetDp())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDeviceManagement' field"))
+	}
 
-	// Virtual field
-	_destinationAddressType := header.GetDestinationAddressType()
-	destinationAddressType := DestinationAddressType(_destinationAddressType)
-	_ = destinationAddressType
+	destinationAddressType, err := ReadVirtualField[DestinationAddressType](ctx, "destinationAddressType", (*DestinationAddressType)(nil), header.GetDestinationAddressType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddressType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusCommandChildSerializeRequirement interface {

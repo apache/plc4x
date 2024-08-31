@@ -176,15 +176,15 @@ func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userExternalIdentifier' field"))
 	}
 
-	// Virtual field
-	_actualValue := userExternalIdentifier
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagCharacterString](ctx, "actualValue", (*BACnetApplicationTagCharacterString)(nil), userExternalIdentifier)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataUserExternalIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataUserExternalIdentifier")

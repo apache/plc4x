@@ -181,10 +181,10 @@ func BACnetConstructedDataInProgressParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inProgress' field"))
 	}
 
-	// Virtual field
-	_actualValue := inProgress
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLightingInProgressTagged](ctx, "actualValue", (*BACnetLightingInProgressTagged)(nil), inProgress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataInProgress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataInProgress")

@@ -170,17 +170,17 @@ func BACnetEventPrioritiesParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	toOffnormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toOffnormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	toOffnormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toOffnormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
 	}
 
-	toFault, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toFault", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	toFault, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toFault", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
 	}
 
-	toNormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toNormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	toNormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "toNormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
 	}

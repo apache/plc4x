@@ -181,10 +181,10 @@ func BACnetConstructedDataNotifyTypeParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notifyType' field"))
 	}
 
-	// Virtual field
-	_actualValue := notifyType
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetNotifyTypeTagged](ctx, "actualValue", (*BACnetNotifyTypeTagged)(nil), notifyType)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataNotifyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataNotifyType")

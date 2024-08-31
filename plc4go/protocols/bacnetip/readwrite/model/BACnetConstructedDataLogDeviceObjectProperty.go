@@ -181,10 +181,10 @@ func BACnetConstructedDataLogDeviceObjectPropertyParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logDeviceObjectProperty' field"))
 	}
 
-	// Virtual field
-	_actualValue := logDeviceObjectProperty
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectPropertyReference](ctx, "actualValue", (*BACnetDeviceObjectPropertyReference)(nil), logDeviceObjectProperty)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLogDeviceObjectProperty"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLogDeviceObjectProperty")

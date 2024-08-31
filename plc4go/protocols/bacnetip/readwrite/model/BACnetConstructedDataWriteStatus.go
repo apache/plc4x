@@ -181,10 +181,10 @@ func BACnetConstructedDataWriteStatusParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeStatus' field"))
 	}
 
-	// Virtual field
-	_actualValue := writeStatus
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetWriteStatusTagged](ctx, "actualValue", (*BACnetWriteStatusTagged)(nil), writeStatus)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataWriteStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataWriteStatus")

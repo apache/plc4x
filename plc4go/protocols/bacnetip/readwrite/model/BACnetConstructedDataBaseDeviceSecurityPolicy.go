@@ -181,10 +181,10 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx context.Co
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'baseDeviceSecurityPolicy' field"))
 	}
 
-	// Virtual field
-	_actualValue := baseDeviceSecurityPolicy
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetSecurityLevelTagged](ctx, "actualValue", (*BACnetSecurityLevelTagged)(nil), baseDeviceSecurityPolicy)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBaseDeviceSecurityPolicy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBaseDeviceSecurityPolicy")

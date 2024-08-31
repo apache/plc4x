@@ -272,60 +272,60 @@ func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 
-	// Virtual field
-	_isAscii := bool(bool((key) >= (0x00))) && bool(bool((key) <= (0x7F)))
-	isAscii := bool(_isAscii)
-	_ = isAscii
+	isAscii, err := ReadVirtualField[bool](ctx, "isAscii", (*bool)(nil), bool(bool((key) >= (0x00))) && bool(bool((key) <= (0x7F))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAscii' field"))
+	}
 
-	// Virtual field
-	_isCustom := bool((key) >= (0x80))
-	isCustom := bool(_isCustom)
-	_ = isCustom
+	isCustom, err := ReadVirtualField[bool](ctx, "isCustom", (*bool)(nil), bool((key) >= (0x80)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCustom' field"))
+	}
 
-	// Virtual field
-	_isEnter := bool((key) == (0x0D))
-	isEnter := bool(_isEnter)
-	_ = isEnter
+	isEnter, err := ReadVirtualField[bool](ctx, "isEnter", (*bool)(nil), bool((key) == (0x0D)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isEnter' field"))
+	}
 
-	// Virtual field
-	_isShift := bool((key) == (0x80))
-	isShift := bool(_isShift)
-	_ = isShift
+	isShift, err := ReadVirtualField[bool](ctx, "isShift", (*bool)(nil), bool((key) == (0x80)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isShift' field"))
+	}
 
-	// Virtual field
-	_isPanic := bool((key) == (0x81))
-	isPanic := bool(_isPanic)
-	_ = isPanic
+	isPanic, err := ReadVirtualField[bool](ctx, "isPanic", (*bool)(nil), bool((key) == (0x81)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPanic' field"))
+	}
 
-	// Virtual field
-	_isFire := bool((key) == (0x82))
-	isFire := bool(_isFire)
-	_ = isFire
+	isFire, err := ReadVirtualField[bool](ctx, "isFire", (*bool)(nil), bool((key) == (0x82)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFire' field"))
+	}
 
-	// Virtual field
-	_isARM := bool((key) == (0x83))
-	isARM := bool(_isARM)
-	_ = isARM
+	isARM, err := ReadVirtualField[bool](ctx, "isARM", (*bool)(nil), bool((key) == (0x83)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isARM' field"))
+	}
 
-	// Virtual field
-	_isAway := bool((key) == (0x84))
-	isAway := bool(_isAway)
-	_ = isAway
+	isAway, err := ReadVirtualField[bool](ctx, "isAway", (*bool)(nil), bool((key) == (0x84)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAway' field"))
+	}
 
-	// Virtual field
-	_isNight := bool((key) == (0x85))
-	isNight := bool(_isNight)
-	_ = isNight
+	isNight, err := ReadVirtualField[bool](ctx, "isNight", (*bool)(nil), bool((key) == (0x85)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNight' field"))
+	}
 
-	// Virtual field
-	_isDay := bool((key) == (0x86))
-	isDay := bool(_isDay)
-	_ = isDay
+	isDay, err := ReadVirtualField[bool](ctx, "isDay", (*bool)(nil), bool((key) == (0x86)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDay' field"))
+	}
 
-	// Virtual field
-	_isVacation := bool((key) == (0x87))
-	isVacation := bool(_isVacation)
-	_ = isVacation
+	isVacation, err := ReadVirtualField[bool](ctx, "isVacation", (*bool)(nil), bool((key) == (0x87)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isVacation' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataEmulatedKeypad"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataEmulatedKeypad")

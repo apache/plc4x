@@ -176,15 +176,15 @@ func BACnetConstructedDataLargeAnalogValueMaxPresValueParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maxPresValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "maxPresValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	maxPresValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "maxPresValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxPresValue' field"))
 	}
 
-	// Virtual field
-	_actualValue := maxPresValue
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDouble](ctx, "actualValue", (*BACnetApplicationTagDouble)(nil), maxPresValue)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueMaxPresValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueMaxPresValue")

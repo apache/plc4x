@@ -181,10 +181,10 @@ func BACnetConstructedDataProtocolObjectTypesSupportedParseWithBuffer(ctx contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolObjectTypesSupported' field"))
 	}
 
-	// Virtual field
-	_actualValue := protocolObjectTypesSupported
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetObjectTypesSupportedTagged](ctx, "actualValue", (*BACnetObjectTypesSupportedTagged)(nil), protocolObjectTypesSupported)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataProtocolObjectTypesSupported"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataProtocolObjectTypesSupported")

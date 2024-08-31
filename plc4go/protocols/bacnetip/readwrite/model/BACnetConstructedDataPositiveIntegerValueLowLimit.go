@@ -176,15 +176,15 @@ func BACnetConstructedDataPositiveIntegerValueLowLimitParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lowLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lowLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	lowLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lowLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}
 
-	// Virtual field
-	_actualValue := lowLimit
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), lowLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueLowLimit")

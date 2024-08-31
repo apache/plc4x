@@ -266,60 +266,60 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auxiliaryLevel' field"))
 	}
 
-	// Virtual field
-	_isAuxLevelUnused := !(auxiliaryLevel)
-	isAuxLevelUnused := bool(_isAuxLevelUnused)
-	_ = isAuxLevelUnused
+	isAuxLevelUnused, err := ReadVirtualField[bool](ctx, "isAuxLevelUnused", (*bool)(nil), !(auxiliaryLevel))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUnused' field"))
+	}
 
-	// Virtual field
-	_isAuxLevelUsed := auxiliaryLevel
-	isAuxLevelUsed := bool(_isAuxLevelUsed)
-	_ = isAuxLevelUsed
+	isAuxLevelUsed, err := ReadVirtualField[bool](ctx, "isAuxLevelUsed", (*bool)(nil), auxiliaryLevel)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUsed' field"))
+	}
 
 	guard, err := ReadSimpleField(ctx, "guard", ReadBoolean(readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'guard' field"))
 	}
 
-	// Virtual field
-	_isGuardDisabled := !(guard)
-	isGuardDisabled := bool(_isGuardDisabled)
-	_ = isGuardDisabled
+	isGuardDisabled, err := ReadVirtualField[bool](ctx, "isGuardDisabled", (*bool)(nil), !(guard))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardDisabled' field"))
+	}
 
-	// Virtual field
-	_isGuardEnabled := guard
-	isGuardEnabled := bool(_isGuardEnabled)
-	_ = isGuardEnabled
+	isGuardEnabled, err := ReadVirtualField[bool](ctx, "isGuardEnabled", (*bool)(nil), guard)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardEnabled' field"))
+	}
 
 	setback, err := ReadSimpleField(ctx, "setback", ReadBoolean(readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setback' field"))
 	}
 
-	// Virtual field
-	_isSetbackDisabled := !(setback)
-	isSetbackDisabled := bool(_isSetbackDisabled)
-	_ = isSetbackDisabled
+	isSetbackDisabled, err := ReadVirtualField[bool](ctx, "isSetbackDisabled", (*bool)(nil), !(setback))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackDisabled' field"))
+	}
 
-	// Virtual field
-	_isSetbackEnabled := setback
-	isSetbackEnabled := bool(_isSetbackEnabled)
-	_ = isSetbackEnabled
+	isSetbackEnabled, err := ReadVirtualField[bool](ctx, "isSetbackEnabled", (*bool)(nil), setback)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackEnabled' field"))
+	}
 
 	level, err := ReadSimpleField(ctx, "level", ReadBoolean(readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
 
-	// Virtual field
-	_isLevelTemperature := !(level)
-	isLevelTemperature := bool(_isLevelTemperature)
-	_ = isLevelTemperature
+	isLevelTemperature, err := ReadVirtualField[bool](ctx, "isLevelTemperature", (*bool)(nil), !(level))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelTemperature' field"))
+	}
 
-	// Virtual field
-	_isLevelRaw := level
-	isLevelRaw := bool(_isLevelRaw)
-	_ = isLevelRaw
+	isLevelRaw, err := ReadVirtualField[bool](ctx, "isLevelRaw", (*bool)(nil), level)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelRaw' field"))
+	}
 
 	mode, err := ReadEnumField[HVACModeAndFlagsMode](ctx, "mode", "HVACModeAndFlagsMode", ReadEnum(HVACModeAndFlagsModeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
 	if err != nil {

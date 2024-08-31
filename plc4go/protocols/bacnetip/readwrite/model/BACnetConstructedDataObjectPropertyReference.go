@@ -181,10 +181,10 @@ func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyReference' field"))
 	}
 
-	// Virtual field
-	_actualValue := propertyReference
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectPropertyReference](ctx, "actualValue", (*BACnetDeviceObjectPropertyReference)(nil), propertyReference)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataObjectPropertyReference"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataObjectPropertyReference")

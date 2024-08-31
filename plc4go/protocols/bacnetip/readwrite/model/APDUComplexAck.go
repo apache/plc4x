@@ -316,10 +316,10 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proposedWindowSize' field"))
 	}
 
-	// Virtual field
-	_apduHeaderReduction := uint16(uint16(2)) + uint16((utils.InlineIf(segmentedMessage, func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16)))
-	apduHeaderReduction := uint16(_apduHeaderReduction)
-	_ = apduHeaderReduction
+	apduHeaderReduction, err := ReadVirtualField[uint16](ctx, "apduHeaderReduction", (*uint16)(nil), uint16(uint16(2))+uint16((utils.InlineIf(segmentedMessage, func() any { return uint16(uint16(2)) }, func() any { return uint16(uint16(0)) }).(uint16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduHeaderReduction' field"))
+	}
 
 	_serviceAck, err := ReadOptionalField[BACnetServiceAck](ctx, "serviceAck", ReadComplex[BACnetServiceAck](BACnetServiceAckParseWithBufferProducer[BACnetServiceAck]((uint32)(uint32(apduLength)-uint32(apduHeaderReduction))), readBuffer), !(segmentedMessage))
 	if err != nil {
@@ -340,10 +340,10 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentServiceChoice' field"))
 	}
 
-	// Virtual field
-	_segmentReduction := utils.InlineIf((bool((segmentServiceChoice) != (nil))), func() any { return uint16((uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() any { return uint16(apduHeaderReduction) }).(uint16)
-	segmentReduction := uint16(_segmentReduction)
-	_ = segmentReduction
+	segmentReduction, err := ReadVirtualField[uint16](ctx, "segmentReduction", (*uint16)(nil), utils.InlineIf((bool((segmentServiceChoice) != (nil))), func() any { return uint16((uint16(apduHeaderReduction) + uint16(uint16(1)))) }, func() any { return uint16(apduHeaderReduction) }).(uint16))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentReduction' field"))
+	}
 
 	segment, err := readBuffer.ReadByteArray("segment", int(utils.InlineIf(segmentedMessage, func() any {
 		return int32((utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(segmentReduction))) }, func() any { return int32(int32(0)) }).(int32)))

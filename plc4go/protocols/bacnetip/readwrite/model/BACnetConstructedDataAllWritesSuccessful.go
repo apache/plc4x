@@ -176,15 +176,15 @@ func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	allWritesSuccessful, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	allWritesSuccessful, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allWritesSuccessful' field"))
 	}
 
-	// Virtual field
-	_actualValue := allWritesSuccessful
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), allWritesSuccessful)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataAllWritesSuccessful"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataAllWritesSuccessful")

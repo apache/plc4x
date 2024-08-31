@@ -176,15 +176,15 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	autoAddressingEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoAddressingEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	autoAddressingEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoAddressingEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'autoAddressingEnable' field"))
 	}
 
-	// Virtual field
-	_actualValue := autoAddressingEnable
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), autoAddressingEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataIPv6AutoAddressingEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataIPv6AutoAddressingEnable")

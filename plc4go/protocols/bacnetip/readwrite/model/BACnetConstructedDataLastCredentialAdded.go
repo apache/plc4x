@@ -181,10 +181,10 @@ func BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx context.Context
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCredentialAdded' field"))
 	}
 
-	// Virtual field
-	_actualValue := lastCredentialAdded
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetDeviceObjectReference](ctx, "actualValue", (*BACnetDeviceObjectReference)(nil), lastCredentialAdded)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLastCredentialAdded"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLastCredentialAdded")

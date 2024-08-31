@@ -176,15 +176,15 @@ func BACnetConstructedDataLargeAnalogValueFaultLowLimitParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	faultLowLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "faultLowLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	faultLowLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "faultLowLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultLowLimit' field"))
 	}
 
-	// Virtual field
-	_actualValue := faultLowLimit
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagDouble](ctx, "actualValue", (*BACnetApplicationTagDouble)(nil), faultLowLimit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLargeAnalogValueFaultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLargeAnalogValueFaultLowLimit")

@@ -215,7 +215,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	_rawObjectType, err := ReadOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", ReadComplex[BACnetContextTagEnumerated](BACnetContextTagParseWithBufferProducer[BACnetContextTagEnumerated]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_ENUMERATED)), readBuffer), true)
+	_rawObjectType, err := ReadOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", ReadComplex[BACnetContextTagEnumerated](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_ENUMERATED)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawObjectType' field"))
 	}
@@ -224,17 +224,17 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 		rawObjectType = *_rawObjectType
 	}
 
-	// Virtual field
-	_isObjectType := bool((rawObjectType) != (nil))
-	isObjectType := bool(_isObjectType)
-	_ = isObjectType
+	isObjectType, err := ReadVirtualField[bool](ctx, "isObjectType", (*bool)(nil), bool((rawObjectType) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isObjectType' field"))
+	}
 
-	// Virtual field
-	_objectType := MapBACnetObjectType(ctx, (rawObjectType))
-	objectType := BACnetObjectType(_objectType)
-	_ = objectType
+	objectType, err := ReadVirtualField[BACnetObjectType](ctx, "objectType", (*BACnetObjectType)(nil), MapBACnetObjectType(ctx, (*rawObjectType)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
+	}
 
-	_objectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
+	_objectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
@@ -243,10 +243,10 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 		objectIdentifier = *_objectIdentifier
 	}
 
-	// Virtual field
-	_isObjectIdentifier := bool((objectIdentifier) != (nil))
-	isObjectIdentifier := bool(_isObjectIdentifier)
-	_ = isObjectIdentifier
+	isObjectIdentifier, err := ReadVirtualField[bool](ctx, "isObjectIdentifier", (*bool)(nil), bool((objectIdentifier) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isObjectIdentifier' field"))
+	}
 
 	// Validation
 	if !(bool(isObjectType) || bool(isObjectIdentifier)) {

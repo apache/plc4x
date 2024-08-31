@@ -181,10 +181,10 @@ func BACnetConstructedDataPrescaleParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'prescale' field"))
 	}
 
-	// Virtual field
-	_actualValue := prescale
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetPrescale](ctx, "actualValue", (*BACnetPrescale)(nil), prescale)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPrescale"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPrescale")

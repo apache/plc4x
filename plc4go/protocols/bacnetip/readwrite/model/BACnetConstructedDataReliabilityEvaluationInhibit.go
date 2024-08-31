@@ -176,15 +176,15 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reliabilityEvaluationInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "reliabilityEvaluationInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	reliabilityEvaluationInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "reliabilityEvaluationInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reliabilityEvaluationInhibit' field"))
 	}
 
-	// Virtual field
-	_actualValue := reliabilityEvaluationInhibit
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagBoolean](ctx, "actualValue", (*BACnetApplicationTagBoolean)(nil), reliabilityEvaluationInhibit)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataReliabilityEvaluationInhibit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataReliabilityEvaluationInhibit")

@@ -158,10 +158,10 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetRejectReason_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
+	isProprietary, err := ReadVirtualField[bool](ctx, "isProprietary", (*bool)(nil), bool((value) == (BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
+	}
 
 	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)))
 	if err != nil {

@@ -176,15 +176,15 @@ func BACnetConstructedDataPositiveIntegerValueResolutionParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	resolution, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "resolution", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	resolution, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "resolution", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resolution' field"))
 	}
 
-	// Virtual field
-	_actualValue := resolution
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), resolution)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPositiveIntegerValueResolution"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPositiveIntegerValueResolution")

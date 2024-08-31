@@ -176,15 +176,15 @@ func BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	valuesBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	valuesBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valuesBeforeChange' field"))
 	}
 
-	// Virtual field
-	_actualValue := valuesBeforeChange
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), valuesBeforeChange)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataValueBeforeChange"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataValueBeforeChange")

@@ -176,15 +176,15 @@ func BACnetConstructedDataFDSubscriptionLifetimeParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fdSubscriptionLifetime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fdSubscriptionLifetime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	fdSubscriptionLifetime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fdSubscriptionLifetime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fdSubscriptionLifetime' field"))
 	}
 
-	// Virtual field
-	_actualValue := fdSubscriptionLifetime
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), fdSubscriptionLifetime)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFDSubscriptionLifetime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFDSubscriptionLifetime")

@@ -161,10 +161,10 @@ func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
-	// Virtual field
-	_isVendorProprietaryMessage := bool((messageType) >= (128))
-	isVendorProprietaryMessage := bool(_isVendorProprietaryMessage)
-	_ = isVendorProprietaryMessage
+	isVendorProprietaryMessage, err := ReadVirtualField[bool](ctx, "isVendorProprietaryMessage", (*bool)(nil), bool((messageType) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isVendorProprietaryMessage' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type NLMChildSerializeRequirement interface {

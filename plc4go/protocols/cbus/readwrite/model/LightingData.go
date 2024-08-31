@@ -177,10 +177,10 @@ func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := LightingCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[LightingCommandType](ctx, "commandType", (*LightingCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type LightingDataChildSerializeRequirement interface {

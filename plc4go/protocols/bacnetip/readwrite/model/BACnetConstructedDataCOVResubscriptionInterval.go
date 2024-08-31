@@ -176,15 +176,15 @@ func BACnetConstructedDataCOVResubscriptionIntervalParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	covResubscriptionInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covResubscriptionInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	covResubscriptionInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covResubscriptionInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covResubscriptionInterval' field"))
 	}
 
-	// Virtual field
-	_actualValue := covResubscriptionInterval
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetApplicationTagUnsignedInteger](ctx, "actualValue", (*BACnetApplicationTagUnsignedInteger)(nil), covResubscriptionInterval)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCOVResubscriptionInterval"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCOVResubscriptionInterval")

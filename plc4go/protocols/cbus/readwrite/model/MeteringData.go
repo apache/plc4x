@@ -188,10 +188,10 @@ func MeteringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
-	// Virtual field
-	_commandType := commandTypeContainer.CommandType()
-	commandType := MeteringCommandType(_commandType)
-	_ = commandType
+	commandType, err := ReadVirtualField[MeteringCommandType](ctx, "commandType", (*MeteringCommandType)(nil), commandTypeContainer.CommandType())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
+	}
 
 	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
 	if err != nil {

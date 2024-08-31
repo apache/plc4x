@@ -146,10 +146,10 @@ func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityValue' field"))
 	}
 
-	// Virtual field
-	_humidityInPercent := float32(humidityValue) / float32(float32(65535))
-	humidityInPercent := float32(_humidityInPercent)
-	_ = humidityInPercent
+	humidityInPercent, err := ReadVirtualField[float32](ctx, "humidityInPercent", (*float32)(nil), float32(humidityValue)/float32(float32(65535)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityInPercent' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("HVACHumidity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACHumidity")

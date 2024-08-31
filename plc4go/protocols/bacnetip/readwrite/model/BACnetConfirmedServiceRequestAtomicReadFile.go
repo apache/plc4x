@@ -161,7 +161,7 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fileIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	fileIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileIdentifier' field"))
 	}

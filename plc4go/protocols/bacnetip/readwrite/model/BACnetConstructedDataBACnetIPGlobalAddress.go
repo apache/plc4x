@@ -181,10 +181,10 @@ func BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIpGlobalAddress' field"))
 	}
 
-	// Virtual field
-	_actualValue := bacnetIpGlobalAddress
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetHostNPort](ctx, "actualValue", (*BACnetHostNPort)(nil), bacnetIpGlobalAddress)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataBACnetIPGlobalAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataBACnetIPGlobalAddress")

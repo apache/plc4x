@@ -149,10 +149,10 @@ func BACnetTagPayloadEnumeratedParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
-	// Virtual field
-	_actualValue := ParseVarUint(ctx, data)
-	actualValue := uint32(_actualValue)
-	_ = actualValue
+	actualValue, err := ReadVirtualField[uint32](ctx, "actualValue", (*uint32)(nil), ParseVarUint(ctx, data))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadEnumerated"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadEnumerated")

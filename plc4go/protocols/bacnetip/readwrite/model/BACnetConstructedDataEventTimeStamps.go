@@ -231,12 +231,12 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_zero := uint64(0)
-	zero := uint64(_zero)
-	_ = zero
+	zero, err := ReadVirtualField[uint64](ctx, "zero", (*uint64)(nil), uint64(0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
+	}
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -250,20 +250,20 @@ func BACnetConstructedDataEventTimeStampsParseWithBuffer(ctx context.Context, re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventTimeStamps' field"))
 	}
 
-	// Virtual field
-	_toOffnormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[0]) }, func() any { return CastBACnetTimeStamp(nil) }))
-	toOffnormal := _toOffnormal
-	_ = toOffnormal
+	toOffnormal, err := ReadVirtualField[BACnetTimeStamp](ctx, "toOffnormal", (*BACnetTimeStamp)(nil), CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[0]) }, func() any { return CastBACnetTimeStamp(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
+	}
 
-	// Virtual field
-	_toFault := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[1]) }, func() any { return CastBACnetTimeStamp(nil) }))
-	toFault := _toFault
-	_ = toFault
+	toFault, err := ReadVirtualField[BACnetTimeStamp](ctx, "toFault", (*BACnetTimeStamp)(nil), CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[1]) }, func() any { return CastBACnetTimeStamp(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
+	}
 
-	// Virtual field
-	_toNormal := CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[2]) }, func() any { return CastBACnetTimeStamp(nil) }))
-	toNormal := _toNormal
-	_ = toNormal
+	toNormal, err := ReadVirtualField[BACnetTimeStamp](ctx, "toNormal", (*BACnetTimeStamp)(nil), CastBACnetTimeStamp(utils.InlineIf(bool((len(eventTimeStamps)) == (3)), func() any { return CastBACnetTimeStamp(eventTimeStamps[2]) }, func() any { return CastBACnetTimeStamp(nil) })))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
+	}
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(eventTimeStamps)) == (3)))) {

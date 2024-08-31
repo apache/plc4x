@@ -191,20 +191,20 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReply' field"))
 	}
 
-	// Virtual field
-	_encodedReplyDecoded := encodedReply
-	encodedReplyDecoded := _encodedReplyDecoded
-	_ = encodedReplyDecoded
+	encodedReplyDecoded, err := ReadVirtualField[EncodedReply](ctx, "encodedReplyDecoded", (*EncodedReply)(nil), encodedReply)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReplyDecoded' field"))
+	}
 
 	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 
-	// Virtual field
-	_chksumDecoded := chksum
-	chksumDecoded := _chksumDecoded
-	_ = chksumDecoded
+	chksumDecoded, err := ReadVirtualField[Checksum](ctx, "chksumDecoded", (*Checksum)(nil), chksum)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("ReplyEncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyEncodedReply")

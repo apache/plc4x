@@ -181,10 +181,10 @@ func BACnetConstructedDataPriorityArrayParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityArray' field"))
 	}
 
-	// Virtual field
-	_actualValue := priorityArray
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetPriorityArray](ctx, "actualValue", (*BACnetPriorityArray)(nil), priorityArray)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPriorityArray"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPriorityArray")

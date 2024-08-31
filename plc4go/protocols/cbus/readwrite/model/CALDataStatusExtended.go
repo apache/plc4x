@@ -252,17 +252,17 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockStart' field"))
 	}
 
-	// Virtual field
-	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8)
-	numberOfStatusBytes := uint8(_numberOfStatusBytes)
-	_ = numberOfStatusBytes
+	numberOfStatusBytes, err := ReadVirtualField[uint8](ctx, "numberOfStatusBytes", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfStatusBytes' field"))
+	}
 
-	// Virtual field
-	_numberOfLevelInformation := utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
+	numberOfLevelInformation, err := ReadVirtualField[uint8](ctx, "numberOfLevelInformation", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
 		return uint8((uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
-	}, func() any { return uint8((uint8(0))) }).(uint8)
-	numberOfLevelInformation := uint8(_numberOfLevelInformation)
-	_ = numberOfLevelInformation
+	}, func() any { return uint8((uint8(0))) }).(uint8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfLevelInformation' field"))
+	}
 
 	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(numberOfStatusBytes))
 	if err != nil {

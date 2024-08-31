@@ -143,20 +143,20 @@ func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Virtual field
-	_value := bool((actualLength) == (1))
-	value := bool(_value)
-	_ = value
+	value, err := ReadVirtualField[bool](ctx, "value", (*bool)(nil), bool((actualLength) == (1)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
 
-	// Virtual field
-	_isTrue := value
-	isTrue := bool(_isTrue)
-	_ = isTrue
+	isTrue, err := ReadVirtualField[bool](ctx, "isTrue", (*bool)(nil), value)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isTrue' field"))
+	}
 
-	// Virtual field
-	_isFalse := !(value)
-	isFalse := bool(_isFalse)
-	_ = isFalse
+	isFalse, err := ReadVirtualField[bool](ctx, "isFalse", (*bool)(nil), !(value))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFalse' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadBoolean")

@@ -171,10 +171,10 @@ func BACnetApplicationTagRealParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
-	// Virtual field
-	_actualValue := payload.GetValue()
-	actualValue := float32(_actualValue)
-	_ = actualValue
+	actualValue, err := ReadVirtualField[float32](ctx, "actualValue", (*float32)(nil), payload.GetValue())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagReal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagReal")

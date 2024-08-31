@@ -288,20 +288,20 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "Invalid Error condition"})
 	}
 
-	// Virtual field
-	_isMostSevereError := mostSevere
-	isMostSevereError := bool(_isMostSevereError)
-	_ = isMostSevereError
+	isMostSevereError, err := ReadVirtualField[bool](ctx, "isMostSevereError", (*bool)(nil), mostSevere)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostSevereError' field"))
+	}
 
-	// Virtual field
-	_isMostRecentError := mostRecent
-	isMostRecentError := bool(_isMostRecentError)
-	_ = isMostRecentError
+	isMostRecentError, err := ReadVirtualField[bool](ctx, "isMostRecentError", (*bool)(nil), mostRecent)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostRecentError' field"))
+	}
 
-	// Virtual field
-	_isMostRecentAndMostSevere := bool(isMostRecentError) && bool(isMostSevereError)
-	isMostRecentAndMostSevere := bool(_isMostRecentAndMostSevere)
-	_ = isMostRecentAndMostSevere
+	isMostRecentAndMostSevere, err := ReadVirtualField[bool](ctx, "isMostRecentAndMostSevere", (*bool)(nil), bool(isMostRecentError) && bool(isMostSevereError))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostRecentAndMostSevere' field"))
+	}
 
 	severity, err := ReadEnumField[ErrorReportingSeverity](ctx, "severity", "ErrorReportingSeverity", ReadEnum(ErrorReportingSeverityByValue, ReadUnsignedByte(readBuffer, uint8(3))))
 	if err != nil {

@@ -181,10 +181,10 @@ func BACnetConstructedDataPolarityParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'polarity' field"))
 	}
 
-	// Virtual field
-	_actualValue := polarity
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetPolarityTagged](ctx, "actualValue", (*BACnetPolarityTagged)(nil), polarity)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataPolarity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataPolarity")

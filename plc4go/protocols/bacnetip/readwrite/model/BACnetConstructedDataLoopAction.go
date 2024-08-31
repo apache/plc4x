@@ -181,10 +181,10 @@ func BACnetConstructedDataLoopActionParseWithBuffer(ctx context.Context, readBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'action' field"))
 	}
 
-	// Virtual field
-	_actualValue := action
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetActionTagged](ctx, "actualValue", (*BACnetActionTagged)(nil), action)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLoopAction"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLoopAction")

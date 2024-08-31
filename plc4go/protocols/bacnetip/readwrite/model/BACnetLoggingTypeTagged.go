@@ -185,10 +185,10 @@ func BACnetLoggingTypeTaggedParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
-	// Virtual field
-	_isProprietary := bool((value) == (BACnetLoggingType_VENDOR_PROPRIETARY_VALUE))
-	isProprietary := bool(_isProprietary)
-	_ = isProprietary
+	isProprietary, err := ReadVirtualField[bool](ctx, "isProprietary", (*bool)(nil), bool((value) == (BACnetLoggingType_VENDOR_PROPRIETARY_VALUE)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
+	}
 
 	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
 	if err != nil {

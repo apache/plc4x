@@ -181,10 +181,10 @@ func BACnetConstructedDataLimitEnableParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limitEnable' field"))
 	}
 
-	// Virtual field
-	_actualValue := limitEnable
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLimitEnableTagged](ctx, "actualValue", (*BACnetLimitEnableTagged)(nil), limitEnable)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataLimitEnable"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataLimitEnable")

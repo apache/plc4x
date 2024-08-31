@@ -181,10 +181,10 @@ func BACnetConstructedDataCarMovingDirectionParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carMovingDirection' field"))
 	}
 
-	// Virtual field
-	_actualValue := carMovingDirection
-	actualValue := _actualValue
-	_ = actualValue
+	actualValue, err := ReadVirtualField[BACnetLiftCarDirectionTagged](ctx, "actualValue", (*BACnetLiftCarDirectionTagged)(nil), carMovingDirection)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataCarMovingDirection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataCarMovingDirection")

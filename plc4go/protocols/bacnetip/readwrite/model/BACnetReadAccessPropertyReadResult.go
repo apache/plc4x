@@ -179,10 +179,10 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 	peekedTagHeader, _ := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
 	readBuffer.Reset(currentPos)
 
-	// Virtual field
-	_peekedTagNumber := peekedTagHeader.GetActualTagNumber()
-	peekedTagNumber := uint8(_peekedTagNumber)
-	_ = peekedTagNumber
+	peekedTagNumber, err := ReadVirtualField[uint8](ctx, "peekedTagNumber", (*uint8)(nil), peekedTagHeader.GetActualTagNumber())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
+	}
 
 	_propertyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(4)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument)), readBuffer), bool((peekedTagNumber) == (4)))
 	if err != nil {
