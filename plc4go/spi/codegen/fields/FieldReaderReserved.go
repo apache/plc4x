@@ -46,7 +46,7 @@ func (f *FieldReaderReserved[T]) ReadReservedField(ctx context.Context, logicalN
 		return dataReader.Read(ctx, logicalName, readerArgs...)
 	}, dataReader, f.ExtractByteOrder(utils.UpcastReaderArgs(readerArgs...)...))
 	if value != referenceValue {
-		return nil, utils.ParseAssertError{Message: fmt.Sprintf("Expected constant value %v but got %v for reserved field", referenceValue, value), Err: err}
+		return &value, utils.ParseAssertError{Message: fmt.Sprintf("Expected constant value %v but got %v for reserved field", referenceValue, value), Err: err}
 	}
-	return &value, nil
+	return nil, nil
 }
