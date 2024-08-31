@@ -27,7 +27,7 @@ import logging
 import unittest
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Iterator, Any
+from typing import List, Iterator, Any, Tuple
 from xml.etree import ElementTree
 
 from xsdata.formats.dataclass.parsers import XmlParser
@@ -48,7 +48,7 @@ class XmlTestSuiteLoader(unittest.TestLoader, ABC):
     #
 
     test_suite_document: str
-    test_suite_document_xml: Iterator[tuple[str, Any]] = field(init=False)
+    test_suite_document_xml: Iterator[Tuple[str, Any]] = field(init=False)
 
     def __post_init__(self) -> None:
         # ElementTree.register_namespace('test', 'https://plc4x.apache.org/schemas/driver-testsuite.xsd')
