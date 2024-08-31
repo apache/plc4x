@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPriorityValueBitStringParse(ctx context.Context, theBytes []byte, obj
 	return BACnetPriorityValueBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetPriorityValueBitStringParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueBitString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueBitString, error) {
+		return BACnetPriorityValueBitStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetPriorityValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPriorityValueBitStringParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitStringValue)
-	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
-	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetPriorityValueBitString")
-	}
-	bitStringValue := _bitStringValue.(BACnetApplicationTagBitString)
-	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
+	bitStringValue, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitStringValue", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueBitString"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParse(ctx context.
 	return BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned, error) {
+		return BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsignedParseWithBuffer(ct
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unsignedValue)
-	if pullErr := readBuffer.PullContext("unsignedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unsignedValue")
-	}
-	_unsignedValue, _unsignedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _unsignedValueErr != nil {
-		return nil, errors.Wrap(_unsignedValueErr, "Error parsing 'unsignedValue' field of BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned")
-	}
-	unsignedValue := _unsignedValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("unsignedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unsignedValue")
+	unsignedValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMaxNormalValueUnsigned"); closeErr != nil {

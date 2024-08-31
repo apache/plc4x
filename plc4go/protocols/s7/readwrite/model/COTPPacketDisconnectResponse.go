@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,6 +146,12 @@ func COTPPacketDisconnectResponseParse(ctx context.Context, theBytes []byte, cot
 	return COTPPacketDisconnectResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
+func COTPPacketDisconnectResponseParseWithBufferProducer(cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketDisconnectResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketDisconnectResponse, error) {
+		return COTPPacketDisconnectResponseParseWithBuffer(ctx, readBuffer, cotpLen)
+	}
+}
+
 func COTPPacketDisconnectResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketDisconnectResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,19 +163,15 @@ func COTPPacketDisconnectResponseParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationReference)
-	_destinationReference, _destinationReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationReference", 16)
-	if _destinationReferenceErr != nil {
-		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field of COTPPacketDisconnectResponse")
+	destinationReference, err := ReadSimpleField(ctx, "destinationReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationReference' field"))
 	}
-	destinationReference := _destinationReference
 
-	// Simple Field (sourceReference)
-	_sourceReference, _sourceReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sourceReference", 16)
-	if _sourceReferenceErr != nil {
-		return nil, errors.Wrap(_sourceReferenceErr, "Error parsing 'sourceReference' field of COTPPacketDisconnectResponse")
+	sourceReference, err := ReadSimpleField(ctx, "sourceReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceReference' field"))
 	}
-	sourceReference := _sourceReference
 
 	if closeErr := readBuffer.CloseContext("COTPPacketDisconnectResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketDisconnectResponse")

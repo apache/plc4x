@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetServiceAckAtomicReadFileParse(ctx context.Context, theBytes []byte, s
 	return BACnetServiceAckAtomicReadFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
+func BACnetServiceAckAtomicReadFileParseWithBufferProducer(serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFile, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFile, error) {
+		return BACnetServiceAckAtomicReadFileParseWithBuffer(ctx, readBuffer, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetServiceAckAtomicReadFileParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (endOfFile)
-	if pullErr := readBuffer.PullContext("endOfFile"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endOfFile")
-	}
-	_endOfFile, _endOfFileErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _endOfFileErr != nil {
-		return nil, errors.Wrap(_endOfFileErr, "Error parsing 'endOfFile' field of BACnetServiceAckAtomicReadFile")
-	}
-	endOfFile := _endOfFile.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("endOfFile"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endOfFile")
+	endOfFile, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "endOfFile", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endOfFile' field"))
 	}
 
-	// Simple Field (accessMethod)
-	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
-	}
-	_accessMethod, _accessMethodErr := BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer(ctx, readBuffer)
-	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetServiceAckAtomicReadFile")
-	}
-	accessMethod := _accessMethod.(BACnetServiceAckAtomicReadFileStreamOrRecord)
-	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessMethod")
+	accessMethod, err := ReadSimpleField[BACnetServiceAckAtomicReadFileStreamOrRecord](ctx, "accessMethod", ReadComplex[BACnetServiceAckAtomicReadFileStreamOrRecord](BACnetServiceAckAtomicReadFileStreamOrRecordParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessMethod' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFile"); closeErr != nil {

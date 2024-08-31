@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BrowsePathTargetParse(ctx context.Context, theBytes []byte, identifier stri
 	return BrowsePathTargetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowsePathTargetParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePathTarget, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePathTarget, error) {
+		return BrowsePathTargetParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowsePathTargetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowsePathTarget, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,25 +160,15 @@ func BrowsePathTargetParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetId)
-	if pullErr := readBuffer.PullContext("targetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetId")
-	}
-	_targetId, _targetIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetIdErr != nil {
-		return nil, errors.Wrap(_targetIdErr, "Error parsing 'targetId' field of BrowsePathTarget")
-	}
-	targetId := _targetId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetId")
+	targetId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetId' field"))
 	}
 
-	// Simple Field (remainingPathIndex)
-	_remainingPathIndex, _remainingPathIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint32("remainingPathIndex", 32)
-	if _remainingPathIndexErr != nil {
-		return nil, errors.Wrap(_remainingPathIndexErr, "Error parsing 'remainingPathIndex' field of BrowsePathTarget")
+	remainingPathIndex, err := ReadSimpleField(ctx, "remainingPathIndex", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remainingPathIndex' field"))
 	}
-	remainingPathIndex := _remainingPathIndex
 
 	if closeErr := readBuffer.CloseContext("BrowsePathTarget"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BrowsePathTarget")

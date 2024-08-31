@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataTemperatureBroadcastParse(ctx context.Context, theBytes []byte, appl
 	return SALDataTemperatureBroadcastParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataTemperatureBroadcastParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTemperatureBroadcast, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTemperatureBroadcast, error) {
+		return SALDataTemperatureBroadcastParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataTemperatureBroadcastParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTemperatureBroadcast, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataTemperatureBroadcastParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (temperatureBroadcastData)
-	if pullErr := readBuffer.PullContext("temperatureBroadcastData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for temperatureBroadcastData")
-	}
-	_temperatureBroadcastData, _temperatureBroadcastDataErr := TemperatureBroadcastDataParseWithBuffer(ctx, readBuffer)
-	if _temperatureBroadcastDataErr != nil {
-		return nil, errors.Wrap(_temperatureBroadcastDataErr, "Error parsing 'temperatureBroadcastData' field of SALDataTemperatureBroadcast")
-	}
-	temperatureBroadcastData := _temperatureBroadcastData.(TemperatureBroadcastData)
-	if closeErr := readBuffer.CloseContext("temperatureBroadcastData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for temperatureBroadcastData")
+	temperatureBroadcastData, err := ReadSimpleField[TemperatureBroadcastData](ctx, "temperatureBroadcastData", ReadComplex[TemperatureBroadcastData](TemperatureBroadcastDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureBroadcastData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTemperatureBroadcast"); closeErr != nil {

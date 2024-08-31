@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,6 +137,17 @@ func CALReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions
 	return CALReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func CALReplyParseWithBufferProducer[T CALReply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -177,17 +190,9 @@ func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, c
 	}
 	_child = _childTemp.(CALReplyChildSerializeRequirement)
 
-	// Simple Field (calData)
-	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calData")
-	}
-	_calData, _calDataErr := CALDataParseWithBuffer(ctx, readBuffer, requestContext)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CALReply")
-	}
-	calData := _calData.(CALData)
-	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calData")
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(requestContext)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CALReply"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParse(ctx context.
 	return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
+		return BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetFaultParameterFaultExtendedParametersEntryReferenceParseWithBuffer(ct
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reference)
-	if pullErr := readBuffer.PullContext("reference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reference")
-	}
-	_reference, _referenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _referenceErr != nil {
-		return nil, errors.Wrap(_referenceErr, "Error parsing 'reference' field of BACnetFaultParameterFaultExtendedParametersEntryReference")
-	}
-	reference := _reference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("reference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reference")
+	reference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reference' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryReference"); closeErr != nil {

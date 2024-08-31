@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func ExtensiblePayloadParse(ctx context.Context, theBytes []byte, extensible boo
 	return ExtensiblePayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
 }
 
+func ExtensiblePayloadParseWithBufferProducer(extensible bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensiblePayload, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensiblePayload, error) {
+		return ExtensiblePayloadParseWithBuffer(ctx, readBuffer, extensible, byteCount)
+	}
+}
+
 func ExtensiblePayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (ExtensiblePayload, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func ExtensiblePayloadParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(false)))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of ExtensiblePayload")
-	}
-	payload := _payload.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[ExtensionObject](ctx, "payload", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(false))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ExtensiblePayload"); closeErr != nil {

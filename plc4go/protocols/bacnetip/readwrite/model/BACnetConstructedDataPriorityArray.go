@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPriorityArrayParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataPriorityArrayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPriorityArrayParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPriorityArray, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPriorityArray, error) {
+		return BACnetConstructedDataPriorityArrayParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPriorityArrayParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (priorityArray)
-	if pullErr := readBuffer.PullContext("priorityArray"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priorityArray")
-	}
-	_priorityArray, _priorityArrayErr := BACnetPriorityArrayParseWithBuffer(ctx, readBuffer, BACnetObjectType(objectTypeArgument), uint8(tagNumber), arrayIndexArgument)
-	if _priorityArrayErr != nil {
-		return nil, errors.Wrap(_priorityArrayErr, "Error parsing 'priorityArray' field of BACnetConstructedDataPriorityArray")
-	}
-	priorityArray := _priorityArray.(BACnetPriorityArray)
-	if closeErr := readBuffer.CloseContext("priorityArray"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priorityArray")
+	priorityArray, err := ReadSimpleField[BACnetPriorityArray](ctx, "priorityArray", ReadComplex[BACnetPriorityArray](BACnetPriorityArrayParseWithBufferProducer((BACnetObjectType)(objectTypeArgument), (uint8)(tagNumber), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityArray' field"))
 	}
 
 	// Virtual field

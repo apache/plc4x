@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAccompanimentParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataAccompanimentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccompanimentParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccompaniment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccompaniment, error) {
+		return BACnetConstructedDataAccompanimentParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccompanimentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompaniment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAccompanimentParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accompaniment)
-	if pullErr := readBuffer.PullContext("accompaniment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accompaniment")
-	}
-	_accompaniment, _accompanimentErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _accompanimentErr != nil {
-		return nil, errors.Wrap(_accompanimentErr, "Error parsing 'accompaniment' field of BACnetConstructedDataAccompaniment")
-	}
-	accompaniment := _accompaniment.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("accompaniment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accompaniment")
+	accompaniment, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "accompaniment", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accompaniment' field"))
 	}
 
 	// Virtual field

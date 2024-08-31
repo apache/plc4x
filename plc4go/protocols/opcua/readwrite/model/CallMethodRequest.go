@@ -172,6 +172,12 @@ func CallMethodRequestParse(ctx context.Context, theBytes []byte, identifier str
 	return CallMethodRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CallMethodRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CallMethodRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CallMethodRequest, error) {
+		return CallMethodRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CallMethodRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallMethodRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,38 +189,20 @@ func CallMethodRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectId)
-	if pullErr := readBuffer.PullContext("objectId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectId")
-	}
-	_objectId, _objectIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of CallMethodRequest")
-	}
-	objectId := _objectId.(NodeId)
-	if closeErr := readBuffer.CloseContext("objectId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectId")
+	objectId, err := ReadSimpleField[NodeId](ctx, "objectId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectId' field"))
 	}
 
-	// Simple Field (methodId)
-	if pullErr := readBuffer.PullContext("methodId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for methodId")
-	}
-	_methodId, _methodIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _methodIdErr != nil {
-		return nil, errors.Wrap(_methodIdErr, "Error parsing 'methodId' field of CallMethodRequest")
-	}
-	methodId := _methodId.(NodeId)
-	if closeErr := readBuffer.CloseContext("methodId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for methodId")
+	methodId, err := ReadSimpleField[NodeId](ctx, "methodId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodId' field"))
 	}
 
-	// Simple Field (noOfInputArguments)
-	_noOfInputArguments, _noOfInputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArguments", 32)
-	if _noOfInputArgumentsErr != nil {
-		return nil, errors.Wrap(_noOfInputArgumentsErr, "Error parsing 'noOfInputArguments' field of CallMethodRequest")
+	noOfInputArguments, err := ReadSimpleField(ctx, "noOfInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArguments' field"))
 	}
-	noOfInputArguments := _noOfInputArguments
 
 	inputArguments, err := ReadCountArrayField[Variant](ctx, "inputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfInputArguments))
 	if err != nil {

@@ -83,6 +83,12 @@ func StructureParse(ctx context.Context, theBytes []byte) (Structure, error) {
 	return StructureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StructureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
+		return StructureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StructureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Structure, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func CALDataGetStatusParse(ctx context.Context, theBytes []byte, requestContext 
 	return CALDataGetStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
+func CALDataGetStatusParseWithBufferProducer(requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataGetStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataGetStatus, error) {
+		return CALDataGetStatusParseWithBuffer(ctx, readBuffer, requestContext)
+	}
+}
+
 func CALDataGetStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataGetStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,25 +159,15 @@ func CALDataGetStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
-	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataGetStatus")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 
-	// Simple Field (count)
-	_count, _countErr := /*TODO: migrate me*/ readBuffer.ReadUint8("count", 8)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of CALDataGetStatus")
+	count, err := ReadSimpleField(ctx, "count", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
-	count := _count
 
 	if closeErr := readBuffer.CloseContext("CALDataGetStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataGetStatus")

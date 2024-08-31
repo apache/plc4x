@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func ModificationInfoParse(ctx context.Context, theBytes []byte, identifier stri
 	return ModificationInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ModificationInfoParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModificationInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModificationInfo, error) {
+		return ModificationInfoParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ModificationInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ModificationInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,37 +171,19 @@ func ModificationInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (modificationTime)
-	_modificationTime, _modificationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("modificationTime", 64)
-	if _modificationTimeErr != nil {
-		return nil, errors.Wrap(_modificationTimeErr, "Error parsing 'modificationTime' field of ModificationInfo")
-	}
-	modificationTime := _modificationTime
-
-	// Simple Field (updateType)
-	if pullErr := readBuffer.PullContext("updateType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateType")
-	}
-	_updateType, _updateTypeErr := HistoryUpdateTypeParseWithBuffer(ctx, readBuffer)
-	if _updateTypeErr != nil {
-		return nil, errors.Wrap(_updateTypeErr, "Error parsing 'updateType' field of ModificationInfo")
-	}
-	updateType := _updateType
-	if closeErr := readBuffer.CloseContext("updateType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateType")
+	modificationTime, err := ReadSimpleField(ctx, "modificationTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modificationTime' field"))
 	}
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
+	updateType, err := ReadEnumField[HistoryUpdateType](ctx, "updateType", "HistoryUpdateType", ReadEnum(HistoryUpdateTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateType' field"))
 	}
-	_userName, _userNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of ModificationInfo")
-	}
-	userName := _userName.(PascalString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
+
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModificationInfo"); closeErr != nil {

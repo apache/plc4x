@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUpdateKeySetTimeoutParse(ctx context.Context, theBytes
 	return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUpdateKeySetTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateKeySetTimeout, error) {
+		return BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateKeySetTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUpdateKeySetTimeoutParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateKeySetTimeout)
-	if pullErr := readBuffer.PullContext("updateKeySetTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateKeySetTimeout")
-	}
-	_updateKeySetTimeout, _updateKeySetTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _updateKeySetTimeoutErr != nil {
-		return nil, errors.Wrap(_updateKeySetTimeoutErr, "Error parsing 'updateKeySetTimeout' field of BACnetConstructedDataUpdateKeySetTimeout")
-	}
-	updateKeySetTimeout := _updateKeySetTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("updateKeySetTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateKeySetTimeout")
+	updateKeySetTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateKeySetTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateKeySetTimeout' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataShedDurationParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataShedDurationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataShedDurationParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataShedDuration, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataShedDuration, error) {
+		return BACnetConstructedDataShedDurationParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataShedDurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedDuration, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataShedDurationParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (shedDuration)
-	if pullErr := readBuffer.PullContext("shedDuration"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for shedDuration")
-	}
-	_shedDuration, _shedDurationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _shedDurationErr != nil {
-		return nil, errors.Wrap(_shedDurationErr, "Error parsing 'shedDuration' field of BACnetConstructedDataShedDuration")
-	}
-	shedDuration := _shedDuration.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("shedDuration"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for shedDuration")
+	shedDuration, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "shedDuration", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'shedDuration' field"))
 	}
 
 	// Virtual field

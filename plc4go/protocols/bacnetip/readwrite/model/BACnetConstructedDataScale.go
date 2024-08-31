@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataScaleParse(ctx context.Context, theBytes []byte, tagNu
 	return BACnetConstructedDataScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataScaleParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScale, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScale, error) {
+		return BACnetConstructedDataScaleParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataScaleParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (scale)
-	if pullErr := readBuffer.PullContext("scale"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for scale")
-	}
-	_scale, _scaleErr := BACnetScaleParseWithBuffer(ctx, readBuffer)
-	if _scaleErr != nil {
-		return nil, errors.Wrap(_scaleErr, "Error parsing 'scale' field of BACnetConstructedDataScale")
-	}
-	scale := _scale.(BACnetScale)
-	if closeErr := readBuffer.CloseContext("scale"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for scale")
+	scale, err := ReadSimpleField[BACnetScale](ctx, "scale", ReadComplex[BACnetScale](BACnetScaleParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scale' field"))
 	}
 
 	// Virtual field

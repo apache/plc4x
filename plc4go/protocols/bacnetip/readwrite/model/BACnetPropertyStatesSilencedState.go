@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesSilencedStateParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesSilencedStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesSilencedStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSilencedState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSilencedState, error) {
+		return BACnetPropertyStatesSilencedStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesSilencedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSilencedState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesSilencedStateParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (silencedState)
-	if pullErr := readBuffer.PullContext("silencedState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for silencedState")
-	}
-	_silencedState, _silencedStateErr := BACnetSilencedStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _silencedStateErr != nil {
-		return nil, errors.Wrap(_silencedStateErr, "Error parsing 'silencedState' field of BACnetPropertyStatesSilencedState")
-	}
-	silencedState := _silencedState.(BACnetSilencedStateTagged)
-	if closeErr := readBuffer.CloseContext("silencedState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for silencedState")
+	silencedState, err := ReadSimpleField[BACnetSilencedStateTagged](ctx, "silencedState", ReadComplex[BACnetSilencedStateTagged](BACnetSilencedStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'silencedState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSilencedState"); closeErr != nil {

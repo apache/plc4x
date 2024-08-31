@@ -122,6 +122,12 @@ func NullCommandRequestParse(ctx context.Context, theBytes []byte, response bool
 	return NullCommandRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func NullCommandRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (NullCommandRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NullCommandRequest, error) {
+		return NullCommandRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func NullCommandRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullCommandRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

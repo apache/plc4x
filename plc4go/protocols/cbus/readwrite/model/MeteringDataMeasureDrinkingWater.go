@@ -108,6 +108,12 @@ func MeteringDataMeasureDrinkingWaterParse(ctx context.Context, theBytes []byte)
 	return MeteringDataMeasureDrinkingWaterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataMeasureDrinkingWaterParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureDrinkingWater, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureDrinkingWater, error) {
+		return MeteringDataMeasureDrinkingWaterParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataMeasureDrinkingWaterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureDrinkingWater, error) {
 	positionAware := readBuffer
 	_ = positionAware

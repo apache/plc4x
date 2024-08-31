@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func LinearConversionDataTypeParse(ctx context.Context, theBytes []byte, identif
 	return LinearConversionDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func LinearConversionDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (LinearConversionDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LinearConversionDataType, error) {
+		return LinearConversionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func LinearConversionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (LinearConversionDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,33 +182,25 @@ func LinearConversionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (initialAddend)
-	_initialAddend, _initialAddendErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("initialAddend", 32)
-	if _initialAddendErr != nil {
-		return nil, errors.Wrap(_initialAddendErr, "Error parsing 'initialAddend' field of LinearConversionDataType")
+	initialAddend, err := ReadSimpleField(ctx, "initialAddend", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initialAddend' field"))
 	}
-	initialAddend := _initialAddend
 
-	// Simple Field (multiplicand)
-	_multiplicand, _multiplicandErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("multiplicand", 32)
-	if _multiplicandErr != nil {
-		return nil, errors.Wrap(_multiplicandErr, "Error parsing 'multiplicand' field of LinearConversionDataType")
+	multiplicand, err := ReadSimpleField(ctx, "multiplicand", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplicand' field"))
 	}
-	multiplicand := _multiplicand
 
-	// Simple Field (divisor)
-	_divisor, _divisorErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("divisor", 32)
-	if _divisorErr != nil {
-		return nil, errors.Wrap(_divisorErr, "Error parsing 'divisor' field of LinearConversionDataType")
+	divisor, err := ReadSimpleField(ctx, "divisor", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'divisor' field"))
 	}
-	divisor := _divisor
 
-	// Simple Field (finalAddend)
-	_finalAddend, _finalAddendErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("finalAddend", 32)
-	if _finalAddendErr != nil {
-		return nil, errors.Wrap(_finalAddendErr, "Error parsing 'finalAddend' field of LinearConversionDataType")
+	finalAddend, err := ReadSimpleField(ctx, "finalAddend", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'finalAddend' field"))
 	}
-	finalAddend := _finalAddend
 
 	if closeErr := readBuffer.CloseContext("LinearConversionDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LinearConversionDataType")

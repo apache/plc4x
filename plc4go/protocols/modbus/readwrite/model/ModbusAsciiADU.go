@@ -148,6 +148,12 @@ func ModbusAsciiADUParse(ctx context.Context, theBytes []byte, driverType Driver
 	return ModbusAsciiADUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
+func ModbusAsciiADUParseWithBufferProducer(driverType DriverType, response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusAsciiADU, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusAsciiADU, error) {
+		return ModbusAsciiADUParseWithBuffer(ctx, readBuffer, driverType, response)
+	}
+}
+
 func ModbusAsciiADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusAsciiADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,27 +165,17 @@ func ModbusAsciiADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("address", 8)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusAsciiADU")
-	}
-	address := _address
-
-	// Simple Field (pdu)
-	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
-	}
-	_pdu, _pduErr := ModbusPDUParseWithBuffer(ctx, readBuffer, bool(response))
-	if _pduErr != nil {
-		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusAsciiADU")
-	}
-	pdu := _pdu.(ModbusPDU)
-	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pdu")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 
-	crc, err := ReadChecksumField[uint8](ctx, "crc", ReadUnsignedByte(readBuffer, 8), AsciiLrcCheck(ctx, address, pdu), codegen.WithByteOrder(binary.BigEndian))
+	pdu, err := ReadSimpleField[ModbusPDU](ctx, "pdu", ReadComplex[ModbusPDU](ModbusPDUParseWithBufferProducer[ModbusPDU]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pdu' field"))
+	}
+
+	crc, err := ReadChecksumField[uint8](ctx, "crc", ReadUnsignedByte(readBuffer, uint8(8)), AsciiLrcCheck(ctx, address, pdu), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}

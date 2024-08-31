@@ -108,6 +108,12 @@ func SecurityDataGasAlarmClearedParse(ctx context.Context, theBytes []byte) (Sec
 	return SecurityDataGasAlarmClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataGasAlarmClearedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataGasAlarmCleared, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataGasAlarmCleared, error) {
+		return SecurityDataGasAlarmClearedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataGasAlarmClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataGasAlarmCleared, error) {
 	positionAware := readBuffer
 	_ = positionAware

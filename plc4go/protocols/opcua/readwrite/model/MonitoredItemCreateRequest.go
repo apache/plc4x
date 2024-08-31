@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func MonitoredItemCreateRequestParse(ctx context.Context, theBytes []byte, ident
 	return MonitoredItemCreateRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoredItemCreateRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemCreateRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemCreateRequest, error) {
+		return MonitoredItemCreateRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoredItemCreateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemCreateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,43 +171,19 @@ func MonitoredItemCreateRequestParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemToMonitor)
-	if pullErr := readBuffer.PullContext("itemToMonitor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for itemToMonitor")
-	}
-	_itemToMonitor, _itemToMonitorErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("628"))
-	if _itemToMonitorErr != nil {
-		return nil, errors.Wrap(_itemToMonitorErr, "Error parsing 'itemToMonitor' field of MonitoredItemCreateRequest")
-	}
-	itemToMonitor := _itemToMonitor.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("itemToMonitor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for itemToMonitor")
+	itemToMonitor, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "itemToMonitor", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("628")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemToMonitor' field"))
 	}
 
-	// Simple Field (monitoringMode)
-	if pullErr := readBuffer.PullContext("monitoringMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoringMode")
-	}
-	_monitoringMode, _monitoringModeErr := MonitoringModeParseWithBuffer(ctx, readBuffer)
-	if _monitoringModeErr != nil {
-		return nil, errors.Wrap(_monitoringModeErr, "Error parsing 'monitoringMode' field of MonitoredItemCreateRequest")
-	}
-	monitoringMode := _monitoringMode
-	if closeErr := readBuffer.CloseContext("monitoringMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoringMode")
+	monitoringMode, err := ReadEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", ReadEnum(MonitoringModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringMode' field"))
 	}
 
-	// Simple Field (requestedParameters)
-	if pullErr := readBuffer.PullContext("requestedParameters"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestedParameters")
-	}
-	_requestedParameters, _requestedParametersErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("742"))
-	if _requestedParametersErr != nil {
-		return nil, errors.Wrap(_requestedParametersErr, "Error parsing 'requestedParameters' field of MonitoredItemCreateRequest")
-	}
-	requestedParameters := _requestedParameters.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestedParameters"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestedParameters")
+	requestedParameters, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("742")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemCreateRequest"); closeErr != nil {

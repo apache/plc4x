@@ -109,6 +109,12 @@ func ApduDataExtLinkWriteParse(ctx context.Context, theBytes []byte, length uint
 	return ApduDataExtLinkWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtLinkWriteParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtLinkWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtLinkWrite, error) {
+		return ApduDataExtLinkWriteParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtLinkWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtLinkWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func CIPDataConnectedParse(ctx context.Context, theBytes []byte) (CIPDataConnect
 	return CIPDataConnectedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CIPDataConnectedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
+		return CIPDataConnectedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPDataConnected, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func CIPDataConnectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("value", 32)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of CIPDataConnected")
+	value, err := ReadSimpleField(ctx, "value", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
-	// Simple Field (tagStatus)
-	_tagStatus, _tagStatusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("tagStatus", 16)
-	if _tagStatusErr != nil {
-		return nil, errors.Wrap(_tagStatusErr, "Error parsing 'tagStatus' field of CIPDataConnected")
+	tagStatus, err := ReadSimpleField(ctx, "tagStatus", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagStatus' field"))
 	}
-	tagStatus := _tagStatus
 
 	if closeErr := readBuffer.CloseContext("CIPDataConnected"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CIPDataConnected")

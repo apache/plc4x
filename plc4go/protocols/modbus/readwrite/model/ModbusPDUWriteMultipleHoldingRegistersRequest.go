@@ -167,6 +167,12 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParse(ctx context.Context, the
 	return ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
+		return ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteMultipleHoldingRegistersRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -178,21 +184,17 @@ func ModbusPDUWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startingAddress)
-	_startingAddress, _startingAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startingAddress", 16)
-	if _startingAddressErr != nil {
-		return nil, errors.Wrap(_startingAddressErr, "Error parsing 'startingAddress' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
+	startingAddress, err := ReadSimpleField(ctx, "startingAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingAddress' field"))
 	}
-	startingAddress := _startingAddress
 
-	// Simple Field (quantity)
-	_quantity, _quantityErr := /*TODO: migrate me*/ readBuffer.ReadUint16("quantity", 16)
-	if _quantityErr != nil {
-		return nil, errors.Wrap(_quantityErr, "Error parsing 'quantity' field of ModbusPDUWriteMultipleHoldingRegistersRequest")
+	quantity, err := ReadSimpleField(ctx, "quantity", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'quantity' field"))
 	}
-	quantity := _quantity
 
-	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, 8))
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}

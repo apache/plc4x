@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLinkSpeedParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataLinkSpeedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLinkSpeedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeed, error) {
+		return BACnetConstructedDataLinkSpeedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLinkSpeedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeed, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLinkSpeedParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (linkSpeed)
-	if pullErr := readBuffer.PullContext("linkSpeed"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeed")
-	}
-	_linkSpeed, _linkSpeedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _linkSpeedErr != nil {
-		return nil, errors.Wrap(_linkSpeedErr, "Error parsing 'linkSpeed' field of BACnetConstructedDataLinkSpeed")
-	}
-	linkSpeed := _linkSpeed.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("linkSpeed"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linkSpeed")
+	linkSpeed, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "linkSpeed", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeed' field"))
 	}
 
 	// Virtual field

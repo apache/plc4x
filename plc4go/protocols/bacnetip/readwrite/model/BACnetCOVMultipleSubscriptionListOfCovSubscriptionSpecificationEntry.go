@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParse(c
 	return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
+		return BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWi
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredObjectIdentifier)
-	if pullErr := readBuffer.PullContext("monitoredObjectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredObjectIdentifier")
-	}
-	_monitoredObjectIdentifier, _monitoredObjectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _monitoredObjectIdentifierErr != nil {
-		return nil, errors.Wrap(_monitoredObjectIdentifierErr, "Error parsing 'monitoredObjectIdentifier' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
-	}
-	monitoredObjectIdentifier := _monitoredObjectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("monitoredObjectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredObjectIdentifier")
+	monitoredObjectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "monitoredObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredObjectIdentifier' field"))
 	}
 
-	// Simple Field (listOfCovReferences)
-	if pullErr := readBuffer.PullContext("listOfCovReferences"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovReferences")
-	}
-	_listOfCovReferences, _listOfCovReferencesErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _listOfCovReferencesErr != nil {
-		return nil, errors.Wrap(_listOfCovReferencesErr, "Error parsing 'listOfCovReferences' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry")
-	}
-	listOfCovReferences := _listOfCovReferences.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences)
-	if closeErr := readBuffer.CloseContext("listOfCovReferences"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfCovReferences")
+	listOfCovReferences, err := ReadSimpleField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](ctx, "listOfCovReferences", ReadComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferences](BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovReferences' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry"); closeErr != nil {

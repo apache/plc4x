@@ -223,6 +223,12 @@ func CALReplyLongParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return CALReplyLongParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func CALReplyLongParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALReplyLong, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALReplyLong, error) {
+		return CALReplyLongParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyLong, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -271,17 +277,9 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		bridgeAddress = *_bridgeAddress
 	}
 
-	// Simple Field (serialInterfaceAddress)
-	if pullErr := readBuffer.PullContext("serialInterfaceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serialInterfaceAddress")
-	}
-	_serialInterfaceAddress, _serialInterfaceAddressErr := SerialInterfaceAddressParseWithBuffer(ctx, readBuffer)
-	if _serialInterfaceAddressErr != nil {
-		return nil, errors.Wrap(_serialInterfaceAddressErr, "Error parsing 'serialInterfaceAddress' field of CALReplyLong")
-	}
-	serialInterfaceAddress := _serialInterfaceAddress.(SerialInterfaceAddress)
-	if closeErr := readBuffer.CloseContext("serialInterfaceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serialInterfaceAddress")
+	serialInterfaceAddress, err := ReadSimpleField[SerialInterfaceAddress](ctx, "serialInterfaceAddress", ReadComplex[SerialInterfaceAddress](SerialInterfaceAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialInterfaceAddress' field"))
 	}
 
 	reservedByte, err := ReadOptionalField[byte](ctx, "reservedByte", ReadByte(readBuffer, 8), isUnitAddress)

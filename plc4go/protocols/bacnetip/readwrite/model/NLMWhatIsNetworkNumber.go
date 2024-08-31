@@ -109,6 +109,12 @@ func NLMWhatIsNetworkNumberParse(ctx context.Context, theBytes []byte, apduLengt
 	return NLMWhatIsNetworkNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMWhatIsNetworkNumberParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMWhatIsNetworkNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMWhatIsNetworkNumber, error) {
+		return NLMWhatIsNetworkNumberParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMWhatIsNetworkNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMWhatIsNetworkNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware

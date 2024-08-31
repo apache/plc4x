@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func BACnetContextTagObjectIdentifierParse(ctx context.Context, theBytes []byte,
 	return BACnetContextTagObjectIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument, dataType)
 }
 
+func BACnetContextTagObjectIdentifierParseWithBufferProducer(tagNumberArgument uint8, dataType BACnetDataType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+		return BACnetContextTagObjectIdentifierParseWithBuffer(ctx, readBuffer, tagNumberArgument, dataType)
+	}
+}
+
 func BACnetContextTagObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,17 +180,9 @@ func BACnetContextTagObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx, readBuffer)
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagObjectIdentifier")
-	}
-	payload := _payload.(BACnetTagPayloadObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadObjectIdentifier](ctx, "payload", ReadComplex[BACnetTagPayloadObjectIdentifier](BACnetTagPayloadObjectIdentifierParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	// Virtual field

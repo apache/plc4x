@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataClockAndTimekeepingParse(ctx context.Context, theBytes []byte, appli
 	return SALDataClockAndTimekeepingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataClockAndTimekeepingParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataClockAndTimekeeping, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataClockAndTimekeeping, error) {
+		return SALDataClockAndTimekeepingParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataClockAndTimekeepingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataClockAndTimekeeping, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataClockAndTimekeepingParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (clockAndTimekeepingData)
-	if pullErr := readBuffer.PullContext("clockAndTimekeepingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clockAndTimekeepingData")
-	}
-	_clockAndTimekeepingData, _clockAndTimekeepingDataErr := ClockAndTimekeepingDataParseWithBuffer(ctx, readBuffer)
-	if _clockAndTimekeepingDataErr != nil {
-		return nil, errors.Wrap(_clockAndTimekeepingDataErr, "Error parsing 'clockAndTimekeepingData' field of SALDataClockAndTimekeeping")
-	}
-	clockAndTimekeepingData := _clockAndTimekeepingData.(ClockAndTimekeepingData)
-	if closeErr := readBuffer.CloseContext("clockAndTimekeepingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clockAndTimekeepingData")
+	clockAndTimekeepingData, err := ReadSimpleField[ClockAndTimekeepingData](ctx, "clockAndTimekeepingData", ReadComplex[ClockAndTimekeepingData](ClockAndTimekeepingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clockAndTimekeepingData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataClockAndTimekeeping"); closeErr != nil {

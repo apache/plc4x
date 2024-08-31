@@ -144,6 +144,12 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParse(ctx context.Context, 
 	return BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
+		return BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSupportedSecurityAlgorithms, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,13 +161,7 @@ func BACnetConstructedDataSupportedSecurityAlgorithmsParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	supportedSecurityAlgorithms, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "supportedSecurityAlgorithms", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	supportedSecurityAlgorithms, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "supportedSecurityAlgorithms", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'supportedSecurityAlgorithms' field"))
 	}

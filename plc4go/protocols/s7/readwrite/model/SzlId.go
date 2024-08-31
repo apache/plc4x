@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func SzlIdParse(ctx context.Context, theBytes []byte) (SzlId, error) {
 	return SzlIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SzlIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
+		return SzlIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,37 +142,19 @@ func SzlIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Szl
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (typeClass)
-	if pullErr := readBuffer.PullContext("typeClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeClass")
-	}
-	_typeClass, _typeClassErr := SzlModuleTypeClassParseWithBuffer(ctx, readBuffer)
-	if _typeClassErr != nil {
-		return nil, errors.Wrap(_typeClassErr, "Error parsing 'typeClass' field of SzlId")
-	}
-	typeClass := _typeClass
-	if closeErr := readBuffer.CloseContext("typeClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeClass")
+	typeClass, err := ReadEnumField[SzlModuleTypeClass](ctx, "typeClass", "SzlModuleTypeClass", ReadEnum(SzlModuleTypeClassByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeClass' field"))
 	}
 
-	// Simple Field (sublistExtract)
-	_sublistExtract, _sublistExtractErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sublistExtract", 4)
-	if _sublistExtractErr != nil {
-		return nil, errors.Wrap(_sublistExtractErr, "Error parsing 'sublistExtract' field of SzlId")
+	sublistExtract, err := ReadSimpleField(ctx, "sublistExtract", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sublistExtract' field"))
 	}
-	sublistExtract := _sublistExtract
 
-	// Simple Field (sublistList)
-	if pullErr := readBuffer.PullContext("sublistList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sublistList")
-	}
-	_sublistList, _sublistListErr := SzlSublistParseWithBuffer(ctx, readBuffer)
-	if _sublistListErr != nil {
-		return nil, errors.Wrap(_sublistListErr, "Error parsing 'sublistList' field of SzlId")
-	}
-	sublistList := _sublistList
-	if closeErr := readBuffer.CloseContext("sublistList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sublistList")
+	sublistList, err := ReadEnumField[SzlSublist](ctx, "sublistList", "SzlSublist", ReadEnum(SzlSublistByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sublistList' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SzlId"); closeErr != nil {

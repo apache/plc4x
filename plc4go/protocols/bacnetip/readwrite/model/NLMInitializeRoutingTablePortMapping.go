@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,6 +137,12 @@ func NLMInitializeRoutingTablePortMappingParse(ctx context.Context, theBytes []b
 	return NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NLMInitializeRoutingTablePortMappingParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
+		return NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTablePortMapping, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,26 +154,20 @@ func NLMInitializeRoutingTablePortMappingParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMInitializeRoutingTablePortMapping")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
 
-	// Simple Field (portId)
-	_portId, _portIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("portId", 8)
-	if _portIdErr != nil {
-		return nil, errors.Wrap(_portIdErr, "Error parsing 'portId' field of NLMInitializeRoutingTablePortMapping")
+	portId, err := ReadSimpleField(ctx, "portId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portId' field"))
 	}
-	portId := _portId
 
-	// Simple Field (portInfoLength)
-	_portInfoLength, _portInfoLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("portInfoLength", 8)
-	if _portInfoLengthErr != nil {
-		return nil, errors.Wrap(_portInfoLengthErr, "Error parsing 'portInfoLength' field of NLMInitializeRoutingTablePortMapping")
+	portInfoLength, err := ReadSimpleField(ctx, "portInfoLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portInfoLength' field"))
 	}
-	portInfoLength := _portInfoLength
 
 	portInfo, err := readBuffer.ReadByteArray("portInfo", int(portInfoLength))
 	if err != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetChannelValueOctetStringParse(ctx context.Context, theBytes []byte) (B
 	return BACnetChannelValueOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetChannelValueOctetStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
+		return BACnetChannelValueOctetStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetChannelValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetChannelValueOctetStringParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octetStringValue)
-	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
-	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetChannelValueOctetString")
-	}
-	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
+	octetStringValue, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octetStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueOctetString"); closeErr != nil {

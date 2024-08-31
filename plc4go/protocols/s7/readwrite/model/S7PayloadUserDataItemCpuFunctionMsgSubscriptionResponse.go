@@ -121,6 +121,12 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParse(ctx context.Co
 	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
+		return S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

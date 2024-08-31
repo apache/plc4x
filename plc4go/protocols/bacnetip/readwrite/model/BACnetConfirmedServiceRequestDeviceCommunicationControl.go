@@ -159,6 +159,12 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParse(ctx context.Co
 	return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
+		return BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestDeviceCommunicationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,13 +176,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_timeDuration, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_timeDuration, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDuration' field"))
 	}
@@ -185,26 +185,12 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx 
 		timeDuration = *_timeDuration
 	}
 
-	// Simple Field (enableDisable)
-	if pullErr := readBuffer.PullContext("enableDisable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enableDisable")
-	}
-	_enableDisable, _enableDisableErr := BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _enableDisableErr != nil {
-		return nil, errors.Wrap(_enableDisableErr, "Error parsing 'enableDisable' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
-	}
-	enableDisable := _enableDisable.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged)
-	if closeErr := readBuffer.CloseContext("enableDisable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enableDisable")
+	enableDisable, err := ReadSimpleField[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged](ctx, "enableDisable", ReadComplex[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTagged](BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableDisable' field"))
 	}
 
-	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagCharacterString), nil
-	}, readBuffer), true)
+	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
 	}

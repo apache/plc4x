@@ -109,6 +109,12 @@ func UnionParse(ctx context.Context, theBytes []byte, identifier string) (Union,
 	return UnionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UnionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (Union, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Union, error) {
+		return UnionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UnionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Union, error) {
 	positionAware := readBuffer
 	_ = positionAware

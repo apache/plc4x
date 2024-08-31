@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,6 +151,12 @@ func ModbusPDUWriteSingleCoilRequestParse(ctx context.Context, theBytes []byte, 
 	return ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUWriteSingleCoilRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteSingleCoilRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteSingleCoilRequest, error) {
+		return ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteSingleCoilRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,19 +168,15 @@ func ModbusPDUWriteSingleCoilRequestParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ModbusPDUWriteSingleCoilRequest")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadUint16("value", 16)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ModbusPDUWriteSingleCoilRequest")
+	value, err := ReadSimpleField(ctx, "value", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUWriteSingleCoilRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUWriteSingleCoilRequest")

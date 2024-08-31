@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEventParametersParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataEventParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEventParametersParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventParameters, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventParameters, error) {
+		return BACnetConstructedDataEventParametersParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEventParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEventParametersParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventParameter)
-	if pullErr := readBuffer.PullContext("eventParameter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventParameter")
-	}
-	_eventParameter, _eventParameterErr := BACnetEventParameterParseWithBuffer(ctx, readBuffer)
-	if _eventParameterErr != nil {
-		return nil, errors.Wrap(_eventParameterErr, "Error parsing 'eventParameter' field of BACnetConstructedDataEventParameters")
-	}
-	eventParameter := _eventParameter.(BACnetEventParameter)
-	if closeErr := readBuffer.CloseContext("eventParameter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventParameter")
+	eventParameter, err := ReadSimpleField[BACnetEventParameter](ctx, "eventParameter", ReadComplex[BACnetEventParameter](BACnetEventParameterParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventParameter' field"))
 	}
 
 	// Virtual field

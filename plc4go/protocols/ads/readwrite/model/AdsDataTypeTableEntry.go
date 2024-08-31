@@ -317,6 +317,12 @@ func AdsDataTypeTableEntryParse(ctx context.Context, theBytes []byte) (AdsDataTy
 	return AdsDataTypeTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsDataTypeTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
+		return AdsDataTypeTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -330,128 +336,102 @@ func AdsDataTypeTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	// Simple Field (entryLength)
-	_entryLength, _entryLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("entryLength", 32)
-	if _entryLengthErr != nil {
-		return nil, errors.Wrap(_entryLengthErr, "Error parsing 'entryLength' field of AdsDataTypeTableEntry")
+	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'entryLength' field"))
 	}
-	entryLength := _entryLength
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsDataTypeTableEntry")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
 
-	// Simple Field (hashValue)
-	_hashValue, _hashValueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("hashValue", 32)
-	if _hashValueErr != nil {
-		return nil, errors.Wrap(_hashValueErr, "Error parsing 'hashValue' field of AdsDataTypeTableEntry")
+	hashValue, err := ReadSimpleField(ctx, "hashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hashValue' field"))
 	}
-	hashValue := _hashValue
 
-	// Simple Field (typeHashValue)
-	_typeHashValue, _typeHashValueErr := /*TODO: migrate me*/ readBuffer.ReadUint32("typeHashValue", 32)
-	if _typeHashValueErr != nil {
-		return nil, errors.Wrap(_typeHashValueErr, "Error parsing 'typeHashValue' field of AdsDataTypeTableEntry")
+	typeHashValue, err := ReadSimpleField(ctx, "typeHashValue", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeHashValue' field"))
 	}
-	typeHashValue := _typeHashValue
 
-	// Simple Field (size)
-	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("size", 32)
-	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of AdsDataTypeTableEntry")
+	size, err := ReadSimpleField(ctx, "size", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'size' field"))
 	}
-	size := _size
 
-	// Simple Field (offset)
-	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("offset", 32)
-	if _offsetErr != nil {
-		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of AdsDataTypeTableEntry")
+	offset, err := ReadSimpleField(ctx, "offset", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offset' field"))
 	}
-	offset := _offset
 
-	// Simple Field (dataType)
-	_dataType, _dataTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataType", 32)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of AdsDataTypeTableEntry")
+	dataType, err := ReadSimpleField(ctx, "dataType", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
-	dataType := _dataType
 
-	// Simple Field (flags)
-	_flags, _flagsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("flags", 32)
-	if _flagsErr != nil {
-		return nil, errors.Wrap(_flagsErr, "Error parsing 'flags' field of AdsDataTypeTableEntry")
+	flags, err := ReadSimpleField(ctx, "flags", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flags' field"))
 	}
-	flags := _flags
 
-	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameLength' field"))
 	}
 	_ = dataTypeNameLength
 
-	simpleTypeNameLength, err := ReadImplicitField[uint16](ctx, "simpleTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	simpleTypeNameLength, err := ReadImplicitField[uint16](ctx, "simpleTypeNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleTypeNameLength' field"))
 	}
 	_ = simpleTypeNameLength
 
-	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
 	_ = commentLength
 
-	// Simple Field (arrayDimensions)
-	_arrayDimensions, _arrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("arrayDimensions", 16)
-	if _arrayDimensionsErr != nil {
-		return nil, errors.Wrap(_arrayDimensionsErr, "Error parsing 'arrayDimensions' field of AdsDataTypeTableEntry")
+	arrayDimensions, err := ReadSimpleField(ctx, "arrayDimensions", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
-	arrayDimensions := _arrayDimensions
 
-	// Simple Field (numChildren)
-	_numChildren, _numChildrenErr := /*TODO: migrate me*/ readBuffer.ReadUint16("numChildren", 16)
-	if _numChildrenErr != nil {
-		return nil, errors.Wrap(_numChildrenErr, "Error parsing 'numChildren' field of AdsDataTypeTableEntry")
+	numChildren, err := ReadSimpleField(ctx, "numChildren", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numChildren' field"))
 	}
-	numChildren := _numChildren
 
-	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _dataTypeNameErr != nil {
-		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsDataTypeTableEntry")
+	dataTypeName, err := ReadSimpleField(ctx, "dataTypeName", ReadString(readBuffer, uint32(int32(dataTypeNameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeName' field"))
 	}
-	dataTypeName := _dataTypeName
 
-	dataTypeNameTerminator, err := ReadConstField[uint8](ctx, "dataTypeNameTerminator", ReadUnsignedByte(readBuffer, 8), AdsDataTypeTableEntry_DATATYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	dataTypeNameTerminator, err := ReadConstField[uint8](ctx, "dataTypeNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_DATATYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameTerminator' field"))
 	}
 	_ = dataTypeNameTerminator
 
-	// Simple Field (simpleTypeName)
-	_simpleTypeName, _simpleTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("simpleTypeName", uint32((simpleTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _simpleTypeNameErr != nil {
-		return nil, errors.Wrap(_simpleTypeNameErr, "Error parsing 'simpleTypeName' field of AdsDataTypeTableEntry")
+	simpleTypeName, err := ReadSimpleField(ctx, "simpleTypeName", ReadString(readBuffer, uint32(int32(simpleTypeNameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleTypeName' field"))
 	}
-	simpleTypeName := _simpleTypeName
 
-	simpleTypeNameTerminator, err := ReadConstField[uint8](ctx, "simpleTypeNameTerminator", ReadUnsignedByte(readBuffer, 8), AdsDataTypeTableEntry_SIMPLETYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	simpleTypeNameTerminator, err := ReadConstField[uint8](ctx, "simpleTypeNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_SIMPLETYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleTypeNameTerminator' field"))
 	}
 	_ = simpleTypeNameTerminator
 
-	// Simple Field (comment)
-	_comment, _commentErr := /*TODO: migrate me*/ readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _commentErr != nil {
-		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsDataTypeTableEntry")
+	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comment' field"))
 	}
-	comment := _comment
 
-	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, 8), AdsDataTypeTableEntry_COMMENTTERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsDataTypeTableEntry_COMMENTTERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentTerminator' field"))
 	}

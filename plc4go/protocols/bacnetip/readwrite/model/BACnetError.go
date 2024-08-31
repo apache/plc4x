@@ -106,6 +106,17 @@ func BACnetErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetCo
 	return BACnetErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
+func BACnetErrorParseWithBufferProducer[T BACnetError](errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (BACnetError, error) {
 	positionAware := readBuffer
 	_ = positionAware

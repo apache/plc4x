@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func MediaTransportControlDataSetSelectionParse(ctx context.Context, theBytes []
 	return MediaTransportControlDataSetSelectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataSetSelectionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
+		return MediaTransportControlDataSetSelectionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,19 +159,15 @@ func MediaTransportControlDataSetSelectionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (selectionHi)
-	_selectionHi, _selectionHiErr := /*TODO: migrate me*/ readBuffer.ReadByte("selectionHi")
-	if _selectionHiErr != nil {
-		return nil, errors.Wrap(_selectionHiErr, "Error parsing 'selectionHi' field of MediaTransportControlDataSetSelection")
+	selectionHi, err := ReadSimpleField(ctx, "selectionHi", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionHi' field"))
 	}
-	selectionHi := _selectionHi
 
-	// Simple Field (selectionLo)
-	_selectionLo, _selectionLoErr := /*TODO: migrate me*/ readBuffer.ReadByte("selectionLo")
-	if _selectionLoErr != nil {
-		return nil, errors.Wrap(_selectionLoErr, "Error parsing 'selectionLo' field of MediaTransportControlDataSetSelection")
+	selectionLo, err := ReadSimpleField(ctx, "selectionLo", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionLo' field"))
 	}
-	selectionLo := _selectionLo
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSetSelection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSetSelection")

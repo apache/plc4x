@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProtocolLevelParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataProtocolLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProtocolLevelParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolLevel, error) {
+		return BACnetConstructedDataProtocolLevelParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProtocolLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProtocolLevelParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolLevel)
-	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
-	}
-	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _protocolLevelErr != nil {
-		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetConstructedDataProtocolLevel")
-	}
-	protocolLevel := _protocolLevel.(BACnetProtocolLevelTagged)
-	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolLevel")
+	protocolLevel, err := ReadSimpleField[BACnetProtocolLevelTagged](ctx, "protocolLevel", ReadComplex[BACnetProtocolLevelTagged](BACnetProtocolLevelTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolLevel' field"))
 	}
 
 	// Virtual field

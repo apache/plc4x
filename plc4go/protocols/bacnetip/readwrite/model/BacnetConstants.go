@@ -105,6 +105,12 @@ func BacnetConstantsParse(ctx context.Context, theBytes []byte) (BacnetConstants
 	return BacnetConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BacnetConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {
+		return BacnetConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BacnetConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -116,7 +122,7 @@ func BacnetConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetUdpDefaultPort, err := ReadConstField[uint16](ctx, "bacnetUdpDefaultPort", ReadUnsignedShort(readBuffer, 16), BacnetConstants_BACNETUDPDEFAULTPORT)
+	bacnetUdpDefaultPort, err := ReadConstField[uint16](ctx, "bacnetUdpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), BacnetConstants_BACNETUDPDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetUdpDefaultPort' field"))
 	}

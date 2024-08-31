@@ -148,6 +148,12 @@ func ApduDataMemoryResponseParse(ctx context.Context, theBytes []byte, dataLengt
 	return ApduDataMemoryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataMemoryResponseParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryResponse, error) {
+		return ApduDataMemoryResponseParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,18 +165,16 @@ func ApduDataMemoryResponseParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numBytes, err := ReadImplicitField[uint8](ctx, "numBytes", ReadUnsignedByte(readBuffer, 6))
+	numBytes, err := ReadImplicitField[uint8](ctx, "numBytes", ReadUnsignedByte(readBuffer, uint8(6)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBytes' field"))
 	}
 	_ = numBytes
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApduDataMemoryResponse")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
 	data, err := readBuffer.ReadByteArray("data", int(numBytes))
 	if err != nil {

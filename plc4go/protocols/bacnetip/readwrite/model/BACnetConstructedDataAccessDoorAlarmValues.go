@@ -144,6 +144,12 @@ func BACnetConstructedDataAccessDoorAlarmValuesParse(ctx context.Context, theByt
 	return BACnetConstructedDataAccessDoorAlarmValuesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccessDoorAlarmValuesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessDoorAlarmValues, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessDoorAlarmValues, error) {
+		return BACnetConstructedDataAccessDoorAlarmValuesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccessDoorAlarmValuesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessDoorAlarmValues, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,13 +161,7 @@ func BACnetConstructedDataAccessDoorAlarmValuesParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	alarmValues, err := ReadTerminatedArrayField[BACnetDoorAlarmStateTagged](ctx, "alarmValues", ReadComplex[BACnetDoorAlarmStateTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDoorAlarmStateTagged, error) {
-		v, err := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetDoorAlarmStateTagged), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	alarmValues, err := ReadTerminatedArrayField[BACnetDoorAlarmStateTagged](ctx, "alarmValues", ReadComplex[BACnetDoorAlarmStateTagged](BACnetDoorAlarmStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}

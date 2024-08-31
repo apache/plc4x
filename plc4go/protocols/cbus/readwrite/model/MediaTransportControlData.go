@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,17 @@ func MediaTransportControlDataParse(ctx context.Context, theBytes []byte) (Media
 	return MediaTransportControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataParseWithBufferProducer[T MediaTransportControlData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := MediaTransportControlDataParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,17 +182,9 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := MediaTransportControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of MediaTransportControlData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[MediaTransportControlCommandTypeContainer](ctx, "commandTypeContainer", "MediaTransportControlCommandTypeContainer", ReadEnum(MediaTransportControlCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -187,12 +192,10 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 	commandType := MediaTransportControlCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (mediaLinkGroup)
-	_mediaLinkGroup, _mediaLinkGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("mediaLinkGroup")
-	if _mediaLinkGroupErr != nil {
-		return nil, errors.Wrap(_mediaLinkGroupErr, "Error parsing 'mediaLinkGroup' field of MediaTransportControlData")
+	mediaLinkGroup, err := ReadSimpleField(ctx, "mediaLinkGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mediaLinkGroup' field"))
 	}
-	mediaLinkGroup := _mediaLinkGroup
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MediaTransportControlDataChildSerializeRequirement interface {

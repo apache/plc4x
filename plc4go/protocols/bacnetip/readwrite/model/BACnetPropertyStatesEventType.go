@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesEventTypeParse(ctx context.Context, theBytes []byte, pe
 	return BACnetPropertyStatesEventTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesEventTypeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEventType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEventType, error) {
+		return BACnetPropertyStatesEventTypeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesEventTypeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventType)
-	if pullErr := readBuffer.PullContext("eventType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventType")
-	}
-	_eventType, _eventTypeErr := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventTypeErr != nil {
-		return nil, errors.Wrap(_eventTypeErr, "Error parsing 'eventType' field of BACnetPropertyStatesEventType")
-	}
-	eventType := _eventType.(BACnetEventTypeTagged)
-	if closeErr := readBuffer.CloseContext("eventType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventType")
+	eventType, err := ReadSimpleField[BACnetEventTypeTagged](ctx, "eventType", ReadComplex[BACnetEventTypeTagged](BACnetEventTypeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEventType"); closeErr != nil {

@@ -184,6 +184,12 @@ func S7PayloadUserDataItemCyclicServicesSubscribeRequestParse(ctx context.Contex
 	return S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
+		return S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesSubscribeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -195,32 +201,20 @@ func S7PayloadUserDataItemCyclicServicesSubscribeRequestParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemsCount)
-	_itemsCount, _itemsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("itemsCount", 16)
-	if _itemsCountErr != nil {
-		return nil, errors.Wrap(_itemsCountErr, "Error parsing 'itemsCount' field of S7PayloadUserDataItemCyclicServicesSubscribeRequest")
-	}
-	itemsCount := _itemsCount
-
-	// Simple Field (timeBase)
-	if pullErr := readBuffer.PullContext("timeBase"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeBase")
-	}
-	_timeBase, _timeBaseErr := TimeBaseParseWithBuffer(ctx, readBuffer)
-	if _timeBaseErr != nil {
-		return nil, errors.Wrap(_timeBaseErr, "Error parsing 'timeBase' field of S7PayloadUserDataItemCyclicServicesSubscribeRequest")
-	}
-	timeBase := _timeBase
-	if closeErr := readBuffer.CloseContext("timeBase"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeBase")
+	itemsCount, err := ReadSimpleField(ctx, "itemsCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsCount' field"))
 	}
 
-	// Simple Field (timeFactor)
-	_timeFactor, _timeFactorErr := /*TODO: migrate me*/ readBuffer.ReadUint8("timeFactor", 8)
-	if _timeFactorErr != nil {
-		return nil, errors.Wrap(_timeFactorErr, "Error parsing 'timeFactor' field of S7PayloadUserDataItemCyclicServicesSubscribeRequest")
+	timeBase, err := ReadEnumField[TimeBase](ctx, "timeBase", "TimeBase", ReadEnum(TimeBaseByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeBase' field"))
 	}
-	timeFactor := _timeFactor
+
+	timeFactor, err := ReadSimpleField(ctx, "timeFactor", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeFactor' field"))
+	}
 
 	item, err := ReadCountArrayField[CycServiceItemType](ctx, "item", ReadComplex[CycServiceItemType](CycServiceItemTypeParseWithBuffer, readBuffer), uint64(itemsCount))
 	if err != nil {

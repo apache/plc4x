@@ -109,6 +109,12 @@ func MResetReqParse(ctx context.Context, theBytes []byte, size uint16) (MResetRe
 	return MResetReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MResetReqParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MResetReq, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MResetReq, error) {
+		return MResetReqParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MResetReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MResetReq, error) {
 	positionAware := readBuffer
 	_ = positionAware

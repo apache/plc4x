@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func AirConditioningDataSetZoneGroupOnParse(ctx context.Context, theBytes []byte
 	return AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AirConditioningDataSetZoneGroupOnParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
+		return AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetZoneGroupOn, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,12 +147,10 @@ func AirConditioningDataSetZoneGroupOnParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetZoneGroupOn")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
-	zoneGroup := _zoneGroup
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetZoneGroupOn"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AirConditioningDataSetZoneGroupOn")

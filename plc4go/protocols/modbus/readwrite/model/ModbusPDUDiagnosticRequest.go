@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,6 +151,12 @@ func ModbusPDUDiagnosticRequestParse(ctx context.Context, theBytes []byte, respo
 	return ModbusPDUDiagnosticRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUDiagnosticRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUDiagnosticRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUDiagnosticRequest, error) {
+		return ModbusPDUDiagnosticRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUDiagnosticRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUDiagnosticRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,19 +168,15 @@ func ModbusPDUDiagnosticRequestParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subFunction)
-	_subFunction, _subFunctionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("subFunction", 16)
-	if _subFunctionErr != nil {
-		return nil, errors.Wrap(_subFunctionErr, "Error parsing 'subFunction' field of ModbusPDUDiagnosticRequest")
+	subFunction, err := ReadSimpleField(ctx, "subFunction", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subFunction' field"))
 	}
-	subFunction := _subFunction
 
-	// Simple Field (data)
-	_data, _dataErr := /*TODO: migrate me*/ readBuffer.ReadUint16("data", 16)
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of ModbusPDUDiagnosticRequest")
+	data, err := ReadSimpleField(ctx, "data", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	data := _data
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUDiagnosticRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUDiagnosticRequest")

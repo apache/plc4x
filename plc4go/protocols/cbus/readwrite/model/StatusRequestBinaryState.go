@@ -139,6 +139,12 @@ func StatusRequestBinaryStateParse(ctx context.Context, theBytes []byte) (Status
 	return StatusRequestBinaryStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusRequestBinaryStateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
+		return StatusRequestBinaryStateParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,17 +161,9 @@ func StatusRequestBinaryStateParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryState")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))

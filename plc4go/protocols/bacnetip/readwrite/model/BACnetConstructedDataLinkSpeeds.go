@@ -178,6 +178,12 @@ func BACnetConstructedDataLinkSpeedsParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataLinkSpeedsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLinkSpeedsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeeds, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeeds, error) {
+		return BACnetConstructedDataLinkSpeedsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLinkSpeedsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeeds, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,13 +200,7 @@ func BACnetConstructedDataLinkSpeedsParseWithBuffer(ctx context.Context, readBuf
 	zero := uint64(_zero)
 	_ = zero
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -209,13 +209,7 @@ func BACnetConstructedDataLinkSpeedsParseWithBuffer(ctx context.Context, readBuf
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	linkSpeeds, err := ReadTerminatedArrayField[BACnetApplicationTagReal](ctx, "linkSpeeds", ReadComplex[BACnetApplicationTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagReal, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagReal), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	linkSpeeds, err := ReadTerminatedArrayField[BACnetApplicationTagReal](ctx, "linkSpeeds", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeeds' field"))
 	}

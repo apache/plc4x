@@ -118,6 +118,17 @@ func ModbusPDUParse(ctx context.Context, theBytes []byte, response bool) (Modbus
 	return ModbusPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUParseWithBufferProducer[T ModbusPDU](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ModbusPDUParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,7 +145,7 @@ func ModbusPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorFlag' field"))
 	}
 
-	functionFlag, err := ReadDiscriminatorField[uint8](ctx, "functionFlag", ReadUnsignedByte(readBuffer, 7))
+	functionFlag, err := ReadDiscriminatorField[uint8](ctx, "functionFlag", ReadUnsignedByte(readBuffer, uint8(7)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionFlag' field"))
 	}

@@ -146,6 +146,12 @@ func CBusPointToMultiPointCommandNormalParse(ctx context.Context, theBytes []byt
 	return CBusPointToMultiPointCommandNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToMultiPointCommandNormalParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToMultiPointCommandNormal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToMultiPointCommandNormal, error) {
+		return CBusPointToMultiPointCommandNormalParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,17 +163,9 @@ func CBusPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToMultiPointCommandNormal")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
 	reservedField0, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))
@@ -175,17 +173,9 @@ func CBusPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (salData)
-	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for salData")
-	}
-	_salData, _salDataErr := SALDataParseWithBuffer(ctx, readBuffer, ApplicationId(application.ApplicationId()))
-	if _salDataErr != nil {
-		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToMultiPointCommandNormal")
-	}
-	salData := _salData.(SALData)
-	if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for salData")
+	salData, err := ReadSimpleField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandNormal"); closeErr != nil {

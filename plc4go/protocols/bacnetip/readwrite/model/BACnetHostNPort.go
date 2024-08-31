@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetHostNPortParse(ctx context.Context, theBytes []byte) (BACnetHostNPort
 	return BACnetHostNPortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetHostNPortParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
+		return BACnetHostNPortParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostNPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetHostNPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (host)
-	if pullErr := readBuffer.PullContext("host"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for host")
-	}
-	_host, _hostErr := BACnetHostAddressEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _hostErr != nil {
-		return nil, errors.Wrap(_hostErr, "Error parsing 'host' field of BACnetHostNPort")
-	}
-	host := _host.(BACnetHostAddressEnclosed)
-	if closeErr := readBuffer.CloseContext("host"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for host")
+	host, err := ReadSimpleField[BACnetHostAddressEnclosed](ctx, "host", ReadComplex[BACnetHostAddressEnclosed](BACnetHostAddressEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'host' field"))
 	}
 
-	// Simple Field (port)
-	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for port")
-	}
-	_port, _portErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetHostNPort")
-	}
-	port := _port.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for port")
+	port, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "port", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostNPort"); closeErr != nil {

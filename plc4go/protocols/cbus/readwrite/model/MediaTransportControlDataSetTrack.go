@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -162,6 +164,12 @@ func MediaTransportControlDataSetTrackParse(ctx context.Context, theBytes []byte
 	return MediaTransportControlDataSetTrackParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataSetTrackParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
+		return MediaTransportControlDataSetTrackParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataSetTrackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetTrack, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -173,33 +181,25 @@ func MediaTransportControlDataSetTrackParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackMSB)
-	_trackMSB, _trackMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMSB")
-	if _trackMSBErr != nil {
-		return nil, errors.Wrap(_trackMSBErr, "Error parsing 'trackMSB' field of MediaTransportControlDataSetTrack")
+	trackMSB, err := ReadSimpleField(ctx, "trackMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMSB' field"))
 	}
-	trackMSB := _trackMSB
 
-	// Simple Field (trackMMSB)
-	_trackMMSB, _trackMMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMMSB")
-	if _trackMMSBErr != nil {
-		return nil, errors.Wrap(_trackMMSBErr, "Error parsing 'trackMMSB' field of MediaTransportControlDataSetTrack")
+	trackMMSB, err := ReadSimpleField(ctx, "trackMMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMMSB' field"))
 	}
-	trackMMSB := _trackMMSB
 
-	// Simple Field (trackMLSB)
-	_trackMLSB, _trackMLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackMLSB")
-	if _trackMLSBErr != nil {
-		return nil, errors.Wrap(_trackMLSBErr, "Error parsing 'trackMLSB' field of MediaTransportControlDataSetTrack")
+	trackMLSB, err := ReadSimpleField(ctx, "trackMLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackMLSB' field"))
 	}
-	trackMLSB := _trackMLSB
 
-	// Simple Field (trackLSB)
-	_trackLSB, _trackLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("trackLSB")
-	if _trackLSBErr != nil {
-		return nil, errors.Wrap(_trackLSBErr, "Error parsing 'trackLSB' field of MediaTransportControlDataSetTrack")
+	trackLSB, err := ReadSimpleField(ctx, "trackLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackLSB' field"))
 	}
-	trackLSB := _trackLSB
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSetTrack"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSetTrack")

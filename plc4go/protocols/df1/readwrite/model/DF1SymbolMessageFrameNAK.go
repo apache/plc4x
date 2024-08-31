@@ -110,6 +110,12 @@ func DF1SymbolMessageFrameNAKParse(ctx context.Context, theBytes []byte) (DF1Sym
 	return DF1SymbolMessageFrameNAKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DF1SymbolMessageFrameNAKParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
+		return DF1SymbolMessageFrameNAKParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1SymbolMessageFrameNAKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameNAK, error) {
 	positionAware := readBuffer
 	_ = positionAware

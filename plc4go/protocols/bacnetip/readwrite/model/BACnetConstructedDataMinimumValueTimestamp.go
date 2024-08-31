@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMinimumValueTimestampParse(ctx context.Context, theByt
 	return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMinimumValueTimestampParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumValueTimestamp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumValueTimestamp, error) {
+		return BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValueTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMinimumValueTimestampParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumValueTimestamp)
-	if pullErr := readBuffer.PullContext("minimumValueTimestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumValueTimestamp")
-	}
-	_minimumValueTimestamp, _minimumValueTimestampErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _minimumValueTimestampErr != nil {
-		return nil, errors.Wrap(_minimumValueTimestampErr, "Error parsing 'minimumValueTimestamp' field of BACnetConstructedDataMinimumValueTimestamp")
-	}
-	minimumValueTimestamp := _minimumValueTimestamp.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("minimumValueTimestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumValueTimestamp")
+	minimumValueTimestamp, err := ReadSimpleField[BACnetDateTime](ctx, "minimumValueTimestamp", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumValueTimestamp' field"))
 	}
 
 	// Virtual field

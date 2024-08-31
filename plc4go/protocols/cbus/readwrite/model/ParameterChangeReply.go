@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func ParameterChangeReplyParse(ctx context.Context, theBytes []byte, cBusOptions
 	return ParameterChangeReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func ParameterChangeReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChangeReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChangeReply, error) {
+		return ParameterChangeReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func ParameterChangeReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ParameterChangeReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func ParameterChangeReplyParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (parameterChange)
-	if pullErr := readBuffer.PullContext("parameterChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameterChange")
-	}
-	_parameterChange, _parameterChangeErr := ParameterChangeParseWithBuffer(ctx, readBuffer)
-	if _parameterChangeErr != nil {
-		return nil, errors.Wrap(_parameterChangeErr, "Error parsing 'parameterChange' field of ParameterChangeReply")
-	}
-	parameterChange := _parameterChange.(ParameterChange)
-	if closeErr := readBuffer.CloseContext("parameterChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameterChange")
+	parameterChange, err := ReadSimpleField[ParameterChange](ctx, "parameterChange", ReadComplex[ParameterChange](ParameterChangeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterChange' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterChangeReply"); closeErr != nil {

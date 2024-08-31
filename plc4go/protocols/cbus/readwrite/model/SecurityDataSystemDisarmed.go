@@ -108,6 +108,12 @@ func SecurityDataSystemDisarmedParse(ctx context.Context, theBytes []byte) (Secu
 	return SecurityDataSystemDisarmedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataSystemDisarmedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemDisarmed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemDisarmed, error) {
+		return SecurityDataSystemDisarmedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataSystemDisarmedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemDisarmed, error) {
 	positionAware := readBuffer
 	_ = positionAware

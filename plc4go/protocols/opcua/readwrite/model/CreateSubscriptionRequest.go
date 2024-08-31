@@ -203,6 +203,12 @@ func CreateSubscriptionRequestParse(ctx context.Context, theBytes []byte, identi
 	return CreateSubscriptionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CreateSubscriptionRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSubscriptionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSubscriptionRequest, error) {
+		return CreateSubscriptionRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CreateSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSubscriptionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -214,65 +220,45 @@ func CreateSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CreateSubscriptionRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (requestedPublishingInterval)
-	_requestedPublishingInterval, _requestedPublishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("requestedPublishingInterval", 64)
-	if _requestedPublishingIntervalErr != nil {
-		return nil, errors.Wrap(_requestedPublishingIntervalErr, "Error parsing 'requestedPublishingInterval' field of CreateSubscriptionRequest")
+	requestedPublishingInterval, err := ReadSimpleField(ctx, "requestedPublishingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedPublishingInterval' field"))
 	}
-	requestedPublishingInterval := _requestedPublishingInterval
 
-	// Simple Field (requestedLifetimeCount)
-	_requestedLifetimeCount, _requestedLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedLifetimeCount", 32)
-	if _requestedLifetimeCountErr != nil {
-		return nil, errors.Wrap(_requestedLifetimeCountErr, "Error parsing 'requestedLifetimeCount' field of CreateSubscriptionRequest")
+	requestedLifetimeCount, err := ReadSimpleField(ctx, "requestedLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedLifetimeCount' field"))
 	}
-	requestedLifetimeCount := _requestedLifetimeCount
 
-	// Simple Field (requestedMaxKeepAliveCount)
-	_requestedMaxKeepAliveCount, _requestedMaxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedMaxKeepAliveCount", 32)
-	if _requestedMaxKeepAliveCountErr != nil {
-		return nil, errors.Wrap(_requestedMaxKeepAliveCountErr, "Error parsing 'requestedMaxKeepAliveCount' field of CreateSubscriptionRequest")
+	requestedMaxKeepAliveCount, err := ReadSimpleField(ctx, "requestedMaxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedMaxKeepAliveCount' field"))
 	}
-	requestedMaxKeepAliveCount := _requestedMaxKeepAliveCount
 
-	// Simple Field (maxNotificationsPerPublish)
-	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
-	if _maxNotificationsPerPublishErr != nil {
-		return nil, errors.Wrap(_maxNotificationsPerPublishErr, "Error parsing 'maxNotificationsPerPublish' field of CreateSubscriptionRequest")
+	maxNotificationsPerPublish, err := ReadSimpleField(ctx, "maxNotificationsPerPublish", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationsPerPublish' field"))
 	}
-	maxNotificationsPerPublish := _maxNotificationsPerPublish
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (publishingEnabled)
-	_publishingEnabled, _publishingEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("publishingEnabled")
-	if _publishingEnabledErr != nil {
-		return nil, errors.Wrap(_publishingEnabledErr, "Error parsing 'publishingEnabled' field of CreateSubscriptionRequest")
+	publishingEnabled, err := ReadSimpleField(ctx, "publishingEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingEnabled' field"))
 	}
-	publishingEnabled := _publishingEnabled
 
-	// Simple Field (priority)
-	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 8)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of CreateSubscriptionRequest")
+	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-	priority := _priority
 
 	if closeErr := readBuffer.CloseContext("CreateSubscriptionRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CreateSubscriptionRequest")

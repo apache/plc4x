@@ -160,6 +160,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParse(ctx context.Context, 
 	return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
+		return S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,20 +177,18 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckResponseParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (functionId)
-	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of S7PayloadUserDataItemCpuFunctionAlarmAckResponse")
+	functionId, err := ReadSimpleField(ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	functionId := _functionId
 
-	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, 8))
+	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
 	_ = numberOfObjects
 
-	messageObjects, err := ReadCountArrayField[uint8](ctx, "messageObjects", ReadUnsignedByte(readBuffer, 8), uint64(numberOfObjects))
+	messageObjects, err := ReadCountArrayField[uint8](ctx, "messageObjects", ReadUnsignedByte(readBuffer, uint8(8)), uint64(numberOfObjects))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageObjects' field"))
 	}

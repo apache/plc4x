@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataVerificationTimeParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataVerificationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataVerificationTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVerificationTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVerificationTime, error) {
+		return BACnetConstructedDataVerificationTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataVerificationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVerificationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataVerificationTimeParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (verificationTime)
-	if pullErr := readBuffer.PullContext("verificationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for verificationTime")
-	}
-	_verificationTime, _verificationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _verificationTimeErr != nil {
-		return nil, errors.Wrap(_verificationTimeErr, "Error parsing 'verificationTime' field of BACnetConstructedDataVerificationTime")
-	}
-	verificationTime := _verificationTime.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("verificationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for verificationTime")
+	verificationTime, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'verificationTime' field"))
 	}
 
 	// Virtual field

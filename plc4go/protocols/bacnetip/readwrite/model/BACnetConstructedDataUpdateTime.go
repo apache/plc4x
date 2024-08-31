@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUpdateTimeParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataUpdateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUpdateTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateTime, error) {
+		return BACnetConstructedDataUpdateTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUpdateTimeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateTime)
-	if pullErr := readBuffer.PullContext("updateTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateTime")
-	}
-	_updateTime, _updateTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _updateTimeErr != nil {
-		return nil, errors.Wrap(_updateTimeErr, "Error parsing 'updateTime' field of BACnetConstructedDataUpdateTime")
-	}
-	updateTime := _updateTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("updateTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateTime")
+	updateTime, err := ReadSimpleField[BACnetDateTime](ctx, "updateTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateTime' field"))
 	}
 
 	// Virtual field

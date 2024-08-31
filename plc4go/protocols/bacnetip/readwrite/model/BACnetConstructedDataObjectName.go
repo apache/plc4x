@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataObjectNameParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataObjectNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataObjectNameParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataObjectName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataObjectName, error) {
+		return BACnetConstructedDataObjectNameParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataObjectNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataObjectNameParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectName)
-	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
-	}
-	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectNameErr != nil {
-		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetConstructedDataObjectName")
-	}
-	objectName := _objectName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectName")
+	objectName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "objectName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectName' field"))
 	}
 
 	// Virtual field

@@ -139,6 +139,12 @@ func StatusRequestBinaryStateDeprecatedParse(ctx context.Context, theBytes []byt
 	return StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusRequestBinaryStateDeprecatedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
+		return StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestBinaryStateDeprecated, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,17 +161,9 @@ func StatusRequestBinaryStateDeprecatedParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestBinaryStateDeprecated")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadByte(readBuffer, 8), byte(0x00))

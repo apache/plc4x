@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func BACnetAddressParse(ctx context.Context, theBytes []byte) (BACnetAddress, er
 	return BACnetAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
+		return BACnetAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,17 +171,9 @@ func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumber)
-	if pullErr := readBuffer.PullContext("networkNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkNumber")
-	}
-	_networkNumber, _networkNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of BACnetAddress")
-	}
-	networkNumber := _networkNumber.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("networkNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkNumber")
+	networkNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "networkNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
 
 	// Virtual field
@@ -186,17 +186,9 @@ func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	isLocalNetwork := bool(_isLocalNetwork)
 	_ = isLocalNetwork
 
-	// Simple Field (macAddress)
-	if pullErr := readBuffer.PullContext("macAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for macAddress")
-	}
-	_macAddress, _macAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _macAddressErr != nil {
-		return nil, errors.Wrap(_macAddressErr, "Error parsing 'macAddress' field of BACnetAddress")
-	}
-	macAddress := _macAddress.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("macAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for macAddress")
+	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'macAddress' field"))
 	}
 
 	// Virtual field

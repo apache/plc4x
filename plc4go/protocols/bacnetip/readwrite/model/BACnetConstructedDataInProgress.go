@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataInProgressParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataInProgressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataInProgressParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInProgress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInProgress, error) {
+		return BACnetConstructedDataInProgressParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataInProgressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataInProgressParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (inProgress)
-	if pullErr := readBuffer.PullContext("inProgress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inProgress")
-	}
-	_inProgress, _inProgressErr := BACnetLightingInProgressTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _inProgressErr != nil {
-		return nil, errors.Wrap(_inProgressErr, "Error parsing 'inProgress' field of BACnetConstructedDataInProgress")
-	}
-	inProgress := _inProgress.(BACnetLightingInProgressTagged)
-	if closeErr := readBuffer.CloseContext("inProgress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inProgress")
+	inProgress, err := ReadSimpleField[BACnetLightingInProgressTagged](ctx, "inProgress", ReadComplex[BACnetLightingInProgressTagged](BACnetLightingInProgressTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inProgress' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDescriptionOfHaltParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDescriptionOfHaltParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDescriptionOfHalt, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDescriptionOfHalt, error) {
+		return BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDescriptionOfHalt, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDescriptionOfHaltParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (descriptionForHalt)
-	if pullErr := readBuffer.PullContext("descriptionForHalt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for descriptionForHalt")
-	}
-	_descriptionForHalt, _descriptionForHaltErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _descriptionForHaltErr != nil {
-		return nil, errors.Wrap(_descriptionForHaltErr, "Error parsing 'descriptionForHalt' field of BACnetConstructedDataDescriptionOfHalt")
-	}
-	descriptionForHalt := _descriptionForHalt.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("descriptionForHalt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for descriptionForHalt")
+	descriptionForHalt, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "descriptionForHalt", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptionForHalt' field"))
 	}
 
 	// Virtual field

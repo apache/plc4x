@@ -185,6 +185,12 @@ func AggregateConfigurationParse(ctx context.Context, theBytes []byte, identifie
 	return AggregateConfigurationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AggregateConfigurationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AggregateConfiguration, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AggregateConfiguration, error) {
+		return AggregateConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AggregateConfiguration, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,50 +202,40 @@ func AggregateConfigurationParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 6), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (treatUncertainAsBad)
-	_treatUncertainAsBad, _treatUncertainAsBadErr := /*TODO: migrate me*/ readBuffer.ReadBit("treatUncertainAsBad")
-	if _treatUncertainAsBadErr != nil {
-		return nil, errors.Wrap(_treatUncertainAsBadErr, "Error parsing 'treatUncertainAsBad' field of AggregateConfiguration")
+	treatUncertainAsBad, err := ReadSimpleField(ctx, "treatUncertainAsBad", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'treatUncertainAsBad' field"))
 	}
-	treatUncertainAsBad := _treatUncertainAsBad
 
-	// Simple Field (useServerCapabilitiesDefaults)
-	_useServerCapabilitiesDefaults, _useServerCapabilitiesDefaultsErr := /*TODO: migrate me*/ readBuffer.ReadBit("useServerCapabilitiesDefaults")
-	if _useServerCapabilitiesDefaultsErr != nil {
-		return nil, errors.Wrap(_useServerCapabilitiesDefaultsErr, "Error parsing 'useServerCapabilitiesDefaults' field of AggregateConfiguration")
+	useServerCapabilitiesDefaults, err := ReadSimpleField(ctx, "useServerCapabilitiesDefaults", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useServerCapabilitiesDefaults' field"))
 	}
-	useServerCapabilitiesDefaults := _useServerCapabilitiesDefaults
 
-	// Simple Field (percentDataBad)
-	_percentDataBad, _percentDataBadErr := /*TODO: migrate me*/ readBuffer.ReadUint8("percentDataBad", 8)
-	if _percentDataBadErr != nil {
-		return nil, errors.Wrap(_percentDataBadErr, "Error parsing 'percentDataBad' field of AggregateConfiguration")
+	percentDataBad, err := ReadSimpleField(ctx, "percentDataBad", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'percentDataBad' field"))
 	}
-	percentDataBad := _percentDataBad
 
-	// Simple Field (percentDataGood)
-	_percentDataGood, _percentDataGoodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("percentDataGood", 8)
-	if _percentDataGoodErr != nil {
-		return nil, errors.Wrap(_percentDataGoodErr, "Error parsing 'percentDataGood' field of AggregateConfiguration")
+	percentDataGood, err := ReadSimpleField(ctx, "percentDataGood", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'percentDataGood' field"))
 	}
-	percentDataGood := _percentDataGood
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (useSlopedExtrapolation)
-	_useSlopedExtrapolation, _useSlopedExtrapolationErr := /*TODO: migrate me*/ readBuffer.ReadBit("useSlopedExtrapolation")
-	if _useSlopedExtrapolationErr != nil {
-		return nil, errors.Wrap(_useSlopedExtrapolationErr, "Error parsing 'useSlopedExtrapolation' field of AggregateConfiguration")
+	useSlopedExtrapolation, err := ReadSimpleField(ctx, "useSlopedExtrapolation", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useSlopedExtrapolation' field"))
 	}
-	useSlopedExtrapolation := _useSlopedExtrapolation
 
 	if closeErr := readBuffer.CloseContext("AggregateConfiguration"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AggregateConfiguration")

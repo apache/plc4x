@@ -83,6 +83,12 @@ func BitFieldMaskDataTypeParse(ctx context.Context, theBytes []byte) (BitFieldMa
 	return BitFieldMaskDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BitFieldMaskDataTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
+		return BitFieldMaskDataTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BitFieldMaskDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldMaskDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -183,6 +183,12 @@ func FindServersOnNetworkRequestParse(ctx context.Context, theBytes []byte, iden
 	return FindServersOnNetworkRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func FindServersOnNetworkRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (FindServersOnNetworkRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FindServersOnNetworkRequest, error) {
+		return FindServersOnNetworkRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersOnNetworkRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,39 +200,25 @@ func FindServersOnNetworkRequestParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of FindServersOnNetworkRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (startingRecordId)
-	_startingRecordId, _startingRecordIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("startingRecordId", 32)
-	if _startingRecordIdErr != nil {
-		return nil, errors.Wrap(_startingRecordIdErr, "Error parsing 'startingRecordId' field of FindServersOnNetworkRequest")
+	startingRecordId, err := ReadSimpleField(ctx, "startingRecordId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingRecordId' field"))
 	}
-	startingRecordId := _startingRecordId
 
-	// Simple Field (maxRecordsToReturn)
-	_maxRecordsToReturn, _maxRecordsToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxRecordsToReturn", 32)
-	if _maxRecordsToReturnErr != nil {
-		return nil, errors.Wrap(_maxRecordsToReturnErr, "Error parsing 'maxRecordsToReturn' field of FindServersOnNetworkRequest")
+	maxRecordsToReturn, err := ReadSimpleField(ctx, "maxRecordsToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxRecordsToReturn' field"))
 	}
-	maxRecordsToReturn := _maxRecordsToReturn
 
-	// Simple Field (noOfServerCapabilityFilter)
-	_noOfServerCapabilityFilter, _noOfServerCapabilityFilterErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerCapabilityFilter", 32)
-	if _noOfServerCapabilityFilterErr != nil {
-		return nil, errors.Wrap(_noOfServerCapabilityFilterErr, "Error parsing 'noOfServerCapabilityFilter' field of FindServersOnNetworkRequest")
+	noOfServerCapabilityFilter, err := ReadSimpleField(ctx, "noOfServerCapabilityFilter", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilityFilter' field"))
 	}
-	noOfServerCapabilityFilter := _noOfServerCapabilityFilter
 
 	serverCapabilityFilter, err := ReadCountArrayField[PascalString](ctx, "serverCapabilityFilter", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilityFilter))
 	if err != nil {

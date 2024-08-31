@@ -198,6 +198,12 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParse(ctx context.Context,
 	return BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
+		return BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEnrollmentSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -209,26 +215,12 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (acknowledgmentFilter)
-	if pullErr := readBuffer.PullContext("acknowledgmentFilter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgmentFilter")
-	}
-	_acknowledgmentFilter, _acknowledgmentFilterErr := BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _acknowledgmentFilterErr != nil {
-		return nil, errors.Wrap(_acknowledgmentFilterErr, "Error parsing 'acknowledgmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-	}
-	acknowledgmentFilter := _acknowledgmentFilter.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged)
-	if closeErr := readBuffer.CloseContext("acknowledgmentFilter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for acknowledgmentFilter")
+	acknowledgmentFilter, err := ReadSimpleField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged](ctx, "acknowledgmentFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagged](BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgmentFilter' field"))
 	}
 
-	_enrollmentFilter, err := ReadOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", ReadComplex[BACnetRecipientProcessEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetRecipientProcessEnclosed, error) {
-		v, err := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetRecipientProcessEnclosed), nil
-	}, readBuffer), true)
+	_enrollmentFilter, err := ReadOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", ReadComplex[BACnetRecipientProcessEnclosed](BACnetRecipientProcessEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enrollmentFilter' field"))
 	}
@@ -237,13 +229,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		enrollmentFilter = *_enrollmentFilter
 	}
 
-	_eventStateFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
-		v, err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged), nil
-	}, readBuffer), true)
+	_eventStateFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventStateFilter' field"))
 	}
@@ -252,13 +238,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		eventStateFilter = *_eventStateFilter
 	}
 
-	_eventTypeFilter, err := ReadOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", ReadComplex[BACnetEventTypeTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetEventTypeTagged, error) {
-		v, err := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetEventTypeTagged), nil
-	}, readBuffer), true)
+	_eventTypeFilter, err := ReadOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", ReadComplex[BACnetEventTypeTagged](BACnetEventTypeTaggedParseWithBufferProducer((uint8)(uint8(3)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventTypeFilter' field"))
 	}
@@ -267,13 +247,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		eventTypeFilter = *_eventTypeFilter
 	}
 
-	_priorityFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
-		v, err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter), nil
-	}, readBuffer), true)
+	_priorityFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBufferProducer((uint8)(uint8(4))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityFilter' field"))
 	}
@@ -282,13 +256,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		priorityFilter = *_priorityFilter
 	}
 
-	_notificationClassFilter, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_notificationClassFilter, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationClassFilter' field"))
 	}

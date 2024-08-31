@@ -170,6 +170,12 @@ func IdentifyReplyCommandNetworkVoltageParse(ctx context.Context, theBytes []byt
 	return IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandNetworkVoltageParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandNetworkVoltage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandNetworkVoltage, error) {
+		return IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandNetworkVoltage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,12 +187,10 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (volts)
-	_volts, _voltsErr := /*TODO: migrate me*/ readBuffer.ReadString("volts", uint32(16), utils.WithEncoding("UTF-8"))
-	if _voltsErr != nil {
-		return nil, errors.Wrap(_voltsErr, "Error parsing 'volts' field of IdentifyReplyCommandNetworkVoltage")
+	volts, err := ReadSimpleField(ctx, "volts", ReadString(readBuffer, uint32(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'volts' field"))
 	}
-	volts := _volts
 
 	dot, err := ReadConstField[byte](ctx, "dot", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_DOT)
 	if err != nil {
@@ -194,12 +198,10 @@ func IdentifyReplyCommandNetworkVoltageParseWithBuffer(ctx context.Context, read
 	}
 	_ = dot
 
-	// Simple Field (voltsDecimalPlace)
-	_voltsDecimalPlace, _voltsDecimalPlaceErr := /*TODO: migrate me*/ readBuffer.ReadString("voltsDecimalPlace", uint32(16), utils.WithEncoding("UTF-8"))
-	if _voltsDecimalPlaceErr != nil {
-		return nil, errors.Wrap(_voltsDecimalPlaceErr, "Error parsing 'voltsDecimalPlace' field of IdentifyReplyCommandNetworkVoltage")
+	voltsDecimalPlace, err := ReadSimpleField(ctx, "voltsDecimalPlace", ReadString(readBuffer, uint32(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'voltsDecimalPlace' field"))
 	}
-	voltsDecimalPlace := _voltsDecimalPlace
 
 	v, err := ReadConstField[byte](ctx, "v", ReadByte(readBuffer, 8), IdentifyReplyCommandNetworkVoltage_V)
 	if err != nil {

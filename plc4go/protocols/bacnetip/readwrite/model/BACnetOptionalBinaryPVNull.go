@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetOptionalBinaryPVNullParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetOptionalBinaryPVNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalBinaryPVNullParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVNull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVNull, error) {
+		return BACnetOptionalBinaryPVNullParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetOptionalBinaryPVNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPVNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetOptionalBinaryPVNullParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
-	}
-	_nullValue, _nullValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetOptionalBinaryPVNull")
-	}
-	nullValue := _nullValue.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
+	nullValue, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalBinaryPVNull"); closeErr != nil {

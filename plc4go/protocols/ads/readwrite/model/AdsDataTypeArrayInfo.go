@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +136,12 @@ func AdsDataTypeArrayInfoParse(ctx context.Context, theBytes []byte) (AdsDataTyp
 	return AdsDataTypeArrayInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsDataTypeArrayInfoParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
+		return AdsDataTypeArrayInfoParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDataTypeArrayInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,19 +153,15 @@ func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lowerBound)
-	_lowerBound, _lowerBoundErr := /*TODO: migrate me*/ readBuffer.ReadUint32("lowerBound", 32)
-	if _lowerBoundErr != nil {
-		return nil, errors.Wrap(_lowerBoundErr, "Error parsing 'lowerBound' field of AdsDataTypeArrayInfo")
+	lowerBound, err := ReadSimpleField(ctx, "lowerBound", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowerBound' field"))
 	}
-	lowerBound := _lowerBound
 
-	// Simple Field (numElements)
-	_numElements, _numElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("numElements", 32)
-	if _numElementsErr != nil {
-		return nil, errors.Wrap(_numElementsErr, "Error parsing 'numElements' field of AdsDataTypeArrayInfo")
+	numElements, err := ReadSimpleField(ctx, "numElements", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numElements' field"))
 	}
-	numElements := _numElements
 
 	// Virtual field
 	_upperBound := uint32(lowerBound) + uint32(numElements)

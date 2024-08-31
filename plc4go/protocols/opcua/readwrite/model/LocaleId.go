@@ -83,6 +83,12 @@ func LocaleIdParse(ctx context.Context, theBytes []byte) (LocaleId, error) {
 	return LocaleIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LocaleIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
+		return LocaleIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LocaleIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocaleId, error) {
 	positionAware := readBuffer
 	_ = positionAware

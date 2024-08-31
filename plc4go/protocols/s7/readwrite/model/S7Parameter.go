@@ -113,6 +113,17 @@ func S7ParameterParse(ctx context.Context, theBytes []byte, messageType uint8) (
 	return S7ParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
+func S7ParameterParseWithBufferProducer[T S7Parameter](messageType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7ParameterParseWithBuffer(ctx, readBuffer, messageType)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7Parameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func S7ParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	parameterType, err := ReadDiscriminatorField[uint8](ctx, "parameterType", ReadUnsignedByte(readBuffer, 8))
+	parameterType, err := ReadDiscriminatorField[uint8](ctx, "parameterType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterType' field"))
 	}

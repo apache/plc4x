@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPrescaleParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataPrescaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPrescaleParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPrescale, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPrescale, error) {
+		return BACnetConstructedDataPrescaleParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPrescaleParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (prescale)
-	if pullErr := readBuffer.PullContext("prescale"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for prescale")
-	}
-	_prescale, _prescaleErr := BACnetPrescaleParseWithBuffer(ctx, readBuffer)
-	if _prescaleErr != nil {
-		return nil, errors.Wrap(_prescaleErr, "Error parsing 'prescale' field of BACnetConstructedDataPrescale")
-	}
-	prescale := _prescale.(BACnetPrescale)
-	if closeErr := readBuffer.CloseContext("prescale"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for prescale")
+	prescale, err := ReadSimpleField[BACnetPrescale](ctx, "prescale", ReadComplex[BACnetPrescale](BACnetPrescaleParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'prescale' field"))
 	}
 
 	// Virtual field

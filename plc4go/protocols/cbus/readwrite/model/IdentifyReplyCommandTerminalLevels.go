@@ -132,6 +132,12 @@ func IdentifyReplyCommandTerminalLevelsParse(ctx context.Context, theBytes []byt
 	return IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandTerminalLevelsParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandTerminalLevels, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandTerminalLevels, error) {
+		return IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandTerminalLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandTerminalLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware

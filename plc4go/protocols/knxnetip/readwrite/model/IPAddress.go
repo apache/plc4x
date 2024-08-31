@@ -105,6 +105,12 @@ func IPAddressParse(ctx context.Context, theBytes []byte) (IPAddress, error) {
 	return IPAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IPAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
+		return IPAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IPAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IPAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware

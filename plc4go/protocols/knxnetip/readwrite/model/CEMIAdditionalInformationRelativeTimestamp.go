@@ -152,6 +152,12 @@ func CEMIAdditionalInformationRelativeTimestampParse(ctx context.Context, theByt
 	return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CEMIAdditionalInformationRelativeTimestampParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
+		return CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationRelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,23 +169,15 @@ func CEMIAdditionalInformationRelativeTimestampParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, 8), CEMIAdditionalInformationRelativeTimestamp_LEN)
+	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, uint8(8)), CEMIAdditionalInformationRelativeTimestamp_LEN)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
 	}
 	_ = len
 
-	// Simple Field (relativeTimestamp)
-	if pullErr := readBuffer.PullContext("relativeTimestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relativeTimestamp")
-	}
-	_relativeTimestamp, _relativeTimestampErr := RelativeTimestampParseWithBuffer(ctx, readBuffer)
-	if _relativeTimestampErr != nil {
-		return nil, errors.Wrap(_relativeTimestampErr, "Error parsing 'relativeTimestamp' field of CEMIAdditionalInformationRelativeTimestamp")
-	}
-	relativeTimestamp := _relativeTimestamp.(RelativeTimestamp)
-	if closeErr := readBuffer.CloseContext("relativeTimestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relativeTimestamp")
+	relativeTimestamp, err := ReadSimpleField[RelativeTimestamp](ctx, "relativeTimestamp", ReadComplex[RelativeTimestamp](RelativeTimestampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativeTimestamp' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationRelativeTimestamp"); closeErr != nil {

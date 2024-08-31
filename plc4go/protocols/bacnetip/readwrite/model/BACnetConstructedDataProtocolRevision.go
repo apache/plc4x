@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProtocolRevisionParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProtocolRevisionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolRevision, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolRevision, error) {
+		return BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProtocolRevisionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolRevision)
-	if pullErr := readBuffer.PullContext("protocolRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolRevision")
-	}
-	_protocolRevision, _protocolRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _protocolRevisionErr != nil {
-		return nil, errors.Wrap(_protocolRevisionErr, "Error parsing 'protocolRevision' field of BACnetConstructedDataProtocolRevision")
-	}
-	protocolRevision := _protocolRevision.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("protocolRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolRevision")
+	protocolRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "protocolRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolRevision' field"))
 	}
 
 	// Virtual field

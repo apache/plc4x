@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDaysRemainingParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataDaysRemainingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDaysRemainingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDaysRemaining, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDaysRemaining, error) {
+		return BACnetConstructedDataDaysRemainingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDaysRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaysRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDaysRemainingParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (daysRemaining)
-	if pullErr := readBuffer.PullContext("daysRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for daysRemaining")
-	}
-	_daysRemaining, _daysRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _daysRemainingErr != nil {
-		return nil, errors.Wrap(_daysRemainingErr, "Error parsing 'daysRemaining' field of BACnetConstructedDataDaysRemaining")
-	}
-	daysRemaining := _daysRemaining.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("daysRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for daysRemaining")
+	daysRemaining, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "daysRemaining", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daysRemaining' field"))
 	}
 
 	// Virtual field

@@ -110,6 +110,17 @@ func ServiceIdParse(ctx context.Context, theBytes []byte) (ServiceId, error) {
 	return ServiceIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ServiceIdParseWithBufferProducer[T ServiceId]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ServiceIdParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ServiceIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServiceId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func ServiceIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serviceType, err := ReadDiscriminatorField[uint8](ctx, "serviceType", ReadUnsignedByte(readBuffer, 8))
+	serviceType, err := ReadDiscriminatorField[uint8](ctx, "serviceType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceType' field"))
 	}

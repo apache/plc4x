@@ -171,6 +171,12 @@ func LPollDataParse(ctx context.Context, theBytes []byte) (LPollData, error) {
 	return LPollDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LPollDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {
+		return LPollDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LPollData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -182,17 +188,9 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceAddress)
-	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
-	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LPollData")
-	}
-	sourceAddress := _sourceAddress.(KnxAddress)
-	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
+	sourceAddress, err := ReadSimpleField[KnxAddress](ctx, "sourceAddress", ReadComplex[KnxAddress](KnxAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
 
 	targetAddress, err := readBuffer.ReadByteArray("targetAddress", int(int32(2)))
@@ -200,17 +198,15 @@ func LPollDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAddress' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 4), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (numberExpectedPollData)
-	_numberExpectedPollData, _numberExpectedPollDataErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberExpectedPollData", 6)
-	if _numberExpectedPollDataErr != nil {
-		return nil, errors.Wrap(_numberExpectedPollDataErr, "Error parsing 'numberExpectedPollData' field of LPollData")
+	numberExpectedPollData, err := ReadSimpleField(ctx, "numberExpectedPollData", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberExpectedPollData' field"))
 	}
-	numberExpectedPollData := _numberExpectedPollData
 
 	if closeErr := readBuffer.CloseContext("LPollData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LPollData")

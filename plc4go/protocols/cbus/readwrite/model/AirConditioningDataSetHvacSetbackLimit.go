@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func AirConditioningDataSetHvacSetbackLimitParse(ctx context.Context, theBytes [
 	return AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AirConditioningDataSetHvacSetbackLimitParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
+		return AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataSetHvacSetbackLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,50 +180,24 @@ func AirConditioningDataSetHvacSetbackLimitParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	zoneGroup := _zoneGroup
-
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
-	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
 
-	// Simple Field (limit)
-	if pullErr := readBuffer.PullContext("limit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limit")
-	}
-	_limit, _limitErr := HVACTemperatureParseWithBuffer(ctx, readBuffer)
-	if _limitErr != nil {
-		return nil, errors.Wrap(_limitErr, "Error parsing 'limit' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	limit := _limit.(HVACTemperature)
-	if closeErr := readBuffer.CloseContext("limit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limit")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
 
-	// Simple Field (hvacModeAndFlags)
-	if pullErr := readBuffer.PullContext("hvacModeAndFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hvacModeAndFlags")
+	limit, err := ReadSimpleField[HVACTemperature](ctx, "limit", ReadComplex[HVACTemperature](HVACTemperatureParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limit' field"))
 	}
-	_hvacModeAndFlags, _hvacModeAndFlagsErr := HVACModeAndFlagsParseWithBuffer(ctx, readBuffer)
-	if _hvacModeAndFlagsErr != nil {
-		return nil, errors.Wrap(_hvacModeAndFlagsErr, "Error parsing 'hvacModeAndFlags' field of AirConditioningDataSetHvacSetbackLimit")
-	}
-	hvacModeAndFlags := _hvacModeAndFlags.(HVACModeAndFlags)
-	if closeErr := readBuffer.CloseContext("hvacModeAndFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hvacModeAndFlags")
+
+	hvacModeAndFlags, err := ReadSimpleField[HVACModeAndFlags](ctx, "hvacModeAndFlags", ReadComplex[HVACModeAndFlags](HVACModeAndFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hvacModeAndFlags' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetHvacSetbackLimit"); closeErr != nil {

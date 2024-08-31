@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func DescriptionRequestParse(ctx context.Context, theBytes []byte) (DescriptionR
 	return DescriptionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DescriptionRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
+		return DescriptionRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DescriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +151,9 @@ func DescriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiControlEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
-	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DescriptionRequest")
-	}
-	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
+	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiControlEndpoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DescriptionRequest"); closeErr != nil {

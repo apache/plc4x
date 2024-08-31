@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -150,6 +152,12 @@ func OpcuaMessageRequestParse(ctx context.Context, theBytes []byte, totalLength 
 	return OpcuaMessageRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
 }
 
+func OpcuaMessageRequestParseWithBufferProducer(totalLength uint32, response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaMessageRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaMessageRequest, error) {
+		return OpcuaMessageRequestParseWithBuffer(ctx, readBuffer, totalLength, response)
+	}
+}
+
 func OpcuaMessageRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaMessageRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,30 +169,14 @@ func OpcuaMessageRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityHeader)
-	if pullErr := readBuffer.PullContext("securityHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityHeader")
-	}
-	_securityHeader, _securityHeaderErr := SecurityHeaderParseWithBuffer(ctx, readBuffer)
-	if _securityHeaderErr != nil {
-		return nil, errors.Wrap(_securityHeaderErr, "Error parsing 'securityHeader' field of OpcuaMessageRequest")
-	}
-	securityHeader := _securityHeader.(SecurityHeader)
-	if closeErr := readBuffer.CloseContext("securityHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityHeader")
+	securityHeader, err := ReadSimpleField[SecurityHeader](ctx, "securityHeader", ReadComplex[SecurityHeader](SecurityHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityHeader' field"))
 	}
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16))))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaMessageRequest")
-	}
-	message := _message.(Payload)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(securityHeader.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaMessageRequest"); closeErr != nil {

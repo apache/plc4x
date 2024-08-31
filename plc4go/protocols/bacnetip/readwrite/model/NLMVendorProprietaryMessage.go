@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func NLMVendorProprietaryMessageParse(ctx context.Context, theBytes []byte, apdu
 	return NLMVendorProprietaryMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMVendorProprietaryMessageParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMVendorProprietaryMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMVendorProprietaryMessage, error) {
+		return NLMVendorProprietaryMessageParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMVendorProprietaryMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,17 +162,9 @@ func NLMVendorProprietaryMessageParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vendorId)
-	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
-	}
-	_vendorId, _vendorIdErr := BACnetVendorIdParseWithBuffer(ctx, readBuffer)
-	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of NLMVendorProprietaryMessage")
-	}
-	vendorId := _vendorId
-	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
+	vendorId, err := ReadEnumField[BACnetVendorId](ctx, "vendorId", "BACnetVendorId", ReadEnum(BACnetVendorIdByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
 
 	proprietaryMessage, err := readBuffer.ReadByteArray("proprietaryMessage", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(int32(3)))) }, func() any { return int32(int32(0)) }).(int32)))

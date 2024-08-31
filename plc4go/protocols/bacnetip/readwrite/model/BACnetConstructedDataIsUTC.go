@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIsUTCParse(ctx context.Context, theBytes []byte, tagNu
 	return BACnetConstructedDataIsUTCParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIsUTCParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIsUTC, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIsUTC, error) {
+		return BACnetConstructedDataIsUTCParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIsUTCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIsUTC, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIsUTCParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (isUtc)
-	if pullErr := readBuffer.PullContext("isUtc"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for isUtc")
-	}
-	_isUtc, _isUtcErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _isUtcErr != nil {
-		return nil, errors.Wrap(_isUtcErr, "Error parsing 'isUtc' field of BACnetConstructedDataIsUTC")
-	}
-	isUtc := _isUtc.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("isUtc"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for isUtc")
+	isUtc, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "isUtc", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUtc' field"))
 	}
 
 	// Virtual field

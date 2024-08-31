@@ -132,6 +132,12 @@ func AlarmMessageAckTypeParse(ctx context.Context, theBytes []byte) (AlarmMessag
 	return AlarmMessageAckTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessageAckTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
+		return AlarmMessageAckTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,19 +149,15 @@ func AlarmMessageAckTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (functionId)
-	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessageAckType")
+	functionId, err := ReadSimpleField(ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	functionId := _functionId
 
-	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessageAckType")
+	numberOfObjects, err := ReadSimpleField(ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
-	numberOfObjects := _numberOfObjects
 
 	messageObjects, err := ReadCountArrayField[AlarmMessageObjectAckType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectAckType](AlarmMessageObjectAckTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))
 	if err != nil {

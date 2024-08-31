@@ -178,6 +178,12 @@ func BACnetConstructedDataShedLevelDescriptionsParse(ctx context.Context, theByt
 	return BACnetConstructedDataShedLevelDescriptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataShedLevelDescriptionsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataShedLevelDescriptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataShedLevelDescriptions, error) {
+		return BACnetConstructedDataShedLevelDescriptionsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataShedLevelDescriptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataShedLevelDescriptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,13 +200,7 @@ func BACnetConstructedDataShedLevelDescriptionsParseWithBuffer(ctx context.Conte
 	zero := uint64(_zero)
 	_ = zero
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -209,13 +209,7 @@ func BACnetConstructedDataShedLevelDescriptionsParseWithBuffer(ctx context.Conte
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	shedLevelDescriptions, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "shedLevelDescriptions", ReadComplex[BACnetApplicationTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagCharacterString, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagCharacterString), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	shedLevelDescriptions, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "shedLevelDescriptions", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'shedLevelDescriptions' field"))
 	}

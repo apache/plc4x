@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParse(ctx context.Context, the
 	return BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
+		return BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6AutoAddressingEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPv6AutoAddressingEnableParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (autoAddressingEnable)
-	if pullErr := readBuffer.PullContext("autoAddressingEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for autoAddressingEnable")
-	}
-	_autoAddressingEnable, _autoAddressingEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _autoAddressingEnableErr != nil {
-		return nil, errors.Wrap(_autoAddressingEnableErr, "Error parsing 'autoAddressingEnable' field of BACnetConstructedDataIPv6AutoAddressingEnable")
-	}
-	autoAddressingEnable := _autoAddressingEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("autoAddressingEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for autoAddressingEnable")
+	autoAddressingEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoAddressingEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'autoAddressingEnable' field"))
 	}
 
 	// Virtual field

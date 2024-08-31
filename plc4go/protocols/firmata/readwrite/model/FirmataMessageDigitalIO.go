@@ -147,6 +147,12 @@ func FirmataMessageDigitalIOParse(ctx context.Context, theBytes []byte, response
 	return FirmataMessageDigitalIOParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
+func FirmataMessageDigitalIOParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageDigitalIO, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageDigitalIO, error) {
+		return FirmataMessageDigitalIOParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageDigitalIO, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,14 +164,12 @@ func FirmataMessageDigitalIOParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pinBlock)
-	_pinBlock, _pinBlockErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinBlock", 4)
-	if _pinBlockErr != nil {
-		return nil, errors.Wrap(_pinBlockErr, "Error parsing 'pinBlock' field of FirmataMessageDigitalIO")
+	pinBlock, err := ReadSimpleField(ctx, "pinBlock", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinBlock' field"))
 	}
-	pinBlock := _pinBlock
 
-	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, 8), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
+	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

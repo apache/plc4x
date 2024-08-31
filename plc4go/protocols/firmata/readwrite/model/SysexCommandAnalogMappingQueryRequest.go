@@ -113,6 +113,12 @@ func SysexCommandAnalogMappingQueryRequestParse(ctx context.Context, theBytes []
 	return SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandAnalogMappingQueryRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandAnalogMappingQueryRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandAnalogMappingQueryRequest, error) {
+		return SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandAnalogMappingQueryRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

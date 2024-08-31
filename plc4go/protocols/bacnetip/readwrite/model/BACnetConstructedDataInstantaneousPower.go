@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataInstantaneousPowerParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataInstantaneousPowerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataInstantaneousPowerParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInstantaneousPower, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInstantaneousPower, error) {
+		return BACnetConstructedDataInstantaneousPowerParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataInstantaneousPowerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstantaneousPower, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataInstantaneousPowerParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (instantaneousPower)
-	if pullErr := readBuffer.PullContext("instantaneousPower"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for instantaneousPower")
-	}
-	_instantaneousPower, _instantaneousPowerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _instantaneousPowerErr != nil {
-		return nil, errors.Wrap(_instantaneousPowerErr, "Error parsing 'instantaneousPower' field of BACnetConstructedDataInstantaneousPower")
-	}
-	instantaneousPower := _instantaneousPower.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("instantaneousPower"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for instantaneousPower")
+	instantaneousPower, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "instantaneousPower", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instantaneousPower' field"))
 	}
 
 	// Virtual field

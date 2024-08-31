@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPDHCPServerParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataIPDHCPServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPDHCPServerParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPServer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPServer, error) {
+		return BACnetConstructedDataIPDHCPServerParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPDHCPServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPDHCPServerParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dhcpServer)
-	if pullErr := readBuffer.PullContext("dhcpServer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dhcpServer")
-	}
-	_dhcpServer, _dhcpServerErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _dhcpServerErr != nil {
-		return nil, errors.Wrap(_dhcpServerErr, "Error parsing 'dhcpServer' field of BACnetConstructedDataIPDHCPServer")
-	}
-	dhcpServer := _dhcpServer.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("dhcpServer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dhcpServer")
+	dhcpServer, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "dhcpServer", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dhcpServer' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesReasonForHaltParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesReasonForHaltParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesReasonForHalt, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesReasonForHalt, error) {
+		return BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesReasonForHalt, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesReasonForHaltParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reasonForHalt)
-	if pullErr := readBuffer.PullContext("reasonForHalt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reasonForHalt")
-	}
-	_reasonForHalt, _reasonForHaltErr := BACnetProgramErrorTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _reasonForHaltErr != nil {
-		return nil, errors.Wrap(_reasonForHaltErr, "Error parsing 'reasonForHalt' field of BACnetPropertyStatesReasonForHalt")
-	}
-	reasonForHalt := _reasonForHalt.(BACnetProgramErrorTagged)
-	if closeErr := readBuffer.CloseContext("reasonForHalt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reasonForHalt")
+	reasonForHalt, err := ReadSimpleField[BACnetProgramErrorTagged](ctx, "reasonForHalt", ReadComplex[BACnetProgramErrorTagged](BACnetProgramErrorTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reasonForHalt' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesReasonForHalt"); closeErr != nil {

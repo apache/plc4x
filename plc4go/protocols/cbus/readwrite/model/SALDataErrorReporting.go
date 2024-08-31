@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataErrorReportingParse(ctx context.Context, theBytes []byte, applicatio
 	return SALDataErrorReportingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataErrorReportingParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataErrorReporting, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataErrorReporting, error) {
+		return SALDataErrorReportingParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataErrorReportingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataErrorReporting, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataErrorReportingParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorReportingData)
-	if pullErr := readBuffer.PullContext("errorReportingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorReportingData")
-	}
-	_errorReportingData, _errorReportingDataErr := ErrorReportingDataParseWithBuffer(ctx, readBuffer)
-	if _errorReportingDataErr != nil {
-		return nil, errors.Wrap(_errorReportingDataErr, "Error parsing 'errorReportingData' field of SALDataErrorReporting")
-	}
-	errorReportingData := _errorReportingData.(ErrorReportingData)
-	if closeErr := readBuffer.CloseContext("errorReportingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorReportingData")
+	errorReportingData, err := ReadSimpleField[ErrorReportingData](ctx, "errorReportingData", ReadComplex[ErrorReportingData](ErrorReportingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorReportingData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataErrorReporting"); closeErr != nil {

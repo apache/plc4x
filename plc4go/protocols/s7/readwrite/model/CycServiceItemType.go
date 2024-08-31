@@ -155,6 +155,17 @@ func CycServiceItemTypeParse(ctx context.Context, theBytes []byte) (CycServiceIt
 	return CycServiceItemTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CycServiceItemTypeParseWithBufferProducer[T CycServiceItemType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CycServiceItemTypeParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -166,25 +177,21 @@ func CycServiceItemTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, 8), CycServiceItemType_FUNCTIONID)
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), CycServiceItemType_FUNCTIONID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
 	_ = functionId
 
-	// Simple Field (byteLength)
-	_byteLength, _byteLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("byteLength", 8)
-	if _byteLengthErr != nil {
-		return nil, errors.Wrap(_byteLengthErr, "Error parsing 'byteLength' field of CycServiceItemType")
+	byteLength, err := ReadSimpleField(ctx, "byteLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteLength' field"))
 	}
-	byteLength := _byteLength
 
-	// Simple Field (syntaxId)
-	_syntaxId, _syntaxIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("syntaxId", 8)
-	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of CycServiceItemType")
+	syntaxId, err := ReadSimpleField(ctx, "syntaxId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'syntaxId' field"))
 	}
-	syntaxId := _syntaxId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CycServiceItemTypeChildSerializeRequirement interface {

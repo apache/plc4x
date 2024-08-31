@@ -137,6 +137,12 @@ func AssociatedQueryValueTypeParse(ctx context.Context, theBytes []byte) (Associ
 	return AssociatedQueryValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AssociatedQueryValueTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
+		return AssociatedQueryValueTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AssociatedQueryValueType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,40 +154,22 @@ func AssociatedQueryValueTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
-	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of AssociatedQueryValueType")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
 
-	// Simple Field (transportSize)
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
-	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of AssociatedQueryValueType")
-	}
-	transportSize := _transportSize
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
+	transportSize, err := ReadEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", ReadEnum(DataTransportSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
 
-	// Simple Field (valueLength)
-	_valueLength, _valueLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("valueLength", 16)
-	if _valueLengthErr != nil {
-		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedQueryValueType")
+	valueLength, err := ReadSimpleField(ctx, "valueLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueLength' field"))
 	}
-	valueLength := _valueLength
 
-	data, err := ReadCountArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, 8), uint64(valueLength))
+	data, err := ReadCountArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, uint8(8)), uint64(valueLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

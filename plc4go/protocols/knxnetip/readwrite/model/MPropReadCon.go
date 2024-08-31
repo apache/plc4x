@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -185,6 +187,12 @@ func MPropReadConParse(ctx context.Context, theBytes []byte, size uint16) (MProp
 	return MPropReadConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MPropReadConParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropReadCon, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropReadCon, error) {
+		return MPropReadConParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropReadCon, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,47 +204,35 @@ func MPropReadConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceObjectType)
-	_interfaceObjectType, _interfaceObjectTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("interfaceObjectType", 16)
-	if _interfaceObjectTypeErr != nil {
-		return nil, errors.Wrap(_interfaceObjectTypeErr, "Error parsing 'interfaceObjectType' field of MPropReadCon")
+	interfaceObjectType, err := ReadSimpleField(ctx, "interfaceObjectType", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceObjectType' field"))
 	}
-	interfaceObjectType := _interfaceObjectType
 
-	// Simple Field (objectInstance)
-	_objectInstance, _objectInstanceErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectInstance", 8)
-	if _objectInstanceErr != nil {
-		return nil, errors.Wrap(_objectInstanceErr, "Error parsing 'objectInstance' field of MPropReadCon")
+	objectInstance, err := ReadSimpleField(ctx, "objectInstance", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectInstance' field"))
 	}
-	objectInstance := _objectInstance
 
-	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("propertyId", 8)
-	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of MPropReadCon")
+	propertyId, err := ReadSimpleField(ctx, "propertyId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyId' field"))
 	}
-	propertyId := _propertyId
 
-	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfElements", 4)
-	if _numberOfElementsErr != nil {
-		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of MPropReadCon")
+	numberOfElements, err := ReadSimpleField(ctx, "numberOfElements", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfElements' field"))
 	}
-	numberOfElements := _numberOfElements
 
-	// Simple Field (startIndex)
-	_startIndex, _startIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startIndex", 12)
-	if _startIndexErr != nil {
-		return nil, errors.Wrap(_startIndexErr, "Error parsing 'startIndex' field of MPropReadCon")
+	startIndex, err := ReadSimpleField(ctx, "startIndex", ReadUnsignedShort(readBuffer, uint8(12)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startIndex' field"))
 	}
-	startIndex := _startIndex
 
-	// Simple Field (data)
-	_data, _dataErr := /*TODO: migrate me*/ readBuffer.ReadUint16("data", 16)
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MPropReadCon")
+	data, err := ReadSimpleField(ctx, "data", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
-	data := _data
 
 	if closeErr := readBuffer.CloseContext("MPropReadCon"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MPropReadCon")

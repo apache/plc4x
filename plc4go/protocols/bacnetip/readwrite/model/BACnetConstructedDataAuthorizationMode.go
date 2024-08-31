@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAuthorizationModeParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAuthorizationModeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAuthorizationMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAuthorizationMode, error) {
+		return BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAuthorizationModeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (authorizationMode)
-	if pullErr := readBuffer.PullContext("authorizationMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authorizationMode")
-	}
-	_authorizationMode, _authorizationModeErr := BACnetAuthorizationModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _authorizationModeErr != nil {
-		return nil, errors.Wrap(_authorizationModeErr, "Error parsing 'authorizationMode' field of BACnetConstructedDataAuthorizationMode")
-	}
-	authorizationMode := _authorizationMode.(BACnetAuthorizationModeTagged)
-	if closeErr := readBuffer.CloseContext("authorizationMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authorizationMode")
+	authorizationMode, err := ReadSimpleField[BACnetAuthorizationModeTagged](ctx, "authorizationMode", ReadComplex[BACnetAuthorizationModeTagged](BACnetAuthorizationModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationMode' field"))
 	}
 
 	// Virtual field

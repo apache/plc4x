@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFDBBMDAddressParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFDBBMDAddressParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFDBBMDAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFDBBMDAddress, error) {
+		return BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFDBBMDAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFDBBMDAddressParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fDBBMDAddress)
-	if pullErr := readBuffer.PullContext("fDBBMDAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fDBBMDAddress")
-	}
-	_fDBBMDAddress, _fDBBMDAddressErr := BACnetHostNPortParseWithBuffer(ctx, readBuffer)
-	if _fDBBMDAddressErr != nil {
-		return nil, errors.Wrap(_fDBBMDAddressErr, "Error parsing 'fDBBMDAddress' field of BACnetConstructedDataFDBBMDAddress")
-	}
-	fDBBMDAddress := _fDBBMDAddress.(BACnetHostNPort)
-	if closeErr := readBuffer.CloseContext("fDBBMDAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fDBBMDAddress")
+	fDBBMDAddress, err := ReadSimpleField[BACnetHostNPort](ctx, "fDBBMDAddress", ReadComplex[BACnetHostNPort](BACnetHostNPortParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fDBBMDAddress' field"))
 	}
 
 	// Virtual field

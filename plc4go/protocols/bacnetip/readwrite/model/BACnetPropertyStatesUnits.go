@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesUnitsParse(ctx context.Context, theBytes []byte, peeked
 	return BACnetPropertyStatesUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesUnitsParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesUnits, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesUnits, error) {
+		return BACnetPropertyStatesUnitsParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesUnitsParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (units)
-	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for units")
-	}
-	_units, _unitsErr := BACnetEngineeringUnitsTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of BACnetPropertyStatesUnits")
-	}
-	units := _units.(BACnetEngineeringUnitsTagged)
-	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for units")
+	units, err := ReadSimpleField[BACnetEngineeringUnitsTagged](ctx, "units", ReadComplex[BACnetEngineeringUnitsTagged](BACnetEngineeringUnitsTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'units' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesUnits"); closeErr != nil {

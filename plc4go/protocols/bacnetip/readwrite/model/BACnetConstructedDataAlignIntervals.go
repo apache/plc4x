@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAlignIntervalsParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAlignIntervalsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAlignIntervals, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAlignIntervals, error) {
+		return BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAlignIntervals, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (alignIntervals)
-	if pullErr := readBuffer.PullContext("alignIntervals"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alignIntervals")
-	}
-	_alignIntervals, _alignIntervalsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _alignIntervalsErr != nil {
-		return nil, errors.Wrap(_alignIntervalsErr, "Error parsing 'alignIntervals' field of BACnetConstructedDataAlignIntervals")
-	}
-	alignIntervals := _alignIntervals.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("alignIntervals"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alignIntervals")
+	alignIntervals, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "alignIntervals", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alignIntervals' field"))
 	}
 
 	// Virtual field

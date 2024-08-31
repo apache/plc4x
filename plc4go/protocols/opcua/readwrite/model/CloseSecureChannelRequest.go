@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func CloseSecureChannelRequestParse(ctx context.Context, theBytes []byte, identi
 	return CloseSecureChannelRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CloseSecureChannelRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CloseSecureChannelRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CloseSecureChannelRequest, error) {
+		return CloseSecureChannelRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CloseSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CloseSecureChannelRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func CloseSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CloseSecureChannelRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CloseSecureChannelRequest"); closeErr != nil {

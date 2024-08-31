@@ -83,6 +83,12 @@ func VersionTimeParse(ctx context.Context, theBytes []byte) (VersionTime, error)
 	return VersionTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func VersionTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
+		return VersionTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func VersionTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VersionTime, error) {
 	positionAware := readBuffer
 	_ = positionAware

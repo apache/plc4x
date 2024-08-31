@@ -129,6 +129,12 @@ func NodeIdParse(ctx context.Context, theBytes []byte) (NodeId, error) {
 	return NodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
+		return NodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,22 +146,14 @@ func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (No
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, 2), int8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, uint8(2)), int8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdTypeDefinitionParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of NodeId")
-	}
-	nodeId := _nodeId.(NodeIdTypeDefinition)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeIdTypeDefinition](ctx, "nodeId", ReadComplex[NodeIdTypeDefinition](NodeIdTypeDefinitionParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
 	// Virtual field

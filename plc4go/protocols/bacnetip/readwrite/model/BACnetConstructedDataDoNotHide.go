@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDoNotHideParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataDoNotHideParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDoNotHideParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoNotHide, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoNotHide, error) {
+		return BACnetConstructedDataDoNotHideParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDoNotHideParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoNotHide, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDoNotHideParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doNotHide)
-	if pullErr := readBuffer.PullContext("doNotHide"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doNotHide")
-	}
-	_doNotHide, _doNotHideErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doNotHideErr != nil {
-		return nil, errors.Wrap(_doNotHideErr, "Error parsing 'doNotHide' field of BACnetConstructedDataDoNotHide")
-	}
-	doNotHide := _doNotHide.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("doNotHide"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doNotHide")
+	doNotHide, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "doNotHide", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doNotHide' field"))
 	}
 
 	// Virtual field

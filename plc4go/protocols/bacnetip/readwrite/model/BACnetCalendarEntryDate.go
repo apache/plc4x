@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetCalendarEntryDateParse(ctx context.Context, theBytes []byte) (BACnetC
 	return BACnetCalendarEntryDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCalendarEntryDateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
+		return BACnetCalendarEntryDateParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCalendarEntryDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetCalendarEntryDateParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateValue)
-	if pullErr := readBuffer.PullContext("dateValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateValue")
-	}
-	_dateValue, _dateValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_DATE))
-	if _dateValueErr != nil {
-		return nil, errors.Wrap(_dateValueErr, "Error parsing 'dateValue' field of BACnetCalendarEntryDate")
-	}
-	dateValue := _dateValue.(BACnetContextTagDate)
-	if closeErr := readBuffer.CloseContext("dateValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateValue")
+	dateValue, err := ReadSimpleField[BACnetContextTagDate](ctx, "dateValue", ReadComplex[BACnetContextTagDate](BACnetContextTagParseWithBufferProducer[BACnetContextTagDate]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_DATE)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryDate"); closeErr != nil {

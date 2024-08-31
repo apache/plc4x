@@ -108,6 +108,12 @@ func ClockAndTimekeepingDataRequestRefreshParse(ctx context.Context, theBytes []
 	return ClockAndTimekeepingDataRequestRefreshParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClockAndTimekeepingDataRequestRefreshParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataRequestRefresh, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataRequestRefresh, error) {
+		return ClockAndTimekeepingDataRequestRefreshParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ClockAndTimekeepingDataRequestRefreshParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataRequestRefresh, error) {
 	positionAware := readBuffer
 	_ = positionAware

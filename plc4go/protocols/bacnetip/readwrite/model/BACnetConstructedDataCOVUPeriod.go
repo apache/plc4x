@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataCOVUPeriodParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCOVUPeriodParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCOVUPeriod, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCOVUPeriod, error) {
+		return BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCOVUPeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (covuPeriod)
-	if pullErr := readBuffer.PullContext("covuPeriod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for covuPeriod")
-	}
-	_covuPeriod, _covuPeriodErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _covuPeriodErr != nil {
-		return nil, errors.Wrap(_covuPeriodErr, "Error parsing 'covuPeriod' field of BACnetConstructedDataCOVUPeriod")
-	}
-	covuPeriod := _covuPeriod.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("covuPeriod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for covuPeriod")
+	covuPeriod, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covuPeriod", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covuPeriod' field"))
 	}
 
 	// Virtual field

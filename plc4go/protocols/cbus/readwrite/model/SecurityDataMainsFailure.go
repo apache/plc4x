@@ -108,6 +108,12 @@ func SecurityDataMainsFailureParse(ctx context.Context, theBytes []byte) (Securi
 	return SecurityDataMainsFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataMainsFailureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
+		return SecurityDataMainsFailureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataMainsFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware

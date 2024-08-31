@@ -134,6 +134,12 @@ func BACnetLogRecordLogDatumAnyValueParse(ctx context.Context, theBytes []byte, 
 	return BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumAnyValueParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumAnyValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumAnyValue, error) {
+		return BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumAnyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,13 +151,7 @@ func BACnetLogRecordLogDatumAnyValueParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_anyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "anyValue", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
-		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(10)), (BACnetObjectType)(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConstructedData), nil
-	}, readBuffer), true)
+	_anyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "anyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(10)), (BACnetObjectType)(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'anyValue' field"))
 	}

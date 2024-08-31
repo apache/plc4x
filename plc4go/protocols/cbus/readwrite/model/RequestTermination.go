@@ -105,6 +105,12 @@ func RequestTerminationParse(ctx context.Context, theBytes []byte) (RequestTermi
 	return RequestTerminationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RequestTerminationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
+		return RequestTerminationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RequestTerminationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestTermination, error) {
 	positionAware := readBuffer
 	_ = positionAware

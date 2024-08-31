@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BACnetAssignedLandingCallsParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetAssignedLandingCallsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAssignedLandingCallsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
+		return BACnetAssignedLandingCallsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAssignedLandingCallsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCalls, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func BACnetAssignedLandingCallsParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (landingCalls)
-	if pullErr := readBuffer.PullContext("landingCalls"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for landingCalls")
-	}
-	_landingCalls, _landingCallsErr := BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _landingCallsErr != nil {
-		return nil, errors.Wrap(_landingCallsErr, "Error parsing 'landingCalls' field of BACnetAssignedLandingCalls")
-	}
-	landingCalls := _landingCalls.(BACnetAssignedLandingCallsLandingCallsList)
-	if closeErr := readBuffer.CloseContext("landingCalls"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for landingCalls")
+	landingCalls, err := ReadSimpleField[BACnetAssignedLandingCallsLandingCallsList](ctx, "landingCalls", ReadComplex[BACnetAssignedLandingCallsLandingCallsList](BACnetAssignedLandingCallsLandingCallsListParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingCalls' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAssignedLandingCalls"); closeErr != nil {

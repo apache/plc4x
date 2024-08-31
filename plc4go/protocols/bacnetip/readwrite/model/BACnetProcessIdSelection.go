@@ -140,6 +140,17 @@ func BACnetProcessIdSelectionParse(ctx context.Context, theBytes []byte) (BACnet
 	return BACnetProcessIdSelectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetProcessIdSelectionParseWithBufferProducer[T BACnetProcessIdSelection]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetProcessIdSelectionParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetProcessIdSelectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetProcessIdSelection, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func AdsReadRequestParse(ctx context.Context, theBytes []byte) (AdsReadRequest, 
 	return AdsReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
+		return AdsReadRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,26 +182,20 @@ func AdsReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
-	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsReadRequest")
+	indexGroup, err := ReadSimpleField(ctx, "indexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexGroup' field"))
 	}
-	indexGroup := _indexGroup
 
-	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
-	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsReadRequest")
+	indexOffset, err := ReadSimpleField(ctx, "indexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexOffset' field"))
 	}
-	indexOffset := _indexOffset
 
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsReadRequest")
+	length, err := ReadSimpleField(ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	length := _length
 
 	if closeErr := readBuffer.CloseContext("AdsReadRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsReadRequest")

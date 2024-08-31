@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,6 +198,12 @@ func NLMRequestKeyUpdateParse(ctx context.Context, theBytes []byte, apduLength u
 	return NLMRequestKeyUpdateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMRequestKeyUpdateParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRequestKeyUpdate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRequestKeyUpdate, error) {
+		return NLMRequestKeyUpdateParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMRequestKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestKeyUpdate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -207,54 +215,40 @@ func NLMRequestKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (set1KeyRevision)
-	_set1KeyRevision, _set1KeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("set1KeyRevision")
-	if _set1KeyRevisionErr != nil {
-		return nil, errors.Wrap(_set1KeyRevisionErr, "Error parsing 'set1KeyRevision' field of NLMRequestKeyUpdate")
+	set1KeyRevision, err := ReadSimpleField(ctx, "set1KeyRevision", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyRevision' field"))
 	}
-	set1KeyRevision := _set1KeyRevision
 
-	// Simple Field (set1ActivationTime)
-	_set1ActivationTime, _set1ActivationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set1ActivationTime", 32)
-	if _set1ActivationTimeErr != nil {
-		return nil, errors.Wrap(_set1ActivationTimeErr, "Error parsing 'set1ActivationTime' field of NLMRequestKeyUpdate")
+	set1ActivationTime, err := ReadSimpleField(ctx, "set1ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ActivationTime' field"))
 	}
-	set1ActivationTime := _set1ActivationTime
 
-	// Simple Field (set1ExpirationTime)
-	_set1ExpirationTime, _set1ExpirationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set1ExpirationTime", 32)
-	if _set1ExpirationTimeErr != nil {
-		return nil, errors.Wrap(_set1ExpirationTimeErr, "Error parsing 'set1ExpirationTime' field of NLMRequestKeyUpdate")
+	set1ExpirationTime, err := ReadSimpleField(ctx, "set1ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ExpirationTime' field"))
 	}
-	set1ExpirationTime := _set1ExpirationTime
 
-	// Simple Field (set2KeyRevision)
-	_set2KeyRevision, _set2KeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("set2KeyRevision")
-	if _set2KeyRevisionErr != nil {
-		return nil, errors.Wrap(_set2KeyRevisionErr, "Error parsing 'set2KeyRevision' field of NLMRequestKeyUpdate")
+	set2KeyRevision, err := ReadSimpleField(ctx, "set2KeyRevision", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyRevision' field"))
 	}
-	set2KeyRevision := _set2KeyRevision
 
-	// Simple Field (set2ActivationTime)
-	_set2ActivationTime, _set2ActivationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set2ActivationTime", 32)
-	if _set2ActivationTimeErr != nil {
-		return nil, errors.Wrap(_set2ActivationTimeErr, "Error parsing 'set2ActivationTime' field of NLMRequestKeyUpdate")
+	set2ActivationTime, err := ReadSimpleField(ctx, "set2ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ActivationTime' field"))
 	}
-	set2ActivationTime := _set2ActivationTime
 
-	// Simple Field (set2ExpirationTime)
-	_set2ExpirationTime, _set2ExpirationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("set2ExpirationTime", 32)
-	if _set2ExpirationTimeErr != nil {
-		return nil, errors.Wrap(_set2ExpirationTimeErr, "Error parsing 'set2ExpirationTime' field of NLMRequestKeyUpdate")
+	set2ExpirationTime, err := ReadSimpleField(ctx, "set2ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ExpirationTime' field"))
 	}
-	set2ExpirationTime := _set2ExpirationTime
 
-	// Simple Field (distributionKeyRevision)
-	_distributionKeyRevision, _distributionKeyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("distributionKeyRevision")
-	if _distributionKeyRevisionErr != nil {
-		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of NLMRequestKeyUpdate")
+	distributionKeyRevision, err := ReadSimpleField(ctx, "distributionKeyRevision", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'distributionKeyRevision' field"))
 	}
-	distributionKeyRevision := _distributionKeyRevision
 
 	if closeErr := readBuffer.CloseContext("NLMRequestKeyUpdate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMRequestKeyUpdate")

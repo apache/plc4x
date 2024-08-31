@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBACnetIPv6UDPPortParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBACnetIPv6UDPPortParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
+		return BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6UDPPort, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipv6UdpPort)
-	if pullErr := readBuffer.PullContext("ipv6UdpPort"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6UdpPort")
-	}
-	_ipv6UdpPort, _ipv6UdpPortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipv6UdpPortErr != nil {
-		return nil, errors.Wrap(_ipv6UdpPortErr, "Error parsing 'ipv6UdpPort' field of BACnetConstructedDataBACnetIPv6UDPPort")
-	}
-	ipv6UdpPort := _ipv6UdpPort.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("ipv6UdpPort"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6UdpPort")
+	ipv6UdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6UdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6UdpPort' field"))
 	}
 
 	// Virtual field

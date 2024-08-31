@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMinimumOffTimeParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMinimumOffTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumOffTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumOffTime, error) {
+		return BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOffTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMinimumOffTimeParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumOffTime)
-	if pullErr := readBuffer.PullContext("minimumOffTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumOffTime")
-	}
-	_minimumOffTime, _minimumOffTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minimumOffTimeErr != nil {
-		return nil, errors.Wrap(_minimumOffTimeErr, "Error parsing 'minimumOffTime' field of BACnetConstructedDataMinimumOffTime")
-	}
-	minimumOffTime := _minimumOffTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("minimumOffTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumOffTime")
+	minimumOffTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOffTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOffTime' field"))
 	}
 
 	// Virtual field

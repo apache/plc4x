@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetChannelValueEnumeratedParse(ctx context.Context, theBytes []byte) (BA
 	return BACnetChannelValueEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetChannelValueEnumeratedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
+		return BACnetChannelValueEnumeratedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetChannelValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetChannelValueEnumeratedParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumeratedValue)
-	if pullErr := readBuffer.PullContext("enumeratedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enumeratedValue")
-	}
-	_enumeratedValue, _enumeratedValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _enumeratedValueErr != nil {
-		return nil, errors.Wrap(_enumeratedValueErr, "Error parsing 'enumeratedValue' field of BACnetChannelValueEnumerated")
-	}
-	enumeratedValue := _enumeratedValue.(BACnetApplicationTagEnumerated)
-	if closeErr := readBuffer.CloseContext("enumeratedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enumeratedValue")
+	enumeratedValue, err := ReadSimpleField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetApplicationTagEnumerated](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagEnumerated](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueEnumerated"); closeErr != nil {

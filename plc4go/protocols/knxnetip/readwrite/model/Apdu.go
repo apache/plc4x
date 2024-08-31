@@ -143,6 +143,17 @@ func ApduParse(ctx context.Context, theBytes []byte, dataLength uint8) (Apdu, er
 	return ApduParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduParseWithBufferProducer[T Apdu](dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ApduParseWithBuffer(ctx, readBuffer, dataLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (Apdu, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,24 +165,20 @@ func ApduParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataL
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	control, err := ReadDiscriminatorField[uint8](ctx, "control", ReadUnsignedByte(readBuffer, 1))
+	control, err := ReadDiscriminatorField[uint8](ctx, "control", ReadUnsignedByte(readBuffer, uint8(1)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'control' field"))
 	}
 
-	// Simple Field (numbered)
-	_numbered, _numberedErr := /*TODO: migrate me*/ readBuffer.ReadBit("numbered")
-	if _numberedErr != nil {
-		return nil, errors.Wrap(_numberedErr, "Error parsing 'numbered' field of Apdu")
+	numbered, err := ReadSimpleField(ctx, "numbered", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numbered' field"))
 	}
-	numbered := _numbered
 
-	// Simple Field (counter)
-	_counter, _counterErr := /*TODO: migrate me*/ readBuffer.ReadUint8("counter", 4)
-	if _counterErr != nil {
-		return nil, errors.Wrap(_counterErr, "Error parsing 'counter' field of Apdu")
+	counter, err := ReadSimpleField(ctx, "counter", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'counter' field"))
 	}
-	counter := _counter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ApduChildSerializeRequirement interface {

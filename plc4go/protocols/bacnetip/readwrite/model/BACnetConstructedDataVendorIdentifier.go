@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataVendorIdentifierParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataVendorIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataVendorIdentifierParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVendorIdentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVendorIdentifier, error) {
+		return BACnetConstructedDataVendorIdentifierParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataVendorIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVendorIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataVendorIdentifierParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vendorIdentifier)
-	if pullErr := readBuffer.PullContext("vendorIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorIdentifier")
-	}
-	_vendorIdentifier, _vendorIdentifierErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _vendorIdentifierErr != nil {
-		return nil, errors.Wrap(_vendorIdentifierErr, "Error parsing 'vendorIdentifier' field of BACnetConstructedDataVendorIdentifier")
-	}
-	vendorIdentifier := _vendorIdentifier.(BACnetVendorIdTagged)
-	if closeErr := readBuffer.CloseContext("vendorIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorIdentifier")
+	vendorIdentifier, err := ReadSimpleField[BACnetVendorIdTagged](ctx, "vendorIdentifier", ReadComplex[BACnetVendorIdTagged](BACnetVendorIdTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorIdentifier' field"))
 	}
 
 	// Virtual field

@@ -147,6 +147,12 @@ func FirmataMessageAnalogIOParse(ctx context.Context, theBytes []byte, response 
 	return FirmataMessageAnalogIOParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
+func FirmataMessageAnalogIOParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageAnalogIO, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageAnalogIO, error) {
+		return FirmataMessageAnalogIOParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageAnalogIO, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,14 +164,12 @@ func FirmataMessageAnalogIOParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 4)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataMessageAnalogIO")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
-	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, 8), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
+	data, err := ReadCountArrayField[int8](ctx, "data", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

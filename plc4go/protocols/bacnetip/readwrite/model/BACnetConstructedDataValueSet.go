@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataValueSetParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataValueSetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataValueSetParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueSet, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueSet, error) {
+		return BACnetConstructedDataValueSetParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataValueSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSet, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataValueSetParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valueSet)
-	if pullErr := readBuffer.PullContext("valueSet"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueSet")
-	}
-	_valueSet, _valueSetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _valueSetErr != nil {
-		return nil, errors.Wrap(_valueSetErr, "Error parsing 'valueSet' field of BACnetConstructedDataValueSet")
-	}
-	valueSet := _valueSet.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("valueSet"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueSet")
+	valueSet, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valueSet", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSet' field"))
 	}
 
 	// Virtual field

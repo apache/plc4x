@@ -83,6 +83,12 @@ func IndexParse(ctx context.Context, theBytes []byte) (Index, error) {
 	return IndexParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IndexParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
+		return IndexParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Index, error) {
 	positionAware := readBuffer
 	_ = positionAware

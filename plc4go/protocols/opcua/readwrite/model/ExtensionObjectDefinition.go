@@ -106,6 +106,17 @@ func ExtensionObjectDefinitionParse(ctx context.Context, theBytes []byte, identi
 	return ExtensionObjectDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ExtensionObjectDefinitionParseWithBufferProducer[T ExtensionObjectDefinition](identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ExtensionObjectDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ExtensionObjectDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware

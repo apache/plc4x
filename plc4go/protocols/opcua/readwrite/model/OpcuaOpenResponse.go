@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -150,6 +152,12 @@ func OpcuaOpenResponseParse(ctx context.Context, theBytes []byte, totalLength ui
 	return OpcuaOpenResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), totalLength, response)
 }
 
+func OpcuaOpenResponseParseWithBufferProducer(totalLength uint32, response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaOpenResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaOpenResponse, error) {
+		return OpcuaOpenResponseParseWithBuffer(ctx, readBuffer, totalLength, response)
+	}
+}
+
 func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint32, response bool) (OpcuaOpenResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,30 +169,14 @@ func OpcuaOpenResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openResponse)
-	if pullErr := readBuffer.PullContext("openResponse"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openResponse")
-	}
-	_openResponse, _openResponseErr := OpenChannelMessageParseWithBuffer(ctx, readBuffer, bool(response))
-	if _openResponseErr != nil {
-		return nil, errors.Wrap(_openResponseErr, "Error parsing 'openResponse' field of OpcuaOpenResponse")
-	}
-	openResponse := _openResponse.(OpenChannelMessage)
-	if closeErr := readBuffer.CloseContext("openResponse"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openResponse")
+	openResponse, err := ReadSimpleField[OpenChannelMessage](ctx, "openResponse", ReadComplex[OpenChannelMessage](OpenChannelMessageParseWithBufferProducer[OpenChannelMessage]((bool)(response)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openResponse' field"))
 	}
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(uint32(totalLength)-uint32(openResponse.GetLengthInBytes(ctx)))-uint32(uint32(16))))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaOpenResponse")
-	}
-	message := _message.(Payload)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(uint32(totalLength)-uint32(openResponse.GetLengthInBytes(ctx)))-uint32(uint32(16)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaOpenResponse"); closeErr != nil {

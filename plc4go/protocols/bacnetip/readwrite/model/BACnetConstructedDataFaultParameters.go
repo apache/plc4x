@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFaultParametersParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataFaultParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFaultParametersParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFaultParameters, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFaultParameters, error) {
+		return BACnetConstructedDataFaultParametersParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFaultParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFaultParametersParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (faultParameters)
-	if pullErr := readBuffer.PullContext("faultParameters"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultParameters")
-	}
-	_faultParameters, _faultParametersErr := BACnetFaultParameterParseWithBuffer(ctx, readBuffer)
-	if _faultParametersErr != nil {
-		return nil, errors.Wrap(_faultParametersErr, "Error parsing 'faultParameters' field of BACnetConstructedDataFaultParameters")
-	}
-	faultParameters := _faultParameters.(BACnetFaultParameter)
-	if closeErr := readBuffer.CloseContext("faultParameters"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultParameters")
+	faultParameters, err := ReadSimpleField[BACnetFaultParameter](ctx, "faultParameters", ReadComplex[BACnetFaultParameter](BACnetFaultParameterParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultParameters' field"))
 	}
 
 	// Virtual field

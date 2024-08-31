@@ -113,6 +113,12 @@ func SysexCommandExtendedAnalogParse(ctx context.Context, theBytes []byte, respo
 	return SysexCommandExtendedAnalogParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandExtendedAnalogParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandExtendedAnalog, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandExtendedAnalog, error) {
+		return SysexCommandExtendedAnalogParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandExtendedAnalogParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedAnalog, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataCarDriveStatusParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataCarDriveStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCarDriveStatusParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarDriveStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarDriveStatus, error) {
+		return BACnetConstructedDataCarDriveStatusParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCarDriveStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDriveStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataCarDriveStatusParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (carDriveStatus)
-	if pullErr := readBuffer.PullContext("carDriveStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for carDriveStatus")
-	}
-	_carDriveStatus, _carDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _carDriveStatusErr != nil {
-		return nil, errors.Wrap(_carDriveStatusErr, "Error parsing 'carDriveStatus' field of BACnetConstructedDataCarDriveStatus")
-	}
-	carDriveStatus := _carDriveStatus.(BACnetLiftCarDriveStatusTagged)
-	if closeErr := readBuffer.CloseContext("carDriveStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for carDriveStatus")
+	carDriveStatus, err := ReadSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "carDriveStatus", ReadComplex[BACnetLiftCarDriveStatusTagged](BACnetLiftCarDriveStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carDriveStatus' field"))
 	}
 
 	// Virtual field

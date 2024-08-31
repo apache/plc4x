@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTimerRunningParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataTimerRunningParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTimerRunningParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimerRunning, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimerRunning, error) {
+		return BACnetConstructedDataTimerRunningParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTimerRunningParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimerRunning, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTimerRunningParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timerRunning)
-	if pullErr := readBuffer.PullContext("timerRunning"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timerRunning")
-	}
-	_timerRunning, _timerRunningErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timerRunningErr != nil {
-		return nil, errors.Wrap(_timerRunningErr, "Error parsing 'timerRunning' field of BACnetConstructedDataTimerRunning")
-	}
-	timerRunning := _timerRunning.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("timerRunning"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timerRunning")
+	timerRunning, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "timerRunning", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerRunning' field"))
 	}
 
 	// Virtual field

@@ -129,6 +129,12 @@ func ServerErrorReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBu
 	return ServerErrorReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func ServerErrorReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerErrorReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerErrorReply, error) {
+		return ServerErrorReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func ServerErrorReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ServerErrorReply, error) {
 	positionAware := readBuffer
 	_ = positionAware

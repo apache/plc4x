@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataRecordsSinceNotificationParse(ctx context.Context, the
 	return BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataRecordsSinceNotificationParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRecordsSinceNotification, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRecordsSinceNotification, error) {
+		return BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRecordsSinceNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataRecordsSinceNotificationParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recordsSinceNotifications)
-	if pullErr := readBuffer.PullContext("recordsSinceNotifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recordsSinceNotifications")
-	}
-	_recordsSinceNotifications, _recordsSinceNotificationsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _recordsSinceNotificationsErr != nil {
-		return nil, errors.Wrap(_recordsSinceNotificationsErr, "Error parsing 'recordsSinceNotifications' field of BACnetConstructedDataRecordsSinceNotification")
-	}
-	recordsSinceNotifications := _recordsSinceNotifications.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("recordsSinceNotifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recordsSinceNotifications")
+	recordsSinceNotifications, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "recordsSinceNotifications", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordsSinceNotifications' field"))
 	}
 
 	// Virtual field

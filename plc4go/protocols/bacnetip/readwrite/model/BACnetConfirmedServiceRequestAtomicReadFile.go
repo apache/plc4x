@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func BACnetConfirmedServiceRequestAtomicReadFileParse(ctx context.Context, theBy
 	return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestAtomicReadFileParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
+		return BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestAtomicReadFile, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,30 +161,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileIdentifier)
-	if pullErr := readBuffer.PullContext("fileIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileIdentifier")
-	}
-	_fileIdentifier, _fileIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileIdentifierErr != nil {
-		return nil, errors.Wrap(_fileIdentifierErr, "Error parsing 'fileIdentifier' field of BACnetConfirmedServiceRequestAtomicReadFile")
-	}
-	fileIdentifier := _fileIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("fileIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileIdentifier")
+	fileIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "fileIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileIdentifier' field"))
 	}
 
-	// Simple Field (accessMethod)
-	if pullErr := readBuffer.PullContext("accessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessMethod")
-	}
-	_accessMethod, _accessMethodErr := BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer(ctx, readBuffer)
-	if _accessMethodErr != nil {
-		return nil, errors.Wrap(_accessMethodErr, "Error parsing 'accessMethod' field of BACnetConfirmedServiceRequestAtomicReadFile")
-	}
-	accessMethod := _accessMethod.(BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord)
-	if closeErr := readBuffer.CloseContext("accessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessMethod")
+	accessMethod, err := ReadSimpleField[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](ctx, "accessMethod", ReadComplex[BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecord](BACnetConfirmedServiceRequestAtomicReadFileStreamOrRecordParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessMethod' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFile"); closeErr != nil {

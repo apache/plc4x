@@ -161,6 +161,12 @@ func ContentFilterElementParse(ctx context.Context, theBytes []byte, identifier 
 	return ContentFilterElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ContentFilterElementParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterElement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterElement, error) {
+		return ContentFilterElementParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func ContentFilterElementParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (filterOperator)
-	if pullErr := readBuffer.PullContext("filterOperator"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterOperator")
-	}
-	_filterOperator, _filterOperatorErr := FilterOperatorParseWithBuffer(ctx, readBuffer)
-	if _filterOperatorErr != nil {
-		return nil, errors.Wrap(_filterOperatorErr, "Error parsing 'filterOperator' field of ContentFilterElement")
-	}
-	filterOperator := _filterOperator
-	if closeErr := readBuffer.CloseContext("filterOperator"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterOperator")
+	filterOperator, err := ReadEnumField[FilterOperator](ctx, "filterOperator", "FilterOperator", ReadEnum(FilterOperatorByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperator' field"))
 	}
 
-	// Simple Field (noOfFilterOperands)
-	_noOfFilterOperands, _noOfFilterOperandsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfFilterOperands", 32)
-	if _noOfFilterOperandsErr != nil {
-		return nil, errors.Wrap(_noOfFilterOperandsErr, "Error parsing 'noOfFilterOperands' field of ContentFilterElement")
+	noOfFilterOperands, err := ReadSimpleField(ctx, "noOfFilterOperands", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfFilterOperands' field"))
 	}
-	noOfFilterOperands := _noOfFilterOperands
 
-	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
-		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObject), nil
-	}, readBuffer), uint64(noOfFilterOperands))
+	filterOperands, err := ReadCountArrayField[ExtensionObject](ctx, "filterOperands", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfFilterOperands))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterOperands' field"))
 	}

@@ -148,6 +148,12 @@ func ConfirmationParse(ctx context.Context, theBytes []byte) (Confirmation, erro
 	return ConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConfirmationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
+		return ConfirmationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Confirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,17 +165,9 @@ func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (alpha)
-	if pullErr := readBuffer.PullContext("alpha"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alpha")
-	}
-	_alpha, _alphaErr := AlphaParseWithBuffer(ctx, readBuffer)
-	if _alphaErr != nil {
-		return nil, errors.Wrap(_alphaErr, "Error parsing 'alpha' field of Confirmation")
-	}
-	alpha := _alpha.(Alpha)
-	if closeErr := readBuffer.CloseContext("alpha"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alpha")
+	alpha, err := ReadSimpleField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alpha' field"))
 	}
 
 	_secondAlpha, err := ReadOptionalField[Alpha](ctx, "secondAlpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
@@ -181,17 +179,9 @@ func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		secondAlpha = *_secondAlpha
 	}
 
-	// Simple Field (confirmationType)
-	if pullErr := readBuffer.PullContext("confirmationType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for confirmationType")
-	}
-	_confirmationType, _confirmationTypeErr := ConfirmationTypeParseWithBuffer(ctx, readBuffer)
-	if _confirmationTypeErr != nil {
-		return nil, errors.Wrap(_confirmationTypeErr, "Error parsing 'confirmationType' field of Confirmation")
-	}
-	confirmationType := _confirmationType
-	if closeErr := readBuffer.CloseContext("confirmationType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for confirmationType")
+	confirmationType, err := ReadEnumField[ConfirmationType](ctx, "confirmationType", "ConfirmationType", ReadEnum(ConfirmationTypeByValue, ReadByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmationType' field"))
 	}
 
 	// Virtual field

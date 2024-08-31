@@ -137,6 +137,12 @@ func BACnetEventNotificationSubscriptionParse(ctx context.Context, theBytes []by
 	return BACnetEventNotificationSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventNotificationSubscriptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
+		return BACnetEventNotificationSubscriptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventNotificationSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,39 +154,17 @@ func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recipient)
-	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
-	}
-	_recipient, _recipientErr := BACnetRecipientEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetEventNotificationSubscription")
-	}
-	recipient := _recipient.(BACnetRecipientEnclosed)
-	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipient")
+	recipient, err := ReadSimpleField[BACnetRecipientEnclosed](ctx, "recipient", ReadComplex[BACnetRecipientEnclosed](BACnetRecipientEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipient' field"))
 	}
 
-	// Simple Field (processIdentifier)
-	if pullErr := readBuffer.PullContext("processIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifier")
-	}
-	_processIdentifier, _processIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _processIdentifierErr != nil {
-		return nil, errors.Wrap(_processIdentifierErr, "Error parsing 'processIdentifier' field of BACnetEventNotificationSubscription")
-	}
-	processIdentifier := _processIdentifier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("processIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for processIdentifier")
+	processIdentifier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "processIdentifier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifier' field"))
 	}
 
-	_issueConfirmedNotifications, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_BOOLEAN))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagBoolean), nil
-	}, readBuffer), true)
+	_issueConfirmedNotifications, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issueConfirmedNotifications' field"))
 	}
@@ -189,17 +173,9 @@ func BACnetEventNotificationSubscriptionParseWithBuffer(ctx context.Context, rea
 		issueConfirmedNotifications = *_issueConfirmedNotifications
 	}
 
-	// Simple Field (timeRemaining)
-	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
-	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetEventNotificationSubscription")
-	}
-	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
+	timeRemaining, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRemaining' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventNotificationSubscription"); closeErr != nil {

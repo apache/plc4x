@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataExtendedTimeEnableParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataExtendedTimeEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataExtendedTimeEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataExtendedTimeEnable, error) {
+		return BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataExtendedTimeEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (extendedTimeEnable)
-	if pullErr := readBuffer.PullContext("extendedTimeEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for extendedTimeEnable")
-	}
-	_extendedTimeEnable, _extendedTimeEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _extendedTimeEnableErr != nil {
-		return nil, errors.Wrap(_extendedTimeEnableErr, "Error parsing 'extendedTimeEnable' field of BACnetConstructedDataExtendedTimeEnable")
-	}
-	extendedTimeEnable := _extendedTimeEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("extendedTimeEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for extendedTimeEnable")
+	extendedTimeEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "extendedTimeEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedTimeEnable' field"))
 	}
 
 	// Virtual field

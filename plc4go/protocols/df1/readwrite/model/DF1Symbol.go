@@ -132,6 +132,17 @@ func DF1SymbolParse(ctx context.Context, theBytes []byte) (DF1Symbol, error) {
 	return DF1SymbolParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DF1SymbolParseWithBufferProducer[T DF1Symbol]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DF1SymbolParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Symbol, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,13 +154,13 @@ func DF1SymbolParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageStart, err := ReadConstField[uint8](ctx, "messageStart", ReadUnsignedByte(readBuffer, 8), DF1Symbol_MESSAGESTART, codegen.WithByteOrder(binary.BigEndian))
+	messageStart, err := ReadConstField[uint8](ctx, "messageStart", ReadUnsignedByte(readBuffer, uint8(8)), DF1Symbol_MESSAGESTART, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageStart' field"))
 	}
 	_ = messageStart
 
-	symbolType, err := ReadDiscriminatorField[uint8](ctx, "symbolType", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	symbolType, err := ReadDiscriminatorField[uint8](ctx, "symbolType", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolType' field"))
 	}

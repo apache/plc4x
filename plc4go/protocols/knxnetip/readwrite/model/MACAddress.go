@@ -105,6 +105,12 @@ func MACAddressParse(ctx context.Context, theBytes []byte) (MACAddress, error) {
 	return MACAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MACAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {
+		return MACAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MACAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MACAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware

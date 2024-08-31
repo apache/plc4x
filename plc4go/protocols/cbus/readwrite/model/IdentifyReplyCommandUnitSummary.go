@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -173,6 +175,12 @@ func IdentifyReplyCommandUnitSummaryParse(ctx context.Context, theBytes []byte) 
 	return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IdentifyReplyCommandUnitSummaryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
+		return IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,61 +192,45 @@ func IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (assertingNetworkBurden)
-	_assertingNetworkBurden, _assertingNetworkBurdenErr := /*TODO: migrate me*/ readBuffer.ReadBit("assertingNetworkBurden")
-	if _assertingNetworkBurdenErr != nil {
-		return nil, errors.Wrap(_assertingNetworkBurdenErr, "Error parsing 'assertingNetworkBurden' field of IdentifyReplyCommandUnitSummary")
+	assertingNetworkBurden, err := ReadSimpleField(ctx, "assertingNetworkBurden", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assertingNetworkBurden' field"))
 	}
-	assertingNetworkBurden := _assertingNetworkBurden
 
-	// Simple Field (restrikeTimingActive)
-	_restrikeTimingActive, _restrikeTimingActiveErr := /*TODO: migrate me*/ readBuffer.ReadBit("restrikeTimingActive")
-	if _restrikeTimingActiveErr != nil {
-		return nil, errors.Wrap(_restrikeTimingActiveErr, "Error parsing 'restrikeTimingActive' field of IdentifyReplyCommandUnitSummary")
+	restrikeTimingActive, err := ReadSimpleField(ctx, "restrikeTimingActive", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restrikeTimingActive' field"))
 	}
-	restrikeTimingActive := _restrikeTimingActive
 
-	// Simple Field (remoteOFFInputAsserted)
-	_remoteOFFInputAsserted, _remoteOFFInputAssertedErr := /*TODO: migrate me*/ readBuffer.ReadBit("remoteOFFInputAsserted")
-	if _remoteOFFInputAssertedErr != nil {
-		return nil, errors.Wrap(_remoteOFFInputAssertedErr, "Error parsing 'remoteOFFInputAsserted' field of IdentifyReplyCommandUnitSummary")
+	remoteOFFInputAsserted, err := ReadSimpleField(ctx, "remoteOFFInputAsserted", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteOFFInputAsserted' field"))
 	}
-	remoteOFFInputAsserted := _remoteOFFInputAsserted
 
-	// Simple Field (remoteONInputAsserted)
-	_remoteONInputAsserted, _remoteONInputAssertedErr := /*TODO: migrate me*/ readBuffer.ReadBit("remoteONInputAsserted")
-	if _remoteONInputAssertedErr != nil {
-		return nil, errors.Wrap(_remoteONInputAssertedErr, "Error parsing 'remoteONInputAsserted' field of IdentifyReplyCommandUnitSummary")
+	remoteONInputAsserted, err := ReadSimpleField(ctx, "remoteONInputAsserted", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteONInputAsserted' field"))
 	}
-	remoteONInputAsserted := _remoteONInputAsserted
 
-	// Simple Field (localToggleEnabled)
-	_localToggleEnabled, _localToggleEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("localToggleEnabled")
-	if _localToggleEnabledErr != nil {
-		return nil, errors.Wrap(_localToggleEnabledErr, "Error parsing 'localToggleEnabled' field of IdentifyReplyCommandUnitSummary")
+	localToggleEnabled, err := ReadSimpleField(ctx, "localToggleEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleEnabled' field"))
 	}
-	localToggleEnabled := _localToggleEnabled
 
-	// Simple Field (localToggleActiveState)
-	_localToggleActiveState, _localToggleActiveStateErr := /*TODO: migrate me*/ readBuffer.ReadBit("localToggleActiveState")
-	if _localToggleActiveStateErr != nil {
-		return nil, errors.Wrap(_localToggleActiveStateErr, "Error parsing 'localToggleActiveState' field of IdentifyReplyCommandUnitSummary")
+	localToggleActiveState, err := ReadSimpleField(ctx, "localToggleActiveState", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localToggleActiveState' field"))
 	}
-	localToggleActiveState := _localToggleActiveState
 
-	// Simple Field (clockGenerationEnabled)
-	_clockGenerationEnabled, _clockGenerationEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("clockGenerationEnabled")
-	if _clockGenerationEnabledErr != nil {
-		return nil, errors.Wrap(_clockGenerationEnabledErr, "Error parsing 'clockGenerationEnabled' field of IdentifyReplyCommandUnitSummary")
+	clockGenerationEnabled, err := ReadSimpleField(ctx, "clockGenerationEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clockGenerationEnabled' field"))
 	}
-	clockGenerationEnabled := _clockGenerationEnabled
 
-	// Simple Field (unitGeneratingClock)
-	_unitGeneratingClock, _unitGeneratingClockErr := /*TODO: migrate me*/ readBuffer.ReadBit("unitGeneratingClock")
-	if _unitGeneratingClockErr != nil {
-		return nil, errors.Wrap(_unitGeneratingClockErr, "Error parsing 'unitGeneratingClock' field of IdentifyReplyCommandUnitSummary")
+	unitGeneratingClock, err := ReadSimpleField(ctx, "unitGeneratingClock", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitGeneratingClock' field"))
 	}
-	unitGeneratingClock := _unitGeneratingClock
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandUnitSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandUnitSummary")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func MonitoredSALReplyParse(ctx context.Context, theBytes []byte, cBusOptions CB
 	return MonitoredSALReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func MonitoredSALReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALReply, error) {
+		return MonitoredSALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func MonitoredSALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (MonitoredSALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func MonitoredSALReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredSAL)
-	if pullErr := readBuffer.PullContext("monitoredSAL"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredSAL")
-	}
-	_monitoredSAL, _monitoredSALErr := MonitoredSALParseWithBuffer(ctx, readBuffer, cBusOptions)
-	if _monitoredSALErr != nil {
-		return nil, errors.Wrap(_monitoredSALErr, "Error parsing 'monitoredSAL' field of MonitoredSALReply")
-	}
-	monitoredSAL := _monitoredSAL.(MonitoredSAL)
-	if closeErr := readBuffer.CloseContext("monitoredSAL"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredSAL")
+	monitoredSAL, err := ReadSimpleField[MonitoredSAL](ctx, "monitoredSAL", ReadComplex[MonitoredSAL](MonitoredSALParseWithBufferProducer[MonitoredSAL]((CBusOptions)(cBusOptions)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredSAL' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALReply"); closeErr != nil {

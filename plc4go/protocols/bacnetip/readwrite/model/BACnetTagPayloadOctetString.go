@@ -108,6 +108,12 @@ func BACnetTagPayloadOctetStringParse(ctx context.Context, theBytes []byte, actu
 	return BACnetTagPayloadOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadOctetStringParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadOctetString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadOctetString, error) {
+		return BACnetTagPayloadOctetStringParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware

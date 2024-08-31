@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLiftCarModeParse(ctx context.Context, theBytes []byte, 
 	return BACnetPropertyStatesLiftCarModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLiftCarModeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarMode, error) {
+		return BACnetPropertyStatesLiftCarModeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLiftCarModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLiftCarModeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarMode)
-	if pullErr := readBuffer.PullContext("liftCarMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarMode")
-	}
-	_liftCarMode, _liftCarModeErr := BACnetLiftCarModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarModeErr != nil {
-		return nil, errors.Wrap(_liftCarModeErr, "Error parsing 'liftCarMode' field of BACnetPropertyStatesLiftCarMode")
-	}
-	liftCarMode := _liftCarMode.(BACnetLiftCarModeTagged)
-	if closeErr := readBuffer.CloseContext("liftCarMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarMode")
+	liftCarMode, err := ReadSimpleField[BACnetLiftCarModeTagged](ctx, "liftCarMode", ReadComplex[BACnetLiftCarModeTagged](BACnetLiftCarModeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarMode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarMode"); closeErr != nil {

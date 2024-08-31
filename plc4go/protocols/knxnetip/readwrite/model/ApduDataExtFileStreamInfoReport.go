@@ -109,6 +109,12 @@ func ApduDataExtFileStreamInfoReportParse(ctx context.Context, theBytes []byte, 
 	return ApduDataExtFileStreamInfoReportParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtFileStreamInfoReportParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtFileStreamInfoReport, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtFileStreamInfoReport, error) {
+		return ApduDataExtFileStreamInfoReportParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtFileStreamInfoReportParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtFileStreamInfoReport, error) {
 	positionAware := readBuffer
 	_ = positionAware

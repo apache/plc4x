@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	return BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
+		return BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterStringPar
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterStringValue)
-	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
-	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString")
-	}
-	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
+	characterStringValue, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfDiscreteValueNewValueCharacterString"); closeErr != nil {

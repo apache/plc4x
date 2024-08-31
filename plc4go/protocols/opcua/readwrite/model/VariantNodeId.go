@@ -157,6 +157,12 @@ func VariantNodeIdParse(ctx context.Context, theBytes []byte, arrayLengthSpecifi
 	return VariantNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
 }
 
+func VariantNodeIdParseWithBufferProducer(arrayLengthSpecified bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNodeId, error) {
+		return VariantNodeIdParseWithBuffer(ctx, readBuffer, arrayLengthSpecified)
+	}
+}
+
 func VariantNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,7 +174,7 @@ func VariantNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, 32), arrayLengthSpecified)
+	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}

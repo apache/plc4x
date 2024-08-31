@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParse(ctx context.Context, th
 	return BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
+		return BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDAcceptFDRegistrations, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bbmdAcceptFDRegistrations)
-	if pullErr := readBuffer.PullContext("bbmdAcceptFDRegistrations"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAcceptFDRegistrations")
-	}
-	_bbmdAcceptFDRegistrations, _bbmdAcceptFDRegistrationsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bbmdAcceptFDRegistrationsErr != nil {
-		return nil, errors.Wrap(_bbmdAcceptFDRegistrationsErr, "Error parsing 'bbmdAcceptFDRegistrations' field of BACnetConstructedDataBBMDAcceptFDRegistrations")
-	}
-	bbmdAcceptFDRegistrations := _bbmdAcceptFDRegistrations.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("bbmdAcceptFDRegistrations"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bbmdAcceptFDRegistrations")
+	bbmdAcceptFDRegistrations, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdAcceptFDRegistrations' field"))
 	}
 
 	// Virtual field

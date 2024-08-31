@@ -106,6 +106,17 @@ func KnxGroupAddressParse(ctx context.Context, theBytes []byte, numLevels uint8)
 	return KnxGroupAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
+func KnxGroupAddressParseWithBufferProducer[T KnxGroupAddress](numLevels uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := KnxGroupAddressParseWithBuffer(ctx, readBuffer, numLevels)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func KnxGroupAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware

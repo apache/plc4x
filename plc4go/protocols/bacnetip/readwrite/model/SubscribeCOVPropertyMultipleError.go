@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func SubscribeCOVPropertyMultipleErrorParse(ctx context.Context, theBytes []byte
 	return SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
+func SubscribeCOVPropertyMultipleErrorParseWithBufferProducer(errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscribeCOVPropertyMultipleError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscribeCOVPropertyMultipleError, error) {
+		return SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+	}
+}
+
 func SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (SubscribeCOVPropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func SubscribeCOVPropertyMultipleErrorParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
-	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of SubscribeCOVPropertyMultipleError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
 
-	// Simple Field (firstFailedSubscription)
-	if pullErr := readBuffer.PullContext("firstFailedSubscription"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedSubscription")
-	}
-	_firstFailedSubscription, _firstFailedSubscriptionErr := SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _firstFailedSubscriptionErr != nil {
-		return nil, errors.Wrap(_firstFailedSubscriptionErr, "Error parsing 'firstFailedSubscription' field of SubscribeCOVPropertyMultipleError")
-	}
-	firstFailedSubscription := _firstFailedSubscription.(SubscribeCOVPropertyMultipleErrorFirstFailedSubscription)
-	if closeErr := readBuffer.CloseContext("firstFailedSubscription"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firstFailedSubscription")
+	firstFailedSubscription, err := ReadSimpleField[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](ctx, "firstFailedSubscription", ReadComplex[SubscribeCOVPropertyMultipleErrorFirstFailedSubscription](SubscribeCOVPropertyMultipleErrorFirstFailedSubscriptionParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstFailedSubscription' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SubscribeCOVPropertyMultipleError"); closeErr != nil {

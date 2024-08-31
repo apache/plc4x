@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNodeSubtypeParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNodeSubtypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNodeSubtype, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNodeSubtype, error) {
+		return BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNodeSubtype, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeSubType)
-	if pullErr := readBuffer.PullContext("nodeSubType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeSubType")
-	}
-	_nodeSubType, _nodeSubTypeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _nodeSubTypeErr != nil {
-		return nil, errors.Wrap(_nodeSubTypeErr, "Error parsing 'nodeSubType' field of BACnetConstructedDataNodeSubtype")
-	}
-	nodeSubType := _nodeSubType.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("nodeSubType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeSubType")
+	nodeSubType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeSubType' field"))
 	}
 
 	// Virtual field

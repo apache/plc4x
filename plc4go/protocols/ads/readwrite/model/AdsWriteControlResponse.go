@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func AdsWriteControlResponseParse(ctx context.Context, theBytes []byte) (AdsWrit
 	return AdsWriteControlResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsWriteControlResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
+		return AdsWriteControlResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsWriteControlResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,17 +160,9 @@ func AdsWriteControlResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsWriteControlResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsWriteControlResponse"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesNetworkPortCommandParse(ctx context.Context, theBytes [
 	return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesNetworkPortCommandParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkPortCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkPortCommand, error) {
+		return BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkPortCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesNetworkPortCommandParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkPortCommand)
-	if pullErr := readBuffer.PullContext("networkPortCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPortCommand")
-	}
-	_networkPortCommand, _networkPortCommandErr := BACnetNetworkPortCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _networkPortCommandErr != nil {
-		return nil, errors.Wrap(_networkPortCommandErr, "Error parsing 'networkPortCommand' field of BACnetPropertyStatesNetworkPortCommand")
-	}
-	networkPortCommand := _networkPortCommand.(BACnetNetworkPortCommandTagged)
-	if closeErr := readBuffer.CloseContext("networkPortCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPortCommand")
+	networkPortCommand, err := ReadSimpleField[BACnetNetworkPortCommandTagged](ctx, "networkPortCommand", ReadComplex[BACnetNetworkPortCommandTagged](BACnetNetworkPortCommandTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPortCommand' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkPortCommand"); closeErr != nil {

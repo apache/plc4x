@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func IdentifyReplyCommandSummaryParse(ctx context.Context, theBytes []byte, attr
 	return IdentifyReplyCommandSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandSummaryParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandSummary, error) {
+		return IdentifyReplyCommandSummaryParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,26 +171,20 @@ func IdentifyReplyCommandSummaryParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (partName)
-	_partName, _partNameErr := /*TODO: migrate me*/ readBuffer.ReadString("partName", uint32(48), utils.WithEncoding("UTF-8"))
-	if _partNameErr != nil {
-		return nil, errors.Wrap(_partNameErr, "Error parsing 'partName' field of IdentifyReplyCommandSummary")
+	partName, err := ReadSimpleField(ctx, "partName", ReadString(readBuffer, uint32(48)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'partName' field"))
 	}
-	partName := _partName
 
-	// Simple Field (unitServiceType)
-	_unitServiceType, _unitServiceTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("unitServiceType")
-	if _unitServiceTypeErr != nil {
-		return nil, errors.Wrap(_unitServiceTypeErr, "Error parsing 'unitServiceType' field of IdentifyReplyCommandSummary")
+	unitServiceType, err := ReadSimpleField(ctx, "unitServiceType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitServiceType' field"))
 	}
-	unitServiceType := _unitServiceType
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadString("version", uint32(32), utils.WithEncoding("UTF-8"))
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of IdentifyReplyCommandSummary")
+	version, err := ReadSimpleField(ctx, "version", ReadString(readBuffer, uint32(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandSummary")

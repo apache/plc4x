@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -187,6 +189,12 @@ func AdsReadDeviceInfoResponseParse(ctx context.Context, theBytes []byte) (AdsRe
 	return AdsReadDeviceInfoResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadDeviceInfoResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
+		return AdsReadDeviceInfoResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -198,39 +206,25 @@ func AdsReadDeviceInfoResponseParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadDeviceInfoResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("majorVersion", 8)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of AdsReadDeviceInfoResponse")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minorVersion", 8)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of AdsReadDeviceInfoResponse")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("version", 16)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of AdsReadDeviceInfoResponse")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
 
 	device, err := readBuffer.ReadByteArray("device", int(int32(16)))
 	if err != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataInactiveTextParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataInactiveTextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataInactiveTextParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInactiveText, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInactiveText, error) {
+		return BACnetConstructedDataInactiveTextParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataInactiveTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInactiveText, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataInactiveTextParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (inactiveText)
-	if pullErr := readBuffer.PullContext("inactiveText"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for inactiveText")
-	}
-	_inactiveText, _inactiveTextErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _inactiveTextErr != nil {
-		return nil, errors.Wrap(_inactiveTextErr, "Error parsing 'inactiveText' field of BACnetConstructedDataInactiveText")
-	}
-	inactiveText := _inactiveText.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("inactiveText"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for inactiveText")
+	inactiveText, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "inactiveText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inactiveText' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetLogRecordLogDatumTimeChangeParse(ctx context.Context, theBytes []byte
 	return BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumTimeChangeParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumTimeChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumTimeChange, error) {
+		return BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumTimeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetLogRecordLogDatumTimeChangeParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeChange)
-	if pullErr := readBuffer.PullContext("timeChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeChange")
-	}
-	_timeChange, _timeChangeErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(9)), BACnetDataType(BACnetDataType_REAL))
-	if _timeChangeErr != nil {
-		return nil, errors.Wrap(_timeChangeErr, "Error parsing 'timeChange' field of BACnetLogRecordLogDatumTimeChange")
-	}
-	timeChange := _timeChange.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("timeChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeChange")
+	timeChange, err := ReadSimpleField[BACnetContextTagReal](ctx, "timeChange", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(9)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeChange' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumTimeChange"); closeErr != nil {

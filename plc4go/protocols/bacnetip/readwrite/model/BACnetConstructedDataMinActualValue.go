@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMinActualValueParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataMinActualValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMinActualValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinActualValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinActualValue, error) {
+		return BACnetConstructedDataMinActualValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMinActualValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinActualValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMinActualValueParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minActualValue)
-	if pullErr := readBuffer.PullContext("minActualValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minActualValue")
-	}
-	_minActualValue, _minActualValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minActualValueErr != nil {
-		return nil, errors.Wrap(_minActualValueErr, "Error parsing 'minActualValue' field of BACnetConstructedDataMinActualValue")
-	}
-	minActualValue := _minActualValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("minActualValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minActualValue")
+	minActualValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minActualValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minActualValue' field"))
 	}
 
 	// Virtual field

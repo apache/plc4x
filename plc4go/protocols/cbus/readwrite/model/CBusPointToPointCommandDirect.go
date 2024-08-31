@@ -136,6 +136,12 @@ func CBusPointToPointCommandDirectParse(ctx context.Context, theBytes []byte, cB
 	return CBusPointToPointCommandDirectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToPointCommandDirectParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointCommandDirect, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointCommandDirect, error) {
+		return CBusPointToPointCommandDirectParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusPointToPointCommandDirectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommandDirect, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -147,20 +153,12 @@ func CBusPointToPointCommandDirectParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unitAddress)
-	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
-	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
-	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of CBusPointToPointCommandDirect")
-	}
-	unitAddress := _unitAddress.(UnitAddress)
-	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
+	unitAddress, err := ReadSimpleField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataGroupIDParse(ctx context.Context, theBytes []byte, tag
 	return BACnetConstructedDataGroupIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataGroupIDParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataGroupID, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataGroupID, error) {
+		return BACnetConstructedDataGroupIDParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataGroupIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataGroupID, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataGroupIDParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (groupId)
-	if pullErr := readBuffer.PullContext("groupId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for groupId")
-	}
-	_groupId, _groupIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _groupIdErr != nil {
-		return nil, errors.Wrap(_groupIdErr, "Error parsing 'groupId' field of BACnetConstructedDataGroupID")
-	}
-	groupId := _groupId.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("groupId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for groupId")
+	groupId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "groupId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupId' field"))
 	}
 
 	// Virtual field

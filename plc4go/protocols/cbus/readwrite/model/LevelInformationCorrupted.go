@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func LevelInformationCorruptedParse(ctx context.Context, theBytes []byte) (Level
 	return LevelInformationCorruptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LevelInformationCorruptedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
+		return LevelInformationCorruptedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LevelInformationCorruptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationCorrupted, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +180,25 @@ func LevelInformationCorruptedParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (corruptedNibble1)
-	_corruptedNibble1, _corruptedNibble1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("corruptedNibble1", 4)
-	if _corruptedNibble1Err != nil {
-		return nil, errors.Wrap(_corruptedNibble1Err, "Error parsing 'corruptedNibble1' field of LevelInformationCorrupted")
+	corruptedNibble1, err := ReadSimpleField(ctx, "corruptedNibble1", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble1' field"))
 	}
-	corruptedNibble1 := _corruptedNibble1
 
-	// Simple Field (corruptedNibble2)
-	_corruptedNibble2, _corruptedNibble2Err := /*TODO: migrate me*/ readBuffer.ReadUint8("corruptedNibble2", 4)
-	if _corruptedNibble2Err != nil {
-		return nil, errors.Wrap(_corruptedNibble2Err, "Error parsing 'corruptedNibble2' field of LevelInformationCorrupted")
+	corruptedNibble2, err := ReadSimpleField(ctx, "corruptedNibble2", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble2' field"))
 	}
-	corruptedNibble2 := _corruptedNibble2
 
-	// Simple Field (corruptedNibble3)
-	_corruptedNibble3, _corruptedNibble3Err := /*TODO: migrate me*/ readBuffer.ReadUint8("corruptedNibble3", 4)
-	if _corruptedNibble3Err != nil {
-		return nil, errors.Wrap(_corruptedNibble3Err, "Error parsing 'corruptedNibble3' field of LevelInformationCorrupted")
+	corruptedNibble3, err := ReadSimpleField(ctx, "corruptedNibble3", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble3' field"))
 	}
-	corruptedNibble3 := _corruptedNibble3
 
-	// Simple Field (corruptedNibble4)
-	_corruptedNibble4, _corruptedNibble4Err := /*TODO: migrate me*/ readBuffer.ReadUint8("corruptedNibble4", 4)
-	if _corruptedNibble4Err != nil {
-		return nil, errors.Wrap(_corruptedNibble4Err, "Error parsing 'corruptedNibble4' field of LevelInformationCorrupted")
+	corruptedNibble4, err := ReadSimpleField(ctx, "corruptedNibble4", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'corruptedNibble4' field"))
 	}
-	corruptedNibble4 := _corruptedNibble4
 
 	if closeErr := readBuffer.CloseContext("LevelInformationCorrupted"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LevelInformationCorrupted")

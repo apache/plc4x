@@ -784,6 +784,21 @@ func ${type.name}Parse(ctx context.Context, theBytes []byte<#if hasParserArgumen
 	return ${type.name}ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes${helper.getEndiannessOptions(true, true, parserArguments)})<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
 }
 
+func ${type.name}ParseWithBufferProducer<#if type.isDiscriminatedParentTypeDefinition()>[T ${type.name}]</#if>(<#if hasParserArguments>${parserArgumentList}</#if>)  func(ctx context.Context, readBuffer utils.ReadBuffer) (<#if type.isDiscriminatedParentTypeDefinition()>T<#else>${type.name}</#if>, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (<#if type.isDiscriminatedParentTypeDefinition()>T<#else>${type.name}</#if>, error){
+<#if type.isDiscriminatedParentTypeDefinition()>
+	buffer, err := ${type.name}ParseWithBuffer(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+	if err != nil {
+		var zero T
+		return zero,err
+	}
+	return buffer.(T), err
+<#else>
+	return ${type.name}ParseWithBuffer(ctx , readBuffer<#if hasParserArguments>, ${parserArgumentNameList}</#if>)
+</#if>
+	}
+}
+
 func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer<#if hasParserArguments>, ${parserArgumentList}</#if>) (${type.name}, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -959,59 +974,33 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#break>
 			<#case "simple">
 				<#assign simpleField = field.asSimpleField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Simple Field (${simpleField.name})
-				<#if !simpleField.type.isSimpleTypeReference()>
-	if pullErr := readBuffer.PullContext("${simpleField.name}"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-				</#if>
-    <#assign simpleFieldLogicalName><#if simpleField.type.isSimpleTypeReference() && !helper.isEnumField(field)>${simpleField.name}<#else>${simpleField.typeName}</#if></#assign>
-	<@compress single_line=true>
-	_${simpleField.name}, _${simpleField.name}Err :=
-	<#if simpleField.type.isSimpleTypeReference()>
-		${helper.getReadBufferReadMethodCall(simpleFieldLogicalName, simpleField.type.asSimpleTypeReference().orElseThrow(), null, simpleField)}
+<@compress single_line=true>
+	${namedField.name},err  :=
+	<#if typedField.type.isEnumTypeReference()>
+		ReadEnumField[${helper.getLanguageTypeNameForField(field)}](
+			ctx,
+			"${namedField.name}",
+			"${helper.getLanguageTypeNameForField(field)}",
+			${helper.getDataReaderCall(typedField.type)}
+			${helper.getFieldOptions(typedField, parserArguments)}
+		)
 	<#else>
-        <#assign nonSimpleTypeReference=simpleField.type.asNonSimpleTypeReference().orElseThrow()>
-        <#assign typeName=nonSimpleTypeReference.name>
-        <#assign typeDefinition=nonSimpleTypeReference.typeDefinition>
-        <#if typeDefinition.isComplexTypeDefinition() && typeDefinition.asComplexTypeDefinition().orElseThrow().isDiscriminatedChildTypeDefinition()>
-        <#-- Usually you don't use child directly unless they are parameterized #-->
-            <#assign typeName=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow().name>
-            <#assign typeDefinition=typeDefinition.asComplexTypeDefinition().orElseThrow().parentType.orElseThrow()>
-        </#if>
-        <#assign hasRefParams=nonSimpleTypeReference.params.isPresent()>
-        <#assign refParams>
-            <#if hasRefParams>
-				,
-                <#list nonSimpleTypeReference.params.orElseThrow() as parserArgument>
-					<#assign parserTypeRef=helper.getArgumentType(simpleField.type, parserArgument?index)>
-					<#if !parserTypeRef.isComplexTypeReference()>${helper.getLanguageTypeNameForTypeReference(parserTypeRef)}(</#if>
-                    ${helper.toTypedParseExpression(simpleField, parserTypeRef, parserArgument, parserArguments)}
-                    <#if !parserTypeRef.isComplexTypeReference()>)</#if>
-                    <#sep>, </#sep>
-                </#list>
-            </#if>
-        </#assign>
-		${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
+		Read${field.typeName?cap_first}Field<#if typedField.getType().isComplexTypeReference()>[${helper.getLanguageTypeNameForField(field)}]</#if>(
+			ctx,
+			"${namedField.name}",
+			${helper.getDataReaderCall(typedField.type)}
+			${helper.getFieldOptions(typedField, parserArguments)}
+		)
 	</#if>
-    </@compress>
+</@compress>
 
-	if _${simpleField.name}Err != nil {
-			<#if helper.isEnumField(field)>
-		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			<#else>
-		return nil, errors.Wrap(_${simpleField.name}Err, "Error parsing '${simpleField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			</#if>
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
-	${simpleField.name} := _${simpleField.name}<#if helper.isComplex(field) && !helper.isEnumField(field) && !field.isArrayField()>.(${helper.getLanguageTypeNameForField(field)})</#if>
-				<#if !simpleField.type.isSimpleTypeReference()>
-	if closeErr := readBuffer.CloseContext("${simpleField.name}"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ${simpleField.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-				</#if>
 				<#break>
-
 			<#case "switch">
 				<#assign switchField = field.asSwitchField().orElseThrow()>
 

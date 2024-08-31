@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func HistoryReadValueIdParse(ctx context.Context, theBytes []byte, identifier st
 	return HistoryReadValueIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryReadValueIdParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadValueId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadValueId, error) {
+		return HistoryReadValueIdParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryReadValueIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryReadValueId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,56 +182,24 @@ func HistoryReadValueIdParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of HistoryReadValueId")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
-	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of HistoryReadValueId")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
 
-	// Simple Field (dataEncoding)
-	if pullErr := readBuffer.PullContext("dataEncoding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataEncoding")
-	}
-	_dataEncoding, _dataEncodingErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _dataEncodingErr != nil {
-		return nil, errors.Wrap(_dataEncodingErr, "Error parsing 'dataEncoding' field of HistoryReadValueId")
-	}
-	dataEncoding := _dataEncoding.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("dataEncoding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataEncoding")
+	dataEncoding, err := ReadSimpleField[QualifiedName](ctx, "dataEncoding", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataEncoding' field"))
 	}
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
-	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of HistoryReadValueId")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("HistoryReadValueId"); closeErr != nil {

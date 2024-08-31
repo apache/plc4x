@@ -172,6 +172,12 @@ func QueryNextResponseParse(ctx context.Context, theBytes []byte, identifier str
 	return QueryNextResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryNextResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryNextResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryNextResponse, error) {
+		return QueryNextResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryNextResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,48 +189,24 @@ func QueryNextResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of QueryNextResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (noOfQueryDataSets)
-	_noOfQueryDataSets, _noOfQueryDataSetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfQueryDataSets", 32)
-	if _noOfQueryDataSetsErr != nil {
-		return nil, errors.Wrap(_noOfQueryDataSetsErr, "Error parsing 'noOfQueryDataSets' field of QueryNextResponse")
+	noOfQueryDataSets, err := ReadSimpleField(ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfQueryDataSets' field"))
 	}
-	noOfQueryDataSets := _noOfQueryDataSets
 
-	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("579"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfQueryDataSets))
+	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("579")), readBuffer), uint64(noOfQueryDataSets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
 
-	// Simple Field (revisedContinuationPoint)
-	if pullErr := readBuffer.PullContext("revisedContinuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for revisedContinuationPoint")
-	}
-	_revisedContinuationPoint, _revisedContinuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _revisedContinuationPointErr != nil {
-		return nil, errors.Wrap(_revisedContinuationPointErr, "Error parsing 'revisedContinuationPoint' field of QueryNextResponse")
-	}
-	revisedContinuationPoint := _revisedContinuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("revisedContinuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for revisedContinuationPoint")
+	revisedContinuationPoint, err := ReadSimpleField[PascalByteString](ctx, "revisedContinuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedContinuationPoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("QueryNextResponse"); closeErr != nil {

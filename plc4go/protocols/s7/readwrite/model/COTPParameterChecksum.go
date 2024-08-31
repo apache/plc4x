@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func COTPParameterChecksumParse(ctx context.Context, theBytes []byte, rest uint8
 	return COTPParameterChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
+func COTPParameterChecksumParseWithBufferProducer(rest uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterChecksum, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterChecksum, error) {
+		return COTPParameterChecksumParseWithBuffer(ctx, readBuffer, rest)
+	}
+}
+
 func COTPParameterChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterChecksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func COTPParameterChecksumParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (crc)
-	_crc, _crcErr := /*TODO: migrate me*/ readBuffer.ReadUint8("crc", 8)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of COTPParameterChecksum")
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
-	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("COTPParameterChecksum"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterChecksum")

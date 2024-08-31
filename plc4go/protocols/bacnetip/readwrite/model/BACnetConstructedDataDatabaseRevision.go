@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDatabaseRevisionParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDatabaseRevisionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDatabaseRevision, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDatabaseRevision, error) {
+		return BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDatabaseRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (databaseRevision)
-	if pullErr := readBuffer.PullContext("databaseRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for databaseRevision")
-	}
-	_databaseRevision, _databaseRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _databaseRevisionErr != nil {
-		return nil, errors.Wrap(_databaseRevisionErr, "Error parsing 'databaseRevision' field of BACnetConstructedDataDatabaseRevision")
-	}
-	databaseRevision := _databaseRevision.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("databaseRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for databaseRevision")
+	databaseRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'databaseRevision' field"))
 	}
 
 	// Virtual field

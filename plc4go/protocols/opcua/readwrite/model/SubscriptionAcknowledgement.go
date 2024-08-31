@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func SubscriptionAcknowledgementParse(ctx context.Context, theBytes []byte, iden
 	return SubscriptionAcknowledgementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SubscriptionAcknowledgementParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscriptionAcknowledgement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscriptionAcknowledgement, error) {
+		return SubscriptionAcknowledgementParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SubscriptionAcknowledgementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscriptionAcknowledgement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func SubscriptionAcknowledgementParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SubscriptionAcknowledgement")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SubscriptionAcknowledgement")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("SubscriptionAcknowledgement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SubscriptionAcknowledgement")

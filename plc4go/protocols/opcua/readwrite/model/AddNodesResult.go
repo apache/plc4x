@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func AddNodesResultParse(ctx context.Context, theBytes []byte, identifier string
 	return AddNodesResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AddNodesResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesResult, error) {
+		return AddNodesResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AddNodesResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddNodesResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func AddNodesResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of AddNodesResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (addedNodeId)
-	if pullErr := readBuffer.PullContext("addedNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addedNodeId")
-	}
-	_addedNodeId, _addedNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _addedNodeIdErr != nil {
-		return nil, errors.Wrap(_addedNodeIdErr, "Error parsing 'addedNodeId' field of AddNodesResult")
-	}
-	addedNodeId := _addedNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("addedNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addedNodeId")
+	addedNodeId, err := ReadSimpleField[NodeId](ctx, "addedNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addedNodeId' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AddNodesResult"); closeErr != nil {

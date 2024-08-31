@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataLightingParse(ctx context.Context, theBytes []byte, applicationId Ap
 	return SALDataLightingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataLightingParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataLighting, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataLighting, error) {
+		return SALDataLightingParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataLightingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataLighting, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataLightingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightingData)
-	if pullErr := readBuffer.PullContext("lightingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightingData")
-	}
-	_lightingData, _lightingDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _lightingDataErr != nil {
-		return nil, errors.Wrap(_lightingDataErr, "Error parsing 'lightingData' field of SALDataLighting")
-	}
-	lightingData := _lightingData.(LightingData)
-	if closeErr := readBuffer.CloseContext("lightingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightingData")
+	lightingData, err := ReadSimpleField[LightingData](ctx, "lightingData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataLighting"); closeErr != nil {

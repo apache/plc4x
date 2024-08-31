@@ -144,6 +144,12 @@ func BACnetConstructedDataAuthorizationExemptionsParse(ctx context.Context, theB
 	return BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAuthorizationExemptionsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAuthorizationExemptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAuthorizationExemptions, error) {
+		return BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAuthorizationExemptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,13 +161,7 @@ func BACnetConstructedDataAuthorizationExemptionsParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	authorizationExemption, err := ReadTerminatedArrayField[BACnetAuthorizationExemptionTagged](ctx, "authorizationExemption", ReadComplex[BACnetAuthorizationExemptionTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAuthorizationExemptionTagged, error) {
-		v, err := BACnetAuthorizationExemptionTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetAuthorizationExemptionTagged), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	authorizationExemption, err := ReadTerminatedArrayField[BACnetAuthorizationExemptionTagged](ctx, "authorizationExemption", ReadComplex[BACnetAuthorizationExemptionTagged](BACnetAuthorizationExemptionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authorizationExemption' field"))
 	}

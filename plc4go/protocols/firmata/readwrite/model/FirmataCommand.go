@@ -113,6 +113,17 @@ func FirmataCommandParse(ctx context.Context, theBytes []byte, response bool) (F
 	return FirmataCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandParseWithBufferProducer[T FirmataCommand](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := FirmataCommandParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func FirmataCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, 4))
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}

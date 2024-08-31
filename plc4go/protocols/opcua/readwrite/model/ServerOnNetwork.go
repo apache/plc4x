@@ -183,6 +183,12 @@ func ServerOnNetworkParse(ctx context.Context, theBytes []byte, identifier strin
 	return ServerOnNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ServerOnNetworkParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerOnNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerOnNetwork, error) {
+		return ServerOnNetworkParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServerOnNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,45 +200,25 @@ func ServerOnNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recordId)
-	_recordId, _recordIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("recordId", 32)
-	if _recordIdErr != nil {
-		return nil, errors.Wrap(_recordIdErr, "Error parsing 'recordId' field of ServerOnNetwork")
-	}
-	recordId := _recordId
-
-	// Simple Field (serverName)
-	if pullErr := readBuffer.PullContext("serverName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverName")
-	}
-	_serverName, _serverNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverNameErr != nil {
-		return nil, errors.Wrap(_serverNameErr, "Error parsing 'serverName' field of ServerOnNetwork")
-	}
-	serverName := _serverName.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverName")
+	recordId, err := ReadSimpleField(ctx, "recordId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordId' field"))
 	}
 
-	// Simple Field (discoveryUrl)
-	if pullErr := readBuffer.PullContext("discoveryUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discoveryUrl")
-	}
-	_discoveryUrl, _discoveryUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _discoveryUrlErr != nil {
-		return nil, errors.Wrap(_discoveryUrlErr, "Error parsing 'discoveryUrl' field of ServerOnNetwork")
-	}
-	discoveryUrl := _discoveryUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("discoveryUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discoveryUrl")
+	serverName, err := ReadSimpleField[PascalString](ctx, "serverName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverName' field"))
 	}
 
-	// Simple Field (noOfServerCapabilities)
-	_noOfServerCapabilities, _noOfServerCapabilitiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerCapabilities", 32)
-	if _noOfServerCapabilitiesErr != nil {
-		return nil, errors.Wrap(_noOfServerCapabilitiesErr, "Error parsing 'noOfServerCapabilities' field of ServerOnNetwork")
+	discoveryUrl, err := ReadSimpleField[PascalString](ctx, "discoveryUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrl' field"))
 	}
-	noOfServerCapabilities := _noOfServerCapabilities
+
+	noOfServerCapabilities, err := ReadSimpleField(ctx, "noOfServerCapabilities", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerCapabilities' field"))
+	}
 
 	serverCapabilities, err := ReadCountArrayField[PascalString](ctx, "serverCapabilities", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerCapabilities))
 	if err != nil {

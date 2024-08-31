@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParse(ctx context.Context,
 	return BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
+		return BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestAtomicReadFileRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetConfirmedServiceRequestAtomicReadFileRecordParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileStartRecord)
-	if pullErr := readBuffer.PullContext("fileStartRecord"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartRecord")
-	}
-	_fileStartRecord, _fileStartRecordErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileStartRecordErr != nil {
-		return nil, errors.Wrap(_fileStartRecordErr, "Error parsing 'fileStartRecord' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
-	}
-	fileStartRecord := _fileStartRecord.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartRecord"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartRecord")
+	fileStartRecord, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartRecord", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartRecord' field"))
 	}
 
-	// Simple Field (requestRecordCount)
-	if pullErr := readBuffer.PullContext("requestRecordCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestRecordCount")
-	}
-	_requestRecordCount, _requestRecordCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _requestRecordCountErr != nil {
-		return nil, errors.Wrap(_requestRecordCountErr, "Error parsing 'requestRecordCount' field of BACnetConfirmedServiceRequestAtomicReadFileRecord")
-	}
-	requestRecordCount := _requestRecordCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("requestRecordCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestRecordCount")
+	requestRecordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "requestRecordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestRecordCount' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicReadFileRecord"); closeErr != nil {

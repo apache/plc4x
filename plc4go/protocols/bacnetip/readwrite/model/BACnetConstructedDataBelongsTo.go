@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBelongsToParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataBelongsToParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBelongsToParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBelongsTo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBelongsTo, error) {
+		return BACnetConstructedDataBelongsToParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBelongsToParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBelongsTo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBelongsToParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (belongsTo)
-	if pullErr := readBuffer.PullContext("belongsTo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for belongsTo")
-	}
-	_belongsTo, _belongsToErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _belongsToErr != nil {
-		return nil, errors.Wrap(_belongsToErr, "Error parsing 'belongsTo' field of BACnetConstructedDataBelongsTo")
-	}
-	belongsTo := _belongsTo.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("belongsTo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for belongsTo")
+	belongsTo, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "belongsTo", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'belongsTo' field"))
 	}
 
 	// Virtual field

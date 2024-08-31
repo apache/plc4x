@@ -109,6 +109,12 @@ func ApduDataMemoryWriteParse(ctx context.Context, theBytes []byte, dataLength u
 	return ApduDataMemoryWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataMemoryWriteParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryWrite, error) {
+		return ApduDataMemoryWriteParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataMemoryWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

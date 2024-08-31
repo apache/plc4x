@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +144,12 @@ func BACnetTagPayloadObjectIdentifierParse(ctx context.Context, theBytes []byte)
 	return BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagPayloadObjectIdentifierParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
+		return BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadObjectIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,12 +176,10 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	// Simple Field (instanceNumber)
-	_instanceNumber, _instanceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("instanceNumber", 22)
-	if _instanceNumberErr != nil {
-		return nil, errors.Wrap(_instanceNumberErr, "Error parsing 'instanceNumber' field of BACnetTagPayloadObjectIdentifier")
+	instanceNumber, err := ReadSimpleField(ctx, "instanceNumber", ReadUnsignedInt(readBuffer, uint8(22)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceNumber' field"))
 	}
-	instanceNumber := _instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadObjectIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadObjectIdentifier")

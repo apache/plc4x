@@ -109,6 +109,12 @@ func ApduDataExtReadRouterStatusResponseParse(ctx context.Context, theBytes []by
 	return ApduDataExtReadRouterStatusResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtReadRouterStatusResponseParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtReadRouterStatusResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtReadRouterStatusResponse, error) {
+		return ApduDataExtReadRouterStatusResponseParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtReadRouterStatusResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtReadRouterStatusResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

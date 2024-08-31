@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ApduDataOtherParse(ctx context.Context, theBytes []byte, dataLength uint8) 
 	return ApduDataOtherParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataOtherParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataOther, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataOther, error) {
+		return ApduDataOtherParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataOtherParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataOther, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func ApduDataOtherParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (extendedApdu)
-	if pullErr := readBuffer.PullContext("extendedApdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for extendedApdu")
-	}
-	_extendedApdu, _extendedApduErr := ApduDataExtParseWithBuffer(ctx, readBuffer, uint8(dataLength))
-	if _extendedApduErr != nil {
-		return nil, errors.Wrap(_extendedApduErr, "Error parsing 'extendedApdu' field of ApduDataOther")
-	}
-	extendedApdu := _extendedApdu.(ApduDataExt)
-	if closeErr := readBuffer.CloseContext("extendedApdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for extendedApdu")
+	extendedApdu, err := ReadSimpleField[ApduDataExt](ctx, "extendedApdu", ReadComplex[ApduDataExt](ApduDataExtParseWithBufferProducer[ApduDataExt]((uint8)(dataLength)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedApdu' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduDataOther"); closeErr != nil {

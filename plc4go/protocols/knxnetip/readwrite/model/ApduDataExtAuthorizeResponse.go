@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ApduDataExtAuthorizeResponseParse(ctx context.Context, theBytes []byte, len
 	return ApduDataExtAuthorizeResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtAuthorizeResponseParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtAuthorizeResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtAuthorizeResponse, error) {
+		return ApduDataExtAuthorizeResponseParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtAuthorizeResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtAuthorizeResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func ApduDataExtAuthorizeResponseParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (level)
-	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("level", 8)
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ApduDataExtAuthorizeResponse")
+	level, err := ReadSimpleField(ctx, "level", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	level := _level
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtAuthorizeResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtAuthorizeResponse")

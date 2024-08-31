@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataRepresentsParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataRepresentsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataRepresentsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRepresents, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRepresents, error) {
+		return BACnetConstructedDataRepresentsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataRepresentsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRepresents, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataRepresentsParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (represents)
-	if pullErr := readBuffer.PullContext("represents"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for represents")
-	}
-	_represents, _representsErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _representsErr != nil {
-		return nil, errors.Wrap(_representsErr, "Error parsing 'represents' field of BACnetConstructedDataRepresents")
-	}
-	represents := _represents.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("represents"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for represents")
+	represents, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "represents", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'represents' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func CALDataIdentifyParse(ctx context.Context, theBytes []byte, requestContext R
 	return CALDataIdentifyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
+func CALDataIdentifyParseWithBufferProducer(requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataIdentify, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataIdentify, error) {
+		return CALDataIdentifyParseWithBuffer(ctx, readBuffer, requestContext)
+	}
+}
+
 func CALDataIdentifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataIdentify, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,17 +148,9 @@ func CALDataIdentifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attribute)
-	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
-	}
-	_attribute, _attributeErr := AttributeParseWithBuffer(ctx, readBuffer)
-	if _attributeErr != nil {
-		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentify")
-	}
-	attribute := _attribute
-	if closeErr := readBuffer.CloseContext("attribute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for attribute")
+	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attribute' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataIdentify"); closeErr != nil {

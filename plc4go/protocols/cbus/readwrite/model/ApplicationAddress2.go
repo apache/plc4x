@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,6 +124,12 @@ func ApplicationAddress2Parse(ctx context.Context, theBytes []byte) (Application
 	return ApplicationAddress2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApplicationAddress2ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
+		return ApplicationAddress2ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationAddress2, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,12 +141,10 @@ func ApplicationAddress2ParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadByte("address")
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApplicationAddress2")
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
 	// Virtual field
 	_isWildcard := bool((address) == (0xFF))

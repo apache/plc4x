@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -208,6 +210,12 @@ func S7PayloadDiagnosticMessageParse(ctx context.Context, theBytes []byte, cpuFu
 	return S7PayloadDiagnosticMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadDiagnosticMessageParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadDiagnosticMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadDiagnosticMessage, error) {
+		return S7PayloadDiagnosticMessageParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadDiagnosticMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -219,59 +227,39 @@ func S7PayloadDiagnosticMessageParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventId)
-	_eventId, _eventIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventId", 16)
-	if _eventIdErr != nil {
-		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of S7PayloadDiagnosticMessage")
+	eventId, err := ReadSimpleField(ctx, "eventId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventId' field"))
 	}
-	eventId := _eventId
 
-	// Simple Field (priorityClass)
-	_priorityClass, _priorityClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priorityClass", 8)
-	if _priorityClassErr != nil {
-		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of S7PayloadDiagnosticMessage")
+	priorityClass, err := ReadSimpleField(ctx, "priorityClass", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityClass' field"))
 	}
-	priorityClass := _priorityClass
 
-	// Simple Field (obNumber)
-	_obNumber, _obNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("obNumber", 8)
-	if _obNumberErr != nil {
-		return nil, errors.Wrap(_obNumberErr, "Error parsing 'obNumber' field of S7PayloadDiagnosticMessage")
+	obNumber, err := ReadSimpleField(ctx, "obNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'obNumber' field"))
 	}
-	obNumber := _obNumber
 
-	// Simple Field (datId)
-	_datId, _datIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("datId", 16)
-	if _datIdErr != nil {
-		return nil, errors.Wrap(_datIdErr, "Error parsing 'datId' field of S7PayloadDiagnosticMessage")
+	datId, err := ReadSimpleField(ctx, "datId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'datId' field"))
 	}
-	datId := _datId
 
-	// Simple Field (info1)
-	_info1, _info1Err := /*TODO: migrate me*/ readBuffer.ReadUint16("info1", 16)
-	if _info1Err != nil {
-		return nil, errors.Wrap(_info1Err, "Error parsing 'info1' field of S7PayloadDiagnosticMessage")
+	info1, err := ReadSimpleField(ctx, "info1", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'info1' field"))
 	}
-	info1 := _info1
 
-	// Simple Field (info2)
-	_info2, _info2Err := /*TODO: migrate me*/ readBuffer.ReadUint32("info2", 32)
-	if _info2Err != nil {
-		return nil, errors.Wrap(_info2Err, "Error parsing 'info2' field of S7PayloadDiagnosticMessage")
+	info2, err := ReadSimpleField(ctx, "info2", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'info2' field"))
 	}
-	info2 := _info2
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
-	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadDiagnosticMessage")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadDiagnosticMessage"); closeErr != nil {

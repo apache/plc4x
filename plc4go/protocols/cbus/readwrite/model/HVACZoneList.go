@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -192,6 +194,12 @@ func HVACZoneListParse(ctx context.Context, theBytes []byte) (HVACZoneList, erro
 	return HVACZoneListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACZoneListParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
+		return HVACZoneListParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACZoneList, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -203,61 +211,45 @@ func HVACZoneListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expansion)
-	_expansion, _expansionErr := /*TODO: migrate me*/ readBuffer.ReadBit("expansion")
-	if _expansionErr != nil {
-		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACZoneList")
+	expansion, err := ReadSimpleField(ctx, "expansion", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expansion' field"))
 	}
-	expansion := _expansion
 
-	// Simple Field (zone6)
-	_zone6, _zone6Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone6")
-	if _zone6Err != nil {
-		return nil, errors.Wrap(_zone6Err, "Error parsing 'zone6' field of HVACZoneList")
+	zone6, err := ReadSimpleField(ctx, "zone6", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone6' field"))
 	}
-	zone6 := _zone6
 
-	// Simple Field (zone5)
-	_zone5, _zone5Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone5")
-	if _zone5Err != nil {
-		return nil, errors.Wrap(_zone5Err, "Error parsing 'zone5' field of HVACZoneList")
+	zone5, err := ReadSimpleField(ctx, "zone5", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone5' field"))
 	}
-	zone5 := _zone5
 
-	// Simple Field (zone4)
-	_zone4, _zone4Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone4")
-	if _zone4Err != nil {
-		return nil, errors.Wrap(_zone4Err, "Error parsing 'zone4' field of HVACZoneList")
+	zone4, err := ReadSimpleField(ctx, "zone4", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone4' field"))
 	}
-	zone4 := _zone4
 
-	// Simple Field (zone3)
-	_zone3, _zone3Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone3")
-	if _zone3Err != nil {
-		return nil, errors.Wrap(_zone3Err, "Error parsing 'zone3' field of HVACZoneList")
+	zone3, err := ReadSimpleField(ctx, "zone3", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone3' field"))
 	}
-	zone3 := _zone3
 
-	// Simple Field (zone2)
-	_zone2, _zone2Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone2")
-	if _zone2Err != nil {
-		return nil, errors.Wrap(_zone2Err, "Error parsing 'zone2' field of HVACZoneList")
+	zone2, err := ReadSimpleField(ctx, "zone2", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone2' field"))
 	}
-	zone2 := _zone2
 
-	// Simple Field (zone1)
-	_zone1, _zone1Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone1")
-	if _zone1Err != nil {
-		return nil, errors.Wrap(_zone1Err, "Error parsing 'zone1' field of HVACZoneList")
+	zone1, err := ReadSimpleField(ctx, "zone1", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone1' field"))
 	}
-	zone1 := _zone1
 
-	// Simple Field (zone0)
-	_zone0, _zone0Err := /*TODO: migrate me*/ readBuffer.ReadBit("zone0")
-	if _zone0Err != nil {
-		return nil, errors.Wrap(_zone0Err, "Error parsing 'zone0' field of HVACZoneList")
+	zone0, err := ReadSimpleField(ctx, "zone0", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zone0' field"))
 	}
-	zone0 := _zone0
 
 	// Virtual field
 	_unswitchedZone := zone0

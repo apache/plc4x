@@ -157,6 +157,12 @@ func VariantByteStringParse(ctx context.Context, theBytes []byte, arrayLengthSpe
 	return VariantByteStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
 }
 
+func VariantByteStringParseWithBufferProducer(arrayLengthSpecified bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantByteString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantByteString, error) {
+		return VariantByteStringParseWithBuffer(ctx, readBuffer, arrayLengthSpecified)
+	}
+}
+
 func VariantByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantByteString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,7 +174,7 @@ func VariantByteStringParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, 32), arrayLengthSpecified)
+	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}

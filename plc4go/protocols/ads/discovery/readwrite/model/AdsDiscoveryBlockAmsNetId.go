@@ -151,6 +151,12 @@ func AdsDiscoveryBlockAmsNetIdParse(ctx context.Context, theBytes []byte) (AdsDi
 	return AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockAmsNetIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
+		return AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockAmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -162,23 +168,15 @@ func AdsDiscoveryBlockAmsNetIdParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	amsNetIdLength, err := ReadConstField[uint16](ctx, "amsNetIdLength", ReadUnsignedShort(readBuffer, 16), AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH)
+	amsNetIdLength, err := ReadConstField[uint16](ctx, "amsNetIdLength", ReadUnsignedShort(readBuffer, uint8(16)), AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetIdLength' field"))
 	}
 	_ = amsNetIdLength
 
-	// Simple Field (amsNetId)
-	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
-	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _amsNetIdErr != nil {
-		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscoveryBlockAmsNetId")
-	}
-	amsNetId := _amsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("amsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for amsNetId")
+	amsNetId, err := ReadSimpleField[AmsNetId](ctx, "amsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetId' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockAmsNetId"); closeErr != nil {

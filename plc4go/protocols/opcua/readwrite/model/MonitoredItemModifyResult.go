@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func MonitoredItemModifyResultParse(ctx context.Context, theBytes []byte, identi
 	return MonitoredItemModifyResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoredItemModifyResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemModifyResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemModifyResult, error) {
+		return MonitoredItemModifyResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoredItemModifyResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemModifyResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,44 +182,24 @@ func MonitoredItemModifyResultParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of MonitoredItemModifyResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (revisedSamplingInterval)
-	_revisedSamplingInterval, _revisedSamplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedSamplingInterval", 64)
-	if _revisedSamplingIntervalErr != nil {
-		return nil, errors.Wrap(_revisedSamplingIntervalErr, "Error parsing 'revisedSamplingInterval' field of MonitoredItemModifyResult")
+	revisedSamplingInterval, err := ReadSimpleField(ctx, "revisedSamplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedSamplingInterval' field"))
 	}
-	revisedSamplingInterval := _revisedSamplingInterval
 
-	// Simple Field (revisedQueueSize)
-	_revisedQueueSize, _revisedQueueSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedQueueSize", 32)
-	if _revisedQueueSizeErr != nil {
-		return nil, errors.Wrap(_revisedQueueSizeErr, "Error parsing 'revisedQueueSize' field of MonitoredItemModifyResult")
+	revisedQueueSize, err := ReadSimpleField(ctx, "revisedQueueSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedQueueSize' field"))
 	}
-	revisedQueueSize := _revisedQueueSize
 
-	// Simple Field (filterResult)
-	if pullErr := readBuffer.PullContext("filterResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterResult")
-	}
-	_filterResult, _filterResultErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _filterResultErr != nil {
-		return nil, errors.Wrap(_filterResultErr, "Error parsing 'filterResult' field of MonitoredItemModifyResult")
-	}
-	filterResult := _filterResult.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("filterResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterResult")
+	filterResult, err := ReadSimpleField[ExtensionObject](ctx, "filterResult", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemModifyResult"); closeErr != nil {

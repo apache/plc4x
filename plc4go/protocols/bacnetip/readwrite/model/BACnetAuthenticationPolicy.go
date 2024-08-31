@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func BACnetAuthenticationPolicyParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetAuthenticationPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAuthenticationPolicyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
+		return BACnetAuthenticationPolicyParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func BACnetAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (policy)
-	if pullErr := readBuffer.PullContext("policy"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for policy")
-	}
-	_policy, _policyErr := BACnetAuthenticationPolicyListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _policyErr != nil {
-		return nil, errors.Wrap(_policyErr, "Error parsing 'policy' field of BACnetAuthenticationPolicy")
-	}
-	policy := _policy.(BACnetAuthenticationPolicyList)
-	if closeErr := readBuffer.CloseContext("policy"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for policy")
+	policy, err := ReadSimpleField[BACnetAuthenticationPolicyList](ctx, "policy", ReadComplex[BACnetAuthenticationPolicyList](BACnetAuthenticationPolicyListParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policy' field"))
 	}
 
-	// Simple Field (orderEnforced)
-	if pullErr := readBuffer.PullContext("orderEnforced"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for orderEnforced")
-	}
-	_orderEnforced, _orderEnforcedErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _orderEnforcedErr != nil {
-		return nil, errors.Wrap(_orderEnforcedErr, "Error parsing 'orderEnforced' field of BACnetAuthenticationPolicy")
-	}
-	orderEnforced := _orderEnforced.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("orderEnforced"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for orderEnforced")
+	orderEnforced, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "orderEnforced", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'orderEnforced' field"))
 	}
 
-	// Simple Field (timeout)
-	if pullErr := readBuffer.PullContext("timeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeout")
-	}
-	_timeout, _timeoutErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeoutErr != nil {
-		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of BACnetAuthenticationPolicy")
-	}
-	timeout := _timeout.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeout")
+	timeout, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeout", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeout' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationPolicy"); closeErr != nil {

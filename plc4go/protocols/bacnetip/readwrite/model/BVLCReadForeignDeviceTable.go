@@ -110,6 +110,12 @@ func BVLCReadForeignDeviceTableParse(ctx context.Context, theBytes []byte) (BVLC
 	return BVLCReadForeignDeviceTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCReadForeignDeviceTableParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
+		return BVLCReadForeignDeviceTableParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCReadForeignDeviceTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTable, error) {
 	positionAware := readBuffer
 	_ = positionAware

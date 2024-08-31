@@ -144,6 +144,12 @@ func BACnetPropertyWriteDefinitionParse(ctx context.Context, theBytes []byte, ob
 	return BACnetPropertyWriteDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetPropertyWriteDefinitionParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyWriteDefinition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyWriteDefinition, error) {
+		return BACnetPropertyWriteDefinitionParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPropertyWriteDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,26 +161,12 @@ func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (propertyIdentifier)
-	if pullErr := readBuffer.PullContext("propertyIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyIdentifier")
-	}
-	_propertyIdentifier, _propertyIdentifierErr := BACnetPropertyIdentifierTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _propertyIdentifierErr != nil {
-		return nil, errors.Wrap(_propertyIdentifierErr, "Error parsing 'propertyIdentifier' field of BACnetPropertyWriteDefinition")
-	}
-	propertyIdentifier := _propertyIdentifier.(BACnetPropertyIdentifierTagged)
-	if closeErr := readBuffer.CloseContext("propertyIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
+	propertyIdentifier, err := ReadSimpleField[BACnetPropertyIdentifierTagged](ctx, "propertyIdentifier", ReadComplex[BACnetPropertyIdentifierTagged](BACnetPropertyIdentifierTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyIdentifier' field"))
 	}
 
-	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayIndex' field"))
 	}
@@ -183,13 +175,7 @@ func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffe
 		arrayIndex = *_arrayIndex
 	}
 
-	_propertyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
-		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) })))))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConstructedData), nil
-	}, readBuffer), true)
+	_propertyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(2)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyValue' field"))
 	}
@@ -198,13 +184,7 @@ func BACnetPropertyWriteDefinitionParseWithBuffer(ctx context.Context, readBuffe
 		propertyValue = *_propertyValue
 	}
 
-	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}

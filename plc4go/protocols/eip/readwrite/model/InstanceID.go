@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func InstanceIDParse(ctx context.Context, theBytes []byte) (InstanceID, error) {
 	return InstanceIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func InstanceIDParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceID, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceID, error) {
+		return InstanceIDParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func InstanceIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InstanceID, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func InstanceIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (format)
-	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("format", 2)
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of InstanceID")
+	format, err := ReadSimpleField(ctx, "format", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	format := _format
 
-	// Simple Field (instance)
-	_instance, _instanceErr := /*TODO: migrate me*/ readBuffer.ReadUint8("instance", 8)
-	if _instanceErr != nil {
-		return nil, errors.Wrap(_instanceErr, "Error parsing 'instance' field of InstanceID")
+	instance, err := ReadSimpleField(ctx, "instance", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instance' field"))
 	}
-	instance := _instance
 
 	if closeErr := readBuffer.CloseContext("InstanceID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for InstanceID")

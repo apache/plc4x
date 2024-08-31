@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func BACnetCOVMultipleSubscriptionParse(ctx context.Context, theBytes []byte) (B
 	return BACnetCOVMultipleSubscriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCOVMultipleSubscriptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
+		return BACnetCOVMultipleSubscriptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCOVMultipleSubscriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCOVMultipleSubscription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,69 +162,29 @@ func BACnetCOVMultipleSubscriptionParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recipient)
-	if pullErr := readBuffer.PullContext("recipient"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for recipient")
-	}
-	_recipient, _recipientErr := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _recipientErr != nil {
-		return nil, errors.Wrap(_recipientErr, "Error parsing 'recipient' field of BACnetCOVMultipleSubscription")
-	}
-	recipient := _recipient.(BACnetRecipientProcessEnclosed)
-	if closeErr := readBuffer.CloseContext("recipient"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for recipient")
+	recipient, err := ReadSimpleField[BACnetRecipientProcessEnclosed](ctx, "recipient", ReadComplex[BACnetRecipientProcessEnclosed](BACnetRecipientProcessEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipient' field"))
 	}
 
-	// Simple Field (issueConfirmedNotifications)
-	if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
-	}
-	_issueConfirmedNotifications, _issueConfirmedNotificationsErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _issueConfirmedNotificationsErr != nil {
-		return nil, errors.Wrap(_issueConfirmedNotificationsErr, "Error parsing 'issueConfirmedNotifications' field of BACnetCOVMultipleSubscription")
-	}
-	issueConfirmedNotifications := _issueConfirmedNotifications.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
+	issueConfirmedNotifications, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issueConfirmedNotifications' field"))
 	}
 
-	// Simple Field (timeRemaining)
-	if pullErr := readBuffer.PullContext("timeRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeRemaining")
-	}
-	_timeRemaining, _timeRemainingErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _timeRemainingErr != nil {
-		return nil, errors.Wrap(_timeRemainingErr, "Error parsing 'timeRemaining' field of BACnetCOVMultipleSubscription")
-	}
-	timeRemaining := _timeRemaining.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeRemaining")
+	timeRemaining, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "timeRemaining", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRemaining' field"))
 	}
 
-	// Simple Field (maxNotificationDelay)
-	if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
-	}
-	_maxNotificationDelay, _maxNotificationDelayErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _maxNotificationDelayErr != nil {
-		return nil, errors.Wrap(_maxNotificationDelayErr, "Error parsing 'maxNotificationDelay' field of BACnetCOVMultipleSubscription")
-	}
-	maxNotificationDelay := _maxNotificationDelay.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxNotificationDelay")
+	maxNotificationDelay, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationDelay' field"))
 	}
 
-	// Simple Field (listOfCovSubscriptionSpecification)
-	if pullErr := readBuffer.PullContext("listOfCovSubscriptionSpecification"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfCovSubscriptionSpecification")
-	}
-	_listOfCovSubscriptionSpecification, _listOfCovSubscriptionSpecificationErr := BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuffer(ctx, readBuffer, uint8(uint8(4)))
-	if _listOfCovSubscriptionSpecificationErr != nil {
-		return nil, errors.Wrap(_listOfCovSubscriptionSpecificationErr, "Error parsing 'listOfCovSubscriptionSpecification' field of BACnetCOVMultipleSubscription")
-	}
-	listOfCovSubscriptionSpecification := _listOfCovSubscriptionSpecification.(BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification)
-	if closeErr := readBuffer.CloseContext("listOfCovSubscriptionSpecification"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfCovSubscriptionSpecification")
+	listOfCovSubscriptionSpecification, err := ReadSimpleField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification](ctx, "listOfCovSubscriptionSpecification", ReadComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecification](BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBufferProducer((uint8)(uint8(4))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovSubscriptionSpecification' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCOVMultipleSubscription"); closeErr != nil {

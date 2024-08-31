@@ -170,6 +170,12 @@ func ReferenceDescriptionDataTypeParse(ctx context.Context, theBytes []byte, ide
 	return ReferenceDescriptionDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReferenceDescriptionDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceDescriptionDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceDescriptionDataType, error) {
+		return ReferenceDescriptionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReferenceDescriptionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReferenceDescriptionDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,55 +187,29 @@ func ReferenceDescriptionDataTypeParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceNode)
-	if pullErr := readBuffer.PullContext("sourceNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceNode")
-	}
-	_sourceNode, _sourceNodeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sourceNodeErr != nil {
-		return nil, errors.Wrap(_sourceNodeErr, "Error parsing 'sourceNode' field of ReferenceDescriptionDataType")
-	}
-	sourceNode := _sourceNode.(NodeId)
-	if closeErr := readBuffer.CloseContext("sourceNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceNode")
+	sourceNode, err := ReadSimpleField[NodeId](ctx, "sourceNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNode' field"))
 	}
 
-	// Simple Field (referenceType)
-	if pullErr := readBuffer.PullContext("referenceType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceType")
-	}
-	_referenceType, _referenceTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ReferenceDescriptionDataType")
-	}
-	referenceType := _referenceType.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceType")
+	referenceType, err := ReadSimpleField[NodeId](ctx, "referenceType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of ReferenceDescriptionDataType")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
 
-	// Simple Field (targetNode)
-	if pullErr := readBuffer.PullContext("targetNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNode")
-	}
-	_targetNode, _targetNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeErr != nil {
-		return nil, errors.Wrap(_targetNodeErr, "Error parsing 'targetNode' field of ReferenceDescriptionDataType")
-	}
-	targetNode := _targetNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNode")
+	targetNode, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReferenceDescriptionDataType"); closeErr != nil {

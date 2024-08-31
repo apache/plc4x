@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLocalTimeParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataLocalTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLocalTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalTime, error) {
+		return BACnetConstructedDataLocalTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLocalTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLocalTimeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localTime)
-	if pullErr := readBuffer.PullContext("localTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localTime")
-	}
-	_localTime, _localTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localTimeErr != nil {
-		return nil, errors.Wrap(_localTimeErr, "Error parsing 'localTime' field of BACnetConstructedDataLocalTime")
-	}
-	localTime := _localTime.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("localTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localTime")
+	localTime, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "localTime", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localTime' field"))
 	}
 
 	// Virtual field

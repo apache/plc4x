@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -150,6 +152,12 @@ func BACnetFaultParameterFaultListedParse(ctx context.Context, theBytes []byte) 
 	return BACnetFaultParameterFaultListedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetFaultParameterFaultListedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultListed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultListed, error) {
+		return BACnetFaultParameterFaultListedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetFaultParameterFaultListedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultListed, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,43 +169,19 @@ func BACnetFaultParameterFaultListedParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
-	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultListed")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(7))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	// Simple Field (faultListReference)
-	if pullErr := readBuffer.PullContext("faultListReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultListReference")
-	}
-	_faultListReference, _faultListReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _faultListReferenceErr != nil {
-		return nil, errors.Wrap(_faultListReferenceErr, "Error parsing 'faultListReference' field of BACnetFaultParameterFaultListed")
-	}
-	faultListReference := _faultListReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("faultListReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultListReference")
+	faultListReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "faultListReference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultListReference' field"))
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
-	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultListed")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(7))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultListed"); closeErr != nil {

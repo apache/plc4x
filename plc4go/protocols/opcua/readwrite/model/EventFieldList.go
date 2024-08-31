@@ -161,6 +161,12 @@ func EventFieldListParse(ctx context.Context, theBytes []byte, identifier string
 	return EventFieldListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EventFieldListParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EventFieldList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EventFieldList, error) {
+		return EventFieldListParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EventFieldList, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,19 +178,15 @@ func EventFieldListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientHandle", 32)
-	if _clientHandleErr != nil {
-		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of EventFieldList")
+	clientHandle, err := ReadSimpleField(ctx, "clientHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientHandle' field"))
 	}
-	clientHandle := _clientHandle
 
-	// Simple Field (noOfEventFields)
-	_noOfEventFields, _noOfEventFieldsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEventFields", 32)
-	if _noOfEventFieldsErr != nil {
-		return nil, errors.Wrap(_noOfEventFieldsErr, "Error parsing 'noOfEventFields' field of EventFieldList")
+	noOfEventFields, err := ReadSimpleField(ctx, "noOfEventFields", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEventFields' field"))
 	}
-	noOfEventFields := _noOfEventFields
 
 	eventFields, err := ReadCountArrayField[Variant](ctx, "eventFields", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfEventFields))
 	if err != nil {

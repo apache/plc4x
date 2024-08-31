@@ -134,6 +134,12 @@ func NLMWhoIsRouterToNetworkParse(ctx context.Context, theBytes []byte, apduLeng
 	return NLMWhoIsRouterToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMWhoIsRouterToNetworkParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMWhoIsRouterToNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMWhoIsRouterToNetwork, error) {
+		return NLMWhoIsRouterToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMWhoIsRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMWhoIsRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,7 +151,7 @@ func NLMWhoIsRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	destinationNetworkAddress, err := ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, 16), true)
+	destinationNetworkAddress, err := ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}

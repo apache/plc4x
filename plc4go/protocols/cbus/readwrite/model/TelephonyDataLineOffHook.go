@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func TelephonyDataLineOffHookParse(ctx context.Context, theBytes []byte, command
 	return TelephonyDataLineOffHookParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func TelephonyDataLineOffHookParseWithBufferProducer(commandTypeContainer TelephonyCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOffHook, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOffHook, error) {
+		return TelephonyDataLineOffHookParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func TelephonyDataLineOffHookParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataLineOffHook, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,25 +159,15 @@ func TelephonyDataLineOffHookParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reason)
-	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reason")
-	}
-	_reason, _reasonErr := LineOffHookReasonParseWithBuffer(ctx, readBuffer)
-	if _reasonErr != nil {
-		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataLineOffHook")
-	}
-	reason := _reason
-	if closeErr := readBuffer.CloseContext("reason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reason")
+	reason, err := ReadEnumField[LineOffHookReason](ctx, "reason", "LineOffHookReason", ReadEnum(LineOffHookReasonByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reason' field"))
 	}
 
-	// Simple Field (number)
-	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataLineOffHook")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(2))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataLineOffHook"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataLineOffHook")

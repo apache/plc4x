@@ -132,6 +132,12 @@ func ParameterValueRawParse(ctx context.Context, theBytes []byte, parameterType 
 	return ParameterValueRawParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
+func ParameterValueRawParseWithBufferProducer(parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueRaw, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueRaw, error) {
+		return ParameterValueRawParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+	}
+}
+
 func ParameterValueRawParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueRaw, error) {
 	positionAware := readBuffer
 	_ = positionAware

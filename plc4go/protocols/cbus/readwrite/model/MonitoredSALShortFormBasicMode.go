@@ -190,6 +190,12 @@ func MonitoredSALShortFormBasicModeParse(ctx context.Context, theBytes []byte, c
 	return MonitoredSALShortFormBasicModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func MonitoredSALShortFormBasicModeParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALShortFormBasicMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALShortFormBasicMode, error) {
+		return MonitoredSALShortFormBasicModeParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALShortFormBasicMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -210,12 +216,12 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 
 	readBuffer.Reset(currentPos)
 
-	bridgeCount, err := ReadOptionalField[uint8](ctx, "bridgeCount", ReadUnsignedByte(readBuffer, 8), bool((counts) != (0x00)))
+	bridgeCount, err := ReadOptionalField[uint8](ctx, "bridgeCount", ReadUnsignedByte(readBuffer, uint8(8)), bool((counts) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeCount' field"))
 	}
 
-	networkNumber, err := ReadOptionalField[uint8](ctx, "networkNumber", ReadUnsignedByte(readBuffer, 8), bool((counts) != (0x00)))
+	networkNumber, err := ReadOptionalField[uint8](ctx, "networkNumber", ReadUnsignedByte(readBuffer, uint8(8)), bool((counts) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
@@ -225,26 +231,12 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noCounts' field"))
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALShortFormBasicMode")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
-	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](func(ctx context.Context, buffer utils.ReadBuffer) (SALData, error) {
-		v, err := SALDataParseWithBuffer(ctx, readBuffer, (ApplicationId)(application.ApplicationId()))
-		if err != nil {
-			return nil, err
-		}
-		return v.(SALData), nil
-	}, readBuffer), true)
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}

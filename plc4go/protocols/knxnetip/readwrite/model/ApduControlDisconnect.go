@@ -109,6 +109,12 @@ func ApduControlDisconnectParse(ctx context.Context, theBytes []byte) (ApduContr
 	return ApduControlDisconnectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApduControlDisconnectParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {
+		return ApduControlDisconnectParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApduControlDisconnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlDisconnect, error) {
 	positionAware := readBuffer
 	_ = positionAware

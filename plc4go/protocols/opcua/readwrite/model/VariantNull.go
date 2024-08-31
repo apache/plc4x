@@ -114,6 +114,12 @@ func VariantNullParse(ctx context.Context, theBytes []byte) (VariantNull, error)
 	return VariantNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func VariantNullParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNull, error) {
+		return VariantNullParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func VariantNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (VariantNull, error) {
 	positionAware := readBuffer
 	_ = positionAware

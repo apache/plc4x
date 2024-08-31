@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func BACnetApplicationTagBooleanParse(ctx context.Context, theBytes []byte, head
 	return BACnetApplicationTagBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
 }
 
+func BACnetApplicationTagBooleanParseWithBufferProducer(header BACnetTagHeader) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagBoolean, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagBoolean, error) {
+		return BACnetApplicationTagBooleanParseWithBuffer(ctx, readBuffer, header)
+	}
+}
+
 func BACnetApplicationTagBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,17 +166,9 @@ func BACnetApplicationTagBooleanParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadBooleanParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagBoolean")
-	}
-	payload := _payload.(BACnetTagPayloadBoolean)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadBoolean](ctx, "payload", ReadComplex[BACnetTagPayloadBoolean](BACnetTagPayloadBooleanParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	// Virtual field

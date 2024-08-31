@@ -170,6 +170,12 @@ func ModbusPDUReadDeviceIdentificationRequestParse(ctx context.Context, theBytes
 	return ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadDeviceIdentificationRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadDeviceIdentificationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadDeviceIdentificationRequest, error) {
+		return ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadDeviceIdentificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,31 +187,21 @@ func ModbusPDUReadDeviceIdentificationRequestParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	meiType, err := ReadConstField[uint8](ctx, "meiType", ReadUnsignedByte(readBuffer, 8), ModbusPDUReadDeviceIdentificationRequest_MEITYPE)
+	meiType, err := ReadConstField[uint8](ctx, "meiType", ReadUnsignedByte(readBuffer, uint8(8)), ModbusPDUReadDeviceIdentificationRequest_MEITYPE)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'meiType' field"))
 	}
 	_ = meiType
 
-	// Simple Field (level)
-	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for level")
-	}
-	_level, _levelErr := ModbusDeviceInformationLevelParseWithBuffer(ctx, readBuffer)
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of ModbusPDUReadDeviceIdentificationRequest")
-	}
-	level := _level
-	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for level")
+	level, err := ReadEnumField[ModbusDeviceInformationLevel](ctx, "level", "ModbusDeviceInformationLevel", ReadEnum(ModbusDeviceInformationLevelByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
 
-	// Simple Field (objectId)
-	_objectId, _objectIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectId", 8)
-	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusPDUReadDeviceIdentificationRequest")
+	objectId, err := ReadSimpleField(ctx, "objectId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectId' field"))
 	}
-	objectId := _objectId
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadDeviceIdentificationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadDeviceIdentificationRequest")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesSecurityLevelParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesSecurityLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesSecurityLevelParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSecurityLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSecurityLevel, error) {
+		return BACnetPropertyStatesSecurityLevelParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesSecurityLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSecurityLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesSecurityLevelParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityLevel)
-	if pullErr := readBuffer.PullContext("securityLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityLevel")
-	}
-	_securityLevel, _securityLevelErr := BACnetSecurityLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of BACnetPropertyStatesSecurityLevel")
-	}
-	securityLevel := _securityLevel.(BACnetSecurityLevelTagged)
-	if closeErr := readBuffer.CloseContext("securityLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityLevel")
+	securityLevel, err := ReadSimpleField[BACnetSecurityLevelTagged](ctx, "securityLevel", ReadComplex[BACnetSecurityLevelTagged](BACnetSecurityLevelTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityLevel' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSecurityLevel"); closeErr != nil {

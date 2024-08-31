@@ -156,6 +156,12 @@ func TransferResultParse(ctx context.Context, theBytes []byte, identifier string
 	return TransferResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TransferResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TransferResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TransferResult, error) {
+		return TransferResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransferResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -167,27 +173,17 @@ func TransferResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of TransferResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (noOfAvailableSequenceNumbers)
-	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
-	if _noOfAvailableSequenceNumbersErr != nil {
-		return nil, errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error parsing 'noOfAvailableSequenceNumbers' field of TransferResult")
+	noOfAvailableSequenceNumbers, err := ReadSimpleField(ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAvailableSequenceNumbers' field"))
 	}
-	noOfAvailableSequenceNumbers := _noOfAvailableSequenceNumbers
 
-	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, 32), uint64(noOfAvailableSequenceNumbers))
+	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfAvailableSequenceNumbers))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'availableSequenceNumbers' field"))
 	}

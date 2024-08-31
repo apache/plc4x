@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func BACnetSpecialEventParse(ctx context.Context, theBytes []byte) (BACnetSpecia
 	return BACnetSpecialEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSpecialEventParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
+		return BACnetSpecialEventParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetSpecialEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func BACnetSpecialEventParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (period)
-	if pullErr := readBuffer.PullContext("period"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for period")
-	}
-	_period, _periodErr := BACnetSpecialEventPeriodParseWithBuffer(ctx, readBuffer)
-	if _periodErr != nil {
-		return nil, errors.Wrap(_periodErr, "Error parsing 'period' field of BACnetSpecialEvent")
-	}
-	period := _period.(BACnetSpecialEventPeriod)
-	if closeErr := readBuffer.CloseContext("period"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for period")
+	period, err := ReadSimpleField[BACnetSpecialEventPeriod](ctx, "period", ReadComplex[BACnetSpecialEventPeriod](BACnetSpecialEventPeriodParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'period' field"))
 	}
 
-	// Simple Field (listOfTimeValues)
-	if pullErr := readBuffer.PullContext("listOfTimeValues"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfTimeValues")
-	}
-	_listOfTimeValues, _listOfTimeValuesErr := BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _listOfTimeValuesErr != nil {
-		return nil, errors.Wrap(_listOfTimeValuesErr, "Error parsing 'listOfTimeValues' field of BACnetSpecialEvent")
-	}
-	listOfTimeValues := _listOfTimeValues.(BACnetSpecialEventListOfTimeValues)
-	if closeErr := readBuffer.CloseContext("listOfTimeValues"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfTimeValues")
+	listOfTimeValues, err := ReadSimpleField[BACnetSpecialEventListOfTimeValues](ctx, "listOfTimeValues", ReadComplex[BACnetSpecialEventListOfTimeValues](BACnetSpecialEventListOfTimeValuesParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfTimeValues' field"))
 	}
 
-	// Simple Field (eventPriority)
-	if pullErr := readBuffer.PullContext("eventPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventPriority")
-	}
-	_eventPriority, _eventPriorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _eventPriorityErr != nil {
-		return nil, errors.Wrap(_eventPriorityErr, "Error parsing 'eventPriority' field of BACnetSpecialEvent")
-	}
-	eventPriority := _eventPriority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("eventPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventPriority")
+	eventPriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "eventPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventPriority' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEvent"); closeErr != nil {

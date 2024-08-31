@@ -137,6 +137,12 @@ func BVLCForeignDeviceTableEntryParse(ctx context.Context, theBytes []byte) (BVL
 	return BVLCForeignDeviceTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BVLCForeignDeviceTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
+		return BVLCForeignDeviceTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,31 +154,25 @@ func BVLCForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, 8), uint64(int32(4)))
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
 
-	// Simple Field (port)
-	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCForeignDeviceTableEntry")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
 
-	// Simple Field (ttl)
-	_ttl, _ttlErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ttl", 16)
-	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCForeignDeviceTableEntry")
+	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ttl' field"))
 	}
-	ttl := _ttl
 
-	// Simple Field (secondRemainingBeforePurge)
-	_secondRemainingBeforePurge, _secondRemainingBeforePurgeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("secondRemainingBeforePurge", 16)
-	if _secondRemainingBeforePurgeErr != nil {
-		return nil, errors.Wrap(_secondRemainingBeforePurgeErr, "Error parsing 'secondRemainingBeforePurge' field of BVLCForeignDeviceTableEntry")
+	secondRemainingBeforePurge, err := ReadSimpleField(ctx, "secondRemainingBeforePurge", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondRemainingBeforePurge' field"))
 	}
-	secondRemainingBeforePurge := _secondRemainingBeforePurge
 
 	if closeErr := readBuffer.CloseContext("BVLCForeignDeviceTableEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCForeignDeviceTableEntry")

@@ -136,6 +136,12 @@ func BACnetConfirmedServiceRequestRequestKeyParse(ctx context.Context, theBytes 
 	return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestRequestKeyParseWithBufferProducer(serviceRequestPayloadLength uint32, serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestRequestKey, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestRequestKey, error) {
+		return BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestRequestKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestRequestKey, error) {
 	positionAware := readBuffer
 	_ = positionAware

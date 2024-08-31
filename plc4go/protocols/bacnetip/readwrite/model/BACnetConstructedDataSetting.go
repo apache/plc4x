@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSettingParse(ctx context.Context, theBytes []byte, tag
 	return BACnetConstructedDataSettingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSettingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetting, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetting, error) {
+		return BACnetConstructedDataSettingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSettingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetting, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSettingParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (setting)
-	if pullErr := readBuffer.PullContext("setting"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setting")
-	}
-	_setting, _settingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _settingErr != nil {
-		return nil, errors.Wrap(_settingErr, "Error parsing 'setting' field of BACnetConstructedDataSetting")
-	}
-	setting := _setting.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("setting"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setting")
+	setting, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "setting", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setting' field"))
 	}
 
 	// Virtual field

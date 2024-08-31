@@ -133,6 +133,12 @@ func BACnetUnconfirmedServiceRequestUnknownParse(ctx context.Context, theBytes [
 	return BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestUnknownParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUnknown, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUnknown, error) {
+		return BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func TunnelingResponseParse(ctx context.Context, theBytes []byte) (TunnelingResp
 	return TunnelingResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func TunnelingResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
+		return TunnelingResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TunnelingResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +151,9 @@ func TunnelingResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tunnelingResponseDataBlock)
-	if pullErr := readBuffer.PullContext("tunnelingResponseDataBlock"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingResponseDataBlock")
-	}
-	_tunnelingResponseDataBlock, _tunnelingResponseDataBlockErr := TunnelingResponseDataBlockParseWithBuffer(ctx, readBuffer)
-	if _tunnelingResponseDataBlockErr != nil {
-		return nil, errors.Wrap(_tunnelingResponseDataBlockErr, "Error parsing 'tunnelingResponseDataBlock' field of TunnelingResponse")
-	}
-	tunnelingResponseDataBlock := _tunnelingResponseDataBlock.(TunnelingResponseDataBlock)
-	if closeErr := readBuffer.CloseContext("tunnelingResponseDataBlock"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tunnelingResponseDataBlock")
+	tunnelingResponseDataBlock, err := ReadSimpleField[TunnelingResponseDataBlock](ctx, "tunnelingResponseDataBlock", ReadComplex[TunnelingResponseDataBlock](TunnelingResponseDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tunnelingResponseDataBlock' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingResponse"); closeErr != nil {

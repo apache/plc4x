@@ -136,6 +136,12 @@ func BACnetRejectReasonTaggedParse(ctx context.Context, theBytes []byte, actualL
 	return BACnetRejectReasonTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetRejectReasonTaggedParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRejectReasonTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRejectReasonTagged, error) {
+		return BACnetRejectReasonTaggedParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetRejectReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware

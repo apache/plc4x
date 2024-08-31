@@ -183,6 +183,12 @@ func BrowseRequestParse(ctx context.Context, theBytes []byte, identifier string)
 	return BrowseRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowseRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseRequest, error) {
+		return BrowseRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,53 +200,27 @@ func BrowseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of BrowseRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (view)
-	if pullErr := readBuffer.PullContext("view"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for view")
-	}
-	_view, _viewErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("513"))
-	if _viewErr != nil {
-		return nil, errors.Wrap(_viewErr, "Error parsing 'view' field of BrowseRequest")
-	}
-	view := _view.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("view"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for view")
+	view, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "view", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("513")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'view' field"))
 	}
 
-	// Simple Field (requestedMaxReferencesPerNode)
-	_requestedMaxReferencesPerNode, _requestedMaxReferencesPerNodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedMaxReferencesPerNode", 32)
-	if _requestedMaxReferencesPerNodeErr != nil {
-		return nil, errors.Wrap(_requestedMaxReferencesPerNodeErr, "Error parsing 'requestedMaxReferencesPerNode' field of BrowseRequest")
+	requestedMaxReferencesPerNode, err := ReadSimpleField(ctx, "requestedMaxReferencesPerNode", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedMaxReferencesPerNode' field"))
 	}
-	requestedMaxReferencesPerNode := _requestedMaxReferencesPerNode
 
-	// Simple Field (noOfNodesToBrowse)
-	_noOfNodesToBrowse, _noOfNodesToBrowseErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToBrowse", 32)
-	if _noOfNodesToBrowseErr != nil {
-		return nil, errors.Wrap(_noOfNodesToBrowseErr, "Error parsing 'noOfNodesToBrowse' field of BrowseRequest")
+	noOfNodesToBrowse, err := ReadSimpleField(ctx, "noOfNodesToBrowse", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToBrowse' field"))
 	}
-	noOfNodesToBrowse := _noOfNodesToBrowse
 
-	nodesToBrowse, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToBrowse", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("516"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodesToBrowse))
+	nodesToBrowse, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToBrowse", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("516")), readBuffer), uint64(noOfNodesToBrowse))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToBrowse' field"))
 	}

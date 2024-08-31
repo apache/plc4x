@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLocalForwardingOnlyParse(ctx context.Context, theBytes
 	return BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLocalForwardingOnlyParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalForwardingOnly, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalForwardingOnly, error) {
+		return BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalForwardingOnly, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localForwardingOnly)
-	if pullErr := readBuffer.PullContext("localForwardingOnly"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localForwardingOnly")
-	}
-	_localForwardingOnly, _localForwardingOnlyErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localForwardingOnlyErr != nil {
-		return nil, errors.Wrap(_localForwardingOnlyErr, "Error parsing 'localForwardingOnly' field of BACnetConstructedDataLocalForwardingOnly")
-	}
-	localForwardingOnly := _localForwardingOnly.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("localForwardingOnly"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localForwardingOnly")
+	localForwardingOnly, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "localForwardingOnly", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localForwardingOnly' field"))
 	}
 
 	// Virtual field

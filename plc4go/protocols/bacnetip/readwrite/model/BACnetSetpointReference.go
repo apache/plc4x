@@ -107,6 +107,12 @@ func BACnetSetpointReferenceParse(ctx context.Context, theBytes []byte) (BACnetS
 	return BACnetSetpointReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSetpointReferenceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
+		return BACnetSetpointReferenceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -118,13 +124,7 @@ func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_setPointReference, err := ReadOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", ReadComplex[BACnetObjectPropertyReferenceEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetObjectPropertyReferenceEnclosed, error) {
-		v, err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetObjectPropertyReferenceEnclosed), nil
-	}, readBuffer), true)
+	_setPointReference, err := ReadOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", ReadComplex[BACnetObjectPropertyReferenceEnclosed](BACnetObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setPointReference' field"))
 	}

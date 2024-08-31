@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func SubItemParse(ctx context.Context, theBytes []byte) (SubItem, error) {
 	return SubItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SubItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SubItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SubItem, error) {
+		return SubItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SubItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,26 +142,20 @@ func SubItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bytesToRead)
-	_bytesToRead, _bytesToReadErr := /*TODO: migrate me*/ readBuffer.ReadUint8("bytesToRead", 8)
-	if _bytesToReadErr != nil {
-		return nil, errors.Wrap(_bytesToReadErr, "Error parsing 'bytesToRead' field of SubItem")
+	bytesToRead, err := ReadSimpleField(ctx, "bytesToRead", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bytesToRead' field"))
 	}
-	bytesToRead := _bytesToRead
 
-	// Simple Field (dbNumber)
-	_dbNumber, _dbNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dbNumber", 16)
-	if _dbNumberErr != nil {
-		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of SubItem")
+	dbNumber, err := ReadSimpleField(ctx, "dbNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dbNumber' field"))
 	}
-	dbNumber := _dbNumber
 
-	// Simple Field (startAddress)
-	_startAddress, _startAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("startAddress", 16)
-	if _startAddressErr != nil {
-		return nil, errors.Wrap(_startAddressErr, "Error parsing 'startAddress' field of SubItem")
+	startAddress, err := ReadSimpleField(ctx, "startAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startAddress' field"))
 	}
-	startAddress := _startAddress
 
 	if closeErr := readBuffer.CloseContext("SubItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SubItem")

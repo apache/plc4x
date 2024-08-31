@@ -113,6 +113,17 @@ func ApduDataParse(ctx context.Context, theBytes []byte, dataLength uint8) (Apdu
 	return ApduDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataParseWithBufferProducer[T ApduData](dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ApduDataParseWithBuffer(ctx, readBuffer, dataLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ApduDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func ApduDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, d
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	apciType, err := ReadDiscriminatorField[uint8](ctx, "apciType", ReadUnsignedByte(readBuffer, 4))
+	apciType, err := ReadDiscriminatorField[uint8](ctx, "apciType", ReadUnsignedByte(readBuffer, uint8(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apciType' field"))
 	}

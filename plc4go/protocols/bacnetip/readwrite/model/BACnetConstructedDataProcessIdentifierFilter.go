@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProcessIdentifierFilterParse(ctx context.Context, theB
 	return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProcessIdentifierFilterParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProcessIdentifierFilter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProcessIdentifierFilter, error) {
+		return BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProcessIdentifierFilter, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProcessIdentifierFilterParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (processIdentifierFilter)
-	if pullErr := readBuffer.PullContext("processIdentifierFilter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for processIdentifierFilter")
-	}
-	_processIdentifierFilter, _processIdentifierFilterErr := BACnetProcessIdSelectionParseWithBuffer(ctx, readBuffer)
-	if _processIdentifierFilterErr != nil {
-		return nil, errors.Wrap(_processIdentifierFilterErr, "Error parsing 'processIdentifierFilter' field of BACnetConstructedDataProcessIdentifierFilter")
-	}
-	processIdentifierFilter := _processIdentifierFilter.(BACnetProcessIdSelection)
-	if closeErr := readBuffer.CloseContext("processIdentifierFilter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for processIdentifierFilter")
+	processIdentifierFilter, err := ReadSimpleField[BACnetProcessIdSelection](ctx, "processIdentifierFilter", ReadComplex[BACnetProcessIdSelection](BACnetProcessIdSelectionParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'processIdentifierFilter' field"))
 	}
 
 	// Virtual field

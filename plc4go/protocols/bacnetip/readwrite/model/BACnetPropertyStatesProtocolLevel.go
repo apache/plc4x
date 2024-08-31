@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesProtocolLevelParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesProtocolLevelParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesProtocolLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesProtocolLevel, error) {
+		return BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProtocolLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesProtocolLevelParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolLevel)
-	if pullErr := readBuffer.PullContext("protocolLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolLevel")
-	}
-	_protocolLevel, _protocolLevelErr := BACnetProtocolLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _protocolLevelErr != nil {
-		return nil, errors.Wrap(_protocolLevelErr, "Error parsing 'protocolLevel' field of BACnetPropertyStatesProtocolLevel")
-	}
-	protocolLevel := _protocolLevel.(BACnetProtocolLevelTagged)
-	if closeErr := readBuffer.CloseContext("protocolLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolLevel")
+	protocolLevel, err := ReadSimpleField[BACnetProtocolLevelTagged](ctx, "protocolLevel", ReadComplex[BACnetProtocolLevelTagged](BACnetProtocolLevelTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolLevel' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesProtocolLevel"); closeErr != nil {

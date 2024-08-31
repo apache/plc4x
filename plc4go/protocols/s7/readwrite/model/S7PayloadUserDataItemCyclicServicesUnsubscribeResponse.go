@@ -121,6 +121,12 @@ func S7PayloadUserDataItemCyclicServicesUnsubscribeResponseParse(ctx context.Con
 	return S7PayloadUserDataItemCyclicServicesUnsubscribeResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCyclicServicesUnsubscribeResponseParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
+		return S7PayloadUserDataItemCyclicServicesUnsubscribeResponseParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCyclicServicesUnsubscribeResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesUnsubscribeResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

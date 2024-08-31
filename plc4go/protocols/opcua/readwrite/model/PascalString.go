@@ -127,6 +127,12 @@ func PascalStringParse(ctx context.Context, theBytes []byte) (PascalString, erro
 	return PascalStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PascalStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
+		return PascalStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PascalString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -138,7 +144,7 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	sLength, err := ReadImplicitField[int32](ctx, "sLength", ReadSignedInt(readBuffer, 32))
+	sLength, err := ReadImplicitField[int32](ctx, "sLength", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sLength' field"))
 	}
@@ -149,12 +155,10 @@ func PascalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	stringLength := int32(_stringLength)
 	_ = stringLength
 
-	// Simple Field (stringValue)
-	_stringValue, _stringValueErr := /*TODO: migrate me*/ readBuffer.ReadString("stringValue", uint32((stringLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _stringValueErr != nil {
-		return nil, errors.Wrap(_stringValueErr, "Error parsing 'stringValue' field of PascalString")
+	stringValue, err := ReadSimpleField(ctx, "stringValue", ReadString(readBuffer, uint32(int32(stringLength)*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringValue' field"))
 	}
-	stringValue := _stringValue
 
 	if closeErr := readBuffer.CloseContext("PascalString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PascalString")

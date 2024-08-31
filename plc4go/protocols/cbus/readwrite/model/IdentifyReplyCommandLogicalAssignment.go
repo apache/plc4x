@@ -139,6 +139,12 @@ func IdentifyReplyCommandLogicalAssignmentParse(ctx context.Context, theBytes []
 	return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandLogicalAssignmentParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandLogicalAssignment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandLogicalAssignment, error) {
+		return IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandLogicalAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandLogicalAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware

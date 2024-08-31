@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataActivationTimeParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataActivationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataActivationTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActivationTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActivationTime, error) {
+		return BACnetConstructedDataActivationTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataActivationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActivationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataActivationTimeParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (activationTime)
-	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
-	}
-	_activationTime, _activationTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _activationTimeErr != nil {
-		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetConstructedDataActivationTime")
-	}
-	activationTime := _activationTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("activationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activationTime")
+	activationTime, err := ReadSimpleField[BACnetDateTime](ctx, "activationTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activationTime' field"))
 	}
 
 	// Virtual field

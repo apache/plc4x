@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func RedundantServerDataTypeParse(ctx context.Context, theBytes []byte, identifi
 	return RedundantServerDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RedundantServerDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RedundantServerDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RedundantServerDataType, error) {
+		return RedundantServerDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RedundantServerDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RedundantServerDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,37 +171,19 @@ func RedundantServerDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serverId)
-	if pullErr := readBuffer.PullContext("serverId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverId")
-	}
-	_serverId, _serverIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverIdErr != nil {
-		return nil, errors.Wrap(_serverIdErr, "Error parsing 'serverId' field of RedundantServerDataType")
-	}
-	serverId := _serverId.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverId")
+	serverId, err := ReadSimpleField[PascalString](ctx, "serverId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverId' field"))
 	}
 
-	// Simple Field (serviceLevel)
-	_serviceLevel, _serviceLevelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("serviceLevel", 8)
-	if _serviceLevelErr != nil {
-		return nil, errors.Wrap(_serviceLevelErr, "Error parsing 'serviceLevel' field of RedundantServerDataType")
+	serviceLevel, err := ReadSimpleField(ctx, "serviceLevel", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceLevel' field"))
 	}
-	serviceLevel := _serviceLevel
 
-	// Simple Field (serverState)
-	if pullErr := readBuffer.PullContext("serverState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverState")
-	}
-	_serverState, _serverStateErr := ServerStateParseWithBuffer(ctx, readBuffer)
-	if _serverStateErr != nil {
-		return nil, errors.Wrap(_serverStateErr, "Error parsing 'serverState' field of RedundantServerDataType")
-	}
-	serverState := _serverState
-	if closeErr := readBuffer.CloseContext("serverState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverState")
+	serverState, err := ReadEnumField[ServerState](ctx, "serverState", "ServerState", ReadEnum(ServerStateByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RedundantServerDataType"); closeErr != nil {

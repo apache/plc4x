@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +145,12 @@ func DescriptionResponseParse(ctx context.Context, theBytes []byte) (Description
 	return DescriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DescriptionResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
+		return DescriptionResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DescriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,30 +162,14 @@ func DescriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dibDeviceInfo)
-	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
-	}
-	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(ctx, readBuffer)
-	if _dibDeviceInfoErr != nil {
-		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of DescriptionResponse")
-	}
-	dibDeviceInfo := _dibDeviceInfo.(DIBDeviceInfo)
-	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibDeviceInfo")
+	dibDeviceInfo, err := ReadSimpleField[DIBDeviceInfo](ctx, "dibDeviceInfo", ReadComplex[DIBDeviceInfo](DIBDeviceInfoParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibDeviceInfo' field"))
 	}
 
-	// Simple Field (dibSuppSvcFamilies)
-	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
-	}
-	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(ctx, readBuffer)
-	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of DescriptionResponse")
-	}
-	dibSuppSvcFamilies := _dibSuppSvcFamilies.(DIBSuppSvcFamilies)
-	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibSuppSvcFamilies")
+	dibSuppSvcFamilies, err := ReadSimpleField[DIBSuppSvcFamilies](ctx, "dibSuppSvcFamilies", ReadComplex[DIBSuppSvcFamilies](DIBSuppSvcFamiliesParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibSuppSvcFamilies' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DescriptionResponse"); closeErr != nil {

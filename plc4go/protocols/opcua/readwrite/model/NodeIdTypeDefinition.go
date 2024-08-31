@@ -128,6 +128,17 @@ func NodeIdTypeDefinitionParse(ctx context.Context, theBytes []byte) (NodeIdType
 	return NodeIdTypeDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdTypeDefinitionParseWithBufferProducer[T NodeIdTypeDefinition]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := NodeIdTypeDefinitionParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func NodeIdTypeDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdTypeDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,7 +150,7 @@ func NodeIdTypeDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeType, err := ReadDiscriminatorEnumField[NodeIdType](ctx, "nodeType", "NodeIdType", ReadEnum(NodeIdTypeByValue, ReadUnsignedByte(readBuffer, 6)))
+	nodeType, err := ReadDiscriminatorEnumField[NodeIdType](ctx, "nodeType", "NodeIdType", ReadEnum(NodeIdTypeByValue, ReadUnsignedByte(readBuffer, uint8(6))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeType' field"))
 	}

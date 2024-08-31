@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func ErrorReportingSystemCategoryParse(ctx context.Context, theBytes []byte) (Er
 	return ErrorReportingSystemCategoryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ErrorReportingSystemCategoryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {
+		return ErrorReportingSystemCategoryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func ErrorReportingSystemCategoryParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (systemCategoryClass)
-	if pullErr := readBuffer.PullContext("systemCategoryClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemCategoryClass")
-	}
-	_systemCategoryClass, _systemCategoryClassErr := ErrorReportingSystemCategoryClassParseWithBuffer(ctx, readBuffer)
-	if _systemCategoryClassErr != nil {
-		return nil, errors.Wrap(_systemCategoryClassErr, "Error parsing 'systemCategoryClass' field of ErrorReportingSystemCategory")
-	}
-	systemCategoryClass := _systemCategoryClass
-	if closeErr := readBuffer.CloseContext("systemCategoryClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemCategoryClass")
+	systemCategoryClass, err := ReadEnumField[ErrorReportingSystemCategoryClass](ctx, "systemCategoryClass", "ErrorReportingSystemCategoryClass", ReadEnum(ErrorReportingSystemCategoryClassByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemCategoryClass' field"))
 	}
 
-	// Simple Field (systemCategoryType)
-	if pullErr := readBuffer.PullContext("systemCategoryType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemCategoryType")
-	}
-	_systemCategoryType, _systemCategoryTypeErr := ErrorReportingSystemCategoryTypeParseWithBuffer(ctx, readBuffer, ErrorReportingSystemCategoryClass(systemCategoryClass))
-	if _systemCategoryTypeErr != nil {
-		return nil, errors.Wrap(_systemCategoryTypeErr, "Error parsing 'systemCategoryType' field of ErrorReportingSystemCategory")
-	}
-	systemCategoryType := _systemCategoryType.(ErrorReportingSystemCategoryType)
-	if closeErr := readBuffer.CloseContext("systemCategoryType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemCategoryType")
+	systemCategoryType, err := ReadSimpleField[ErrorReportingSystemCategoryType](ctx, "systemCategoryType", ReadComplex[ErrorReportingSystemCategoryType](ErrorReportingSystemCategoryTypeParseWithBufferProducer[ErrorReportingSystemCategoryType]((ErrorReportingSystemCategoryClass)(systemCategoryClass)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemCategoryType' field"))
 	}
 
-	// Simple Field (systemCategoryVariant)
-	if pullErr := readBuffer.PullContext("systemCategoryVariant"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemCategoryVariant")
-	}
-	_systemCategoryVariant, _systemCategoryVariantErr := ErrorReportingSystemCategoryVariantParseWithBuffer(ctx, readBuffer)
-	if _systemCategoryVariantErr != nil {
-		return nil, errors.Wrap(_systemCategoryVariantErr, "Error parsing 'systemCategoryVariant' field of ErrorReportingSystemCategory")
-	}
-	systemCategoryVariant := _systemCategoryVariant
-	if closeErr := readBuffer.CloseContext("systemCategoryVariant"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemCategoryVariant")
+	systemCategoryVariant, err := ReadEnumField[ErrorReportingSystemCategoryVariant](ctx, "systemCategoryVariant", "ErrorReportingSystemCategoryVariant", ReadEnum(ErrorReportingSystemCategoryVariantByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemCategoryVariant' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategory"); closeErr != nil {

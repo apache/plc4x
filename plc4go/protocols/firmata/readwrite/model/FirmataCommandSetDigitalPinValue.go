@@ -148,6 +148,12 @@ func FirmataCommandSetDigitalPinValueParse(ctx context.Context, theBytes []byte,
 	return FirmataCommandSetDigitalPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandSetDigitalPinValueParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSetDigitalPinValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSetDigitalPinValue, error) {
+		return FirmataCommandSetDigitalPinValueParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetDigitalPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,24 +165,20 @@ func FirmataCommandSetDigitalPinValueParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetDigitalPinValue")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (on)
-	_on, _onErr := /*TODO: migrate me*/ readBuffer.ReadBit("on")
-	if _onErr != nil {
-		return nil, errors.Wrap(_onErr, "Error parsing 'on' field of FirmataCommandSetDigitalPinValue")
+	on, err := ReadSimpleField(ctx, "on", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'on' field"))
 	}
-	on := _on
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetDigitalPinValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandSetDigitalPinValue")

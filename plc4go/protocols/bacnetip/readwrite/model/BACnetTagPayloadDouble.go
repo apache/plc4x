@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BACnetTagPayloadDoubleParse(ctx context.Context, theBytes []byte) (BACnetTa
 	return BACnetTagPayloadDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagPayloadDoubleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
+		return BACnetTagPayloadDoubleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagPayloadDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func BACnetTagPayloadDoubleParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("value", 64)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadDouble")
+	value, err := ReadSimpleField(ctx, "value", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadDouble"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadDouble")

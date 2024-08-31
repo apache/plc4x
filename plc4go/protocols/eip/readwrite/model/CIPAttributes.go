@@ -149,6 +149,12 @@ func CIPAttributesParse(ctx context.Context, theBytes []byte, packetLength uint1
 	return CIPAttributesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), packetLength)
 }
 
+func CIPAttributesParseWithBufferProducer(packetLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPAttributes, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPAttributes, error) {
+		return CIPAttributesParseWithBuffer(ctx, readBuffer, packetLength)
+	}
+}
+
 func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPAttributes, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,23 +166,23 @@ func CIPAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numberOfClasses, err := ReadImplicitField[uint16](ctx, "numberOfClasses", ReadUnsignedShort(readBuffer, 16))
+	numberOfClasses, err := ReadImplicitField[uint16](ctx, "numberOfClasses", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfClasses' field"))
 	}
 	_ = numberOfClasses
 
-	classId, err := ReadCountArrayField[uint16](ctx, "classId", ReadUnsignedShort(readBuffer, 16), uint64(numberOfClasses))
+	classId, err := ReadCountArrayField[uint16](ctx, "classId", ReadUnsignedShort(readBuffer, uint8(16)), uint64(numberOfClasses))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classId' field"))
 	}
 
-	numberAvailable, err := ReadOptionalField[uint16](ctx, "numberAvailable", ReadUnsignedShort(readBuffer, 16), bool((packetLength) >= (((numberOfClasses)*(2))+(4))))
+	numberAvailable, err := ReadOptionalField[uint16](ctx, "numberAvailable", ReadUnsignedShort(readBuffer, uint8(16)), bool((packetLength) >= (((numberOfClasses)*(2))+(4))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberAvailable' field"))
 	}
 
-	numberActive, err := ReadOptionalField[uint16](ctx, "numberActive", ReadUnsignedShort(readBuffer, 16), bool((packetLength) >= (((numberOfClasses)*(2))+(6))))
+	numberActive, err := ReadOptionalField[uint16](ctx, "numberActive", ReadUnsignedShort(readBuffer, uint8(16)), bool((packetLength) >= (((numberOfClasses)*(2))+(6))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberActive' field"))
 	}

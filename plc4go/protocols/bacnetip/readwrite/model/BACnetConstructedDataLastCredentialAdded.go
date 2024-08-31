@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastCredentialAddedParse(ctx context.Context, theBytes
 	return BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastCredentialAddedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastCredentialAdded, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastCredentialAdded, error) {
+		return BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastCredentialAdded, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastCredentialAddedParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastCredentialAdded)
-	if pullErr := readBuffer.PullContext("lastCredentialAdded"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastCredentialAdded")
-	}
-	_lastCredentialAdded, _lastCredentialAddedErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _lastCredentialAddedErr != nil {
-		return nil, errors.Wrap(_lastCredentialAddedErr, "Error parsing 'lastCredentialAdded' field of BACnetConstructedDataLastCredentialAdded")
-	}
-	lastCredentialAdded := _lastCredentialAdded.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("lastCredentialAdded"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastCredentialAdded")
+	lastCredentialAdded, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "lastCredentialAdded", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCredentialAdded' field"))
 	}
 
 	// Virtual field

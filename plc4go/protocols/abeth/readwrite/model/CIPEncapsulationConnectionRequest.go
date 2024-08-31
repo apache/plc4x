@@ -115,6 +115,12 @@ func CIPEncapsulationConnectionRequestParse(ctx context.Context, theBytes []byte
 	return CIPEncapsulationConnectionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func CIPEncapsulationConnectionRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
+		return CIPEncapsulationConnectionRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CIPEncapsulationConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -109,6 +109,12 @@ func AnonymousIdentityTokenParse(ctx context.Context, theBytes []byte, identifie
 	return AnonymousIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AnonymousIdentityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AnonymousIdentityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AnonymousIdentityToken, error) {
+		return AnonymousIdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AnonymousIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AnonymousIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware

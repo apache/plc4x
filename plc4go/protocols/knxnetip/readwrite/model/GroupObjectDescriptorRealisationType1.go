@@ -180,6 +180,12 @@ func GroupObjectDescriptorRealisationType1Parse(ctx context.Context, theBytes []
 	return GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func GroupObjectDescriptorRealisationType1ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
+		return GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType1, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -191,77 +197,49 @@ func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataPointer)
-	_dataPointer, _dataPointerErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dataPointer", 8)
-	if _dataPointerErr != nil {
-		return nil, errors.Wrap(_dataPointerErr, "Error parsing 'dataPointer' field of GroupObjectDescriptorRealisationType1")
+	dataPointer, err := ReadSimpleField(ctx, "dataPointer", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataPointer' field"))
 	}
-	dataPointer := _dataPointer
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 1), uint8(0x1))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0x1))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (transmitEnable)
-	_transmitEnable, _transmitEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("transmitEnable")
-	if _transmitEnableErr != nil {
-		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field of GroupObjectDescriptorRealisationType1")
-	}
-	transmitEnable := _transmitEnable
-
-	// Simple Field (segmentSelectorEnable)
-	_segmentSelectorEnable, _segmentSelectorEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentSelectorEnable")
-	if _segmentSelectorEnableErr != nil {
-		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field of GroupObjectDescriptorRealisationType1")
-	}
-	segmentSelectorEnable := _segmentSelectorEnable
-
-	// Simple Field (writeEnable)
-	_writeEnable, _writeEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeEnable")
-	if _writeEnableErr != nil {
-		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field of GroupObjectDescriptorRealisationType1")
-	}
-	writeEnable := _writeEnable
-
-	// Simple Field (readEnable)
-	_readEnable, _readEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("readEnable")
-	if _readEnableErr != nil {
-		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field of GroupObjectDescriptorRealisationType1")
-	}
-	readEnable := _readEnable
-
-	// Simple Field (communicationEnable)
-	_communicationEnable, _communicationEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("communicationEnable")
-	if _communicationEnableErr != nil {
-		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field of GroupObjectDescriptorRealisationType1")
-	}
-	communicationEnable := _communicationEnable
-
-	// Simple Field (priority)
-	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priority")
-	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of GroupObjectDescriptorRealisationType1")
-	}
-	priority := _priority
-	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priority")
+	transmitEnable, err := ReadSimpleField(ctx, "transmitEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transmitEnable' field"))
 	}
 
-	// Simple Field (valueType)
-	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
+	segmentSelectorEnable, err := ReadSimpleField(ctx, "segmentSelectorEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentSelectorEnable' field"))
 	}
-	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(ctx, readBuffer)
-	if _valueTypeErr != nil {
-		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field of GroupObjectDescriptorRealisationType1")
+
+	writeEnable, err := ReadSimpleField(ctx, "writeEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeEnable' field"))
 	}
-	valueType := _valueType
-	if closeErr := readBuffer.CloseContext("valueType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueType")
+
+	readEnable, err := ReadSimpleField(ctx, "readEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readEnable' field"))
+	}
+
+	communicationEnable, err := ReadSimpleField(ctx, "communicationEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationEnable' field"))
+	}
+
+	priority, err := ReadEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", ReadEnum(CEMIPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
+	}
+
+	valueType, err := ReadEnumField[ComObjectValueType](ctx, "valueType", "ComObjectValueType", ReadEnum(ComObjectValueTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationType1"); closeErr != nil {

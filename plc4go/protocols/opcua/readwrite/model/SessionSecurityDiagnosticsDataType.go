@@ -238,6 +238,12 @@ func SessionSecurityDiagnosticsDataTypeParse(ctx context.Context, theBytes []byt
 	return SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SessionSecurityDiagnosticsDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionSecurityDiagnosticsDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionSecurityDiagnosticsDataType, error) {
+		return SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionSecurityDiagnosticsDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -249,120 +255,54 @@ func SessionSecurityDiagnosticsDataTypeParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sessionId)
-	if pullErr := readBuffer.PullContext("sessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sessionId")
-	}
-	_sessionId, _sessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sessionIdErr != nil {
-		return nil, errors.Wrap(_sessionIdErr, "Error parsing 'sessionId' field of SessionSecurityDiagnosticsDataType")
-	}
-	sessionId := _sessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sessionId")
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 
-	// Simple Field (clientUserIdOfSession)
-	if pullErr := readBuffer.PullContext("clientUserIdOfSession"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientUserIdOfSession")
-	}
-	_clientUserIdOfSession, _clientUserIdOfSessionErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _clientUserIdOfSessionErr != nil {
-		return nil, errors.Wrap(_clientUserIdOfSessionErr, "Error parsing 'clientUserIdOfSession' field of SessionSecurityDiagnosticsDataType")
-	}
-	clientUserIdOfSession := _clientUserIdOfSession.(PascalString)
-	if closeErr := readBuffer.CloseContext("clientUserIdOfSession"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientUserIdOfSession")
+	clientUserIdOfSession, err := ReadSimpleField[PascalString](ctx, "clientUserIdOfSession", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientUserIdOfSession' field"))
 	}
 
-	// Simple Field (noOfClientUserIdHistory)
-	_noOfClientUserIdHistory, _noOfClientUserIdHistoryErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfClientUserIdHistory", 32)
-	if _noOfClientUserIdHistoryErr != nil {
-		return nil, errors.Wrap(_noOfClientUserIdHistoryErr, "Error parsing 'noOfClientUserIdHistory' field of SessionSecurityDiagnosticsDataType")
+	noOfClientUserIdHistory, err := ReadSimpleField(ctx, "noOfClientUserIdHistory", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfClientUserIdHistory' field"))
 	}
-	noOfClientUserIdHistory := _noOfClientUserIdHistory
 
 	clientUserIdHistory, err := ReadCountArrayField[PascalString](ctx, "clientUserIdHistory", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfClientUserIdHistory))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientUserIdHistory' field"))
 	}
 
-	// Simple Field (authenticationMechanism)
-	if pullErr := readBuffer.PullContext("authenticationMechanism"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationMechanism")
-	}
-	_authenticationMechanism, _authenticationMechanismErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _authenticationMechanismErr != nil {
-		return nil, errors.Wrap(_authenticationMechanismErr, "Error parsing 'authenticationMechanism' field of SessionSecurityDiagnosticsDataType")
-	}
-	authenticationMechanism := _authenticationMechanism.(PascalString)
-	if closeErr := readBuffer.CloseContext("authenticationMechanism"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationMechanism")
+	authenticationMechanism, err := ReadSimpleField[PascalString](ctx, "authenticationMechanism", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationMechanism' field"))
 	}
 
-	// Simple Field (encoding)
-	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for encoding")
-	}
-	_encoding, _encodingErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of SessionSecurityDiagnosticsDataType")
-	}
-	encoding := _encoding.(PascalString)
-	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for encoding")
+	encoding, err := ReadSimpleField[PascalString](ctx, "encoding", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encoding' field"))
 	}
 
-	// Simple Field (transportProtocol)
-	if pullErr := readBuffer.PullContext("transportProtocol"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportProtocol")
-	}
-	_transportProtocol, _transportProtocolErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _transportProtocolErr != nil {
-		return nil, errors.Wrap(_transportProtocolErr, "Error parsing 'transportProtocol' field of SessionSecurityDiagnosticsDataType")
-	}
-	transportProtocol := _transportProtocol.(PascalString)
-	if closeErr := readBuffer.CloseContext("transportProtocol"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportProtocol")
+	transportProtocol, err := ReadSimpleField[PascalString](ctx, "transportProtocol", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProtocol' field"))
 	}
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
-	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of SessionSecurityDiagnosticsDataType")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of SessionSecurityDiagnosticsDataType")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (clientCertificate)
-	if pullErr := readBuffer.PullContext("clientCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientCertificate")
-	}
-	_clientCertificate, _clientCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _clientCertificateErr != nil {
-		return nil, errors.Wrap(_clientCertificateErr, "Error parsing 'clientCertificate' field of SessionSecurityDiagnosticsDataType")
-	}
-	clientCertificate := _clientCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("clientCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientCertificate")
+	clientCertificate, err := ReadSimpleField[PascalByteString](ctx, "clientCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientCertificate' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SessionSecurityDiagnosticsDataType"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func NLMSetMasterKeyParse(ctx context.Context, theBytes []byte, apduLength uint1
 	return NLMSetMasterKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMSetMasterKeyParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSetMasterKey, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSetMasterKey, error) {
+		return NLMSetMasterKeyParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMSetMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSetMasterKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func NLMSetMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (key)
-	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for key")
-	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMSetMasterKey")
-	}
-	key := _key.(NLMUpdateKeyUpdateKeyEntry)
-	if closeErr := readBuffer.CloseContext("key"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for key")
+	key, err := ReadSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMSetMasterKey"); closeErr != nil {

@@ -179,6 +179,12 @@ func ContentFilterResultParse(ctx context.Context, theBytes []byte, identifier s
 	return ContentFilterResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ContentFilterResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterResult, error) {
+		return ContentFilterResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -190,30 +196,20 @@ func ContentFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfElementResults)
-	_noOfElementResults, _noOfElementResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElementResults", 32)
-	if _noOfElementResultsErr != nil {
-		return nil, errors.Wrap(_noOfElementResultsErr, "Error parsing 'noOfElementResults' field of ContentFilterResult")
+	noOfElementResults, err := ReadSimpleField(ctx, "noOfElementResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElementResults' field"))
 	}
-	noOfElementResults := _noOfElementResults
 
-	elementResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elementResults", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("606"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfElementResults))
+	elementResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elementResults", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("606")), readBuffer), uint64(noOfElementResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementResults' field"))
 	}
 
-	// Simple Field (noOfElementDiagnosticInfos)
-	_noOfElementDiagnosticInfos, _noOfElementDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElementDiagnosticInfos", 32)
-	if _noOfElementDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfElementDiagnosticInfosErr, "Error parsing 'noOfElementDiagnosticInfos' field of ContentFilterResult")
+	noOfElementDiagnosticInfos, err := ReadSimpleField(ctx, "noOfElementDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElementDiagnosticInfos' field"))
 	}
-	noOfElementDiagnosticInfos := _noOfElementDiagnosticInfos
 
 	elementDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "elementDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfElementDiagnosticInfos))
 	if err != nil {

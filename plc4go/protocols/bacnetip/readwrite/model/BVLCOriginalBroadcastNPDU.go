@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -134,6 +137,12 @@ func BVLCOriginalBroadcastNPDUParse(ctx context.Context, theBytes []byte, bvlcPa
 	return BVLCOriginalBroadcastNPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
+func BVLCOriginalBroadcastNPDUParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCOriginalBroadcastNPDU, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCOriginalBroadcastNPDU, error) {
+		return BVLCOriginalBroadcastNPDUParseWithBuffer(ctx, readBuffer, bvlcPayloadLength)
+	}
+}
+
 func BVLCOriginalBroadcastNPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCOriginalBroadcastNPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,17 +154,9 @@ func BVLCOriginalBroadcastNPDUParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (npdu)
-	if pullErr := readBuffer.PullContext("npdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for npdu")
-	}
-	_npdu, _npduErr := NPDUParseWithBuffer(ctx, readBuffer, uint16(bvlcPayloadLength))
-	if _npduErr != nil {
-		return nil, errors.Wrap(_npduErr, "Error parsing 'npdu' field of BVLCOriginalBroadcastNPDU")
-	}
-	npdu := _npdu.(NPDU)
-	if closeErr := readBuffer.CloseContext("npdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for npdu")
+	npdu, err := ReadSimpleField[NPDU](ctx, "npdu", ReadComplex[NPDU](NPDUParseWithBufferProducer((uint16)(bvlcPayloadLength)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'npdu' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCOriginalBroadcastNPDU"); closeErr != nil {

@@ -106,6 +106,17 @@ func ComObjectTableParse(ctx context.Context, theBytes []byte, firmwareType Firm
 	return ComObjectTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
+func ComObjectTableParseWithBufferProducer[T ComObjectTable](firmwareType FirmwareType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ComObjectTableParseWithBuffer(ctx, readBuffer, firmwareType)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ComObjectTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTable, error) {
 	positionAware := readBuffer
 	_ = positionAware

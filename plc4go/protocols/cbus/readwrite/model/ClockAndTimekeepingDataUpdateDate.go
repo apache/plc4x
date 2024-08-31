@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -173,6 +175,12 @@ func ClockAndTimekeepingDataUpdateDateParse(ctx context.Context, theBytes []byte
 	return ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClockAndTimekeepingDataUpdateDateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
+		return ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,40 +192,30 @@ func ClockAndTimekeepingDataUpdateDateParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (yearHigh)
-	_yearHigh, _yearHighErr := /*TODO: migrate me*/ readBuffer.ReadByte("yearHigh")
-	if _yearHighErr != nil {
-		return nil, errors.Wrap(_yearHighErr, "Error parsing 'yearHigh' field of ClockAndTimekeepingDataUpdateDate")
+	yearHigh, err := ReadSimpleField(ctx, "yearHigh", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'yearHigh' field"))
 	}
-	yearHigh := _yearHigh
 
-	// Simple Field (yearLow)
-	_yearLow, _yearLowErr := /*TODO: migrate me*/ readBuffer.ReadByte("yearLow")
-	if _yearLowErr != nil {
-		return nil, errors.Wrap(_yearLowErr, "Error parsing 'yearLow' field of ClockAndTimekeepingDataUpdateDate")
+	yearLow, err := ReadSimpleField(ctx, "yearLow", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'yearLow' field"))
 	}
-	yearLow := _yearLow
 
-	// Simple Field (month)
-	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
-	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of ClockAndTimekeepingDataUpdateDate")
+	month, err := ReadSimpleField(ctx, "month", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'month' field"))
 	}
-	month := _month
 
-	// Simple Field (day)
-	_day, _dayErr := /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8)
-	if _dayErr != nil {
-		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of ClockAndTimekeepingDataUpdateDate")
+	day, err := ReadSimpleField(ctx, "day", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'day' field"))
 	}
-	day := _day
 
-	// Simple Field (dayOfWeek)
-	_dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 8)
-	if _dayOfWeekErr != nil {
-		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of ClockAndTimekeepingDataUpdateDate")
+	dayOfWeek, err := ReadSimpleField(ctx, "dayOfWeek", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfWeek' field"))
 	}
-	dayOfWeek := _dayOfWeek
 
 	if closeErr := readBuffer.CloseContext("ClockAndTimekeepingDataUpdateDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClockAndTimekeepingDataUpdateDate")

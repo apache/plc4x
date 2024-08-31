@@ -108,6 +108,12 @@ func MeteringDataMeasureOilParse(ctx context.Context, theBytes []byte) (Metering
 	return MeteringDataMeasureOilParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataMeasureOilParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOil, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOil, error) {
+		return MeteringDataMeasureOilParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataMeasureOilParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureOil, error) {
 	positionAware := readBuffer
 	_ = positionAware

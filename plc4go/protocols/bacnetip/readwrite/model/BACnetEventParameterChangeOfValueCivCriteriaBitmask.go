@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParse(ctx context.Contex
 	return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
+		return BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaBitmask, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetEventParameterChangeOfValueCivCriteriaBitmaskParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitmask)
-	if pullErr := readBuffer.PullContext("bitmask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitmask")
-	}
-	_bitmask, _bitmaskErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BIT_STRING))
-	if _bitmaskErr != nil {
-		return nil, errors.Wrap(_bitmaskErr, "Error parsing 'bitmask' field of BACnetEventParameterChangeOfValueCivCriteriaBitmask")
-	}
-	bitmask := _bitmask.(BACnetContextTagBitString)
-	if closeErr := readBuffer.CloseContext("bitmask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitmask")
+	bitmask, err := ReadSimpleField[BACnetContextTagBitString](ctx, "bitmask", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer[BACnetContextTagBitString]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitmask' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteriaBitmask"); closeErr != nil {

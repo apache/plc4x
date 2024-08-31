@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -200,6 +202,12 @@ func MediaTransportControlDataEnumerationsSizeParse(ctx context.Context, theByte
 	return MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataEnumerationsSizeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {
+		return MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerationsSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -211,12 +219,10 @@ func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sizeType)
-	_sizeType, _sizeTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("sizeType")
-	if _sizeTypeErr != nil {
-		return nil, errors.Wrap(_sizeTypeErr, "Error parsing 'sizeType' field of MediaTransportControlDataEnumerationsSize")
+	sizeType, err := ReadSimpleField(ctx, "sizeType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sizeType' field"))
 	}
-	sizeType := _sizeType
 
 	// Virtual field
 	_isListCategories := bool((sizeType) == (0x00))
@@ -238,19 +244,15 @@ func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Contex
 	isReserved := bool(_isReserved)
 	_ = isReserved
 
-	// Simple Field (start)
-	_start, _startErr := /*TODO: migrate me*/ readBuffer.ReadUint8("start", 8)
-	if _startErr != nil {
-		return nil, errors.Wrap(_startErr, "Error parsing 'start' field of MediaTransportControlDataEnumerationsSize")
+	start, err := ReadSimpleField(ctx, "start", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'start' field"))
 	}
-	start := _start
 
-	// Simple Field (size)
-	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("size", 8)
-	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of MediaTransportControlDataEnumerationsSize")
+	size, err := ReadSimpleField(ctx, "size", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'size' field"))
 	}
-	size := _size
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataEnumerationsSize"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataEnumerationsSize")

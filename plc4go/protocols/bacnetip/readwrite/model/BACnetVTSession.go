@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func BACnetVTSessionParse(ctx context.Context, theBytes []byte) (BACnetVTSession
 	return BACnetVTSessionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetVTSessionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
+		return BACnetVTSessionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVTSession, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localVtSessionId)
-	if pullErr := readBuffer.PullContext("localVtSessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localVtSessionId")
-	}
-	_localVtSessionId, _localVtSessionIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localVtSessionIdErr != nil {
-		return nil, errors.Wrap(_localVtSessionIdErr, "Error parsing 'localVtSessionId' field of BACnetVTSession")
-	}
-	localVtSessionId := _localVtSessionId.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("localVtSessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localVtSessionId")
+	localVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localVtSessionId' field"))
 	}
 
-	// Simple Field (removeVtSessionId)
-	if pullErr := readBuffer.PullContext("removeVtSessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for removeVtSessionId")
-	}
-	_removeVtSessionId, _removeVtSessionIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _removeVtSessionIdErr != nil {
-		return nil, errors.Wrap(_removeVtSessionIdErr, "Error parsing 'removeVtSessionId' field of BACnetVTSession")
-	}
-	removeVtSessionId := _removeVtSessionId.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("removeVtSessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for removeVtSessionId")
+	removeVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "removeVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeVtSessionId' field"))
 	}
 
-	// Simple Field (remoteVtAddress)
-	if pullErr := readBuffer.PullContext("remoteVtAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtAddress")
-	}
-	_remoteVtAddress, _remoteVtAddressErr := BACnetAddressParseWithBuffer(ctx, readBuffer)
-	if _remoteVtAddressErr != nil {
-		return nil, errors.Wrap(_remoteVtAddressErr, "Error parsing 'remoteVtAddress' field of BACnetVTSession")
-	}
-	remoteVtAddress := _remoteVtAddress.(BACnetAddress)
-	if closeErr := readBuffer.CloseContext("remoteVtAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for remoteVtAddress")
+	remoteVtAddress, err := ReadSimpleField[BACnetAddress](ctx, "remoteVtAddress", ReadComplex[BACnetAddress](BACnetAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteVtAddress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVTSession"); closeErr != nil {

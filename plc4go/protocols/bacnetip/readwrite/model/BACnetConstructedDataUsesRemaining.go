@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUsesRemainingParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataUsesRemainingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUsesRemainingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUsesRemaining, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUsesRemaining, error) {
+		return BACnetConstructedDataUsesRemainingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUsesRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUsesRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUsesRemainingParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (usesRemaining)
-	if pullErr := readBuffer.PullContext("usesRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for usesRemaining")
-	}
-	_usesRemaining, _usesRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _usesRemainingErr != nil {
-		return nil, errors.Wrap(_usesRemainingErr, "Error parsing 'usesRemaining' field of BACnetConstructedDataUsesRemaining")
-	}
-	usesRemaining := _usesRemaining.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("usesRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for usesRemaining")
+	usesRemaining, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "usesRemaining", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'usesRemaining' field"))
 	}
 
 	// Virtual field

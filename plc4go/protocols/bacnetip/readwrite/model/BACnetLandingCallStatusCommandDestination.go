@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetLandingCallStatusCommandDestinationParse(ctx context.Context, theByte
 	return BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingCallStatusCommandDestinationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
+		return BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDestination, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetLandingCallStatusCommandDestinationParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destination)
-	if pullErr := readBuffer.PullContext("destination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destination")
-	}
-	_destination, _destinationErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _destinationErr != nil {
-		return nil, errors.Wrap(_destinationErr, "Error parsing 'destination' field of BACnetLandingCallStatusCommandDestination")
-	}
-	destination := _destination.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("destination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destination")
+	destination, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "destination", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destination' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDestination"); closeErr != nil {

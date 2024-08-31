@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLandingCallControlParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataLandingCallControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLandingCallControlParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLandingCallControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLandingCallControl, error) {
+		return BACnetConstructedDataLandingCallControlParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLandingCallControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLandingCallControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLandingCallControlParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (landingCallControl)
-	if pullErr := readBuffer.PullContext("landingCallControl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for landingCallControl")
-	}
-	_landingCallControl, _landingCallControlErr := BACnetLandingCallStatusParseWithBuffer(ctx, readBuffer)
-	if _landingCallControlErr != nil {
-		return nil, errors.Wrap(_landingCallControlErr, "Error parsing 'landingCallControl' field of BACnetConstructedDataLandingCallControl")
-	}
-	landingCallControl := _landingCallControl.(BACnetLandingCallStatus)
-	if closeErr := readBuffer.CloseContext("landingCallControl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for landingCallControl")
+	landingCallControl, err := ReadSimpleField[BACnetLandingCallStatus](ctx, "landingCallControl", ReadComplex[BACnetLandingCallStatus](BACnetLandingCallStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingCallControl' field"))
 	}
 
 	// Virtual field

@@ -148,6 +148,12 @@ func NLMNetworkNumberIsParse(ctx context.Context, theBytes []byte, apduLength ui
 	return NLMNetworkNumberIsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMNetworkNumberIsParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMNetworkNumberIs, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMNetworkNumberIs, error) {
+		return NLMNetworkNumberIsParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMNetworkNumberIs, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,24 +165,20 @@ func NLMNetworkNumberIsParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumber)
-	_networkNumber, _networkNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("networkNumber", 16)
-	if _networkNumberErr != nil {
-		return nil, errors.Wrap(_networkNumberErr, "Error parsing 'networkNumber' field of NLMNetworkNumberIs")
+	networkNumber, err := ReadSimpleField(ctx, "networkNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
-	networkNumber := _networkNumber
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (networkNumberConfigured)
-	_networkNumberConfigured, _networkNumberConfiguredErr := /*TODO: migrate me*/ readBuffer.ReadBit("networkNumberConfigured")
-	if _networkNumberConfiguredErr != nil {
-		return nil, errors.Wrap(_networkNumberConfiguredErr, "Error parsing 'networkNumberConfigured' field of NLMNetworkNumberIs")
+	networkNumberConfigured, err := ReadSimpleField(ctx, "networkNumberConfigured", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumberConfigured' field"))
 	}
-	networkNumberConfigured := _networkNumberConfigured
 
 	if closeErr := readBuffer.CloseContext("NLMNetworkNumberIs"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMNetworkNumberIs")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func ClassSegmentParse(ctx context.Context, theBytes []byte) (ClassSegment, erro
 	return ClassSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClassSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {
+		return ClassSegmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,33 +152,25 @@ func ClassSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pathSegmentType)
-	_pathSegmentType, _pathSegmentTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pathSegmentType", 3)
-	if _pathSegmentTypeErr != nil {
-		return nil, errors.Wrap(_pathSegmentTypeErr, "Error parsing 'pathSegmentType' field of ClassSegment")
+	pathSegmentType, err := ReadSimpleField(ctx, "pathSegmentType", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pathSegmentType' field"))
 	}
-	pathSegmentType := _pathSegmentType
 
-	// Simple Field (logicalSegmentType)
-	_logicalSegmentType, _logicalSegmentTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("logicalSegmentType", 3)
-	if _logicalSegmentTypeErr != nil {
-		return nil, errors.Wrap(_logicalSegmentTypeErr, "Error parsing 'logicalSegmentType' field of ClassSegment")
+	logicalSegmentType, err := ReadSimpleField(ctx, "logicalSegmentType", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalSegmentType' field"))
 	}
-	logicalSegmentType := _logicalSegmentType
 
-	// Simple Field (logicalSegmentFormat)
-	_logicalSegmentFormat, _logicalSegmentFormatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("logicalSegmentFormat", 2)
-	if _logicalSegmentFormatErr != nil {
-		return nil, errors.Wrap(_logicalSegmentFormatErr, "Error parsing 'logicalSegmentFormat' field of ClassSegment")
+	logicalSegmentFormat, err := ReadSimpleField(ctx, "logicalSegmentFormat", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalSegmentFormat' field"))
 	}
-	logicalSegmentFormat := _logicalSegmentFormat
 
-	// Simple Field (classSegment)
-	_classSegment, _classSegmentErr := /*TODO: migrate me*/ readBuffer.ReadUint8("classSegment", 8)
-	if _classSegmentErr != nil {
-		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of ClassSegment")
+	classSegment, err := ReadSimpleField(ctx, "classSegment", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classSegment' field"))
 	}
-	classSegment := _classSegment
 
 	if closeErr := readBuffer.CloseContext("ClassSegment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClassSegment")

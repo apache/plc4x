@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBiasParse(ctx context.Context, theBytes []byte, tagNum
 	return BACnetConstructedDataBiasParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBiasParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBias, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBias, error) {
+		return BACnetConstructedDataBiasParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBiasParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBias, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBiasParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bias)
-	if pullErr := readBuffer.PullContext("bias"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bias")
-	}
-	_bias, _biasErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _biasErr != nil {
-		return nil, errors.Wrap(_biasErr, "Error parsing 'bias' field of BACnetConstructedDataBias")
-	}
-	bias := _bias.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("bias"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bias")
+	bias, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "bias", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bias' field"))
 	}
 
 	// Virtual field

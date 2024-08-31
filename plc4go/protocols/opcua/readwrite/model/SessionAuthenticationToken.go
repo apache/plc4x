@@ -83,6 +83,12 @@ func SessionAuthenticationTokenParse(ctx context.Context, theBytes []byte) (Sess
 	return SessionAuthenticationTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SessionAuthenticationTokenParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
+		return SessionAuthenticationTokenParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SessionAuthenticationTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SessionAuthenticationToken, error) {
 	positionAware := readBuffer
 	_ = positionAware

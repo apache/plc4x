@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetNotificationParametersComplexEventTypeParse(ctx context.Context, theB
 	return BACnetNotificationParametersComplexEventTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
+func BACnetNotificationParametersComplexEventTypeParseWithBufferProducer(peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersComplexEventType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersComplexEventType, error) {
+		return BACnetNotificationParametersComplexEventTypeParseWithBuffer(ctx, readBuffer, peekedTagNumber, tagNumber, objectTypeArgument)
+	}
+}
+
 func BACnetNotificationParametersComplexEventTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersComplexEventType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetNotificationParametersComplexEventTypeParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (listOfValues)
-	if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
-	}
-	_listOfValues, _listOfValuesErr := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetObjectType(objectTypeArgument))
-	if _listOfValuesErr != nil {
-		return nil, errors.Wrap(_listOfValuesErr, "Error parsing 'listOfValues' field of BACnetNotificationParametersComplexEventType")
-	}
-	listOfValues := _listOfValues.(BACnetPropertyValues)
-	if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
+	listOfValues, err := ReadSimpleField[BACnetPropertyValues](ctx, "listOfValues", ReadComplex[BACnetPropertyValues](BACnetPropertyValuesParseWithBufferProducer((uint8)(peekedTagNumber), (BACnetObjectType)(objectTypeArgument)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfValues' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersComplexEventType"); closeErr != nil {

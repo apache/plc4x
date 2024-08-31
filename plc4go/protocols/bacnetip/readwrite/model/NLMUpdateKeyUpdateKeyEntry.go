@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -125,6 +127,12 @@ func NLMUpdateKeyUpdateKeyEntryParse(ctx context.Context, theBytes []byte) (NLMU
 	return NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NLMUpdateKeyUpdateKeyEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateKeyEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateKeyEntry, error) {
+		return NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateKeyEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -136,19 +144,15 @@ func NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (keyIdentifier)
-	_keyIdentifier, _keyIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint16("keyIdentifier", 16)
-	if _keyIdentifierErr != nil {
-		return nil, errors.Wrap(_keyIdentifierErr, "Error parsing 'keyIdentifier' field of NLMUpdateKeyUpdateKeyEntry")
+	keyIdentifier, err := ReadSimpleField(ctx, "keyIdentifier", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyIdentifier' field"))
 	}
-	keyIdentifier := _keyIdentifier
 
-	// Simple Field (keySize)
-	_keySize, _keySizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("keySize", 8)
-	if _keySizeErr != nil {
-		return nil, errors.Wrap(_keySizeErr, "Error parsing 'keySize' field of NLMUpdateKeyUpdateKeyEntry")
+	keySize, err := ReadSimpleField(ctx, "keySize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keySize' field"))
 	}
-	keySize := _keySize
 
 	key, err := readBuffer.ReadByteArray("key", int(keySize))
 	if err != nil {

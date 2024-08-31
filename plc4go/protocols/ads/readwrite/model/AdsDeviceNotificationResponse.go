@@ -120,6 +120,12 @@ func AdsDeviceNotificationResponseParse(ctx context.Context, theBytes []byte) (A
 	return AdsDeviceNotificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDeviceNotificationResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
+		return AdsDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

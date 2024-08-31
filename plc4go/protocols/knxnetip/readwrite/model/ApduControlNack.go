@@ -109,6 +109,12 @@ func ApduControlNackParse(ctx context.Context, theBytes []byte) (ApduControlNack
 	return ApduControlNackParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApduControlNackParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlNack, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlNack, error) {
+		return ApduControlNackParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApduControlNackParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlNack, error) {
 	positionAware := readBuffer
 	_ = positionAware

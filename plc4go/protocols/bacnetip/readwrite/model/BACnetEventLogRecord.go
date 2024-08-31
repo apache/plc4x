@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetEventLogRecordParse(ctx context.Context, theBytes []byte) (BACnetEven
 	return BACnetEventLogRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventLogRecordParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
+		return BACnetEventLogRecordParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetEventLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventLogRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetEventLogRecordParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
-	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetEventLogRecord")
-	}
-	timestamp := _timestamp.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
+	timestamp, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "timestamp", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	// Simple Field (logDatum)
-	if pullErr := readBuffer.PullContext("logDatum"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logDatum")
-	}
-	_logDatum, _logDatumErr := BACnetEventLogRecordLogDatumParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _logDatumErr != nil {
-		return nil, errors.Wrap(_logDatumErr, "Error parsing 'logDatum' field of BACnetEventLogRecord")
-	}
-	logDatum := _logDatum.(BACnetEventLogRecordLogDatum)
-	if closeErr := readBuffer.CloseContext("logDatum"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logDatum")
+	logDatum, err := ReadSimpleField[BACnetEventLogRecordLogDatum](ctx, "logDatum", ReadComplex[BACnetEventLogRecordLogDatum](BACnetEventLogRecordLogDatumParseWithBufferProducer[BACnetEventLogRecordLogDatum]((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logDatum' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventLogRecord"); closeErr != nil {

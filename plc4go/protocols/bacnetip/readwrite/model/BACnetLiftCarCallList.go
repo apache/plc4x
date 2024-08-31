@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BACnetLiftCarCallListParse(ctx context.Context, theBytes []byte) (BACnetLif
 	return BACnetLiftCarCallListParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLiftCarCallListParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
+		return BACnetLiftCarCallListParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLiftCarCallList, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func BACnetLiftCarCallListParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floorNumbers)
-	if pullErr := readBuffer.PullContext("floorNumbers"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floorNumbers")
-	}
-	_floorNumbers, _floorNumbersErr := BACnetLiftCarCallListFloorListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _floorNumbersErr != nil {
-		return nil, errors.Wrap(_floorNumbersErr, "Error parsing 'floorNumbers' field of BACnetLiftCarCallList")
-	}
-	floorNumbers := _floorNumbers.(BACnetLiftCarCallListFloorList)
-	if closeErr := readBuffer.CloseContext("floorNumbers"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floorNumbers")
+	floorNumbers, err := ReadSimpleField[BACnetLiftCarCallListFloorList](ctx, "floorNumbers", ReadComplex[BACnetLiftCarCallListFloorList](BACnetLiftCarCallListFloorListParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumbers' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarCallList"); closeErr != nil {

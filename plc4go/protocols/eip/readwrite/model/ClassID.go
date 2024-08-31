@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ClassIDParse(ctx context.Context, theBytes []byte) (ClassID, error) {
 	return ClassIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClassIDParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ClassID, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ClassID, error) {
+		return ClassIDParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClassID, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func ClassIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (format)
-	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("format", 2)
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of ClassID")
+	format, err := ReadSimpleField(ctx, "format", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	format := _format
 
-	// Simple Field (segmentClass)
-	_segmentClass, _segmentClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("segmentClass", 8)
-	if _segmentClassErr != nil {
-		return nil, errors.Wrap(_segmentClassErr, "Error parsing 'segmentClass' field of ClassID")
+	segmentClass, err := ReadSimpleField(ctx, "segmentClass", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentClass' field"))
 	}
-	segmentClass := _segmentClass
 
 	if closeErr := readBuffer.CloseContext("ClassID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClassID")

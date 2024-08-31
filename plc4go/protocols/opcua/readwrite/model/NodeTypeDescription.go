@@ -177,6 +177,12 @@ func NodeTypeDescriptionParse(ctx context.Context, theBytes []byte, identifier s
 	return NodeTypeDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NodeTypeDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeTypeDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeTypeDescription, error) {
+		return NodeTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeTypeDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -188,45 +194,27 @@ func NodeTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (typeDefinitionNode)
-	if pullErr := readBuffer.PullContext("typeDefinitionNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinitionNode")
-	}
-	_typeDefinitionNode, _typeDefinitionNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionNodeErr != nil {
-		return nil, errors.Wrap(_typeDefinitionNodeErr, "Error parsing 'typeDefinitionNode' field of NodeTypeDescription")
-	}
-	typeDefinitionNode := _typeDefinitionNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinitionNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinitionNode")
+	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinitionNode' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (includeSubTypes)
-	_includeSubTypes, _includeSubTypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubTypes")
-	if _includeSubTypesErr != nil {
-		return nil, errors.Wrap(_includeSubTypesErr, "Error parsing 'includeSubTypes' field of NodeTypeDescription")
+	includeSubTypes, err := ReadSimpleField(ctx, "includeSubTypes", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubTypes' field"))
 	}
-	includeSubTypes := _includeSubTypes
 
-	// Simple Field (noOfDataToReturn)
-	_noOfDataToReturn, _noOfDataToReturnErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataToReturn", 32)
-	if _noOfDataToReturnErr != nil {
-		return nil, errors.Wrap(_noOfDataToReturnErr, "Error parsing 'noOfDataToReturn' field of NodeTypeDescription")
+	noOfDataToReturn, err := ReadSimpleField(ctx, "noOfDataToReturn", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataToReturn' field"))
 	}
-	noOfDataToReturn := _noOfDataToReturn
 
-	dataToReturn, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataToReturn", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("572"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfDataToReturn))
+	dataToReturn, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataToReturn", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("572")), readBuffer), uint64(noOfDataToReturn))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataToReturn' field"))
 	}

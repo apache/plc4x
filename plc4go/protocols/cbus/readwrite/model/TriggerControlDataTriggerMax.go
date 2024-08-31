@@ -108,6 +108,12 @@ func TriggerControlDataTriggerMaxParse(ctx context.Context, theBytes []byte) (Tr
 	return TriggerControlDataTriggerMaxParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlDataTriggerMaxParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
+		return TriggerControlDataTriggerMaxParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlDataTriggerMaxParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMax, error) {
 	positionAware := readBuffer
 	_ = positionAware

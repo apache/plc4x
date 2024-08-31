@@ -140,6 +140,17 @@ func BACnetTimeStampParse(ctx context.Context, theBytes []byte) (BACnetTimeStamp
 	return BACnetTimeStampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTimeStampParseWithBufferProducer[T BACnetTimeStamp]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetTimeStampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStamp, error) {
 	positionAware := readBuffer
 	_ = positionAware

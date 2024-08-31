@@ -161,6 +161,12 @@ func GetEndpointsResponseParse(ctx context.Context, theBytes []byte, identifier 
 	return GetEndpointsResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func GetEndpointsResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (GetEndpointsResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GetEndpointsResponse, error) {
+		return GetEndpointsResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func GetEndpointsResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GetEndpointsResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func GetEndpointsResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of GetEndpointsResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (noOfEndpoints)
-	_noOfEndpoints, _noOfEndpointsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEndpoints", 32)
-	if _noOfEndpointsErr != nil {
-		return nil, errors.Wrap(_noOfEndpointsErr, "Error parsing 'noOfEndpoints' field of GetEndpointsResponse")
+	noOfEndpoints, err := ReadSimpleField(ctx, "noOfEndpoints", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpoints' field"))
 	}
-	noOfEndpoints := _noOfEndpoints
 
-	endpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "endpoints", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("314"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfEndpoints))
+	endpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "endpoints", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("314")), readBuffer), uint64(noOfEndpoints))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpoints' field"))
 	}

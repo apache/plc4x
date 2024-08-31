@@ -108,6 +108,12 @@ func MeteringDataMeasureElectricityParse(ctx context.Context, theBytes []byte) (
 	return MeteringDataMeasureElectricityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataMeasureElectricityParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureElectricity, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureElectricity, error) {
+		return MeteringDataMeasureElectricityParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataMeasureElectricityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureElectricity, error) {
 	positionAware := readBuffer
 	_ = positionAware

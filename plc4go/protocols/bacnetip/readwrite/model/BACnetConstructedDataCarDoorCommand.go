@@ -178,6 +178,12 @@ func BACnetConstructedDataCarDoorCommandParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCarDoorCommandParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarDoorCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarDoorCommand, error) {
+		return BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarDoorCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,13 +200,7 @@ func BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx context.Context, rea
 	zero := uint64(_zero)
 	_ = zero
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -209,13 +209,7 @@ func BACnetConstructedDataCarDoorCommandParseWithBuffer(ctx context.Context, rea
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	carDoorCommand, err := ReadTerminatedArrayField[BACnetLiftCarDoorCommandTagged](ctx, "carDoorCommand", ReadComplex[BACnetLiftCarDoorCommandTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetLiftCarDoorCommandTagged, error) {
-		v, err := BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetLiftCarDoorCommandTagged), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	carDoorCommand, err := ReadTerminatedArrayField[BACnetLiftCarDoorCommandTagged](ctx, "carDoorCommand", ReadComplex[BACnetLiftCarDoorCommandTagged](BACnetLiftCarDoorCommandTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carDoorCommand' field"))
 	}

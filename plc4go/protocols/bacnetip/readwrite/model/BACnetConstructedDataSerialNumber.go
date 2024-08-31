@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSerialNumberParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataSerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSerialNumberParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSerialNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSerialNumber, error) {
+		return BACnetConstructedDataSerialNumberParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSerialNumberParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serialNumber)
-	if pullErr := readBuffer.PullContext("serialNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serialNumber")
-	}
-	_serialNumber, _serialNumberErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _serialNumberErr != nil {
-		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of BACnetConstructedDataSerialNumber")
-	}
-	serialNumber := _serialNumber.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("serialNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serialNumber")
+	serialNumber, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "serialNumber", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialNumber' field"))
 	}
 
 	// Virtual field

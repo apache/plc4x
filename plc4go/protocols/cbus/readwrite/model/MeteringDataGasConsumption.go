@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MeteringDataGasConsumptionParse(ctx context.Context, theBytes []byte) (Mete
 	return MeteringDataGasConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataGasConsumptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
+		return MeteringDataGasConsumptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataGasConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataGasConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MeteringDataGasConsumptionParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mJ)
-	_mJ, _mJErr := /*TODO: migrate me*/ readBuffer.ReadUint32("mJ", 32)
-	if _mJErr != nil {
-		return nil, errors.Wrap(_mJErr, "Error parsing 'mJ' field of MeteringDataGasConsumption")
+	mJ, err := ReadSimpleField(ctx, "mJ", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mJ' field"))
 	}
-	mJ := _mJ
 
 	if closeErr := readBuffer.CloseContext("MeteringDataGasConsumption"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataGasConsumption")

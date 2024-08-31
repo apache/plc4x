@@ -113,6 +113,12 @@ func SysexCommandReportFirmwareRequestParse(ctx context.Context, theBytes []byte
 	return SysexCommandReportFirmwareRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandReportFirmwareRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandReportFirmwareRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandReportFirmwareRequest, error) {
+		return SysexCommandReportFirmwareRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandReportFirmwareRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

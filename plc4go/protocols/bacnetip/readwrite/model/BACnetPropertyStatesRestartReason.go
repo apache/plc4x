@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesRestartReasonParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesRestartReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesRestartReasonParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesRestartReason, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesRestartReason, error) {
+		return BACnetPropertyStatesRestartReasonParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesRestartReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesRestartReasonParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (restartReason)
-	if pullErr := readBuffer.PullContext("restartReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for restartReason")
-	}
-	_restartReason, _restartReasonErr := BACnetRestartReasonTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _restartReasonErr != nil {
-		return nil, errors.Wrap(_restartReasonErr, "Error parsing 'restartReason' field of BACnetPropertyStatesRestartReason")
-	}
-	restartReason := _restartReason.(BACnetRestartReasonTagged)
-	if closeErr := readBuffer.CloseContext("restartReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for restartReason")
+	restartReason, err := ReadSimpleField[BACnetRestartReasonTagged](ctx, "restartReason", ReadComplex[BACnetRestartReasonTagged](BACnetRestartReasonTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restartReason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesRestartReason"); closeErr != nil {

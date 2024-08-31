@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetHostAddressNameParse(ctx context.Context, theBytes []byte) (BACnetHos
 	return BACnetHostAddressNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetHostAddressNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
+		return BACnetHostAddressNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetHostAddressNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetHostAddressNameParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BACnetHostAddressName")
-	}
-	name := _name.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "name", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressName"); closeErr != nil {

@@ -175,6 +175,17 @@ func LDataFrameParse(ctx context.Context, theBytes []byte) (LDataFrame, error) {
 	return LDataFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LDataFrameParseWithBufferProducer[T LDataFrame]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := LDataFrameParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -186,56 +197,40 @@ func LDataFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (frameType)
-	_frameType, _frameTypeErr := /*TODO: migrate me*/ readBuffer.ReadBit("frameType")
-	if _frameTypeErr != nil {
-		return nil, errors.Wrap(_frameTypeErr, "Error parsing 'frameType' field of LDataFrame")
+	frameType, err := ReadSimpleField(ctx, "frameType", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'frameType' field"))
 	}
-	frameType := _frameType
 
 	polling, err := ReadDiscriminatorField[bool](ctx, "polling", ReadBoolean(readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'polling' field"))
 	}
 
-	// Simple Field (notRepeated)
-	_notRepeated, _notRepeatedErr := /*TODO: migrate me*/ readBuffer.ReadBit("notRepeated")
-	if _notRepeatedErr != nil {
-		return nil, errors.Wrap(_notRepeatedErr, "Error parsing 'notRepeated' field of LDataFrame")
+	notRepeated, err := ReadSimpleField(ctx, "notRepeated", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notRepeated' field"))
 	}
-	notRepeated := _notRepeated
 
 	notAckFrame, err := ReadDiscriminatorField[bool](ctx, "notAckFrame", ReadBoolean(readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notAckFrame' field"))
 	}
 
-	// Simple Field (priority)
-	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priority")
-	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of LDataFrame")
-	}
-	priority := _priority
-	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priority")
+	priority, err := ReadEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", ReadEnum(CEMIPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
 
-	// Simple Field (acknowledgeRequested)
-	_acknowledgeRequested, _acknowledgeRequestedErr := /*TODO: migrate me*/ readBuffer.ReadBit("acknowledgeRequested")
-	if _acknowledgeRequestedErr != nil {
-		return nil, errors.Wrap(_acknowledgeRequestedErr, "Error parsing 'acknowledgeRequested' field of LDataFrame")
+	acknowledgeRequested, err := ReadSimpleField(ctx, "acknowledgeRequested", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgeRequested' field"))
 	}
-	acknowledgeRequested := _acknowledgeRequested
 
-	// Simple Field (errorFlag)
-	_errorFlag, _errorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("errorFlag")
-	if _errorFlagErr != nil {
-		return nil, errors.Wrap(_errorFlagErr, "Error parsing 'errorFlag' field of LDataFrame")
+	errorFlag, err := ReadSimpleField(ctx, "errorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorFlag' field"))
 	}
-	errorFlag := _errorFlag
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type LDataFrameChildSerializeRequirement interface {

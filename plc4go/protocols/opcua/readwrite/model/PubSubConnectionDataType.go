@@ -279,6 +279,12 @@ func PubSubConnectionDataTypeParse(ctx context.Context, theBytes []byte, identif
 	return PubSubConnectionDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PubSubConnectionDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConnectionDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConnectionDataType, error) {
+		return PubSubConnectionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConnectionDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -290,133 +296,67 @@ func PubSubConnectionDataTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of PubSubConnectionDataType")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (enabled)
-	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
-	if _enabledErr != nil {
-		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubConnectionDataType")
-	}
-	enabled := _enabled
-
-	// Simple Field (publisherId)
-	if pullErr := readBuffer.PullContext("publisherId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publisherId")
-	}
-	_publisherId, _publisherIdErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _publisherIdErr != nil {
-		return nil, errors.Wrap(_publisherIdErr, "Error parsing 'publisherId' field of PubSubConnectionDataType")
-	}
-	publisherId := _publisherId.(Variant)
-	if closeErr := readBuffer.CloseContext("publisherId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publisherId")
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
 
-	// Simple Field (transportProfileUri)
-	if pullErr := readBuffer.PullContext("transportProfileUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportProfileUri")
-	}
-	_transportProfileUri, _transportProfileUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _transportProfileUriErr != nil {
-		return nil, errors.Wrap(_transportProfileUriErr, "Error parsing 'transportProfileUri' field of PubSubConnectionDataType")
-	}
-	transportProfileUri := _transportProfileUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("transportProfileUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportProfileUri")
+	publisherId, err := ReadSimpleField[Variant](ctx, "publisherId", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publisherId' field"))
 	}
 
-	// Simple Field (address)
-	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for address")
-	}
-	_address, _addressErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of PubSubConnectionDataType")
-	}
-	address := _address.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for address")
+	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProfileUri' field"))
 	}
 
-	// Simple Field (noOfConnectionProperties)
-	_noOfConnectionProperties, _noOfConnectionPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfConnectionProperties", 32)
-	if _noOfConnectionPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfConnectionPropertiesErr, "Error parsing 'noOfConnectionProperties' field of PubSubConnectionDataType")
+	address, err := ReadSimpleField[ExtensionObject](ctx, "address", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	noOfConnectionProperties := _noOfConnectionProperties
 
-	connectionProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connectionProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfConnectionProperties))
+	noOfConnectionProperties, err := ReadSimpleField(ctx, "noOfConnectionProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnectionProperties' field"))
+	}
+
+	connectionProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connectionProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfConnectionProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionProperties' field"))
 	}
 
-	// Simple Field (transportSettings)
-	if pullErr := readBuffer.PullContext("transportSettings"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSettings")
-	}
-	_transportSettings, _transportSettingsErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _transportSettingsErr != nil {
-		return nil, errors.Wrap(_transportSettingsErr, "Error parsing 'transportSettings' field of PubSubConnectionDataType")
-	}
-	transportSettings := _transportSettings.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("transportSettings"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSettings")
+	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSettings' field"))
 	}
 
-	// Simple Field (noOfWriterGroups)
-	_noOfWriterGroups, _noOfWriterGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfWriterGroups", 32)
-	if _noOfWriterGroupsErr != nil {
-		return nil, errors.Wrap(_noOfWriterGroupsErr, "Error parsing 'noOfWriterGroups' field of PubSubConnectionDataType")
+	noOfWriterGroups, err := ReadSimpleField(ctx, "noOfWriterGroups", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfWriterGroups' field"))
 	}
-	noOfWriterGroups := _noOfWriterGroups
 
-	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](func(ctx context.Context, buffer utils.ReadBuffer) (PubSubGroupDataType, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15609"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(PubSubGroupDataType), nil
-	}, readBuffer), uint64(noOfWriterGroups))
+	writerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "writerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfWriterGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writerGroups' field"))
 	}
 
-	// Simple Field (noOfReaderGroups)
-	_noOfReaderGroups, _noOfReaderGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReaderGroups", 32)
-	if _noOfReaderGroupsErr != nil {
-		return nil, errors.Wrap(_noOfReaderGroupsErr, "Error parsing 'noOfReaderGroups' field of PubSubConnectionDataType")
+	noOfReaderGroups, err := ReadSimpleField(ctx, "noOfReaderGroups", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReaderGroups' field"))
 	}
-	noOfReaderGroups := _noOfReaderGroups
 
-	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](func(ctx context.Context, buffer utils.ReadBuffer) (PubSubGroupDataType, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15609"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(PubSubGroupDataType), nil
-	}, readBuffer), uint64(noOfReaderGroups))
+	readerGroups, err := ReadCountArrayField[PubSubGroupDataType](ctx, "readerGroups", ReadComplex[PubSubGroupDataType](ExtensionObjectDefinitionParseWithBufferProducer[PubSubGroupDataType]((string)("15609")), readBuffer), uint64(noOfReaderGroups))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readerGroups' field"))
 	}

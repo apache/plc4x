@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataOccupancyLowerLimitParse(ctx context.Context, theBytes
 	return BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataOccupancyLowerLimitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyLowerLimit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyLowerLimit, error) {
+		return BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyLowerLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataOccupancyLowerLimitParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (occupancyLowerLimit)
-	if pullErr := readBuffer.PullContext("occupancyLowerLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for occupancyLowerLimit")
-	}
-	_occupancyLowerLimit, _occupancyLowerLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _occupancyLowerLimitErr != nil {
-		return nil, errors.Wrap(_occupancyLowerLimitErr, "Error parsing 'occupancyLowerLimit' field of BACnetConstructedDataOccupancyLowerLimit")
-	}
-	occupancyLowerLimit := _occupancyLowerLimit.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("occupancyLowerLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for occupancyLowerLimit")
+	occupancyLowerLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyLowerLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyLowerLimit' field"))
 	}
 
 	// Virtual field

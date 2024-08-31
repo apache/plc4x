@@ -110,6 +110,17 @@ func CBusMessageParse(ctx context.Context, theBytes []byte, isResponse bool, req
 	return CBusMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
+func CBusMessageParseWithBufferProducer[T CBusMessage](isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CBusMessageParseWithBuffer(ctx, readBuffer, isResponse, requestContext, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CBusMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware

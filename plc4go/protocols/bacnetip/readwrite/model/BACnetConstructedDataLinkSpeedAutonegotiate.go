@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParse(ctx context.Context, theBy
 	return BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
+		return BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLinkSpeedAutonegotiate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLinkSpeedAutonegotiateParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (linkSpeedAutonegotiate)
-	if pullErr := readBuffer.PullContext("linkSpeedAutonegotiate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for linkSpeedAutonegotiate")
-	}
-	_linkSpeedAutonegotiate, _linkSpeedAutonegotiateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _linkSpeedAutonegotiateErr != nil {
-		return nil, errors.Wrap(_linkSpeedAutonegotiateErr, "Error parsing 'linkSpeedAutonegotiate' field of BACnetConstructedDataLinkSpeedAutonegotiate")
-	}
-	linkSpeedAutonegotiate := _linkSpeedAutonegotiate.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("linkSpeedAutonegotiate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for linkSpeedAutonegotiate")
+	linkSpeedAutonegotiate, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "linkSpeedAutonegotiate", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeedAutonegotiate' field"))
 	}
 
 	// Virtual field

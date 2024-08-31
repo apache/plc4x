@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,6 +160,12 @@ func OpcuaHelloRequestParse(ctx context.Context, theBytes []byte, response bool)
 	return OpcuaHelloRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpcuaHelloRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaHelloRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaHelloRequest, error) {
+		return OpcuaHelloRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpcuaHelloRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaHelloRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,37 +177,19 @@ func OpcuaHelloRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaHelloRequest")
-	}
-	version := _version
-
-	// Simple Field (limits)
-	if pullErr := readBuffer.PullContext("limits"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limits")
-	}
-	_limits, _limitsErr := OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
-	if _limitsErr != nil {
-		return nil, errors.Wrap(_limitsErr, "Error parsing 'limits' field of OpcuaHelloRequest")
-	}
-	limits := _limits.(OpcuaProtocolLimits)
-	if closeErr := readBuffer.CloseContext("limits"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limits")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
 
-	// Simple Field (endpoint)
-	if pullErr := readBuffer.PullContext("endpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpoint")
+	limits, err := ReadSimpleField[OpcuaProtocolLimits](ctx, "limits", ReadComplex[OpcuaProtocolLimits](OpcuaProtocolLimitsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limits' field"))
 	}
-	_endpoint, _endpointErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointErr != nil {
-		return nil, errors.Wrap(_endpointErr, "Error parsing 'endpoint' field of OpcuaHelloRequest")
-	}
-	endpoint := _endpoint.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpoint")
+
+	endpoint, err := ReadSimpleField[PascalString](ctx, "endpoint", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaHelloRequest"); closeErr != nil {

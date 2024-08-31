@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesSystemStatusParse(ctx context.Context, theBytes []byte,
 	return BACnetPropertyStatesSystemStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesSystemStatusParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSystemStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesSystemStatus, error) {
+		return BACnetPropertyStatesSystemStatusParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesSystemStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesSystemStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesSystemStatusParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (systemStatus)
-	if pullErr := readBuffer.PullContext("systemStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemStatus")
-	}
-	_systemStatus, _systemStatusErr := BACnetDeviceStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _systemStatusErr != nil {
-		return nil, errors.Wrap(_systemStatusErr, "Error parsing 'systemStatus' field of BACnetPropertyStatesSystemStatus")
-	}
-	systemStatus := _systemStatus.(BACnetDeviceStatusTagged)
-	if closeErr := readBuffer.CloseContext("systemStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemStatus")
+	systemStatus, err := ReadSimpleField[BACnetDeviceStatusTagged](ctx, "systemStatus", ReadComplex[BACnetDeviceStatusTagged](BACnetDeviceStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesSystemStatus"); closeErr != nil {

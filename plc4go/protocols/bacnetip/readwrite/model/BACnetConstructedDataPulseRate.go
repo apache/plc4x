@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPulseRateParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataPulseRateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPulseRateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPulseRate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPulseRate, error) {
+		return BACnetConstructedDataPulseRateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPulseRateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseRate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPulseRateParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pulseRate)
-	if pullErr := readBuffer.PullContext("pulseRate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pulseRate")
-	}
-	_pulseRate, _pulseRateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _pulseRateErr != nil {
-		return nil, errors.Wrap(_pulseRateErr, "Error parsing 'pulseRate' field of BACnetConstructedDataPulseRate")
-	}
-	pulseRate := _pulseRate.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("pulseRate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pulseRate")
+	pulseRate, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "pulseRate", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pulseRate' field"))
 	}
 
 	// Virtual field

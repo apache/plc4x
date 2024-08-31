@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataArchiveParse(ctx context.Context, theBytes []byte, tag
 	return BACnetConstructedDataArchiveParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataArchiveParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataArchive, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataArchive, error) {
+		return BACnetConstructedDataArchiveParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataArchiveParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataArchive, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataArchiveParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (archive)
-	if pullErr := readBuffer.PullContext("archive"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for archive")
-	}
-	_archive, _archiveErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _archiveErr != nil {
-		return nil, errors.Wrap(_archiveErr, "Error parsing 'archive' field of BACnetConstructedDataArchive")
-	}
-	archive := _archive.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("archive"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for archive")
+	archive, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "archive", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'archive' field"))
 	}
 
 	// Virtual field

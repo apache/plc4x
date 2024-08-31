@@ -110,6 +110,17 @@ func S7AddressParse(ctx context.Context, theBytes []byte) (S7Address, error) {
 	return S7AddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7AddressParseWithBufferProducer[T S7Address]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7AddressParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func S7AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	addressType, err := ReadDiscriminatorField[uint8](ctx, "addressType", ReadUnsignedByte(readBuffer, 8))
+	addressType, err := ReadDiscriminatorField[uint8](ctx, "addressType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addressType' field"))
 	}

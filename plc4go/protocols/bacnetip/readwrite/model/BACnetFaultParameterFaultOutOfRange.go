@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func BACnetFaultParameterFaultOutOfRangeParse(ctx context.Context, theBytes []by
 	return BACnetFaultParameterFaultOutOfRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetFaultParameterFaultOutOfRangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRange, error) {
+		return BACnetFaultParameterFaultOutOfRangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetFaultParameterFaultOutOfRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,56 +180,24 @@ func BACnetFaultParameterFaultOutOfRangeParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
-	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetFaultParameterFaultOutOfRange")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(6))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	// Simple Field (minNormalValue)
-	if pullErr := readBuffer.PullContext("minNormalValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minNormalValue")
-	}
-	_minNormalValue, _minNormalValueErr := BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _minNormalValueErr != nil {
-		return nil, errors.Wrap(_minNormalValueErr, "Error parsing 'minNormalValue' field of BACnetFaultParameterFaultOutOfRange")
-	}
-	minNormalValue := _minNormalValue.(BACnetFaultParameterFaultOutOfRangeMinNormalValue)
-	if closeErr := readBuffer.CloseContext("minNormalValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minNormalValue")
+	minNormalValue, err := ReadSimpleField[BACnetFaultParameterFaultOutOfRangeMinNormalValue](ctx, "minNormalValue", ReadComplex[BACnetFaultParameterFaultOutOfRangeMinNormalValue](BACnetFaultParameterFaultOutOfRangeMinNormalValueParseWithBufferProducer[BACnetFaultParameterFaultOutOfRangeMinNormalValue]((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minNormalValue' field"))
 	}
 
-	// Simple Field (maxNormalValue)
-	if pullErr := readBuffer.PullContext("maxNormalValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxNormalValue")
-	}
-	_maxNormalValue, _maxNormalValueErr := BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _maxNormalValueErr != nil {
-		return nil, errors.Wrap(_maxNormalValueErr, "Error parsing 'maxNormalValue' field of BACnetFaultParameterFaultOutOfRange")
-	}
-	maxNormalValue := _maxNormalValue.(BACnetFaultParameterFaultOutOfRangeMaxNormalValue)
-	if closeErr := readBuffer.CloseContext("maxNormalValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxNormalValue")
+	maxNormalValue, err := ReadSimpleField[BACnetFaultParameterFaultOutOfRangeMaxNormalValue](ctx, "maxNormalValue", ReadComplex[BACnetFaultParameterFaultOutOfRangeMaxNormalValue](BACnetFaultParameterFaultOutOfRangeMaxNormalValueParseWithBufferProducer[BACnetFaultParameterFaultOutOfRangeMaxNormalValue]((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNormalValue' field"))
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
-	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetFaultParameterFaultOutOfRange")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(6))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRange"); closeErr != nil {

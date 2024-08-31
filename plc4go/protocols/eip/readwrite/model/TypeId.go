@@ -110,6 +110,17 @@ func TypeIdParse(ctx context.Context, theBytes []byte) (TypeId, error) {
 	return TypeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TypeIdParseWithBufferProducer[T TypeId]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := TypeIdParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TypeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func TypeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Ty
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	id, err := ReadDiscriminatorField[uint16](ctx, "id", ReadUnsignedShort(readBuffer, 16))
+	id, err := ReadDiscriminatorField[uint16](ctx, "id", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}

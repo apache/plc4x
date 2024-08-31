@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func RepublishResponseParse(ctx context.Context, theBytes []byte, identifier str
 	return RepublishResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RepublishResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RepublishResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RepublishResponse, error) {
+		return RepublishResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RepublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RepublishResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func RepublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of RepublishResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (notificationMessage)
-	if pullErr := readBuffer.PullContext("notificationMessage"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationMessage")
-	}
-	_notificationMessage, _notificationMessageErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("805"))
-	if _notificationMessageErr != nil {
-		return nil, errors.Wrap(_notificationMessageErr, "Error parsing 'notificationMessage' field of RepublishResponse")
-	}
-	notificationMessage := _notificationMessage.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("notificationMessage"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationMessage")
+	notificationMessage, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("805")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RepublishResponse"); closeErr != nil {

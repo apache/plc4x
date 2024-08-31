@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func FirmataCommandProtocolVersionParse(ctx context.Context, theBytes []byte, re
 	return FirmataCommandProtocolVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandProtocolVersionParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandProtocolVersion, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandProtocolVersion, error) {
+		return FirmataCommandProtocolVersionParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataCommandProtocolVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandProtocolVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func FirmataCommandProtocolVersionParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("majorVersion", 8)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of FirmataCommandProtocolVersion")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minorVersion", 8)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of FirmataCommandProtocolVersion")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandProtocolVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataCommandProtocolVersion")

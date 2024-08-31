@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataManipulatedVariableReferenceParse(ctx context.Context,
 	return BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataManipulatedVariableReferenceParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataManipulatedVariableReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataManipulatedVariableReference, error) {
+		return BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataManipulatedVariableReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataManipulatedVariableReferenceParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (manipulatedVariableReference)
-	if pullErr := readBuffer.PullContext("manipulatedVariableReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for manipulatedVariableReference")
-	}
-	_manipulatedVariableReference, _manipulatedVariableReferenceErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _manipulatedVariableReferenceErr != nil {
-		return nil, errors.Wrap(_manipulatedVariableReferenceErr, "Error parsing 'manipulatedVariableReference' field of BACnetConstructedDataManipulatedVariableReference")
-	}
-	manipulatedVariableReference := _manipulatedVariableReference.(BACnetObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("manipulatedVariableReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for manipulatedVariableReference")
+	manipulatedVariableReference, err := ReadSimpleField[BACnetObjectPropertyReference](ctx, "manipulatedVariableReference", ReadComplex[BACnetObjectPropertyReference](BACnetObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manipulatedVariableReference' field"))
 	}
 
 	// Virtual field

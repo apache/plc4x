@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +133,12 @@ func ErrorReportingSystemCategoryTypeReservedParse(ctx context.Context, theBytes
 	return ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
+func ErrorReportingSystemCategoryTypeReservedParseWithBufferProducer(errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeReserved, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeReserved, error) {
+		return ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
+	}
+}
+
 func ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,12 +150,10 @@ func ErrorReportingSystemCategoryTypeReservedParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reservedValue)
-	_reservedValue, _reservedValueErr := /*TODO: migrate me*/ readBuffer.ReadUint8("reservedValue", 4)
-	if _reservedValueErr != nil {
-		return nil, errors.Wrap(_reservedValueErr, "Error parsing 'reservedValue' field of ErrorReportingSystemCategoryTypeReserved")
+	reservedValue, err := ReadSimpleField(ctx, "reservedValue", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reservedValue' field"))
 	}
-	reservedValue := _reservedValue
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeReserved"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorReportingSystemCategoryTypeReserved")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDoorUnlockDelayTimeParse(ctx context.Context, theBytes
 	return BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDoorUnlockDelayTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorUnlockDelayTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorUnlockDelayTime, error) {
+		return BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorUnlockDelayTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorUnlockDelayTime)
-	if pullErr := readBuffer.PullContext("doorUnlockDelayTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorUnlockDelayTime")
-	}
-	_doorUnlockDelayTime, _doorUnlockDelayTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorUnlockDelayTimeErr != nil {
-		return nil, errors.Wrap(_doorUnlockDelayTimeErr, "Error parsing 'doorUnlockDelayTime' field of BACnetConstructedDataDoorUnlockDelayTime")
-	}
-	doorUnlockDelayTime := _doorUnlockDelayTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorUnlockDelayTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorUnlockDelayTime")
+	doorUnlockDelayTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorUnlockDelayTime' field"))
 	}
 
 	// Virtual field

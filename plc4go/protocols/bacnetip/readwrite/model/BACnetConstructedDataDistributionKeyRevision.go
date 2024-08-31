@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDistributionKeyRevisionParse(ctx context.Context, theB
 	return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDistributionKeyRevisionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDistributionKeyRevision, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDistributionKeyRevision, error) {
+		return BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDistributionKeyRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (distributionKeyRevision)
-	if pullErr := readBuffer.PullContext("distributionKeyRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for distributionKeyRevision")
-	}
-	_distributionKeyRevision, _distributionKeyRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _distributionKeyRevisionErr != nil {
-		return nil, errors.Wrap(_distributionKeyRevisionErr, "Error parsing 'distributionKeyRevision' field of BACnetConstructedDataDistributionKeyRevision")
-	}
-	distributionKeyRevision := _distributionKeyRevision.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("distributionKeyRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for distributionKeyRevision")
+	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'distributionKeyRevision' field"))
 	}
 
 	// Virtual field

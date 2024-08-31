@@ -178,6 +178,12 @@ func BACnetConstructedDataIPDNSServerParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataIPDNSServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPDNSServerParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDNSServer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDNSServer, error) {
+		return BACnetConstructedDataIPDNSServerParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPDNSServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDNSServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,13 +200,7 @@ func BACnetConstructedDataIPDNSServerParseWithBuffer(ctx context.Context, readBu
 	zero := uint64(_zero)
 	_ = zero
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -209,13 +209,7 @@ func BACnetConstructedDataIPDNSServerParseWithBuffer(ctx context.Context, readBu
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	ipDnsServer, err := ReadTerminatedArrayField[BACnetApplicationTagOctetString](ctx, "ipDnsServer", ReadComplex[BACnetApplicationTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagOctetString, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagOctetString), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	ipDnsServer, err := ReadTerminatedArrayField[BACnetApplicationTagOctetString](ctx, "ipDnsServer", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDnsServer' field"))
 	}

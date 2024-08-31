@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetLogRecordLogDatumBooleanValueParse(ctx context.Context, theBytes []by
 	return BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumBooleanValueParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumBooleanValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumBooleanValue, error) {
+		return BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBooleanValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetLogRecordLogDatumBooleanValueParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (booleanValue)
-	if pullErr := readBuffer.PullContext("booleanValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for booleanValue")
-	}
-	_booleanValue, _booleanValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _booleanValueErr != nil {
-		return nil, errors.Wrap(_booleanValueErr, "Error parsing 'booleanValue' field of BACnetLogRecordLogDatumBooleanValue")
-	}
-	booleanValue := _booleanValue.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("booleanValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for booleanValue")
+	booleanValue, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "booleanValue", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumBooleanValue"); closeErr != nil {

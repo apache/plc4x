@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -248,6 +250,12 @@ func SecurityDataEmulatedKeypadParse(ctx context.Context, theBytes []byte) (Secu
 	return SecurityDataEmulatedKeypadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataEmulatedKeypadParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
+		return SecurityDataEmulatedKeypadParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEmulatedKeypad, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -259,12 +267,10 @@ func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (key)
-	_key, _keyErr := /*TODO: migrate me*/ readBuffer.ReadByte("key")
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of SecurityDataEmulatedKeypad")
+	key, err := ReadSimpleField(ctx, "key", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
-	key := _key
 
 	// Virtual field
 	_isAscii := bool(bool((key) >= (0x00))) && bool(bool((key) <= (0x7F)))

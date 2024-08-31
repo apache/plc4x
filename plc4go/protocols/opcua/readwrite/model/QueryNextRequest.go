@@ -159,6 +159,12 @@ func QueryNextRequestParse(ctx context.Context, theBytes []byte, identifier stri
 	return QueryNextRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryNextRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryNextRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryNextRequest, error) {
+		return QueryNextRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryNextRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,42 +176,24 @@ func QueryNextRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of QueryNextRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (releaseContinuationPoint)
-	_releaseContinuationPoint, _releaseContinuationPointErr := /*TODO: migrate me*/ readBuffer.ReadBit("releaseContinuationPoint")
-	if _releaseContinuationPointErr != nil {
-		return nil, errors.Wrap(_releaseContinuationPointErr, "Error parsing 'releaseContinuationPoint' field of QueryNextRequest")
+	releaseContinuationPoint, err := ReadSimpleField(ctx, "releaseContinuationPoint", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'releaseContinuationPoint' field"))
 	}
-	releaseContinuationPoint := _releaseContinuationPoint
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
-	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of QueryNextRequest")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("QueryNextRequest"); closeErr != nil {

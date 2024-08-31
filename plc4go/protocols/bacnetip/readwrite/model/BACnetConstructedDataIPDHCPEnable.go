@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPDHCPEnableParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPDHCPEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPEnable, error) {
+		return BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPDHCPEnableParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipDhcpEnable)
-	if pullErr := readBuffer.PullContext("ipDhcpEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipDhcpEnable")
-	}
-	_ipDhcpEnable, _ipDhcpEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipDhcpEnableErr != nil {
-		return nil, errors.Wrap(_ipDhcpEnableErr, "Error parsing 'ipDhcpEnable' field of BACnetConstructedDataIPDHCPEnable")
-	}
-	ipDhcpEnable := _ipDhcpEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("ipDhcpEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipDhcpEnable")
+	ipDhcpEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "ipDhcpEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDhcpEnable' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,6 +153,12 @@ func BACnetContextTagCharacterStringParse(ctx context.Context, theBytes []byte, 
 	return BACnetContextTagCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
+func BACnetContextTagCharacterStringParseWithBufferProducer(header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+		return BACnetContextTagCharacterStringParseWithBuffer(ctx, readBuffer, header, tagNumberArgument, dataType)
+	}
+}
+
 func BACnetContextTagCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -162,17 +170,9 @@ func BACnetContextTagCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadCharacterStringParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagCharacterString")
-	}
-	payload := _payload.(BACnetTagPayloadCharacterString)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadCharacterString](ctx, "payload", ReadComplex[BACnetTagPayloadCharacterString](BACnetTagPayloadCharacterStringParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	// Virtual field

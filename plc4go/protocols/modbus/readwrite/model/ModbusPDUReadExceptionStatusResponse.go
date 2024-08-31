@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -138,6 +140,12 @@ func ModbusPDUReadExceptionStatusResponseParse(ctx context.Context, theBytes []b
 	return ModbusPDUReadExceptionStatusResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadExceptionStatusResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadExceptionStatusResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadExceptionStatusResponse, error) {
+		return ModbusPDUReadExceptionStatusResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadExceptionStatusResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadExceptionStatusResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,12 +157,10 @@ func ModbusPDUReadExceptionStatusResponseParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ModbusPDUReadExceptionStatusResponse")
+	value, err := ReadSimpleField(ctx, "value", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadExceptionStatusResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadExceptionStatusResponse")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetScaleFloatScaleParse(ctx context.Context, theBytes []byte) (BACnetSca
 	return BACnetScaleFloatScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetScaleFloatScaleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
+		return BACnetScaleFloatScaleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleFloatScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetScaleFloatScaleParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floatScale)
-	if pullErr := readBuffer.PullContext("floatScale"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floatScale")
-	}
-	_floatScale, _floatScaleErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_REAL))
-	if _floatScaleErr != nil {
-		return nil, errors.Wrap(_floatScaleErr, "Error parsing 'floatScale' field of BACnetScaleFloatScale")
-	}
-	floatScale := _floatScale.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("floatScale"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floatScale")
+	floatScale, err := ReadSimpleField[BACnetContextTagReal](ctx, "floatScale", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floatScale' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetScaleFloatScale"); closeErr != nil {

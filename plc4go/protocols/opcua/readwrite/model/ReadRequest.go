@@ -183,6 +183,12 @@ func ReadRequestParse(ctx context.Context, theBytes []byte, identifier string) (
 	return ReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReadRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReadRequest, error) {
+		return ReadRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,53 +200,27 @@ func ReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of ReadRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (maxAge)
-	_maxAge, _maxAgeErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("maxAge", 64)
-	if _maxAgeErr != nil {
-		return nil, errors.Wrap(_maxAgeErr, "Error parsing 'maxAge' field of ReadRequest")
-	}
-	maxAge := _maxAge
-
-	// Simple Field (timestampsToReturn)
-	if pullErr := readBuffer.PullContext("timestampsToReturn"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestampsToReturn")
-	}
-	_timestampsToReturn, _timestampsToReturnErr := TimestampsToReturnParseWithBuffer(ctx, readBuffer)
-	if _timestampsToReturnErr != nil {
-		return nil, errors.Wrap(_timestampsToReturnErr, "Error parsing 'timestampsToReturn' field of ReadRequest")
-	}
-	timestampsToReturn := _timestampsToReturn
-	if closeErr := readBuffer.CloseContext("timestampsToReturn"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestampsToReturn")
+	maxAge, err := ReadSimpleField(ctx, "maxAge", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxAge' field"))
 	}
 
-	// Simple Field (noOfNodesToRead)
-	_noOfNodesToRead, _noOfNodesToReadErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRead", 32)
-	if _noOfNodesToReadErr != nil {
-		return nil, errors.Wrap(_noOfNodesToReadErr, "Error parsing 'noOfNodesToRead' field of ReadRequest")
+	timestampsToReturn, err := ReadEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", ReadEnum(TimestampsToReturnByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestampsToReturn' field"))
 	}
-	noOfNodesToRead := _noOfNodesToRead
 
-	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("628"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodesToRead))
+	noOfNodesToRead, err := ReadSimpleField(ctx, "noOfNodesToRead", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRead' field"))
+	}
+
+	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("628")), readBuffer), uint64(noOfNodesToRead))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToRead' field"))
 	}

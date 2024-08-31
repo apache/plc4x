@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -183,6 +185,12 @@ func CBusOptionsParse(ctx context.Context, theBytes []byte) (CBusOptions, error)
 	return CBusOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CBusOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
+		return CBusOptionsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,68 +202,50 @@ func CBusOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (connect)
-	_connect, _connectErr := /*TODO: migrate me*/ readBuffer.ReadBit("connect")
-	if _connectErr != nil {
-		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field of CBusOptions")
+	connect, err := ReadSimpleField(ctx, "connect", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connect' field"))
 	}
-	connect := _connect
 
-	// Simple Field (smart)
-	_smart, _smartErr := /*TODO: migrate me*/ readBuffer.ReadBit("smart")
-	if _smartErr != nil {
-		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field of CBusOptions")
+	smart, err := ReadSimpleField(ctx, "smart", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'smart' field"))
 	}
-	smart := _smart
 
-	// Simple Field (idmon)
-	_idmon, _idmonErr := /*TODO: migrate me*/ readBuffer.ReadBit("idmon")
-	if _idmonErr != nil {
-		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field of CBusOptions")
+	idmon, err := ReadSimpleField(ctx, "idmon", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'idmon' field"))
 	}
-	idmon := _idmon
 
-	// Simple Field (exstat)
-	_exstat, _exstatErr := /*TODO: migrate me*/ readBuffer.ReadBit("exstat")
-	if _exstatErr != nil {
-		return nil, errors.Wrap(_exstatErr, "Error parsing 'exstat' field of CBusOptions")
+	exstat, err := ReadSimpleField(ctx, "exstat", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exstat' field"))
 	}
-	exstat := _exstat
 
-	// Simple Field (monitor)
-	_monitor, _monitorErr := /*TODO: migrate me*/ readBuffer.ReadBit("monitor")
-	if _monitorErr != nil {
-		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field of CBusOptions")
+	monitor, err := ReadSimpleField(ctx, "monitor", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitor' field"))
 	}
-	monitor := _monitor
 
-	// Simple Field (monall)
-	_monall, _monallErr := /*TODO: migrate me*/ readBuffer.ReadBit("monall")
-	if _monallErr != nil {
-		return nil, errors.Wrap(_monallErr, "Error parsing 'monall' field of CBusOptions")
+	monall, err := ReadSimpleField(ctx, "monall", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monall' field"))
 	}
-	monall := _monall
 
-	// Simple Field (pun)
-	_pun, _punErr := /*TODO: migrate me*/ readBuffer.ReadBit("pun")
-	if _punErr != nil {
-		return nil, errors.Wrap(_punErr, "Error parsing 'pun' field of CBusOptions")
+	pun, err := ReadSimpleField(ctx, "pun", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pun' field"))
 	}
-	pun := _pun
 
-	// Simple Field (pcn)
-	_pcn, _pcnErr := /*TODO: migrate me*/ readBuffer.ReadBit("pcn")
-	if _pcnErr != nil {
-		return nil, errors.Wrap(_pcnErr, "Error parsing 'pcn' field of CBusOptions")
+	pcn, err := ReadSimpleField(ctx, "pcn", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pcn' field"))
 	}
-	pcn := _pcn
 
-	// Simple Field (srchk)
-	_srchk, _srchkErr := /*TODO: migrate me*/ readBuffer.ReadBit("srchk")
-	if _srchkErr != nil {
-		return nil, errors.Wrap(_srchkErr, "Error parsing 'srchk' field of CBusOptions")
+	srchk, err := ReadSimpleField(ctx, "srchk", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'srchk' field"))
 	}
-	srchk := _srchk
 
 	if closeErr := readBuffer.CloseContext("CBusOptions"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusOptions")

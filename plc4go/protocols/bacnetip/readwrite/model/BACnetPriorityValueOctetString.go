@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPriorityValueOctetStringParse(ctx context.Context, theBytes []byte, o
 	return BACnetPriorityValueOctetStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetPriorityValueOctetStringParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueOctetString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueOctetString, error) {
+		return BACnetPriorityValueOctetStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetPriorityValueOctetStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueOctetString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPriorityValueOctetStringParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octetStringValue)
-	if pullErr := readBuffer.PullContext("octetStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for octetStringValue")
-	}
-	_octetStringValue, _octetStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _octetStringValueErr != nil {
-		return nil, errors.Wrap(_octetStringValueErr, "Error parsing 'octetStringValue' field of BACnetPriorityValueOctetString")
-	}
-	octetStringValue := _octetStringValue.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("octetStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for octetStringValue")
+	octetStringValue, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octetStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueOctetString"); closeErr != nil {

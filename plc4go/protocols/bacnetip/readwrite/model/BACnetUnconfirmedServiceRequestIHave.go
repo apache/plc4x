@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func BACnetUnconfirmedServiceRequestIHaveParse(ctx context.Context, theBytes []b
 	return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestIHaveParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestIHave, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestIHave, error) {
+		return BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIHave, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,43 +172,19 @@ func BACnetUnconfirmedServiceRequestIHaveParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceIdentifier)
-	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
-	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
-	}
-	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
-	}
-	_objectIdentifier, _objectIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetUnconfirmedServiceRequestIHave")
-	}
-	objectIdentifier := _objectIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
 
-	// Simple Field (objectName)
-	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
-	}
-	_objectName, _objectNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectNameErr != nil {
-		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestIHave")
-	}
-	objectName := _objectName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectName")
+	objectName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "objectName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestIHave"); closeErr != nil {

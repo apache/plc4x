@@ -204,6 +204,12 @@ func CipConnectionManagerCloseResponseParse(ctx context.Context, theBytes []byte
 	return CipConnectionManagerCloseResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipConnectionManagerCloseResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipConnectionManagerCloseResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipConnectionManagerCloseResponse, error) {
+		return CipConnectionManagerCloseResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectionManagerCloseResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -215,54 +221,42 @@ func CipConnectionManagerCloseResponseParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipConnectionManagerCloseResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (additionalStatusWords)
-	_additionalStatusWords, _additionalStatusWordsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("additionalStatusWords", 8)
-	if _additionalStatusWordsErr != nil {
-		return nil, errors.Wrap(_additionalStatusWordsErr, "Error parsing 'additionalStatusWords' field of CipConnectionManagerCloseResponse")
+	additionalStatusWords, err := ReadSimpleField(ctx, "additionalStatusWords", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalStatusWords' field"))
 	}
-	additionalStatusWords := _additionalStatusWords
 
-	// Simple Field (connectionSerialNumber)
-	_connectionSerialNumber, _connectionSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionSerialNumber", 16)
-	if _connectionSerialNumberErr != nil {
-		return nil, errors.Wrap(_connectionSerialNumberErr, "Error parsing 'connectionSerialNumber' field of CipConnectionManagerCloseResponse")
+	connectionSerialNumber, err := ReadSimpleField(ctx, "connectionSerialNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionSerialNumber' field"))
 	}
-	connectionSerialNumber := _connectionSerialNumber
 
-	// Simple Field (originatorVendorId)
-	_originatorVendorId, _originatorVendorIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("originatorVendorId", 16)
-	if _originatorVendorIdErr != nil {
-		return nil, errors.Wrap(_originatorVendorIdErr, "Error parsing 'originatorVendorId' field of CipConnectionManagerCloseResponse")
+	originatorVendorId, err := ReadSimpleField(ctx, "originatorVendorId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originatorVendorId' field"))
 	}
-	originatorVendorId := _originatorVendorId
 
-	// Simple Field (originatorSerialNumber)
-	_originatorSerialNumber, _originatorSerialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originatorSerialNumber", 32)
-	if _originatorSerialNumberErr != nil {
-		return nil, errors.Wrap(_originatorSerialNumberErr, "Error parsing 'originatorSerialNumber' field of CipConnectionManagerCloseResponse")
+	originatorSerialNumber, err := ReadSimpleField(ctx, "originatorSerialNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originatorSerialNumber' field"))
 	}
-	originatorSerialNumber := _originatorSerialNumber
 
-	// Simple Field (applicationReplySize)
-	_applicationReplySize, _applicationReplySizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("applicationReplySize", 8)
-	if _applicationReplySizeErr != nil {
-		return nil, errors.Wrap(_applicationReplySizeErr, "Error parsing 'applicationReplySize' field of CipConnectionManagerCloseResponse")
+	applicationReplySize, err := ReadSimpleField(ctx, "applicationReplySize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationReplySize' field"))
 	}
-	applicationReplySize := _applicationReplySize
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

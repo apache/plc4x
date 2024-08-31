@@ -113,6 +113,12 @@ func S7MessageUserDataParse(ctx context.Context, theBytes []byte) (S7MessageUser
 	return S7MessageUserDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7MessageUserDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageUserData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageUserData, error) {
+		return S7MessageUserDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7MessageUserDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageUserData, error) {
 	positionAware := readBuffer
 	_ = positionAware

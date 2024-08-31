@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func NLMRejectMessageToNetworkParse(ctx context.Context, theBytes []byte, apduLe
 	return NLMRejectMessageToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMRejectMessageToNetworkParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRejectMessageToNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRejectMessageToNetwork, error) {
+		return NLMRejectMessageToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMRejectMessageToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRejectMessageToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,25 +160,15 @@ func NLMRejectMessageToNetworkParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (rejectReason)
-	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
-	}
-	_rejectReason, _rejectReasonErr := NLMRejectMessageToNetworkRejectReasonParseWithBuffer(ctx, readBuffer)
-	if _rejectReasonErr != nil {
-		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of NLMRejectMessageToNetwork")
-	}
-	rejectReason := _rejectReason
-	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for rejectReason")
+	rejectReason, err := ReadEnumField[NLMRejectMessageToNetworkRejectReason](ctx, "rejectReason", "NLMRejectMessageToNetworkRejectReason", ReadEnum(NLMRejectMessageToNetworkRejectReasonByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectReason' field"))
 	}
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMRejectMessageToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
 
 	if closeErr := readBuffer.CloseContext("NLMRejectMessageToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMRejectMessageToNetwork")

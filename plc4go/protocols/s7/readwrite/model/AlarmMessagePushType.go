@@ -142,6 +142,12 @@ func AlarmMessagePushTypeParse(ctx context.Context, theBytes []byte) (AlarmMessa
 	return AlarmMessagePushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessagePushTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
+		return AlarmMessagePushTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessagePushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,32 +159,20 @@ func AlarmMessagePushTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
-	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of AlarmMessagePushType")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
 
-	// Simple Field (functionId)
-	_functionId, _functionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("functionId", 8)
-	if _functionIdErr != nil {
-		return nil, errors.Wrap(_functionIdErr, "Error parsing 'functionId' field of AlarmMessagePushType")
+	functionId, err := ReadSimpleField(ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
-	functionId := _functionId
 
-	// Simple Field (numberOfObjects)
-	_numberOfObjects, _numberOfObjectsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfObjects", 8)
-	if _numberOfObjectsErr != nil {
-		return nil, errors.Wrap(_numberOfObjectsErr, "Error parsing 'numberOfObjects' field of AlarmMessagePushType")
+	numberOfObjects, err := ReadSimpleField(ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}
-	numberOfObjects := _numberOfObjects
 
 	messageObjects, err := ReadCountArrayField[AlarmMessageObjectPushType](ctx, "messageObjects", ReadComplex[AlarmMessageObjectPushType](AlarmMessageObjectPushTypeParseWithBuffer, readBuffer), uint64(numberOfObjects))
 	if err != nil {

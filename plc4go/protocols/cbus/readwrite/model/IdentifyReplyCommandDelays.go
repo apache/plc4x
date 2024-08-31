@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func IdentifyReplyCommandDelaysParse(ctx context.Context, theBytes []byte, attri
 	return IdentifyReplyCommandDelaysParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandDelaysParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandDelays, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandDelays, error) {
+		return IdentifyReplyCommandDelaysParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDelays, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,12 +167,10 @@ func IdentifyReplyCommandDelaysParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminalLevels' field"))
 	}
 
-	// Simple Field (reStrikeDelay)
-	_reStrikeDelay, _reStrikeDelayErr := /*TODO: migrate me*/ readBuffer.ReadByte("reStrikeDelay")
-	if _reStrikeDelayErr != nil {
-		return nil, errors.Wrap(_reStrikeDelayErr, "Error parsing 'reStrikeDelay' field of IdentifyReplyCommandDelays")
+	reStrikeDelay, err := ReadSimpleField(ctx, "reStrikeDelay", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reStrikeDelay' field"))
 	}
-	reStrikeDelay := _reStrikeDelay
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandDelays"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandDelays")

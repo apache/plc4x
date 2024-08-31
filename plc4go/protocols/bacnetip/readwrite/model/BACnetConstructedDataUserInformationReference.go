@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUserInformationReferenceParse(ctx context.Context, the
 	return BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUserInformationReferenceParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUserInformationReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUserInformationReference, error) {
+		return BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserInformationReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userInformationReference)
-	if pullErr := readBuffer.PullContext("userInformationReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userInformationReference")
-	}
-	_userInformationReference, _userInformationReferenceErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _userInformationReferenceErr != nil {
-		return nil, errors.Wrap(_userInformationReferenceErr, "Error parsing 'userInformationReference' field of BACnetConstructedDataUserInformationReference")
-	}
-	userInformationReference := _userInformationReference.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("userInformationReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userInformationReference")
+	userInformationReference, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userInformationReference' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParse(ctx context.Context, the
 	return BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
+		return BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBaseDeviceSecurityPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBaseDeviceSecurityPolicyParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (baseDeviceSecurityPolicy)
-	if pullErr := readBuffer.PullContext("baseDeviceSecurityPolicy"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for baseDeviceSecurityPolicy")
-	}
-	_baseDeviceSecurityPolicy, _baseDeviceSecurityPolicyErr := BACnetSecurityLevelTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _baseDeviceSecurityPolicyErr != nil {
-		return nil, errors.Wrap(_baseDeviceSecurityPolicyErr, "Error parsing 'baseDeviceSecurityPolicy' field of BACnetConstructedDataBaseDeviceSecurityPolicy")
-	}
-	baseDeviceSecurityPolicy := _baseDeviceSecurityPolicy.(BACnetSecurityLevelTagged)
-	if closeErr := readBuffer.CloseContext("baseDeviceSecurityPolicy"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for baseDeviceSecurityPolicy")
+	baseDeviceSecurityPolicy, err := ReadSimpleField[BACnetSecurityLevelTagged](ctx, "baseDeviceSecurityPolicy", ReadComplex[BACnetSecurityLevelTagged](BACnetSecurityLevelTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'baseDeviceSecurityPolicy' field"))
 	}
 
 	// Virtual field

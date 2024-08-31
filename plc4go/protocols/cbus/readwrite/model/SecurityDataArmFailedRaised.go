@@ -108,6 +108,12 @@ func SecurityDataArmFailedRaisedParse(ctx context.Context, theBytes []byte) (Sec
 	return SecurityDataArmFailedRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataArmFailedRaisedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
+		return SecurityDataArmFailedRaisedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataArmFailedRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmFailedRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware

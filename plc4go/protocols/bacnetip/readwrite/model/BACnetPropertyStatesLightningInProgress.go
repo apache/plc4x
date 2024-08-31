@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLightningInProgressParse(ctx context.Context, theBytes 
 	return BACnetPropertyStatesLightningInProgressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLightningInProgressParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningInProgress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningInProgress, error) {
+		return BACnetPropertyStatesLightningInProgressParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLightningInProgressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningInProgress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLightningInProgressParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightningInProgress)
-	if pullErr := readBuffer.PullContext("lightningInProgress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightningInProgress")
-	}
-	_lightningInProgress, _lightningInProgressErr := BACnetLightingInProgressTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lightningInProgressErr != nil {
-		return nil, errors.Wrap(_lightningInProgressErr, "Error parsing 'lightningInProgress' field of BACnetPropertyStatesLightningInProgress")
-	}
-	lightningInProgress := _lightningInProgress.(BACnetLightingInProgressTagged)
-	if closeErr := readBuffer.CloseContext("lightningInProgress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightningInProgress")
+	lightningInProgress, err := ReadSimpleField[BACnetLightingInProgressTagged](ctx, "lightningInProgress", ReadComplex[BACnetLightingInProgressTagged](BACnetLightingInProgressTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightningInProgress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningInProgress"); closeErr != nil {

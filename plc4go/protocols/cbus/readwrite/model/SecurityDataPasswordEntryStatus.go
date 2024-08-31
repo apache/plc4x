@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -188,6 +190,12 @@ func SecurityDataPasswordEntryStatusParse(ctx context.Context, theBytes []byte) 
 	return SecurityDataPasswordEntryStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataPasswordEntryStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
+		return SecurityDataPasswordEntryStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPasswordEntryStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -199,12 +207,10 @@ func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (code)
-	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadByte("code")
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of SecurityDataPasswordEntryStatus")
+	code, err := ReadSimpleField(ctx, "code", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
 
 	// Virtual field
 	_isPasswordEntrySucceeded := bool((code) == (0x01))

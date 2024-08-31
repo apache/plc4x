@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNetworkNumberQualityParse(ctx context.Context, theByte
 	return BACnetConstructedDataNetworkNumberQualityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNetworkNumberQualityParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkNumberQuality, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkNumberQuality, error) {
+		return BACnetConstructedDataNetworkNumberQualityParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNetworkNumberQualityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNetworkNumberQualityParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumberQuality)
-	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
-	}
-	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _networkNumberQualityErr != nil {
-		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetConstructedDataNetworkNumberQuality")
-	}
-	networkNumberQuality := _networkNumberQuality.(BACnetNetworkNumberQualityTagged)
-	if closeErr := readBuffer.CloseContext("networkNumberQuality"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkNumberQuality")
+	networkNumberQuality, err := ReadSimpleField[BACnetNetworkNumberQualityTagged](ctx, "networkNumberQuality", ReadComplex[BACnetNetworkNumberQualityTagged](BACnetNetworkNumberQualityTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumberQuality' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesShedStateParse(ctx context.Context, theBytes []byte, pe
 	return BACnetPropertyStatesShedStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesShedStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesShedState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesShedState, error) {
+		return BACnetPropertyStatesShedStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesShedStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesShedState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesShedStateParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (shedState)
-	if pullErr := readBuffer.PullContext("shedState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for shedState")
-	}
-	_shedState, _shedStateErr := BACnetShedStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _shedStateErr != nil {
-		return nil, errors.Wrap(_shedStateErr, "Error parsing 'shedState' field of BACnetPropertyStatesShedState")
-	}
-	shedState := _shedState.(BACnetShedStateTagged)
-	if closeErr := readBuffer.CloseContext("shedState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for shedState")
+	shedState, err := ReadSimpleField[BACnetShedStateTagged](ctx, "shedState", ReadComplex[BACnetShedStateTagged](BACnetShedStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'shedState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesShedState"); closeErr != nil {

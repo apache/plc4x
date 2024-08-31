@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetValueSourceObjectParse(ctx context.Context, theBytes []byte) (BACnetV
 	return BACnetValueSourceObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetValueSourceObjectParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
+		return BACnetValueSourceObjectParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetValueSourceObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetValueSourceObjectParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (object)
-	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for object")
-	}
-	_object, _objectErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _objectErr != nil {
-		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetValueSourceObject")
-	}
-	object := _object.(BACnetDeviceObjectReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for object")
+	object, err := ReadSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "object", ReadComplex[BACnetDeviceObjectReferenceEnclosed](BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'object' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetValueSourceObject"); closeErr != nil {

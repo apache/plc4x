@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLiftCarDirectionParse(ctx context.Context, theBytes []b
 	return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLiftCarDirectionParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDirection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDirection, error) {
+		return BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLiftCarDirectionParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarDirection)
-	if pullErr := readBuffer.PullContext("liftCarDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDirection")
-	}
-	_liftCarDirection, _liftCarDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarDirectionErr != nil {
-		return nil, errors.Wrap(_liftCarDirectionErr, "Error parsing 'liftCarDirection' field of BACnetPropertyStatesLiftCarDirection")
-	}
-	liftCarDirection := _liftCarDirection.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("liftCarDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarDirection")
+	liftCarDirection, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "liftCarDirection", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarDirection' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDirection"); closeErr != nil {

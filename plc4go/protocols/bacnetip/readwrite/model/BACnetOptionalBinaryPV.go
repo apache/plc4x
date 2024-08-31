@@ -140,6 +140,17 @@ func BACnetOptionalBinaryPVParse(ctx context.Context, theBytes []byte) (BACnetOp
 	return BACnetOptionalBinaryPVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalBinaryPVParseWithBufferProducer[T BACnetOptionalBinaryPV]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetOptionalBinaryPVParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetOptionalBinaryPVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalBinaryPV, error) {
 	positionAware := readBuffer
 	_ = positionAware

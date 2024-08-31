@@ -117,6 +117,12 @@ func BACnetBDTEntryParse(ctx context.Context, theBytes []byte) (BACnetBDTEntry, 
 	return BACnetBDTEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetBDTEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
+		return BACnetBDTEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetBDTEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -128,26 +134,12 @@ func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bbmdAddress)
-	if pullErr := readBuffer.PullContext("bbmdAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bbmdAddress")
-	}
-	_bbmdAddress, _bbmdAddressErr := BACnetHostNPortEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _bbmdAddressErr != nil {
-		return nil, errors.Wrap(_bbmdAddressErr, "Error parsing 'bbmdAddress' field of BACnetBDTEntry")
-	}
-	bbmdAddress := _bbmdAddress.(BACnetHostNPortEnclosed)
-	if closeErr := readBuffer.CloseContext("bbmdAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bbmdAddress")
+	bbmdAddress, err := ReadSimpleField[BACnetHostNPortEnclosed](ctx, "bbmdAddress", ReadComplex[BACnetHostNPortEnclosed](BACnetHostNPortEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdAddress' field"))
 	}
 
-	_broadcastMask, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagOctetString), nil
-	}, readBuffer), true)
+	_broadcastMask, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'broadcastMask' field"))
 	}

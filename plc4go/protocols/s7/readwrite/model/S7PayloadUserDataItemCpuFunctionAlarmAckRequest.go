@@ -173,6 +173,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParse(ctx context.Context, t
 	return S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
+		return S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmAckRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,13 +190,13 @@ func S7PayloadUserDataItemCpuFunctionAlarmAckRequestParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, 8), S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID)
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
 	_ = functionId
 
-	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, 8))
+	numberOfObjects, err := ReadImplicitField[uint8](ctx, "numberOfObjects", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfObjects' field"))
 	}

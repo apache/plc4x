@@ -83,6 +83,12 @@ func GroupObjectDescriptorRealisationType6Parse(ctx context.Context, theBytes []
 	return GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func GroupObjectDescriptorRealisationType6ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
+		return GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware

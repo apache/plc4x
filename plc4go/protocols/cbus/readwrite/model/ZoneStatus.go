@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func ZoneStatusParse(ctx context.Context, theBytes []byte) (ZoneStatus, error) {
 	return ZoneStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ZoneStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatus, error) {
+		return ZoneStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ZoneStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ZoneStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func ZoneStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := ZoneStatusTempParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ZoneStatus")
-	}
-	value := _value
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadEnumField[ZoneStatusTemp](ctx, "value", "ZoneStatusTemp", ReadEnum(ZoneStatusTempByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ZoneStatus"); closeErr != nil {

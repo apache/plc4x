@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParse(ctx context.Context, the
 	return BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
+		return BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventAlgorithmInhibitRef, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEventAlgorithmInhibitRefParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventAlgorithmInhibitRef)
-	if pullErr := readBuffer.PullContext("eventAlgorithmInhibitRef"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventAlgorithmInhibitRef")
-	}
-	_eventAlgorithmInhibitRef, _eventAlgorithmInhibitRefErr := BACnetObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _eventAlgorithmInhibitRefErr != nil {
-		return nil, errors.Wrap(_eventAlgorithmInhibitRefErr, "Error parsing 'eventAlgorithmInhibitRef' field of BACnetConstructedDataEventAlgorithmInhibitRef")
-	}
-	eventAlgorithmInhibitRef := _eventAlgorithmInhibitRef.(BACnetObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("eventAlgorithmInhibitRef"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventAlgorithmInhibitRef")
+	eventAlgorithmInhibitRef, err := ReadSimpleField[BACnetObjectPropertyReference](ctx, "eventAlgorithmInhibitRef", ReadComplex[BACnetObjectPropertyReference](BACnetObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventAlgorithmInhibitRef' field"))
 	}
 
 	// Virtual field

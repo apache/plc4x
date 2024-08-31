@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetValueSourceAddressParse(ctx context.Context, theBytes []byte) (BACnet
 	return BACnetValueSourceAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetValueSourceAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
+		return BACnetValueSourceAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetValueSourceAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSourceAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetValueSourceAddressParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for address")
-	}
-	_address, _addressErr := BACnetAddressEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BACnetValueSourceAddress")
-	}
-	address := _address.(BACnetAddressEnclosed)
-	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for address")
+	address, err := ReadSimpleField[BACnetAddressEnclosed](ctx, "address", ReadComplex[BACnetAddressEnclosed](BACnetAddressEnclosedParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetValueSourceAddress"); closeErr != nil {

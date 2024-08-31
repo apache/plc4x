@@ -113,6 +113,12 @@ func SysexCommandStringDataParse(ctx context.Context, theBytes []byte, response 
 	return SysexCommandStringDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandStringDataParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandStringData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandStringData, error) {
+		return SysexCommandStringDataParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandStringDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandStringData, error) {
 	positionAware := readBuffer
 	_ = positionAware

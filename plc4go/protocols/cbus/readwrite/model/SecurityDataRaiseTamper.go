@@ -108,6 +108,12 @@ func SecurityDataRaiseTamperParse(ctx context.Context, theBytes []byte) (Securit
 	return SecurityDataRaiseTamperParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataRaiseTamperParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
+		return SecurityDataRaiseTamperParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataRaiseTamperParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataRaiseTamper, error) {
 	positionAware := readBuffer
 	_ = positionAware

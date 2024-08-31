@@ -106,6 +106,17 @@ func UserIdentityTokenDefinitionParse(ctx context.Context, theBytes []byte, iden
 	return UserIdentityTokenDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UserIdentityTokenDefinitionParseWithBufferProducer[T UserIdentityTokenDefinition](identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := UserIdentityTokenDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func UserIdentityTokenDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserIdentityTokenDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -128,6 +128,12 @@ func HPAIControlEndpointParse(ctx context.Context, theBytes []byte) (HPAIControl
 	return HPAIControlEndpointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HPAIControlEndpointParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
+		return HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HPAIControlEndpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HPAIControlEndpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,44 +145,26 @@ func HPAIControlEndpointParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, 8))
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
 	_ = structureLength
 
-	// Simple Field (hostProtocolCode)
-	if pullErr := readBuffer.PullContext("hostProtocolCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hostProtocolCode")
-	}
-	_hostProtocolCode, _hostProtocolCodeErr := HostProtocolCodeParseWithBuffer(ctx, readBuffer)
-	if _hostProtocolCodeErr != nil {
-		return nil, errors.Wrap(_hostProtocolCodeErr, "Error parsing 'hostProtocolCode' field of HPAIControlEndpoint")
-	}
-	hostProtocolCode := _hostProtocolCode
-	if closeErr := readBuffer.CloseContext("hostProtocolCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hostProtocolCode")
+	hostProtocolCode, err := ReadEnumField[HostProtocolCode](ctx, "hostProtocolCode", "HostProtocolCode", ReadEnum(HostProtocolCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hostProtocolCode' field"))
 	}
 
-	// Simple Field (ipAddress)
-	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
-	}
-	_ipAddress, _ipAddressErr := IPAddressParseWithBuffer(ctx, readBuffer)
-	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of HPAIControlEndpoint")
-	}
-	ipAddress := _ipAddress.(IPAddress)
-	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
+	ipAddress, err := ReadSimpleField[IPAddress](ctx, "ipAddress", ReadComplex[IPAddress](IPAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
 
-	// Simple Field (ipPort)
-	_ipPort, _ipPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ipPort", 16)
-	if _ipPortErr != nil {
-		return nil, errors.Wrap(_ipPortErr, "Error parsing 'ipPort' field of HPAIControlEndpoint")
+	ipPort, err := ReadSimpleField(ctx, "ipPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipPort' field"))
 	}
-	ipPort := _ipPort
 
 	if closeErr := readBuffer.CloseContext("HPAIControlEndpoint"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HPAIControlEndpoint")

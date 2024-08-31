@@ -150,6 +150,12 @@ func DisconnectRequestParse(ctx context.Context, theBytes []byte) (DisconnectReq
 	return DisconnectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DisconnectRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
+		return DisconnectRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,29 +167,19 @@ func DisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of DisconnectRequest")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (hpaiControlEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
-	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of DisconnectRequest")
-	}
-	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
+	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiControlEndpoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DisconnectRequest"); closeErr != nil {

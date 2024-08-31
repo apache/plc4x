@@ -172,6 +172,17 @@ func CIPEncapsulationPacketParse(ctx context.Context, theBytes []byte) (CIPEncap
 	return CIPEncapsulationPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func CIPEncapsulationPacketParseWithBufferProducer[T CIPEncapsulationPacket]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CIPEncapsulationPacketParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,44 +194,38 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	commandType, err := ReadDiscriminatorField[uint16](ctx, "commandType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
 
-	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	packetLen, err := ReadImplicitField[uint16](ctx, "packetLen", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLen' field"))
 	}
 	_ = packetLen
 
-	// Simple Field (sessionHandle)
-	_sessionHandle, _sessionHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionHandle", 32)
-	if _sessionHandleErr != nil {
-		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of CIPEncapsulationPacket")
+	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionHandle' field"))
 	}
-	sessionHandle := _sessionHandle
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint32("status", 32)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CIPEncapsulationPacket")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	senderContext, err := ReadCountArrayField[uint8](ctx, "senderContext", ReadUnsignedByte(readBuffer, 8), uint64(int32(8)), codegen.WithByteOrder(binary.BigEndian))
+	senderContext, err := ReadCountArrayField[uint8](ctx, "senderContext", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(8)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
 
-	// Simple Field (options)
-	_options, _optionsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("options", 32)
-	if _optionsErr != nil {
-		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of CIPEncapsulationPacket")
+	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'options' field"))
 	}
-	options := _options
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, 32), uint32(0x00000000), codegen.WithByteOrder(binary.BigEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, uint8(32)), uint32(0x00000000), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

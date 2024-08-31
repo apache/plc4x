@@ -130,6 +130,12 @@ func ServicesParse(ctx context.Context, theBytes []byte, servicesLen uint16) (Se
 	return ServicesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), servicesLen)
 }
 
+func ServicesParseWithBufferProducer(servicesLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (Services, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Services, error) {
+		return ServicesParseWithBuffer(ctx, readBuffer, servicesLen)
+	}
+}
+
 func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, servicesLen uint16) (Services, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,24 +147,18 @@ func ServicesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serviceNb, err := ReadImplicitField[uint16](ctx, "serviceNb", ReadUnsignedShort(readBuffer, 16))
+	serviceNb, err := ReadImplicitField[uint16](ctx, "serviceNb", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceNb' field"))
 	}
 	_ = serviceNb
 
-	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, 16), uint64(serviceNb))
+	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, uint8(16)), uint64(serviceNb))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offsets' field"))
 	}
 
-	services, err := ReadCountArrayField[CipService](ctx, "services", ReadComplex[CipService](func(ctx context.Context, buffer utils.ReadBuffer) (CipService, error) {
-		v, err := CipServiceParseWithBuffer(ctx, readBuffer, (bool)(bool(false)), (uint16)(uint16(servicesLen)/uint16(serviceNb)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(CipService), nil
-	}, readBuffer), uint64(serviceNb))
+	services, err := ReadCountArrayField[CipService](ctx, "services", ReadComplex[CipService](CipServiceParseWithBufferProducer[CipService]((bool)(bool(false)), (uint16)(uint16(servicesLen)/uint16(serviceNb))), readBuffer), uint64(serviceNb))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'services' field"))
 	}

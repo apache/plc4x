@@ -243,6 +243,12 @@ func DataSetWriterDataTypeParse(ctx context.Context, theBytes []byte, identifier
 	return DataSetWriterDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataSetWriterDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetWriterDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetWriterDataType, error) {
+		return DataSetWriterDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetWriterDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -254,113 +260,59 @@ func DataSetWriterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of DataSetWriterDataType")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (enabled)
-	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
-	if _enabledErr != nil {
-		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of DataSetWriterDataType")
-	}
-	enabled := _enabled
-
-	// Simple Field (dataSetWriterId)
-	_dataSetWriterId, _dataSetWriterIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dataSetWriterId", 16)
-	if _dataSetWriterIdErr != nil {
-		return nil, errors.Wrap(_dataSetWriterIdErr, "Error parsing 'dataSetWriterId' field of DataSetWriterDataType")
-	}
-	dataSetWriterId := _dataSetWriterId
-
-	// Simple Field (dataSetFieldContentMask)
-	if pullErr := readBuffer.PullContext("dataSetFieldContentMask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetFieldContentMask")
-	}
-	_dataSetFieldContentMask, _dataSetFieldContentMaskErr := DataSetFieldContentMaskParseWithBuffer(ctx, readBuffer)
-	if _dataSetFieldContentMaskErr != nil {
-		return nil, errors.Wrap(_dataSetFieldContentMaskErr, "Error parsing 'dataSetFieldContentMask' field of DataSetWriterDataType")
-	}
-	dataSetFieldContentMask := _dataSetFieldContentMask
-	if closeErr := readBuffer.CloseContext("dataSetFieldContentMask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetFieldContentMask")
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
 
-	// Simple Field (keyFrameCount)
-	_keyFrameCount, _keyFrameCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("keyFrameCount", 32)
-	if _keyFrameCountErr != nil {
-		return nil, errors.Wrap(_keyFrameCountErr, "Error parsing 'keyFrameCount' field of DataSetWriterDataType")
-	}
-	keyFrameCount := _keyFrameCount
-
-	// Simple Field (dataSetName)
-	if pullErr := readBuffer.PullContext("dataSetName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetName")
-	}
-	_dataSetName, _dataSetNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _dataSetNameErr != nil {
-		return nil, errors.Wrap(_dataSetNameErr, "Error parsing 'dataSetName' field of DataSetWriterDataType")
-	}
-	dataSetName := _dataSetName.(PascalString)
-	if closeErr := readBuffer.CloseContext("dataSetName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetName")
+	dataSetWriterId, err := ReadSimpleField(ctx, "dataSetWriterId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterId' field"))
 	}
 
-	// Simple Field (noOfDataSetWriterProperties)
-	_noOfDataSetWriterProperties, _noOfDataSetWriterPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataSetWriterProperties", 32)
-	if _noOfDataSetWriterPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfDataSetWriterPropertiesErr, "Error parsing 'noOfDataSetWriterProperties' field of DataSetWriterDataType")
+	dataSetFieldContentMask, err := ReadEnumField[DataSetFieldContentMask](ctx, "dataSetFieldContentMask", "DataSetFieldContentMask", ReadEnum(DataSetFieldContentMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetFieldContentMask' field"))
 	}
-	noOfDataSetWriterProperties := _noOfDataSetWriterProperties
 
-	dataSetWriterProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataSetWriterProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfDataSetWriterProperties))
+	keyFrameCount, err := ReadSimpleField(ctx, "keyFrameCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyFrameCount' field"))
+	}
+
+	dataSetName, err := ReadSimpleField[PascalString](ctx, "dataSetName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetName' field"))
+	}
+
+	noOfDataSetWriterProperties, err := ReadSimpleField(ctx, "noOfDataSetWriterProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataSetWriterProperties' field"))
+	}
+
+	dataSetWriterProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "dataSetWriterProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfDataSetWriterProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetWriterProperties' field"))
 	}
 
-	// Simple Field (transportSettings)
-	if pullErr := readBuffer.PullContext("transportSettings"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSettings")
-	}
-	_transportSettings, _transportSettingsErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _transportSettingsErr != nil {
-		return nil, errors.Wrap(_transportSettingsErr, "Error parsing 'transportSettings' field of DataSetWriterDataType")
-	}
-	transportSettings := _transportSettings.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("transportSettings"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSettings")
+	transportSettings, err := ReadSimpleField[ExtensionObject](ctx, "transportSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSettings' field"))
 	}
 
-	// Simple Field (messageSettings)
-	if pullErr := readBuffer.PullContext("messageSettings"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messageSettings")
-	}
-	_messageSettings, _messageSettingsErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _messageSettingsErr != nil {
-		return nil, errors.Wrap(_messageSettingsErr, "Error parsing 'messageSettings' field of DataSetWriterDataType")
-	}
-	messageSettings := _messageSettings.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("messageSettings"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messageSettings")
+	messageSettings, err := ReadSimpleField[ExtensionObject](ctx, "messageSettings", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageSettings' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DataSetWriterDataType"); closeErr != nil {

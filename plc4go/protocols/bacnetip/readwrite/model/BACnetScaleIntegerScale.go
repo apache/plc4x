@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetScaleIntegerScaleParse(ctx context.Context, theBytes []byte) (BACnetS
 	return BACnetScaleIntegerScaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetScaleIntegerScaleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
+		return BACnetScaleIntegerScaleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetScaleIntegerScaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetScaleIntegerScale, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetScaleIntegerScaleParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integerScale)
-	if pullErr := readBuffer.PullContext("integerScale"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integerScale")
-	}
-	_integerScale, _integerScaleErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
-	if _integerScaleErr != nil {
-		return nil, errors.Wrap(_integerScaleErr, "Error parsing 'integerScale' field of BACnetScaleIntegerScale")
-	}
-	integerScale := _integerScale.(BACnetContextTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("integerScale"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integerScale")
+	integerScale, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "integerScale", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerScale' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetScaleIntegerScale"); closeErr != nil {

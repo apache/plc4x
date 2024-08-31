@@ -151,6 +151,17 @@ func BACnetFaultParameterFaultExtendedParametersEntryParse(ctx context.Context, 
 	return BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetFaultParameterFaultExtendedParametersEntryParseWithBufferProducer[T BACnetFaultParameterFaultExtendedParametersEntry]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -136,6 +136,12 @@ func TelephonyDataRingingParse(ctx context.Context, theBytes []byte, commandType
 	return TelephonyDataRingingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func TelephonyDataRingingParseWithBufferProducer(commandTypeContainer TelephonyCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRinging, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRinging, error) {
+		return TelephonyDataRingingParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRinging, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,12 +158,10 @@ func TelephonyDataRingingParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (number)
-	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRinging")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(2))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataRinging"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRinging")

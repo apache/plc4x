@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDeviceTypeParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataDeviceTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDeviceTypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDeviceType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDeviceType, error) {
+		return BACnetConstructedDataDeviceTypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDeviceTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDeviceType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDeviceTypeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceType)
-	if pullErr := readBuffer.PullContext("deviceType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceType")
-	}
-	_deviceType, _deviceTypeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of BACnetConstructedDataDeviceType")
-	}
-	deviceType := _deviceType.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("deviceType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceType")
+	deviceType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "deviceType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceType' field"))
 	}
 
 	// Virtual field

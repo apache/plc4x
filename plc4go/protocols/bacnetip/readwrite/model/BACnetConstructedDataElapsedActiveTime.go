@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataElapsedActiveTimeParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataElapsedActiveTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElapsedActiveTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElapsedActiveTime, error) {
+		return BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElapsedActiveTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataElapsedActiveTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (elapsedActiveTime)
-	if pullErr := readBuffer.PullContext("elapsedActiveTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for elapsedActiveTime")
-	}
-	_elapsedActiveTime, _elapsedActiveTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _elapsedActiveTimeErr != nil {
-		return nil, errors.Wrap(_elapsedActiveTimeErr, "Error parsing 'elapsedActiveTime' field of BACnetConstructedDataElapsedActiveTime")
-	}
-	elapsedActiveTime := _elapsedActiveTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("elapsedActiveTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for elapsedActiveTime")
+	elapsedActiveTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "elapsedActiveTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elapsedActiveTime' field"))
 	}
 
 	// Virtual field

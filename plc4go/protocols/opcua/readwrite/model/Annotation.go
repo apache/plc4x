@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func AnnotationParse(ctx context.Context, theBytes []byte, identifier string) (A
 	return AnnotationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AnnotationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (Annotation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Annotation, error) {
+		return AnnotationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AnnotationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Annotation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,38 +171,20 @@ func AnnotationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of Annotation")
-	}
-	message := _message.(PascalString)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[PascalString](ctx, "message", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
-	}
-	_userName, _userNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of Annotation")
-	}
-	userName := _userName.(PascalString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 
-	// Simple Field (annotationTime)
-	_annotationTime, _annotationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("annotationTime", 64)
-	if _annotationTimeErr != nil {
-		return nil, errors.Wrap(_annotationTimeErr, "Error parsing 'annotationTime' field of Annotation")
+	annotationTime, err := ReadSimpleField(ctx, "annotationTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'annotationTime' field"))
 	}
-	annotationTime := _annotationTime
 
 	if closeErr := readBuffer.CloseContext("Annotation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Annotation")

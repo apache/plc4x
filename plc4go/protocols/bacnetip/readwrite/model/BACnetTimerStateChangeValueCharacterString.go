@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimerStateChangeValueCharacterStringParse(ctx context.Context, theByt
 	return BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetTimerStateChangeValueCharacterStringParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueCharacterString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueCharacterString, error) {
+		return BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimerStateChangeValueCharacterStringParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterStringValue)
-	if pullErr := readBuffer.PullContext("characterStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterStringValue")
-	}
-	_characterStringValue, _characterStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterStringValueErr != nil {
-		return nil, errors.Wrap(_characterStringValueErr, "Error parsing 'characterStringValue' field of BACnetTimerStateChangeValueCharacterString")
-	}
-	characterStringValue := _characterStringValue.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterStringValue")
+	characterStringValue, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueCharacterString"); closeErr != nil {

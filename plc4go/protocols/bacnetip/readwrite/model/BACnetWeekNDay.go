@@ -83,6 +83,12 @@ func BACnetWeekNDayParse(ctx context.Context, theBytes []byte) (BACnetWeekNDay, 
 	return BACnetWeekNDayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetWeekNDayParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
+		return BACnetWeekNDayParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetWeekNDayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDay, error) {
 	positionAware := readBuffer
 	_ = positionAware

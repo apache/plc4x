@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -134,6 +136,12 @@ func SysexCommandAnalogMappingQueryResponseParse(ctx context.Context, theBytes [
 	return SysexCommandAnalogMappingQueryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandAnalogMappingQueryResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandAnalogMappingQueryResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandAnalogMappingQueryResponse, error) {
+		return SysexCommandAnalogMappingQueryResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandAnalogMappingQueryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandAnalogMappingQueryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,12 +153,10 @@ func SysexCommandAnalogMappingQueryResponseParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandAnalogMappingQueryResponse")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
 	if closeErr := readBuffer.CloseContext("SysexCommandAnalogMappingQueryResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandAnalogMappingQueryResponse")

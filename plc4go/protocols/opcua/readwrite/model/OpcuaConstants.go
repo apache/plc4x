@@ -105,6 +105,12 @@ func OpcuaConstantsParse(ctx context.Context, theBytes []byte) (OpcuaConstants, 
 	return OpcuaConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func OpcuaConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
+		return OpcuaConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -116,7 +122,7 @@ func OpcuaConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, 8), OpcuaConstants_PROTOCOLVERSION)
+	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), OpcuaConstants_PROTOCOLVERSION)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}

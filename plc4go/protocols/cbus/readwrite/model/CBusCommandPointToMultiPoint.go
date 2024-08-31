@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func CBusCommandPointToMultiPointParse(ctx context.Context, theBytes []byte, cBu
 	return CBusCommandPointToMultiPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusCommandPointToMultiPointParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandPointToMultiPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandPointToMultiPoint, error) {
+		return CBusCommandPointToMultiPointParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusCommandPointToMultiPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToMultiPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func CBusCommandPointToMultiPointParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
-	}
-	_command, _commandErr := CBusPointToMultiPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToMultiPoint")
-	}
-	command := _command.(CBusPointToMultiPointCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	command, err := ReadSimpleField[CBusPointToMultiPointCommand](ctx, "command", ReadComplex[CBusPointToMultiPointCommand](CBusPointToMultiPointCommandParseWithBufferProducer[CBusPointToMultiPointCommand]((CBusOptions)(cBusOptions)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusCommandPointToMultiPoint"); closeErr != nil {

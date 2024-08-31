@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataOperationDirectionParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataOperationDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataOperationDirectionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOperationDirection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOperationDirection, error) {
+		return BACnetConstructedDataOperationDirectionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOperationDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataOperationDirectionParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operationDirection)
-	if pullErr := readBuffer.PullContext("operationDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operationDirection")
-	}
-	_operationDirection, _operationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _operationDirectionErr != nil {
-		return nil, errors.Wrap(_operationDirectionErr, "Error parsing 'operationDirection' field of BACnetConstructedDataOperationDirection")
-	}
-	operationDirection := _operationDirection.(BACnetEscalatorOperationDirectionTagged)
-	if closeErr := readBuffer.CloseContext("operationDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operationDirection")
+	operationDirection, err := ReadSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "operationDirection", ReadComplex[BACnetEscalatorOperationDirectionTagged](BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationDirection' field"))
 	}
 
 	// Virtual field

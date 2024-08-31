@@ -136,6 +136,12 @@ func BACnetAbortReasonTaggedParse(ctx context.Context, theBytes []byte, actualLe
 	return BACnetAbortReasonTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetAbortReasonTaggedParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAbortReasonTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAbortReasonTagged, error) {
+		return BACnetAbortReasonTaggedParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetAbortReasonTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware

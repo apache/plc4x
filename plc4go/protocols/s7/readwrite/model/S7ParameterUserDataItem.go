@@ -110,6 +110,17 @@ func S7ParameterUserDataItemParse(ctx context.Context, theBytes []byte) (S7Param
 	return S7ParameterUserDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7ParameterUserDataItemParseWithBufferProducer[T S7ParameterUserDataItem]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7ParameterUserDataItemParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7ParameterUserDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func S7ParameterUserDataItemParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, 8))
+	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemType' field"))
 	}

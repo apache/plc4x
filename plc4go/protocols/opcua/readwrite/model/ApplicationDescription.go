@@ -216,6 +216,12 @@ func ApplicationDescriptionParse(ctx context.Context, theBytes []byte, identifie
 	return ApplicationDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ApplicationDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationDescription, error) {
+		return ApplicationDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ApplicationDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ApplicationDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -227,90 +233,40 @@ func ApplicationDescriptionParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (applicationUri)
-	if pullErr := readBuffer.PullContext("applicationUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationUri")
-	}
-	_applicationUri, _applicationUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _applicationUriErr != nil {
-		return nil, errors.Wrap(_applicationUriErr, "Error parsing 'applicationUri' field of ApplicationDescription")
-	}
-	applicationUri := _applicationUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("applicationUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationUri")
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
 
-	// Simple Field (productUri)
-	if pullErr := readBuffer.PullContext("productUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productUri")
-	}
-	_productUri, _productUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productUriErr != nil {
-		return nil, errors.Wrap(_productUriErr, "Error parsing 'productUri' field of ApplicationDescription")
-	}
-	productUri := _productUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("productUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productUri")
+	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productUri' field"))
 	}
 
-	// Simple Field (applicationName)
-	if pullErr := readBuffer.PullContext("applicationName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationName")
-	}
-	_applicationName, _applicationNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _applicationNameErr != nil {
-		return nil, errors.Wrap(_applicationNameErr, "Error parsing 'applicationName' field of ApplicationDescription")
-	}
-	applicationName := _applicationName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("applicationName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationName")
+	applicationName, err := ReadSimpleField[LocalizedText](ctx, "applicationName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationName' field"))
 	}
 
-	// Simple Field (applicationType)
-	if pullErr := readBuffer.PullContext("applicationType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationType")
-	}
-	_applicationType, _applicationTypeErr := ApplicationTypeParseWithBuffer(ctx, readBuffer)
-	if _applicationTypeErr != nil {
-		return nil, errors.Wrap(_applicationTypeErr, "Error parsing 'applicationType' field of ApplicationDescription")
-	}
-	applicationType := _applicationType
-	if closeErr := readBuffer.CloseContext("applicationType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationType")
+	applicationType, err := ReadEnumField[ApplicationType](ctx, "applicationType", "ApplicationType", ReadEnum(ApplicationTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationType' field"))
 	}
 
-	// Simple Field (gatewayServerUri)
-	if pullErr := readBuffer.PullContext("gatewayServerUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gatewayServerUri")
-	}
-	_gatewayServerUri, _gatewayServerUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _gatewayServerUriErr != nil {
-		return nil, errors.Wrap(_gatewayServerUriErr, "Error parsing 'gatewayServerUri' field of ApplicationDescription")
-	}
-	gatewayServerUri := _gatewayServerUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("gatewayServerUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gatewayServerUri")
+	gatewayServerUri, err := ReadSimpleField[PascalString](ctx, "gatewayServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gatewayServerUri' field"))
 	}
 
-	// Simple Field (discoveryProfileUri)
-	if pullErr := readBuffer.PullContext("discoveryProfileUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discoveryProfileUri")
-	}
-	_discoveryProfileUri, _discoveryProfileUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _discoveryProfileUriErr != nil {
-		return nil, errors.Wrap(_discoveryProfileUriErr, "Error parsing 'discoveryProfileUri' field of ApplicationDescription")
-	}
-	discoveryProfileUri := _discoveryProfileUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("discoveryProfileUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discoveryProfileUri")
+	discoveryProfileUri, err := ReadSimpleField[PascalString](ctx, "discoveryProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryProfileUri' field"))
 	}
 
-	// Simple Field (noOfDiscoveryUrls)
-	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
-	if _noOfDiscoveryUrlsErr != nil {
-		return nil, errors.Wrap(_noOfDiscoveryUrlsErr, "Error parsing 'noOfDiscoveryUrls' field of ApplicationDescription")
+	noOfDiscoveryUrls, err := ReadSimpleField(ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
-	noOfDiscoveryUrls := _noOfDiscoveryUrls
 
 	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
 	if err != nil {

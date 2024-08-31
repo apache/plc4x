@@ -269,6 +269,17 @@ func AmsPacketParse(ctx context.Context, theBytes []byte) (AmsPacket, error) {
 	return AmsPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsPacketParseWithBufferProducer[T AmsPacket]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := AmsPacketParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -280,47 +291,27 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetAmsNetId)
-	if pullErr := readBuffer.PullContext("targetAmsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetAmsNetId")
-	}
-	_targetAmsNetId, _targetAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _targetAmsNetIdErr != nil {
-		return nil, errors.Wrap(_targetAmsNetIdErr, "Error parsing 'targetAmsNetId' field of AmsPacket")
-	}
-	targetAmsNetId := _targetAmsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("targetAmsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetAmsNetId")
+	targetAmsNetId, err := ReadSimpleField[AmsNetId](ctx, "targetAmsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAmsNetId' field"))
 	}
 
-	// Simple Field (targetAmsPort)
-	_targetAmsPort, _targetAmsPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("targetAmsPort", 16)
-	if _targetAmsPortErr != nil {
-		return nil, errors.Wrap(_targetAmsPortErr, "Error parsing 'targetAmsPort' field of AmsPacket")
-	}
-	targetAmsPort := _targetAmsPort
-
-	// Simple Field (sourceAmsNetId)
-	if pullErr := readBuffer.PullContext("sourceAmsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAmsNetId")
-	}
-	_sourceAmsNetId, _sourceAmsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _sourceAmsNetIdErr != nil {
-		return nil, errors.Wrap(_sourceAmsNetIdErr, "Error parsing 'sourceAmsNetId' field of AmsPacket")
-	}
-	sourceAmsNetId := _sourceAmsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("sourceAmsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAmsNetId")
+	targetAmsPort, err := ReadSimpleField(ctx, "targetAmsPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetAmsPort' field"))
 	}
 
-	// Simple Field (sourceAmsPort)
-	_sourceAmsPort, _sourceAmsPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sourceAmsPort", 16)
-	if _sourceAmsPortErr != nil {
-		return nil, errors.Wrap(_sourceAmsPortErr, "Error parsing 'sourceAmsPort' field of AmsPacket")
+	sourceAmsNetId, err := ReadSimpleField[AmsNetId](ctx, "sourceAmsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAmsNetId' field"))
 	}
-	sourceAmsPort := _sourceAmsPort
 
-	commandId, err := ReadDiscriminatorEnumField[CommandId](ctx, "commandId", "CommandId", ReadEnum(CommandIdByValue, ReadUnsignedShort(readBuffer, 16)))
+	sourceAmsPort, err := ReadSimpleField(ctx, "sourceAmsPort", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAmsPort' field"))
+	}
+
+	commandId, err := ReadDiscriminatorEnumField[CommandId](ctx, "commandId", "CommandId", ReadEnum(CommandIdByValue, ReadUnsignedShort(readBuffer, uint8(16))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandId' field"))
 	}
@@ -378,30 +369,26 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_ = broadcast
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, 7), int8(0x0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, uint8(7)), int8(0x0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 	_ = length
 
-	// Simple Field (errorCode)
-	_errorCode, _errorCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("errorCode", 32)
-	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of AmsPacket")
+	errorCode, err := ReadSimpleField(ctx, "errorCode", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}
-	errorCode := _errorCode
 
-	// Simple Field (invokeId)
-	_invokeId, _invokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("invokeId", 32)
-	if _invokeIdErr != nil {
-		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of AmsPacket")
+	invokeId, err := ReadSimpleField(ctx, "invokeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'invokeId' field"))
 	}
-	invokeId := _invokeId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type AmsPacketChildSerializeRequirement interface {

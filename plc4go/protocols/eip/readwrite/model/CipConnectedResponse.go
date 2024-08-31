@@ -169,6 +169,12 @@ func CipConnectedResponseParse(ctx context.Context, theBytes []byte, connected b
 	return CipConnectedResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipConnectedResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipConnectedResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipConnectedResponse, error) {
+		return CipConnectedResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipConnectedResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -180,24 +186,20 @@ func CipConnectedResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipConnectedResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (additionalStatusWords)
-	_additionalStatusWords, _additionalStatusWordsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("additionalStatusWords", 8)
-	if _additionalStatusWordsErr != nil {
-		return nil, errors.Wrap(_additionalStatusWordsErr, "Error parsing 'additionalStatusWords' field of CipConnectedResponse")
+	additionalStatusWords, err := ReadSimpleField(ctx, "additionalStatusWords", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalStatusWords' field"))
 	}
-	additionalStatusWords := _additionalStatusWords
 
 	_data, err := ReadOptionalField[CIPDataConnected](ctx, "data", ReadComplex[CIPDataConnected](CIPDataConnectedParseWithBuffer, readBuffer), bool(((serviceLen)-(4)) > (0)))
 	if err != nil {

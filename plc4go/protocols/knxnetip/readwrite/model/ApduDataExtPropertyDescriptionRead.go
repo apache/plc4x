@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func ApduDataExtPropertyDescriptionReadParse(ctx context.Context, theBytes []byt
 	return ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtPropertyDescriptionReadParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtPropertyDescriptionRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtPropertyDescriptionRead, error) {
+		return ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtPropertyDescriptionRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,26 +171,20 @@ func ApduDataExtPropertyDescriptionReadParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIndex)
-	_objectIndex, _objectIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectIndex", 8)
-	if _objectIndexErr != nil {
-		return nil, errors.Wrap(_objectIndexErr, "Error parsing 'objectIndex' field of ApduDataExtPropertyDescriptionRead")
+	objectIndex, err := ReadSimpleField(ctx, "objectIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIndex' field"))
 	}
-	objectIndex := _objectIndex
 
-	// Simple Field (propertyId)
-	_propertyId, _propertyIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("propertyId", 8)
-	if _propertyIdErr != nil {
-		return nil, errors.Wrap(_propertyIdErr, "Error parsing 'propertyId' field of ApduDataExtPropertyDescriptionRead")
+	propertyId, err := ReadSimpleField(ctx, "propertyId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyId' field"))
 	}
-	propertyId := _propertyId
 
-	// Simple Field (index)
-	_index, _indexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("index", 8)
-	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of ApduDataExtPropertyDescriptionRead")
+	index, err := ReadSimpleField(ctx, "index", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
-	index := _index
 
 	if closeErr := readBuffer.CloseContext("ApduDataExtPropertyDescriptionRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataExtPropertyDescriptionRead")

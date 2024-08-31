@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func IdentifyReplyCommandTypeParse(ctx context.Context, theBytes []byte, attribu
 	return IdentifyReplyCommandTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandTypeParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandType, error) {
+		return IdentifyReplyCommandTypeParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func IdentifyReplyCommandTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unitType)
-	_unitType, _unitTypeErr := /*TODO: migrate me*/ readBuffer.ReadString("unitType", uint32(64), utils.WithEncoding("UTF-8"))
-	if _unitTypeErr != nil {
-		return nil, errors.Wrap(_unitTypeErr, "Error parsing 'unitType' field of IdentifyReplyCommandType")
+	unitType, err := ReadSimpleField(ctx, "unitType", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitType' field"))
 	}
-	unitType := _unitType
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandType")

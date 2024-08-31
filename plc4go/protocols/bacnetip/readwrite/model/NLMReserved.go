@@ -132,6 +132,12 @@ func NLMReservedParse(ctx context.Context, theBytes []byte, apduLength uint16) (
 	return NLMReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMReservedParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMReserved, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMReserved, error) {
+		return NLMReservedParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware

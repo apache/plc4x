@@ -120,6 +120,12 @@ func ModbusPDUReadFileRecordResponseItemParse(ctx context.Context, theBytes []by
 	return ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ModbusPDUReadFileRecordResponseItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
+		return ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordResponseItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -131,18 +137,16 @@ func ModbusPDUReadFileRecordResponseItemParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, 8))
+	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
 	_ = dataLength
 
-	// Simple Field (referenceType)
-	_referenceType, _referenceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("referenceType", 8)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUReadFileRecordResponseItem")
+	referenceType, err := ReadSimpleField(ctx, "referenceType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
-	referenceType := _referenceType
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(dataLength)-int32(int32(1))))
 	if err != nil {

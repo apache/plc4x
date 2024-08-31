@@ -109,6 +109,12 @@ func DataTypeDefinitionParse(ctx context.Context, theBytes []byte, identifier st
 	return DataTypeDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataTypeDefinitionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeDefinition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeDefinition, error) {
+		return DataTypeDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataTypeDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataTypeDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware

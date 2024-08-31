@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetLogDataLogDataEntryNullValueParse(ctx context.Context, theBytes []byt
 	return BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLogDataLogDataEntryNullValueParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryNullValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryNullValue, error) {
+		return BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryNullValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetLogDataLogDataEntryNullValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nullValue)
-	if pullErr := readBuffer.PullContext("nullValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nullValue")
-	}
-	_nullValue, _nullValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_NULL))
-	if _nullValueErr != nil {
-		return nil, errors.Wrap(_nullValueErr, "Error parsing 'nullValue' field of BACnetLogDataLogDataEntryNullValue")
-	}
-	nullValue := _nullValue.(BACnetContextTagNull)
-	if closeErr := readBuffer.CloseContext("nullValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nullValue")
+	nullValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "nullValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(6)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryNullValue"); closeErr != nil {

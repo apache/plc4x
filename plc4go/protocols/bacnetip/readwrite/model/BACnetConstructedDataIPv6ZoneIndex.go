@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPv6ZoneIndexParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPv6ZoneIndexParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6ZoneIndex, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6ZoneIndex, error) {
+		return BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6ZoneIndex, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipv6ZoneIndex)
-	if pullErr := readBuffer.PullContext("ipv6ZoneIndex"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6ZoneIndex")
-	}
-	_ipv6ZoneIndex, _ipv6ZoneIndexErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipv6ZoneIndexErr != nil {
-		return nil, errors.Wrap(_ipv6ZoneIndexErr, "Error parsing 'ipv6ZoneIndex' field of BACnetConstructedDataIPv6ZoneIndex")
-	}
-	ipv6ZoneIndex := _ipv6ZoneIndex.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("ipv6ZoneIndex"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6ZoneIndex")
+	ipv6ZoneIndex, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "ipv6ZoneIndex", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6ZoneIndex' field"))
 	}
 
 	// Virtual field

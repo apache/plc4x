@@ -199,6 +199,12 @@ func HistoryReadRequestParse(ctx context.Context, theBytes []byte, identifier st
 	return HistoryReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryReadRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadRequest, error) {
+		return HistoryReadRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -210,71 +216,37 @@ func HistoryReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of HistoryReadRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (historyReadDetails)
-	if pullErr := readBuffer.PullContext("historyReadDetails"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for historyReadDetails")
-	}
-	_historyReadDetails, _historyReadDetailsErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _historyReadDetailsErr != nil {
-		return nil, errors.Wrap(_historyReadDetailsErr, "Error parsing 'historyReadDetails' field of HistoryReadRequest")
-	}
-	historyReadDetails := _historyReadDetails.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("historyReadDetails"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for historyReadDetails")
+	historyReadDetails, err := ReadSimpleField[ExtensionObject](ctx, "historyReadDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyReadDetails' field"))
 	}
 
-	// Simple Field (timestampsToReturn)
-	if pullErr := readBuffer.PullContext("timestampsToReturn"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestampsToReturn")
-	}
-	_timestampsToReturn, _timestampsToReturnErr := TimestampsToReturnParseWithBuffer(ctx, readBuffer)
-	if _timestampsToReturnErr != nil {
-		return nil, errors.Wrap(_timestampsToReturnErr, "Error parsing 'timestampsToReturn' field of HistoryReadRequest")
-	}
-	timestampsToReturn := _timestampsToReturn
-	if closeErr := readBuffer.CloseContext("timestampsToReturn"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestampsToReturn")
+	timestampsToReturn, err := ReadEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", ReadEnum(TimestampsToReturnByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestampsToReturn' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (releaseContinuationPoints)
-	_releaseContinuationPoints, _releaseContinuationPointsErr := /*TODO: migrate me*/ readBuffer.ReadBit("releaseContinuationPoints")
-	if _releaseContinuationPointsErr != nil {
-		return nil, errors.Wrap(_releaseContinuationPointsErr, "Error parsing 'releaseContinuationPoints' field of HistoryReadRequest")
+	releaseContinuationPoints, err := ReadSimpleField(ctx, "releaseContinuationPoints", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'releaseContinuationPoints' field"))
 	}
-	releaseContinuationPoints := _releaseContinuationPoints
 
-	// Simple Field (noOfNodesToRead)
-	_noOfNodesToRead, _noOfNodesToReadErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRead", 32)
-	if _noOfNodesToReadErr != nil {
-		return nil, errors.Wrap(_noOfNodesToReadErr, "Error parsing 'noOfNodesToRead' field of HistoryReadRequest")
+	noOfNodesToRead, err := ReadSimpleField(ctx, "noOfNodesToRead", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRead' field"))
 	}
-	noOfNodesToRead := _noOfNodesToRead
 
-	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("637"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodesToRead))
+	nodesToRead, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToRead", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("637")), readBuffer), uint64(noOfNodesToRead))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToRead' field"))
 	}

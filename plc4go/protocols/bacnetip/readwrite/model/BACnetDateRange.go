@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetDateRangeParse(ctx context.Context, theBytes []byte) (BACnetDateRange
 	return BACnetDateRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetDateRangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
+		return BACnetDateRangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetDateRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startDate)
-	if pullErr := readBuffer.PullContext("startDate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for startDate")
-	}
-	_startDate, _startDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _startDateErr != nil {
-		return nil, errors.Wrap(_startDateErr, "Error parsing 'startDate' field of BACnetDateRange")
-	}
-	startDate := _startDate.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("startDate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for startDate")
+	startDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "startDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startDate' field"))
 	}
 
-	// Simple Field (endDate)
-	if pullErr := readBuffer.PullContext("endDate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endDate")
-	}
-	_endDate, _endDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _endDateErr != nil {
-		return nil, errors.Wrap(_endDateErr, "Error parsing 'endDate' field of BACnetDateRange")
-	}
-	endDate := _endDate.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("endDate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endDate")
+	endDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "endDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endDate' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetDateRange"); closeErr != nil {

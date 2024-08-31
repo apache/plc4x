@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPulseConverterAdjustValueParse(ctx context.Context, th
 	return BACnetConstructedDataPulseConverterAdjustValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPulseConverterAdjustValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPulseConverterAdjustValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPulseConverterAdjustValue, error) {
+		return BACnetConstructedDataPulseConverterAdjustValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPulseConverterAdjustValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPulseConverterAdjustValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPulseConverterAdjustValueParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (adjustValue)
-	if pullErr := readBuffer.PullContext("adjustValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for adjustValue")
-	}
-	_adjustValue, _adjustValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _adjustValueErr != nil {
-		return nil, errors.Wrap(_adjustValueErr, "Error parsing 'adjustValue' field of BACnetConstructedDataPulseConverterAdjustValue")
-	}
-	adjustValue := _adjustValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("adjustValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for adjustValue")
+	adjustValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "adjustValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adjustValue' field"))
 	}
 
 	// Virtual field

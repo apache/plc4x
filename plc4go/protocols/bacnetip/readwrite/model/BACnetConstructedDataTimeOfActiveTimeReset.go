@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTimeOfActiveTimeResetParse(ctx context.Context, theByt
 	return BACnetConstructedDataTimeOfActiveTimeResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTimeOfActiveTimeResetParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeOfActiveTimeReset, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeOfActiveTimeReset, error) {
+		return BACnetConstructedDataTimeOfActiveTimeResetParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTimeOfActiveTimeResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfActiveTimeReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTimeOfActiveTimeResetParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeOfActiveTimeReset)
-	if pullErr := readBuffer.PullContext("timeOfActiveTimeReset"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeOfActiveTimeReset")
-	}
-	_timeOfActiveTimeReset, _timeOfActiveTimeResetErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _timeOfActiveTimeResetErr != nil {
-		return nil, errors.Wrap(_timeOfActiveTimeResetErr, "Error parsing 'timeOfActiveTimeReset' field of BACnetConstructedDataTimeOfActiveTimeReset")
-	}
-	timeOfActiveTimeReset := _timeOfActiveTimeReset.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("timeOfActiveTimeReset"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeOfActiveTimeReset")
+	timeOfActiveTimeReset, err := ReadSimpleField[BACnetDateTime](ctx, "timeOfActiveTimeReset", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeOfActiveTimeReset' field"))
 	}
 
 	// Virtual field

@@ -83,6 +83,12 @@ func CounterParse(ctx context.Context, theBytes []byte) (Counter, error) {
 	return CounterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CounterParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
+		return CounterParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CounterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Counter, error) {
 	positionAware := readBuffer
 	_ = positionAware

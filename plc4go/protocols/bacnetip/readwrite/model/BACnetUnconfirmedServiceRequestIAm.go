@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -164,6 +166,12 @@ func BACnetUnconfirmedServiceRequestIAmParse(ctx context.Context, theBytes []byt
 	return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestIAmParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestIAm, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestIAm, error) {
+		return BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestIAm, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -175,56 +183,24 @@ func BACnetUnconfirmedServiceRequestIAmParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceIdentifier)
-	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
-	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetUnconfirmedServiceRequestIAm")
-	}
-	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
 
-	// Simple Field (maximumApduLengthAcceptedLength)
-	if pullErr := readBuffer.PullContext("maximumApduLengthAcceptedLength"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maximumApduLengthAcceptedLength")
-	}
-	_maximumApduLengthAcceptedLength, _maximumApduLengthAcceptedLengthErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maximumApduLengthAcceptedLengthErr != nil {
-		return nil, errors.Wrap(_maximumApduLengthAcceptedLengthErr, "Error parsing 'maximumApduLengthAcceptedLength' field of BACnetUnconfirmedServiceRequestIAm")
-	}
-	maximumApduLengthAcceptedLength := _maximumApduLengthAcceptedLength.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maximumApduLengthAcceptedLength"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maximumApduLengthAcceptedLength")
+	maximumApduLengthAcceptedLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maximumApduLengthAcceptedLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumApduLengthAcceptedLength' field"))
 	}
 
-	// Simple Field (segmentationSupported)
-	if pullErr := readBuffer.PullContext("segmentationSupported"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentationSupported")
-	}
-	_segmentationSupported, _segmentationSupportedErr := BACnetSegmentationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(9)), TagClass(TagClass_APPLICATION_TAGS))
-	if _segmentationSupportedErr != nil {
-		return nil, errors.Wrap(_segmentationSupportedErr, "Error parsing 'segmentationSupported' field of BACnetUnconfirmedServiceRequestIAm")
-	}
-	segmentationSupported := _segmentationSupported.(BACnetSegmentationTagged)
-	if closeErr := readBuffer.CloseContext("segmentationSupported"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentationSupported")
+	segmentationSupported, err := ReadSimpleField[BACnetSegmentationTagged](ctx, "segmentationSupported", ReadComplex[BACnetSegmentationTagged](BACnetSegmentationTaggedParseWithBufferProducer((uint8)(uint8(9)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentationSupported' field"))
 	}
 
-	// Simple Field (vendorId)
-	if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
-	}
-	_vendorId, _vendorIdErr := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_APPLICATION_TAGS))
-	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of BACnetUnconfirmedServiceRequestIAm")
-	}
-	vendorId := _vendorId.(BACnetVendorIdTagged)
-	if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vendorId")
+	vendorId, err := ReadSimpleField[BACnetVendorIdTagged](ctx, "vendorId", ReadComplex[BACnetVendorIdTagged](BACnetVendorIdTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestIAm"); closeErr != nil {

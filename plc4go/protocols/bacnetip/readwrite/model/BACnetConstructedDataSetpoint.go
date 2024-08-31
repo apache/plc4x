@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSetpointParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataSetpointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSetpointParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetpoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetpoint, error) {
+		return BACnetConstructedDataSetpointParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSetpointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSetpointParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (setpoint)
-	if pullErr := readBuffer.PullContext("setpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setpoint")
-	}
-	_setpoint, _setpointErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _setpointErr != nil {
-		return nil, errors.Wrap(_setpointErr, "Error parsing 'setpoint' field of BACnetConstructedDataSetpoint")
-	}
-	setpoint := _setpoint.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("setpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setpoint")
+	setpoint, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "setpoint", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpoint' field"))
 	}
 
 	// Virtual field

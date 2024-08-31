@@ -83,6 +83,12 @@ func ApplicationInstanceCertificateParse(ctx context.Context, theBytes []byte) (
 	return ApplicationInstanceCertificateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApplicationInstanceCertificateParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationInstanceCertificate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationInstanceCertificate, error) {
+		return ApplicationInstanceCertificateParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApplicationInstanceCertificateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApplicationInstanceCertificate, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,17 @@ func LightingDataParse(ctx context.Context, theBytes []byte) (LightingData, erro
 	return LightingDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LightingDataParseWithBufferProducer[T LightingData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := LightingDataParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,17 +172,9 @@ func LightingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := LightingCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of LightingData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[LightingCommandTypeContainer](ctx, "commandTypeContainer", "LightingCommandTypeContainer", ReadEnum(LightingCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field

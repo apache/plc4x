@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -251,6 +253,12 @@ func ServerDiagnosticsSummaryDataTypeParse(ctx context.Context, theBytes []byte,
 	return ServerDiagnosticsSummaryDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ServerDiagnosticsSummaryDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerDiagnosticsSummaryDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerDiagnosticsSummaryDataType, error) {
+		return ServerDiagnosticsSummaryDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ServerDiagnosticsSummaryDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServerDiagnosticsSummaryDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -262,89 +270,65 @@ func ServerDiagnosticsSummaryDataTypeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serverViewCount)
-	_serverViewCount, _serverViewCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serverViewCount", 32)
-	if _serverViewCountErr != nil {
-		return nil, errors.Wrap(_serverViewCountErr, "Error parsing 'serverViewCount' field of ServerDiagnosticsSummaryDataType")
+	serverViewCount, err := ReadSimpleField(ctx, "serverViewCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverViewCount' field"))
 	}
-	serverViewCount := _serverViewCount
 
-	// Simple Field (currentSessionCount)
-	_currentSessionCount, _currentSessionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentSessionCount", 32)
-	if _currentSessionCountErr != nil {
-		return nil, errors.Wrap(_currentSessionCountErr, "Error parsing 'currentSessionCount' field of ServerDiagnosticsSummaryDataType")
+	currentSessionCount, err := ReadSimpleField(ctx, "currentSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSessionCount' field"))
 	}
-	currentSessionCount := _currentSessionCount
 
-	// Simple Field (cumulatedSessionCount)
-	_cumulatedSessionCount, _cumulatedSessionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cumulatedSessionCount", 32)
-	if _cumulatedSessionCountErr != nil {
-		return nil, errors.Wrap(_cumulatedSessionCountErr, "Error parsing 'cumulatedSessionCount' field of ServerDiagnosticsSummaryDataType")
+	cumulatedSessionCount, err := ReadSimpleField(ctx, "cumulatedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cumulatedSessionCount' field"))
 	}
-	cumulatedSessionCount := _cumulatedSessionCount
 
-	// Simple Field (securityRejectedSessionCount)
-	_securityRejectedSessionCount, _securityRejectedSessionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("securityRejectedSessionCount", 32)
-	if _securityRejectedSessionCountErr != nil {
-		return nil, errors.Wrap(_securityRejectedSessionCountErr, "Error parsing 'securityRejectedSessionCount' field of ServerDiagnosticsSummaryDataType")
+	securityRejectedSessionCount, err := ReadSimpleField(ctx, "securityRejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityRejectedSessionCount' field"))
 	}
-	securityRejectedSessionCount := _securityRejectedSessionCount
 
-	// Simple Field (rejectedSessionCount)
-	_rejectedSessionCount, _rejectedSessionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("rejectedSessionCount", 32)
-	if _rejectedSessionCountErr != nil {
-		return nil, errors.Wrap(_rejectedSessionCountErr, "Error parsing 'rejectedSessionCount' field of ServerDiagnosticsSummaryDataType")
+	rejectedSessionCount, err := ReadSimpleField(ctx, "rejectedSessionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectedSessionCount' field"))
 	}
-	rejectedSessionCount := _rejectedSessionCount
 
-	// Simple Field (sessionTimeoutCount)
-	_sessionTimeoutCount, _sessionTimeoutCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionTimeoutCount", 32)
-	if _sessionTimeoutCountErr != nil {
-		return nil, errors.Wrap(_sessionTimeoutCountErr, "Error parsing 'sessionTimeoutCount' field of ServerDiagnosticsSummaryDataType")
+	sessionTimeoutCount, err := ReadSimpleField(ctx, "sessionTimeoutCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionTimeoutCount' field"))
 	}
-	sessionTimeoutCount := _sessionTimeoutCount
 
-	// Simple Field (sessionAbortCount)
-	_sessionAbortCount, _sessionAbortCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionAbortCount", 32)
-	if _sessionAbortCountErr != nil {
-		return nil, errors.Wrap(_sessionAbortCountErr, "Error parsing 'sessionAbortCount' field of ServerDiagnosticsSummaryDataType")
+	sessionAbortCount, err := ReadSimpleField(ctx, "sessionAbortCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionAbortCount' field"))
 	}
-	sessionAbortCount := _sessionAbortCount
 
-	// Simple Field (currentSubscriptionCount)
-	_currentSubscriptionCount, _currentSubscriptionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentSubscriptionCount", 32)
-	if _currentSubscriptionCountErr != nil {
-		return nil, errors.Wrap(_currentSubscriptionCountErr, "Error parsing 'currentSubscriptionCount' field of ServerDiagnosticsSummaryDataType")
+	currentSubscriptionCount, err := ReadSimpleField(ctx, "currentSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentSubscriptionCount' field"))
 	}
-	currentSubscriptionCount := _currentSubscriptionCount
 
-	// Simple Field (cumulatedSubscriptionCount)
-	_cumulatedSubscriptionCount, _cumulatedSubscriptionCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cumulatedSubscriptionCount", 32)
-	if _cumulatedSubscriptionCountErr != nil {
-		return nil, errors.Wrap(_cumulatedSubscriptionCountErr, "Error parsing 'cumulatedSubscriptionCount' field of ServerDiagnosticsSummaryDataType")
+	cumulatedSubscriptionCount, err := ReadSimpleField(ctx, "cumulatedSubscriptionCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cumulatedSubscriptionCount' field"))
 	}
-	cumulatedSubscriptionCount := _cumulatedSubscriptionCount
 
-	// Simple Field (publishingIntervalCount)
-	_publishingIntervalCount, _publishingIntervalCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("publishingIntervalCount", 32)
-	if _publishingIntervalCountErr != nil {
-		return nil, errors.Wrap(_publishingIntervalCountErr, "Error parsing 'publishingIntervalCount' field of ServerDiagnosticsSummaryDataType")
+	publishingIntervalCount, err := ReadSimpleField(ctx, "publishingIntervalCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingIntervalCount' field"))
 	}
-	publishingIntervalCount := _publishingIntervalCount
 
-	// Simple Field (securityRejectedRequestsCount)
-	_securityRejectedRequestsCount, _securityRejectedRequestsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("securityRejectedRequestsCount", 32)
-	if _securityRejectedRequestsCountErr != nil {
-		return nil, errors.Wrap(_securityRejectedRequestsCountErr, "Error parsing 'securityRejectedRequestsCount' field of ServerDiagnosticsSummaryDataType")
+	securityRejectedRequestsCount, err := ReadSimpleField(ctx, "securityRejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityRejectedRequestsCount' field"))
 	}
-	securityRejectedRequestsCount := _securityRejectedRequestsCount
 
-	// Simple Field (rejectedRequestsCount)
-	_rejectedRequestsCount, _rejectedRequestsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("rejectedRequestsCount", 32)
-	if _rejectedRequestsCountErr != nil {
-		return nil, errors.Wrap(_rejectedRequestsCountErr, "Error parsing 'rejectedRequestsCount' field of ServerDiagnosticsSummaryDataType")
+	rejectedRequestsCount, err := ReadSimpleField(ctx, "rejectedRequestsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectedRequestsCount' field"))
 	}
-	rejectedRequestsCount := _rejectedRequestsCount
 
 	if closeErr := readBuffer.CloseContext("ServerDiagnosticsSummaryDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServerDiagnosticsSummaryDataType")

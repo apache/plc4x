@@ -109,6 +109,12 @@ func LPollDataReqParse(ctx context.Context, theBytes []byte, size uint16) (LPoll
 	return LPollDataReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func LPollDataReqParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (LPollDataReq, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LPollDataReq, error) {
+		return LPollDataReqParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func LPollDataReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LPollDataReq, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -109,6 +109,12 @@ func SubscribedDataSetDataTypeParse(ctx context.Context, theBytes []byte, identi
 	return SubscribedDataSetDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SubscribedDataSetDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscribedDataSetDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscribedDataSetDataType, error) {
+		return SubscribedDataSetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SubscribedDataSetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscribedDataSetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

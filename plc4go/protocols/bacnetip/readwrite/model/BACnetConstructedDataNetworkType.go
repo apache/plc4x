@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNetworkTypeParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataNetworkTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNetworkTypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkType, error) {
+		return BACnetConstructedDataNetworkTypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNetworkTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNetworkTypeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkType)
-	if pullErr := readBuffer.PullContext("networkType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkType")
-	}
-	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _networkTypeErr != nil {
-		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field of BACnetConstructedDataNetworkType")
-	}
-	networkType := _networkType.(BACnetNetworkTypeTagged)
-	if closeErr := readBuffer.CloseContext("networkType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkType")
+	networkType, err := ReadSimpleField[BACnetNetworkTypeTagged](ctx, "networkType", ReadComplex[BACnetNetworkTypeTagged](BACnetNetworkTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkType' field"))
 	}
 
 	// Virtual field

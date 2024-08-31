@@ -140,6 +140,17 @@ func BACnetHostAddressParse(ctx context.Context, theBytes []byte) (BACnetHostAdd
 	return BACnetHostAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetHostAddressParseWithBufferProducer[T BACnetHostAddress]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetHostAddressParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetHostAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -116,6 +116,12 @@ func ApduDataGroupValueReadParse(ctx context.Context, theBytes []byte, dataLengt
 	return ApduDataGroupValueReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataGroupValueReadParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataGroupValueRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataGroupValueRead, error) {
+		return ApduDataGroupValueReadParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataGroupValueReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -127,7 +133,7 @@ func ApduDataGroupValueReadParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 6), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

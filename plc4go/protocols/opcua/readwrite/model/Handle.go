@@ -83,6 +83,12 @@ func HandleParse(ctx context.Context, theBytes []byte) (Handle, error) {
 	return HandleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HandleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
+		return HandleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HandleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Handle, error) {
 	positionAware := readBuffer
 	_ = positionAware

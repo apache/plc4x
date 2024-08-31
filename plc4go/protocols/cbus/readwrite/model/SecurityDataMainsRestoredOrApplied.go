@@ -108,6 +108,12 @@ func SecurityDataMainsRestoredOrAppliedParse(ctx context.Context, theBytes []byt
 	return SecurityDataMainsRestoredOrAppliedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataMainsRestoredOrAppliedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsRestoredOrApplied, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsRestoredOrApplied, error) {
+		return SecurityDataMainsRestoredOrAppliedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataMainsRestoredOrAppliedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataMainsRestoredOrApplied, error) {
 	positionAware := readBuffer
 	_ = positionAware

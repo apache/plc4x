@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -138,6 +140,12 @@ func ModbusPDUErrorParse(ctx context.Context, theBytes []byte, response bool) (M
 	return ModbusPDUErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUErrorParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUError, error) {
+		return ModbusPDUErrorParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,17 +157,9 @@ func ModbusPDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (exceptionCode)
-	if pullErr := readBuffer.PullContext("exceptionCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for exceptionCode")
-	}
-	_exceptionCode, _exceptionCodeErr := ModbusErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _exceptionCodeErr != nil {
-		return nil, errors.Wrap(_exceptionCodeErr, "Error parsing 'exceptionCode' field of ModbusPDUError")
-	}
-	exceptionCode := _exceptionCode
-	if closeErr := readBuffer.CloseContext("exceptionCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for exceptionCode")
+	exceptionCode, err := ReadEnumField[ModbusErrorCode](ctx, "exceptionCode", "ModbusErrorCode", ReadEnum(ModbusErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exceptionCode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUError"); closeErr != nil {

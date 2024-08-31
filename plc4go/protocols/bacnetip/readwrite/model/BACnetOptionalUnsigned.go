@@ -140,6 +140,17 @@ func BACnetOptionalUnsignedParse(ctx context.Context, theBytes []byte) (BACnetOp
 	return BACnetOptionalUnsignedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalUnsignedParseWithBufferProducer[T BACnetOptionalUnsigned]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetOptionalUnsignedParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetOptionalUnsignedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalUnsigned, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAccessEventCredentialParse(ctx context.Context, theByt
 	return BACnetConstructedDataAccessEventCredentialParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccessEventCredentialParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventCredential, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventCredential, error) {
+		return BACnetConstructedDataAccessEventCredentialParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccessEventCredentialParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventCredential, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAccessEventCredentialParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessEventCredential)
-	if pullErr := readBuffer.PullContext("accessEventCredential"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEventCredential")
-	}
-	_accessEventCredential, _accessEventCredentialErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _accessEventCredentialErr != nil {
-		return nil, errors.Wrap(_accessEventCredentialErr, "Error parsing 'accessEventCredential' field of BACnetConstructedDataAccessEventCredential")
-	}
-	accessEventCredential := _accessEventCredential.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("accessEventCredential"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEventCredential")
+	accessEventCredential, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "accessEventCredential", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventCredential' field"))
 	}
 
 	// Virtual field

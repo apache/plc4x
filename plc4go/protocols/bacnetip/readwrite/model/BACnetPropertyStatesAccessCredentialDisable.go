@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesAccessCredentialDisableParse(ctx context.Context, theBy
 	return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesAccessCredentialDisableParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAccessCredentialDisable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAccessCredentialDisable, error) {
+		return BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesAccessCredentialDisableParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessCredentialDisable)
-	if pullErr := readBuffer.PullContext("accessCredentialDisable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisable")
-	}
-	_accessCredentialDisable, _accessCredentialDisableErr := BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _accessCredentialDisableErr != nil {
-		return nil, errors.Wrap(_accessCredentialDisableErr, "Error parsing 'accessCredentialDisable' field of BACnetPropertyStatesAccessCredentialDisable")
-	}
-	accessCredentialDisable := _accessCredentialDisable.(BACnetAccessCredentialDisableTagged)
-	if closeErr := readBuffer.CloseContext("accessCredentialDisable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessCredentialDisable")
+	accessCredentialDisable, err := ReadSimpleField[BACnetAccessCredentialDisableTagged](ctx, "accessCredentialDisable", ReadComplex[BACnetAccessCredentialDisableTagged](BACnetAccessCredentialDisableTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessCredentialDisable' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessCredentialDisable"); closeErr != nil {

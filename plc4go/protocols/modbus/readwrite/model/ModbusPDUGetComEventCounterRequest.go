@@ -117,6 +117,12 @@ func ModbusPDUGetComEventCounterRequestParse(ctx context.Context, theBytes []byt
 	return ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUGetComEventCounterRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventCounterRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventCounterRequest, error) {
+		return ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUGetComEventCounterRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventCounterRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

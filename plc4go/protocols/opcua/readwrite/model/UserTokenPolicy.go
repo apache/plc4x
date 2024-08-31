@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func UserTokenPolicyParse(ctx context.Context, theBytes []byte, identifier strin
 	return UserTokenPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UserTokenPolicyParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (UserTokenPolicy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UserTokenPolicy, error) {
+		return UserTokenPolicyParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UserTokenPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserTokenPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,69 +193,29 @@ func UserTokenPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (policyId)
-	if pullErr := readBuffer.PullContext("policyId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for policyId")
-	}
-	_policyId, _policyIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _policyIdErr != nil {
-		return nil, errors.Wrap(_policyIdErr, "Error parsing 'policyId' field of UserTokenPolicy")
-	}
-	policyId := _policyId.(PascalString)
-	if closeErr := readBuffer.CloseContext("policyId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for policyId")
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
 	}
 
-	// Simple Field (tokenType)
-	if pullErr := readBuffer.PullContext("tokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tokenType")
-	}
-	_tokenType, _tokenTypeErr := UserTokenTypeParseWithBuffer(ctx, readBuffer)
-	if _tokenTypeErr != nil {
-		return nil, errors.Wrap(_tokenTypeErr, "Error parsing 'tokenType' field of UserTokenPolicy")
-	}
-	tokenType := _tokenType
-	if closeErr := readBuffer.CloseContext("tokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tokenType")
+	tokenType, err := ReadEnumField[UserTokenType](ctx, "tokenType", "UserTokenType", ReadEnum(UserTokenTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tokenType' field"))
 	}
 
-	// Simple Field (issuedTokenType)
-	if pullErr := readBuffer.PullContext("issuedTokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuedTokenType")
-	}
-	_issuedTokenType, _issuedTokenTypeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _issuedTokenTypeErr != nil {
-		return nil, errors.Wrap(_issuedTokenTypeErr, "Error parsing 'issuedTokenType' field of UserTokenPolicy")
-	}
-	issuedTokenType := _issuedTokenType.(PascalString)
-	if closeErr := readBuffer.CloseContext("issuedTokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuedTokenType")
+	issuedTokenType, err := ReadSimpleField[PascalString](ctx, "issuedTokenType", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuedTokenType' field"))
 	}
 
-	// Simple Field (issuerEndpointUrl)
-	if pullErr := readBuffer.PullContext("issuerEndpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for issuerEndpointUrl")
-	}
-	_issuerEndpointUrl, _issuerEndpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _issuerEndpointUrlErr != nil {
-		return nil, errors.Wrap(_issuerEndpointUrlErr, "Error parsing 'issuerEndpointUrl' field of UserTokenPolicy")
-	}
-	issuerEndpointUrl := _issuerEndpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("issuerEndpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for issuerEndpointUrl")
+	issuerEndpointUrl, err := ReadSimpleField[PascalString](ctx, "issuerEndpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerEndpointUrl' field"))
 	}
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of UserTokenPolicy")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UserTokenPolicy"); closeErr != nil {

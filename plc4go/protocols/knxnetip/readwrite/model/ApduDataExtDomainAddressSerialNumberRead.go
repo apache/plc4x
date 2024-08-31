@@ -109,6 +109,12 @@ func ApduDataExtDomainAddressSerialNumberReadParse(ctx context.Context, theBytes
 	return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtDomainAddressSerialNumberReadParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressSerialNumberRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressSerialNumberRead, error) {
+		return ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtDomainAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSerialNumberRead, error) {
 	positionAware := readBuffer
 	_ = positionAware

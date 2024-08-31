@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFaultTypeParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataFaultTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFaultTypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFaultType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFaultType, error) {
+		return BACnetConstructedDataFaultTypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFaultTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFaultType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFaultTypeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (faultType)
-	if pullErr := readBuffer.PullContext("faultType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for faultType")
-	}
-	_faultType, _faultTypeErr := BACnetFaultTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _faultTypeErr != nil {
-		return nil, errors.Wrap(_faultTypeErr, "Error parsing 'faultType' field of BACnetConstructedDataFaultType")
-	}
-	faultType := _faultType.(BACnetFaultTypeTagged)
-	if closeErr := readBuffer.CloseContext("faultType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for faultType")
+	faultType, err := ReadSimpleField[BACnetFaultTypeTagged](ctx, "faultType", ReadComplex[BACnetFaultTypeTagged](BACnetFaultTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultType' field"))
 	}
 
 	// Virtual field

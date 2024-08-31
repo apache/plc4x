@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataChangesPendingParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataChangesPendingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataChangesPendingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangesPending, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangesPending, error) {
+		return BACnetConstructedDataChangesPendingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangesPending, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changesPending)
-	if pullErr := readBuffer.PullContext("changesPending"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changesPending")
-	}
-	_changesPending, _changesPendingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _changesPendingErr != nil {
-		return nil, errors.Wrap(_changesPendingErr, "Error parsing 'changesPending' field of BACnetConstructedDataChangesPending")
-	}
-	changesPending := _changesPending.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("changesPending"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changesPending")
+	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changesPending' field"))
 	}
 
 	// Virtual field

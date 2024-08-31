@@ -109,6 +109,12 @@ func TDataIndividualIndParse(ctx context.Context, theBytes []byte, size uint16) 
 	return TDataIndividualIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func TDataIndividualIndParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataIndividualInd, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataIndividualInd, error) {
+		return TDataIndividualIndParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func TDataIndividualIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualInd, error) {
 	positionAware := readBuffer
 	_ = positionAware

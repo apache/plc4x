@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func S7PayloadNotifyParse(ctx context.Context, theBytes []byte, cpuFunctionGroup
 	return S7PayloadNotifyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadNotifyParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadNotify, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadNotify, error) {
+		return S7PayloadNotifyParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadNotifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadNotify, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,17 +161,9 @@ func S7PayloadNotifyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (alarmMessage)
-	if pullErr := readBuffer.PullContext("alarmMessage"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmMessage")
-	}
-	_alarmMessage, _alarmMessageErr := AlarmMessagePushTypeParseWithBuffer(ctx, readBuffer)
-	if _alarmMessageErr != nil {
-		return nil, errors.Wrap(_alarmMessageErr, "Error parsing 'alarmMessage' field of S7PayloadNotify")
-	}
-	alarmMessage := _alarmMessage.(AlarmMessagePushType)
-	if closeErr := readBuffer.CloseContext("alarmMessage"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmMessage")
+	alarmMessage, err := ReadSimpleField[AlarmMessagePushType](ctx, "alarmMessage", ReadComplex[AlarmMessagePushType](AlarmMessagePushTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmMessage' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadNotify"); closeErr != nil {

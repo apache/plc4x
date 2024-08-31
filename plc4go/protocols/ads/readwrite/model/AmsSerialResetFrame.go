@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func AmsSerialResetFrameParse(ctx context.Context, theBytes []byte) (AmsSerialRe
 	return AmsSerialResetFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsSerialResetFrameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
+		return AmsSerialResetFrameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsSerialResetFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialResetFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,47 +172,35 @@ func AmsSerialResetFrameParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (magicCookie)
-	_magicCookie, _magicCookieErr := /*TODO: migrate me*/ readBuffer.ReadUint16("magicCookie", 16)
-	if _magicCookieErr != nil {
-		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field of AmsSerialResetFrame")
+	magicCookie, err := ReadSimpleField(ctx, "magicCookie", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'magicCookie' field"))
 	}
-	magicCookie := _magicCookie
 
-	// Simple Field (transmitterAddress)
-	_transmitterAddress, _transmitterAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("transmitterAddress", 8)
-	if _transmitterAddressErr != nil {
-		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field of AmsSerialResetFrame")
+	transmitterAddress, err := ReadSimpleField(ctx, "transmitterAddress", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transmitterAddress' field"))
 	}
-	transmitterAddress := _transmitterAddress
 
-	// Simple Field (receiverAddress)
-	_receiverAddress, _receiverAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("receiverAddress", 8)
-	if _receiverAddressErr != nil {
-		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field of AmsSerialResetFrame")
+	receiverAddress, err := ReadSimpleField(ctx, "receiverAddress", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverAddress' field"))
 	}
-	receiverAddress := _receiverAddress
 
-	// Simple Field (fragmentNumber)
-	_fragmentNumber, _fragmentNumberErr := /*TODO: migrate me*/ readBuffer.ReadInt8("fragmentNumber", 8)
-	if _fragmentNumberErr != nil {
-		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field of AmsSerialResetFrame")
+	fragmentNumber, err := ReadSimpleField(ctx, "fragmentNumber", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fragmentNumber' field"))
 	}
-	fragmentNumber := _fragmentNumber
 
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadInt8("length", 8)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsSerialResetFrame")
+	length, err := ReadSimpleField(ctx, "length", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	length := _length
 
-	// Simple Field (crc)
-	_crc, _crcErr := /*TODO: migrate me*/ readBuffer.ReadUint16("crc", 16)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of AmsSerialResetFrame")
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}
-	crc := _crc
 
 	if closeErr := readBuffer.CloseContext("AmsSerialResetFrame"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AmsSerialResetFrame")

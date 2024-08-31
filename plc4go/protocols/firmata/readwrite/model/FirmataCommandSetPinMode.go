@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func FirmataCommandSetPinModeParse(ctx context.Context, theBytes []byte, respons
 	return FirmataCommandSetPinModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandSetPinModeParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSetPinMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSetPinMode, error) {
+		return FirmataCommandSetPinModeParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataCommandSetPinModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSetPinMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,24 +160,14 @@ func FirmataCommandSetPinModeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataCommandSetPinMode")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
-	// Simple Field (mode)
-	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mode")
-	}
-	_mode, _modeErr := PinModeParseWithBuffer(ctx, readBuffer)
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of FirmataCommandSetPinMode")
-	}
-	mode := _mode
-	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mode")
+	mode, err := ReadEnumField[PinMode](ctx, "mode", "PinMode", ReadEnum(PinModeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("FirmataCommandSetPinMode"); closeErr != nil {

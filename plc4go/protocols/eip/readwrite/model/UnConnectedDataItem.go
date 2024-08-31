@@ -135,6 +135,12 @@ func UnConnectedDataItemParse(ctx context.Context, theBytes []byte) (UnConnected
 	return UnConnectedDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func UnConnectedDataItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
+		return UnConnectedDataItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UnConnectedDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,23 +152,15 @@ func UnConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, 16))
+	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
 	}
 	_ = packetSize
 
-	// Simple Field (service)
-	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for service")
-	}
-	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(packetSize))
-	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of UnConnectedDataItem")
-	}
-	service := _service.(CipService)
-	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for service")
+	service, err := ReadSimpleField[CipService](ctx, "service", ReadComplex[CipService](CipServiceParseWithBufferProducer[CipService]((bool)(bool(false)), (uint16)(packetSize)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'service' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UnConnectedDataItem"); closeErr != nil {

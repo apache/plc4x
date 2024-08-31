@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataScaleFactorParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataScaleFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataScaleFactorParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScaleFactor, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScaleFactor, error) {
+		return BACnetConstructedDataScaleFactorParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataScaleFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScaleFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataScaleFactorParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (scaleFactor)
-	if pullErr := readBuffer.PullContext("scaleFactor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for scaleFactor")
-	}
-	_scaleFactor, _scaleFactorErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _scaleFactorErr != nil {
-		return nil, errors.Wrap(_scaleFactorErr, "Error parsing 'scaleFactor' field of BACnetConstructedDataScaleFactor")
-	}
-	scaleFactor := _scaleFactor.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("scaleFactor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for scaleFactor")
+	scaleFactor, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "scaleFactor", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scaleFactor' field"))
 	}
 
 	// Virtual field

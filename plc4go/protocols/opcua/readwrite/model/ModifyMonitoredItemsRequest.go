@@ -183,6 +183,12 @@ func ModifyMonitoredItemsRequestParse(ctx context.Context, theBytes []byte, iden
 	return ModifyMonitoredItemsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ModifyMonitoredItemsRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModifyMonitoredItemsRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModifyMonitoredItemsRequest, error) {
+		return ModifyMonitoredItemsRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ModifyMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ModifyMonitoredItemsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -194,53 +200,27 @@ func ModifyMonitoredItemsRequestParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of ModifyMonitoredItemsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of ModifyMonitoredItemsRequest")
-	}
-	subscriptionId := _subscriptionId
-
-	// Simple Field (timestampsToReturn)
-	if pullErr := readBuffer.PullContext("timestampsToReturn"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestampsToReturn")
-	}
-	_timestampsToReturn, _timestampsToReturnErr := TimestampsToReturnParseWithBuffer(ctx, readBuffer)
-	if _timestampsToReturnErr != nil {
-		return nil, errors.Wrap(_timestampsToReturnErr, "Error parsing 'timestampsToReturn' field of ModifyMonitoredItemsRequest")
-	}
-	timestampsToReturn := _timestampsToReturn
-	if closeErr := readBuffer.CloseContext("timestampsToReturn"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestampsToReturn")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
 
-	// Simple Field (noOfItemsToModify)
-	_noOfItemsToModify, _noOfItemsToModifyErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfItemsToModify", 32)
-	if _noOfItemsToModifyErr != nil {
-		return nil, errors.Wrap(_noOfItemsToModifyErr, "Error parsing 'noOfItemsToModify' field of ModifyMonitoredItemsRequest")
+	timestampsToReturn, err := ReadEnumField[TimestampsToReturn](ctx, "timestampsToReturn", "TimestampsToReturn", ReadEnum(TimestampsToReturnByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestampsToReturn' field"))
 	}
-	noOfItemsToModify := _noOfItemsToModify
 
-	itemsToModify, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "itemsToModify", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("757"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfItemsToModify))
+	noOfItemsToModify, err := ReadSimpleField(ctx, "noOfItemsToModify", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfItemsToModify' field"))
+	}
+
+	itemsToModify, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "itemsToModify", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("757")), readBuffer), uint64(noOfItemsToModify))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsToModify' field"))
 	}

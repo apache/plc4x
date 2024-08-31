@@ -109,6 +109,12 @@ func ApduDataExtNetworkParameterWriteParse(ctx context.Context, theBytes []byte,
 	return ApduDataExtNetworkParameterWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtNetworkParameterWriteParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtNetworkParameterWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtNetworkParameterWrite, error) {
+		return ApduDataExtNetworkParameterWriteParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtNetworkParameterWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtNetworkParameterWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

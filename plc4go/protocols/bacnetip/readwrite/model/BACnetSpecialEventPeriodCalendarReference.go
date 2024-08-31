@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetSpecialEventPeriodCalendarReferenceParse(ctx context.Context, theByte
 	return BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSpecialEventPeriodCalendarReferenceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
+		return BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (calendarReference)
-	if pullErr := readBuffer.PullContext("calendarReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calendarReference")
-	}
-	_calendarReference, _calendarReferenceErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _calendarReferenceErr != nil {
-		return nil, errors.Wrap(_calendarReferenceErr, "Error parsing 'calendarReference' field of BACnetSpecialEventPeriodCalendarReference")
-	}
-	calendarReference := _calendarReference.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("calendarReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calendarReference")
+	calendarReference, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "calendarReference", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calendarReference' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriodCalendarReference"); closeErr != nil {

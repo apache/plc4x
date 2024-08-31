@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func ReadValueIdParse(ctx context.Context, theBytes []byte, identifier string) (
 	return ReadValueIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReadValueIdParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReadValueId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReadValueId, error) {
+		return ReadValueIdParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReadValueIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReadValueId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,50 +182,24 @@ func ReadValueIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of ReadValueId")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of ReadValueId")
-	}
-	attributeId := _attributeId
-
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
-	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of ReadValueId")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 
-	// Simple Field (dataEncoding)
-	if pullErr := readBuffer.PullContext("dataEncoding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataEncoding")
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
-	_dataEncoding, _dataEncodingErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _dataEncodingErr != nil {
-		return nil, errors.Wrap(_dataEncodingErr, "Error parsing 'dataEncoding' field of ReadValueId")
-	}
-	dataEncoding := _dataEncoding.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("dataEncoding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataEncoding")
+
+	dataEncoding, err := ReadSimpleField[QualifiedName](ctx, "dataEncoding", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataEncoding' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReadValueId"); closeErr != nil {

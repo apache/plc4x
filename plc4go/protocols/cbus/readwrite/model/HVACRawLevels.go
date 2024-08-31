@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,6 +124,12 @@ func HVACRawLevelsParse(ctx context.Context, theBytes []byte) (HVACRawLevels, er
 	return HVACRawLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACRawLevelsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
+		return HVACRawLevelsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACRawLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,12 +141,10 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (rawValue)
-	_rawValue, _rawValueErr := /*TODO: migrate me*/ readBuffer.ReadInt16("rawValue", 16)
-	if _rawValueErr != nil {
-		return nil, errors.Wrap(_rawValueErr, "Error parsing 'rawValue' field of HVACRawLevels")
+	rawValue, err := ReadSimpleField(ctx, "rawValue", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawValue' field"))
 	}
-	rawValue := _rawValue
 
 	// Virtual field
 	_valueInPercent := float32(rawValue) / float32(float32(32767))

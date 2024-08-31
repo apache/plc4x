@@ -109,6 +109,12 @@ func ApduDataExtIndividualAddressSerialNumberReadParse(ctx context.Context, theB
 	return ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtIndividualAddressSerialNumberReadParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtIndividualAddressSerialNumberRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtIndividualAddressSerialNumberRead, error) {
+		return ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtIndividualAddressSerialNumberReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtIndividualAddressSerialNumberRead, error) {
 	positionAware := readBuffer
 	_ = positionAware

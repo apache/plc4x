@@ -122,6 +122,12 @@ func NullListServicesResponseParse(ctx context.Context, theBytes []byte, respons
 	return NullListServicesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func NullListServicesResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (NullListServicesResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NullListServicesResponse, error) {
+		return NullListServicesResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func NullListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullListServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

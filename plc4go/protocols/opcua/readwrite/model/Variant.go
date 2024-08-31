@@ -165,6 +165,17 @@ func VariantParse(ctx context.Context, theBytes []byte) (Variant, error) {
 	return VariantParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func VariantParseWithBufferProducer[T Variant]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := VariantParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Variant, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -176,21 +187,17 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (arrayLengthSpecified)
-	_arrayLengthSpecified, _arrayLengthSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("arrayLengthSpecified")
-	if _arrayLengthSpecifiedErr != nil {
-		return nil, errors.Wrap(_arrayLengthSpecifiedErr, "Error parsing 'arrayLengthSpecified' field of Variant")
+	arrayLengthSpecified, err := ReadSimpleField(ctx, "arrayLengthSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLengthSpecified' field"))
 	}
-	arrayLengthSpecified := _arrayLengthSpecified
 
-	// Simple Field (arrayDimensionsSpecified)
-	_arrayDimensionsSpecified, _arrayDimensionsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("arrayDimensionsSpecified")
-	if _arrayDimensionsSpecifiedErr != nil {
-		return nil, errors.Wrap(_arrayDimensionsSpecifiedErr, "Error parsing 'arrayDimensionsSpecified' field of Variant")
+	arrayDimensionsSpecified, err := ReadSimpleField(ctx, "arrayDimensionsSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensionsSpecified' field"))
 	}
-	arrayDimensionsSpecified := _arrayDimensionsSpecified
 
-	VariantType, err := ReadDiscriminatorField[uint8](ctx, "VariantType", ReadUnsignedByte(readBuffer, 6))
+	VariantType, err := ReadDiscriminatorField[uint8](ctx, "VariantType", ReadUnsignedByte(readBuffer, uint8(6)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'VariantType' field"))
 	}
@@ -265,7 +272,7 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	}
 	_child = _childTemp.(VariantChildSerializeRequirement)
 
-	noOfArrayDimensions, err := ReadOptionalField[int32](ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, 32), arrayDimensionsSpecified)
+	noOfArrayDimensions, err := ReadOptionalField[int32](ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)), arrayDimensionsSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
 	}

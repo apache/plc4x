@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParse(ctx context.Context
 	return BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
+		return BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMultiStateOutputFeedbackValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMultiStateOutputFeedbackValueParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (feedbackValue)
-	if pullErr := readBuffer.PullContext("feedbackValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for feedbackValue")
-	}
-	_feedbackValue, _feedbackValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _feedbackValueErr != nil {
-		return nil, errors.Wrap(_feedbackValueErr, "Error parsing 'feedbackValue' field of BACnetConstructedDataMultiStateOutputFeedbackValue")
-	}
-	feedbackValue := _feedbackValue.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("feedbackValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for feedbackValue")
+	feedbackValue, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "feedbackValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackValue' field"))
 	}
 
 	// Virtual field

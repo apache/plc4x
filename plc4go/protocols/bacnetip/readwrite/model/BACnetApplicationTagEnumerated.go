@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func BACnetApplicationTagEnumeratedParse(ctx context.Context, theBytes []byte, h
 	return BACnetApplicationTagEnumeratedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header)
 }
 
+func BACnetApplicationTagEnumeratedParseWithBufferProducer(header BACnetTagHeader) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagEnumerated, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagEnumerated, error) {
+		return BACnetApplicationTagEnumeratedParseWithBuffer(ctx, readBuffer, header)
+	}
+}
+
 func BACnetApplicationTagEnumeratedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader) (BACnetApplicationTagEnumerated, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,17 +166,9 @@ func BACnetApplicationTagEnumeratedParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadEnumeratedParseWithBuffer(ctx, readBuffer, uint32(header.GetActualLength()))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagEnumerated")
-	}
-	payload := _payload.(BACnetTagPayloadEnumerated)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadEnumerated](ctx, "payload", ReadComplex[BACnetTagPayloadEnumerated](BACnetTagPayloadEnumeratedParseWithBufferProducer((uint32)(header.GetActualLength())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	// Virtual field

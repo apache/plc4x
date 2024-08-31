@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func AmsNetIdParse(ctx context.Context, theBytes []byte) (AmsNetId, error) {
 	return AmsNetIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsNetIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
+		return AmsNetIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsNetId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,47 +172,35 @@ func AmsNetIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octet1)
-	_octet1, _octet1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet1", 8)
-	if _octet1Err != nil {
-		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of AmsNetId")
+	octet1, err := ReadSimpleField(ctx, "octet1", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet1' field"))
 	}
-	octet1 := _octet1
 
-	// Simple Field (octet2)
-	_octet2, _octet2Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet2", 8)
-	if _octet2Err != nil {
-		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of AmsNetId")
+	octet2, err := ReadSimpleField(ctx, "octet2", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet2' field"))
 	}
-	octet2 := _octet2
 
-	// Simple Field (octet3)
-	_octet3, _octet3Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet3", 8)
-	if _octet3Err != nil {
-		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of AmsNetId")
+	octet3, err := ReadSimpleField(ctx, "octet3", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet3' field"))
 	}
-	octet3 := _octet3
 
-	// Simple Field (octet4)
-	_octet4, _octet4Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet4", 8)
-	if _octet4Err != nil {
-		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of AmsNetId")
+	octet4, err := ReadSimpleField(ctx, "octet4", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet4' field"))
 	}
-	octet4 := _octet4
 
-	// Simple Field (octet5)
-	_octet5, _octet5Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet5", 8)
-	if _octet5Err != nil {
-		return nil, errors.Wrap(_octet5Err, "Error parsing 'octet5' field of AmsNetId")
+	octet5, err := ReadSimpleField(ctx, "octet5", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet5' field"))
 	}
-	octet5 := _octet5
 
-	// Simple Field (octet6)
-	_octet6, _octet6Err := /*TODO: migrate me*/ readBuffer.ReadUint8("octet6", 8)
-	if _octet6Err != nil {
-		return nil, errors.Wrap(_octet6Err, "Error parsing 'octet6' field of AmsNetId")
+	octet6, err := ReadSimpleField(ctx, "octet6", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet6' field"))
 	}
-	octet6 := _octet6
 
 	if closeErr := readBuffer.CloseContext("AmsNetId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AmsNetId")

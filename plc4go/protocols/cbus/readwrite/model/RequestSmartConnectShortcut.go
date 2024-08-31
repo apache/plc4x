@@ -163,6 +163,12 @@ func RequestSmartConnectShortcutParse(ctx context.Context, theBytes []byte, cBus
 	return RequestSmartConnectShortcutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestSmartConnectShortcutParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestSmartConnectShortcut, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestSmartConnectShortcut, error) {
+		return RequestSmartConnectShortcutParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestSmartConnectShortcut, error) {
 	positionAware := readBuffer
 	_ = positionAware

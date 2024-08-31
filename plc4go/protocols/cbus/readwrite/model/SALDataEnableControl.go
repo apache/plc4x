@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataEnableControlParse(ctx context.Context, theBytes []byte, application
 	return SALDataEnableControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataEnableControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataEnableControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataEnableControl, error) {
+		return SALDataEnableControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataEnableControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataEnableControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataEnableControlParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enableControlData)
-	if pullErr := readBuffer.PullContext("enableControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enableControlData")
-	}
-	_enableControlData, _enableControlDataErr := EnableControlDataParseWithBuffer(ctx, readBuffer)
-	if _enableControlDataErr != nil {
-		return nil, errors.Wrap(_enableControlDataErr, "Error parsing 'enableControlData' field of SALDataEnableControl")
-	}
-	enableControlData := _enableControlData.(EnableControlData)
-	if closeErr := readBuffer.CloseContext("enableControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enableControlData")
+	enableControlData, err := ReadSimpleField[EnableControlData](ctx, "enableControlData", ReadComplex[EnableControlData](EnableControlDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableControlData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataEnableControl"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetChannelValueBitStringParse(ctx context.Context, theBytes []byte) (BAC
 	return BACnetChannelValueBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetChannelValueBitStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
+		return BACnetChannelValueBitStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetChannelValueBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetChannelValueBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetChannelValueBitStringParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitStringValue)
-	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
-	}
-	_bitStringValue, _bitStringValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetChannelValueBitString")
-	}
-	bitStringValue := _bitStringValue.(BACnetApplicationTagBitString)
-	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
+	bitStringValue, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitStringValue", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetChannelValueBitString"); closeErr != nil {

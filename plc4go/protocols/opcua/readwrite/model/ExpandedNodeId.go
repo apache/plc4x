@@ -172,6 +172,12 @@ func ExpandedNodeIdParse(ctx context.Context, theBytes []byte) (ExpandedNodeId, 
 	return ExpandedNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ExpandedNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ExpandedNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ExpandedNodeId, error) {
+		return ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ExpandedNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,31 +189,19 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceURISpecified)
-	_namespaceURISpecified, _namespaceURISpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("namespaceURISpecified")
-	if _namespaceURISpecifiedErr != nil {
-		return nil, errors.Wrap(_namespaceURISpecifiedErr, "Error parsing 'namespaceURISpecified' field of ExpandedNodeId")
+	namespaceURISpecified, err := ReadSimpleField(ctx, "namespaceURISpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceURISpecified' field"))
 	}
-	namespaceURISpecified := _namespaceURISpecified
 
-	// Simple Field (serverIndexSpecified)
-	_serverIndexSpecified, _serverIndexSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverIndexSpecified")
-	if _serverIndexSpecifiedErr != nil {
-		return nil, errors.Wrap(_serverIndexSpecifiedErr, "Error parsing 'serverIndexSpecified' field of ExpandedNodeId")
+	serverIndexSpecified, err := ReadSimpleField(ctx, "serverIndexSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverIndexSpecified' field"))
 	}
-	serverIndexSpecified := _serverIndexSpecified
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdTypeDefinitionParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of ExpandedNodeId")
-	}
-	nodeId := _nodeId.(NodeIdTypeDefinition)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeIdTypeDefinition](ctx, "nodeId", ReadComplex[NodeIdTypeDefinition](NodeIdTypeDefinitionParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
 	// Virtual field
@@ -224,7 +218,7 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		namespaceURI = *_namespaceURI
 	}
 
-	serverIndex, err := ReadOptionalField[uint32](ctx, "serverIndex", ReadUnsignedInt(readBuffer, 32), serverIndexSpecified)
+	serverIndex, err := ReadOptionalField[uint32](ctx, "serverIndex", ReadUnsignedInt(readBuffer, uint8(32)), serverIndexSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverIndex' field"))
 	}

@@ -138,6 +138,12 @@ func SysexCommandExtendedIdParse(ctx context.Context, theBytes []byte, response 
 	return SysexCommandExtendedIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandExtendedIdParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandExtendedId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandExtendedId, error) {
+		return SysexCommandExtendedIdParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandExtendedIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandExtendedId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,7 +155,7 @@ func SysexCommandExtendedIdParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	id, err := ReadCountArrayField[int8](ctx, "id", ReadSignedByte(readBuffer, 8), uint64(int32(2)))
+	id, err := ReadCountArrayField[int8](ctx, "id", ReadSignedByte(readBuffer, uint8(8)), uint64(int32(2)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}

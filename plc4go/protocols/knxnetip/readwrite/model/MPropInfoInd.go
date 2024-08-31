@@ -109,6 +109,12 @@ func MPropInfoIndParse(ctx context.Context, theBytes []byte, size uint16) (MProp
 	return MPropInfoIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MPropInfoIndParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropInfoInd, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropInfoInd, error) {
+		return MPropInfoIndParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MPropInfoIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropInfoInd, error) {
 	positionAware := readBuffer
 	_ = positionAware

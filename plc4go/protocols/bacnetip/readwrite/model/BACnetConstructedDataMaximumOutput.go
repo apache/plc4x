@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaximumOutputParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataMaximumOutputParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaximumOutputParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaximumOutput, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaximumOutput, error) {
+		return BACnetConstructedDataMaximumOutputParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaximumOutputParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumOutput, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaximumOutputParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maximumOutput)
-	if pullErr := readBuffer.PullContext("maximumOutput"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maximumOutput")
-	}
-	_maximumOutput, _maximumOutputErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maximumOutputErr != nil {
-		return nil, errors.Wrap(_maximumOutputErr, "Error parsing 'maximumOutput' field of BACnetConstructedDataMaximumOutput")
-	}
-	maximumOutput := _maximumOutput.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("maximumOutput"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maximumOutput")
+	maximumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maximumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumOutput' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetApplicationTagTimeParse(ctx context.Context, theBytes []byte) (BACnet
 	return BACnetApplicationTagTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetApplicationTagTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
+		return BACnetApplicationTagTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetApplicationTagTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetApplicationTagTimeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadTimeParseWithBuffer(ctx, readBuffer)
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetApplicationTagTime")
-	}
-	payload := _payload.(BACnetTagPayloadTime)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadTime](ctx, "payload", ReadComplex[BACnetTagPayloadTime](BACnetTagPayloadTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagTime"); closeErr != nil {

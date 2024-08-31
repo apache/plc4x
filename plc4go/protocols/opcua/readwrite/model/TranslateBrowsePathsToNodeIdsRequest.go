@@ -161,6 +161,12 @@ func TranslateBrowsePathsToNodeIdsRequestParse(ctx context.Context, theBytes []b
 	return TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TranslateBrowsePathsToNodeIdsRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TranslateBrowsePathsToNodeIdsRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TranslateBrowsePathsToNodeIdsRequest, error) {
+		return TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TranslateBrowsePathsToNodeIdsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func TranslateBrowsePathsToNodeIdsRequestParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of TranslateBrowsePathsToNodeIdsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfBrowsePaths)
-	_noOfBrowsePaths, _noOfBrowsePathsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfBrowsePaths", 32)
-	if _noOfBrowsePathsErr != nil {
-		return nil, errors.Wrap(_noOfBrowsePathsErr, "Error parsing 'noOfBrowsePaths' field of TranslateBrowsePathsToNodeIdsRequest")
+	noOfBrowsePaths, err := ReadSimpleField(ctx, "noOfBrowsePaths", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfBrowsePaths' field"))
 	}
-	noOfBrowsePaths := _noOfBrowsePaths
 
-	browsePaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "browsePaths", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("545"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfBrowsePaths))
+	browsePaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "browsePaths", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("545")), readBuffer), uint64(noOfBrowsePaths))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browsePaths' field"))
 	}

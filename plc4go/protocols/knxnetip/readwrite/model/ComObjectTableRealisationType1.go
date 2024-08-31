@@ -161,6 +161,12 @@ func ComObjectTableRealisationType1Parse(ctx context.Context, theBytes []byte, f
 	return ComObjectTableRealisationType1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
+func ComObjectTableRealisationType1ParseWithBufferProducer(firmwareType FirmwareType) func(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectTableRealisationType1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectTableRealisationType1, error) {
+		return ComObjectTableRealisationType1ParseWithBuffer(ctx, readBuffer, firmwareType)
+	}
+}
+
 func ComObjectTableRealisationType1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType1, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,19 +178,15 @@ func ComObjectTableRealisationType1ParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numEntries)
-	_numEntries, _numEntriesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numEntries", 8)
-	if _numEntriesErr != nil {
-		return nil, errors.Wrap(_numEntriesErr, "Error parsing 'numEntries' field of ComObjectTableRealisationType1")
+	numEntries, err := ReadSimpleField(ctx, "numEntries", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numEntries' field"))
 	}
-	numEntries := _numEntries
 
-	// Simple Field (ramFlagsTablePointer)
-	_ramFlagsTablePointer, _ramFlagsTablePointerErr := /*TODO: migrate me*/ readBuffer.ReadUint8("ramFlagsTablePointer", 8)
-	if _ramFlagsTablePointerErr != nil {
-		return nil, errors.Wrap(_ramFlagsTablePointerErr, "Error parsing 'ramFlagsTablePointer' field of ComObjectTableRealisationType1")
+	ramFlagsTablePointer, err := ReadSimpleField(ctx, "ramFlagsTablePointer", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ramFlagsTablePointer' field"))
 	}
-	ramFlagsTablePointer := _ramFlagsTablePointer
 
 	comObjectDescriptors, err := ReadCountArrayField[GroupObjectDescriptorRealisationType1](ctx, "comObjectDescriptors", ReadComplex[GroupObjectDescriptorRealisationType1](GroupObjectDescriptorRealisationType1ParseWithBuffer, readBuffer), uint64(numEntries))
 	if err != nil {

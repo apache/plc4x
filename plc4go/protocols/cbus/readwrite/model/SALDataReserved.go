@@ -111,6 +111,12 @@ func SALDataReservedParse(ctx context.Context, theBytes []byte, applicationId Ap
 	return SALDataReservedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataReservedParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataReserved, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataReserved, error) {
+		return SALDataReservedParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataReservedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataReserved, error) {
 	positionAware := readBuffer
 	_ = positionAware

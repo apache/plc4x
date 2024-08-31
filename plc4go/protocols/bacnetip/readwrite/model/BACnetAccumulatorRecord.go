@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func BACnetAccumulatorRecordParse(ctx context.Context, theBytes []byte) (BACnetA
 	return BACnetAccumulatorRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAccumulatorRecordParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
+		return BACnetAccumulatorRecordParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccumulatorRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,56 +152,24 @@ func BACnetAccumulatorRecordParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
-	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetAccumulatorRecord")
-	}
-	timestamp := _timestamp.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
+	timestamp, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "timestamp", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	// Simple Field (presentValue)
-	if pullErr := readBuffer.PullContext("presentValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for presentValue")
-	}
-	_presentValue, _presentValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
-	if _presentValueErr != nil {
-		return nil, errors.Wrap(_presentValueErr, "Error parsing 'presentValue' field of BACnetAccumulatorRecord")
-	}
-	presentValue := _presentValue.(BACnetContextTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("presentValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for presentValue")
+	presentValue, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "presentValue", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
 
-	// Simple Field (accumulatedValue)
-	if pullErr := readBuffer.PullContext("accumulatedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accumulatedValue")
-	}
-	_accumulatedValue, _accumulatedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_SIGNED_INTEGER))
-	if _accumulatedValueErr != nil {
-		return nil, errors.Wrap(_accumulatedValueErr, "Error parsing 'accumulatedValue' field of BACnetAccumulatorRecord")
-	}
-	accumulatedValue := _accumulatedValue.(BACnetContextTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("accumulatedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accumulatedValue")
+	accumulatedValue, err := ReadSimpleField[BACnetContextTagSignedInteger](ctx, "accumulatedValue", ReadComplex[BACnetContextTagSignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagSignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_SIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accumulatedValue' field"))
 	}
 
-	// Simple Field (accumulatorStatus)
-	if pullErr := readBuffer.PullContext("accumulatorStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accumulatorStatus")
-	}
-	_accumulatorStatus, _accumulatorStatusErr := BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _accumulatorStatusErr != nil {
-		return nil, errors.Wrap(_accumulatorStatusErr, "Error parsing 'accumulatorStatus' field of BACnetAccumulatorRecord")
-	}
-	accumulatorStatus := _accumulatorStatus.(BACnetAccumulatorRecordAccumulatorStatusTagged)
-	if closeErr := readBuffer.CloseContext("accumulatorStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accumulatorStatus")
+	accumulatorStatus, err := ReadSimpleField[BACnetAccumulatorRecordAccumulatorStatusTagged](ctx, "accumulatorStatus", ReadComplex[BACnetAccumulatorRecordAccumulatorStatusTagged](BACnetAccumulatorRecordAccumulatorStatusTaggedParseWithBufferProducer((uint8)(uint8(3)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accumulatorStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccumulatorRecord"); closeErr != nil {

@@ -159,6 +159,12 @@ func AdsReadResponseParse(ctx context.Context, theBytes []byte) (AdsReadResponse
 	return AdsReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
+		return AdsReadResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,20 +176,12 @@ func AdsReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}

@@ -154,6 +154,17 @@ func BVLCParse(ctx context.Context, theBytes []byte) (BVLC, error) {
 	return BVLCParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCParseWithBufferProducer[T BVLC]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BVLCParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -165,18 +176,18 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, 8), BVLC_BACNETTYPE, codegen.WithByteOrder(binary.BigEndian))
+	bacnetType, err := ReadConstField[uint8](ctx, "bacnetType", ReadUnsignedByte(readBuffer, uint8(8)), BVLC_BACNETTYPE, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetType' field"))
 	}
 	_ = bacnetType
 
-	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	bvlcFunction, err := ReadDiscriminatorField[uint8](ctx, "bvlcFunction", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcFunction' field"))
 	}
 
-	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	bvlcLength, err := ReadImplicitField[uint16](ctx, "bvlcLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcLength' field"))
 	}

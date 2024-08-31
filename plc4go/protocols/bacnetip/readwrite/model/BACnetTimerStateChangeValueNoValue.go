@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimerStateChangeValueNoValueParse(ctx context.Context, theBytes []byt
 	return BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetTimerStateChangeValueNoValueParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueNoValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueNoValue, error) {
+		return BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueNoValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noValue)
-	if pullErr := readBuffer.PullContext("noValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for noValue")
-	}
-	_noValue, _noValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
-	if _noValueErr != nil {
-		return nil, errors.Wrap(_noValueErr, "Error parsing 'noValue' field of BACnetTimerStateChangeValueNoValue")
-	}
-	noValue := _noValue.(BACnetContextTagNull)
-	if closeErr := readBuffer.CloseContext("noValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for noValue")
+	noValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "noValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueNoValue"); closeErr != nil {

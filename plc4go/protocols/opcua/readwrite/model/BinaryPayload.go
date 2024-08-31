@@ -134,6 +134,12 @@ func BinaryPayloadParse(ctx context.Context, theBytes []byte, extensible bool, b
 	return BinaryPayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
 }
 
+func BinaryPayloadParseWithBufferProducer(extensible bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BinaryPayload, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BinaryPayload, error) {
+		return BinaryPayloadParseWithBuffer(ctx, readBuffer, extensible, byteCount)
+	}
+}
+
 func BinaryPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (BinaryPayload, error) {
 	positionAware := readBuffer
 	_ = positionAware

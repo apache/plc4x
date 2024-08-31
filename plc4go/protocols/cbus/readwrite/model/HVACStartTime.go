@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -162,6 +164,12 @@ func HVACStartTimeParse(ctx context.Context, theBytes []byte) (HVACStartTime, er
 	return HVACStartTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACStartTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
+		return HVACStartTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStartTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -173,12 +181,10 @@ func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minutesSinceSunday12AM)
-	_minutesSinceSunday12AM, _minutesSinceSunday12AMErr := /*TODO: migrate me*/ readBuffer.ReadUint16("minutesSinceSunday12AM", 16)
-	if _minutesSinceSunday12AMErr != nil {
-		return nil, errors.Wrap(_minutesSinceSunday12AMErr, "Error parsing 'minutesSinceSunday12AM' field of HVACStartTime")
+	minutesSinceSunday12AM, err := ReadSimpleField(ctx, "minutesSinceSunday12AM", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minutesSinceSunday12AM' field"))
 	}
-	minutesSinceSunday12AM := _minutesSinceSunday12AM
 
 	// Virtual field
 	_hoursSinceSunday12AM := float32(minutesSinceSunday12AM) / float32(float32(60))

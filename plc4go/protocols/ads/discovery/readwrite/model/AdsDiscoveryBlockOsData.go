@@ -137,6 +137,12 @@ func AdsDiscoveryBlockOsDataParse(ctx context.Context, theBytes []byte) (AdsDisc
 	return AdsDiscoveryBlockOsDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockOsDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
+		return AdsDiscoveryBlockOsDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockOsData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,7 +154,7 @@ func AdsDiscoveryBlockOsDataParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	osDataLen, err := ReadImplicitField[uint16](ctx, "osDataLen", ReadUnsignedShort(readBuffer, 16))
+	osDataLen, err := ReadImplicitField[uint16](ctx, "osDataLen", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'osDataLen' field"))
 	}

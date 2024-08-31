@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBlinkWarnEnableParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBlinkWarnEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBlinkWarnEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBlinkWarnEnable, error) {
+		return BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBlinkWarnEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (blinkWarnEnable)
-	if pullErr := readBuffer.PullContext("blinkWarnEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for blinkWarnEnable")
-	}
-	_blinkWarnEnable, _blinkWarnEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _blinkWarnEnableErr != nil {
-		return nil, errors.Wrap(_blinkWarnEnableErr, "Error parsing 'blinkWarnEnable' field of BACnetConstructedDataBlinkWarnEnable")
-	}
-	blinkWarnEnable := _blinkWarnEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("blinkWarnEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for blinkWarnEnable")
+	blinkWarnEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "blinkWarnEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blinkWarnEnable' field"))
 	}
 
 	// Virtual field

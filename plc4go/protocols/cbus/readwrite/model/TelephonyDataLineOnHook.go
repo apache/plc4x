@@ -108,6 +108,12 @@ func TelephonyDataLineOnHookParse(ctx context.Context, theBytes []byte) (Telepho
 	return TelephonyDataLineOnHookParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataLineOnHookParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOnHook, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOnHook, error) {
+		return TelephonyDataLineOnHookParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataLineOnHookParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataLineOnHook, error) {
 	positionAware := readBuffer
 	_ = positionAware

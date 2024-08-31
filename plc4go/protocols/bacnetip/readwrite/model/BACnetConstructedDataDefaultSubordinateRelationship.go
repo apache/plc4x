@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParse(ctx context.Contex
 	return BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
+		return BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultSubordinateRelationship, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDefaultSubordinateRelationshipParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultSubordinateRelationship)
-	if pullErr := readBuffer.PullContext("defaultSubordinateRelationship"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultSubordinateRelationship")
-	}
-	_defaultSubordinateRelationship, _defaultSubordinateRelationshipErr := BACnetRelationshipTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _defaultSubordinateRelationshipErr != nil {
-		return nil, errors.Wrap(_defaultSubordinateRelationshipErr, "Error parsing 'defaultSubordinateRelationship' field of BACnetConstructedDataDefaultSubordinateRelationship")
-	}
-	defaultSubordinateRelationship := _defaultSubordinateRelationship.(BACnetRelationshipTagged)
-	if closeErr := readBuffer.CloseContext("defaultSubordinateRelationship"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultSubordinateRelationship")
+	defaultSubordinateRelationship, err := ReadSimpleField[BACnetRelationshipTagged](ctx, "defaultSubordinateRelationship", ReadComplex[BACnetRelationshipTagged](BACnetRelationshipTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultSubordinateRelationship' field"))
 	}
 
 	// Virtual field

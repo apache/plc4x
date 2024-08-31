@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataReasonForHaltParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataReasonForHaltParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataReasonForHaltParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReasonForHalt, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReasonForHalt, error) {
+		return BACnetConstructedDataReasonForHaltParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataReasonForHaltParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForHalt, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataReasonForHaltParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programError)
-	if pullErr := readBuffer.PullContext("programError"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programError")
-	}
-	_programError, _programErrorErr := BACnetProgramErrorTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _programErrorErr != nil {
-		return nil, errors.Wrap(_programErrorErr, "Error parsing 'programError' field of BACnetConstructedDataReasonForHalt")
-	}
-	programError := _programError.(BACnetProgramErrorTagged)
-	if closeErr := readBuffer.CloseContext("programError"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programError")
+	programError, err := ReadSimpleField[BACnetProgramErrorTagged](ctx, "programError", ReadComplex[BACnetProgramErrorTagged](BACnetProgramErrorTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programError' field"))
 	}
 
 	// Virtual field

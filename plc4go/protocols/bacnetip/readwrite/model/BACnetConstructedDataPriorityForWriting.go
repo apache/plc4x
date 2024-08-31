@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPriorityForWritingParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataPriorityForWritingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPriorityForWritingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPriorityForWriting, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPriorityForWriting, error) {
+		return BACnetConstructedDataPriorityForWritingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPriorityForWritingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPriorityForWriting, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPriorityForWritingParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (priorityForWriting)
-	if pullErr := readBuffer.PullContext("priorityForWriting"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priorityForWriting")
-	}
-	_priorityForWriting, _priorityForWritingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _priorityForWritingErr != nil {
-		return nil, errors.Wrap(_priorityForWritingErr, "Error parsing 'priorityForWriting' field of BACnetConstructedDataPriorityForWriting")
-	}
-	priorityForWriting := _priorityForWriting.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("priorityForWriting"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priorityForWriting")
+	priorityForWriting, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "priorityForWriting", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityForWriting' field"))
 	}
 
 	// Virtual field

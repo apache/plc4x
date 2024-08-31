@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBACnetIPv6ModeParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataBACnetIPv6ModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBACnetIPv6ModeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6Mode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6Mode, error) {
+		return BACnetConstructedDataBACnetIPv6ModeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBACnetIPv6ModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6Mode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBACnetIPv6ModeParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bacnetIpv6Mode)
-	if pullErr := readBuffer.PullContext("bacnetIpv6Mode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpv6Mode")
-	}
-	_bacnetIpv6Mode, _bacnetIpv6ModeErr := BACnetIPModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _bacnetIpv6ModeErr != nil {
-		return nil, errors.Wrap(_bacnetIpv6ModeErr, "Error parsing 'bacnetIpv6Mode' field of BACnetConstructedDataBACnetIPv6Mode")
-	}
-	bacnetIpv6Mode := _bacnetIpv6Mode.(BACnetIPModeTagged)
-	if closeErr := readBuffer.CloseContext("bacnetIpv6Mode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpv6Mode")
+	bacnetIpv6Mode, err := ReadSimpleField[BACnetIPModeTagged](ctx, "bacnetIpv6Mode", ReadComplex[BACnetIPModeTagged](BACnetIPModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIpv6Mode' field"))
 	}
 
 	// Virtual field

@@ -152,6 +152,12 @@ func EipConnectionResponseParse(ctx context.Context, theBytes []byte, response b
 	return EipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func EipConnectionResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConnectionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConnectionResponse, error) {
+		return EipConnectionResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,13 +169,13 @@ func EipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	protocolVersion, err := ReadConstField[uint16](ctx, "protocolVersion", ReadUnsignedShort(readBuffer, 16), EipConnectionResponse_PROTOCOLVERSION)
+	protocolVersion, err := ReadConstField[uint16](ctx, "protocolVersion", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionResponse_PROTOCOLVERSION)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
 	_ = protocolVersion
 
-	flags, err := ReadConstField[uint16](ctx, "flags", ReadUnsignedShort(readBuffer, 16), EipConnectionResponse_FLAGS)
+	flags, err := ReadConstField[uint16](ctx, "flags", ReadUnsignedShort(readBuffer, uint8(16)), EipConnectionResponse_FLAGS)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flags' field"))
 	}

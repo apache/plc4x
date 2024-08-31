@@ -144,6 +144,12 @@ func BACnetConstructedDataReasonForDisableParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataReasonForDisableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataReasonForDisableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReasonForDisable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReasonForDisable, error) {
+		return BACnetConstructedDataReasonForDisableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataReasonForDisableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReasonForDisable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,13 +161,7 @@ func BACnetConstructedDataReasonForDisableParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reasonForDisable, err := ReadTerminatedArrayField[BACnetAccessCredentialDisableReasonTagged](ctx, "reasonForDisable", ReadComplex[BACnetAccessCredentialDisableReasonTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAccessCredentialDisableReasonTagged, error) {
-		v, err := BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetAccessCredentialDisableReasonTagged), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	reasonForDisable, err := ReadTerminatedArrayField[BACnetAccessCredentialDisableReasonTagged](ctx, "reasonForDisable", ReadComplex[BACnetAccessCredentialDisableReasonTagged](BACnetAccessCredentialDisableReasonTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reasonForDisable' field"))
 	}

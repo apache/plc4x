@@ -148,6 +148,12 @@ func AnsiExtendedSymbolSegmentParse(ctx context.Context, theBytes []byte) (AnsiE
 	return AnsiExtendedSymbolSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AnsiExtendedSymbolSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {
+		return AnsiExtendedSymbolSegmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AnsiExtendedSymbolSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,20 +165,18 @@ func AnsiExtendedSymbolSegmentParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSize, err := ReadImplicitField[uint8](ctx, "dataSize", ReadUnsignedByte(readBuffer, 8))
+	dataSize, err := ReadImplicitField[uint8](ctx, "dataSize", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSize' field"))
 	}
 	_ = dataSize
 
-	// Simple Field (symbol)
-	_symbol, _symbolErr := /*TODO: migrate me*/ readBuffer.ReadString("symbol", uint32((dataSize)*(8)), utils.WithEncoding("UTF-8"))
-	if _symbolErr != nil {
-		return nil, errors.Wrap(_symbolErr, "Error parsing 'symbol' field of AnsiExtendedSymbolSegment")
+	symbol, err := ReadSimpleField(ctx, "symbol", ReadString(readBuffer, uint32(int32(dataSize)*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbol' field"))
 	}
-	symbol := _symbol
 
-	pad, err := ReadOptionalField[uint8](ctx, "pad", ReadUnsignedByte(readBuffer, 8), bool(((len(symbol))%(2)) != (0)))
+	pad, err := ReadOptionalField[uint8](ctx, "pad", ReadUnsignedByte(readBuffer, uint8(8)), bool(((len(symbol))%(2)) != (0)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pad' field"))
 	}

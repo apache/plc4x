@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetPrescaleParse(ctx context.Context, theBytes []byte) (BACnetPrescale, 
 	return BACnetPrescaleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetPrescaleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
+		return BACnetPrescaleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPrescale, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetPrescaleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (multiplier)
-	if pullErr := readBuffer.PullContext("multiplier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for multiplier")
-	}
-	_multiplier, _multiplierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _multiplierErr != nil {
-		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of BACnetPrescale")
-	}
-	multiplier := _multiplier.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("multiplier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for multiplier")
+	multiplier, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "multiplier", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplier' field"))
 	}
 
-	// Simple Field (moduloDivide)
-	if pullErr := readBuffer.PullContext("moduloDivide"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for moduloDivide")
-	}
-	_moduloDivide, _moduloDivideErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _moduloDivideErr != nil {
-		return nil, errors.Wrap(_moduloDivideErr, "Error parsing 'moduloDivide' field of BACnetPrescale")
-	}
-	moduloDivide := _moduloDivide.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("moduloDivide"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for moduloDivide")
+	moduloDivide, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "moduloDivide", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moduloDivide' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPrescale"); closeErr != nil {

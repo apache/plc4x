@@ -174,6 +174,12 @@ func BitFieldDefinitionParse(ctx context.Context, theBytes []byte, identifier st
 	return BitFieldDefinitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BitFieldDefinitionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldDefinition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BitFieldDefinition, error) {
+		return BitFieldDefinitionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BitFieldDefinition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,33 +191,17 @@ func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of BitFieldDefinition")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of BitFieldDefinition")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
@@ -221,19 +211,15 @@ func BitFieldDefinitionParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (startingBitPosition)
-	_startingBitPosition, _startingBitPositionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("startingBitPosition", 32)
-	if _startingBitPositionErr != nil {
-		return nil, errors.Wrap(_startingBitPositionErr, "Error parsing 'startingBitPosition' field of BitFieldDefinition")
+	startingBitPosition, err := ReadSimpleField(ctx, "startingBitPosition", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingBitPosition' field"))
 	}
-	startingBitPosition := _startingBitPosition
 
-	// Simple Field (endingBitPosition)
-	_endingBitPosition, _endingBitPositionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("endingBitPosition", 32)
-	if _endingBitPositionErr != nil {
-		return nil, errors.Wrap(_endingBitPositionErr, "Error parsing 'endingBitPosition' field of BitFieldDefinition")
+	endingBitPosition, err := ReadSimpleField(ctx, "endingBitPosition", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endingBitPosition' field"))
 	}
-	endingBitPosition := _endingBitPosition
 
 	if closeErr := readBuffer.CloseContext("BitFieldDefinition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BitFieldDefinition")

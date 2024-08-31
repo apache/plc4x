@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUserExternalIdentifierParse(ctx context.Context, theBy
 	return BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUserExternalIdentifierParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUserExternalIdentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUserExternalIdentifier, error) {
+		return BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUserExternalIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userExternalIdentifier)
-	if pullErr := readBuffer.PullContext("userExternalIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userExternalIdentifier")
-	}
-	_userExternalIdentifier, _userExternalIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _userExternalIdentifierErr != nil {
-		return nil, errors.Wrap(_userExternalIdentifierErr, "Error parsing 'userExternalIdentifier' field of BACnetConstructedDataUserExternalIdentifier")
-	}
-	userExternalIdentifier := _userExternalIdentifier.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("userExternalIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userExternalIdentifier")
+	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userExternalIdentifier' field"))
 	}
 
 	// Virtual field

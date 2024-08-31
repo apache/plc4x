@@ -187,6 +187,12 @@ func RequestDirectCommandAccessParse(ctx context.Context, theBytes []byte, cBusO
 	return RequestDirectCommandAccessParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestDirectCommandAccessParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestDirectCommandAccess, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestDirectCommandAccess, error) {
+		return RequestDirectCommandAccessParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestDirectCommandAccess, error) {
 	positionAware := readBuffer
 	_ = positionAware

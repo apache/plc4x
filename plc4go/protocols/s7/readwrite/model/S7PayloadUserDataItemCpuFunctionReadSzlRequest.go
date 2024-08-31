@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParse(ctx context.Context, th
 	return S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
+		return S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,25 +172,15 @@ func S7PayloadUserDataItemCpuFunctionReadSzlRequestParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (szlId)
-	if pullErr := readBuffer.PullContext("szlId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for szlId")
-	}
-	_szlId, _szlIdErr := SzlIdParseWithBuffer(ctx, readBuffer)
-	if _szlIdErr != nil {
-		return nil, errors.Wrap(_szlIdErr, "Error parsing 'szlId' field of S7PayloadUserDataItemCpuFunctionReadSzlRequest")
-	}
-	szlId := _szlId.(SzlId)
-	if closeErr := readBuffer.CloseContext("szlId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for szlId")
+	szlId, err := ReadSimpleField[SzlId](ctx, "szlId", ReadComplex[SzlId](SzlIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'szlId' field"))
 	}
 
-	// Simple Field (szlIndex)
-	_szlIndex, _szlIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("szlIndex", 16)
-	if _szlIndexErr != nil {
-		return nil, errors.Wrap(_szlIndexErr, "Error parsing 'szlIndex' field of S7PayloadUserDataItemCpuFunctionReadSzlRequest")
+	szlIndex, err := ReadSimpleField(ctx, "szlIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'szlIndex' field"))
 	}
-	szlIndex := _szlIndex
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionReadSzlRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionReadSzlRequest")

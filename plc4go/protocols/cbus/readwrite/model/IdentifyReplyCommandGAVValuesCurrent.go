@@ -132,6 +132,12 @@ func IdentifyReplyCommandGAVValuesCurrentParse(ctx context.Context, theBytes []b
 	return IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandGAVValuesCurrentParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandGAVValuesCurrent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandGAVValuesCurrent, error) {
+		return IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandGAVValuesCurrentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVValuesCurrent, error) {
 	positionAware := readBuffer
 	_ = positionAware

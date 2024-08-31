@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFailedAttemptsParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataFailedAttemptsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFailedAttemptsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFailedAttempts, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFailedAttempts, error) {
+		return BACnetConstructedDataFailedAttemptsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFailedAttemptsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFailedAttempts, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFailedAttemptsParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (failedAttempts)
-	if pullErr := readBuffer.PullContext("failedAttempts"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for failedAttempts")
-	}
-	_failedAttempts, _failedAttemptsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _failedAttemptsErr != nil {
-		return nil, errors.Wrap(_failedAttemptsErr, "Error parsing 'failedAttempts' field of BACnetConstructedDataFailedAttempts")
-	}
-	failedAttempts := _failedAttempts.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("failedAttempts"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for failedAttempts")
+	failedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "failedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'failedAttempts' field"))
 	}
 
 	// Virtual field

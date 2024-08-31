@@ -161,6 +161,12 @@ func AddNodesRequestParse(ctx context.Context, theBytes []byte, identifier strin
 	return AddNodesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AddNodesRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesRequest, error) {
+		return AddNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AddNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddNodesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func AddNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of AddNodesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfNodesToAdd)
-	_noOfNodesToAdd, _noOfNodesToAddErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToAdd", 32)
-	if _noOfNodesToAddErr != nil {
-		return nil, errors.Wrap(_noOfNodesToAddErr, "Error parsing 'noOfNodesToAdd' field of AddNodesRequest")
+	noOfNodesToAdd, err := ReadSimpleField(ctx, "noOfNodesToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToAdd' field"))
 	}
-	noOfNodesToAdd := _noOfNodesToAdd
 
-	nodesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToAdd", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("378"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodesToAdd))
+	nodesToAdd, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToAdd", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("378")), readBuffer), uint64(noOfNodesToAdd))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToAdd' field"))
 	}

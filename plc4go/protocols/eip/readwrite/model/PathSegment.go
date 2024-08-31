@@ -110,6 +110,17 @@ func PathSegmentParse(ctx context.Context, theBytes []byte) (PathSegment, error)
 	return PathSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PathSegmentParseWithBufferProducer[T PathSegment]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := PathSegmentParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PathSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func PathSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	pathSegment, err := ReadDiscriminatorField[uint8](ctx, "pathSegment", ReadUnsignedByte(readBuffer, 3))
+	pathSegment, err := ReadDiscriminatorField[uint8](ctx, "pathSegment", ReadUnsignedByte(readBuffer, uint8(3)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pathSegment' field"))
 	}

@@ -143,6 +143,12 @@ func ReplyOrConfirmationConfirmationParse(ctx context.Context, theBytes []byte, 
 	return ReplyOrConfirmationConfirmationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func ReplyOrConfirmationConfirmationParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyOrConfirmationConfirmation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyOrConfirmationConfirmation, error) {
+		return ReplyOrConfirmationConfirmationParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func ReplyOrConfirmationConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationConfirmation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,26 +160,12 @@ func ReplyOrConfirmationConfirmationParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (confirmation)
-	if pullErr := readBuffer.PullContext("confirmation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for confirmation")
-	}
-	_confirmation, _confirmationErr := ConfirmationParseWithBuffer(ctx, readBuffer)
-	if _confirmationErr != nil {
-		return nil, errors.Wrap(_confirmationErr, "Error parsing 'confirmation' field of ReplyOrConfirmationConfirmation")
-	}
-	confirmation := _confirmation.(Confirmation)
-	if closeErr := readBuffer.CloseContext("confirmation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for confirmation")
+	confirmation, err := ReadSimpleField[Confirmation](ctx, "confirmation", ReadComplex[Confirmation](ConfirmationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmation' field"))
 	}
 
-	_embeddedReply, err := ReadOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", ReadComplex[ReplyOrConfirmation](func(ctx context.Context, buffer utils.ReadBuffer) (ReplyOrConfirmation, error) {
-		v, err := ReplyOrConfirmationParseWithBuffer(ctx, readBuffer, (CBusOptions)(cBusOptions), (RequestContext)(requestContext))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ReplyOrConfirmation), nil
-	}, readBuffer), true)
+	_embeddedReply, err := ReadOptionalField[ReplyOrConfirmation](ctx, "embeddedReply", ReadComplex[ReplyOrConfirmation](ReplyOrConfirmationParseWithBufferProducer[ReplyOrConfirmation]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'embeddedReply' field"))
 	}

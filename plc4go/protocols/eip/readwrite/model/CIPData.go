@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -118,6 +120,12 @@ func CIPDataParse(ctx context.Context, theBytes []byte, packetLength uint16) (CI
 	return CIPDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), packetLength)
 }
 
+func CIPDataParseWithBufferProducer(packetLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPData, error) {
+		return CIPDataParseWithBuffer(ctx, readBuffer, packetLength)
+	}
+}
+
 func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLength uint16) (CIPData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -129,17 +137,9 @@ func CIPDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, pa
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataType)
-	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
-	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(ctx, readBuffer)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CIPData")
-	}
-	dataType := _dataType
-	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataType")
+	dataType, err := ReadEnumField[CIPDataTypeCode](ctx, "dataType", "CIPDataTypeCode", ReadEnum(CIPDataTypeCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(packetLength)-int32(int32(2))))

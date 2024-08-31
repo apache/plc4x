@@ -161,6 +161,12 @@ func DeleteNodesRequestParse(ctx context.Context, theBytes []byte, identifier st
 	return DeleteNodesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DeleteNodesRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteNodesRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteNodesRequest, error) {
+		return DeleteNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteNodesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func DeleteNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of DeleteNodesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfNodesToDelete)
-	_noOfNodesToDelete, _noOfNodesToDeleteErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToDelete", 32)
-	if _noOfNodesToDeleteErr != nil {
-		return nil, errors.Wrap(_noOfNodesToDeleteErr, "Error parsing 'noOfNodesToDelete' field of DeleteNodesRequest")
+	noOfNodesToDelete, err := ReadSimpleField(ctx, "noOfNodesToDelete", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToDelete' field"))
 	}
-	noOfNodesToDelete := _noOfNodesToDelete
 
-	nodesToDelete, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToDelete", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("384"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodesToDelete))
+	nodesToDelete, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodesToDelete", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("384")), readBuffer), uint64(noOfNodesToDelete))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodesToDelete' field"))
 	}

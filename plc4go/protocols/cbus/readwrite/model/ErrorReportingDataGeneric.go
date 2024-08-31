@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -244,6 +246,12 @@ func ErrorReportingDataGenericParse(ctx context.Context, theBytes []byte) (Error
 	return ErrorReportingDataGenericParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ErrorReportingDataGenericParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingDataGeneric, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingDataGeneric, error) {
+		return ErrorReportingDataGenericParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingDataGeneric, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -255,39 +263,25 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (systemCategory)
-	if pullErr := readBuffer.PullContext("systemCategory"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for systemCategory")
-	}
-	_systemCategory, _systemCategoryErr := ErrorReportingSystemCategoryParseWithBuffer(ctx, readBuffer)
-	if _systemCategoryErr != nil {
-		return nil, errors.Wrap(_systemCategoryErr, "Error parsing 'systemCategory' field of ErrorReportingDataGeneric")
-	}
-	systemCategory := _systemCategory.(ErrorReportingSystemCategory)
-	if closeErr := readBuffer.CloseContext("systemCategory"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for systemCategory")
+	systemCategory, err := ReadSimpleField[ErrorReportingSystemCategory](ctx, "systemCategory", ReadComplex[ErrorReportingSystemCategory](ErrorReportingSystemCategoryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'systemCategory' field"))
 	}
 
-	// Simple Field (mostRecent)
-	_mostRecent, _mostRecentErr := /*TODO: migrate me*/ readBuffer.ReadBit("mostRecent")
-	if _mostRecentErr != nil {
-		return nil, errors.Wrap(_mostRecentErr, "Error parsing 'mostRecent' field of ErrorReportingDataGeneric")
+	mostRecent, err := ReadSimpleField(ctx, "mostRecent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mostRecent' field"))
 	}
-	mostRecent := _mostRecent
 
-	// Simple Field (acknowledge)
-	_acknowledge, _acknowledgeErr := /*TODO: migrate me*/ readBuffer.ReadBit("acknowledge")
-	if _acknowledgeErr != nil {
-		return nil, errors.Wrap(_acknowledgeErr, "Error parsing 'acknowledge' field of ErrorReportingDataGeneric")
+	acknowledge, err := ReadSimpleField(ctx, "acknowledge", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledge' field"))
 	}
-	acknowledge := _acknowledge
 
-	// Simple Field (mostSevere)
-	_mostSevere, _mostSevereErr := /*TODO: migrate me*/ readBuffer.ReadBit("mostSevere")
-	if _mostSevereErr != nil {
-		return nil, errors.Wrap(_mostSevereErr, "Error parsing 'mostSevere' field of ErrorReportingDataGeneric")
+	mostSevere, err := ReadSimpleField(ctx, "mostSevere", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mostSevere' field"))
 	}
-	mostSevere := _mostSevere
 
 	// Validation
 	if !(bool(mostRecent) || bool(mostSevere)) {
@@ -309,39 +303,25 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 	isMostRecentAndMostSevere := bool(_isMostRecentAndMostSevere)
 	_ = isMostRecentAndMostSevere
 
-	// Simple Field (severity)
-	if pullErr := readBuffer.PullContext("severity"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for severity")
-	}
-	_severity, _severityErr := ErrorReportingSeverityParseWithBuffer(ctx, readBuffer)
-	if _severityErr != nil {
-		return nil, errors.Wrap(_severityErr, "Error parsing 'severity' field of ErrorReportingDataGeneric")
-	}
-	severity := _severity
-	if closeErr := readBuffer.CloseContext("severity"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for severity")
+	severity, err := ReadEnumField[ErrorReportingSeverity](ctx, "severity", "ErrorReportingSeverity", ReadEnum(ErrorReportingSeverityByValue, ReadUnsignedByte(readBuffer, uint8(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'severity' field"))
 	}
 
-	// Simple Field (deviceId)
-	_deviceId, _deviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("deviceId", 8)
-	if _deviceIdErr != nil {
-		return nil, errors.Wrap(_deviceIdErr, "Error parsing 'deviceId' field of ErrorReportingDataGeneric")
+	deviceId, err := ReadSimpleField(ctx, "deviceId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceId' field"))
 	}
-	deviceId := _deviceId
 
-	// Simple Field (errorData1)
-	_errorData1, _errorData1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("errorData1", 8)
-	if _errorData1Err != nil {
-		return nil, errors.Wrap(_errorData1Err, "Error parsing 'errorData1' field of ErrorReportingDataGeneric")
+	errorData1, err := ReadSimpleField(ctx, "errorData1", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorData1' field"))
 	}
-	errorData1 := _errorData1
 
-	// Simple Field (errorData2)
-	_errorData2, _errorData2Err := /*TODO: migrate me*/ readBuffer.ReadUint8("errorData2", 8)
-	if _errorData2Err != nil {
-		return nil, errors.Wrap(_errorData2Err, "Error parsing 'errorData2' field of ErrorReportingDataGeneric")
+	errorData2, err := ReadSimpleField(ctx, "errorData2", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorData2' field"))
 	}
-	errorData2 := _errorData2
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingDataGeneric"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ErrorReportingDataGeneric")

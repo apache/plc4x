@@ -138,6 +138,12 @@ func SecurityDataStatusReport2Parse(ctx context.Context, theBytes []byte) (Secur
 	return SecurityDataStatusReport2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataStatusReport2ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport2, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport2, error) {
+		return SecurityDataStatusReport2ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataStatusReport2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport2, error) {
 	positionAware := readBuffer
 	_ = positionAware

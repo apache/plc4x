@@ -127,6 +127,12 @@ func BACnetGroupChannelValueParse(ctx context.Context, theBytes []byte) (BACnetG
 	return BACnetGroupChannelValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetGroupChannelValueParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
+		return BACnetGroupChannelValueParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetGroupChannelValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -138,26 +144,12 @@ func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (channel)
-	if pullErr := readBuffer.PullContext("channel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channel")
-	}
-	_channel, _channelErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _channelErr != nil {
-		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of BACnetGroupChannelValue")
-	}
-	channel := _channel.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("channel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channel")
+	channel, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "channel", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channel' field"))
 	}
 
-	_overridingPriority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_overridingPriority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overridingPriority' field"))
 	}
@@ -166,17 +158,9 @@ func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer util
 		overridingPriority = *_overridingPriority
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := BACnetChannelValueParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetGroupChannelValue")
-	}
-	value := _value.(BACnetChannelValue)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[BACnetChannelValue](ctx, "value", ReadComplex[BACnetChannelValue](BACnetChannelValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetGroupChannelValue"); closeErr != nil {

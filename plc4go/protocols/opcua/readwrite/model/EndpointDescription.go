@@ -227,6 +227,12 @@ func EndpointDescriptionParse(ctx context.Context, theBytes []byte, identifier s
 	return EndpointDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EndpointDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointDescription, error) {
+		return EndpointDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -238,108 +244,50 @@ func EndpointDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
-	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of EndpointDescription")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
 
-	// Simple Field (server)
-	if pullErr := readBuffer.PullContext("server"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for server")
-	}
-	_server, _serverErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("310"))
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of EndpointDescription")
-	}
-	server := _server.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("server"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for server")
+	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("310")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
 
-	// Simple Field (serverCertificate)
-	if pullErr := readBuffer.PullContext("serverCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCertificate")
-	}
-	_serverCertificate, _serverCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _serverCertificateErr != nil {
-		return nil, errors.Wrap(_serverCertificateErr, "Error parsing 'serverCertificate' field of EndpointDescription")
-	}
-	serverCertificate := _serverCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("serverCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCertificate")
+	serverCertificate, err := ReadSimpleField[PascalByteString](ctx, "serverCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCertificate' field"))
 	}
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
-	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of EndpointDescription")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of EndpointDescription")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (noOfUserIdentityTokens)
-	_noOfUserIdentityTokens, _noOfUserIdentityTokensErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfUserIdentityTokens", 32)
-	if _noOfUserIdentityTokensErr != nil {
-		return nil, errors.Wrap(_noOfUserIdentityTokensErr, "Error parsing 'noOfUserIdentityTokens' field of EndpointDescription")
+	noOfUserIdentityTokens, err := ReadSimpleField(ctx, "noOfUserIdentityTokens", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfUserIdentityTokens' field"))
 	}
-	noOfUserIdentityTokens := _noOfUserIdentityTokens
 
-	userIdentityTokens, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "userIdentityTokens", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("306"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfUserIdentityTokens))
+	userIdentityTokens, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "userIdentityTokens", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("306")), readBuffer), uint64(noOfUserIdentityTokens))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokens' field"))
 	}
 
-	// Simple Field (transportProfileUri)
-	if pullErr := readBuffer.PullContext("transportProfileUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportProfileUri")
-	}
-	_transportProfileUri, _transportProfileUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _transportProfileUriErr != nil {
-		return nil, errors.Wrap(_transportProfileUriErr, "Error parsing 'transportProfileUri' field of EndpointDescription")
-	}
-	transportProfileUri := _transportProfileUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("transportProfileUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportProfileUri")
+	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProfileUri' field"))
 	}
 
-	// Simple Field (securityLevel)
-	_securityLevel, _securityLevelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("securityLevel", 8)
-	if _securityLevelErr != nil {
-		return nil, errors.Wrap(_securityLevelErr, "Error parsing 'securityLevel' field of EndpointDescription")
+	securityLevel, err := ReadSimpleField(ctx, "securityLevel", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityLevel' field"))
 	}
-	securityLevel := _securityLevel
 
 	if closeErr := readBuffer.CloseContext("EndpointDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EndpointDescription")

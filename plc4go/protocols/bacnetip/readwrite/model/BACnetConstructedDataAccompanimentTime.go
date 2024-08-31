@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAccompanimentTimeParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccompanimentTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccompanimentTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccompanimentTime, error) {
+		return BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccompanimentTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAccompanimentTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accompanimentTime)
-	if pullErr := readBuffer.PullContext("accompanimentTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accompanimentTime")
-	}
-	_accompanimentTime, _accompanimentTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _accompanimentTimeErr != nil {
-		return nil, errors.Wrap(_accompanimentTimeErr, "Error parsing 'accompanimentTime' field of BACnetConstructedDataAccompanimentTime")
-	}
-	accompanimentTime := _accompanimentTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("accompanimentTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accompanimentTime")
+	accompanimentTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accompanimentTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accompanimentTime' field"))
 	}
 
 	// Virtual field

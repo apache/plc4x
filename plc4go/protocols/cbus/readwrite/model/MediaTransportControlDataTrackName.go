@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MediaTransportControlDataTrackNameParse(ctx context.Context, theBytes []byt
 	return MediaTransportControlDataTrackNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func MediaTransportControlDataTrackNameParseWithBufferProducer(commandTypeContainer MediaTransportControlCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTrackName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTrackName, error) {
+		return MediaTransportControlDataTrackNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func MediaTransportControlDataTrackNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataTrackName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MediaTransportControlDataTrackNameParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackName)
-	_trackName, _trackNameErr := /*TODO: migrate me*/ readBuffer.ReadString("trackName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
-	if _trackNameErr != nil {
-		return nil, errors.Wrap(_trackNameErr, "Error parsing 'trackName' field of MediaTransportControlDataTrackName")
+	trackName, err := ReadSimpleField(ctx, "trackName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackName' field"))
 	}
-	trackName := _trackName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataTrackName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataTrackName")

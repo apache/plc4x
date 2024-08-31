@@ -267,6 +267,12 @@ func ProgramDiagnosticDataTypeParse(ctx context.Context, theBytes []byte, identi
 	return ProgramDiagnosticDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ProgramDiagnosticDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ProgramDiagnosticDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ProgramDiagnosticDataType, error) {
+		return ProgramDiagnosticDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ProgramDiagnosticDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -278,126 +284,64 @@ func ProgramDiagnosticDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (createSessionId)
-	if pullErr := readBuffer.PullContext("createSessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for createSessionId")
-	}
-	_createSessionId, _createSessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _createSessionIdErr != nil {
-		return nil, errors.Wrap(_createSessionIdErr, "Error parsing 'createSessionId' field of ProgramDiagnosticDataType")
-	}
-	createSessionId := _createSessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("createSessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for createSessionId")
+	createSessionId, err := ReadSimpleField[NodeId](ctx, "createSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createSessionId' field"))
 	}
 
-	// Simple Field (createClientName)
-	if pullErr := readBuffer.PullContext("createClientName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for createClientName")
-	}
-	_createClientName, _createClientNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _createClientNameErr != nil {
-		return nil, errors.Wrap(_createClientNameErr, "Error parsing 'createClientName' field of ProgramDiagnosticDataType")
-	}
-	createClientName := _createClientName.(PascalString)
-	if closeErr := readBuffer.CloseContext("createClientName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for createClientName")
+	createClientName, err := ReadSimpleField[PascalString](ctx, "createClientName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createClientName' field"))
 	}
 
-	// Simple Field (invocationCreationTime)
-	_invocationCreationTime, _invocationCreationTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("invocationCreationTime", 64)
-	if _invocationCreationTimeErr != nil {
-		return nil, errors.Wrap(_invocationCreationTimeErr, "Error parsing 'invocationCreationTime' field of ProgramDiagnosticDataType")
-	}
-	invocationCreationTime := _invocationCreationTime
-
-	// Simple Field (lastTransitionTime)
-	_lastTransitionTime, _lastTransitionTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastTransitionTime", 64)
-	if _lastTransitionTimeErr != nil {
-		return nil, errors.Wrap(_lastTransitionTimeErr, "Error parsing 'lastTransitionTime' field of ProgramDiagnosticDataType")
-	}
-	lastTransitionTime := _lastTransitionTime
-
-	// Simple Field (lastMethodCall)
-	if pullErr := readBuffer.PullContext("lastMethodCall"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodCall")
-	}
-	_lastMethodCall, _lastMethodCallErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _lastMethodCallErr != nil {
-		return nil, errors.Wrap(_lastMethodCallErr, "Error parsing 'lastMethodCall' field of ProgramDiagnosticDataType")
-	}
-	lastMethodCall := _lastMethodCall.(PascalString)
-	if closeErr := readBuffer.CloseContext("lastMethodCall"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastMethodCall")
+	invocationCreationTime, err := ReadSimpleField(ctx, "invocationCreationTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'invocationCreationTime' field"))
 	}
 
-	// Simple Field (lastMethodSessionId)
-	if pullErr := readBuffer.PullContext("lastMethodSessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodSessionId")
-	}
-	_lastMethodSessionId, _lastMethodSessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _lastMethodSessionIdErr != nil {
-		return nil, errors.Wrap(_lastMethodSessionIdErr, "Error parsing 'lastMethodSessionId' field of ProgramDiagnosticDataType")
-	}
-	lastMethodSessionId := _lastMethodSessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("lastMethodSessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastMethodSessionId")
+	lastTransitionTime, err := ReadSimpleField(ctx, "lastTransitionTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastTransitionTime' field"))
 	}
 
-	// Simple Field (noOfLastMethodInputArguments)
-	_noOfLastMethodInputArguments, _noOfLastMethodInputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodInputArguments", 32)
-	if _noOfLastMethodInputArgumentsErr != nil {
-		return nil, errors.Wrap(_noOfLastMethodInputArgumentsErr, "Error parsing 'noOfLastMethodInputArguments' field of ProgramDiagnosticDataType")
+	lastMethodCall, err := ReadSimpleField[PascalString](ctx, "lastMethodCall", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodCall' field"))
 	}
-	noOfLastMethodInputArguments := _noOfLastMethodInputArguments
 
-	lastMethodInputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodInputArguments", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("298"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfLastMethodInputArguments))
+	lastMethodSessionId, err := ReadSimpleField[NodeId](ctx, "lastMethodSessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodSessionId' field"))
+	}
+
+	noOfLastMethodInputArguments, err := ReadSimpleField(ctx, "noOfLastMethodInputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodInputArguments' field"))
+	}
+
+	lastMethodInputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodInputArguments", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("298")), readBuffer), uint64(noOfLastMethodInputArguments))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodInputArguments' field"))
 	}
 
-	// Simple Field (noOfLastMethodOutputArguments)
-	_noOfLastMethodOutputArguments, _noOfLastMethodOutputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLastMethodOutputArguments", 32)
-	if _noOfLastMethodOutputArgumentsErr != nil {
-		return nil, errors.Wrap(_noOfLastMethodOutputArgumentsErr, "Error parsing 'noOfLastMethodOutputArguments' field of ProgramDiagnosticDataType")
+	noOfLastMethodOutputArguments, err := ReadSimpleField(ctx, "noOfLastMethodOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLastMethodOutputArguments' field"))
 	}
-	noOfLastMethodOutputArguments := _noOfLastMethodOutputArguments
 
-	lastMethodOutputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodOutputArguments", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("298"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfLastMethodOutputArguments))
+	lastMethodOutputArguments, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "lastMethodOutputArguments", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("298")), readBuffer), uint64(noOfLastMethodOutputArguments))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodOutputArguments' field"))
 	}
 
-	// Simple Field (lastMethodCallTime)
-	_lastMethodCallTime, _lastMethodCallTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastMethodCallTime", 64)
-	if _lastMethodCallTimeErr != nil {
-		return nil, errors.Wrap(_lastMethodCallTimeErr, "Error parsing 'lastMethodCallTime' field of ProgramDiagnosticDataType")
+	lastMethodCallTime, err := ReadSimpleField(ctx, "lastMethodCallTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodCallTime' field"))
 	}
-	lastMethodCallTime := _lastMethodCallTime
 
-	// Simple Field (lastMethodReturnStatus)
-	if pullErr := readBuffer.PullContext("lastMethodReturnStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastMethodReturnStatus")
-	}
-	_lastMethodReturnStatus, _lastMethodReturnStatusErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("301"))
-	if _lastMethodReturnStatusErr != nil {
-		return nil, errors.Wrap(_lastMethodReturnStatusErr, "Error parsing 'lastMethodReturnStatus' field of ProgramDiagnosticDataType")
-	}
-	lastMethodReturnStatus := _lastMethodReturnStatus.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("lastMethodReturnStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastMethodReturnStatus")
+	lastMethodReturnStatus, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "lastMethodReturnStatus", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("301")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastMethodReturnStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ProgramDiagnosticDataType"); closeErr != nil {

@@ -129,6 +129,12 @@ func BACnetAuthenticationFactorFormatParse(ctx context.Context, theBytes []byte)
 	return BACnetAuthenticationFactorFormatParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAuthenticationFactorFormatParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
+		return BACnetAuthenticationFactorFormatParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactorFormat, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,26 +146,12 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (formatType)
-	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
-	}
-	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _formatTypeErr != nil {
-		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactorFormat")
-	}
-	formatType := _formatType.(BACnetAuthenticationFactorTypeTagged)
-	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for formatType")
+	formatType, err := ReadSimpleField[BACnetAuthenticationFactorTypeTagged](ctx, "formatType", ReadComplex[BACnetAuthenticationFactorTypeTagged](BACnetAuthenticationFactorTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'formatType' field"))
 	}
 
-	_vendorId, err := ReadOptionalField[BACnetVendorIdTagged](ctx, "vendorId", ReadComplex[BACnetVendorIdTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetVendorIdTagged, error) {
-		v, err := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetVendorIdTagged), nil
-	}, readBuffer), true)
+	_vendorId, err := ReadOptionalField[BACnetVendorIdTagged](ctx, "vendorId", ReadComplex[BACnetVendorIdTagged](BACnetVendorIdTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
@@ -168,13 +160,7 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 		vendorId = *_vendorId
 	}
 
-	_vendorFormat, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_vendorFormat, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorFormat' field"))
 	}

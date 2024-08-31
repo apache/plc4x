@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataReferencePortParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataReferencePortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataReferencePortParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReferencePort, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReferencePort, error) {
+		return BACnetConstructedDataReferencePortParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataReferencePortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReferencePort, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataReferencePortParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referencePort)
-	if pullErr := readBuffer.PullContext("referencePort"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referencePort")
-	}
-	_referencePort, _referencePortErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _referencePortErr != nil {
-		return nil, errors.Wrap(_referencePortErr, "Error parsing 'referencePort' field of BACnetConstructedDataReferencePort")
-	}
-	referencePort := _referencePort.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("referencePort"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referencePort")
+	referencePort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referencePort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencePort' field"))
 	}
 
 	// Virtual field

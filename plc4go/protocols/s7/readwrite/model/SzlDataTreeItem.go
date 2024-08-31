@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,6 +147,12 @@ func SzlDataTreeItemParse(ctx context.Context, theBytes []byte) (SzlDataTreeItem
 	return SzlDataTreeItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SzlDataTreeItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
+		return SzlDataTreeItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SzlDataTreeItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,38 +164,30 @@ func SzlDataTreeItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemIndex)
-	_itemIndex, _itemIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("itemIndex", 16)
-	if _itemIndexErr != nil {
-		return nil, errors.Wrap(_itemIndexErr, "Error parsing 'itemIndex' field of SzlDataTreeItem")
+	itemIndex, err := ReadSimpleField(ctx, "itemIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndex' field"))
 	}
-	itemIndex := _itemIndex
 
 	mlfb, err := readBuffer.ReadByteArray("mlfb", int(int32(20)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mlfb' field"))
 	}
 
-	// Simple Field (moduleTypeId)
-	_moduleTypeId, _moduleTypeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("moduleTypeId", 16)
-	if _moduleTypeIdErr != nil {
-		return nil, errors.Wrap(_moduleTypeIdErr, "Error parsing 'moduleTypeId' field of SzlDataTreeItem")
+	moduleTypeId, err := ReadSimpleField(ctx, "moduleTypeId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moduleTypeId' field"))
 	}
-	moduleTypeId := _moduleTypeId
 
-	// Simple Field (ausbg)
-	_ausbg, _ausbgErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ausbg", 16)
-	if _ausbgErr != nil {
-		return nil, errors.Wrap(_ausbgErr, "Error parsing 'ausbg' field of SzlDataTreeItem")
+	ausbg, err := ReadSimpleField(ctx, "ausbg", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ausbg' field"))
 	}
-	ausbg := _ausbg
 
-	// Simple Field (ausbe)
-	_ausbe, _ausbeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ausbe", 16)
-	if _ausbeErr != nil {
-		return nil, errors.Wrap(_ausbeErr, "Error parsing 'ausbe' field of SzlDataTreeItem")
+	ausbe, err := ReadSimpleField(ctx, "ausbe", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ausbe' field"))
 	}
-	ausbe := _ausbe
 
 	if closeErr := readBuffer.CloseContext("SzlDataTreeItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SzlDataTreeItem")

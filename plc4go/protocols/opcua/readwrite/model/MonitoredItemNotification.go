@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func MonitoredItemNotificationParse(ctx context.Context, theBytes []byte, identi
 	return MonitoredItemNotificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoredItemNotificationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemNotification, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemNotification, error) {
+		return MonitoredItemNotificationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoredItemNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,24 +160,14 @@ func MonitoredItemNotificationParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientHandle", 32)
-	if _clientHandleErr != nil {
-		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of MonitoredItemNotification")
+	clientHandle, err := ReadSimpleField(ctx, "clientHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientHandle' field"))
 	}
-	clientHandle := _clientHandle
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := DataValueParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of MonitoredItemNotification")
-	}
-	value := _value.(DataValue)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[DataValue](ctx, "value", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemNotification"); closeErr != nil {

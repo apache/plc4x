@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEgressTimeParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataEgressTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEgressTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEgressTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEgressTime, error) {
+		return BACnetConstructedDataEgressTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEgressTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEgressTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEgressTimeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (egressTime)
-	if pullErr := readBuffer.PullContext("egressTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for egressTime")
-	}
-	_egressTime, _egressTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _egressTimeErr != nil {
-		return nil, errors.Wrap(_egressTimeErr, "Error parsing 'egressTime' field of BACnetConstructedDataEgressTime")
-	}
-	egressTime := _egressTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("egressTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for egressTime")
+	egressTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "egressTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'egressTime' field"))
 	}
 
 	// Virtual field

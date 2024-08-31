@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func OpcuaMessageErrorParse(ctx context.Context, theBytes []byte, response bool)
 	return OpcuaMessageErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpcuaMessageErrorParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaMessageError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaMessageError, error) {
+		return OpcuaMessageErrorParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpcuaMessageErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaMessageError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,30 +166,14 @@ func OpcuaMessageErrorParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
-	}
-	_error, _errorErr := OpcuaStatusCodeParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of OpcuaMessageError")
-	}
-	error := _error
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
+	error, err := ReadEnumField[OpcuaStatusCode](ctx, "error", "OpcuaStatusCode", ReadEnum(OpcuaStatusCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
 
-	// Simple Field (reason)
-	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reason")
-	}
-	_reason, _reasonErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _reasonErr != nil {
-		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of OpcuaMessageError")
-	}
-	reason := _reason.(PascalString)
-	if closeErr := readBuffer.CloseContext("reason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reason")
+	reason, err := ReadSimpleField[PascalString](ctx, "reason", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaMessageError"); closeErr != nil {

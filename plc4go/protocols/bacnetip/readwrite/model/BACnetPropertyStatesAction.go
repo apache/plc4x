@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesActionParse(ctx context.Context, theBytes []byte, peeke
 	return BACnetPropertyStatesActionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesActionParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAction, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAction, error) {
+		return BACnetPropertyStatesActionParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesActionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAction, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesActionParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (action)
-	if pullErr := readBuffer.PullContext("action"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for action")
-	}
-	_action, _actionErr := BACnetActionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _actionErr != nil {
-		return nil, errors.Wrap(_actionErr, "Error parsing 'action' field of BACnetPropertyStatesAction")
-	}
-	action := _action.(BACnetActionTagged)
-	if closeErr := readBuffer.CloseContext("action"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for action")
+	action, err := ReadSimpleField[BACnetActionTagged](ctx, "action", ReadComplex[BACnetActionTagged](BACnetActionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'action' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAction"); closeErr != nil {

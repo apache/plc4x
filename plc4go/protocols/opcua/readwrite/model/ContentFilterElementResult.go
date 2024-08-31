@@ -190,6 +190,12 @@ func ContentFilterElementResultParse(ctx context.Context, theBytes []byte, ident
 	return ContentFilterElementResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ContentFilterElementResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterElementResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ContentFilterElementResult, error) {
+		return ContentFilterElementResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ContentFilterElementResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -201,37 +207,25 @@ func ContentFilterElementResultParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of ContentFilterElementResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (noOfOperandStatusCodes)
-	_noOfOperandStatusCodes, _noOfOperandStatusCodesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOperandStatusCodes", 32)
-	if _noOfOperandStatusCodesErr != nil {
-		return nil, errors.Wrap(_noOfOperandStatusCodesErr, "Error parsing 'noOfOperandStatusCodes' field of ContentFilterElementResult")
+	noOfOperandStatusCodes, err := ReadSimpleField(ctx, "noOfOperandStatusCodes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandStatusCodes' field"))
 	}
-	noOfOperandStatusCodes := _noOfOperandStatusCodes
 
 	operandStatusCodes, err := ReadCountArrayField[StatusCode](ctx, "operandStatusCodes", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfOperandStatusCodes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operandStatusCodes' field"))
 	}
 
-	// Simple Field (noOfOperandDiagnosticInfos)
-	_noOfOperandDiagnosticInfos, _noOfOperandDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOperandDiagnosticInfos", 32)
-	if _noOfOperandDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfOperandDiagnosticInfosErr, "Error parsing 'noOfOperandDiagnosticInfos' field of ContentFilterElementResult")
+	noOfOperandDiagnosticInfos, err := ReadSimpleField(ctx, "noOfOperandDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOperandDiagnosticInfos' field"))
 	}
-	noOfOperandDiagnosticInfos := _noOfOperandDiagnosticInfos
 
 	operandDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "operandDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfOperandDiagnosticInfos))
 	if err != nil {

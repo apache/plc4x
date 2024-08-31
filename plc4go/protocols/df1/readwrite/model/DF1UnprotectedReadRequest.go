@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,6 +146,12 @@ func DF1UnprotectedReadRequestParse(ctx context.Context, theBytes []byte) (DF1Un
 	return DF1UnprotectedReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1UnprotectedReadRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
+		return DF1UnprotectedReadRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1UnprotectedReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,19 +163,15 @@ func DF1UnprotectedReadRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of DF1UnprotectedReadRequest")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
-	// Simple Field (size)
-	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("size", 8)
-	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of DF1UnprotectedReadRequest")
+	size, err := ReadSimpleField(ctx, "size", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'size' field"))
 	}
-	size := _size
 
 	if closeErr := readBuffer.CloseContext("DF1UnprotectedReadRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1UnprotectedReadRequest")

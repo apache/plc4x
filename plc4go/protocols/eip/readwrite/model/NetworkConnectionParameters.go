@@ -158,6 +158,12 @@ func NetworkConnectionParametersParse(ctx context.Context, theBytes []byte) (Net
 	return NetworkConnectionParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NetworkConnectionParametersParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {
+		return NetworkConnectionParametersParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkConnectionParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,50 +175,40 @@ func NetworkConnectionParametersParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (connectionSize)
-	_connectionSize, _connectionSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionSize", 16)
-	if _connectionSizeErr != nil {
-		return nil, errors.Wrap(_connectionSizeErr, "Error parsing 'connectionSize' field of NetworkConnectionParameters")
+	connectionSize, err := ReadSimpleField(ctx, "connectionSize", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionSize' field"))
 	}
-	connectionSize := _connectionSize
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (owner)
-	_owner, _ownerErr := /*TODO: migrate me*/ readBuffer.ReadBit("owner")
-	if _ownerErr != nil {
-		return nil, errors.Wrap(_ownerErr, "Error parsing 'owner' field of NetworkConnectionParameters")
+	owner, err := ReadSimpleField(ctx, "owner", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'owner' field"))
 	}
-	owner := _owner
 
-	// Simple Field (connectionType)
-	_connectionType, _connectionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("connectionType", 2)
-	if _connectionTypeErr != nil {
-		return nil, errors.Wrap(_connectionTypeErr, "Error parsing 'connectionType' field of NetworkConnectionParameters")
+	connectionType, err := ReadSimpleField(ctx, "connectionType", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionType' field"))
 	}
-	connectionType := _connectionType
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (priority)
-	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 2)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of NetworkConnectionParameters")
+	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-	priority := _priority
 
-	// Simple Field (connectionSizeType)
-	_connectionSizeType, _connectionSizeTypeErr := /*TODO: migrate me*/ readBuffer.ReadBit("connectionSizeType")
-	if _connectionSizeTypeErr != nil {
-		return nil, errors.Wrap(_connectionSizeTypeErr, "Error parsing 'connectionSizeType' field of NetworkConnectionParameters")
+	connectionSizeType, err := ReadSimpleField(ctx, "connectionSizeType", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionSizeType' field"))
 	}
-	connectionSizeType := _connectionSizeType
 
 	reservedField2, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {

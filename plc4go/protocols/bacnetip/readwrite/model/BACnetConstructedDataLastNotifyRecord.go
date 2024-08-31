@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastNotifyRecordParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataLastNotifyRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastNotifyRecordParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastNotifyRecord, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastNotifyRecord, error) {
+		return BACnetConstructedDataLastNotifyRecordParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastNotifyRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastNotifyRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastNotifyRecordParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastNotifyRecord)
-	if pullErr := readBuffer.PullContext("lastNotifyRecord"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastNotifyRecord")
-	}
-	_lastNotifyRecord, _lastNotifyRecordErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lastNotifyRecordErr != nil {
-		return nil, errors.Wrap(_lastNotifyRecordErr, "Error parsing 'lastNotifyRecord' field of BACnetConstructedDataLastNotifyRecord")
-	}
-	lastNotifyRecord := _lastNotifyRecord.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lastNotifyRecord"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastNotifyRecord")
+	lastNotifyRecord, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastNotifyRecord", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastNotifyRecord' field"))
 	}
 
 	// Virtual field

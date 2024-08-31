@@ -108,6 +108,12 @@ func SecurityDataLowBatteryCorrectedParse(ctx context.Context, theBytes []byte) 
 	return SecurityDataLowBatteryCorrectedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataLowBatteryCorrectedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCorrected, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCorrected, error) {
+		return SecurityDataLowBatteryCorrectedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataLowBatteryCorrectedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCorrected, error) {
 	positionAware := readBuffer
 	_ = positionAware

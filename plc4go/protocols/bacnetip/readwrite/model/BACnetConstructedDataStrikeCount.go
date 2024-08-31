@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataStrikeCountParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataStrikeCountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataStrikeCountParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStrikeCount, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStrikeCount, error) {
+		return BACnetConstructedDataStrikeCountParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataStrikeCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStrikeCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataStrikeCountParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (strikeCount)
-	if pullErr := readBuffer.PullContext("strikeCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for strikeCount")
-	}
-	_strikeCount, _strikeCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _strikeCountErr != nil {
-		return nil, errors.Wrap(_strikeCountErr, "Error parsing 'strikeCount' field of BACnetConstructedDataStrikeCount")
-	}
-	strikeCount := _strikeCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("strikeCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for strikeCount")
+	strikeCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "strikeCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'strikeCount' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataStopTimeParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataStopTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataStopTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStopTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStopTime, error) {
+		return BACnetConstructedDataStopTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataStopTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataStopTimeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (stopTime)
-	if pullErr := readBuffer.PullContext("stopTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for stopTime")
-	}
-	_stopTime, _stopTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _stopTimeErr != nil {
-		return nil, errors.Wrap(_stopTimeErr, "Error parsing 'stopTime' field of BACnetConstructedDataStopTime")
-	}
-	stopTime := _stopTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("stopTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for stopTime")
+	stopTime, err := ReadSimpleField[BACnetDateTime](ctx, "stopTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stopTime' field"))
 	}
 
 	// Virtual field

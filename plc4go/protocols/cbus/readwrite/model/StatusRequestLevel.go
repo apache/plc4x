@@ -150,6 +150,12 @@ func StatusRequestLevelParse(ctx context.Context, theBytes []byte) (StatusReques
 	return StatusRequestLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusRequestLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
+		return StatusRequestLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequestLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,25 +177,15 @@ func StatusRequestLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of StatusRequestLevel")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
-	// Simple Field (startingGroupAddressLabel)
-	_startingGroupAddressLabel, _startingGroupAddressLabelErr := /*TODO: migrate me*/ readBuffer.ReadByte("startingGroupAddressLabel")
-	if _startingGroupAddressLabelErr != nil {
-		return nil, errors.Wrap(_startingGroupAddressLabelErr, "Error parsing 'startingGroupAddressLabel' field of StatusRequestLevel")
+	startingGroupAddressLabel, err := ReadSimpleField(ctx, "startingGroupAddressLabel", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingGroupAddressLabel' field"))
 	}
-	startingGroupAddressLabel := _startingGroupAddressLabel
 
 	// Validation
 	if !(bool(bool(bool(bool(bool(bool(bool(bool((startingGroupAddressLabel) == (0x00))) || bool(bool((startingGroupAddressLabel) == (0x20)))) || bool(bool((startingGroupAddressLabel) == (0x40)))) || bool(bool((startingGroupAddressLabel) == (0x60)))) || bool(bool((startingGroupAddressLabel) == (0x80)))) || bool(bool((startingGroupAddressLabel) == (0xA0)))) || bool(bool((startingGroupAddressLabel) == (0xC0)))) || bool(bool((startingGroupAddressLabel) == (0xE0)))) {

@@ -110,6 +110,17 @@ func DataSegmentTypeParse(ctx context.Context, theBytes []byte) (DataSegmentType
 	return DataSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DataSegmentTypeParseWithBufferProducer[T DataSegmentType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DataSegmentTypeParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func DataSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataSegmentType, err := ReadDiscriminatorField[uint8](ctx, "dataSegmentType", ReadUnsignedByte(readBuffer, 5))
+	dataSegmentType, err := ReadDiscriminatorField[uint8](ctx, "dataSegmentType", ReadUnsignedByte(readBuffer, uint8(5)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSegmentType' field"))
 	}

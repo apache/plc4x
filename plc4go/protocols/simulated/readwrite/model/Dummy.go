@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -104,6 +107,12 @@ func DummyParse(ctx context.Context, theBytes []byte) (Dummy, error) {
 	return DummyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DummyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
+		return DummyParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dummy, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -115,12 +124,10 @@ func DummyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Dum
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dummy)
-	_dummy, _dummyErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dummy", 16)
-	if _dummyErr != nil {
-		return nil, errors.Wrap(_dummyErr, "Error parsing 'dummy' field of Dummy")
+	dummy, err := ReadSimpleField(ctx, "dummy", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dummy' field"))
 	}
-	dummy := _dummy
 
 	if closeErr := readBuffer.CloseContext("Dummy"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Dummy")

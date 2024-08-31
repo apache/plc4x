@@ -241,6 +241,12 @@ func QueryFirstResponseParse(ctx context.Context, theBytes []byte, identifier st
 	return QueryFirstResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryFirstResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryFirstResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryFirstResponse, error) {
+		return QueryFirstResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryFirstResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryFirstResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -252,91 +258,49 @@ func QueryFirstResponseParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of QueryFirstResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (noOfQueryDataSets)
-	_noOfQueryDataSets, _noOfQueryDataSetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfQueryDataSets", 32)
-	if _noOfQueryDataSetsErr != nil {
-		return nil, errors.Wrap(_noOfQueryDataSetsErr, "Error parsing 'noOfQueryDataSets' field of QueryFirstResponse")
+	noOfQueryDataSets, err := ReadSimpleField(ctx, "noOfQueryDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfQueryDataSets' field"))
 	}
-	noOfQueryDataSets := _noOfQueryDataSets
 
-	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("579"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfQueryDataSets))
+	queryDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "queryDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("579")), readBuffer), uint64(noOfQueryDataSets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryDataSets' field"))
 	}
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
-	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of QueryFirstResponse")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
 
-	// Simple Field (noOfParsingResults)
-	_noOfParsingResults, _noOfParsingResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfParsingResults", 32)
-	if _noOfParsingResultsErr != nil {
-		return nil, errors.Wrap(_noOfParsingResultsErr, "Error parsing 'noOfParsingResults' field of QueryFirstResponse")
+	noOfParsingResults, err := ReadSimpleField(ctx, "noOfParsingResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfParsingResults' field"))
 	}
-	noOfParsingResults := _noOfParsingResults
 
-	parsingResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parsingResults", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("612"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfParsingResults))
+	parsingResults, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parsingResults", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("612")), readBuffer), uint64(noOfParsingResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parsingResults' field"))
 	}
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of QueryFirstResponse")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfos' field"))
 	}
 
-	// Simple Field (filterResult)
-	if pullErr := readBuffer.PullContext("filterResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterResult")
-	}
-	_filterResult, _filterResultErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("609"))
-	if _filterResultErr != nil {
-		return nil, errors.Wrap(_filterResultErr, "Error parsing 'filterResult' field of QueryFirstResponse")
-	}
-	filterResult := _filterResult.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("filterResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterResult")
+	filterResult, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "filterResult", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("609")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("QueryFirstResponse"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func SequenceHeaderParse(ctx context.Context, theBytes []byte) (SequenceHeader, 
 	return SequenceHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SequenceHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
+		return SequenceHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SequenceHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func SequenceHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadInt32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of SequenceHeader")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
-	// Simple Field (requestId)
-	_requestId, _requestIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("requestId", 32)
-	if _requestIdErr != nil {
-		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of SequenceHeader")
+	requestId, err := ReadSimpleField(ctx, "requestId", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestId' field"))
 	}
-	requestId := _requestId
 
 	if closeErr := readBuffer.CloseContext("SequenceHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SequenceHeader")

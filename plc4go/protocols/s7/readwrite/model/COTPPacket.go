@@ -152,6 +152,17 @@ func COTPPacketParse(ctx context.Context, theBytes []byte, cotpLen uint16) (COTP
 	return COTPPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
+func COTPPacketParseWithBufferProducer[T COTPPacket](cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := COTPPacketParseWithBuffer(ctx, readBuffer, cotpLen)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -165,13 +176,13 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, 8))
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 	_ = headerLength
 
-	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, 8))
+	tpduCode, err := ReadDiscriminatorField[uint8](ctx, "tpduCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduCode' field"))
 	}
@@ -206,13 +217,7 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	}
 	_child = _childTemp.(COTPPacketChildSerializeRequirement)
 
-	parameters, err := ReadLengthArrayField[COTPParameter](ctx, "parameters", ReadComplex[COTPParameter](func(ctx context.Context, buffer utils.ReadBuffer) (COTPParameter, error) {
-		v, err := COTPParameterParseWithBuffer(ctx, readBuffer, (uint8)(uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos))))
-		if err != nil {
-			return nil, err
-		}
-		return v.(COTPParameter), nil
-	}, readBuffer), int(int32((int32(headerLength)+int32(int32(1))))-int32((positionAware.GetPos()-startPos))))
+	parameters, err := ReadLengthArrayField[COTPParameter](ctx, "parameters", ReadComplex[COTPParameter](COTPParameterParseWithBufferProducer[COTPParameter]((uint8)(uint8((uint8(headerLength)+uint8(uint8(1))))-uint8((positionAware.GetPos()-startPos)))), readBuffer), int(int32((int32(headerLength)+int32(int32(1))))-int32((positionAware.GetPos()-startPos))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLiftCarDoorCommandParse(ctx context.Context, theBytes [
 	return BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLiftCarDoorCommandParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDoorCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDoorCommand, error) {
+		return BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDoorCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLiftCarDoorCommandParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarDoorCommand)
-	if pullErr := readBuffer.PullContext("liftCarDoorCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDoorCommand")
-	}
-	_liftCarDoorCommand, _liftCarDoorCommandErr := BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarDoorCommandErr != nil {
-		return nil, errors.Wrap(_liftCarDoorCommandErr, "Error parsing 'liftCarDoorCommand' field of BACnetPropertyStatesLiftCarDoorCommand")
-	}
-	liftCarDoorCommand := _liftCarDoorCommand.(BACnetLiftCarDoorCommandTagged)
-	if closeErr := readBuffer.CloseContext("liftCarDoorCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarDoorCommand")
+	liftCarDoorCommand, err := ReadSimpleField[BACnetLiftCarDoorCommandTagged](ctx, "liftCarDoorCommand", ReadComplex[BACnetLiftCarDoorCommandTagged](BACnetLiftCarDoorCommandTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarDoorCommand' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDoorCommand"); closeErr != nil {

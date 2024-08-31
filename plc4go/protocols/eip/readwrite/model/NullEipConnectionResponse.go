@@ -122,6 +122,12 @@ func NullEipConnectionResponseParse(ctx context.Context, theBytes []byte, respon
 	return NullEipConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func NullEipConnectionResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (NullEipConnectionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NullEipConnectionResponse, error) {
+		return NullEipConnectionResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func NullEipConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (NullEipConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

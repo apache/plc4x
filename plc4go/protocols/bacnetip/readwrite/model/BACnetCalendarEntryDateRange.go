@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetCalendarEntryDateRangeParse(ctx context.Context, theBytes []byte) (BA
 	return BACnetCalendarEntryDateRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCalendarEntryDateRangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDateRange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDateRange, error) {
+		return BACnetCalendarEntryDateRangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCalendarEntryDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntryDateRange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetCalendarEntryDateRangeParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateRange)
-	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
-	}
-	_dateRange, _dateRangeErr := BACnetDateRangeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _dateRangeErr != nil {
-		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetCalendarEntryDateRange")
-	}
-	dateRange := _dateRange.(BACnetDateRangeEnclosed)
-	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
+	dateRange, err := ReadSimpleField[BACnetDateRangeEnclosed](ctx, "dateRange", ReadComplex[BACnetDateRangeEnclosed](BACnetDateRangeEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateRange' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCalendarEntryDateRange"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastStateChangeParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataLastStateChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastStateChangeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastStateChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastStateChange, error) {
+		return BACnetConstructedDataLastStateChangeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastStateChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastStateChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastStateChangeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastStateChange)
-	if pullErr := readBuffer.PullContext("lastStateChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastStateChange")
-	}
-	_lastStateChange, _lastStateChangeErr := BACnetTimerTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _lastStateChangeErr != nil {
-		return nil, errors.Wrap(_lastStateChangeErr, "Error parsing 'lastStateChange' field of BACnetConstructedDataLastStateChange")
-	}
-	lastStateChange := _lastStateChange.(BACnetTimerTransitionTagged)
-	if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastStateChange")
+	lastStateChange, err := ReadSimpleField[BACnetTimerTransitionTagged](ctx, "lastStateChange", ReadComplex[BACnetTimerTransitionTagged](BACnetTimerTransitionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastStateChange' field"))
 	}
 
 	// Virtual field

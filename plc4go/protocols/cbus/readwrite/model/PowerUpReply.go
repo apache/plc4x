@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func PowerUpReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return PowerUpReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func PowerUpReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUpReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUpReply, error) {
+		return PowerUpReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func PowerUpReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (PowerUpReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func PowerUpReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (powerUpIndicator)
-	if pullErr := readBuffer.PullContext("powerUpIndicator"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for powerUpIndicator")
-	}
-	_powerUpIndicator, _powerUpIndicatorErr := PowerUpParseWithBuffer(ctx, readBuffer)
-	if _powerUpIndicatorErr != nil {
-		return nil, errors.Wrap(_powerUpIndicatorErr, "Error parsing 'powerUpIndicator' field of PowerUpReply")
-	}
-	powerUpIndicator := _powerUpIndicator.(PowerUp)
-	if closeErr := readBuffer.CloseContext("powerUpIndicator"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for powerUpIndicator")
+	powerUpIndicator, err := ReadSimpleField[PowerUp](ctx, "powerUpIndicator", ReadComplex[PowerUp](PowerUpParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerUpIndicator' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PowerUpReply"); closeErr != nil {

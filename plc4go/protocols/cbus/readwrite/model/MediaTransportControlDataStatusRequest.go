@@ -108,6 +108,12 @@ func MediaTransportControlDataStatusRequestParse(ctx context.Context, theBytes [
 	return MediaTransportControlDataStatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataStatusRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataStatusRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataStatusRequest, error) {
+		return MediaTransportControlDataStatusRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataStatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataStatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

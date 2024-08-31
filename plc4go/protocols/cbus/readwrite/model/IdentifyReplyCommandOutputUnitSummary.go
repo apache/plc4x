@@ -169,6 +169,12 @@ func IdentifyReplyCommandOutputUnitSummaryParse(ctx context.Context, theBytes []
 	return IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandOutputUnitSummaryParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandOutputUnitSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandOutputUnitSummary, error) {
+		return IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandOutputUnitSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -180,17 +186,9 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unitFlags)
-	if pullErr := readBuffer.PullContext("unitFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitFlags")
-	}
-	_unitFlags, _unitFlagsErr := IdentifyReplyCommandUnitSummaryParseWithBuffer(ctx, readBuffer)
-	if _unitFlagsErr != nil {
-		return nil, errors.Wrap(_unitFlagsErr, "Error parsing 'unitFlags' field of IdentifyReplyCommandOutputUnitSummary")
-	}
-	unitFlags := _unitFlags.(IdentifyReplyCommandUnitSummary)
-	if closeErr := readBuffer.CloseContext("unitFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitFlags")
+	unitFlags, err := ReadSimpleField[IdentifyReplyCommandUnitSummary](ctx, "unitFlags", ReadComplex[IdentifyReplyCommandUnitSummary](IdentifyReplyCommandUnitSummaryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitFlags' field"))
 	}
 
 	gavStoreEnabledByte1, err := ReadOptionalField[byte](ctx, "gavStoreEnabledByte1", ReadByte(readBuffer, 8), bool((numBytes) > (1)))
@@ -203,12 +201,10 @@ func IdentifyReplyCommandOutputUnitSummaryParseWithBuffer(ctx context.Context, r
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gavStoreEnabledByte2' field"))
 	}
 
-	// Simple Field (timeFromLastRecoverOfMainsInSeconds)
-	_timeFromLastRecoverOfMainsInSeconds, _timeFromLastRecoverOfMainsInSecondsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("timeFromLastRecoverOfMainsInSeconds", 8)
-	if _timeFromLastRecoverOfMainsInSecondsErr != nil {
-		return nil, errors.Wrap(_timeFromLastRecoverOfMainsInSecondsErr, "Error parsing 'timeFromLastRecoverOfMainsInSeconds' field of IdentifyReplyCommandOutputUnitSummary")
+	timeFromLastRecoverOfMainsInSeconds, err := ReadSimpleField(ctx, "timeFromLastRecoverOfMainsInSeconds", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeFromLastRecoverOfMainsInSeconds' field"))
 	}
-	timeFromLastRecoverOfMainsInSeconds := _timeFromLastRecoverOfMainsInSeconds
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandOutputUnitSummary"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandOutputUnitSummary")

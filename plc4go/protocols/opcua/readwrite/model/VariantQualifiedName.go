@@ -157,6 +157,12 @@ func VariantQualifiedNameParse(ctx context.Context, theBytes []byte, arrayLength
 	return VariantQualifiedNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
 }
 
+func VariantQualifiedNameParseWithBufferProducer(arrayLengthSpecified bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantQualifiedName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantQualifiedName, error) {
+		return VariantQualifiedNameParseWithBuffer(ctx, readBuffer, arrayLengthSpecified)
+	}
+}
+
 func VariantQualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantQualifiedName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,7 +174,7 @@ func VariantQualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, 32), arrayLengthSpecified)
+	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}

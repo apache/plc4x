@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataVarianceValueParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataVarianceValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataVarianceValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVarianceValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataVarianceValue, error) {
+		return BACnetConstructedDataVarianceValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataVarianceValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataVarianceValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataVarianceValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (varianceValue)
-	if pullErr := readBuffer.PullContext("varianceValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for varianceValue")
-	}
-	_varianceValue, _varianceValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _varianceValueErr != nil {
-		return nil, errors.Wrap(_varianceValueErr, "Error parsing 'varianceValue' field of BACnetConstructedDataVarianceValue")
-	}
-	varianceValue := _varianceValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("varianceValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for varianceValue")
+	varianceValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "varianceValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'varianceValue' field"))
 	}
 
 	// Virtual field

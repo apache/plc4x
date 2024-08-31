@@ -83,6 +83,12 @@ func UriStringParse(ctx context.Context, theBytes []byte) (UriString, error) {
 	return UriStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func UriStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (UriString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UriString, error) {
+		return UriStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func UriStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UriString, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -193,6 +195,12 @@ func DeviceDescriptorType2Parse(ctx context.Context, theBytes []byte) (DeviceDes
 	return DeviceDescriptorType2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DeviceDescriptorType2ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
+		return DeviceDescriptorType2ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceDescriptorType2, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -204,98 +212,54 @@ func DeviceDescriptorType2ParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (manufacturerId)
-	_manufacturerId, _manufacturerIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("manufacturerId", 16)
-	if _manufacturerIdErr != nil {
-		return nil, errors.Wrap(_manufacturerIdErr, "Error parsing 'manufacturerId' field of DeviceDescriptorType2")
-	}
-	manufacturerId := _manufacturerId
-
-	// Simple Field (deviceType)
-	_deviceType, _deviceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceType", 16)
-	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of DeviceDescriptorType2")
-	}
-	deviceType := _deviceType
-
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of DeviceDescriptorType2")
-	}
-	version := _version
-
-	// Simple Field (readSupported)
-	_readSupported, _readSupportedErr := /*TODO: migrate me*/ readBuffer.ReadBit("readSupported")
-	if _readSupportedErr != nil {
-		return nil, errors.Wrap(_readSupportedErr, "Error parsing 'readSupported' field of DeviceDescriptorType2")
-	}
-	readSupported := _readSupported
-
-	// Simple Field (writeSupported)
-	_writeSupported, _writeSupportedErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeSupported")
-	if _writeSupportedErr != nil {
-		return nil, errors.Wrap(_writeSupportedErr, "Error parsing 'writeSupported' field of DeviceDescriptorType2")
-	}
-	writeSupported := _writeSupported
-
-	// Simple Field (logicalTagBase)
-	_logicalTagBase, _logicalTagBaseErr := /*TODO: migrate me*/ readBuffer.ReadUint8("logicalTagBase", 6)
-	if _logicalTagBaseErr != nil {
-		return nil, errors.Wrap(_logicalTagBaseErr, "Error parsing 'logicalTagBase' field of DeviceDescriptorType2")
-	}
-	logicalTagBase := _logicalTagBase
-
-	// Simple Field (channelInfo1)
-	if pullErr := readBuffer.PullContext("channelInfo1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo1")
-	}
-	_channelInfo1, _channelInfo1Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo1Err != nil {
-		return nil, errors.Wrap(_channelInfo1Err, "Error parsing 'channelInfo1' field of DeviceDescriptorType2")
-	}
-	channelInfo1 := _channelInfo1.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo1")
+	manufacturerId, err := ReadSimpleField(ctx, "manufacturerId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerId' field"))
 	}
 
-	// Simple Field (channelInfo2)
-	if pullErr := readBuffer.PullContext("channelInfo2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo2")
-	}
-	_channelInfo2, _channelInfo2Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo2Err != nil {
-		return nil, errors.Wrap(_channelInfo2Err, "Error parsing 'channelInfo2' field of DeviceDescriptorType2")
-	}
-	channelInfo2 := _channelInfo2.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo2")
+	deviceType, err := ReadSimpleField(ctx, "deviceType", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceType' field"))
 	}
 
-	// Simple Field (channelInfo3)
-	if pullErr := readBuffer.PullContext("channelInfo3"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo3")
-	}
-	_channelInfo3, _channelInfo3Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo3Err != nil {
-		return nil, errors.Wrap(_channelInfo3Err, "Error parsing 'channelInfo3' field of DeviceDescriptorType2")
-	}
-	channelInfo3 := _channelInfo3.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo3"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo3")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
 
-	// Simple Field (channelInfo4)
-	if pullErr := readBuffer.PullContext("channelInfo4"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelInfo4")
+	readSupported, err := ReadSimpleField(ctx, "readSupported", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readSupported' field"))
 	}
-	_channelInfo4, _channelInfo4Err := ChannelInformationParseWithBuffer(ctx, readBuffer)
-	if _channelInfo4Err != nil {
-		return nil, errors.Wrap(_channelInfo4Err, "Error parsing 'channelInfo4' field of DeviceDescriptorType2")
+
+	writeSupported, err := ReadSimpleField(ctx, "writeSupported", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeSupported' field"))
 	}
-	channelInfo4 := _channelInfo4.(ChannelInformation)
-	if closeErr := readBuffer.CloseContext("channelInfo4"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelInfo4")
+
+	logicalTagBase, err := ReadSimpleField(ctx, "logicalTagBase", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalTagBase' field"))
+	}
+
+	channelInfo1, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo1", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo1' field"))
+	}
+
+	channelInfo2, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo2", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo2' field"))
+	}
+
+	channelInfo3, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo3", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo3' field"))
+	}
+
+	channelInfo4, err := ReadSimpleField[ChannelInformation](ctx, "channelInfo4", ReadComplex[ChannelInformation](ChannelInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelInfo4' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceDescriptorType2"); closeErr != nil {

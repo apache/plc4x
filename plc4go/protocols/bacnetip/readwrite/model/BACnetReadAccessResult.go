@@ -117,6 +117,12 @@ func BACnetReadAccessResultParse(ctx context.Context, theBytes []byte) (BACnetRe
 	return BACnetReadAccessResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetReadAccessResultParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
+		return BACnetReadAccessResultParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetReadAccessResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -128,26 +134,12 @@ func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
-	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetReadAccessResult")
-	}
-	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
 
-	_listOfResults, err := ReadOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", ReadComplex[BACnetReadAccessResultListOfResults](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetReadAccessResultListOfResults, error) {
-		v, err := BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetObjectType)(objectIdentifier.GetObjectType()))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetReadAccessResultListOfResults), nil
-	}, readBuffer), true)
+	_listOfResults, err := ReadOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", ReadComplex[BACnetReadAccessResultListOfResults](BACnetReadAccessResultListOfResultsParseWithBufferProducer((uint8)(uint8(1)), (BACnetObjectType)(objectIdentifier.GetObjectType())), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfResults' field"))
 	}

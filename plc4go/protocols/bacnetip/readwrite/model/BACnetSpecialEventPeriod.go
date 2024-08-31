@@ -140,6 +140,17 @@ func BACnetSpecialEventPeriodParse(ctx context.Context, theBytes []byte) (BACnet
 	return BACnetSpecialEventPeriodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSpecialEventPeriodParseWithBufferProducer[T BACnetSpecialEventPeriod]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetSpecialEventPeriodParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetSpecialEventPeriodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware

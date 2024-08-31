@@ -83,6 +83,12 @@ func IntegerIdParse(ctx context.Context, theBytes []byte) (IntegerId, error) {
 	return IntegerIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func IntegerIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
+		return IntegerIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func IntegerIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (IntegerId, error) {
 	positionAware := readBuffer
 	_ = positionAware

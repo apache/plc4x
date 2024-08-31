@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLimitMonitoringIntervalParse(ctx context.Context, theB
 	return BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLimitMonitoringIntervalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLimitMonitoringInterval, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLimitMonitoringInterval, error) {
+		return BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLimitMonitoringInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLimitMonitoringIntervalParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (limitMonitoringInterval)
-	if pullErr := readBuffer.PullContext("limitMonitoringInterval"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limitMonitoringInterval")
-	}
-	_limitMonitoringInterval, _limitMonitoringIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _limitMonitoringIntervalErr != nil {
-		return nil, errors.Wrap(_limitMonitoringIntervalErr, "Error parsing 'limitMonitoringInterval' field of BACnetConstructedDataLimitMonitoringInterval")
-	}
-	limitMonitoringInterval := _limitMonitoringInterval.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("limitMonitoringInterval"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limitMonitoringInterval")
+	limitMonitoringInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "limitMonitoringInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limitMonitoringInterval' field"))
 	}
 
 	// Virtual field

@@ -207,6 +207,12 @@ func CEMIAdditionalInformationBusmonitorInfoParse(ctx context.Context, theBytes 
 	return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CEMIAdditionalInformationBusmonitorInfoParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
+		return CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformationBusmonitorInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -218,53 +224,41 @@ func CEMIAdditionalInformationBusmonitorInfoParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, 8), CEMIAdditionalInformationBusmonitorInfo_LEN)
+	len, err := ReadConstField[uint8](ctx, "len", ReadUnsignedByte(readBuffer, uint8(8)), CEMIAdditionalInformationBusmonitorInfo_LEN)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'len' field"))
 	}
 	_ = len
 
-	// Simple Field (frameErrorFlag)
-	_frameErrorFlag, _frameErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("frameErrorFlag")
-	if _frameErrorFlagErr != nil {
-		return nil, errors.Wrap(_frameErrorFlagErr, "Error parsing 'frameErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	frameErrorFlag, err := ReadSimpleField(ctx, "frameErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'frameErrorFlag' field"))
 	}
-	frameErrorFlag := _frameErrorFlag
 
-	// Simple Field (bitErrorFlag)
-	_bitErrorFlag, _bitErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("bitErrorFlag")
-	if _bitErrorFlagErr != nil {
-		return nil, errors.Wrap(_bitErrorFlagErr, "Error parsing 'bitErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	bitErrorFlag, err := ReadSimpleField(ctx, "bitErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitErrorFlag' field"))
 	}
-	bitErrorFlag := _bitErrorFlag
 
-	// Simple Field (parityErrorFlag)
-	_parityErrorFlag, _parityErrorFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("parityErrorFlag")
-	if _parityErrorFlagErr != nil {
-		return nil, errors.Wrap(_parityErrorFlagErr, "Error parsing 'parityErrorFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	parityErrorFlag, err := ReadSimpleField(ctx, "parityErrorFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parityErrorFlag' field"))
 	}
-	parityErrorFlag := _parityErrorFlag
 
-	// Simple Field (unknownFlag)
-	_unknownFlag, _unknownFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("unknownFlag")
-	if _unknownFlagErr != nil {
-		return nil, errors.Wrap(_unknownFlagErr, "Error parsing 'unknownFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	unknownFlag, err := ReadSimpleField(ctx, "unknownFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownFlag' field"))
 	}
-	unknownFlag := _unknownFlag
 
-	// Simple Field (lostFlag)
-	_lostFlag, _lostFlagErr := /*TODO: migrate me*/ readBuffer.ReadBit("lostFlag")
-	if _lostFlagErr != nil {
-		return nil, errors.Wrap(_lostFlagErr, "Error parsing 'lostFlag' field of CEMIAdditionalInformationBusmonitorInfo")
+	lostFlag, err := ReadSimpleField(ctx, "lostFlag", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lostFlag' field"))
 	}
-	lostFlag := _lostFlag
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 3)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of CEMIAdditionalInformationBusmonitorInfo")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("CEMIAdditionalInformationBusmonitorInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CEMIAdditionalInformationBusmonitorInfo")

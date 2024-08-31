@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func IdentifyReplyCommandFirmwareVersionParse(ctx context.Context, theBytes []by
 	return IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandFirmwareVersionParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandFirmwareVersion, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandFirmwareVersion, error) {
+		return IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandFirmwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func IdentifyReplyCommandFirmwareVersionParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (firmwareVersion)
-	_firmwareVersion, _firmwareVersionErr := /*TODO: migrate me*/ readBuffer.ReadString("firmwareVersion", uint32(64), utils.WithEncoding("UTF-8"))
-	if _firmwareVersionErr != nil {
-		return nil, errors.Wrap(_firmwareVersionErr, "Error parsing 'firmwareVersion' field of IdentifyReplyCommandFirmwareVersion")
+	firmwareVersion, err := ReadSimpleField(ctx, "firmwareVersion", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firmwareVersion' field"))
 	}
-	firmwareVersion := _firmwareVersion
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandFirmwareVersion"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandFirmwareVersion")

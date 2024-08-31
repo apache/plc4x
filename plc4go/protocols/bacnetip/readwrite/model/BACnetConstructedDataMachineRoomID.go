@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMachineRoomIDParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataMachineRoomIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMachineRoomIDParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMachineRoomID, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMachineRoomID, error) {
+		return BACnetConstructedDataMachineRoomIDParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMachineRoomIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMachineRoomID, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMachineRoomIDParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (machineRoomId)
-	if pullErr := readBuffer.PullContext("machineRoomId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for machineRoomId")
-	}
-	_machineRoomId, _machineRoomIdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _machineRoomIdErr != nil {
-		return nil, errors.Wrap(_machineRoomIdErr, "Error parsing 'machineRoomId' field of BACnetConstructedDataMachineRoomID")
-	}
-	machineRoomId := _machineRoomId.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("machineRoomId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for machineRoomId")
+	machineRoomId, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "machineRoomId", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'machineRoomId' field"))
 	}
 
 	// Virtual field

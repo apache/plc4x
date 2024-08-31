@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,6 +124,12 @@ func HVACTemperatureParse(ctx context.Context, theBytes []byte) (HVACTemperature
 	return HVACTemperatureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACTemperatureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
+		return HVACTemperatureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,12 +141,10 @@ func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (temperatureValue)
-	_temperatureValue, _temperatureValueErr := /*TODO: migrate me*/ readBuffer.ReadInt16("temperatureValue", 16)
-	if _temperatureValueErr != nil {
-		return nil, errors.Wrap(_temperatureValueErr, "Error parsing 'temperatureValue' field of HVACTemperature")
+	temperatureValue, err := ReadSimpleField(ctx, "temperatureValue", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureValue' field"))
 	}
-	temperatureValue := _temperatureValue
 
 	// Virtual field
 	_temperatureInCelcius := float32(temperatureValue) / float32(float32(256))

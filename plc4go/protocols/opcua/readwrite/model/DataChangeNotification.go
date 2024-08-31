@@ -182,6 +182,12 @@ func DataChangeNotificationParse(ctx context.Context, theBytes []byte, identifie
 	return DataChangeNotificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataChangeNotificationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataChangeNotification, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataChangeNotification, error) {
+		return DataChangeNotificationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataChangeNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -193,36 +199,26 @@ func DataChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, 32))
+	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
 	_ = notificationLength
 
-	// Simple Field (noOfMonitoredItems)
-	_noOfMonitoredItems, _noOfMonitoredItemsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMonitoredItems", 32)
-	if _noOfMonitoredItemsErr != nil {
-		return nil, errors.Wrap(_noOfMonitoredItemsErr, "Error parsing 'noOfMonitoredItems' field of DataChangeNotification")
+	noOfMonitoredItems, err := ReadSimpleField(ctx, "noOfMonitoredItems", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItems' field"))
 	}
-	noOfMonitoredItems := _noOfMonitoredItems
 
-	monitoredItems, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "monitoredItems", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("808"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfMonitoredItems))
+	monitoredItems, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "monitoredItems", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("808")), readBuffer), uint64(noOfMonitoredItems))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItems' field"))
 	}
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of DataChangeNotification")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {

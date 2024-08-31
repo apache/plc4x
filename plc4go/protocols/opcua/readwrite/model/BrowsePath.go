@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BrowsePathParse(ctx context.Context, theBytes []byte, identifier string) (B
 	return BrowsePathParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowsePathParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePath, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePath, error) {
+		return BrowsePathParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowsePathParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowsePath, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BrowsePathParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startingNode)
-	if pullErr := readBuffer.PullContext("startingNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for startingNode")
-	}
-	_startingNode, _startingNodeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _startingNodeErr != nil {
-		return nil, errors.Wrap(_startingNodeErr, "Error parsing 'startingNode' field of BrowsePath")
-	}
-	startingNode := _startingNode.(NodeId)
-	if closeErr := readBuffer.CloseContext("startingNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for startingNode")
+	startingNode, err := ReadSimpleField[NodeId](ctx, "startingNode", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingNode' field"))
 	}
 
-	// Simple Field (relativePath)
-	if pullErr := readBuffer.PullContext("relativePath"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relativePath")
-	}
-	_relativePath, _relativePathErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("542"))
-	if _relativePathErr != nil {
-		return nil, errors.Wrap(_relativePathErr, "Error parsing 'relativePath' field of BrowsePath")
-	}
-	relativePath := _relativePath.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("relativePath"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relativePath")
+	relativePath, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "relativePath", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("542")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BrowsePath"); closeErr != nil {

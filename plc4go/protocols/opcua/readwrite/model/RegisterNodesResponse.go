@@ -161,6 +161,12 @@ func RegisterNodesResponseParse(ctx context.Context, theBytes []byte, identifier
 	return RegisterNodesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RegisterNodesResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterNodesResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterNodesResponse, error) {
+		return RegisterNodesResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterNodesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,25 +178,15 @@ func RegisterNodesResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of RegisterNodesResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (noOfRegisteredNodeIds)
-	_noOfRegisteredNodeIds, _noOfRegisteredNodeIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRegisteredNodeIds", 32)
-	if _noOfRegisteredNodeIdsErr != nil {
-		return nil, errors.Wrap(_noOfRegisteredNodeIdsErr, "Error parsing 'noOfRegisteredNodeIds' field of RegisterNodesResponse")
+	noOfRegisteredNodeIds, err := ReadSimpleField(ctx, "noOfRegisteredNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRegisteredNodeIds' field"))
 	}
-	noOfRegisteredNodeIds := _noOfRegisteredNodeIds
 
 	registeredNodeIds, err := ReadCountArrayField[NodeId](ctx, "registeredNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfRegisteredNodeIds))
 	if err != nil {

@@ -143,6 +143,12 @@ func S7PayloadWriteVarResponseParse(ctx context.Context, theBytes []byte, messag
 	return S7PayloadWriteVarResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType, parameter)
 }
 
+func S7PayloadWriteVarResponseParseWithBufferProducer(messageType uint8, parameter S7Parameter) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadWriteVarResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadWriteVarResponse, error) {
+		return S7PayloadWriteVarResponseParseWithBuffer(ctx, readBuffer, messageType, parameter)
+	}
+}
+
 func S7PayloadWriteVarResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadWriteVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

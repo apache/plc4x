@@ -110,6 +110,12 @@ func RoutingIndicationParse(ctx context.Context, theBytes []byte) (RoutingIndica
 	return RoutingIndicationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func RoutingIndicationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
+		return RoutingIndicationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RoutingIndicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RoutingIndication, error) {
 	positionAware := readBuffer
 	_ = positionAware

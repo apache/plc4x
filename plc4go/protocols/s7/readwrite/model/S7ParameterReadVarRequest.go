@@ -146,6 +146,12 @@ func S7ParameterReadVarRequestParse(ctx context.Context, theBytes []byte, messag
 	return S7ParameterReadVarRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
+func S7ParameterReadVarRequestParseWithBufferProducer(messageType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterReadVarRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterReadVarRequest, error) {
+		return S7ParameterReadVarRequestParseWithBuffer(ctx, readBuffer, messageType)
+	}
+}
+
 func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterReadVarRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,7 +163,7 @@ func S7ParameterReadVarRequestParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numItems, err := ReadImplicitField[uint8](ctx, "numItems", ReadUnsignedByte(readBuffer, 8))
+	numItems, err := ReadImplicitField[uint8](ctx, "numItems", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
 	}

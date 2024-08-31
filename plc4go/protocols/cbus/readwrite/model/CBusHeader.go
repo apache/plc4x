@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func CBusHeaderParse(ctx context.Context, theBytes []byte) (CBusHeader, error) {
 	return CBusHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CBusHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
+		return CBusHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,44 +152,24 @@ func CBusHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (priorityClass)
-	if pullErr := readBuffer.PullContext("priorityClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priorityClass")
-	}
-	_priorityClass, _priorityClassErr := PriorityClassParseWithBuffer(ctx, readBuffer)
-	if _priorityClassErr != nil {
-		return nil, errors.Wrap(_priorityClassErr, "Error parsing 'priorityClass' field of CBusHeader")
-	}
-	priorityClass := _priorityClass
-	if closeErr := readBuffer.CloseContext("priorityClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priorityClass")
+	priorityClass, err := ReadEnumField[PriorityClass](ctx, "priorityClass", "PriorityClass", ReadEnum(PriorityClassByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityClass' field"))
 	}
 
-	// Simple Field (dp)
-	_dp, _dpErr := /*TODO: migrate me*/ readBuffer.ReadBit("dp")
-	if _dpErr != nil {
-		return nil, errors.Wrap(_dpErr, "Error parsing 'dp' field of CBusHeader")
+	dp, err := ReadSimpleField(ctx, "dp", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dp' field"))
 	}
-	dp := _dp
 
-	// Simple Field (rc)
-	_rc, _rcErr := /*TODO: migrate me*/ readBuffer.ReadUint8("rc", 2)
-	if _rcErr != nil {
-		return nil, errors.Wrap(_rcErr, "Error parsing 'rc' field of CBusHeader")
+	rc, err := ReadSimpleField(ctx, "rc", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rc' field"))
 	}
-	rc := _rc
 
-	// Simple Field (destinationAddressType)
-	if pullErr := readBuffer.PullContext("destinationAddressType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for destinationAddressType")
-	}
-	_destinationAddressType, _destinationAddressTypeErr := DestinationAddressTypeParseWithBuffer(ctx, readBuffer)
-	if _destinationAddressTypeErr != nil {
-		return nil, errors.Wrap(_destinationAddressTypeErr, "Error parsing 'destinationAddressType' field of CBusHeader")
-	}
-	destinationAddressType := _destinationAddressType
-	if closeErr := readBuffer.CloseContext("destinationAddressType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for destinationAddressType")
+	destinationAddressType, err := ReadEnumField[DestinationAddressType](ctx, "destinationAddressType", "DestinationAddressType", ReadEnum(DestinationAddressTypeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddressType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusHeader"); closeErr != nil {

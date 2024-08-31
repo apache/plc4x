@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParse(ctx context.Context, 
 	return BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
+		return BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyUpperLimitEnforced, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataOccupancyUpperLimitEnforcedParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (occupancyUpperLimitEnforced)
-	if pullErr := readBuffer.PullContext("occupancyUpperLimitEnforced"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for occupancyUpperLimitEnforced")
-	}
-	_occupancyUpperLimitEnforced, _occupancyUpperLimitEnforcedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _occupancyUpperLimitEnforcedErr != nil {
-		return nil, errors.Wrap(_occupancyUpperLimitEnforcedErr, "Error parsing 'occupancyUpperLimitEnforced' field of BACnetConstructedDataOccupancyUpperLimitEnforced")
-	}
-	occupancyUpperLimitEnforced := _occupancyUpperLimitEnforced.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("occupancyUpperLimitEnforced"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for occupancyUpperLimitEnforced")
+	occupancyUpperLimitEnforced, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyUpperLimitEnforced", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyUpperLimitEnforced' field"))
 	}
 
 	// Virtual field

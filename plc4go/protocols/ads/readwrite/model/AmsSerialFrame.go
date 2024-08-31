@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func AmsSerialFrameParse(ctx context.Context, theBytes []byte) (AmsSerialFrame, 
 	return AmsSerialFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsSerialFrameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
+		return AmsSerialFrameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsSerialFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,60 +182,40 @@ func AmsSerialFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (magicCookie)
-	_magicCookie, _magicCookieErr := /*TODO: migrate me*/ readBuffer.ReadUint16("magicCookie", 16)
-	if _magicCookieErr != nil {
-		return nil, errors.Wrap(_magicCookieErr, "Error parsing 'magicCookie' field of AmsSerialFrame")
-	}
-	magicCookie := _magicCookie
-
-	// Simple Field (transmitterAddress)
-	_transmitterAddress, _transmitterAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("transmitterAddress", 8)
-	if _transmitterAddressErr != nil {
-		return nil, errors.Wrap(_transmitterAddressErr, "Error parsing 'transmitterAddress' field of AmsSerialFrame")
-	}
-	transmitterAddress := _transmitterAddress
-
-	// Simple Field (receiverAddress)
-	_receiverAddress, _receiverAddressErr := /*TODO: migrate me*/ readBuffer.ReadInt8("receiverAddress", 8)
-	if _receiverAddressErr != nil {
-		return nil, errors.Wrap(_receiverAddressErr, "Error parsing 'receiverAddress' field of AmsSerialFrame")
-	}
-	receiverAddress := _receiverAddress
-
-	// Simple Field (fragmentNumber)
-	_fragmentNumber, _fragmentNumberErr := /*TODO: migrate me*/ readBuffer.ReadInt8("fragmentNumber", 8)
-	if _fragmentNumberErr != nil {
-		return nil, errors.Wrap(_fragmentNumberErr, "Error parsing 'fragmentNumber' field of AmsSerialFrame")
-	}
-	fragmentNumber := _fragmentNumber
-
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadInt8("length", 8)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AmsSerialFrame")
-	}
-	length := _length
-
-	// Simple Field (userdata)
-	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
-	}
-	_userdata, _userdataErr := AmsPacketParseWithBuffer(ctx, readBuffer)
-	if _userdataErr != nil {
-		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsSerialFrame")
-	}
-	userdata := _userdata.(AmsPacket)
-	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userdata")
+	magicCookie, err := ReadSimpleField(ctx, "magicCookie", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'magicCookie' field"))
 	}
 
-	// Simple Field (crc)
-	_crc, _crcErr := /*TODO: migrate me*/ readBuffer.ReadUint16("crc", 16)
-	if _crcErr != nil {
-		return nil, errors.Wrap(_crcErr, "Error parsing 'crc' field of AmsSerialFrame")
+	transmitterAddress, err := ReadSimpleField(ctx, "transmitterAddress", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transmitterAddress' field"))
 	}
-	crc := _crc
+
+	receiverAddress, err := ReadSimpleField(ctx, "receiverAddress", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverAddress' field"))
+	}
+
+	fragmentNumber, err := ReadSimpleField(ctx, "fragmentNumber", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fragmentNumber' field"))
+	}
+
+	length, err := ReadSimpleField(ctx, "length", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
+	}
+
+	userdata, err := ReadSimpleField[AmsPacket](ctx, "userdata", ReadComplex[AmsPacket](AmsPacketParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userdata' field"))
+	}
+
+	crc, err := ReadSimpleField(ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("AmsSerialFrame"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AmsSerialFrame")

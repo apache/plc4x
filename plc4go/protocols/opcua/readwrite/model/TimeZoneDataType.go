@@ -148,6 +148,12 @@ func TimeZoneDataTypeParse(ctx context.Context, theBytes []byte, identifier stri
 	return TimeZoneDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TimeZoneDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeZoneDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeZoneDataType, error) {
+		return TimeZoneDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TimeZoneDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TimeZoneDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,24 +165,20 @@ func TimeZoneDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (offset)
-	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadInt16("offset", 16)
-	if _offsetErr != nil {
-		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of TimeZoneDataType")
+	offset, err := ReadSimpleField(ctx, "offset", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offset' field"))
 	}
-	offset := _offset
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (daylightSavingInOffset)
-	_daylightSavingInOffset, _daylightSavingInOffsetErr := /*TODO: migrate me*/ readBuffer.ReadBit("daylightSavingInOffset")
-	if _daylightSavingInOffsetErr != nil {
-		return nil, errors.Wrap(_daylightSavingInOffsetErr, "Error parsing 'daylightSavingInOffset' field of TimeZoneDataType")
+	daylightSavingInOffset, err := ReadSimpleField(ctx, "daylightSavingInOffset", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSavingInOffset' field"))
 	}
-	daylightSavingInOffset := _daylightSavingInOffset
 
 	if closeErr := readBuffer.CloseContext("TimeZoneDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TimeZoneDataType")

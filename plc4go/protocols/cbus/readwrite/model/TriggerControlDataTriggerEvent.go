@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func TriggerControlDataTriggerEventParse(ctx context.Context, theBytes []byte) (
 	return TriggerControlDataTriggerEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlDataTriggerEventParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
+		return TriggerControlDataTriggerEventParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlDataTriggerEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func TriggerControlDataTriggerEventParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (actionSelector)
-	_actionSelector, _actionSelectorErr := /*TODO: migrate me*/ readBuffer.ReadByte("actionSelector")
-	if _actionSelectorErr != nil {
-		return nil, errors.Wrap(_actionSelectorErr, "Error parsing 'actionSelector' field of TriggerControlDataTriggerEvent")
+	actionSelector, err := ReadSimpleField(ctx, "actionSelector", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionSelector' field"))
 	}
-	actionSelector := _actionSelector
 
 	if closeErr := readBuffer.CloseContext("TriggerControlDataTriggerEvent"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TriggerControlDataTriggerEvent")

@@ -199,6 +199,12 @@ func AdsReadWriteRequestParse(ctx context.Context, theBytes []byte) (AdsReadWrit
 	return AdsReadWriteRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadWriteRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
+		return AdsReadWriteRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -210,40 +216,28 @@ func AdsReadWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
-	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsReadWriteRequest")
+	indexGroup, err := ReadSimpleField(ctx, "indexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexGroup' field"))
 	}
-	indexGroup := _indexGroup
 
-	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
-	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsReadWriteRequest")
+	indexOffset, err := ReadSimpleField(ctx, "indexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexOffset' field"))
 	}
-	indexOffset := _indexOffset
 
-	// Simple Field (readLength)
-	_readLength, _readLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("readLength", 32)
-	if _readLengthErr != nil {
-		return nil, errors.Wrap(_readLengthErr, "Error parsing 'readLength' field of AdsReadWriteRequest")
+	readLength, err := ReadSimpleField(ctx, "readLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readLength' field"))
 	}
-	readLength := _readLength
 
-	writeLength, err := ReadImplicitField[uint32](ctx, "writeLength", ReadUnsignedInt(readBuffer, 32))
+	writeLength, err := ReadImplicitField[uint32](ctx, "writeLength", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeLength' field"))
 	}
 	_ = writeLength
 
-	items, err := ReadCountArrayField[AdsMultiRequestItem](ctx, "items", ReadComplex[AdsMultiRequestItem](func(ctx context.Context, buffer utils.ReadBuffer) (AdsMultiRequestItem, error) {
-		v, err := AdsMultiRequestItemParseWithBuffer(ctx, readBuffer, (uint32)(indexGroup))
-		if err != nil {
-			return nil, err
-		}
-		return v.(AdsMultiRequestItem), nil
-	}, readBuffer), uint64(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return int32(indexOffset) }, func() any { return int32(int32(0)) }).(int32)))
+	items, err := ReadCountArrayField[AdsMultiRequestItem](ctx, "items", ReadComplex[AdsMultiRequestItem](AdsMultiRequestItemParseWithBufferProducer[AdsMultiRequestItem]((uint32)(indexGroup)), readBuffer), uint64(utils.InlineIf((bool(bool((bool((indexGroup) == (61568)))) || bool((bool((indexGroup) == (61569))))) || bool((bool((indexGroup) == (61570))))), func() any { return int32(indexOffset) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}

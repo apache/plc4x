@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastRestartReasonParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataLastRestartReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastRestartReasonParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastRestartReason, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastRestartReason, error) {
+		return BACnetConstructedDataLastRestartReasonParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastRestartReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastRestartReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastRestartReasonParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastRestartReason)
-	if pullErr := readBuffer.PullContext("lastRestartReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastRestartReason")
-	}
-	_lastRestartReason, _lastRestartReasonErr := BACnetRestartReasonTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _lastRestartReasonErr != nil {
-		return nil, errors.Wrap(_lastRestartReasonErr, "Error parsing 'lastRestartReason' field of BACnetConstructedDataLastRestartReason")
-	}
-	lastRestartReason := _lastRestartReason.(BACnetRestartReasonTagged)
-	if closeErr := readBuffer.CloseContext("lastRestartReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastRestartReason")
+	lastRestartReason, err := ReadSimpleField[BACnetRestartReasonTagged](ctx, "lastRestartReason", ReadComplex[BACnetRestartReasonTagged](BACnetRestartReasonTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastRestartReason' field"))
 	}
 
 	// Virtual field

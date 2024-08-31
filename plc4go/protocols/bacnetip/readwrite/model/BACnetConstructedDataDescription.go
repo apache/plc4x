@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDescriptionParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDescriptionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDescription, error) {
+		return BACnetConstructedDataDescriptionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDescriptionParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of BACnetConstructedDataDescription")
-	}
-	description := _description.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	description, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "description", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
 	// Virtual field

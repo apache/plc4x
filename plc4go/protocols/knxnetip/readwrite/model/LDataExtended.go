@@ -202,6 +202,12 @@ func LDataExtendedParse(ctx context.Context, theBytes []byte) (LDataExtended, er
 	return LDataExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LDataExtendedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
+		return LDataExtendedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -213,38 +219,24 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (groupAddress)
-	_groupAddress, _groupAddressErr := /*TODO: migrate me*/ readBuffer.ReadBit("groupAddress")
-	if _groupAddressErr != nil {
-		return nil, errors.Wrap(_groupAddressErr, "Error parsing 'groupAddress' field of LDataExtended")
+	groupAddress, err := ReadSimpleField(ctx, "groupAddress", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupAddress' field"))
 	}
-	groupAddress := _groupAddress
 
-	// Simple Field (hopCount)
-	_hopCount, _hopCountErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hopCount", 3)
-	if _hopCountErr != nil {
-		return nil, errors.Wrap(_hopCountErr, "Error parsing 'hopCount' field of LDataExtended")
+	hopCount, err := ReadSimpleField(ctx, "hopCount", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hopCount' field"))
 	}
-	hopCount := _hopCount
 
-	// Simple Field (extendedFrameFormat)
-	_extendedFrameFormat, _extendedFrameFormatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extendedFrameFormat", 4)
-	if _extendedFrameFormatErr != nil {
-		return nil, errors.Wrap(_extendedFrameFormatErr, "Error parsing 'extendedFrameFormat' field of LDataExtended")
+	extendedFrameFormat, err := ReadSimpleField(ctx, "extendedFrameFormat", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedFrameFormat' field"))
 	}
-	extendedFrameFormat := _extendedFrameFormat
 
-	// Simple Field (sourceAddress)
-	if pullErr := readBuffer.PullContext("sourceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceAddress")
-	}
-	_sourceAddress, _sourceAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of LDataExtended")
-	}
-	sourceAddress := _sourceAddress.(KnxAddress)
-	if closeErr := readBuffer.CloseContext("sourceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceAddress")
+	sourceAddress, err := ReadSimpleField[KnxAddress](ctx, "sourceAddress", ReadComplex[KnxAddress](KnxAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
 
 	destinationAddress, err := readBuffer.ReadByteArray("destinationAddress", int(int32(2)))
@@ -252,23 +244,15 @@ func LDataExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 
-	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, 8))
+	dataLength, err := ReadImplicitField[uint8](ctx, "dataLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
 	_ = dataLength
 
-	// Simple Field (apdu)
-	if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apdu")
-	}
-	_apdu, _apduErr := ApduParseWithBuffer(ctx, readBuffer, uint8(dataLength))
-	if _apduErr != nil {
-		return nil, errors.Wrap(_apduErr, "Error parsing 'apdu' field of LDataExtended")
-	}
-	apdu := _apdu.(Apdu)
-	if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apdu")
+	apdu, err := ReadSimpleField[Apdu](ctx, "apdu", ReadComplex[Apdu](ApduParseWithBufferProducer[Apdu]((uint8)(dataLength)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apdu' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("LDataExtended"); closeErr != nil {

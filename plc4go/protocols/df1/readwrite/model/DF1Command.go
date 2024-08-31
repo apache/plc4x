@@ -140,6 +140,17 @@ func DF1CommandParse(ctx context.Context, theBytes []byte) (DF1Command, error) {
 	return DF1CommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1CommandParseWithBufferProducer[T DF1Command]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DF1CommandParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1Command, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,24 +162,20 @@ func DF1CommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, 8))
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1Command")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionCounter", 16)
-	if _transactionCounterErr != nil {
-		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1Command")
+	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionCounter' field"))
 	}
-	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type DF1CommandChildSerializeRequirement interface {

@@ -127,6 +127,12 @@ func BACnetLandingCallStatusParse(ctx context.Context, theBytes []byte) (BACnetL
 	return BACnetLandingCallStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingCallStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
+		return BACnetLandingCallStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -138,39 +144,17 @@ func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floorNumber)
-	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
-	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetLandingCallStatus")
-	}
-	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floorNumber")
+	floorNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumber' field"))
 	}
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
-	}
-	_command, _commandErr := BACnetLandingCallStatusCommandParseWithBuffer(ctx, readBuffer)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of BACnetLandingCallStatus")
-	}
-	command := _command.(BACnetLandingCallStatusCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	command, err := ReadSimpleField[BACnetLandingCallStatusCommand](ctx, "command", ReadComplex[BACnetLandingCallStatusCommand](BACnetLandingCallStatusCommandParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	_floorText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "floorText", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagCharacterString), nil
-	}, readBuffer), true)
+	_floorText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "floorText", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
 	}

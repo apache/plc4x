@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetAddressBindingParse(ctx context.Context, theBytes []byte) (BACnetAddr
 	return BACnetAddressBindingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAddressBindingParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
+		return BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAddressBinding, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetAddressBindingParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceIdentifier)
-	if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
-	}
-	_deviceIdentifier, _deviceIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _deviceIdentifierErr != nil {
-		return nil, errors.Wrap(_deviceIdentifierErr, "Error parsing 'deviceIdentifier' field of BACnetAddressBinding")
-	}
-	deviceIdentifier := _deviceIdentifier.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
+	deviceIdentifier, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
 	}
 
-	// Simple Field (deviceAddress)
-	if pullErr := readBuffer.PullContext("deviceAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceAddress")
-	}
-	_deviceAddress, _deviceAddressErr := BACnetAddressParseWithBuffer(ctx, readBuffer)
-	if _deviceAddressErr != nil {
-		return nil, errors.Wrap(_deviceAddressErr, "Error parsing 'deviceAddress' field of BACnetAddressBinding")
-	}
-	deviceAddress := _deviceAddress.(BACnetAddress)
-	if closeErr := readBuffer.CloseContext("deviceAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceAddress")
+	deviceAddress, err := ReadSimpleField[BACnetAddress](ctx, "deviceAddress", ReadComplex[BACnetAddress](BACnetAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceAddress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAddressBinding"); closeErr != nil {

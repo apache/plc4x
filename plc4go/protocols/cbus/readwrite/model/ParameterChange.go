@@ -113,6 +113,12 @@ func ParameterChangeParse(ctx context.Context, theBytes []byte) (ParameterChange
 	return ParameterChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ParameterChangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
+		return ParameterChangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ParameterChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterChange, error) {
 	positionAware := readBuffer
 	_ = positionAware

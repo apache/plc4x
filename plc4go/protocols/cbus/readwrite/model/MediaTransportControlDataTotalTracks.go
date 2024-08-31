@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -162,6 +164,12 @@ func MediaTransportControlDataTotalTracksParse(ctx context.Context, theBytes []b
 	return MediaTransportControlDataTotalTracksParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataTotalTracksParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
+		return MediaTransportControlDataTotalTracksParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataTotalTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataTotalTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -173,33 +181,25 @@ func MediaTransportControlDataTotalTracksParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (totalTracksMSB)
-	_totalTracksMSB, _totalTracksMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMSB")
-	if _totalTracksMSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMSBErr, "Error parsing 'totalTracksMSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMSB, err := ReadSimpleField(ctx, "totalTracksMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMSB' field"))
 	}
-	totalTracksMSB := _totalTracksMSB
 
-	// Simple Field (totalTracksMMSB)
-	_totalTracksMMSB, _totalTracksMMSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMMSB")
-	if _totalTracksMMSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMMSBErr, "Error parsing 'totalTracksMMSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMMSB, err := ReadSimpleField(ctx, "totalTracksMMSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMMSB' field"))
 	}
-	totalTracksMMSB := _totalTracksMMSB
 
-	// Simple Field (totalTracksMLSB)
-	_totalTracksMLSB, _totalTracksMLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksMLSB")
-	if _totalTracksMLSBErr != nil {
-		return nil, errors.Wrap(_totalTracksMLSBErr, "Error parsing 'totalTracksMLSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksMLSB, err := ReadSimpleField(ctx, "totalTracksMLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksMLSB' field"))
 	}
-	totalTracksMLSB := _totalTracksMLSB
 
-	// Simple Field (totalTracksLSB)
-	_totalTracksLSB, _totalTracksLSBErr := /*TODO: migrate me*/ readBuffer.ReadByte("totalTracksLSB")
-	if _totalTracksLSBErr != nil {
-		return nil, errors.Wrap(_totalTracksLSBErr, "Error parsing 'totalTracksLSB' field of MediaTransportControlDataTotalTracks")
+	totalTracksLSB, err := ReadSimpleField(ctx, "totalTracksLSB", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalTracksLSB' field"))
 	}
-	totalTracksLSB := _totalTracksLSB
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataTotalTracks"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataTotalTracks")

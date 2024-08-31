@@ -467,6 +467,12 @@ func SubscriptionDiagnosticsDataTypeParse(ctx context.Context, theBytes []byte, 
 	return SubscriptionDiagnosticsDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SubscriptionDiagnosticsDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscriptionDiagnosticsDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SubscriptionDiagnosticsDataType, error) {
+		return SubscriptionDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SubscriptionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SubscriptionDiagnosticsDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -478,233 +484,165 @@ func SubscriptionDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sessionId)
-	if pullErr := readBuffer.PullContext("sessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sessionId")
-	}
-	_sessionId, _sessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sessionIdErr != nil {
-		return nil, errors.Wrap(_sessionIdErr, "Error parsing 'sessionId' field of SubscriptionDiagnosticsDataType")
-	}
-	sessionId := _sessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sessionId")
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SubscriptionDiagnosticsDataType")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (priority)
-	_priority, _priorityErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priority", 8)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of SubscriptionDiagnosticsDataType")
+	priority, err := ReadSimpleField(ctx, "priority", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}
-	priority := _priority
 
-	// Simple Field (publishingInterval)
-	_publishingInterval, _publishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("publishingInterval", 64)
-	if _publishingIntervalErr != nil {
-		return nil, errors.Wrap(_publishingIntervalErr, "Error parsing 'publishingInterval' field of SubscriptionDiagnosticsDataType")
+	publishingInterval, err := ReadSimpleField(ctx, "publishingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingInterval' field"))
 	}
-	publishingInterval := _publishingInterval
 
-	// Simple Field (maxKeepAliveCount)
-	_maxKeepAliveCount, _maxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxKeepAliveCount", 32)
-	if _maxKeepAliveCountErr != nil {
-		return nil, errors.Wrap(_maxKeepAliveCountErr, "Error parsing 'maxKeepAliveCount' field of SubscriptionDiagnosticsDataType")
+	maxKeepAliveCount, err := ReadSimpleField(ctx, "maxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxKeepAliveCount' field"))
 	}
-	maxKeepAliveCount := _maxKeepAliveCount
 
-	// Simple Field (maxLifetimeCount)
-	_maxLifetimeCount, _maxLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxLifetimeCount", 32)
-	if _maxLifetimeCountErr != nil {
-		return nil, errors.Wrap(_maxLifetimeCountErr, "Error parsing 'maxLifetimeCount' field of SubscriptionDiagnosticsDataType")
+	maxLifetimeCount, err := ReadSimpleField(ctx, "maxLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxLifetimeCount' field"))
 	}
-	maxLifetimeCount := _maxLifetimeCount
 
-	// Simple Field (maxNotificationsPerPublish)
-	_maxNotificationsPerPublish, _maxNotificationsPerPublishErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNotificationsPerPublish", 32)
-	if _maxNotificationsPerPublishErr != nil {
-		return nil, errors.Wrap(_maxNotificationsPerPublishErr, "Error parsing 'maxNotificationsPerPublish' field of SubscriptionDiagnosticsDataType")
+	maxNotificationsPerPublish, err := ReadSimpleField(ctx, "maxNotificationsPerPublish", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationsPerPublish' field"))
 	}
-	maxNotificationsPerPublish := _maxNotificationsPerPublish
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (publishingEnabled)
-	_publishingEnabled, _publishingEnabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("publishingEnabled")
-	if _publishingEnabledErr != nil {
-		return nil, errors.Wrap(_publishingEnabledErr, "Error parsing 'publishingEnabled' field of SubscriptionDiagnosticsDataType")
+	publishingEnabled, err := ReadSimpleField(ctx, "publishingEnabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishingEnabled' field"))
 	}
-	publishingEnabled := _publishingEnabled
 
-	// Simple Field (modifyCount)
-	_modifyCount, _modifyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("modifyCount", 32)
-	if _modifyCountErr != nil {
-		return nil, errors.Wrap(_modifyCountErr, "Error parsing 'modifyCount' field of SubscriptionDiagnosticsDataType")
+	modifyCount, err := ReadSimpleField(ctx, "modifyCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modifyCount' field"))
 	}
-	modifyCount := _modifyCount
 
-	// Simple Field (enableCount)
-	_enableCount, _enableCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("enableCount", 32)
-	if _enableCountErr != nil {
-		return nil, errors.Wrap(_enableCountErr, "Error parsing 'enableCount' field of SubscriptionDiagnosticsDataType")
+	enableCount, err := ReadSimpleField(ctx, "enableCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableCount' field"))
 	}
-	enableCount := _enableCount
 
-	// Simple Field (disableCount)
-	_disableCount, _disableCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("disableCount", 32)
-	if _disableCountErr != nil {
-		return nil, errors.Wrap(_disableCountErr, "Error parsing 'disableCount' field of SubscriptionDiagnosticsDataType")
+	disableCount, err := ReadSimpleField(ctx, "disableCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disableCount' field"))
 	}
-	disableCount := _disableCount
 
-	// Simple Field (republishRequestCount)
-	_republishRequestCount, _republishRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("republishRequestCount", 32)
-	if _republishRequestCountErr != nil {
-		return nil, errors.Wrap(_republishRequestCountErr, "Error parsing 'republishRequestCount' field of SubscriptionDiagnosticsDataType")
+	republishRequestCount, err := ReadSimpleField(ctx, "republishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishRequestCount' field"))
 	}
-	republishRequestCount := _republishRequestCount
 
-	// Simple Field (republishMessageRequestCount)
-	_republishMessageRequestCount, _republishMessageRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("republishMessageRequestCount", 32)
-	if _republishMessageRequestCountErr != nil {
-		return nil, errors.Wrap(_republishMessageRequestCountErr, "Error parsing 'republishMessageRequestCount' field of SubscriptionDiagnosticsDataType")
+	republishMessageRequestCount, err := ReadSimpleField(ctx, "republishMessageRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishMessageRequestCount' field"))
 	}
-	republishMessageRequestCount := _republishMessageRequestCount
 
-	// Simple Field (republishMessageCount)
-	_republishMessageCount, _republishMessageCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("republishMessageCount", 32)
-	if _republishMessageCountErr != nil {
-		return nil, errors.Wrap(_republishMessageCountErr, "Error parsing 'republishMessageCount' field of SubscriptionDiagnosticsDataType")
+	republishMessageCount, err := ReadSimpleField(ctx, "republishMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'republishMessageCount' field"))
 	}
-	republishMessageCount := _republishMessageCount
 
-	// Simple Field (transferRequestCount)
-	_transferRequestCount, _transferRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("transferRequestCount", 32)
-	if _transferRequestCountErr != nil {
-		return nil, errors.Wrap(_transferRequestCountErr, "Error parsing 'transferRequestCount' field of SubscriptionDiagnosticsDataType")
+	transferRequestCount, err := ReadSimpleField(ctx, "transferRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferRequestCount' field"))
 	}
-	transferRequestCount := _transferRequestCount
 
-	// Simple Field (transferredToAltClientCount)
-	_transferredToAltClientCount, _transferredToAltClientCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("transferredToAltClientCount", 32)
-	if _transferredToAltClientCountErr != nil {
-		return nil, errors.Wrap(_transferredToAltClientCountErr, "Error parsing 'transferredToAltClientCount' field of SubscriptionDiagnosticsDataType")
+	transferredToAltClientCount, err := ReadSimpleField(ctx, "transferredToAltClientCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferredToAltClientCount' field"))
 	}
-	transferredToAltClientCount := _transferredToAltClientCount
 
-	// Simple Field (transferredToSameClientCount)
-	_transferredToSameClientCount, _transferredToSameClientCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("transferredToSameClientCount", 32)
-	if _transferredToSameClientCountErr != nil {
-		return nil, errors.Wrap(_transferredToSameClientCountErr, "Error parsing 'transferredToSameClientCount' field of SubscriptionDiagnosticsDataType")
+	transferredToSameClientCount, err := ReadSimpleField(ctx, "transferredToSameClientCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transferredToSameClientCount' field"))
 	}
-	transferredToSameClientCount := _transferredToSameClientCount
 
-	// Simple Field (publishRequestCount)
-	_publishRequestCount, _publishRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("publishRequestCount", 32)
-	if _publishRequestCountErr != nil {
-		return nil, errors.Wrap(_publishRequestCountErr, "Error parsing 'publishRequestCount' field of SubscriptionDiagnosticsDataType")
+	publishRequestCount, err := ReadSimpleField(ctx, "publishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishRequestCount' field"))
 	}
-	publishRequestCount := _publishRequestCount
 
-	// Simple Field (dataChangeNotificationsCount)
-	_dataChangeNotificationsCount, _dataChangeNotificationsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataChangeNotificationsCount", 32)
-	if _dataChangeNotificationsCountErr != nil {
-		return nil, errors.Wrap(_dataChangeNotificationsCountErr, "Error parsing 'dataChangeNotificationsCount' field of SubscriptionDiagnosticsDataType")
+	dataChangeNotificationsCount, err := ReadSimpleField(ctx, "dataChangeNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataChangeNotificationsCount' field"))
 	}
-	dataChangeNotificationsCount := _dataChangeNotificationsCount
 
-	// Simple Field (eventNotificationsCount)
-	_eventNotificationsCount, _eventNotificationsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("eventNotificationsCount", 32)
-	if _eventNotificationsCountErr != nil {
-		return nil, errors.Wrap(_eventNotificationsCountErr, "Error parsing 'eventNotificationsCount' field of SubscriptionDiagnosticsDataType")
+	eventNotificationsCount, err := ReadSimpleField(ctx, "eventNotificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventNotificationsCount' field"))
 	}
-	eventNotificationsCount := _eventNotificationsCount
 
-	// Simple Field (notificationsCount)
-	_notificationsCount, _notificationsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationsCount", 32)
-	if _notificationsCountErr != nil {
-		return nil, errors.Wrap(_notificationsCountErr, "Error parsing 'notificationsCount' field of SubscriptionDiagnosticsDataType")
+	notificationsCount, err := ReadSimpleField(ctx, "notificationsCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationsCount' field"))
 	}
-	notificationsCount := _notificationsCount
 
-	// Simple Field (latePublishRequestCount)
-	_latePublishRequestCount, _latePublishRequestCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("latePublishRequestCount", 32)
-	if _latePublishRequestCountErr != nil {
-		return nil, errors.Wrap(_latePublishRequestCountErr, "Error parsing 'latePublishRequestCount' field of SubscriptionDiagnosticsDataType")
+	latePublishRequestCount, err := ReadSimpleField(ctx, "latePublishRequestCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'latePublishRequestCount' field"))
 	}
-	latePublishRequestCount := _latePublishRequestCount
 
-	// Simple Field (currentKeepAliveCount)
-	_currentKeepAliveCount, _currentKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentKeepAliveCount", 32)
-	if _currentKeepAliveCountErr != nil {
-		return nil, errors.Wrap(_currentKeepAliveCountErr, "Error parsing 'currentKeepAliveCount' field of SubscriptionDiagnosticsDataType")
+	currentKeepAliveCount, err := ReadSimpleField(ctx, "currentKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentKeepAliveCount' field"))
 	}
-	currentKeepAliveCount := _currentKeepAliveCount
 
-	// Simple Field (currentLifetimeCount)
-	_currentLifetimeCount, _currentLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("currentLifetimeCount", 32)
-	if _currentLifetimeCountErr != nil {
-		return nil, errors.Wrap(_currentLifetimeCountErr, "Error parsing 'currentLifetimeCount' field of SubscriptionDiagnosticsDataType")
+	currentLifetimeCount, err := ReadSimpleField(ctx, "currentLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentLifetimeCount' field"))
 	}
-	currentLifetimeCount := _currentLifetimeCount
 
-	// Simple Field (unacknowledgedMessageCount)
-	_unacknowledgedMessageCount, _unacknowledgedMessageCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("unacknowledgedMessageCount", 32)
-	if _unacknowledgedMessageCountErr != nil {
-		return nil, errors.Wrap(_unacknowledgedMessageCountErr, "Error parsing 'unacknowledgedMessageCount' field of SubscriptionDiagnosticsDataType")
+	unacknowledgedMessageCount, err := ReadSimpleField(ctx, "unacknowledgedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unacknowledgedMessageCount' field"))
 	}
-	unacknowledgedMessageCount := _unacknowledgedMessageCount
 
-	// Simple Field (discardedMessageCount)
-	_discardedMessageCount, _discardedMessageCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("discardedMessageCount", 32)
-	if _discardedMessageCountErr != nil {
-		return nil, errors.Wrap(_discardedMessageCountErr, "Error parsing 'discardedMessageCount' field of SubscriptionDiagnosticsDataType")
+	discardedMessageCount, err := ReadSimpleField(ctx, "discardedMessageCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discardedMessageCount' field"))
 	}
-	discardedMessageCount := _discardedMessageCount
 
-	// Simple Field (monitoredItemCount)
-	_monitoredItemCount, _monitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemCount", 32)
-	if _monitoredItemCountErr != nil {
-		return nil, errors.Wrap(_monitoredItemCountErr, "Error parsing 'monitoredItemCount' field of SubscriptionDiagnosticsDataType")
+	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemCount' field"))
 	}
-	monitoredItemCount := _monitoredItemCount
 
-	// Simple Field (disabledMonitoredItemCount)
-	_disabledMonitoredItemCount, _disabledMonitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("disabledMonitoredItemCount", 32)
-	if _disabledMonitoredItemCountErr != nil {
-		return nil, errors.Wrap(_disabledMonitoredItemCountErr, "Error parsing 'disabledMonitoredItemCount' field of SubscriptionDiagnosticsDataType")
+	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disabledMonitoredItemCount' field"))
 	}
-	disabledMonitoredItemCount := _disabledMonitoredItemCount
 
-	// Simple Field (monitoringQueueOverflowCount)
-	_monitoringQueueOverflowCount, _monitoringQueueOverflowCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoringQueueOverflowCount", 32)
-	if _monitoringQueueOverflowCountErr != nil {
-		return nil, errors.Wrap(_monitoringQueueOverflowCountErr, "Error parsing 'monitoringQueueOverflowCount' field of SubscriptionDiagnosticsDataType")
+	monitoringQueueOverflowCount, err := ReadSimpleField(ctx, "monitoringQueueOverflowCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringQueueOverflowCount' field"))
 	}
-	monitoringQueueOverflowCount := _monitoringQueueOverflowCount
 
-	// Simple Field (nextSequenceNumber)
-	_nextSequenceNumber, _nextSequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("nextSequenceNumber", 32)
-	if _nextSequenceNumberErr != nil {
-		return nil, errors.Wrap(_nextSequenceNumberErr, "Error parsing 'nextSequenceNumber' field of SubscriptionDiagnosticsDataType")
+	nextSequenceNumber, err := ReadSimpleField(ctx, "nextSequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nextSequenceNumber' field"))
 	}
-	nextSequenceNumber := _nextSequenceNumber
 
-	// Simple Field (eventQueueOverFlowCount)
-	_eventQueueOverFlowCount, _eventQueueOverFlowCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("eventQueueOverFlowCount", 32)
-	if _eventQueueOverFlowCountErr != nil {
-		return nil, errors.Wrap(_eventQueueOverFlowCountErr, "Error parsing 'eventQueueOverFlowCount' field of SubscriptionDiagnosticsDataType")
+	eventQueueOverFlowCount, err := ReadSimpleField(ctx, "eventQueueOverFlowCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventQueueOverFlowCount' field"))
 	}
-	eventQueueOverFlowCount := _eventQueueOverFlowCount
 
 	if closeErr := readBuffer.CloseContext("SubscriptionDiagnosticsDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SubscriptionDiagnosticsDataType")

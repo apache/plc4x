@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimerStateChangeValueLightingCommandParse(ctx context.Context, theByt
 	return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetTimerStateChangeValueLightingCommandParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueLightingCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueLightingCommand, error) {
+		return BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimerStateChangeValueLightingCommandParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ligthingCommandValue)
-	if pullErr := readBuffer.PullContext("ligthingCommandValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ligthingCommandValue")
-	}
-	_ligthingCommandValue, _ligthingCommandValueErr := BACnetLightingCommandEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _ligthingCommandValueErr != nil {
-		return nil, errors.Wrap(_ligthingCommandValueErr, "Error parsing 'ligthingCommandValue' field of BACnetTimerStateChangeValueLightingCommand")
-	}
-	ligthingCommandValue := _ligthingCommandValue.(BACnetLightingCommandEnclosed)
-	if closeErr := readBuffer.CloseContext("ligthingCommandValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ligthingCommandValue")
+	ligthingCommandValue, err := ReadSimpleField[BACnetLightingCommandEnclosed](ctx, "ligthingCommandValue", ReadComplex[BACnetLightingCommandEnclosed](BACnetLightingCommandEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ligthingCommandValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueLightingCommand"); closeErr != nil {

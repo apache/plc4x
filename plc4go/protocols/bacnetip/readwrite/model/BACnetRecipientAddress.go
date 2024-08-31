@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetRecipientAddressParse(ctx context.Context, theBytes []byte) (BACnetRe
 	return BACnetRecipientAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetRecipientAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
+		return BACnetRecipientAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetRecipientAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetRecipientAddressParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (addressValue)
-	if pullErr := readBuffer.PullContext("addressValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for addressValue")
-	}
-	_addressValue, _addressValueErr := BACnetAddressEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _addressValueErr != nil {
-		return nil, errors.Wrap(_addressValueErr, "Error parsing 'addressValue' field of BACnetRecipientAddress")
-	}
-	addressValue := _addressValue.(BACnetAddressEnclosed)
-	if closeErr := readBuffer.CloseContext("addressValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for addressValue")
+	addressValue, err := ReadSimpleField[BACnetAddressEnclosed](ctx, "addressValue", ReadComplex[BACnetAddressEnclosed](BACnetAddressEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addressValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientAddress"); closeErr != nil {

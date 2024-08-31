@@ -171,6 +171,12 @@ func SecurityDataStatusReport1Parse(ctx context.Context, theBytes []byte) (Secur
 	return SecurityDataStatusReport1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataStatusReport1ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
+		return SecurityDataStatusReport1ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatusReport1, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -182,43 +188,19 @@ func SecurityDataStatusReport1ParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (armCodeType)
-	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
-	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(ctx, readBuffer)
-	if _armCodeTypeErr != nil {
-		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataStatusReport1")
-	}
-	armCodeType := _armCodeType.(SecurityArmCode)
-	if closeErr := readBuffer.CloseContext("armCodeType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for armCodeType")
+	armCodeType, err := ReadSimpleField[SecurityArmCode](ctx, "armCodeType", ReadComplex[SecurityArmCode](SecurityArmCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'armCodeType' field"))
 	}
 
-	// Simple Field (tamperStatus)
-	if pullErr := readBuffer.PullContext("tamperStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tamperStatus")
-	}
-	_tamperStatus, _tamperStatusErr := TamperStatusParseWithBuffer(ctx, readBuffer)
-	if _tamperStatusErr != nil {
-		return nil, errors.Wrap(_tamperStatusErr, "Error parsing 'tamperStatus' field of SecurityDataStatusReport1")
-	}
-	tamperStatus := _tamperStatus.(TamperStatus)
-	if closeErr := readBuffer.CloseContext("tamperStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tamperStatus")
+	tamperStatus, err := ReadSimpleField[TamperStatus](ctx, "tamperStatus", ReadComplex[TamperStatus](TamperStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tamperStatus' field"))
 	}
 
-	// Simple Field (panicStatus)
-	if pullErr := readBuffer.PullContext("panicStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for panicStatus")
-	}
-	_panicStatus, _panicStatusErr := PanicStatusParseWithBuffer(ctx, readBuffer)
-	if _panicStatusErr != nil {
-		return nil, errors.Wrap(_panicStatusErr, "Error parsing 'panicStatus' field of SecurityDataStatusReport1")
-	}
-	panicStatus := _panicStatus.(PanicStatus)
-	if closeErr := readBuffer.CloseContext("panicStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for panicStatus")
+	panicStatus, err := ReadSimpleField[PanicStatus](ctx, "panicStatus", ReadComplex[PanicStatus](PanicStatusParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'panicStatus' field"))
 	}
 
 	zoneStatus, err := ReadCountArrayField[ZoneStatus](ctx, "zoneStatus", ReadComplex[ZoneStatus](ZoneStatusParseWithBuffer, readBuffer), uint64(int32(32)))

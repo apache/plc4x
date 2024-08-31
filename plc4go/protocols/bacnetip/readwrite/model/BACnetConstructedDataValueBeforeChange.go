@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataValueBeforeChangeParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataValueBeforeChangeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueBeforeChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueBeforeChange, error) {
+		return BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueBeforeChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataValueBeforeChangeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valuesBeforeChange)
-	if pullErr := readBuffer.PullContext("valuesBeforeChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valuesBeforeChange")
-	}
-	_valuesBeforeChange, _valuesBeforeChangeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _valuesBeforeChangeErr != nil {
-		return nil, errors.Wrap(_valuesBeforeChangeErr, "Error parsing 'valuesBeforeChange' field of BACnetConstructedDataValueBeforeChange")
-	}
-	valuesBeforeChange := _valuesBeforeChange.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("valuesBeforeChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valuesBeforeChange")
+	valuesBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "valuesBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valuesBeforeChange' field"))
 	}
 
 	// Virtual field

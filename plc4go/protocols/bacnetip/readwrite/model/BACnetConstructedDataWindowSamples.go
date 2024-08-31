@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataWindowSamplesParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataWindowSamplesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataWindowSamplesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataWindowSamples, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataWindowSamples, error) {
+		return BACnetConstructedDataWindowSamplesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataWindowSamplesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataWindowSamplesParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (windowSamples)
-	if pullErr := readBuffer.PullContext("windowSamples"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for windowSamples")
-	}
-	_windowSamples, _windowSamplesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _windowSamplesErr != nil {
-		return nil, errors.Wrap(_windowSamplesErr, "Error parsing 'windowSamples' field of BACnetConstructedDataWindowSamples")
-	}
-	windowSamples := _windowSamples.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("windowSamples"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for windowSamples")
+	windowSamples, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowSamples", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'windowSamples' field"))
 	}
 
 	// Virtual field

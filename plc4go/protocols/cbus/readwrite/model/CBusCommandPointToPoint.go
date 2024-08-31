@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func CBusCommandPointToPointParse(ctx context.Context, theBytes []byte, cBusOpti
 	return CBusCommandPointToPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusCommandPointToPointParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandPointToPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandPointToPoint, error) {
+		return CBusCommandPointToPointParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusCommandPointToPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandPointToPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func CBusCommandPointToPointParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
-	}
-	_command, _commandErr := CBusPointToPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of CBusCommandPointToPoint")
-	}
-	command := _command.(CBusPointToPointCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	command, err := ReadSimpleField[CBusPointToPointCommand](ctx, "command", ReadComplex[CBusPointToPointCommand](CBusPointToPointCommandParseWithBufferProducer[CBusPointToPointCommand]((CBusOptions)(cBusOptions)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusCommandPointToPoint"); closeErr != nil {

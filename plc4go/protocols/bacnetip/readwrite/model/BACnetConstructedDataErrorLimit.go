@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataErrorLimitParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataErrorLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataErrorLimitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataErrorLimit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataErrorLimit, error) {
+		return BACnetConstructedDataErrorLimitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataErrorLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataErrorLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataErrorLimitParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorLimit)
-	if pullErr := readBuffer.PullContext("errorLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorLimit")
-	}
-	_errorLimit, _errorLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _errorLimitErr != nil {
-		return nil, errors.Wrap(_errorLimitErr, "Error parsing 'errorLimit' field of BACnetConstructedDataErrorLimit")
-	}
-	errorLimit := _errorLimit.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("errorLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorLimit")
+	errorLimit, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "errorLimit", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorLimit' field"))
 	}
 
 	// Virtual field

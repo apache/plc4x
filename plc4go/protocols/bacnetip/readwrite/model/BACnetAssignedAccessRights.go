@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetAssignedAccessRightsParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetAssignedAccessRightsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAssignedAccessRightsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
+		return BACnetAssignedAccessRightsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedAccessRights, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetAssignedAccessRightsParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (assignedAccessRights)
-	if pullErr := readBuffer.PullContext("assignedAccessRights"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for assignedAccessRights")
-	}
-	_assignedAccessRights, _assignedAccessRightsErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _assignedAccessRightsErr != nil {
-		return nil, errors.Wrap(_assignedAccessRightsErr, "Error parsing 'assignedAccessRights' field of BACnetAssignedAccessRights")
-	}
-	assignedAccessRights := _assignedAccessRights.(BACnetDeviceObjectReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("assignedAccessRights"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for assignedAccessRights")
+	assignedAccessRights, err := ReadSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "assignedAccessRights", ReadComplex[BACnetDeviceObjectReferenceEnclosed](BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedAccessRights' field"))
 	}
 
-	// Simple Field (enable)
-	if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for enable")
-	}
-	_enable, _enableErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of BACnetAssignedAccessRights")
-	}
-	enable := _enable.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for enable")
+	enable, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "enable", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAssignedAccessRights"); closeErr != nil {

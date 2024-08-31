@@ -131,6 +131,12 @@ func SecurityDataEventParse(ctx context.Context, theBytes []byte, commandTypeCon
 	return SecurityDataEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func SecurityDataEventParseWithBufferProducer(commandTypeContainer SecurityCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEvent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataEvent, error) {
+		return SecurityDataEventParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func SecurityDataEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware

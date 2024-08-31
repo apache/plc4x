@@ -140,6 +140,17 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectParse(ctx context.Context, theBy
 	return BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBufferProducer[T BACnetUnconfirmedServiceRequestWhoHasObject]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObject, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -199,6 +199,12 @@ func HVACStatusFlagsParse(ctx context.Context, theBytes []byte) (HVACStatusFlags
 	return HVACStatusFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACStatusFlagsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
+		return HVACStatusFlagsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -210,38 +216,30 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expansion)
-	_expansion, _expansionErr := /*TODO: migrate me*/ readBuffer.ReadBit("expansion")
-	if _expansionErr != nil {
-		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACStatusFlags")
+	expansion, err := ReadSimpleField(ctx, "expansion", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expansion' field"))
 	}
-	expansion := _expansion
 
-	// Simple Field (error)
-	_error, _errorErr := /*TODO: migrate me*/ readBuffer.ReadBit("error")
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of HVACStatusFlags")
+	error, err := ReadSimpleField(ctx, "error", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	error := _error
 
-	// Simple Field (busy)
-	_busy, _busyErr := /*TODO: migrate me*/ readBuffer.ReadBit("busy")
-	if _busyErr != nil {
-		return nil, errors.Wrap(_busyErr, "Error parsing 'busy' field of HVACStatusFlags")
+	busy, err := ReadSimpleField(ctx, "busy", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'busy' field"))
 	}
-	busy := _busy
 
 	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (damperState)
-	_damperState, _damperStateErr := /*TODO: migrate me*/ readBuffer.ReadBit("damperState")
-	if _damperStateErr != nil {
-		return nil, errors.Wrap(_damperStateErr, "Error parsing 'damperState' field of HVACStatusFlags")
+	damperState, err := ReadSimpleField(ctx, "damperState", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'damperState' field"))
 	}
-	damperState := _damperState
 
 	// Virtual field
 	_isDamperStateClosed := !(damperState)
@@ -253,26 +251,20 @@ func HVACStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	isDamperStateOpen := bool(_isDamperStateOpen)
 	_ = isDamperStateOpen
 
-	// Simple Field (fanActive)
-	_fanActive, _fanActiveErr := /*TODO: migrate me*/ readBuffer.ReadBit("fanActive")
-	if _fanActiveErr != nil {
-		return nil, errors.Wrap(_fanActiveErr, "Error parsing 'fanActive' field of HVACStatusFlags")
+	fanActive, err := ReadSimpleField(ctx, "fanActive", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fanActive' field"))
 	}
-	fanActive := _fanActive
 
-	// Simple Field (heatingPlant)
-	_heatingPlant, _heatingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("heatingPlant")
-	if _heatingPlantErr != nil {
-		return nil, errors.Wrap(_heatingPlantErr, "Error parsing 'heatingPlant' field of HVACStatusFlags")
+	heatingPlant, err := ReadSimpleField(ctx, "heatingPlant", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'heatingPlant' field"))
 	}
-	heatingPlant := _heatingPlant
 
-	// Simple Field (coolingPlant)
-	_coolingPlant, _coolingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("coolingPlant")
-	if _coolingPlantErr != nil {
-		return nil, errors.Wrap(_coolingPlantErr, "Error parsing 'coolingPlant' field of HVACStatusFlags")
+	coolingPlant, err := ReadSimpleField(ctx, "coolingPlant", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'coolingPlant' field"))
 	}
-	coolingPlant := _coolingPlant
 
 	if closeErr := readBuffer.CloseContext("HVACStatusFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACStatusFlags")

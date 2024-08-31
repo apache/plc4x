@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBackupAndRestoreStateParse(ctx context.Context, theByt
 	return BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBackupAndRestoreStateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupAndRestoreState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupAndRestoreState, error) {
+		return BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupAndRestoreState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBackupAndRestoreStateParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (backupAndRestoreState)
-	if pullErr := readBuffer.PullContext("backupAndRestoreState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for backupAndRestoreState")
-	}
-	_backupAndRestoreState, _backupAndRestoreStateErr := BACnetBackupStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _backupAndRestoreStateErr != nil {
-		return nil, errors.Wrap(_backupAndRestoreStateErr, "Error parsing 'backupAndRestoreState' field of BACnetConstructedDataBackupAndRestoreState")
-	}
-	backupAndRestoreState := _backupAndRestoreState.(BACnetBackupStateTagged)
-	if closeErr := readBuffer.CloseContext("backupAndRestoreState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for backupAndRestoreState")
+	backupAndRestoreState, err := ReadSimpleField[BACnetBackupStateTagged](ctx, "backupAndRestoreState", ReadComplex[BACnetBackupStateTagged](BACnetBackupStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupAndRestoreState' field"))
 	}
 
 	// Virtual field

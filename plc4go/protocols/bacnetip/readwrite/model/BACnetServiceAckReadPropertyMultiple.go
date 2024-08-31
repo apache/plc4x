@@ -139,6 +139,12 @@ func BACnetServiceAckReadPropertyMultipleParse(ctx context.Context, theBytes []b
 	return BACnetServiceAckReadPropertyMultipleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
+func BACnetServiceAckReadPropertyMultipleParseWithBufferProducer(serviceAckPayloadLength uint32, serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckReadPropertyMultiple, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckReadPropertyMultiple, error) {
+		return BACnetServiceAckReadPropertyMultipleParseWithBuffer(ctx, readBuffer, serviceAckPayloadLength, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckReadPropertyMultipleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyMultiple, error) {
 	positionAware := readBuffer
 	_ = positionAware

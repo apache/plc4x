@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +133,12 @@ func ConnectionResponseDataBlockTunnelConnectionParse(ctx context.Context, theBy
 	return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectionResponseDataBlockTunnelConnectionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
+		return ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockTunnelConnection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +150,9 @@ func ConnectionResponseDataBlockTunnelConnectionParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (knxAddress)
-	if pullErr := readBuffer.PullContext("knxAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxAddress")
-	}
-	_knxAddress, _knxAddressErr := KnxAddressParseWithBuffer(ctx, readBuffer)
-	if _knxAddressErr != nil {
-		return nil, errors.Wrap(_knxAddressErr, "Error parsing 'knxAddress' field of ConnectionResponseDataBlockTunnelConnection")
-	}
-	knxAddress := _knxAddress.(KnxAddress)
-	if closeErr := readBuffer.CloseContext("knxAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxAddress")
+	knxAddress, err := ReadSimpleField[KnxAddress](ctx, "knxAddress", ReadComplex[KnxAddress](KnxAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxAddress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponseDataBlockTunnelConnection"); closeErr != nil {

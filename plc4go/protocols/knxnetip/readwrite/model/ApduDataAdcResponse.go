@@ -109,6 +109,12 @@ func ApduDataAdcResponseParse(ctx context.Context, theBytes []byte, dataLength u
 	return ApduDataAdcResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataAdcResponseParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataAdcResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataAdcResponse, error) {
+		return ApduDataAdcResponseParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataAdcResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataAdcResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

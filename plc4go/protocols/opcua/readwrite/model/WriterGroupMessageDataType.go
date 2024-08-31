@@ -109,6 +109,12 @@ func WriterGroupMessageDataTypeParse(ctx context.Context, theBytes []byte, ident
 	return WriterGroupMessageDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func WriterGroupMessageDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (WriterGroupMessageDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (WriterGroupMessageDataType, error) {
+		return WriterGroupMessageDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func WriterGroupMessageDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupMessageDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

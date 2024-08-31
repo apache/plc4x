@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func MonitoredItemModifyRequestParse(ctx context.Context, theBytes []byte, ident
 	return MonitoredItemModifyRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoredItemModifyRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemModifyRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemModifyRequest, error) {
+		return MonitoredItemModifyRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoredItemModifyRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemModifyRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,24 +160,14 @@ func MonitoredItemModifyRequestParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredItemId)
-	_monitoredItemId, _monitoredItemIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemId", 32)
-	if _monitoredItemIdErr != nil {
-		return nil, errors.Wrap(_monitoredItemIdErr, "Error parsing 'monitoredItemId' field of MonitoredItemModifyRequest")
+	monitoredItemId, err := ReadSimpleField(ctx, "monitoredItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemId' field"))
 	}
-	monitoredItemId := _monitoredItemId
 
-	// Simple Field (requestedParameters)
-	if pullErr := readBuffer.PullContext("requestedParameters"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestedParameters")
-	}
-	_requestedParameters, _requestedParametersErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("742"))
-	if _requestedParametersErr != nil {
-		return nil, errors.Wrap(_requestedParametersErr, "Error parsing 'requestedParameters' field of MonitoredItemModifyRequest")
-	}
-	requestedParameters := _requestedParameters.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestedParameters"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestedParameters")
+	requestedParameters, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestedParameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("742")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedParameters' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemModifyRequest"); closeErr != nil {

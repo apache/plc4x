@@ -83,6 +83,12 @@ func EccEncryptedSecretParse(ctx context.Context, theBytes []byte) (EccEncrypted
 	return EccEncryptedSecretParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EccEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
+		return EccEncryptedSecretParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EccEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EccEncryptedSecret, error) {
 	positionAware := readBuffer
 	_ = positionAware

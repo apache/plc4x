@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,6 +198,12 @@ func FieldTargetDataTypeParse(ctx context.Context, theBytes []byte, identifier s
 	return FieldTargetDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func FieldTargetDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (FieldTargetDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FieldTargetDataType, error) {
+		return FieldTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func FieldTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FieldTargetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -207,89 +215,39 @@ func FieldTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataSetFieldId)
-	if pullErr := readBuffer.PullContext("dataSetFieldId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetFieldId")
-	}
-	_dataSetFieldId, _dataSetFieldIdErr := GuidValueParseWithBuffer(ctx, readBuffer)
-	if _dataSetFieldIdErr != nil {
-		return nil, errors.Wrap(_dataSetFieldIdErr, "Error parsing 'dataSetFieldId' field of FieldTargetDataType")
-	}
-	dataSetFieldId := _dataSetFieldId.(GuidValue)
-	if closeErr := readBuffer.CloseContext("dataSetFieldId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetFieldId")
+	dataSetFieldId, err := ReadSimpleField[GuidValue](ctx, "dataSetFieldId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetFieldId' field"))
 	}
 
-	// Simple Field (receiverIndexRange)
-	if pullErr := readBuffer.PullContext("receiverIndexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for receiverIndexRange")
-	}
-	_receiverIndexRange, _receiverIndexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _receiverIndexRangeErr != nil {
-		return nil, errors.Wrap(_receiverIndexRangeErr, "Error parsing 'receiverIndexRange' field of FieldTargetDataType")
-	}
-	receiverIndexRange := _receiverIndexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("receiverIndexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for receiverIndexRange")
+	receiverIndexRange, err := ReadSimpleField[PascalString](ctx, "receiverIndexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverIndexRange' field"))
 	}
 
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
-	}
-	_targetNodeId, _targetNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of FieldTargetDataType")
-	}
-	targetNodeId := _targetNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
+	targetNodeId, err := ReadSimpleField[NodeId](ctx, "targetNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
 	}
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of FieldTargetDataType")
-	}
-	attributeId := _attributeId
-
-	// Simple Field (writeIndexRange)
-	if pullErr := readBuffer.PullContext("writeIndexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writeIndexRange")
-	}
-	_writeIndexRange, _writeIndexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _writeIndexRangeErr != nil {
-		return nil, errors.Wrap(_writeIndexRangeErr, "Error parsing 'writeIndexRange' field of FieldTargetDataType")
-	}
-	writeIndexRange := _writeIndexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("writeIndexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writeIndexRange")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 
-	// Simple Field (overrideValueHandling)
-	if pullErr := readBuffer.PullContext("overrideValueHandling"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for overrideValueHandling")
-	}
-	_overrideValueHandling, _overrideValueHandlingErr := OverrideValueHandlingParseWithBuffer(ctx, readBuffer)
-	if _overrideValueHandlingErr != nil {
-		return nil, errors.Wrap(_overrideValueHandlingErr, "Error parsing 'overrideValueHandling' field of FieldTargetDataType")
-	}
-	overrideValueHandling := _overrideValueHandling
-	if closeErr := readBuffer.CloseContext("overrideValueHandling"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for overrideValueHandling")
+	writeIndexRange, err := ReadSimpleField[PascalString](ctx, "writeIndexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeIndexRange' field"))
 	}
 
-	// Simple Field (overrideValue)
-	if pullErr := readBuffer.PullContext("overrideValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for overrideValue")
+	overrideValueHandling, err := ReadEnumField[OverrideValueHandling](ctx, "overrideValueHandling", "OverrideValueHandling", ReadEnum(OverrideValueHandlingByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overrideValueHandling' field"))
 	}
-	_overrideValue, _overrideValueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _overrideValueErr != nil {
-		return nil, errors.Wrap(_overrideValueErr, "Error parsing 'overrideValue' field of FieldTargetDataType")
-	}
-	overrideValue := _overrideValue.(Variant)
-	if closeErr := readBuffer.CloseContext("overrideValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for overrideValue")
+
+	overrideValue, err := ReadSimpleField[Variant](ctx, "overrideValue", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overrideValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("FieldTargetDataType"); closeErr != nil {

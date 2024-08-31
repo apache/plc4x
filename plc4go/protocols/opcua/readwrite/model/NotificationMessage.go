@@ -172,6 +172,12 @@ func NotificationMessageParse(ctx context.Context, theBytes []byte, identifier s
 	return NotificationMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NotificationMessageParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NotificationMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NotificationMessage, error) {
+		return NotificationMessageParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NotificationMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,34 +189,22 @@ func NotificationMessageParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sequenceNumber", 32)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of NotificationMessage")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
-	// Simple Field (publishTime)
-	_publishTime, _publishTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("publishTime", 64)
-	if _publishTimeErr != nil {
-		return nil, errors.Wrap(_publishTimeErr, "Error parsing 'publishTime' field of NotificationMessage")
+	publishTime, err := ReadSimpleField(ctx, "publishTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishTime' field"))
 	}
-	publishTime := _publishTime
 
-	// Simple Field (noOfNotificationData)
-	_noOfNotificationData, _noOfNotificationDataErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNotificationData", 32)
-	if _noOfNotificationDataErr != nil {
-		return nil, errors.Wrap(_noOfNotificationDataErr, "Error parsing 'noOfNotificationData' field of NotificationMessage")
+	noOfNotificationData, err := ReadSimpleField(ctx, "noOfNotificationData", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNotificationData' field"))
 	}
-	noOfNotificationData := _noOfNotificationData
 
-	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
-		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObject), nil
-	}, readBuffer), uint64(noOfNotificationData))
+	notificationData, err := ReadCountArrayField[ExtensionObject](ctx, "notificationData", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfNotificationData))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationData' field"))
 	}

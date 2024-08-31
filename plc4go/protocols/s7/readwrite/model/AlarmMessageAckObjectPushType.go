@@ -174,6 +174,12 @@ func AlarmMessageAckObjectPushTypeParse(ctx context.Context, theBytes []byte) (A
 	return AlarmMessageAckObjectPushTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlarmMessageAckObjectPushTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
+		return AlarmMessageAckObjectPushTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlarmMessageAckObjectPushTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AlarmMessageAckObjectPushType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,70 +191,40 @@ func AlarmMessageAckObjectPushTypeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, 8), AlarmMessageAckObjectPushType_VARIABLESPEC)
+	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, uint8(8)), AlarmMessageAckObjectPushType_VARIABLESPEC)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'variableSpec' field"))
 	}
 	_ = variableSpec
 
-	// Simple Field (lengthSpec)
-	_lengthSpec, _lengthSpecErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lengthSpec", 8)
-	if _lengthSpecErr != nil {
-		return nil, errors.Wrap(_lengthSpecErr, "Error parsing 'lengthSpec' field of AlarmMessageAckObjectPushType")
-	}
-	lengthSpec := _lengthSpec
-
-	// Simple Field (syntaxId)
-	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
-	}
-	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(ctx, readBuffer)
-	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of AlarmMessageAckObjectPushType")
-	}
-	syntaxId := _syntaxId
-	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for syntaxId")
+	lengthSpec, err := ReadSimpleField(ctx, "lengthSpec", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthSpec' field"))
 	}
 
-	// Simple Field (numberOfValues)
-	_numberOfValues, _numberOfValuesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfValues", 8)
-	if _numberOfValuesErr != nil {
-		return nil, errors.Wrap(_numberOfValuesErr, "Error parsing 'numberOfValues' field of AlarmMessageAckObjectPushType")
-	}
-	numberOfValues := _numberOfValues
-
-	// Simple Field (eventId)
-	_eventId, _eventIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("eventId", 32)
-	if _eventIdErr != nil {
-		return nil, errors.Wrap(_eventIdErr, "Error parsing 'eventId' field of AlarmMessageAckObjectPushType")
-	}
-	eventId := _eventId
-
-	// Simple Field (ackStateGoing)
-	if pullErr := readBuffer.PullContext("ackStateGoing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateGoing")
-	}
-	_ackStateGoing, _ackStateGoingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateGoingErr != nil {
-		return nil, errors.Wrap(_ackStateGoingErr, "Error parsing 'ackStateGoing' field of AlarmMessageAckObjectPushType")
-	}
-	ackStateGoing := _ackStateGoing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateGoing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateGoing")
+	syntaxId, err := ReadEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", ReadEnum(SyntaxIdTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'syntaxId' field"))
 	}
 
-	// Simple Field (ackStateComing)
-	if pullErr := readBuffer.PullContext("ackStateComing"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ackStateComing")
+	numberOfValues, err := ReadSimpleField(ctx, "numberOfValues", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfValues' field"))
 	}
-	_ackStateComing, _ackStateComingErr := StateParseWithBuffer(ctx, readBuffer)
-	if _ackStateComingErr != nil {
-		return nil, errors.Wrap(_ackStateComingErr, "Error parsing 'ackStateComing' field of AlarmMessageAckObjectPushType")
+
+	eventId, err := ReadSimpleField(ctx, "eventId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventId' field"))
 	}
-	ackStateComing := _ackStateComing.(State)
-	if closeErr := readBuffer.CloseContext("ackStateComing"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ackStateComing")
+
+	ackStateGoing, err := ReadSimpleField[State](ctx, "ackStateGoing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateGoing' field"))
+	}
+
+	ackStateComing, err := ReadSimpleField[State](ctx, "ackStateComing", ReadComplex[State](StateParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackStateComing' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AlarmMessageAckObjectPushType"); closeErr != nil {

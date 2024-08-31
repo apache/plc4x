@@ -143,6 +143,12 @@ func S7PayloadUserDataParse(ctx context.Context, theBytes []byte, messageType ui
 	return S7PayloadUserDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType, parameter)
 }
 
+func S7PayloadUserDataParseWithBufferProducer(messageType uint8, parameter S7Parameter) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserData, error) {
+		return S7PayloadUserDataParseWithBuffer(ctx, readBuffer, messageType, parameter)
+	}
+}
+
 func S7PayloadUserDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7PayloadUserData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,13 +160,7 @@ func S7PayloadUserDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	items, err := ReadCountArrayField[S7PayloadUserDataItem](ctx, "items", ReadComplex[S7PayloadUserDataItem](func(ctx context.Context, buffer utils.ReadBuffer) (S7PayloadUserDataItem, error) {
-		v, err := S7PayloadUserDataItemParseWithBuffer(ctx, readBuffer, (uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionGroup()), (uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType()), (uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction()))
-		if err != nil {
-			return nil, err
-		}
-		return v.(S7PayloadUserDataItem), nil
-	}, readBuffer), uint64(int32(len(CastS7ParameterUserData(parameter).GetItems()))))
+	items, err := ReadCountArrayField[S7PayloadUserDataItem](ctx, "items", ReadComplex[S7PayloadUserDataItem](S7PayloadUserDataItemParseWithBufferProducer[S7PayloadUserDataItem]((uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionGroup()), (uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuFunctionType()), (uint8)(CastS7ParameterUserDataItemCPUFunctions(CastS7ParameterUserData(parameter).GetItems()[0]).GetCpuSubfunction())), readBuffer), uint64(int32(len(CastS7ParameterUserData(parameter).GetItems()))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'items' field"))
 	}

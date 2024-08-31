@@ -137,6 +137,12 @@ func AdsDiscoveryBlockFingerprintParse(ctx context.Context, theBytes []byte) (Ad
 	return AdsDiscoveryBlockFingerprintParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockFingerprintParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockFingerprint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockFingerprint, error) {
+		return AdsDiscoveryBlockFingerprintParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockFingerprint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,7 +154,7 @@ func AdsDiscoveryBlockFingerprintParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dataLen, err := ReadImplicitField[uint16](ctx, "dataLen", ReadUnsignedShort(readBuffer, 16))
+	dataLen, err := ReadImplicitField[uint16](ctx, "dataLen", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLen' field"))
 	}

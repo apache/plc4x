@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func EndpointTypeParse(ctx context.Context, theBytes []byte, identifier string) 
 	return EndpointTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EndpointTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointType, error) {
+		return EndpointTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EndpointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,56 +182,24 @@ func EndpointTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
-	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of EndpointType")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
-	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of EndpointType")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of EndpointType")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (transportProfileUri)
-	if pullErr := readBuffer.PullContext("transportProfileUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportProfileUri")
-	}
-	_transportProfileUri, _transportProfileUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _transportProfileUriErr != nil {
-		return nil, errors.Wrap(_transportProfileUriErr, "Error parsing 'transportProfileUri' field of EndpointType")
-	}
-	transportProfileUri := _transportProfileUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("transportProfileUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportProfileUri")
+	transportProfileUri, err := ReadSimpleField[PascalString](ctx, "transportProfileUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportProfileUri' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EndpointType"); closeErr != nil {

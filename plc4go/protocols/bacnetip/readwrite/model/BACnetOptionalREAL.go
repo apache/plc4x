@@ -140,6 +140,17 @@ func BACnetOptionalREALParse(ctx context.Context, theBytes []byte) (BACnetOption
 	return BACnetOptionalREALParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalREALParseWithBufferProducer[T BACnetOptionalREAL]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetOptionalREALParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetOptionalREALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalREAL, error) {
 	positionAware := readBuffer
 	_ = positionAware

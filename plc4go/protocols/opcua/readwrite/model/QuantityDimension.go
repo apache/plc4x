@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -207,6 +209,12 @@ func QuantityDimensionParse(ctx context.Context, theBytes []byte, identifier str
 	return QuantityDimensionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QuantityDimensionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QuantityDimension, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QuantityDimension, error) {
+		return QuantityDimensionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QuantityDimensionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QuantityDimension, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -218,61 +226,45 @@ func QuantityDimensionParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (massExponent)
-	_massExponent, _massExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("massExponent", 8)
-	if _massExponentErr != nil {
-		return nil, errors.Wrap(_massExponentErr, "Error parsing 'massExponent' field of QuantityDimension")
+	massExponent, err := ReadSimpleField(ctx, "massExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'massExponent' field"))
 	}
-	massExponent := _massExponent
 
-	// Simple Field (lengthExponent)
-	_lengthExponent, _lengthExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("lengthExponent", 8)
-	if _lengthExponentErr != nil {
-		return nil, errors.Wrap(_lengthExponentErr, "Error parsing 'lengthExponent' field of QuantityDimension")
+	lengthExponent, err := ReadSimpleField(ctx, "lengthExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthExponent' field"))
 	}
-	lengthExponent := _lengthExponent
 
-	// Simple Field (timeExponent)
-	_timeExponent, _timeExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("timeExponent", 8)
-	if _timeExponentErr != nil {
-		return nil, errors.Wrap(_timeExponentErr, "Error parsing 'timeExponent' field of QuantityDimension")
+	timeExponent, err := ReadSimpleField(ctx, "timeExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeExponent' field"))
 	}
-	timeExponent := _timeExponent
 
-	// Simple Field (electricCurrentExponent)
-	_electricCurrentExponent, _electricCurrentExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("electricCurrentExponent", 8)
-	if _electricCurrentExponentErr != nil {
-		return nil, errors.Wrap(_electricCurrentExponentErr, "Error parsing 'electricCurrentExponent' field of QuantityDimension")
+	electricCurrentExponent, err := ReadSimpleField(ctx, "electricCurrentExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'electricCurrentExponent' field"))
 	}
-	electricCurrentExponent := _electricCurrentExponent
 
-	// Simple Field (amountOfSubstanceExponent)
-	_amountOfSubstanceExponent, _amountOfSubstanceExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("amountOfSubstanceExponent", 8)
-	if _amountOfSubstanceExponentErr != nil {
-		return nil, errors.Wrap(_amountOfSubstanceExponentErr, "Error parsing 'amountOfSubstanceExponent' field of QuantityDimension")
+	amountOfSubstanceExponent, err := ReadSimpleField(ctx, "amountOfSubstanceExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amountOfSubstanceExponent' field"))
 	}
-	amountOfSubstanceExponent := _amountOfSubstanceExponent
 
-	// Simple Field (luminousIntensityExponent)
-	_luminousIntensityExponent, _luminousIntensityExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("luminousIntensityExponent", 8)
-	if _luminousIntensityExponentErr != nil {
-		return nil, errors.Wrap(_luminousIntensityExponentErr, "Error parsing 'luminousIntensityExponent' field of QuantityDimension")
+	luminousIntensityExponent, err := ReadSimpleField(ctx, "luminousIntensityExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'luminousIntensityExponent' field"))
 	}
-	luminousIntensityExponent := _luminousIntensityExponent
 
-	// Simple Field (absoluteTemperatureExponent)
-	_absoluteTemperatureExponent, _absoluteTemperatureExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("absoluteTemperatureExponent", 8)
-	if _absoluteTemperatureExponentErr != nil {
-		return nil, errors.Wrap(_absoluteTemperatureExponentErr, "Error parsing 'absoluteTemperatureExponent' field of QuantityDimension")
+	absoluteTemperatureExponent, err := ReadSimpleField(ctx, "absoluteTemperatureExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'absoluteTemperatureExponent' field"))
 	}
-	absoluteTemperatureExponent := _absoluteTemperatureExponent
 
-	// Simple Field (dimensionlessExponent)
-	_dimensionlessExponent, _dimensionlessExponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("dimensionlessExponent", 8)
-	if _dimensionlessExponentErr != nil {
-		return nil, errors.Wrap(_dimensionlessExponentErr, "Error parsing 'dimensionlessExponent' field of QuantityDimension")
+	dimensionlessExponent, err := ReadSimpleField(ctx, "dimensionlessExponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dimensionlessExponent' field"))
 	}
-	dimensionlessExponent := _dimensionlessExponent
 
 	if closeErr := readBuffer.CloseContext("QuantityDimension"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for QuantityDimension")

@@ -185,6 +185,12 @@ func SendUnitDataParse(ctx context.Context, theBytes []byte, response bool) (Sen
 	return SendUnitDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SendUnitDataParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SendUnitData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SendUnitData, error) {
+		return SendUnitDataParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SendUnitData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,20 +202,18 @@ func SendUnitDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	interfaceHandle, err := ReadConstField[uint32](ctx, "interfaceHandle", ReadUnsignedInt(readBuffer, 32), SendUnitData_INTERFACEHANDLE)
+	interfaceHandle, err := ReadConstField[uint32](ctx, "interfaceHandle", ReadUnsignedInt(readBuffer, uint8(32)), SendUnitData_INTERFACEHANDLE)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceHandle' field"))
 	}
 	_ = interfaceHandle
 
-	// Simple Field (timeout)
-	_timeout, _timeoutErr := /*TODO: migrate me*/ readBuffer.ReadUint16("timeout", 16)
-	if _timeoutErr != nil {
-		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of SendUnitData")
+	timeout, err := ReadSimpleField(ctx, "timeout", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeout' field"))
 	}
-	timeout := _timeout
 
-	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, 16))
+	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}

@@ -109,6 +109,12 @@ func MonitoringFilterResultParse(ctx context.Context, theBytes []byte, identifie
 	return MonitoringFilterResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoringFilterResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoringFilterResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoringFilterResult, error) {
+		return MonitoringFilterResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoringFilterResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoringFilterResult, error) {
 	positionAware := readBuffer
 	_ = positionAware

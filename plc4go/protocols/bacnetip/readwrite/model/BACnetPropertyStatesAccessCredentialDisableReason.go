@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParse(ctx context.Context,
 	return BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesAccessCredentialDisableReasonParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
+		return BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAccessCredentialDisableReason, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesAccessCredentialDisableReasonParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessCredentialDisableReason)
-	if pullErr := readBuffer.PullContext("accessCredentialDisableReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessCredentialDisableReason")
-	}
-	_accessCredentialDisableReason, _accessCredentialDisableReasonErr := BACnetAccessCredentialDisableReasonTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _accessCredentialDisableReasonErr != nil {
-		return nil, errors.Wrap(_accessCredentialDisableReasonErr, "Error parsing 'accessCredentialDisableReason' field of BACnetPropertyStatesAccessCredentialDisableReason")
-	}
-	accessCredentialDisableReason := _accessCredentialDisableReason.(BACnetAccessCredentialDisableReasonTagged)
-	if closeErr := readBuffer.CloseContext("accessCredentialDisableReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessCredentialDisableReason")
+	accessCredentialDisableReason, err := ReadSimpleField[BACnetAccessCredentialDisableReasonTagged](ctx, "accessCredentialDisableReason", ReadComplex[BACnetAccessCredentialDisableReasonTagged](BACnetAccessCredentialDisableReasonTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessCredentialDisableReason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAccessCredentialDisableReason"); closeErr != nil {

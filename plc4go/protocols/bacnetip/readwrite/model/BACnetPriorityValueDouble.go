@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPriorityValueDoubleParse(ctx context.Context, theBytes []byte, object
 	return BACnetPriorityValueDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetPriorityValueDoubleParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueDouble, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityValueDouble, error) {
+		return BACnetPriorityValueDoubleParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetPriorityValueDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPriorityValueDoubleParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doubleValue)
-	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
-	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doubleValueErr != nil {
-		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetPriorityValueDouble")
-	}
-	doubleValue := _doubleValue.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
+	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPriorityValueDouble"); closeErr != nil {

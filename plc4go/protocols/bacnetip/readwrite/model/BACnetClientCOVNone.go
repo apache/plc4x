@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetClientCOVNoneParse(ctx context.Context, theBytes []byte) (BACnetClien
 	return BACnetClientCOVNoneParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetClientCOVNoneParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVNone, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVNone, error) {
+		return BACnetClientCOVNoneParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetClientCOVNoneParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVNone, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetClientCOVNoneParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultIncrement)
-	if pullErr := readBuffer.PullContext("defaultIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultIncrement")
-	}
-	_defaultIncrement, _defaultIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultIncrementErr != nil {
-		return nil, errors.Wrap(_defaultIncrementErr, "Error parsing 'defaultIncrement' field of BACnetClientCOVNone")
-	}
-	defaultIncrement := _defaultIncrement.(BACnetApplicationTagNull)
-	if closeErr := readBuffer.CloseContext("defaultIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultIncrement")
+	defaultIncrement, err := ReadSimpleField[BACnetApplicationTagNull](ctx, "defaultIncrement", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultIncrement' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOVNone"); closeErr != nil {

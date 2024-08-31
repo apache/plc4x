@@ -136,6 +136,12 @@ func BACnetConfirmedServiceRequestReadPropertyConditionalParse(ctx context.Conte
 	return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBufferProducer(serviceRequestPayloadLength uint32, serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
+		return BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestReadPropertyConditionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware

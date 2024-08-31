@@ -186,6 +186,12 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParse(ctx context.Con
 	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
+		return S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -197,31 +203,27 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subscription)
-	_subscription, _subscriptionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subscription", 8)
-	if _subscriptionErr != nil {
-		return nil, errors.Wrap(_subscriptionErr, "Error parsing 'subscription' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+	subscription, err := ReadSimpleField(ctx, "subscription", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscription' field"))
 	}
-	subscription := _subscription
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (magicKey)
-	_magicKey, _magicKeyErr := /*TODO: migrate me*/ readBuffer.ReadString("magicKey", uint32(64), utils.WithEncoding("UTF-8"))
-	if _magicKeyErr != nil {
-		return nil, errors.Wrap(_magicKeyErr, "Error parsing 'magicKey' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
+	magicKey, err := ReadSimpleField(ctx, "magicKey", ReadString(readBuffer, uint32(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'magicKey' field"))
 	}
-	magicKey := _magicKey
 
-	alarmtype, err := ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((subscription) >= (128)))
+	alarmtype, err := ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((subscription) >= (128)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmtype' field"))
 	}
 
-	reserve, err := ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, 8), bool((subscription) >= (128)))
+	reserve, err := ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, uint8(8)), bool((subscription) >= (128)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserve' field"))
 	}

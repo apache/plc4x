@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLocationParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataLocationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLocationParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocation, error) {
+		return BACnetConstructedDataLocationParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLocationParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (location)
-	if pullErr := readBuffer.PullContext("location"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for location")
-	}
-	_location, _locationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _locationErr != nil {
-		return nil, errors.Wrap(_locationErr, "Error parsing 'location' field of BACnetConstructedDataLocation")
-	}
-	location := _location.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for location")
+	location, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "location", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'location' field"))
 	}
 
 	// Virtual field

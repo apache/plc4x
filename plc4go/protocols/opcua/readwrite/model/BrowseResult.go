@@ -172,6 +172,12 @@ func BrowseResultParse(ctx context.Context, theBytes []byte, identifier string) 
 	return BrowseResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowseResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseResult, error) {
+		return BrowseResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowseResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowseResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,46 +189,22 @@ func BrowseResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of BrowseResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (continuationPoint)
-	if pullErr := readBuffer.PullContext("continuationPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for continuationPoint")
-	}
-	_continuationPoint, _continuationPointErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _continuationPointErr != nil {
-		return nil, errors.Wrap(_continuationPointErr, "Error parsing 'continuationPoint' field of BrowseResult")
-	}
-	continuationPoint := _continuationPoint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("continuationPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for continuationPoint")
+	continuationPoint, err := ReadSimpleField[PascalByteString](ctx, "continuationPoint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'continuationPoint' field"))
 	}
 
-	// Simple Field (noOfReferences)
-	_noOfReferences, _noOfReferencesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferences", 32)
-	if _noOfReferencesErr != nil {
-		return nil, errors.Wrap(_noOfReferencesErr, "Error parsing 'noOfReferences' field of BrowseResult")
+	noOfReferences, err := ReadSimpleField(ctx, "noOfReferences", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferences' field"))
 	}
-	noOfReferences := _noOfReferences
 
-	references, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "references", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("520"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfReferences))
+	references, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "references", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("520")), readBuffer), uint64(noOfReferences))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'references' field"))
 	}

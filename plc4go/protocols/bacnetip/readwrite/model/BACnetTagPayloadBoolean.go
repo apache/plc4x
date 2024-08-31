@@ -126,6 +126,12 @@ func BACnetTagPayloadBooleanParse(ctx context.Context, theBytes []byte, actualLe
 	return BACnetTagPayloadBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadBooleanParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBoolean, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBoolean, error) {
+		return BACnetTagPayloadBooleanParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -185,6 +187,12 @@ func BuildInfoParse(ctx context.Context, theBytes []byte, identifier string) (Bu
 	return BuildInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BuildInfoParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BuildInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BuildInfo, error) {
+		return BuildInfoParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BuildInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BuildInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,77 +204,35 @@ func BuildInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (productUri)
-	if pullErr := readBuffer.PullContext("productUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productUri")
-	}
-	_productUri, _productUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productUriErr != nil {
-		return nil, errors.Wrap(_productUriErr, "Error parsing 'productUri' field of BuildInfo")
-	}
-	productUri := _productUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("productUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productUri")
+	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productUri' field"))
 	}
 
-	// Simple Field (manufacturerName)
-	if pullErr := readBuffer.PullContext("manufacturerName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for manufacturerName")
-	}
-	_manufacturerName, _manufacturerNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _manufacturerNameErr != nil {
-		return nil, errors.Wrap(_manufacturerNameErr, "Error parsing 'manufacturerName' field of BuildInfo")
-	}
-	manufacturerName := _manufacturerName.(PascalString)
-	if closeErr := readBuffer.CloseContext("manufacturerName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for manufacturerName")
+	manufacturerName, err := ReadSimpleField[PascalString](ctx, "manufacturerName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manufacturerName' field"))
 	}
 
-	// Simple Field (productName)
-	if pullErr := readBuffer.PullContext("productName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productName")
-	}
-	_productName, _productNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productNameErr != nil {
-		return nil, errors.Wrap(_productNameErr, "Error parsing 'productName' field of BuildInfo")
-	}
-	productName := _productName.(PascalString)
-	if closeErr := readBuffer.CloseContext("productName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productName")
+	productName, err := ReadSimpleField[PascalString](ctx, "productName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productName' field"))
 	}
 
-	// Simple Field (softwareVersion)
-	if pullErr := readBuffer.PullContext("softwareVersion"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for softwareVersion")
-	}
-	_softwareVersion, _softwareVersionErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _softwareVersionErr != nil {
-		return nil, errors.Wrap(_softwareVersionErr, "Error parsing 'softwareVersion' field of BuildInfo")
-	}
-	softwareVersion := _softwareVersion.(PascalString)
-	if closeErr := readBuffer.CloseContext("softwareVersion"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for softwareVersion")
+	softwareVersion, err := ReadSimpleField[PascalString](ctx, "softwareVersion", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'softwareVersion' field"))
 	}
 
-	// Simple Field (buildNumber)
-	if pullErr := readBuffer.PullContext("buildNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for buildNumber")
-	}
-	_buildNumber, _buildNumberErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _buildNumberErr != nil {
-		return nil, errors.Wrap(_buildNumberErr, "Error parsing 'buildNumber' field of BuildInfo")
-	}
-	buildNumber := _buildNumber.(PascalString)
-	if closeErr := readBuffer.CloseContext("buildNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for buildNumber")
+	buildNumber, err := ReadSimpleField[PascalString](ctx, "buildNumber", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildNumber' field"))
 	}
 
-	// Simple Field (buildDate)
-	_buildDate, _buildDateErr := /*TODO: migrate me*/ readBuffer.ReadInt64("buildDate", 64)
-	if _buildDateErr != nil {
-		return nil, errors.Wrap(_buildDateErr, "Error parsing 'buildDate' field of BuildInfo")
+	buildDate, err := ReadSimpleField(ctx, "buildDate", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildDate' field"))
 	}
-	buildDate := _buildDate
 
 	if closeErr := readBuffer.CloseContext("BuildInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BuildInfo")

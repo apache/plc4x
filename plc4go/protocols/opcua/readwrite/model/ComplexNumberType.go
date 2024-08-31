@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ComplexNumberTypeParse(ctx context.Context, theBytes []byte, identifier str
 	return ComplexNumberTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ComplexNumberTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ComplexNumberType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ComplexNumberType, error) {
+		return ComplexNumberTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ComplexNumberType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func ComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (real)
-	_real, _realErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("real", 32)
-	if _realErr != nil {
-		return nil, errors.Wrap(_realErr, "Error parsing 'real' field of ComplexNumberType")
+	real, err := ReadSimpleField(ctx, "real", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'real' field"))
 	}
-	real := _real
 
-	// Simple Field (imaginary)
-	_imaginary, _imaginaryErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("imaginary", 32)
-	if _imaginaryErr != nil {
-		return nil, errors.Wrap(_imaginaryErr, "Error parsing 'imaginary' field of ComplexNumberType")
+	imaginary, err := ReadSimpleField(ctx, "imaginary", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'imaginary' field"))
 	}
-	imaginary := _imaginary
 
 	if closeErr := readBuffer.CloseContext("ComplexNumberType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ComplexNumberType")

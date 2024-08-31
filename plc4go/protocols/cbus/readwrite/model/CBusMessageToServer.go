@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func CBusMessageToServerParse(ctx context.Context, theBytes []byte, isResponse b
 	return CBusMessageToServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), isResponse, requestContext, cBusOptions)
 }
 
+func CBusMessageToServerParseWithBufferProducer(isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusMessageToServer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusMessageToServer, error) {
+		return CBusMessageToServerParseWithBuffer(ctx, readBuffer, isResponse, requestContext, cBusOptions)
+	}
+}
+
 func CBusMessageToServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, isResponse bool, requestContext RequestContext, cBusOptions CBusOptions) (CBusMessageToServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func CBusMessageToServerParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (request)
-	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for request")
-	}
-	_request, _requestErr := RequestParseWithBuffer(ctx, readBuffer, cBusOptions)
-	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CBusMessageToServer")
-	}
-	request := _request.(Request)
-	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for request")
+	request, err := ReadSimpleField[Request](ctx, "request", ReadComplex[Request](RequestParseWithBufferProducer[Request]((CBusOptions)(cBusOptions)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'request' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusMessageToServer"); closeErr != nil {

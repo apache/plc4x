@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLockoutRelinquishTimeParse(ctx context.Context, theByt
 	return BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLockoutRelinquishTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLockoutRelinquishTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLockoutRelinquishTime, error) {
+		return BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockoutRelinquishTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLockoutRelinquishTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lockoutRelinquishTime)
-	if pullErr := readBuffer.PullContext("lockoutRelinquishTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lockoutRelinquishTime")
-	}
-	_lockoutRelinquishTime, _lockoutRelinquishTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lockoutRelinquishTimeErr != nil {
-		return nil, errors.Wrap(_lockoutRelinquishTimeErr, "Error parsing 'lockoutRelinquishTime' field of BACnetConstructedDataLockoutRelinquishTime")
-	}
-	lockoutRelinquishTime := _lockoutRelinquishTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lockoutRelinquishTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lockoutRelinquishTime")
+	lockoutRelinquishTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lockoutRelinquishTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockoutRelinquishTime' field"))
 	}
 
 	// Virtual field

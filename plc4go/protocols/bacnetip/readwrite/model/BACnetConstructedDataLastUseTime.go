@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastUseTimeParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataLastUseTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastUseTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastUseTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastUseTime, error) {
+		return BACnetConstructedDataLastUseTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastUseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastUseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastUseTimeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastUseTime)
-	if pullErr := readBuffer.PullContext("lastUseTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastUseTime")
-	}
-	_lastUseTime, _lastUseTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _lastUseTimeErr != nil {
-		return nil, errors.Wrap(_lastUseTimeErr, "Error parsing 'lastUseTime' field of BACnetConstructedDataLastUseTime")
-	}
-	lastUseTime := _lastUseTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("lastUseTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastUseTime")
+	lastUseTime, err := ReadSimpleField[BACnetDateTime](ctx, "lastUseTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastUseTime' field"))
 	}
 
 	// Virtual field

@@ -117,6 +117,12 @@ func XmlElementParse(ctx context.Context, theBytes []byte) (XmlElement, error) {
 	return XmlElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func XmlElementParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (XmlElement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (XmlElement, error) {
+		return XmlElementParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (XmlElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -128,14 +134,12 @@ func XmlElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("length", 32)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of XmlElement")
+	length, err := ReadSimpleField(ctx, "length", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	length := _length
 
-	value, err := ReadCountArrayField[string](ctx, "value", ReadString(readBuffer, 8), uint64(length))
+	value, err := ReadCountArrayField[string](ctx, "value", ReadString(readBuffer, uint32(8)), uint64(length))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

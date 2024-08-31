@@ -124,6 +124,17 @@ func MonitoredSALParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return MonitoredSALParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func MonitoredSALParseWithBufferProducer[T MonitoredSAL](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := MonitoredSALParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSAL, error) {
 	positionAware := readBuffer
 	_ = positionAware

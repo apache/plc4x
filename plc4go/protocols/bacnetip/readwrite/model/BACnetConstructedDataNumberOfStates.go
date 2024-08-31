@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNumberOfStatesParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNumberOfStatesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfStates, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfStates, error) {
+		return BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfStates, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNumberOfStatesParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfState)
-	if pullErr := readBuffer.PullContext("numberOfState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numberOfState")
-	}
-	_numberOfState, _numberOfStateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _numberOfStateErr != nil {
-		return nil, errors.Wrap(_numberOfStateErr, "Error parsing 'numberOfState' field of BACnetConstructedDataNumberOfStates")
-	}
-	numberOfState := _numberOfState.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numberOfState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numberOfState")
+	numberOfState, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfState", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfState' field"))
 	}
 
 	// Virtual field

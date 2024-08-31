@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPassbackModeParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataPassbackModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPassbackModeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPassbackMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPassbackMode, error) {
+		return BACnetConstructedDataPassbackModeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPassbackModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassbackMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPassbackModeParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (passbackMode)
-	if pullErr := readBuffer.PullContext("passbackMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for passbackMode")
-	}
-	_passbackMode, _passbackModeErr := BACnetAccessPassbackModeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _passbackModeErr != nil {
-		return nil, errors.Wrap(_passbackModeErr, "Error parsing 'passbackMode' field of BACnetConstructedDataPassbackMode")
-	}
-	passbackMode := _passbackMode.(BACnetAccessPassbackModeTagged)
-	if closeErr := readBuffer.CloseContext("passbackMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for passbackMode")
+	passbackMode, err := ReadSimpleField[BACnetAccessPassbackModeTagged](ctx, "passbackMode", ReadComplex[BACnetAccessPassbackModeTagged](BACnetAccessPassbackModeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'passbackMode' field"))
 	}
 
 	// Virtual field

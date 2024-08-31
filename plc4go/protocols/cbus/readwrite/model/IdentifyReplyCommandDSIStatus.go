@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -229,6 +231,12 @@ func IdentifyReplyCommandDSIStatusParse(ctx context.Context, theBytes []byte, at
 	return IdentifyReplyCommandDSIStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandDSIStatusParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandDSIStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandDSIStatus, error) {
+		return IdentifyReplyCommandDSIStatusParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandDSIStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandDSIStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -240,129 +248,55 @@ func IdentifyReplyCommandDSIStatusParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (channelStatus1)
-	if pullErr := readBuffer.PullContext("channelStatus1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus1")
-	}
-	_channelStatus1, _channelStatus1Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus1Err != nil {
-		return nil, errors.Wrap(_channelStatus1Err, "Error parsing 'channelStatus1' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus1 := _channelStatus1
-	if closeErr := readBuffer.CloseContext("channelStatus1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus1")
+	channelStatus1, err := ReadEnumField[ChannelStatus](ctx, "channelStatus1", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus1' field"))
 	}
 
-	// Simple Field (channelStatus2)
-	if pullErr := readBuffer.PullContext("channelStatus2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus2")
-	}
-	_channelStatus2, _channelStatus2Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus2Err != nil {
-		return nil, errors.Wrap(_channelStatus2Err, "Error parsing 'channelStatus2' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus2 := _channelStatus2
-	if closeErr := readBuffer.CloseContext("channelStatus2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus2")
+	channelStatus2, err := ReadEnumField[ChannelStatus](ctx, "channelStatus2", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus2' field"))
 	}
 
-	// Simple Field (channelStatus3)
-	if pullErr := readBuffer.PullContext("channelStatus3"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus3")
-	}
-	_channelStatus3, _channelStatus3Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus3Err != nil {
-		return nil, errors.Wrap(_channelStatus3Err, "Error parsing 'channelStatus3' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus3 := _channelStatus3
-	if closeErr := readBuffer.CloseContext("channelStatus3"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus3")
+	channelStatus3, err := ReadEnumField[ChannelStatus](ctx, "channelStatus3", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus3' field"))
 	}
 
-	// Simple Field (channelStatus4)
-	if pullErr := readBuffer.PullContext("channelStatus4"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus4")
-	}
-	_channelStatus4, _channelStatus4Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus4Err != nil {
-		return nil, errors.Wrap(_channelStatus4Err, "Error parsing 'channelStatus4' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus4 := _channelStatus4
-	if closeErr := readBuffer.CloseContext("channelStatus4"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus4")
+	channelStatus4, err := ReadEnumField[ChannelStatus](ctx, "channelStatus4", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus4' field"))
 	}
 
-	// Simple Field (channelStatus5)
-	if pullErr := readBuffer.PullContext("channelStatus5"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus5")
-	}
-	_channelStatus5, _channelStatus5Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus5Err != nil {
-		return nil, errors.Wrap(_channelStatus5Err, "Error parsing 'channelStatus5' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus5 := _channelStatus5
-	if closeErr := readBuffer.CloseContext("channelStatus5"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus5")
+	channelStatus5, err := ReadEnumField[ChannelStatus](ctx, "channelStatus5", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus5' field"))
 	}
 
-	// Simple Field (channelStatus6)
-	if pullErr := readBuffer.PullContext("channelStatus6"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus6")
-	}
-	_channelStatus6, _channelStatus6Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus6Err != nil {
-		return nil, errors.Wrap(_channelStatus6Err, "Error parsing 'channelStatus6' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus6 := _channelStatus6
-	if closeErr := readBuffer.CloseContext("channelStatus6"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus6")
+	channelStatus6, err := ReadEnumField[ChannelStatus](ctx, "channelStatus6", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus6' field"))
 	}
 
-	// Simple Field (channelStatus7)
-	if pullErr := readBuffer.PullContext("channelStatus7"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus7")
-	}
-	_channelStatus7, _channelStatus7Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus7Err != nil {
-		return nil, errors.Wrap(_channelStatus7Err, "Error parsing 'channelStatus7' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus7 := _channelStatus7
-	if closeErr := readBuffer.CloseContext("channelStatus7"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus7")
+	channelStatus7, err := ReadEnumField[ChannelStatus](ctx, "channelStatus7", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus7' field"))
 	}
 
-	// Simple Field (channelStatus8)
-	if pullErr := readBuffer.PullContext("channelStatus8"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for channelStatus8")
-	}
-	_channelStatus8, _channelStatus8Err := ChannelStatusParseWithBuffer(ctx, readBuffer)
-	if _channelStatus8Err != nil {
-		return nil, errors.Wrap(_channelStatus8Err, "Error parsing 'channelStatus8' field of IdentifyReplyCommandDSIStatus")
-	}
-	channelStatus8 := _channelStatus8
-	if closeErr := readBuffer.CloseContext("channelStatus8"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for channelStatus8")
+	channelStatus8, err := ReadEnumField[ChannelStatus](ctx, "channelStatus8", "ChannelStatus", ReadEnum(ChannelStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelStatus8' field"))
 	}
 
-	// Simple Field (unitStatus)
-	if pullErr := readBuffer.PullContext("unitStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitStatus")
-	}
-	_unitStatus, _unitStatusErr := UnitStatusParseWithBuffer(ctx, readBuffer)
-	if _unitStatusErr != nil {
-		return nil, errors.Wrap(_unitStatusErr, "Error parsing 'unitStatus' field of IdentifyReplyCommandDSIStatus")
-	}
-	unitStatus := _unitStatus
-	if closeErr := readBuffer.CloseContext("unitStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitStatus")
+	unitStatus, err := ReadEnumField[UnitStatus](ctx, "unitStatus", "UnitStatus", ReadEnum(UnitStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitStatus' field"))
 	}
 
-	// Simple Field (dimmingUCRevisionNumber)
-	_dimmingUCRevisionNumber, _dimmingUCRevisionNumberErr := /*TODO: migrate me*/ readBuffer.ReadByte("dimmingUCRevisionNumber")
-	if _dimmingUCRevisionNumberErr != nil {
-		return nil, errors.Wrap(_dimmingUCRevisionNumberErr, "Error parsing 'dimmingUCRevisionNumber' field of IdentifyReplyCommandDSIStatus")
+	dimmingUCRevisionNumber, err := ReadSimpleField(ctx, "dimmingUCRevisionNumber", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dimmingUCRevisionNumber' field"))
 	}
-	dimmingUCRevisionNumber := _dimmingUCRevisionNumber
 
 	if closeErr := readBuffer.CloseContext("IdentifyReplyCommandDSIStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for IdentifyReplyCommandDSIStatus")

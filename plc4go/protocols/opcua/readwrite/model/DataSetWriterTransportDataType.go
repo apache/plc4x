@@ -109,6 +109,12 @@ func DataSetWriterTransportDataTypeParse(ctx context.Context, theBytes []byte, i
 	return DataSetWriterTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataSetWriterTransportDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetWriterTransportDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetWriterTransportDataType, error) {
+		return DataSetWriterTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataSetWriterTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetWriterTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParse(ctx context.Context, the
 	return BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
+		return BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDHCPLeaseTimeRemaining, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPDHCPLeaseTimeRemainingParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipDhcpLeaseTimeRemaining)
-	if pullErr := readBuffer.PullContext("ipDhcpLeaseTimeRemaining"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipDhcpLeaseTimeRemaining")
-	}
-	_ipDhcpLeaseTimeRemaining, _ipDhcpLeaseTimeRemainingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipDhcpLeaseTimeRemainingErr != nil {
-		return nil, errors.Wrap(_ipDhcpLeaseTimeRemainingErr, "Error parsing 'ipDhcpLeaseTimeRemaining' field of BACnetConstructedDataIPDHCPLeaseTimeRemaining")
-	}
-	ipDhcpLeaseTimeRemaining := _ipDhcpLeaseTimeRemaining.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("ipDhcpLeaseTimeRemaining"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipDhcpLeaseTimeRemaining")
+	ipDhcpLeaseTimeRemaining, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipDhcpLeaseTimeRemaining", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDhcpLeaseTimeRemaining' field"))
 	}
 
 	// Virtual field

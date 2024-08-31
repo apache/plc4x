@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func BVLCRegisterForeignDeviceParse(ctx context.Context, theBytes []byte) (BVLCR
 	return BVLCRegisterForeignDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCRegisterForeignDeviceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
+		return BVLCRegisterForeignDeviceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCRegisterForeignDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,12 +151,10 @@ func BVLCRegisterForeignDeviceParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ttl)
-	_ttl, _ttlErr := /*TODO: migrate me*/ readBuffer.ReadUint16("ttl", 16)
-	if _ttlErr != nil {
-		return nil, errors.Wrap(_ttlErr, "Error parsing 'ttl' field of BVLCRegisterForeignDevice")
+	ttl, err := ReadSimpleField(ctx, "ttl", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ttl' field"))
 	}
-	ttl := _ttl
 
 	if closeErr := readBuffer.CloseContext("BVLCRegisterForeignDevice"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCRegisterForeignDevice")

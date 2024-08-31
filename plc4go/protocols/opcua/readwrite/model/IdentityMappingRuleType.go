@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func IdentityMappingRuleTypeParse(ctx context.Context, theBytes []byte, identifi
 	return IdentityMappingRuleTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func IdentityMappingRuleTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentityMappingRuleType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentityMappingRuleType, error) {
+		return IdentityMappingRuleTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func IdentityMappingRuleTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (IdentityMappingRuleType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func IdentityMappingRuleTypeParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (criteriaType)
-	if pullErr := readBuffer.PullContext("criteriaType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for criteriaType")
-	}
-	_criteriaType, _criteriaTypeErr := IdentityCriteriaTypeParseWithBuffer(ctx, readBuffer)
-	if _criteriaTypeErr != nil {
-		return nil, errors.Wrap(_criteriaTypeErr, "Error parsing 'criteriaType' field of IdentityMappingRuleType")
-	}
-	criteriaType := _criteriaType
-	if closeErr := readBuffer.CloseContext("criteriaType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for criteriaType")
+	criteriaType, err := ReadEnumField[IdentityCriteriaType](ctx, "criteriaType", "IdentityCriteriaType", ReadEnum(IdentityCriteriaTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'criteriaType' field"))
 	}
 
-	// Simple Field (criteria)
-	if pullErr := readBuffer.PullContext("criteria"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for criteria")
-	}
-	_criteria, _criteriaErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _criteriaErr != nil {
-		return nil, errors.Wrap(_criteriaErr, "Error parsing 'criteria' field of IdentityMappingRuleType")
-	}
-	criteria := _criteria.(PascalString)
-	if closeErr := readBuffer.CloseContext("criteria"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for criteria")
+	criteria, err := ReadSimpleField[PascalString](ctx, "criteria", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'criteria' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IdentityMappingRuleType"); closeErr != nil {

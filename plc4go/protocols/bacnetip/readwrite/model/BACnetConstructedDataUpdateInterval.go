@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUpdateIntervalParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUpdateIntervalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateInterval, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUpdateInterval, error) {
+		return BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUpdateInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUpdateIntervalParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateInterval)
-	if pullErr := readBuffer.PullContext("updateInterval"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for updateInterval")
-	}
-	_updateInterval, _updateIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _updateIntervalErr != nil {
-		return nil, errors.Wrap(_updateIntervalErr, "Error parsing 'updateInterval' field of BACnetConstructedDataUpdateInterval")
-	}
-	updateInterval := _updateInterval.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("updateInterval"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for updateInterval")
+	updateInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "updateInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateInterval' field"))
 	}
 
 	// Virtual field

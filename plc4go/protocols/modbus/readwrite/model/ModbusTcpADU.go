@@ -178,6 +178,12 @@ func ModbusTcpADUParse(ctx context.Context, theBytes []byte, driverType DriverTy
 	return ModbusTcpADUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
+func ModbusTcpADUParseWithBufferProducer(driverType DriverType, response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusTcpADU, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusTcpADU, error) {
+		return ModbusTcpADUParseWithBuffer(ctx, readBuffer, driverType, response)
+	}
+}
+
 func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusTcpADU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -189,43 +195,31 @@ func ModbusTcpADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (transactionIdentifier)
-	_transactionIdentifier, _transactionIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionIdentifier", 16)
-	if _transactionIdentifierErr != nil {
-		return nil, errors.Wrap(_transactionIdentifierErr, "Error parsing 'transactionIdentifier' field of ModbusTcpADU")
+	transactionIdentifier, err := ReadSimpleField(ctx, "transactionIdentifier", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionIdentifier' field"))
 	}
-	transactionIdentifier := _transactionIdentifier
 
-	protocolIdentifier, err := ReadConstField[uint16](ctx, "protocolIdentifier", ReadUnsignedShort(readBuffer, 16), ModbusTcpADU_PROTOCOLIDENTIFIER, codegen.WithByteOrder(binary.BigEndian))
+	protocolIdentifier, err := ReadConstField[uint16](ctx, "protocolIdentifier", ReadUnsignedShort(readBuffer, uint8(16)), ModbusTcpADU_PROTOCOLIDENTIFIER, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolIdentifier' field"))
 	}
 	_ = protocolIdentifier
 
-	length, err := ReadImplicitField[uint16](ctx, "length", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	length, err := ReadImplicitField[uint16](ctx, "length", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 	_ = length
 
-	// Simple Field (unitIdentifier)
-	_unitIdentifier, _unitIdentifierErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unitIdentifier", 8)
-	if _unitIdentifierErr != nil {
-		return nil, errors.Wrap(_unitIdentifierErr, "Error parsing 'unitIdentifier' field of ModbusTcpADU")
+	unitIdentifier, err := ReadSimpleField(ctx, "unitIdentifier", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitIdentifier' field"))
 	}
-	unitIdentifier := _unitIdentifier
 
-	// Simple Field (pdu)
-	if pullErr := readBuffer.PullContext("pdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pdu")
-	}
-	_pdu, _pduErr := ModbusPDUParseWithBuffer(ctx, readBuffer, bool(response))
-	if _pduErr != nil {
-		return nil, errors.Wrap(_pduErr, "Error parsing 'pdu' field of ModbusTcpADU")
-	}
-	pdu := _pdu.(ModbusPDU)
-	if closeErr := readBuffer.CloseContext("pdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pdu")
+	pdu, err := ReadSimpleField[ModbusPDU](ctx, "pdu", ReadComplex[ModbusPDU](ModbusPDUParseWithBufferProducer[ModbusPDU]((bool)(response)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pdu' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ModbusTcpADU"); closeErr != nil {

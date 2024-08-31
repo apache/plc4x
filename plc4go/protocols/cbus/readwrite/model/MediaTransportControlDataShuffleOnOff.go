@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,6 +160,12 @@ func MediaTransportControlDataShuffleOnOffParse(ctx context.Context, theBytes []
 	return MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataShuffleOnOffParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
+		return MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataShuffleOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,12 +177,10 @@ func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (state)
-	_state, _stateErr := /*TODO: migrate me*/ readBuffer.ReadByte("state")
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of MediaTransportControlDataShuffleOnOff")
+	state, err := ReadSimpleField(ctx, "state", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
-	state := _state
 
 	// Virtual field
 	_isOff := bool((state) == (0x00))

@@ -119,6 +119,12 @@ func LDataFrameACKParse(ctx context.Context, theBytes []byte) (LDataFrameACK, er
 	return LDataFrameACKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LDataFrameACKParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
+		return LDataFrameACKParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LDataFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LDataFrameACK, error) {
 	positionAware := readBuffer
 	_ = positionAware

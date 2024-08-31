@@ -121,6 +121,17 @@ func CipServiceParse(ctx context.Context, theBytes []byte, connected bool, servi
 	return CipServiceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipServiceParseWithBufferProducer[T CipService](connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CipServiceParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipService, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -137,7 +148,7 @@ func CipServiceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 
-	service, err := ReadDiscriminatorField[uint8](ctx, "service", ReadUnsignedByte(readBuffer, 7))
+	service, err := ReadDiscriminatorField[uint8](ctx, "service", ReadUnsignedByte(readBuffer, uint8(7)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'service' field"))
 	}

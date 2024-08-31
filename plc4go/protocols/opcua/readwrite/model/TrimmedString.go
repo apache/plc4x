@@ -83,6 +83,12 @@ func TrimmedStringParse(ctx context.Context, theBytes []byte) (TrimmedString, er
 	return TrimmedStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TrimmedStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
+		return TrimmedStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TrimmedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TrimmedString, error) {
 	positionAware := readBuffer
 	_ = positionAware

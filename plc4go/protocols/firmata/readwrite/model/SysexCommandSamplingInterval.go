@@ -113,6 +113,12 @@ func SysexCommandSamplingIntervalParse(ctx context.Context, theBytes []byte, res
 	return SysexCommandSamplingIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandSamplingIntervalParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandSamplingInterval, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandSamplingInterval, error) {
+		return SysexCommandSamplingIntervalParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandSamplingIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSamplingInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware

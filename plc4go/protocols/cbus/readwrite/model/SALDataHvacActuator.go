@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataHvacActuatorParse(ctx context.Context, theBytes []byte, applicationI
 	return SALDataHvacActuatorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataHvacActuatorParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataHvacActuator, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataHvacActuator, error) {
+		return SALDataHvacActuatorParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataHvacActuatorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHvacActuator, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataHvacActuatorParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hvacActuatorData)
-	if pullErr := readBuffer.PullContext("hvacActuatorData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hvacActuatorData")
-	}
-	_hvacActuatorData, _hvacActuatorDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _hvacActuatorDataErr != nil {
-		return nil, errors.Wrap(_hvacActuatorDataErr, "Error parsing 'hvacActuatorData' field of SALDataHvacActuator")
-	}
-	hvacActuatorData := _hvacActuatorData.(LightingData)
-	if closeErr := readBuffer.CloseContext("hvacActuatorData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hvacActuatorData")
+	hvacActuatorData, err := ReadSimpleField[LightingData](ctx, "hvacActuatorData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hvacActuatorData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataHvacActuator"); closeErr != nil {

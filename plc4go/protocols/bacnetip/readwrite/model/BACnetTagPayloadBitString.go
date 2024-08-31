@@ -132,6 +132,12 @@ func BACnetTagPayloadBitStringParse(ctx context.Context, theBytes []byte, actual
 	return BACnetTagPayloadBitStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadBitStringParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBitString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadBitString, error) {
+		return BACnetTagPayloadBitStringParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadBitString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,12 +149,10 @@ func BACnetTagPayloadBitStringParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unusedBits)
-	_unusedBits, _unusedBitsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unusedBits", 8)
-	if _unusedBitsErr != nil {
-		return nil, errors.Wrap(_unusedBitsErr, "Error parsing 'unusedBits' field of BACnetTagPayloadBitString")
+	unusedBits, err := ReadSimpleField(ctx, "unusedBits", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unusedBits' field"))
 	}
-	unusedBits := _unusedBits
 
 	data, err := ReadCountArrayField[bool](ctx, "data", ReadBoolean(readBuffer), uint64(int32((int32((int32(actualLength)-int32(int32(1))))*int32(int32(8))))-int32(unusedBits)))
 	if err != nil {

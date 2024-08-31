@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func MemberIDParse(ctx context.Context, theBytes []byte) (MemberID, error) {
 	return MemberIDParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MemberIDParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {
+		return MemberIDParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MemberIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MemberID, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func MemberIDParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (format)
-	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadUint8("format", 2)
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of MemberID")
+	format, err := ReadSimpleField(ctx, "format", ReadUnsignedByte(readBuffer, uint8(2)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	format := _format
 
-	// Simple Field (instance)
-	_instance, _instanceErr := /*TODO: migrate me*/ readBuffer.ReadUint8("instance", 8)
-	if _instanceErr != nil {
-		return nil, errors.Wrap(_instanceErr, "Error parsing 'instance' field of MemberID")
+	instance, err := ReadSimpleField(ctx, "instance", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instance' field"))
 	}
-	instance := _instance
 
 	if closeErr := readBuffer.CloseContext("MemberID"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MemberID")

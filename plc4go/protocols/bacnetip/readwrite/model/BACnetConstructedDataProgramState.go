@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProgramStateParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataProgramStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProgramStateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProgramState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProgramState, error) {
+		return BACnetConstructedDataProgramStateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProgramStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProgramStateParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programState)
-	if pullErr := readBuffer.PullContext("programState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programState")
-	}
-	_programState, _programStateErr := BACnetProgramStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _programStateErr != nil {
-		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field of BACnetConstructedDataProgramState")
-	}
-	programState := _programState.(BACnetProgramStateTagged)
-	if closeErr := readBuffer.CloseContext("programState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programState")
+	programState, err := ReadSimpleField[BACnetProgramStateTagged](ctx, "programState", ReadComplex[BACnetProgramStateTagged](BACnetProgramStateTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programState' field"))
 	}
 
 	// Virtual field

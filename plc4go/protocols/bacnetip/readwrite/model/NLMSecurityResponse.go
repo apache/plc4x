@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -165,6 +167,12 @@ func NLMSecurityResponseParse(ctx context.Context, theBytes []byte, apduLength u
 	return NLMSecurityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMSecurityResponseParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSecurityResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSecurityResponse, error) {
+		return NLMSecurityResponseParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -176,32 +184,20 @@ func NLMSecurityResponseParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseCode)
-	if pullErr := readBuffer.PullContext("responseCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseCode")
-	}
-	_responseCode, _responseCodeErr := SecurityResponseCodeParseWithBuffer(ctx, readBuffer)
-	if _responseCodeErr != nil {
-		return nil, errors.Wrap(_responseCodeErr, "Error parsing 'responseCode' field of NLMSecurityResponse")
-	}
-	responseCode := _responseCode
-	if closeErr := readBuffer.CloseContext("responseCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseCode")
+	responseCode, err := ReadEnumField[SecurityResponseCode](ctx, "responseCode", "SecurityResponseCode", ReadEnum(SecurityResponseCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseCode' field"))
 	}
 
-	// Simple Field (originalMessageId)
-	_originalMessageId, _originalMessageIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originalMessageId", 32)
-	if _originalMessageIdErr != nil {
-		return nil, errors.Wrap(_originalMessageIdErr, "Error parsing 'originalMessageId' field of NLMSecurityResponse")
+	originalMessageId, err := ReadSimpleField(ctx, "originalMessageId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalMessageId' field"))
 	}
-	originalMessageId := _originalMessageId
 
-	// Simple Field (originalTimestamp)
-	_originalTimestamp, _originalTimestampErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originalTimestamp", 32)
-	if _originalTimestampErr != nil {
-		return nil, errors.Wrap(_originalTimestampErr, "Error parsing 'originalTimestamp' field of NLMSecurityResponse")
+	originalTimestamp, err := ReadSimpleField(ctx, "originalTimestamp", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalTimestamp' field"))
 	}
-	originalTimestamp := _originalTimestamp
 
 	variableParameters, err := readBuffer.ReadByteArray("variableParameters", int(int32(apduLength)-int32((int32(int32(int32(int32(1))+int32(int32(1)))+int32(int32(4)))+int32(int32(4))))))
 	if err != nil {

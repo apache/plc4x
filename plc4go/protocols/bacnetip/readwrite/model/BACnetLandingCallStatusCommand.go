@@ -140,6 +140,17 @@ func BACnetLandingCallStatusCommandParse(ctx context.Context, theBytes []byte) (
 	return BACnetLandingCallStatusCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingCallStatusCommandParseWithBufferProducer[T BACnetLandingCallStatusCommand]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetLandingCallStatusCommandParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetLandingCallStatusCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware

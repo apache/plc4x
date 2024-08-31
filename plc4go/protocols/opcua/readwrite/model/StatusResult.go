@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func StatusResultParse(ctx context.Context, theBytes []byte, identifier string) 
 	return StatusResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func StatusResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusResult, error) {
+		return StatusResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func StatusResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (StatusResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func StatusResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of StatusResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (diagnosticInfo)
-	if pullErr := readBuffer.PullContext("diagnosticInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfo")
-	}
-	_diagnosticInfo, _diagnosticInfoErr := DiagnosticInfoParseWithBuffer(ctx, readBuffer)
-	if _diagnosticInfoErr != nil {
-		return nil, errors.Wrap(_diagnosticInfoErr, "Error parsing 'diagnosticInfo' field of StatusResult")
-	}
-	diagnosticInfo := _diagnosticInfo.(DiagnosticInfo)
-	if closeErr := readBuffer.CloseContext("diagnosticInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfo")
+	diagnosticInfo, err := ReadSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfo' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusResult"); closeErr != nil {

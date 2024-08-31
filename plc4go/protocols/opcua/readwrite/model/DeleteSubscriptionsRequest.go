@@ -156,6 +156,12 @@ func DeleteSubscriptionsRequestParse(ctx context.Context, theBytes []byte, ident
 	return DeleteSubscriptionsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DeleteSubscriptionsRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteSubscriptionsRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteSubscriptionsRequest, error) {
+		return DeleteSubscriptionsRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DeleteSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteSubscriptionsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -167,27 +173,17 @@ func DeleteSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of DeleteSubscriptionsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfSubscriptionIds)
-	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionIds", 32)
-	if _noOfSubscriptionIdsErr != nil {
-		return nil, errors.Wrap(_noOfSubscriptionIdsErr, "Error parsing 'noOfSubscriptionIds' field of DeleteSubscriptionsRequest")
+	noOfSubscriptionIds, err := ReadSimpleField(ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionIds' field"))
 	}
-	noOfSubscriptionIds := _noOfSubscriptionIds
 
-	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, 32), uint64(noOfSubscriptionIds))
+	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfSubscriptionIds))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionIds' field"))
 	}

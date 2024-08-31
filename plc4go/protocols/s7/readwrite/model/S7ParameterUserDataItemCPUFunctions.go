@@ -218,6 +218,12 @@ func S7ParameterUserDataItemCPUFunctionsParse(ctx context.Context, theBytes []by
 	return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7ParameterUserDataItemCPUFunctionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
+		return S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterUserDataItemCPUFunctions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -229,58 +235,48 @@ func S7ParameterUserDataItemCPUFunctionsParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, 8))
+	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 	_ = itemLength
 
-	// Simple Field (method)
-	_method, _methodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("method", 8)
-	if _methodErr != nil {
-		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterUserDataItemCPUFunctions")
+	method, err := ReadSimpleField(ctx, "method", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'method' field"))
 	}
-	method := _method
 
-	// Simple Field (cpuFunctionType)
-	_cpuFunctionType, _cpuFunctionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionType", 4)
-	if _cpuFunctionTypeErr != nil {
-		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterUserDataItemCPUFunctions")
+	cpuFunctionType, err := ReadSimpleField(ctx, "cpuFunctionType", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionType' field"))
 	}
-	cpuFunctionType := _cpuFunctionType
 
-	// Simple Field (cpuFunctionGroup)
-	_cpuFunctionGroup, _cpuFunctionGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionGroup", 4)
-	if _cpuFunctionGroupErr != nil {
-		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterUserDataItemCPUFunctions")
+	cpuFunctionGroup, err := ReadSimpleField(ctx, "cpuFunctionGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionGroup' field"))
 	}
-	cpuFunctionGroup := _cpuFunctionGroup
 
-	// Simple Field (cpuSubfunction)
-	_cpuSubfunction, _cpuSubfunctionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuSubfunction", 8)
-	if _cpuSubfunctionErr != nil {
-		return nil, errors.Wrap(_cpuSubfunctionErr, "Error parsing 'cpuSubfunction' field of S7ParameterUserDataItemCPUFunctions")
+	cpuSubfunction, err := ReadSimpleField(ctx, "cpuSubfunction", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuSubfunction' field"))
 	}
-	cpuSubfunction := _cpuSubfunction
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterUserDataItemCPUFunctions")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
-	dataUnitReferenceNumber, err := ReadOptionalField[uint8](ctx, "dataUnitReferenceNumber", ReadUnsignedByte(readBuffer, 8), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
+	dataUnitReferenceNumber, err := ReadOptionalField[uint8](ctx, "dataUnitReferenceNumber", ReadUnsignedByte(readBuffer, uint8(8)), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataUnitReferenceNumber' field"))
 	}
 
-	lastDataUnit, err := ReadOptionalField[uint8](ctx, "lastDataUnit", ReadUnsignedByte(readBuffer, 8), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
+	lastDataUnit, err := ReadOptionalField[uint8](ctx, "lastDataUnit", ReadUnsignedByte(readBuffer, uint8(8)), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastDataUnit' field"))
 	}
 
-	errorCode, err := ReadOptionalField[uint16](ctx, "errorCode", ReadUnsignedShort(readBuffer, 16), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
+	errorCode, err := ReadOptionalField[uint16](ctx, "errorCode", ReadUnsignedShort(readBuffer, uint8(16)), bool((bool((cpuFunctionType) == (8)))) || bool((bool((bool((cpuFunctionType) == (0)))) && bool((bool((cpuFunctionGroup) == (2)))))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}

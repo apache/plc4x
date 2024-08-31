@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ApduDataMemoryReadParse(ctx context.Context, theBytes []byte, dataLength ui
 	return ApduDataMemoryReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataMemoryReadParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataMemoryRead, error) {
+		return ApduDataMemoryReadParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataMemoryReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataMemoryRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func ApduDataMemoryReadParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numBytes)
-	_numBytes, _numBytesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numBytes", 6)
-	if _numBytesErr != nil {
-		return nil, errors.Wrap(_numBytesErr, "Error parsing 'numBytes' field of ApduDataMemoryRead")
+	numBytes, err := ReadSimpleField(ctx, "numBytes", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBytes' field"))
 	}
-	numBytes := _numBytes
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("address", 16)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of ApduDataMemoryRead")
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
 	if closeErr := readBuffer.CloseContext("ApduDataMemoryRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataMemoryRead")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func AdsDiscoveryBlockRouteNameParse(ctx context.Context, theBytes []byte) (AdsD
 	return AdsDiscoveryBlockRouteNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockRouteNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
+		return AdsDiscoveryBlockRouteNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockRouteNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockRouteName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func AdsDiscoveryBlockRouteNameParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (routeName)
-	if pullErr := readBuffer.PullContext("routeName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for routeName")
-	}
-	_routeName, _routeNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
-	if _routeNameErr != nil {
-		return nil, errors.Wrap(_routeNameErr, "Error parsing 'routeName' field of AdsDiscoveryBlockRouteName")
-	}
-	routeName := _routeName.(AmsString)
-	if closeErr := readBuffer.CloseContext("routeName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for routeName")
+	routeName, err := ReadSimpleField[AmsString](ctx, "routeName", ReadComplex[AmsString](AmsStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'routeName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockRouteName"); closeErr != nil {

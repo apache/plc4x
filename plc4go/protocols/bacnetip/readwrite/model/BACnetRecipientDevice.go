@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetRecipientDeviceParse(ctx context.Context, theBytes []byte) (BACnetRec
 	return BACnetRecipientDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetRecipientDeviceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
+		return BACnetRecipientDeviceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetRecipientDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipientDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetRecipientDeviceParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceValue)
-	if pullErr := readBuffer.PullContext("deviceValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceValue")
-	}
-	_deviceValue, _deviceValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _deviceValueErr != nil {
-		return nil, errors.Wrap(_deviceValueErr, "Error parsing 'deviceValue' field of BACnetRecipientDevice")
-	}
-	deviceValue := _deviceValue.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("deviceValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceValue")
+	deviceValue, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "deviceValue", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRecipientDevice"); closeErr != nil {

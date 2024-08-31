@@ -140,6 +140,12 @@ func InterfaceOptions2Parse(ctx context.Context, theBytes []byte) (InterfaceOpti
 	return InterfaceOptions2ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func InterfaceOptions2ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
+		return InterfaceOptions2ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions2, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,12 +162,10 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (burden)
-	_burden, _burdenErr := /*TODO: migrate me*/ readBuffer.ReadBit("burden")
-	if _burdenErr != nil {
-		return nil, errors.Wrap(_burdenErr, "Error parsing 'burden' field of InterfaceOptions2")
+	burden, err := ReadSimpleField(ctx, "burden", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'burden' field"))
 	}
-	burden := _burden
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
@@ -188,12 +192,10 @@ func InterfaceOptions2ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (clockGen)
-	_clockGen, _clockGenErr := /*TODO: migrate me*/ readBuffer.ReadBit("clockGen")
-	if _clockGenErr != nil {
-		return nil, errors.Wrap(_clockGenErr, "Error parsing 'clockGen' field of InterfaceOptions2")
+	clockGen, err := ReadSimpleField(ctx, "clockGen", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clockGen' field"))
 	}
-	clockGen := _clockGen
 
 	if closeErr := readBuffer.CloseContext("InterfaceOptions2"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for InterfaceOptions2")

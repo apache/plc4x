@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesProgramChangeParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesProgramChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesProgramChangeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesProgramChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesProgramChange, error) {
+		return BACnetPropertyStatesProgramChangeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesProgramChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesProgramChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesProgramChangeParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programState)
-	if pullErr := readBuffer.PullContext("programState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programState")
-	}
-	_programState, _programStateErr := BACnetProgramStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _programStateErr != nil {
-		return nil, errors.Wrap(_programStateErr, "Error parsing 'programState' field of BACnetPropertyStatesProgramChange")
-	}
-	programState := _programState.(BACnetProgramStateTagged)
-	if closeErr := readBuffer.CloseContext("programState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programState")
+	programState, err := ReadSimpleField[BACnetProgramStateTagged](ctx, "programState", ReadComplex[BACnetProgramStateTagged](BACnetProgramStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesProgramChange"); closeErr != nil {

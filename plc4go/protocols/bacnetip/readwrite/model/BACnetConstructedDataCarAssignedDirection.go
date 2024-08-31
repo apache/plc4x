@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataCarAssignedDirectionParse(ctx context.Context, theByte
 	return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCarAssignedDirectionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarAssignedDirection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCarAssignedDirection, error) {
+		return BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCarAssignedDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataCarAssignedDirectionParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (assignedDirection)
-	if pullErr := readBuffer.PullContext("assignedDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for assignedDirection")
-	}
-	_assignedDirection, _assignedDirectionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _assignedDirectionErr != nil {
-		return nil, errors.Wrap(_assignedDirectionErr, "Error parsing 'assignedDirection' field of BACnetConstructedDataCarAssignedDirection")
-	}
-	assignedDirection := _assignedDirection.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("assignedDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for assignedDirection")
+	assignedDirection, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "assignedDirection", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedDirection' field"))
 	}
 
 	// Virtual field

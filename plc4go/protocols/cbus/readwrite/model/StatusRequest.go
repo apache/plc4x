@@ -121,6 +121,17 @@ func StatusRequestParse(ctx context.Context, theBytes []byte) (StatusRequest, er
 	return StatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusRequestParseWithBufferProducer[T StatusRequest]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := StatusRequestParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

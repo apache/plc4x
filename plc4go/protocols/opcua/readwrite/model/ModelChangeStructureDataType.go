@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func ModelChangeStructureDataTypeParse(ctx context.Context, theBytes []byte, ide
 	return ModelChangeStructureDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ModelChangeStructureDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModelChangeStructureDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModelChangeStructureDataType, error) {
+		return ModelChangeStructureDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ModelChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ModelChangeStructureDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,38 +171,20 @@ func ModelChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (affected)
-	if pullErr := readBuffer.PullContext("affected"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for affected")
-	}
-	_affected, _affectedErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _affectedErr != nil {
-		return nil, errors.Wrap(_affectedErr, "Error parsing 'affected' field of ModelChangeStructureDataType")
-	}
-	affected := _affected.(NodeId)
-	if closeErr := readBuffer.CloseContext("affected"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for affected")
+	affected, err := ReadSimpleField[NodeId](ctx, "affected", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'affected' field"))
 	}
 
-	// Simple Field (affectedType)
-	if pullErr := readBuffer.PullContext("affectedType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for affectedType")
-	}
-	_affectedType, _affectedTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _affectedTypeErr != nil {
-		return nil, errors.Wrap(_affectedTypeErr, "Error parsing 'affectedType' field of ModelChangeStructureDataType")
-	}
-	affectedType := _affectedType.(NodeId)
-	if closeErr := readBuffer.CloseContext("affectedType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for affectedType")
+	affectedType, err := ReadSimpleField[NodeId](ctx, "affectedType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'affectedType' field"))
 	}
 
-	// Simple Field (verb)
-	_verb, _verbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("verb", 8)
-	if _verbErr != nil {
-		return nil, errors.Wrap(_verbErr, "Error parsing 'verb' field of ModelChangeStructureDataType")
+	verb, err := ReadSimpleField(ctx, "verb", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'verb' field"))
 	}
-	verb := _verb
 
 	if closeErr := readBuffer.CloseContext("ModelChangeStructureDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModelChangeStructureDataType")

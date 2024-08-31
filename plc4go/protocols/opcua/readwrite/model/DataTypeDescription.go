@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func DataTypeDescriptionParse(ctx context.Context, theBytes []byte, identifier s
 	return DataTypeDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataTypeDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeDescription, error) {
+		return DataTypeDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataTypeDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func DataTypeDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataTypeId)
-	if pullErr := readBuffer.PullContext("dataTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataTypeId")
-	}
-	_dataTypeId, _dataTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _dataTypeIdErr != nil {
-		return nil, errors.Wrap(_dataTypeIdErr, "Error parsing 'dataTypeId' field of DataTypeDescription")
-	}
-	dataTypeId := _dataTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("dataTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataTypeId")
+	dataTypeId, err := ReadSimpleField[NodeId](ctx, "dataTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeId' field"))
 	}
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of DataTypeDescription")
-	}
-	name := _name.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[QualifiedName](ctx, "name", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DataTypeDescription"); closeErr != nil {

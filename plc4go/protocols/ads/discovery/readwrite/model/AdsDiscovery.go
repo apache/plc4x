@@ -176,6 +176,12 @@ func AdsDiscoveryParse(ctx context.Context, theBytes []byte) (AdsDiscovery, erro
 	return AdsDiscoveryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsDiscoveryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
+		return AdsDiscoveryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -187,59 +193,33 @@ func AdsDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	header, err := ReadConstField[uint32](ctx, "header", ReadUnsignedInt(readBuffer, 32), AdsDiscovery_HEADER, codegen.WithByteOrder(binary.LittleEndian))
+	header, err := ReadConstField[uint32](ctx, "header", ReadUnsignedInt(readBuffer, uint8(32)), AdsDiscovery_HEADER, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 	_ = header
 
-	// Simple Field (requestId)
-	_requestId, _requestIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestId", 32)
-	if _requestIdErr != nil {
-		return nil, errors.Wrap(_requestIdErr, "Error parsing 'requestId' field of AdsDiscovery")
-	}
-	requestId := _requestId
-
-	// Simple Field (operation)
-	if pullErr := readBuffer.PullContext("operation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for operation")
-	}
-	_operation, _operationErr := OperationParseWithBuffer(ctx, readBuffer)
-	if _operationErr != nil {
-		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of AdsDiscovery")
-	}
-	operation := _operation
-	if closeErr := readBuffer.CloseContext("operation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for operation")
+	requestId, err := ReadSimpleField(ctx, "requestId", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestId' field"))
 	}
 
-	// Simple Field (amsNetId)
-	if pullErr := readBuffer.PullContext("amsNetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for amsNetId")
-	}
-	_amsNetId, _amsNetIdErr := AmsNetIdParseWithBuffer(ctx, readBuffer)
-	if _amsNetIdErr != nil {
-		return nil, errors.Wrap(_amsNetIdErr, "Error parsing 'amsNetId' field of AdsDiscovery")
-	}
-	amsNetId := _amsNetId.(AmsNetId)
-	if closeErr := readBuffer.CloseContext("amsNetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for amsNetId")
+	operation, err := ReadEnumField[Operation](ctx, "operation", "Operation", ReadEnum(OperationByValue, ReadUnsignedInt(readBuffer, uint8(32))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
 
-	// Simple Field (portNumber)
-	if pullErr := readBuffer.PullContext("portNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for portNumber")
-	}
-	_portNumber, _portNumberErr := AdsPortNumbersParseWithBuffer(ctx, readBuffer)
-	if _portNumberErr != nil {
-		return nil, errors.Wrap(_portNumberErr, "Error parsing 'portNumber' field of AdsDiscovery")
-	}
-	portNumber := _portNumber
-	if closeErr := readBuffer.CloseContext("portNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for portNumber")
+	amsNetId, err := ReadSimpleField[AmsNetId](ctx, "amsNetId", ReadComplex[AmsNetId](AmsNetIdParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amsNetId' field"))
 	}
 
-	numBlocks, err := ReadImplicitField[uint32](ctx, "numBlocks", ReadUnsignedInt(readBuffer, 32), codegen.WithByteOrder(binary.LittleEndian))
+	portNumber, err := ReadEnumField[AdsPortNumbers](ctx, "portNumber", "AdsPortNumbers", ReadEnum(AdsPortNumbersByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portNumber' field"))
+	}
+
+	numBlocks, err := ReadImplicitField[uint32](ctx, "numBlocks", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numBlocks' field"))
 	}

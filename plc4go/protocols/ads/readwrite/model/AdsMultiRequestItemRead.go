@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func AdsMultiRequestItemReadParse(ctx context.Context, theBytes []byte, indexGro
 	return AdsMultiRequestItemReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
+func AdsMultiRequestItemReadParseWithBufferProducer(indexGroup uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsMultiRequestItemRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsMultiRequestItemRead, error) {
+		return AdsMultiRequestItemReadParseWithBuffer(ctx, readBuffer, indexGroup)
+	}
+}
+
 func AdsMultiRequestItemReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItemRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,26 +171,20 @@ func AdsMultiRequestItemReadParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemIndexGroup)
-	_itemIndexGroup, _itemIndexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemIndexGroup", 32)
-	if _itemIndexGroupErr != nil {
-		return nil, errors.Wrap(_itemIndexGroupErr, "Error parsing 'itemIndexGroup' field of AdsMultiRequestItemRead")
+	itemIndexGroup, err := ReadSimpleField(ctx, "itemIndexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndexGroup' field"))
 	}
-	itemIndexGroup := _itemIndexGroup
 
-	// Simple Field (itemIndexOffset)
-	_itemIndexOffset, _itemIndexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemIndexOffset", 32)
-	if _itemIndexOffsetErr != nil {
-		return nil, errors.Wrap(_itemIndexOffsetErr, "Error parsing 'itemIndexOffset' field of AdsMultiRequestItemRead")
+	itemIndexOffset, err := ReadSimpleField(ctx, "itemIndexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemIndexOffset' field"))
 	}
-	itemIndexOffset := _itemIndexOffset
 
-	// Simple Field (itemReadLength)
-	_itemReadLength, _itemReadLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("itemReadLength", 32)
-	if _itemReadLengthErr != nil {
-		return nil, errors.Wrap(_itemReadLengthErr, "Error parsing 'itemReadLength' field of AdsMultiRequestItemRead")
+	itemReadLength, err := ReadSimpleField(ctx, "itemReadLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemReadLength' field"))
 	}
-	itemReadLength := _itemReadLength
 
 	if closeErr := readBuffer.CloseContext("AdsMultiRequestItemRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsMultiRequestItemRead")

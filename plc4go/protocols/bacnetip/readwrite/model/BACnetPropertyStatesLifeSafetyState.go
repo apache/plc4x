@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLifeSafetyStateParse(ctx context.Context, theBytes []by
 	return BACnetPropertyStatesLifeSafetyStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLifeSafetyStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLifeSafetyState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLifeSafetyState, error) {
+		return BACnetPropertyStatesLifeSafetyStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLifeSafetyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLifeSafetyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLifeSafetyStateParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lifeSafetyState)
-	if pullErr := readBuffer.PullContext("lifeSafetyState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lifeSafetyState")
-	}
-	_lifeSafetyState, _lifeSafetyStateErr := BACnetLifeSafetyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lifeSafetyStateErr != nil {
-		return nil, errors.Wrap(_lifeSafetyStateErr, "Error parsing 'lifeSafetyState' field of BACnetPropertyStatesLifeSafetyState")
-	}
-	lifeSafetyState := _lifeSafetyState.(BACnetLifeSafetyStateTagged)
-	if closeErr := readBuffer.CloseContext("lifeSafetyState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lifeSafetyState")
+	lifeSafetyState, err := ReadSimpleField[BACnetLifeSafetyStateTagged](ctx, "lifeSafetyState", ReadComplex[BACnetLifeSafetyStateTagged](BACnetLifeSafetyStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLifeSafetyState"); closeErr != nil {

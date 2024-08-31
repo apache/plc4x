@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesEscalatorFaultParse(ctx context.Context, theBytes []byt
 	return BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesEscalatorFaultParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEscalatorFault, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEscalatorFault, error) {
+		return BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorFault, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesEscalatorFaultParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (escalatorFault)
-	if pullErr := readBuffer.PullContext("escalatorFault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for escalatorFault")
-	}
-	_escalatorFault, _escalatorFaultErr := BACnetEscalatorFaultTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _escalatorFaultErr != nil {
-		return nil, errors.Wrap(_escalatorFaultErr, "Error parsing 'escalatorFault' field of BACnetPropertyStatesEscalatorFault")
-	}
-	escalatorFault := _escalatorFault.(BACnetEscalatorFaultTagged)
-	if closeErr := readBuffer.CloseContext("escalatorFault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for escalatorFault")
+	escalatorFault, err := ReadSimpleField[BACnetEscalatorFaultTagged](ctx, "escalatorFault", ReadComplex[BACnetEscalatorFaultTagged](BACnetEscalatorFaultTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalatorFault' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorFault"); closeErr != nil {

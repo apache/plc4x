@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProtocolServicesSupportedParse(ctx context.Context, th
 	return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProtocolServicesSupportedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolServicesSupported, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProtocolServicesSupported, error) {
+		return BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProtocolServicesSupported, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProtocolServicesSupportedParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolServicesSupported)
-	if pullErr := readBuffer.PullContext("protocolServicesSupported"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for protocolServicesSupported")
-	}
-	_protocolServicesSupported, _protocolServicesSupportedErr := BACnetServicesSupportedTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _protocolServicesSupportedErr != nil {
-		return nil, errors.Wrap(_protocolServicesSupportedErr, "Error parsing 'protocolServicesSupported' field of BACnetConstructedDataProtocolServicesSupported")
-	}
-	protocolServicesSupported := _protocolServicesSupported.(BACnetServicesSupportedTagged)
-	if closeErr := readBuffer.CloseContext("protocolServicesSupported"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for protocolServicesSupported")
+	protocolServicesSupported, err := ReadSimpleField[BACnetServicesSupportedTagged](ctx, "protocolServicesSupported", ReadComplex[BACnetServicesSupportedTagged](BACnetServicesSupportedTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolServicesSupported' field"))
 	}
 
 	// Virtual field

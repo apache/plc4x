@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,17 @@ func CBusPointToPointCommandParse(ctx context.Context, theBytes []byte, cBusOpti
 	return CBusPointToPointCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToPointCommandParseWithBufferProducer[T CBusPointToPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CBusPointToPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -200,17 +213,9 @@ func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	_child = _childTemp.(CBusPointToPointCommandChildSerializeRequirement)
 
-	// Simple Field (calData)
-	if pullErr := readBuffer.PullContext("calData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calData")
-	}
-	_calData, _calDataErr := CALDataParseWithBuffer(ctx, readBuffer, nil)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of CBusPointToPointCommand")
-	}
-	calData := _calData.(CALData)
-	if closeErr := readBuffer.CloseContext("calData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calData")
+	calData, err := ReadSimpleField[CALData](ctx, "calData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointCommand"); closeErr != nil {

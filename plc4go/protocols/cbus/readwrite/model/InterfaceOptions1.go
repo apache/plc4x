@@ -164,6 +164,12 @@ func InterfaceOptions1Parse(ctx context.Context, theBytes []byte) (InterfaceOpti
 	return InterfaceOptions1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func InterfaceOptions1ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
+		return InterfaceOptions1ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -180,52 +186,40 @@ func InterfaceOptions1ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (idmon)
-	_idmon, _idmonErr := /*TODO: migrate me*/ readBuffer.ReadBit("idmon")
-	if _idmonErr != nil {
-		return nil, errors.Wrap(_idmonErr, "Error parsing 'idmon' field of InterfaceOptions1")
+	idmon, err := ReadSimpleField(ctx, "idmon", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'idmon' field"))
 	}
-	idmon := _idmon
 
-	// Simple Field (monitor)
-	_monitor, _monitorErr := /*TODO: migrate me*/ readBuffer.ReadBit("monitor")
-	if _monitorErr != nil {
-		return nil, errors.Wrap(_monitorErr, "Error parsing 'monitor' field of InterfaceOptions1")
+	monitor, err := ReadSimpleField(ctx, "monitor", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitor' field"))
 	}
-	monitor := _monitor
 
-	// Simple Field (smart)
-	_smart, _smartErr := /*TODO: migrate me*/ readBuffer.ReadBit("smart")
-	if _smartErr != nil {
-		return nil, errors.Wrap(_smartErr, "Error parsing 'smart' field of InterfaceOptions1")
+	smart, err := ReadSimpleField(ctx, "smart", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'smart' field"))
 	}
-	smart := _smart
 
-	// Simple Field (srchk)
-	_srchk, _srchkErr := /*TODO: migrate me*/ readBuffer.ReadBit("srchk")
-	if _srchkErr != nil {
-		return nil, errors.Wrap(_srchkErr, "Error parsing 'srchk' field of InterfaceOptions1")
+	srchk, err := ReadSimpleField(ctx, "srchk", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'srchk' field"))
 	}
-	srchk := _srchk
 
-	// Simple Field (xonXoff)
-	_xonXoff, _xonXoffErr := /*TODO: migrate me*/ readBuffer.ReadBit("xonXoff")
-	if _xonXoffErr != nil {
-		return nil, errors.Wrap(_xonXoffErr, "Error parsing 'xonXoff' field of InterfaceOptions1")
+	xonXoff, err := ReadSimpleField(ctx, "xonXoff", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'xonXoff' field"))
 	}
-	xonXoff := _xonXoff
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (connect)
-	_connect, _connectErr := /*TODO: migrate me*/ readBuffer.ReadBit("connect")
-	if _connectErr != nil {
-		return nil, errors.Wrap(_connectErr, "Error parsing 'connect' field of InterfaceOptions1")
+	connect, err := ReadSimpleField(ctx, "connect", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connect' field"))
 	}
-	connect := _connect
 
 	if closeErr := readBuffer.CloseContext("InterfaceOptions1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for InterfaceOptions1")

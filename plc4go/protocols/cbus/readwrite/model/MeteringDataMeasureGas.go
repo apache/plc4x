@@ -108,6 +108,12 @@ func MeteringDataMeasureGasParse(ctx context.Context, theBytes []byte) (Metering
 	return MeteringDataMeasureGasParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataMeasureGasParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {
+		return MeteringDataMeasureGasParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataMeasureGasParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataMeasureGas, error) {
 	positionAware := readBuffer
 	_ = positionAware

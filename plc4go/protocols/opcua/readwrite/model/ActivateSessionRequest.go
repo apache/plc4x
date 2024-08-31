@@ -223,6 +223,12 @@ func ActivateSessionRequestParse(ctx context.Context, theBytes []byte, identifie
 	return ActivateSessionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ActivateSessionRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ActivateSessionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ActivateSessionRequest, error) {
+		return ActivateSessionRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ActivateSessionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -234,86 +240,44 @@ func ActivateSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of ActivateSessionRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (clientSignature)
-	if pullErr := readBuffer.PullContext("clientSignature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientSignature")
-	}
-	_clientSignature, _clientSignatureErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("458"))
-	if _clientSignatureErr != nil {
-		return nil, errors.Wrap(_clientSignatureErr, "Error parsing 'clientSignature' field of ActivateSessionRequest")
-	}
-	clientSignature := _clientSignature.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("clientSignature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientSignature")
+	clientSignature, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "clientSignature", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("458")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientSignature' field"))
 	}
 
-	// Simple Field (noOfClientSoftwareCertificates)
-	_noOfClientSoftwareCertificates, _noOfClientSoftwareCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfClientSoftwareCertificates", 32)
-	if _noOfClientSoftwareCertificatesErr != nil {
-		return nil, errors.Wrap(_noOfClientSoftwareCertificatesErr, "Error parsing 'noOfClientSoftwareCertificates' field of ActivateSessionRequest")
+	noOfClientSoftwareCertificates, err := ReadSimpleField(ctx, "noOfClientSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfClientSoftwareCertificates' field"))
 	}
-	noOfClientSoftwareCertificates := _noOfClientSoftwareCertificates
 
-	clientSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "clientSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("346"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfClientSoftwareCertificates))
+	clientSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "clientSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("346")), readBuffer), uint64(noOfClientSoftwareCertificates))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientSoftwareCertificates' field"))
 	}
 
-	// Simple Field (noOfLocaleIds)
-	_noOfLocaleIds, _noOfLocaleIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLocaleIds", 32)
-	if _noOfLocaleIdsErr != nil {
-		return nil, errors.Wrap(_noOfLocaleIdsErr, "Error parsing 'noOfLocaleIds' field of ActivateSessionRequest")
+	noOfLocaleIds, err := ReadSimpleField(ctx, "noOfLocaleIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLocaleIds' field"))
 	}
-	noOfLocaleIds := _noOfLocaleIds
 
 	localeIds, err := ReadCountArrayField[PascalString](ctx, "localeIds", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfLocaleIds))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeIds' field"))
 	}
 
-	// Simple Field (userIdentityToken)
-	if pullErr := readBuffer.PullContext("userIdentityToken"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityToken")
-	}
-	_userIdentityToken, _userIdentityTokenErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _userIdentityTokenErr != nil {
-		return nil, errors.Wrap(_userIdentityTokenErr, "Error parsing 'userIdentityToken' field of ActivateSessionRequest")
-	}
-	userIdentityToken := _userIdentityToken.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("userIdentityToken"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userIdentityToken")
+	userIdentityToken, err := ReadSimpleField[ExtensionObject](ctx, "userIdentityToken", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityToken' field"))
 	}
 
-	// Simple Field (userTokenSignature)
-	if pullErr := readBuffer.PullContext("userTokenSignature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userTokenSignature")
-	}
-	_userTokenSignature, _userTokenSignatureErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("458"))
-	if _userTokenSignatureErr != nil {
-		return nil, errors.Wrap(_userTokenSignatureErr, "Error parsing 'userTokenSignature' field of ActivateSessionRequest")
-	}
-	userTokenSignature := _userTokenSignature.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("userTokenSignature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userTokenSignature")
+	userTokenSignature, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "userTokenSignature", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("458")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenSignature' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ActivateSessionRequest"); closeErr != nil {

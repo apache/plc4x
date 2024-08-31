@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +133,12 @@ func ErrorReportingSystemCategoryTypeInputUnitsParse(ctx context.Context, theByt
 	return ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
+func ErrorReportingSystemCategoryTypeInputUnitsParseWithBufferProducer(errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeInputUnits, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeInputUnits, error) {
+		return ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
+	}
+}
+
 func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeInputUnits, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +150,9 @@ func ErrorReportingSystemCategoryTypeInputUnitsParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryForType)
-	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
-	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForInputUnitsParseWithBuffer(ctx, readBuffer)
-	if _categoryForTypeErr != nil {
-		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeInputUnits")
-	}
-	categoryForType := _categoryForType
-	if closeErr := readBuffer.CloseContext("categoryForType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for categoryForType")
+	categoryForType, err := ReadEnumField[ErrorReportingSystemCategoryTypeForInputUnits](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForInputUnits", ReadEnum(ErrorReportingSystemCategoryTypeForInputUnitsByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryForType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeInputUnits"); closeErr != nil {

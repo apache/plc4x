@@ -148,6 +148,12 @@ func CloseSessionRequestParse(ctx context.Context, theBytes []byte, identifier s
 	return CloseSessionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CloseSessionRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CloseSessionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CloseSessionRequest, error) {
+		return CloseSessionRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CloseSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CloseSessionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,30 +165,20 @@ func CloseSessionRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CloseSessionRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (deleteSubscriptions)
-	_deleteSubscriptions, _deleteSubscriptionsErr := /*TODO: migrate me*/ readBuffer.ReadBit("deleteSubscriptions")
-	if _deleteSubscriptionsErr != nil {
-		return nil, errors.Wrap(_deleteSubscriptionsErr, "Error parsing 'deleteSubscriptions' field of CloseSessionRequest")
+	deleteSubscriptions, err := ReadSimpleField(ctx, "deleteSubscriptions", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteSubscriptions' field"))
 	}
-	deleteSubscriptions := _deleteSubscriptions
 
 	if closeErr := readBuffer.CloseContext("CloseSessionRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CloseSessionRequest")

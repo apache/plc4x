@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesTimerTransitionParse(ctx context.Context, theBytes []by
 	return BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesTimerTransitionParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesTimerTransition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesTimerTransition, error) {
+		return BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesTimerTransitionParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timerTransition)
-	if pullErr := readBuffer.PullContext("timerTransition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timerTransition")
-	}
-	_timerTransition, _timerTransitionErr := BACnetTimerTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _timerTransitionErr != nil {
-		return nil, errors.Wrap(_timerTransitionErr, "Error parsing 'timerTransition' field of BACnetPropertyStatesTimerTransition")
-	}
-	timerTransition := _timerTransition.(BACnetTimerTransitionTagged)
-	if closeErr := readBuffer.CloseContext("timerTransition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timerTransition")
+	timerTransition, err := ReadSimpleField[BACnetTimerTransitionTagged](ctx, "timerTransition", ReadComplex[BACnetTimerTransitionTagged](BACnetTimerTransitionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerTransition' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesTimerTransition"); closeErr != nil {

@@ -121,6 +121,12 @@ func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParse(ctx context.Conte
 	return S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
+		return S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionReadSzlNoDataRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

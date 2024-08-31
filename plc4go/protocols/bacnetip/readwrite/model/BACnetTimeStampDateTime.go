@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimeStampDateTimeParse(ctx context.Context, theBytes []byte) (BACnetT
 	return BACnetTimeStampDateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTimeStampDateTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
+		return BACnetTimeStampDateTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTimeStampDateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampDateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimeStampDateTimeParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateTimeValue)
-	if pullErr := readBuffer.PullContext("dateTimeValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateTimeValue")
-	}
-	_dateTimeValue, _dateTimeValueErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _dateTimeValueErr != nil {
-		return nil, errors.Wrap(_dateTimeValueErr, "Error parsing 'dateTimeValue' field of BACnetTimeStampDateTime")
-	}
-	dateTimeValue := _dateTimeValue.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("dateTimeValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateTimeValue")
+	dateTimeValue, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "dateTimeValue", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateTimeValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStampDateTime"); closeErr != nil {

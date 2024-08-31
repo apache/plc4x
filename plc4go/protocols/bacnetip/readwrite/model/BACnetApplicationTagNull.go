@@ -107,6 +107,12 @@ func BACnetApplicationTagNullParse(ctx context.Context, theBytes []byte) (BACnet
 	return BACnetApplicationTagNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetApplicationTagNullParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
+		return BACnetApplicationTagNullParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetApplicationTagNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
 	positionAware := readBuffer
 	_ = positionAware

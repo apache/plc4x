@@ -109,6 +109,12 @@ func MResetIndParse(ctx context.Context, theBytes []byte, size uint16) (MResetIn
 	return MResetIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MResetIndParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MResetInd, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MResetInd, error) {
+		return MResetIndParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MResetIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MResetInd, error) {
 	positionAware := readBuffer
 	_ = positionAware

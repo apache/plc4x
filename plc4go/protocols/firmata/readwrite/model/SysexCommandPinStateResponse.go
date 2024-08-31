@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -156,6 +158,12 @@ func SysexCommandPinStateResponseParse(ctx context.Context, theBytes []byte, res
 	return SysexCommandPinStateResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandPinStateResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandPinStateResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandPinStateResponse, error) {
+		return SysexCommandPinStateResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandPinStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandPinStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -167,26 +175,20 @@ func SysexCommandPinStateResponseParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 8)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of SysexCommandPinStateResponse")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
-	// Simple Field (pinMode)
-	_pinMode, _pinModeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinMode", 8)
-	if _pinModeErr != nil {
-		return nil, errors.Wrap(_pinModeErr, "Error parsing 'pinMode' field of SysexCommandPinStateResponse")
+	pinMode, err := ReadSimpleField(ctx, "pinMode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinMode' field"))
 	}
-	pinMode := _pinMode
 
-	// Simple Field (pinState)
-	_pinState, _pinStateErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pinState", 8)
-	if _pinStateErr != nil {
-		return nil, errors.Wrap(_pinStateErr, "Error parsing 'pinState' field of SysexCommandPinStateResponse")
+	pinState, err := ReadSimpleField(ctx, "pinState", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pinState' field"))
 	}
-	pinState := _pinState
 
 	if closeErr := readBuffer.CloseContext("SysexCommandPinStateResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SysexCommandPinStateResponse")

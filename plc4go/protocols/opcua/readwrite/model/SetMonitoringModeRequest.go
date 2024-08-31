@@ -178,6 +178,12 @@ func SetMonitoringModeRequestParse(ctx context.Context, theBytes []byte, identif
 	return SetMonitoringModeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SetMonitoringModeRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetMonitoringModeRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetMonitoringModeRequest, error) {
+		return SetMonitoringModeRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SetMonitoringModeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetMonitoringModeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -189,47 +195,27 @@ func SetMonitoringModeRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of SetMonitoringModeRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SetMonitoringModeRequest")
-	}
-	subscriptionId := _subscriptionId
-
-	// Simple Field (monitoringMode)
-	if pullErr := readBuffer.PullContext("monitoringMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoringMode")
-	}
-	_monitoringMode, _monitoringModeErr := MonitoringModeParseWithBuffer(ctx, readBuffer)
-	if _monitoringModeErr != nil {
-		return nil, errors.Wrap(_monitoringModeErr, "Error parsing 'monitoringMode' field of SetMonitoringModeRequest")
-	}
-	monitoringMode := _monitoringMode
-	if closeErr := readBuffer.CloseContext("monitoringMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoringMode")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
 
-	// Simple Field (noOfMonitoredItemIds)
-	_noOfMonitoredItemIds, _noOfMonitoredItemIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMonitoredItemIds", 32)
-	if _noOfMonitoredItemIdsErr != nil {
-		return nil, errors.Wrap(_noOfMonitoredItemIdsErr, "Error parsing 'noOfMonitoredItemIds' field of SetMonitoringModeRequest")
+	monitoringMode, err := ReadEnumField[MonitoringMode](ctx, "monitoringMode", "MonitoringMode", ReadEnum(MonitoringModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoringMode' field"))
 	}
-	noOfMonitoredItemIds := _noOfMonitoredItemIds
 
-	monitoredItemIds, err := ReadCountArrayField[uint32](ctx, "monitoredItemIds", ReadUnsignedInt(readBuffer, 32), uint64(noOfMonitoredItemIds))
+	noOfMonitoredItemIds, err := ReadSimpleField(ctx, "noOfMonitoredItemIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMonitoredItemIds' field"))
+	}
+
+	monitoredItemIds, err := ReadCountArrayField[uint32](ctx, "monitoredItemIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfMonitoredItemIds))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemIds' field"))
 	}

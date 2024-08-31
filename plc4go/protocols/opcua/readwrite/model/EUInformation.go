@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func EUInformationParse(ctx context.Context, theBytes []byte, identifier string)
 	return EUInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EUInformationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EUInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EUInformation, error) {
+		return EUInformationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EUInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EUInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,50 +182,24 @@ func EUInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceUri)
-	if pullErr := readBuffer.PullContext("namespaceUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUri")
-	}
-	_namespaceUri, _namespaceUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _namespaceUriErr != nil {
-		return nil, errors.Wrap(_namespaceUriErr, "Error parsing 'namespaceUri' field of EUInformation")
-	}
-	namespaceUri := _namespaceUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("namespaceUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaceUri")
+	namespaceUri, err := ReadSimpleField[PascalString](ctx, "namespaceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUri' field"))
 	}
 
-	// Simple Field (unitId)
-	_unitId, _unitIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("unitId", 32)
-	if _unitIdErr != nil {
-		return nil, errors.Wrap(_unitIdErr, "Error parsing 'unitId' field of EUInformation")
-	}
-	unitId := _unitId
-
-	// Simple Field (displayName)
-	if pullErr := readBuffer.PullContext("displayName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for displayName")
-	}
-	_displayName, _displayNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _displayNameErr != nil {
-		return nil, errors.Wrap(_displayNameErr, "Error parsing 'displayName' field of EUInformation")
-	}
-	displayName := _displayName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("displayName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for displayName")
+	unitId, err := ReadSimpleField(ctx, "unitId", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitId' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
+	displayName, err := ReadSimpleField[LocalizedText](ctx, "displayName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'displayName' field"))
 	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of EUInformation")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EUInformation"); closeErr != nil {

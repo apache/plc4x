@@ -120,6 +120,12 @@ func NetworkProtocolControlInformationParse(ctx context.Context, theBytes []byte
 	return NetworkProtocolControlInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NetworkProtocolControlInformationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
+		return NetworkProtocolControlInformationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkProtocolControlInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -131,24 +137,20 @@ func NetworkProtocolControlInformationParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0x0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (stackCounter)
-	_stackCounter, _stackCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint8("stackCounter", 3)
-	if _stackCounterErr != nil {
-		return nil, errors.Wrap(_stackCounterErr, "Error parsing 'stackCounter' field of NetworkProtocolControlInformation")
+	stackCounter, err := ReadSimpleField(ctx, "stackCounter", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackCounter' field"))
 	}
-	stackCounter := _stackCounter
 
-	// Simple Field (stackDepth)
-	_stackDepth, _stackDepthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("stackDepth", 3)
-	if _stackDepthErr != nil {
-		return nil, errors.Wrap(_stackDepthErr, "Error parsing 'stackDepth' field of NetworkProtocolControlInformation")
+	stackDepth, err := ReadSimpleField(ctx, "stackDepth", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stackDepth' field"))
 	}
-	stackDepth := _stackDepth
 
 	if closeErr := readBuffer.CloseContext("NetworkProtocolControlInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NetworkProtocolControlInformation")

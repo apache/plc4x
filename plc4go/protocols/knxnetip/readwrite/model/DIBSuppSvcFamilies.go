@@ -122,6 +122,12 @@ func DIBSuppSvcFamiliesParse(ctx context.Context, theBytes []byte) (DIBSuppSvcFa
 	return DIBSuppSvcFamiliesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DIBSuppSvcFamiliesParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
+		return DIBSuppSvcFamiliesParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DIBSuppSvcFamilies, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,18 +139,16 @@ func DIBSuppSvcFamiliesParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, 8))
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
 	_ = structureLength
 
-	// Simple Field (descriptionType)
-	_descriptionType, _descriptionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("descriptionType", 8)
-	if _descriptionTypeErr != nil {
-		return nil, errors.Wrap(_descriptionTypeErr, "Error parsing 'descriptionType' field of DIBSuppSvcFamilies")
+	descriptionType, err := ReadSimpleField(ctx, "descriptionType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptionType' field"))
 	}
-	descriptionType := _descriptionType
 
 	serviceIds, err := ReadLengthArrayField[ServiceId](ctx, "serviceIds", ReadComplex[ServiceId](ServiceIdParseWithBuffer, readBuffer), int(int32(structureLength)-int32(int32(2))))
 	if err != nil {

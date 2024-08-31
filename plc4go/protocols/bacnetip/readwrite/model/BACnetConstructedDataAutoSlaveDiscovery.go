@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAutoSlaveDiscoveryParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAutoSlaveDiscoveryParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAutoSlaveDiscovery, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAutoSlaveDiscovery, error) {
+		return BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAutoSlaveDiscovery, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (autoSlaveDiscovery)
-	if pullErr := readBuffer.PullContext("autoSlaveDiscovery"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for autoSlaveDiscovery")
-	}
-	_autoSlaveDiscovery, _autoSlaveDiscoveryErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _autoSlaveDiscoveryErr != nil {
-		return nil, errors.Wrap(_autoSlaveDiscoveryErr, "Error parsing 'autoSlaveDiscovery' field of BACnetConstructedDataAutoSlaveDiscovery")
-	}
-	autoSlaveDiscovery := _autoSlaveDiscovery.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("autoSlaveDiscovery"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for autoSlaveDiscovery")
+	autoSlaveDiscovery, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'autoSlaveDiscovery' field"))
 	}
 
 	// Virtual field

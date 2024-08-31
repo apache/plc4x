@@ -144,6 +144,12 @@ func LocalizedTextParse(ctx context.Context, theBytes []byte) (LocalizedText, er
 	return LocalizedTextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LocalizedTextParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
+		return LocalizedTextParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LocalizedText, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,24 +161,20 @@ func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 6), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (textSpecified)
-	_textSpecified, _textSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("textSpecified")
-	if _textSpecifiedErr != nil {
-		return nil, errors.Wrap(_textSpecifiedErr, "Error parsing 'textSpecified' field of LocalizedText")
+	textSpecified, err := ReadSimpleField(ctx, "textSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'textSpecified' field"))
 	}
-	textSpecified := _textSpecified
 
-	// Simple Field (localeSpecified)
-	_localeSpecified, _localeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localeSpecified")
-	if _localeSpecifiedErr != nil {
-		return nil, errors.Wrap(_localeSpecifiedErr, "Error parsing 'localeSpecified' field of LocalizedText")
+	localeSpecified, err := ReadSimpleField(ctx, "localeSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeSpecified' field"))
 	}
-	localeSpecified := _localeSpecified
 
 	_locale, err := ReadOptionalField[PascalString](ctx, "locale", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), localeSpecified)
 	if err != nil {

@@ -132,6 +132,12 @@ func COTPParameterDisconnectAdditionalInformationParse(ctx context.Context, theB
 	return COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
+func COTPParameterDisconnectAdditionalInformationParseWithBufferProducer(rest uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterDisconnectAdditionalInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterDisconnectAdditionalInformation, error) {
+		return COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx, readBuffer, rest)
+	}
+}
+
 func COTPParameterDisconnectAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterDisconnectAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware

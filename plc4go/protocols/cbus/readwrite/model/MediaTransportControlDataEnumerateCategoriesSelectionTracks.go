@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -189,6 +191,12 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParse(ctx contex
 	return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
+		return MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataEnumerateCategoriesSelectionTracks, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -200,12 +208,10 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (enumerateType)
-	_enumerateType, _enumerateTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("enumerateType")
-	if _enumerateTypeErr != nil {
-		return nil, errors.Wrap(_enumerateTypeErr, "Error parsing 'enumerateType' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
+	enumerateType, err := ReadSimpleField(ctx, "enumerateType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumerateType' field"))
 	}
-	enumerateType := _enumerateType
 
 	// Virtual field
 	_isListCategories := bool((enumerateType) == (0x00))
@@ -227,12 +233,10 @@ func MediaTransportControlDataEnumerateCategoriesSelectionTracksParseWithBuffer(
 	isReserved := bool(_isReserved)
 	_ = isReserved
 
-	// Simple Field (start)
-	_start, _startErr := /*TODO: migrate me*/ readBuffer.ReadUint8("start", 8)
-	if _startErr != nil {
-		return nil, errors.Wrap(_startErr, "Error parsing 'start' field of MediaTransportControlDataEnumerateCategoriesSelectionTracks")
+	start, err := ReadSimpleField(ctx, "start", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'start' field"))
 	}
-	start := _start
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataEnumerateCategoriesSelectionTracks"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataEnumerateCategoriesSelectionTracks")

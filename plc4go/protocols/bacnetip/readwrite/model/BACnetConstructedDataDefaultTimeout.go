@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDefaultTimeoutParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDefaultTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultTimeout, error) {
+		return BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultTimeout)
-	if pullErr := readBuffer.PullContext("defaultTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultTimeout")
-	}
-	_defaultTimeout, _defaultTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultTimeoutErr != nil {
-		return nil, errors.Wrap(_defaultTimeoutErr, "Error parsing 'defaultTimeout' field of BACnetConstructedDataDefaultTimeout")
-	}
-	defaultTimeout := _defaultTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("defaultTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultTimeout")
+	defaultTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultTimeout' field"))
 	}
 
 	// Virtual field

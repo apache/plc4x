@@ -237,6 +237,12 @@ func MonitoredSALLongFormSmartModeParse(ctx context.Context, theBytes []byte, cB
 	return MonitoredSALLongFormSmartModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func MonitoredSALLongFormSmartModeParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALLongFormSmartMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredSALLongFormSmartMode, error) {
+		return MonitoredSALLongFormSmartModeParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (MonitoredSALLongFormSmartMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -285,17 +291,9 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 		bridgeAddress = *_bridgeAddress
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of MonitoredSALLongFormSmartMode")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
 	reservedByte, err := ReadOptionalField[byte](ctx, "reservedByte", ReadByte(readBuffer, 8), isUnitAddress)
@@ -317,13 +315,7 @@ func MonitoredSALLongFormSmartModeParseWithBuffer(ctx context.Context, readBuffe
 		replyNetwork = *_replyNetwork
 	}
 
-	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](func(ctx context.Context, buffer utils.ReadBuffer) (SALData, error) {
-		v, err := SALDataParseWithBuffer(ctx, readBuffer, (ApplicationId)(application.ApplicationId()))
-		if err != nil {
-			return nil, err
-		}
-		return v.(SALData), nil
-	}, readBuffer), true)
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}

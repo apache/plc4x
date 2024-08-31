@@ -113,6 +113,12 @@ func EipConstantsParse(ctx context.Context, theBytes []byte) (EipConstants, erro
 	return EipConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EipConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
+		return EipConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EipConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,13 +130,13 @@ func EipConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eipUdpDiscoveryDefaultPort, err := ReadConstField[uint16](ctx, "eipUdpDiscoveryDefaultPort", ReadUnsignedShort(readBuffer, 16), EipConstants_EIPUDPDISCOVERYDEFAULTPORT)
+	eipUdpDiscoveryDefaultPort, err := ReadConstField[uint16](ctx, "eipUdpDiscoveryDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), EipConstants_EIPUDPDISCOVERYDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eipUdpDiscoveryDefaultPort' field"))
 	}
 	_ = eipUdpDiscoveryDefaultPort
 
-	eipTcpDefaultPort, err := ReadConstField[uint16](ctx, "eipTcpDefaultPort", ReadUnsignedShort(readBuffer, 16), EipConstants_EIPTCPDEFAULTPORT)
+	eipTcpDefaultPort, err := ReadConstField[uint16](ctx, "eipTcpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), EipConstants_EIPTCPDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eipTcpDefaultPort' field"))
 	}

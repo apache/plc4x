@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBACnetIPGlobalAddressParse(ctx context.Context, theByt
 	return BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBACnetIPGlobalAddressParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
+		return BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPGlobalAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBACnetIPGlobalAddressParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bacnetIpGlobalAddress)
-	if pullErr := readBuffer.PullContext("bacnetIpGlobalAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpGlobalAddress")
-	}
-	_bacnetIpGlobalAddress, _bacnetIpGlobalAddressErr := BACnetHostNPortParseWithBuffer(ctx, readBuffer)
-	if _bacnetIpGlobalAddressErr != nil {
-		return nil, errors.Wrap(_bacnetIpGlobalAddressErr, "Error parsing 'bacnetIpGlobalAddress' field of BACnetConstructedDataBACnetIPGlobalAddress")
-	}
-	bacnetIpGlobalAddress := _bacnetIpGlobalAddress.(BACnetHostNPort)
-	if closeErr := readBuffer.CloseContext("bacnetIpGlobalAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpGlobalAddress")
+	bacnetIpGlobalAddress, err := ReadSimpleField[BACnetHostNPort](ctx, "bacnetIpGlobalAddress", ReadComplex[BACnetHostNPort](BACnetHostNPortParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIpGlobalAddress' field"))
 	}
 
 	// Virtual field

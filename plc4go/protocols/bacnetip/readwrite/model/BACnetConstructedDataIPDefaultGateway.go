@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPDefaultGatewayParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPDefaultGatewayParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDefaultGateway, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPDefaultGateway, error) {
+		return BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPDefaultGateway, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipDefaultGateway)
-	if pullErr := readBuffer.PullContext("ipDefaultGateway"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipDefaultGateway")
-	}
-	_ipDefaultGateway, _ipDefaultGatewayErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipDefaultGatewayErr != nil {
-		return nil, errors.Wrap(_ipDefaultGatewayErr, "Error parsing 'ipDefaultGateway' field of BACnetConstructedDataIPDefaultGateway")
-	}
-	ipDefaultGateway := _ipDefaultGateway.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipDefaultGateway"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipDefaultGateway")
+	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDefaultGateway' field"))
 	}
 
 	// Virtual field

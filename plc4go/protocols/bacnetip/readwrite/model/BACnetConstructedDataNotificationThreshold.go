@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNotificationThresholdParse(ctx context.Context, theByt
 	return BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNotificationThresholdParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNotificationThreshold, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNotificationThreshold, error) {
+		return BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNotificationThreshold, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notificationThreshold)
-	if pullErr := readBuffer.PullContext("notificationThreshold"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationThreshold")
-	}
-	_notificationThreshold, _notificationThresholdErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _notificationThresholdErr != nil {
-		return nil, errors.Wrap(_notificationThresholdErr, "Error parsing 'notificationThreshold' field of BACnetConstructedDataNotificationThreshold")
-	}
-	notificationThreshold := _notificationThreshold.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("notificationThreshold"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationThreshold")
+	notificationThreshold, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationThreshold", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationThreshold' field"))
 	}
 
 	// Virtual field

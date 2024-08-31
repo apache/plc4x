@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func IssuedIdentityTokenParse(ctx context.Context, theBytes []byte, identifier s
 	return IssuedIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func IssuedIdentityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (IssuedIdentityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IssuedIdentityToken, error) {
+		return IssuedIdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func IssuedIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (IssuedIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func IssuedIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tokenData)
-	if pullErr := readBuffer.PullContext("tokenData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tokenData")
-	}
-	_tokenData, _tokenDataErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _tokenDataErr != nil {
-		return nil, errors.Wrap(_tokenDataErr, "Error parsing 'tokenData' field of IssuedIdentityToken")
-	}
-	tokenData := _tokenData.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("tokenData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tokenData")
+	tokenData, err := ReadSimpleField[PascalByteString](ctx, "tokenData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tokenData' field"))
 	}
 
-	// Simple Field (encryptionAlgorithm)
-	if pullErr := readBuffer.PullContext("encryptionAlgorithm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for encryptionAlgorithm")
-	}
-	_encryptionAlgorithm, _encryptionAlgorithmErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _encryptionAlgorithmErr != nil {
-		return nil, errors.Wrap(_encryptionAlgorithmErr, "Error parsing 'encryptionAlgorithm' field of IssuedIdentityToken")
-	}
-	encryptionAlgorithm := _encryptionAlgorithm.(PascalString)
-	if closeErr := readBuffer.CloseContext("encryptionAlgorithm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for encryptionAlgorithm")
+	encryptionAlgorithm, err := ReadSimpleField[PascalString](ctx, "encryptionAlgorithm", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encryptionAlgorithm' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("IssuedIdentityToken"); closeErr != nil {

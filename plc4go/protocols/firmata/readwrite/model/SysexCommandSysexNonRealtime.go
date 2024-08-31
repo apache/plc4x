@@ -113,6 +113,12 @@ func SysexCommandSysexNonRealtimeParse(ctx context.Context, theBytes []byte, res
 	return SysexCommandSysexNonRealtimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandSysexNonRealtimeParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandSysexNonRealtime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandSysexNonRealtime, error) {
+		return SysexCommandSysexNonRealtimeParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandSysexNonRealtimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandSysexNonRealtime, error) {
 	positionAware := readBuffer
 	_ = positionAware

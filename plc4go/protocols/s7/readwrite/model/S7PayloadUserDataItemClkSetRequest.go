@@ -153,6 +153,12 @@ func S7PayloadUserDataItemClkSetRequestParse(ctx context.Context, theBytes []byt
 	return S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemClkSetRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemClkSetRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemClkSetRequest, error) {
+		return S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkSetRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,27 +170,19 @@ func S7PayloadUserDataItemClkSetRequestParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
-	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadUserDataItemClkSetRequest")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemClkSetRequest"); closeErr != nil {

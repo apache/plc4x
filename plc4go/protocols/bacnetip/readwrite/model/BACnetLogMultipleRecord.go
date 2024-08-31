@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetLogMultipleRecordParse(ctx context.Context, theBytes []byte) (BACnetL
 	return BACnetLogMultipleRecordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLogMultipleRecordParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
+		return BACnetLogMultipleRecordParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLogMultipleRecordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogMultipleRecord, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetLogMultipleRecordParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	if pullErr := readBuffer.PullContext("timestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamp")
-	}
-	_timestamp, _timestampErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of BACnetLogMultipleRecord")
-	}
-	timestamp := _timestamp.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("timestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamp")
+	timestamp, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "timestamp", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	// Simple Field (logData)
-	if pullErr := readBuffer.PullContext("logData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logData")
-	}
-	_logData, _logDataErr := BACnetLogDataParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _logDataErr != nil {
-		return nil, errors.Wrap(_logDataErr, "Error parsing 'logData' field of BACnetLogMultipleRecord")
-	}
-	logData := _logData.(BACnetLogData)
-	if closeErr := readBuffer.CloseContext("logData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logData")
+	logData, err := ReadSimpleField[BACnetLogData](ctx, "logData", ReadComplex[BACnetLogData](BACnetLogDataParseWithBufferProducer[BACnetLogData]((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogMultipleRecord"); closeErr != nil {

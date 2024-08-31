@@ -108,6 +108,12 @@ func SecurityDataPanicClearedParse(ctx context.Context, theBytes []byte) (Securi
 	return SecurityDataPanicClearedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataPanicClearedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPanicCleared, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPanicCleared, error) {
+		return SecurityDataPanicClearedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataPanicClearedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataPanicCleared, error) {
 	positionAware := readBuffer
 	_ = positionAware

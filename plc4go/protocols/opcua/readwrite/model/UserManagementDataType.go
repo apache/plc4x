@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func UserManagementDataTypeParse(ctx context.Context, theBytes []byte, identifie
 	return UserManagementDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UserManagementDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (UserManagementDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UserManagementDataType, error) {
+		return UserManagementDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UserManagementDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserManagementDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,43 +171,19 @@ func UserManagementDataTypeParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
-	}
-	_userName, _userNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of UserManagementDataType")
-	}
-	userName := _userName.(PascalString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 
-	// Simple Field (userConfiguration)
-	if pullErr := readBuffer.PullContext("userConfiguration"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userConfiguration")
-	}
-	_userConfiguration, _userConfigurationErr := UserConfigurationMaskParseWithBuffer(ctx, readBuffer)
-	if _userConfigurationErr != nil {
-		return nil, errors.Wrap(_userConfigurationErr, "Error parsing 'userConfiguration' field of UserManagementDataType")
-	}
-	userConfiguration := _userConfiguration
-	if closeErr := readBuffer.CloseContext("userConfiguration"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userConfiguration")
+	userConfiguration, err := ReadEnumField[UserConfigurationMask](ctx, "userConfiguration", "UserConfigurationMask", ReadEnum(UserConfigurationMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userConfiguration' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of UserManagementDataType")
-	}
-	description := _description.(PascalString)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	description, err := ReadSimpleField[PascalString](ctx, "description", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UserManagementDataType"); closeErr != nil {

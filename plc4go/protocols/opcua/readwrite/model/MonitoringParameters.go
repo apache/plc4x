@@ -181,6 +181,12 @@ func MonitoringParametersParse(ctx context.Context, theBytes []byte, identifier 
 	return MonitoringParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoringParametersParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoringParameters, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoringParameters, error) {
+		return MonitoringParametersParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoringParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -192,51 +198,35 @@ func MonitoringParametersParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (clientHandle)
-	_clientHandle, _clientHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientHandle", 32)
-	if _clientHandleErr != nil {
-		return nil, errors.Wrap(_clientHandleErr, "Error parsing 'clientHandle' field of MonitoringParameters")
-	}
-	clientHandle := _clientHandle
-
-	// Simple Field (samplingInterval)
-	_samplingInterval, _samplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingInterval", 64)
-	if _samplingIntervalErr != nil {
-		return nil, errors.Wrap(_samplingIntervalErr, "Error parsing 'samplingInterval' field of MonitoringParameters")
-	}
-	samplingInterval := _samplingInterval
-
-	// Simple Field (filter)
-	if pullErr := readBuffer.PullContext("filter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filter")
-	}
-	_filter, _filterErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _filterErr != nil {
-		return nil, errors.Wrap(_filterErr, "Error parsing 'filter' field of MonitoringParameters")
-	}
-	filter := _filter.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("filter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filter")
+	clientHandle, err := ReadSimpleField(ctx, "clientHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientHandle' field"))
 	}
 
-	// Simple Field (queueSize)
-	_queueSize, _queueSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("queueSize", 32)
-	if _queueSizeErr != nil {
-		return nil, errors.Wrap(_queueSizeErr, "Error parsing 'queueSize' field of MonitoringParameters")
+	samplingInterval, err := ReadSimpleField(ctx, "samplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingInterval' field"))
 	}
-	queueSize := _queueSize
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	filter, err := ReadSimpleField[ExtensionObject](ctx, "filter", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
+	}
+
+	queueSize, err := ReadSimpleField(ctx, "queueSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queueSize' field"))
+	}
+
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (discardOldest)
-	_discardOldest, _discardOldestErr := /*TODO: migrate me*/ readBuffer.ReadBit("discardOldest")
-	if _discardOldestErr != nil {
-		return nil, errors.Wrap(_discardOldestErr, "Error parsing 'discardOldest' field of MonitoringParameters")
+	discardOldest, err := ReadSimpleField(ctx, "discardOldest", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discardOldest' field"))
 	}
-	discardOldest := _discardOldest
 
 	if closeErr := readBuffer.CloseContext("MonitoringParameters"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MonitoringParameters")

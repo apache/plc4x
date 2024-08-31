@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func TemperatureBroadcastDataParse(ctx context.Context, theBytes []byte) (Temper
 	return TemperatureBroadcastDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TemperatureBroadcastDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
+		return TemperatureBroadcastDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TemperatureBroadcastData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := TemperatureBroadcastCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TemperatureBroadcastData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[TemperatureBroadcastCommandTypeContainer](ctx, "commandTypeContainer", "TemperatureBroadcastCommandTypeContainer", ReadEnum(TemperatureBroadcastCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -186,19 +186,15 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	commandType := TemperatureBroadcastCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (temperatureGroup)
-	_temperatureGroup, _temperatureGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("temperatureGroup")
-	if _temperatureGroupErr != nil {
-		return nil, errors.Wrap(_temperatureGroupErr, "Error parsing 'temperatureGroup' field of TemperatureBroadcastData")
+	temperatureGroup, err := ReadSimpleField(ctx, "temperatureGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureGroup' field"))
 	}
-	temperatureGroup := _temperatureGroup
 
-	// Simple Field (temperatureByte)
-	_temperatureByte, _temperatureByteErr := /*TODO: migrate me*/ readBuffer.ReadByte("temperatureByte")
-	if _temperatureByteErr != nil {
-		return nil, errors.Wrap(_temperatureByteErr, "Error parsing 'temperatureByte' field of TemperatureBroadcastData")
+	temperatureByte, err := ReadSimpleField(ctx, "temperatureByte", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureByte' field"))
 	}
-	temperatureByte := _temperatureByte
 
 	// Virtual field
 	_temperatureInCelsius := float32(temperatureByte) / float32(float32(4))

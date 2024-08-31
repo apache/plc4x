@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func NLMSecurityPayloadParse(ctx context.Context, theBytes []byte, apduLength ui
 	return NLMSecurityPayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMSecurityPayloadParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSecurityPayload, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMSecurityPayload, error) {
+		return NLMSecurityPayloadParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMSecurityPayload, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,12 +162,10 @@ func NLMSecurityPayloadParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (payloadLength)
-	_payloadLength, _payloadLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("payloadLength", 16)
-	if _payloadLengthErr != nil {
-		return nil, errors.Wrap(_payloadLengthErr, "Error parsing 'payloadLength' field of NLMSecurityPayload")
+	payloadLength, err := ReadSimpleField(ctx, "payloadLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadLength' field"))
 	}
-	payloadLength := _payloadLength
 
 	payload, err := readBuffer.ReadByteArray("payload", int(payloadLength))
 	if err != nil {

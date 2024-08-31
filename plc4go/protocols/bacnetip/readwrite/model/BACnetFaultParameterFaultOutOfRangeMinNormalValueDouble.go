@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParse(ctx context.Co
 	return BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
+		return BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetFaultParameterFaultOutOfRangeMinNormalValueDoubleParseWithBuffer(ctx 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doubleValue)
-	if pullErr := readBuffer.PullContext("doubleValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doubleValue")
-	}
-	_doubleValue, _doubleValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doubleValueErr != nil {
-		return nil, errors.Wrap(_doubleValueErr, "Error parsing 'doubleValue' field of BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble")
-	}
-	doubleValue := _doubleValue.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("doubleValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doubleValue")
+	doubleValue, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultOutOfRangeMinNormalValueDouble"); closeErr != nil {

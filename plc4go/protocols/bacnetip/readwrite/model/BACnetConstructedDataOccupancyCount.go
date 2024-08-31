@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataOccupancyCountParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataOccupancyCountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataOccupancyCountParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyCount, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataOccupancyCount, error) {
+		return BACnetConstructedDataOccupancyCountParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataOccupancyCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataOccupancyCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataOccupancyCountParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (occupancyCount)
-	if pullErr := readBuffer.PullContext("occupancyCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for occupancyCount")
-	}
-	_occupancyCount, _occupancyCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _occupancyCountErr != nil {
-		return nil, errors.Wrap(_occupancyCountErr, "Error parsing 'occupancyCount' field of BACnetConstructedDataOccupancyCount")
-	}
-	occupancyCount := _occupancyCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("occupancyCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for occupancyCount")
+	occupancyCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyCount' field"))
 	}
 
 	// Virtual field

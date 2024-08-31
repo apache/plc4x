@@ -146,6 +146,12 @@ func BACnetConfirmedServiceRequestCreateObjectParse(ctx context.Context, theByte
 	return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestCreateObjectParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestCreateObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestCreateObject, error) {
+		return BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestCreateObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,26 +163,12 @@ func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectSpecifier)
-	if pullErr := readBuffer.PullContext("objectSpecifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectSpecifier")
-	}
-	_objectSpecifier, _objectSpecifierErr := BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _objectSpecifierErr != nil {
-		return nil, errors.Wrap(_objectSpecifierErr, "Error parsing 'objectSpecifier' field of BACnetConfirmedServiceRequestCreateObject")
-	}
-	objectSpecifier := _objectSpecifier.(BACnetConfirmedServiceRequestCreateObjectObjectSpecifier)
-	if closeErr := readBuffer.CloseContext("objectSpecifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectSpecifier")
+	objectSpecifier, err := ReadSimpleField[BACnetConfirmedServiceRequestCreateObjectObjectSpecifier](ctx, "objectSpecifier", ReadComplex[BACnetConfirmedServiceRequestCreateObjectObjectSpecifier](BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectSpecifier' field"))
 	}
 
-	_listOfValues, err := ReadOptionalField[BACnetPropertyValues](ctx, "listOfValues", ReadComplex[BACnetPropertyValues](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetPropertyValues, error) {
-		v, err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetObjectType)(CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) }))))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetPropertyValues), nil
-	}, readBuffer), true)
+	_listOfValues, err := ReadOptionalField[BACnetPropertyValues](ctx, "listOfValues", ReadComplex[BACnetPropertyValues](BACnetPropertyValuesParseWithBufferProducer((uint8)(uint8(1)), (BACnetObjectType)(CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfValues' field"))
 	}

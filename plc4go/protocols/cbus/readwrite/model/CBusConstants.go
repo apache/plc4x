@@ -105,6 +105,12 @@ func CBusConstantsParse(ctx context.Context, theBytes []byte) (CBusConstants, er
 	return CBusConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CBusConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {
+		return CBusConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CBusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -116,7 +122,7 @@ func CBusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	cbusTcpDefaultPort, err := ReadConstField[uint16](ctx, "cbusTcpDefaultPort", ReadUnsignedShort(readBuffer, 16), CBusConstants_CBUSTCPDEFAULTPORT)
+	cbusTcpDefaultPort, err := ReadConstField[uint16](ctx, "cbusTcpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), CBusConstants_CBUSTCPDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusTcpDefaultPort' field"))
 	}

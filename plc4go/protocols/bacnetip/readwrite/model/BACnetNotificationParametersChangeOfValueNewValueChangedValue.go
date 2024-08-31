@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParse(ctx cont
 	return BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber)
 }
 
+func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBufferProducer(peekedTagNumber uint8, tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
+		return BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(ctx, readBuffer, peekedTagNumber, tagNumber)
+	}
+}
+
 func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8) (BACnetNotificationParametersChangeOfValueNewValueChangedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changedValue)
-	if pullErr := readBuffer.PullContext("changedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changedValue")
-	}
-	_changedValue, _changedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
-	if _changedValueErr != nil {
-		return nil, errors.Wrap(_changedValueErr, "Error parsing 'changedValue' field of BACnetNotificationParametersChangeOfValueNewValueChangedValue")
-	}
-	changedValue := _changedValue.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("changedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changedValue")
+	changedValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "changedValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changedValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersChangeOfValueNewValueChangedValue"); closeErr != nil {

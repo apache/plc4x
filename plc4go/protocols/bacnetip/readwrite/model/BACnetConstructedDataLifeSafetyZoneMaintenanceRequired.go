@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParse(ctx context.Con
 	return BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
+		return BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLifeSafetyZoneMaintenanceRequired, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLifeSafetyZoneMaintenanceRequiredParseWithBuffer(ctx c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maintenanceRequired)
-	if pullErr := readBuffer.PullContext("maintenanceRequired"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maintenanceRequired")
-	}
-	_maintenanceRequired, _maintenanceRequiredErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maintenanceRequiredErr != nil {
-		return nil, errors.Wrap(_maintenanceRequiredErr, "Error parsing 'maintenanceRequired' field of BACnetConstructedDataLifeSafetyZoneMaintenanceRequired")
-	}
-	maintenanceRequired := _maintenanceRequired.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("maintenanceRequired"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maintenanceRequired")
+	maintenanceRequired, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "maintenanceRequired", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenanceRequired' field"))
 	}
 
 	// Virtual field

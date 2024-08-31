@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPassengerAlarmParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPassengerAlarmParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPassengerAlarm, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPassengerAlarm, error) {
+		return BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPassengerAlarm, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPassengerAlarmParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (passengerAlarm)
-	if pullErr := readBuffer.PullContext("passengerAlarm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for passengerAlarm")
-	}
-	_passengerAlarm, _passengerAlarmErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _passengerAlarmErr != nil {
-		return nil, errors.Wrap(_passengerAlarmErr, "Error parsing 'passengerAlarm' field of BACnetConstructedDataPassengerAlarm")
-	}
-	passengerAlarm := _passengerAlarm.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("passengerAlarm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for passengerAlarm")
+	passengerAlarm, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "passengerAlarm", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'passengerAlarm' field"))
 	}
 
 	// Virtual field

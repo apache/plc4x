@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func X509IdentityTokenParse(ctx context.Context, theBytes []byte, identifier str
 	return X509IdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func X509IdentityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (X509IdentityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (X509IdentityToken, error) {
+		return X509IdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func X509IdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (X509IdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func X509IdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (certificateData)
-	if pullErr := readBuffer.PullContext("certificateData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for certificateData")
-	}
-	_certificateData, _certificateDataErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _certificateDataErr != nil {
-		return nil, errors.Wrap(_certificateDataErr, "Error parsing 'certificateData' field of X509IdentityToken")
-	}
-	certificateData := _certificateData.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("certificateData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for certificateData")
+	certificateData, err := ReadSimpleField[PascalByteString](ctx, "certificateData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificateData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("X509IdentityToken"); closeErr != nil {

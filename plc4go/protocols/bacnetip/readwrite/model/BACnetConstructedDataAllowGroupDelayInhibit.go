@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAllowGroupDelayInhibitParse(ctx context.Context, theBy
 	return BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAllowGroupDelayInhibitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
+		return BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAllowGroupDelayInhibit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (allowGroupDelayInhibit)
-	if pullErr := readBuffer.PullContext("allowGroupDelayInhibit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for allowGroupDelayInhibit")
-	}
-	_allowGroupDelayInhibit, _allowGroupDelayInhibitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _allowGroupDelayInhibitErr != nil {
-		return nil, errors.Wrap(_allowGroupDelayInhibitErr, "Error parsing 'allowGroupDelayInhibit' field of BACnetConstructedDataAllowGroupDelayInhibit")
-	}
-	allowGroupDelayInhibit := _allowGroupDelayInhibit.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("allowGroupDelayInhibit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for allowGroupDelayInhibit")
+	allowGroupDelayInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allowGroupDelayInhibit' field"))
 	}
 
 	// Virtual field

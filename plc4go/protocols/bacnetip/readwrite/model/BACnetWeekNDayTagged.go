@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -286,6 +288,12 @@ func BACnetWeekNDayTaggedParse(ctx context.Context, theBytes []byte, tagNumber u
 	return BACnetWeekNDayTaggedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, tagClass)
 }
 
+func BACnetWeekNDayTaggedParseWithBufferProducer(tagNumber uint8, tagClass TagClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDayTagged, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetWeekNDayTagged, error) {
+		return BACnetWeekNDayTaggedParseWithBuffer(ctx, readBuffer, tagNumber, tagClass)
+	}
+}
+
 func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, tagClass TagClass) (BACnetWeekNDayTagged, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -297,17 +305,9 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
-	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetWeekNDayTagged")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 
 	// Validation
@@ -325,12 +325,10 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "We should have at least 3 octets"})
 	}
 
-	// Simple Field (month)
-	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
-	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of BACnetWeekNDayTagged")
+	month, err := ReadSimpleField(ctx, "month", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'month' field"))
 	}
-	month := _month
 
 	// Virtual field
 	_oddMonths := bool((month) == (13))
@@ -347,12 +345,10 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	anyMonth := bool(_anyMonth)
 	_ = anyMonth
 
-	// Simple Field (weekOfMonth)
-	_weekOfMonth, _weekOfMonthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("weekOfMonth", 8)
-	if _weekOfMonthErr != nil {
-		return nil, errors.Wrap(_weekOfMonthErr, "Error parsing 'weekOfMonth' field of BACnetWeekNDayTagged")
+	weekOfMonth, err := ReadSimpleField(ctx, "weekOfMonth", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'weekOfMonth' field"))
 	}
-	weekOfMonth := _weekOfMonth
 
 	// Virtual field
 	_days1to7 := bool((weekOfMonth) == (1))
@@ -404,12 +400,10 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	anyWeekOfthisMonth := bool(_anyWeekOfthisMonth)
 	_ = anyWeekOfthisMonth
 
-	// Simple Field (dayOfWeek)
-	_dayOfWeek, _dayOfWeekErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dayOfWeek", 8)
-	if _dayOfWeekErr != nil {
-		return nil, errors.Wrap(_dayOfWeekErr, "Error parsing 'dayOfWeek' field of BACnetWeekNDayTagged")
+	dayOfWeek, err := ReadSimpleField(ctx, "dayOfWeek", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfWeek' field"))
 	}
-	dayOfWeek := _dayOfWeek
 
 	// Virtual field
 	_anyDayOfWeek := bool((dayOfWeek) == (0xFF))

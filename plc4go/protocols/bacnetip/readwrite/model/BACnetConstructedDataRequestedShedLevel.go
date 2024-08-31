@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataRequestedShedLevelParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataRequestedShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataRequestedShedLevelParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRequestedShedLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataRequestedShedLevel, error) {
+		return BACnetConstructedDataRequestedShedLevelParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataRequestedShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataRequestedShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataRequestedShedLevelParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestedShedLevel)
-	if pullErr := readBuffer.PullContext("requestedShedLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestedShedLevel")
-	}
-	_requestedShedLevel, _requestedShedLevelErr := BACnetShedLevelParseWithBuffer(ctx, readBuffer)
-	if _requestedShedLevelErr != nil {
-		return nil, errors.Wrap(_requestedShedLevelErr, "Error parsing 'requestedShedLevel' field of BACnetConstructedDataRequestedShedLevel")
-	}
-	requestedShedLevel := _requestedShedLevel.(BACnetShedLevel)
-	if closeErr := readBuffer.CloseContext("requestedShedLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestedShedLevel")
+	requestedShedLevel, err := ReadSimpleField[BACnetShedLevel](ctx, "requestedShedLevel", ReadComplex[BACnetShedLevel](BACnetShedLevelParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedShedLevel' field"))
 	}
 
 	// Virtual field

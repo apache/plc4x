@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func RepublishRequestParse(ctx context.Context, theBytes []byte, identifier stri
 	return RepublishRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RepublishRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RepublishRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RepublishRequest, error) {
+		return RepublishRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RepublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RepublishRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,32 +171,20 @@ func RepublishRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of RepublishRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of RepublishRequest")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (retransmitSequenceNumber)
-	_retransmitSequenceNumber, _retransmitSequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("retransmitSequenceNumber", 32)
-	if _retransmitSequenceNumberErr != nil {
-		return nil, errors.Wrap(_retransmitSequenceNumberErr, "Error parsing 'retransmitSequenceNumber' field of RepublishRequest")
+	retransmitSequenceNumber, err := ReadSimpleField(ctx, "retransmitSequenceNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'retransmitSequenceNumber' field"))
 	}
-	retransmitSequenceNumber := _retransmitSequenceNumber
 
 	if closeErr := readBuffer.CloseContext("RepublishRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RepublishRequest")

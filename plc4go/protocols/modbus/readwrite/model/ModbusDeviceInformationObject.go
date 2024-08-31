@@ -120,6 +120,12 @@ func ModbusDeviceInformationObjectParse(ctx context.Context, theBytes []byte) (M
 	return ModbusDeviceInformationObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ModbusDeviceInformationObjectParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationObject, error) {
+		return ModbusDeviceInformationObjectParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusDeviceInformationObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -131,14 +137,12 @@ func ModbusDeviceInformationObjectParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectId)
-	_objectId, _objectIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("objectId", 8)
-	if _objectIdErr != nil {
-		return nil, errors.Wrap(_objectIdErr, "Error parsing 'objectId' field of ModbusDeviceInformationObject")
+	objectId, err := ReadSimpleField(ctx, "objectId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectId' field"))
 	}
-	objectId := _objectId
 
-	objectLength, err := ReadImplicitField[uint8](ctx, "objectLength", ReadUnsignedByte(readBuffer, 8))
+	objectLength, err := ReadImplicitField[uint8](ctx, "objectLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectLength' field"))
 	}

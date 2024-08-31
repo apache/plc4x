@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesDoorSecuredStatusParse(ctx context.Context, theBytes []
 	return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesDoorSecuredStatusParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesDoorSecuredStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesDoorSecuredStatus, error) {
+		return BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorSecuredStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesDoorSecuredStatusParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorSecuredStatus)
-	if pullErr := readBuffer.PullContext("doorSecuredStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorSecuredStatus")
-	}
-	_doorSecuredStatus, _doorSecuredStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _doorSecuredStatusErr != nil {
-		return nil, errors.Wrap(_doorSecuredStatusErr, "Error parsing 'doorSecuredStatus' field of BACnetPropertyStatesDoorSecuredStatus")
-	}
-	doorSecuredStatus := _doorSecuredStatus.(BACnetDoorSecuredStatusTagged)
-	if closeErr := readBuffer.CloseContext("doorSecuredStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorSecuredStatus")
+	doorSecuredStatus, err := ReadSimpleField[BACnetDoorSecuredStatusTagged](ctx, "doorSecuredStatus", ReadComplex[BACnetDoorSecuredStatusTagged](BACnetDoorSecuredStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorSecuredStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesDoorSecuredStatus"); closeErr != nil {

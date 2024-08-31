@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFileTypeParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataFileTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFileTypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFileType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFileType, error) {
+		return BACnetConstructedDataFileTypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFileTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFileTypeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileType)
-	if pullErr := readBuffer.PullContext("fileType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileType")
-	}
-	_fileType, _fileTypeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileTypeErr != nil {
-		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of BACnetConstructedDataFileType")
-	}
-	fileType := _fileType.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("fileType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileType")
+	fileType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "fileType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileType' field"))
 	}
 
 	// Virtual field

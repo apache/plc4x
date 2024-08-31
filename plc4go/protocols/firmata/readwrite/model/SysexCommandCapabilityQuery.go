@@ -113,6 +113,12 @@ func SysexCommandCapabilityQueryParse(ctx context.Context, theBytes []byte, resp
 	return SysexCommandCapabilityQueryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandCapabilityQueryParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandCapabilityQuery, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandCapabilityQuery, error) {
+		return SysexCommandCapabilityQueryParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandCapabilityQueryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandCapabilityQuery, error) {
 	positionAware := readBuffer
 	_ = positionAware

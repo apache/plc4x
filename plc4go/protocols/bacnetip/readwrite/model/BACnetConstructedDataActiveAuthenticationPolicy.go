@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataActiveAuthenticationPolicyParse(ctx context.Context, t
 	return BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataActiveAuthenticationPolicyParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
+		return BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActiveAuthenticationPolicy, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (activeAuthenticationPolicy)
-	if pullErr := readBuffer.PullContext("activeAuthenticationPolicy"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activeAuthenticationPolicy")
-	}
-	_activeAuthenticationPolicy, _activeAuthenticationPolicyErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _activeAuthenticationPolicyErr != nil {
-		return nil, errors.Wrap(_activeAuthenticationPolicyErr, "Error parsing 'activeAuthenticationPolicy' field of BACnetConstructedDataActiveAuthenticationPolicy")
-	}
-	activeAuthenticationPolicy := _activeAuthenticationPolicy.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("activeAuthenticationPolicy"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activeAuthenticationPolicy")
+	activeAuthenticationPolicy, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeAuthenticationPolicy' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func LogicalSegmentParse(ctx context.Context, theBytes []byte) (LogicalSegment, 
 	return LogicalSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LogicalSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegment, error) {
+		return LogicalSegmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LogicalSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func LogicalSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentType)
-	if pullErr := readBuffer.PullContext("segmentType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentType")
-	}
-	_segmentType, _segmentTypeErr := LogicalSegmentTypeParseWithBuffer(ctx, readBuffer)
-	if _segmentTypeErr != nil {
-		return nil, errors.Wrap(_segmentTypeErr, "Error parsing 'segmentType' field of LogicalSegment")
-	}
-	segmentType := _segmentType.(LogicalSegmentType)
-	if closeErr := readBuffer.CloseContext("segmentType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentType")
+	segmentType, err := ReadSimpleField[LogicalSegmentType](ctx, "segmentType", ReadComplex[LogicalSegmentType](LogicalSegmentTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("LogicalSegment"); closeErr != nil {

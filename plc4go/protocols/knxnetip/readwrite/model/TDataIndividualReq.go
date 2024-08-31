@@ -109,6 +109,12 @@ func TDataIndividualReqParse(ctx context.Context, theBytes []byte, size uint16) 
 	return TDataIndividualReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func TDataIndividualReqParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataIndividualReq, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataIndividualReq, error) {
+		return TDataIndividualReqParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func TDataIndividualReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataIndividualReq, error) {
 	positionAware := readBuffer
 	_ = positionAware

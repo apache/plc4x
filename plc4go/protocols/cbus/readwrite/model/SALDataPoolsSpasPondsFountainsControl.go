@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataPoolsSpasPondsFountainsControlParse(ctx context.Context, theBytes []
 	return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataPoolsSpasPondsFountainsControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataPoolsSpasPondsFountainsControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataPoolsSpasPondsFountainsControl, error) {
+		return SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataPoolsSpasPondsFountainsControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataPoolsSpasPondsFountainsControlParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (poolsSpaPondsFountainsData)
-	if pullErr := readBuffer.PullContext("poolsSpaPondsFountainsData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for poolsSpaPondsFountainsData")
-	}
-	_poolsSpaPondsFountainsData, _poolsSpaPondsFountainsDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _poolsSpaPondsFountainsDataErr != nil {
-		return nil, errors.Wrap(_poolsSpaPondsFountainsDataErr, "Error parsing 'poolsSpaPondsFountainsData' field of SALDataPoolsSpasPondsFountainsControl")
-	}
-	poolsSpaPondsFountainsData := _poolsSpaPondsFountainsData.(LightingData)
-	if closeErr := readBuffer.CloseContext("poolsSpaPondsFountainsData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for poolsSpaPondsFountainsData")
+	poolsSpaPondsFountainsData, err := ReadSimpleField[LightingData](ctx, "poolsSpaPondsFountainsData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'poolsSpaPondsFountainsData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataPoolsSpasPondsFountainsControl"); closeErr != nil {

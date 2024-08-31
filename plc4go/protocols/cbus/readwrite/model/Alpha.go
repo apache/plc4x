@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func AlphaParse(ctx context.Context, theBytes []byte) (Alpha, error) {
 	return AlphaParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AlphaParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
+		return AlphaParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alpha, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func AlphaParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Alp
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (character)
-	_character, _characterErr := /*TODO: migrate me*/ readBuffer.ReadByte("character")
-	if _characterErr != nil {
-		return nil, errors.Wrap(_characterErr, "Error parsing 'character' field of Alpha")
+	character, err := ReadSimpleField(ctx, "character", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'character' field"))
 	}
-	character := _character
 
 	// Validation
 	if !(bool((bool((character) >= (0x67)))) && bool((bool((character) <= (0x7A))))) {

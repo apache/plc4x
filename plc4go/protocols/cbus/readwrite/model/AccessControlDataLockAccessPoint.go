@@ -109,6 +109,12 @@ func AccessControlDataLockAccessPointParse(ctx context.Context, theBytes []byte)
 	return AccessControlDataLockAccessPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AccessControlDataLockAccessPointParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
+		return AccessControlDataLockAccessPointParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AccessControlDataLockAccessPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataLockAccessPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware

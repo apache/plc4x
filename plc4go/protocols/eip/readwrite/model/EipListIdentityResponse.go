@@ -155,6 +155,12 @@ func EipListIdentityResponseParse(ctx context.Context, theBytes []byte, response
 	return EipListIdentityResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func EipListIdentityResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (EipListIdentityResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipListIdentityResponse, error) {
+		return EipListIdentityResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipListIdentityResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -166,7 +172,7 @@ func EipListIdentityResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, 16))
+	itemCount, err := ReadImplicitField[uint16](ctx, "itemCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemCount' field"))
 	}

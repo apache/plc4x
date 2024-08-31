@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func EncodedReplyCALReplyParse(ctx context.Context, theBytes []byte, cBusOptions
 	return EncodedReplyCALReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func EncodedReplyCALReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedReplyCALReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedReplyCALReply, error) {
+		return EncodedReplyCALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func EncodedReplyCALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReplyCALReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func EncodedReplyCALReplyParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (calReply)
-	if pullErr := readBuffer.PullContext("calReply"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calReply")
-	}
-	_calReply, _calReplyErr := CALReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
-	if _calReplyErr != nil {
-		return nil, errors.Wrap(_calReplyErr, "Error parsing 'calReply' field of EncodedReplyCALReply")
-	}
-	calReply := _calReply.(CALReply)
-	if closeErr := readBuffer.CloseContext("calReply"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calReply")
+	calReply, err := ReadSimpleField[CALReply](ctx, "calReply", ReadComplex[CALReply](CALReplyParseWithBufferProducer[CALReply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calReply' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EncodedReplyCALReply"); closeErr != nil {

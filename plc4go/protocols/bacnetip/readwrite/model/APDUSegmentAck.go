@@ -181,6 +181,12 @@ func APDUSegmentAckParse(ctx context.Context, theBytes []byte, apduLength uint16
 	return APDUSegmentAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUSegmentAckParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUSegmentAck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUSegmentAck, error) {
+		return APDUSegmentAckParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUSegmentAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -192,45 +198,35 @@ func APDUSegmentAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (negativeAck)
-	_negativeAck, _negativeAckErr := /*TODO: migrate me*/ readBuffer.ReadBit("negativeAck")
-	if _negativeAckErr != nil {
-		return nil, errors.Wrap(_negativeAckErr, "Error parsing 'negativeAck' field of APDUSegmentAck")
+	negativeAck, err := ReadSimpleField(ctx, "negativeAck", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'negativeAck' field"))
 	}
-	negativeAck := _negativeAck
 
-	// Simple Field (server)
-	_server, _serverErr := /*TODO: migrate me*/ readBuffer.ReadBit("server")
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of APDUSegmentAck")
+	server, err := ReadSimpleField(ctx, "server", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
-	server := _server
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUSegmentAck")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of APDUSegmentAck")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
-	// Simple Field (actualWindowSize)
-	_actualWindowSize, _actualWindowSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("actualWindowSize", 8)
-	if _actualWindowSizeErr != nil {
-		return nil, errors.Wrap(_actualWindowSizeErr, "Error parsing 'actualWindowSize' field of APDUSegmentAck")
+	actualWindowSize, err := ReadSimpleField(ctx, "actualWindowSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualWindowSize' field"))
 	}
-	actualWindowSize := _actualWindowSize
 
 	if closeErr := readBuffer.CloseContext("APDUSegmentAck"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for APDUSegmentAck")

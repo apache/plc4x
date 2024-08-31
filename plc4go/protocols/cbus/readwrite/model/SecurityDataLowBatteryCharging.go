@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,6 +160,12 @@ func SecurityDataLowBatteryChargingParse(ctx context.Context, theBytes []byte) (
 	return SecurityDataLowBatteryChargingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataLowBatteryChargingParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
+		return SecurityDataLowBatteryChargingParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataLowBatteryCharging, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,12 +177,10 @@ func SecurityDataLowBatteryChargingParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startStop)
-	_startStop, _startStopErr := /*TODO: migrate me*/ readBuffer.ReadByte("startStop")
-	if _startStopErr != nil {
-		return nil, errors.Wrap(_startStopErr, "Error parsing 'startStop' field of SecurityDataLowBatteryCharging")
+	startStop, err := ReadSimpleField(ctx, "startStop", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startStop' field"))
 	}
-	startStop := _startStop
 
 	// Virtual field
 	_chargeStopped := bool((startStop) == (0x00))

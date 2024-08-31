@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTimeDelayNormalParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTimeDelayNormalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeDelayNormal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeDelayNormal, error) {
+		return BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeDelayNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTimeDelayNormalParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeDelayNormal)
-	if pullErr := readBuffer.PullContext("timeDelayNormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeDelayNormal")
-	}
-	_timeDelayNormal, _timeDelayNormalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeDelayNormalErr != nil {
-		return nil, errors.Wrap(_timeDelayNormalErr, "Error parsing 'timeDelayNormal' field of BACnetConstructedDataTimeDelayNormal")
-	}
-	timeDelayNormal := _timeDelayNormal.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeDelayNormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeDelayNormal")
+	timeDelayNormal, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelayNormal", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelayNormal' field"))
 	}
 
 	// Virtual field

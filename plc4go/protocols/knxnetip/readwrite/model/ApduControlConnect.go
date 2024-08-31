@@ -109,6 +109,12 @@ func ApduControlConnectParse(ctx context.Context, theBytes []byte) (ApduControlC
 	return ApduControlConnectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApduControlConnectParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
+		return ApduControlConnectParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ApduControlConnectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlConnect, error) {
 	positionAware := readBuffer
 	_ = positionAware

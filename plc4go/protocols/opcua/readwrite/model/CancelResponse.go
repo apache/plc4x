@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func CancelResponseParse(ctx context.Context, theBytes []byte, identifier string
 	return CancelResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CancelResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CancelResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CancelResponse, error) {
+		return CancelResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CancelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CancelResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,25 +160,15 @@ func CancelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CancelResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (cancelCount)
-	_cancelCount, _cancelCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cancelCount", 32)
-	if _cancelCountErr != nil {
-		return nil, errors.Wrap(_cancelCountErr, "Error parsing 'cancelCount' field of CancelResponse")
+	cancelCount, err := ReadSimpleField(ctx, "cancelCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cancelCount' field"))
 	}
-	cancelCount := _cancelCount
 
 	if closeErr := readBuffer.CloseContext("CancelResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CancelResponse")

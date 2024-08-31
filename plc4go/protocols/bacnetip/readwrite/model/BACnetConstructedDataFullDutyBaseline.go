@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFullDutyBaselineParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataFullDutyBaselineParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFullDutyBaselineParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFullDutyBaseline, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFullDutyBaseline, error) {
+		return BACnetConstructedDataFullDutyBaselineParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFullDutyBaselineParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFullDutyBaseline, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFullDutyBaselineParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fullDutyBaseLine)
-	if pullErr := readBuffer.PullContext("fullDutyBaseLine"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fullDutyBaseLine")
-	}
-	_fullDutyBaseLine, _fullDutyBaseLineErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fullDutyBaseLineErr != nil {
-		return nil, errors.Wrap(_fullDutyBaseLineErr, "Error parsing 'fullDutyBaseLine' field of BACnetConstructedDataFullDutyBaseline")
-	}
-	fullDutyBaseLine := _fullDutyBaseLine.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("fullDutyBaseLine"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fullDutyBaseLine")
+	fullDutyBaseLine, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "fullDutyBaseLine", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fullDutyBaseLine' field"))
 	}
 
 	// Virtual field

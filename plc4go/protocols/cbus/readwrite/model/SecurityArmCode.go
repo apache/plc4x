@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -162,6 +164,12 @@ func SecurityArmCodeParse(ctx context.Context, theBytes []byte) (SecurityArmCode
 	return SecurityArmCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityArmCodeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
+		return SecurityArmCodeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityArmCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -173,12 +181,10 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (code)
-	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("code", 8)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of SecurityArmCode")
+	code, err := ReadSimpleField(ctx, "code", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
 
 	// Virtual field
 	_isDisarmed := bool((code) == (0x00))

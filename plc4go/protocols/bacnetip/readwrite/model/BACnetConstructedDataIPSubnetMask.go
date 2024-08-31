@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPSubnetMaskParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPSubnetMaskParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPSubnetMask, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPSubnetMask, error) {
+		return BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPSubnetMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipSubnetMask)
-	if pullErr := readBuffer.PullContext("ipSubnetMask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipSubnetMask")
-	}
-	_ipSubnetMask, _ipSubnetMaskErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipSubnetMaskErr != nil {
-		return nil, errors.Wrap(_ipSubnetMaskErr, "Error parsing 'ipSubnetMask' field of BACnetConstructedDataIPSubnetMask")
-	}
-	ipSubnetMask := _ipSubnetMask.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipSubnetMask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipSubnetMask")
+	ipSubnetMask, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipSubnetMask' field"))
 	}
 
 	// Virtual field

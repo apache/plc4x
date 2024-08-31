@@ -161,6 +161,12 @@ func CallRequestParse(ctx context.Context, theBytes []byte, identifier string) (
 	return CallRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CallRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CallRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CallRequest, error) {
+		return CallRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func CallRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of CallRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfMethodsToCall)
-	_noOfMethodsToCall, _noOfMethodsToCallErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMethodsToCall", 32)
-	if _noOfMethodsToCallErr != nil {
-		return nil, errors.Wrap(_noOfMethodsToCallErr, "Error parsing 'noOfMethodsToCall' field of CallRequest")
+	noOfMethodsToCall, err := ReadSimpleField(ctx, "noOfMethodsToCall", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMethodsToCall' field"))
 	}
-	noOfMethodsToCall := _noOfMethodsToCall
 
-	methodsToCall, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "methodsToCall", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("706"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfMethodsToCall))
+	methodsToCall, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "methodsToCall", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("706")), readBuffer), uint64(noOfMethodsToCall))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'methodsToCall' field"))
 	}

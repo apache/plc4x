@@ -254,6 +254,12 @@ func DiagnosticInfoParse(ctx context.Context, theBytes []byte) (DiagnosticInfo, 
 	return DiagnosticInfoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DiagnosticInfoParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
+		return DiagnosticInfoParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DiagnosticInfo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -270,71 +276,57 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (innerDiagnosticInfoSpecified)
-	_innerDiagnosticInfoSpecified, _innerDiagnosticInfoSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("innerDiagnosticInfoSpecified")
-	if _innerDiagnosticInfoSpecifiedErr != nil {
-		return nil, errors.Wrap(_innerDiagnosticInfoSpecifiedErr, "Error parsing 'innerDiagnosticInfoSpecified' field of DiagnosticInfo")
+	innerDiagnosticInfoSpecified, err := ReadSimpleField(ctx, "innerDiagnosticInfoSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerDiagnosticInfoSpecified' field"))
 	}
-	innerDiagnosticInfoSpecified := _innerDiagnosticInfoSpecified
 
-	// Simple Field (innerStatusCodeSpecified)
-	_innerStatusCodeSpecified, _innerStatusCodeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("innerStatusCodeSpecified")
-	if _innerStatusCodeSpecifiedErr != nil {
-		return nil, errors.Wrap(_innerStatusCodeSpecifiedErr, "Error parsing 'innerStatusCodeSpecified' field of DiagnosticInfo")
+	innerStatusCodeSpecified, err := ReadSimpleField(ctx, "innerStatusCodeSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerStatusCodeSpecified' field"))
 	}
-	innerStatusCodeSpecified := _innerStatusCodeSpecified
 
-	// Simple Field (additionalInfoSpecified)
-	_additionalInfoSpecified, _additionalInfoSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("additionalInfoSpecified")
-	if _additionalInfoSpecifiedErr != nil {
-		return nil, errors.Wrap(_additionalInfoSpecifiedErr, "Error parsing 'additionalInfoSpecified' field of DiagnosticInfo")
+	additionalInfoSpecified, err := ReadSimpleField(ctx, "additionalInfoSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInfoSpecified' field"))
 	}
-	additionalInfoSpecified := _additionalInfoSpecified
 
-	// Simple Field (localeSpecified)
-	_localeSpecified, _localeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localeSpecified")
-	if _localeSpecifiedErr != nil {
-		return nil, errors.Wrap(_localeSpecifiedErr, "Error parsing 'localeSpecified' field of DiagnosticInfo")
+	localeSpecified, err := ReadSimpleField(ctx, "localeSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localeSpecified' field"))
 	}
-	localeSpecified := _localeSpecified
 
-	// Simple Field (localizedTextSpecified)
-	_localizedTextSpecified, _localizedTextSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("localizedTextSpecified")
-	if _localizedTextSpecifiedErr != nil {
-		return nil, errors.Wrap(_localizedTextSpecifiedErr, "Error parsing 'localizedTextSpecified' field of DiagnosticInfo")
+	localizedTextSpecified, err := ReadSimpleField(ctx, "localizedTextSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localizedTextSpecified' field"))
 	}
-	localizedTextSpecified := _localizedTextSpecified
 
-	// Simple Field (namespaceURISpecified)
-	_namespaceURISpecified, _namespaceURISpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("namespaceURISpecified")
-	if _namespaceURISpecifiedErr != nil {
-		return nil, errors.Wrap(_namespaceURISpecifiedErr, "Error parsing 'namespaceURISpecified' field of DiagnosticInfo")
+	namespaceURISpecified, err := ReadSimpleField(ctx, "namespaceURISpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceURISpecified' field"))
 	}
-	namespaceURISpecified := _namespaceURISpecified
 
-	// Simple Field (symbolicIdSpecified)
-	_symbolicIdSpecified, _symbolicIdSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("symbolicIdSpecified")
-	if _symbolicIdSpecifiedErr != nil {
-		return nil, errors.Wrap(_symbolicIdSpecifiedErr, "Error parsing 'symbolicIdSpecified' field of DiagnosticInfo")
+	symbolicIdSpecified, err := ReadSimpleField(ctx, "symbolicIdSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolicIdSpecified' field"))
 	}
-	symbolicIdSpecified := _symbolicIdSpecified
 
-	symbolicId, err := ReadOptionalField[int32](ctx, "symbolicId", ReadSignedInt(readBuffer, 32), symbolicIdSpecified)
+	symbolicId, err := ReadOptionalField[int32](ctx, "symbolicId", ReadSignedInt(readBuffer, uint8(32)), symbolicIdSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolicId' field"))
 	}
 
-	namespaceURI, err := ReadOptionalField[int32](ctx, "namespaceURI", ReadSignedInt(readBuffer, 32), namespaceURISpecified)
+	namespaceURI, err := ReadOptionalField[int32](ctx, "namespaceURI", ReadSignedInt(readBuffer, uint8(32)), namespaceURISpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceURI' field"))
 	}
 
-	locale, err := ReadOptionalField[int32](ctx, "locale", ReadSignedInt(readBuffer, 32), localeSpecified)
+	locale, err := ReadOptionalField[int32](ctx, "locale", ReadSignedInt(readBuffer, uint8(32)), localeSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'locale' field"))
 	}
 
-	localizedText, err := ReadOptionalField[int32](ctx, "localizedText", ReadSignedInt(readBuffer, 32), localizedTextSpecified)
+	localizedText, err := ReadOptionalField[int32](ctx, "localizedText", ReadSignedInt(readBuffer, uint8(32)), localizedTextSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localizedText' field"))
 	}

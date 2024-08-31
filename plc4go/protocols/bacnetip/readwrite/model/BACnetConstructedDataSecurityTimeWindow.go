@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSecurityTimeWindowParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSecurityTimeWindowParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecurityTimeWindow, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecurityTimeWindow, error) {
+		return BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityTimeWindow, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSecurityTimeWindowParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityTimeWindow)
-	if pullErr := readBuffer.PullContext("securityTimeWindow"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityTimeWindow")
-	}
-	_securityTimeWindow, _securityTimeWindowErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _securityTimeWindowErr != nil {
-		return nil, errors.Wrap(_securityTimeWindowErr, "Error parsing 'securityTimeWindow' field of BACnetConstructedDataSecurityTimeWindow")
-	}
-	securityTimeWindow := _securityTimeWindow.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("securityTimeWindow"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityTimeWindow")
+	securityTimeWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityTimeWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityTimeWindow' field"))
 	}
 
 	// Virtual field

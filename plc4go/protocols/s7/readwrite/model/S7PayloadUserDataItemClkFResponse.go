@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -164,6 +166,12 @@ func S7PayloadUserDataItemClkFResponseParse(ctx context.Context, theBytes []byte
 	return S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemClkFResponseParseWithBufferProducer(dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemClkFResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemClkFResponse, error) {
+		return S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx, readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemClkFResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -175,31 +183,19 @@ func S7PayloadUserDataItemClkFResponseParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (res)
-	_res, _resErr := /*TODO: migrate me*/ readBuffer.ReadUint8("res", 8)
-	if _resErr != nil {
-		return nil, errors.Wrap(_resErr, "Error parsing 'res' field of S7PayloadUserDataItemClkFResponse")
+	res, err := ReadSimpleField(ctx, "res", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'res' field"))
 	}
-	res := _res
 
-	// Simple Field (year1)
-	_year1, _year1Err := /*TODO: migrate me*/ readBuffer.ReadUint8("year1", 8)
-	if _year1Err != nil {
-		return nil, errors.Wrap(_year1Err, "Error parsing 'year1' field of S7PayloadUserDataItemClkFResponse")
+	year1, err := ReadSimpleField(ctx, "year1", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'year1' field"))
 	}
-	year1 := _year1
 
-	// Simple Field (timeStamp)
-	if pullErr := readBuffer.PullContext("timeStamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeStamp")
-	}
-	_timeStamp, _timeStampErr := DateAndTimeParseWithBuffer(ctx, readBuffer)
-	if _timeStampErr != nil {
-		return nil, errors.Wrap(_timeStampErr, "Error parsing 'timeStamp' field of S7PayloadUserDataItemClkFResponse")
-	}
-	timeStamp := _timeStamp.(DateAndTime)
-	if closeErr := readBuffer.CloseContext("timeStamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeStamp")
+	timeStamp, err := ReadSimpleField[DateAndTime](ctx, "timeStamp", ReadComplex[DateAndTime](DateAndTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeStamp' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemClkFResponse"); closeErr != nil {

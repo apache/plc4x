@@ -165,6 +165,12 @@ func BACnetLightingCommandParse(ctx context.Context, theBytes []byte) (BACnetLig
 	return BACnetLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLightingCommandParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
+		return BACnetLightingCommandParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -176,26 +182,12 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightningOperation)
-	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
-	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lightningOperationErr != nil {
-		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetLightingCommand")
-	}
-	lightningOperation := _lightningOperation.(BACnetLightingOperationTagged)
-	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightningOperation")
+	lightningOperation, err := ReadSimpleField[BACnetLightingOperationTagged](ctx, "lightningOperation", ReadComplex[BACnetLightingOperationTagged](BACnetLightingOperationTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightningOperation' field"))
 	}
 
-	_targetLevel, err := ReadOptionalField[BACnetContextTagReal](ctx, "targetLevel", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagReal), nil
-	}, readBuffer), true)
+	_targetLevel, err := ReadOptionalField[BACnetContextTagReal](ctx, "targetLevel", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetLevel' field"))
 	}
@@ -204,13 +196,7 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 		targetLevel = *_targetLevel
 	}
 
-	_rampRate, err := ReadOptionalField[BACnetContextTagReal](ctx, "rampRate", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagReal), nil
-	}, readBuffer), true)
+	_rampRate, err := ReadOptionalField[BACnetContextTagReal](ctx, "rampRate", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rampRate' field"))
 	}
@@ -219,13 +205,7 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 		rampRate = *_rampRate
 	}
 
-	_stepIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "stepIncrement", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_REAL))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagReal), nil
-	}, readBuffer), true)
+	_stepIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "stepIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stepIncrement' field"))
 	}
@@ -234,13 +214,7 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 		stepIncrement = *_stepIncrement
 	}
 
-	_fadeTime, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_fadeTime, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fadeTime' field"))
 	}
@@ -249,13 +223,7 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 		fadeTime = *_fadeTime
 	}
 
-	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
 	}

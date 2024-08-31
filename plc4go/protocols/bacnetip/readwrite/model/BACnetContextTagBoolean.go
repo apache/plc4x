@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -162,6 +164,12 @@ func BACnetContextTagBooleanParse(ctx context.Context, theBytes []byte, header B
 	return BACnetContextTagBooleanParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), header, tagNumberArgument, dataType)
 }
 
+func BACnetContextTagBooleanParseWithBufferProducer(header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+		return BACnetContextTagBooleanParseWithBuffer(ctx, readBuffer, header, tagNumberArgument, dataType)
+	}
+}
+
 func BACnetContextTagBooleanParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, header BACnetTagHeader, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagBoolean, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -178,24 +186,14 @@ func BACnetContextTagBooleanParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "length field should be 1"})
 	}
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadUint8("value", 8)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetContextTagBoolean")
+	value, err := ReadSimpleField(ctx, "value", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
-	// Simple Field (payload)
-	if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for payload")
-	}
-	_payload, _payloadErr := BACnetTagPayloadBooleanParseWithBuffer(ctx, readBuffer, uint32(value))
-	if _payloadErr != nil {
-		return nil, errors.Wrap(_payloadErr, "Error parsing 'payload' field of BACnetContextTagBoolean")
-	}
-	payload := _payload.(BACnetTagPayloadBoolean)
-	if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for payload")
+	payload, err := ReadSimpleField[BACnetTagPayloadBoolean](ctx, "payload", ReadComplex[BACnetTagPayloadBoolean](BACnetTagPayloadBooleanParseWithBufferProducer((uint32)(value)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}
 
 	// Virtual field

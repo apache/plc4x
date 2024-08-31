@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func SecurityHeaderParse(ctx context.Context, theBytes []byte) (SecurityHeader, 
 	return SecurityHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
+		return SecurityHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func SecurityHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of SecurityHeader")
+	secureChannelId, err := ReadSimpleField(ctx, "secureChannelId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureChannelId' field"))
 	}
-	secureChannelId := _secureChannelId
 
-	// Simple Field (secureTokenId)
-	_secureTokenId, _secureTokenIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secureTokenId", 32)
-	if _secureTokenIdErr != nil {
-		return nil, errors.Wrap(_secureTokenIdErr, "Error parsing 'secureTokenId' field of SecurityHeader")
+	secureTokenId, err := ReadSimpleField(ctx, "secureTokenId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureTokenId' field"))
 	}
-	secureTokenId := _secureTokenId
 
 	if closeErr := readBuffer.CloseContext("SecurityHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityHeader")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParse(ctx context.Context,
 	return BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
+		return BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueCOVIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (covIncrement)
-	if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
-	}
-	_covIncrement, _covIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _covIncrementErr != nil {
-		return nil, errors.Wrap(_covIncrementErr, "Error parsing 'covIncrement' field of BACnetConstructedDataLargeAnalogValueCOVIncrement")
-	}
-	covIncrement := _covIncrement.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
+	covIncrement, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "covIncrement", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}
 
 	// Virtual field

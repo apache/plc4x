@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParse(ctx context.Cont
 	return S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
+		return S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesUnsubscribeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,19 +172,15 @@ func S7PayloadUserDataItemCyclicServicesUnsubscribeRequestParseWithBuffer(ctx co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (function)
-	_function, _functionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("function", 8)
-	if _functionErr != nil {
-		return nil, errors.Wrap(_functionErr, "Error parsing 'function' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
+	function, err := ReadSimpleField(ctx, "function", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'function' field"))
 	}
-	function := _function
 
-	// Simple Field (jobId)
-	_jobId, _jobIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("jobId", 8)
-	if _jobIdErr != nil {
-		return nil, errors.Wrap(_jobIdErr, "Error parsing 'jobId' field of S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")
+	jobId, err := ReadSimpleField(ctx, "jobId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'jobId' field"))
 	}
-	jobId := _jobId
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCyclicServicesUnsubscribeRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCyclicServicesUnsubscribeRequest")

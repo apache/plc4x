@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -122,6 +124,12 @@ func HVACHumidityParse(ctx context.Context, theBytes []byte) (HVACHumidity, erro
 	return HVACHumidityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACHumidityParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidity, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidity, error) {
+		return HVACHumidityParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidity, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,12 +141,10 @@ func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (humidityValue)
-	_humidityValue, _humidityValueErr := /*TODO: migrate me*/ readBuffer.ReadUint16("humidityValue", 16)
-	if _humidityValueErr != nil {
-		return nil, errors.Wrap(_humidityValueErr, "Error parsing 'humidityValue' field of HVACHumidity")
+	humidityValue, err := ReadSimpleField(ctx, "humidityValue", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityValue' field"))
 	}
-	humidityValue := _humidityValue
 
 	// Virtual field
 	_humidityInPercent := float32(humidityValue) / float32(float32(65535))

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataSecurityParse(ctx context.Context, theBytes []byte, applicationId Ap
 	return SALDataSecurityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataSecurityParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataSecurity, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataSecurity, error) {
+		return SALDataSecurityParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataSecurityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataSecurity, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataSecurityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityData)
-	if pullErr := readBuffer.PullContext("securityData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityData")
-	}
-	_securityData, _securityDataErr := SecurityDataParseWithBuffer(ctx, readBuffer)
-	if _securityDataErr != nil {
-		return nil, errors.Wrap(_securityDataErr, "Error parsing 'securityData' field of SALDataSecurity")
-	}
-	securityData := _securityData.(SecurityData)
-	if closeErr := readBuffer.CloseContext("securityData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityData")
+	securityData, err := ReadSimpleField[SecurityData](ctx, "securityData", ReadComplex[SecurityData](SecurityDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataSecurity"); closeErr != nil {

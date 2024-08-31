@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func BVLCResultParse(ctx context.Context, theBytes []byte) (BVLCResult, error) {
 	return BVLCResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCResultParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
+		return BVLCResultParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +151,9 @@ func BVLCResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (code)
-	if pullErr := readBuffer.PullContext("code"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for code")
-	}
-	_code, _codeErr := BVLCResultCodeParseWithBuffer(ctx, readBuffer)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of BVLCResult")
-	}
-	code := _code
-	if closeErr := readBuffer.CloseContext("code"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for code")
+	code, err := ReadEnumField[BVLCResultCode](ctx, "code", "BVLCResultCode", ReadEnum(BVLCResultCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCResult"); closeErr != nil {

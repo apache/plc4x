@@ -109,6 +109,12 @@ func MPropWriteReqParse(ctx context.Context, theBytes []byte, size uint16) (MPro
 	return MPropWriteReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MPropWriteReqParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropWriteReq, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MPropWriteReq, error) {
+		return MPropWriteReqParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MPropWriteReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MPropWriteReq, error) {
 	positionAware := readBuffer
 	_ = positionAware

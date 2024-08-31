@@ -109,6 +109,12 @@ func ApduDataExtGroupPropertyValueResponseParse(ctx context.Context, theBytes []
 	return ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtGroupPropertyValueResponseParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtGroupPropertyValueResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtGroupPropertyValueResponse, error) {
+		return ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtGroupPropertyValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtGroupPropertyValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

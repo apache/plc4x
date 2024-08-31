@@ -105,6 +105,12 @@ func AdsDiscoveryConstantsParse(ctx context.Context, theBytes []byte) (AdsDiscov
 	return AdsDiscoveryConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
+		return AdsDiscoveryConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -116,7 +122,7 @@ func AdsDiscoveryConstantsParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	adsDiscoveryUdpDefaultPort, err := ReadConstField[uint16](ctx, "adsDiscoveryUdpDefaultPort", ReadUnsignedShort(readBuffer, 16), AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT)
+	adsDiscoveryUdpDefaultPort, err := ReadConstField[uint16](ctx, "adsDiscoveryUdpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsDiscoveryUdpDefaultPort' field"))
 	}

@@ -161,6 +161,12 @@ func NetworkGroupDataTypeParse(ctx context.Context, theBytes []byte, identifier 
 	return NetworkGroupDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NetworkGroupDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkGroupDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkGroupDataType, error) {
+		return NetworkGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NetworkGroupDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func NetworkGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serverUri)
-	if pullErr := readBuffer.PullContext("serverUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUri")
-	}
-	_serverUri, _serverUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverUriErr != nil {
-		return nil, errors.Wrap(_serverUriErr, "Error parsing 'serverUri' field of NetworkGroupDataType")
-	}
-	serverUri := _serverUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUri")
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
 
-	// Simple Field (noOfNetworkPaths)
-	_noOfNetworkPaths, _noOfNetworkPathsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNetworkPaths", 32)
-	if _noOfNetworkPathsErr != nil {
-		return nil, errors.Wrap(_noOfNetworkPathsErr, "Error parsing 'noOfNetworkPaths' field of NetworkGroupDataType")
+	noOfNetworkPaths, err := ReadSimpleField(ctx, "noOfNetworkPaths", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNetworkPaths' field"))
 	}
-	noOfNetworkPaths := _noOfNetworkPaths
 
-	networkPaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "networkPaths", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("11945"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNetworkPaths))
+	networkPaths, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "networkPaths", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("11945")), readBuffer), uint64(noOfNetworkPaths))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPaths' field"))
 	}

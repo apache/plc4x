@@ -165,6 +165,12 @@ func RequestResetParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return RequestResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestResetParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestReset, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestReset, error) {
+		return RequestResetParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestReset, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -191,7 +197,7 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	readBuffer.Reset(currentPos)
 
-	secondTilde, err := ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((tildePeek) == (RequestType_RESET)))
+	secondTilde, err := ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek) == (RequestType_RESET)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondTilde' field"))
 	}
@@ -211,7 +217,7 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 	readBuffer.Reset(currentPos)
 
-	thirdTilde, err := ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((tildePeek2) == (RequestType_RESET)))
+	thirdTilde, err := ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek2) == (RequestType_RESET)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'thirdTilde' field"))
 	}

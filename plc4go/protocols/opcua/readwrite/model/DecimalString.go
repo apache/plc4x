@@ -83,6 +83,12 @@ func DecimalStringParse(ctx context.Context, theBytes []byte) (DecimalString, er
 	return DecimalStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DecimalStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
+		return DecimalStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DecimalStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DecimalString, error) {
 	positionAware := readBuffer
 	_ = positionAware

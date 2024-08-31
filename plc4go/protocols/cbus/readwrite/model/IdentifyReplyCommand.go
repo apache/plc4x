@@ -109,6 +109,17 @@ func IdentifyReplyCommandParse(ctx context.Context, theBytes []byte, attribute A
 	return IdentifyReplyCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandParseWithBufferProducer[T IdentifyReplyCommand](attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := IdentifyReplyCommandParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func IdentifyReplyCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -110,6 +110,17 @@ func CEMIAdditionalInformationParse(ctx context.Context, theBytes []byte) (CEMIA
 	return CEMIAdditionalInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CEMIAdditionalInformationParseWithBufferProducer[T CEMIAdditionalInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CEMIAdditionalInformationParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CEMIAdditionalInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func CEMIAdditionalInformationParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	additionalInformationType, err := ReadDiscriminatorField[uint8](ctx, "additionalInformationType", ReadUnsignedByte(readBuffer, 8))
+	additionalInformationType, err := ReadDiscriminatorField[uint8](ctx, "additionalInformationType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInformationType' field"))
 	}

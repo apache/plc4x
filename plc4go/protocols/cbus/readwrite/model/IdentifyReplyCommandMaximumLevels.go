@@ -132,6 +132,12 @@ func IdentifyReplyCommandMaximumLevelsParse(ctx context.Context, theBytes []byte
 	return IdentifyReplyCommandMaximumLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandMaximumLevelsParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandMaximumLevels, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandMaximumLevels, error) {
+		return IdentifyReplyCommandMaximumLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandMaximumLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMaximumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -111,6 +111,12 @@ func RequestEmptyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return RequestEmptyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestEmptyParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestEmpty, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestEmpty, error) {
+		return RequestEmptyParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestEmptyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestEmpty, error) {
 	positionAware := readBuffer
 	_ = positionAware

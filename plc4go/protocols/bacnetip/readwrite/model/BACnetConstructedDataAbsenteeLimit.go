@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAbsenteeLimitParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAbsenteeLimitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAbsenteeLimit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAbsenteeLimit, error) {
+		return BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAbsenteeLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (absenteeLimit)
-	if pullErr := readBuffer.PullContext("absenteeLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for absenteeLimit")
-	}
-	_absenteeLimit, _absenteeLimitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _absenteeLimitErr != nil {
-		return nil, errors.Wrap(_absenteeLimitErr, "Error parsing 'absenteeLimit' field of BACnetConstructedDataAbsenteeLimit")
-	}
-	absenteeLimit := _absenteeLimit.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("absenteeLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for absenteeLimit")
+	absenteeLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "absenteeLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'absenteeLimit' field"))
 	}
 
 	// Virtual field

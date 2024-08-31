@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetCredentialAuthenticationFactorParse(ctx context.Context, theBytes []b
 	return BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCredentialAuthenticationFactorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
+		return BACnetCredentialAuthenticationFactorParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCredentialAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetCredentialAuthenticationFactorParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (disable)
-	if pullErr := readBuffer.PullContext("disable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for disable")
-	}
-	_disable, _disableErr := BACnetAccessAuthenticationFactorDisableTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _disableErr != nil {
-		return nil, errors.Wrap(_disableErr, "Error parsing 'disable' field of BACnetCredentialAuthenticationFactor")
-	}
-	disable := _disable.(BACnetAccessAuthenticationFactorDisableTagged)
-	if closeErr := readBuffer.CloseContext("disable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for disable")
+	disable, err := ReadSimpleField[BACnetAccessAuthenticationFactorDisableTagged](ctx, "disable", ReadComplex[BACnetAccessAuthenticationFactorDisableTagged](BACnetAccessAuthenticationFactorDisableTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disable' field"))
 	}
 
-	// Simple Field (authenticationFactor)
-	if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
-	}
-	_authenticationFactor, _authenticationFactorErr := BACnetAuthenticationFactorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _authenticationFactorErr != nil {
-		return nil, errors.Wrap(_authenticationFactorErr, "Error parsing 'authenticationFactor' field of BACnetCredentialAuthenticationFactor")
-	}
-	authenticationFactor := _authenticationFactor.(BACnetAuthenticationFactorEnclosed)
-	if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationFactor")
+	authenticationFactor, err := ReadSimpleField[BACnetAuthenticationFactorEnclosed](ctx, "authenticationFactor", ReadComplex[BACnetAuthenticationFactorEnclosed](BACnetAuthenticationFactorEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationFactor' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetCredentialAuthenticationFactor"); closeErr != nil {

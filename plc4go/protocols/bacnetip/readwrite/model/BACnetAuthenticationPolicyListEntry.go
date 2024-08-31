@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetAuthenticationPolicyListEntryParse(ctx context.Context, theBytes []by
 	return BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAuthenticationPolicyListEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
+		return BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationPolicyListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (credentialDataInput)
-	if pullErr := readBuffer.PullContext("credentialDataInput"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for credentialDataInput")
-	}
-	_credentialDataInput, _credentialDataInputErr := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _credentialDataInputErr != nil {
-		return nil, errors.Wrap(_credentialDataInputErr, "Error parsing 'credentialDataInput' field of BACnetAuthenticationPolicyListEntry")
-	}
-	credentialDataInput := _credentialDataInput.(BACnetDeviceObjectReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("credentialDataInput"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for credentialDataInput")
+	credentialDataInput, err := ReadSimpleField[BACnetDeviceObjectReferenceEnclosed](ctx, "credentialDataInput", ReadComplex[BACnetDeviceObjectReferenceEnclosed](BACnetDeviceObjectReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'credentialDataInput' field"))
 	}
 
-	// Simple Field (index)
-	if pullErr := readBuffer.PullContext("index"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for index")
-	}
-	_index, _indexErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _indexErr != nil {
-		return nil, errors.Wrap(_indexErr, "Error parsing 'index' field of BACnetAuthenticationPolicyListEntry")
-	}
-	index := _index.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("index"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for index")
+	index, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationPolicyListEntry"); closeErr != nil {

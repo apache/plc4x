@@ -203,6 +203,12 @@ func ReferenceDescriptionParse(ctx context.Context, theBytes []byte, identifier 
 	return ReferenceDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReferenceDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceDescription, error) {
+		return ReferenceDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReferenceDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReferenceDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -214,94 +220,44 @@ func ReferenceDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of ReferenceDescription")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of ReferenceDescription")
-	}
-	isForward := _isForward
-
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of ReferenceDescription")
-	}
-	nodeId := _nodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
 
-	// Simple Field (browseName)
-	if pullErr := readBuffer.PullContext("browseName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browseName")
-	}
-	_browseName, _browseNameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _browseNameErr != nil {
-		return nil, errors.Wrap(_browseNameErr, "Error parsing 'browseName' field of ReferenceDescription")
-	}
-	browseName := _browseName.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("browseName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browseName")
+	nodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "nodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (displayName)
-	if pullErr := readBuffer.PullContext("displayName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for displayName")
-	}
-	_displayName, _displayNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _displayNameErr != nil {
-		return nil, errors.Wrap(_displayNameErr, "Error parsing 'displayName' field of ReferenceDescription")
-	}
-	displayName := _displayName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("displayName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for displayName")
+	browseName, err := ReadSimpleField[QualifiedName](ctx, "browseName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseName' field"))
 	}
 
-	// Simple Field (nodeClass)
-	if pullErr := readBuffer.PullContext("nodeClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeClass")
-	}
-	_nodeClass, _nodeClassErr := NodeClassParseWithBuffer(ctx, readBuffer)
-	if _nodeClassErr != nil {
-		return nil, errors.Wrap(_nodeClassErr, "Error parsing 'nodeClass' field of ReferenceDescription")
-	}
-	nodeClass := _nodeClass
-	if closeErr := readBuffer.CloseContext("nodeClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeClass")
+	displayName, err := ReadSimpleField[LocalizedText](ctx, "displayName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'displayName' field"))
 	}
 
-	// Simple Field (typeDefinition)
-	if pullErr := readBuffer.PullContext("typeDefinition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinition")
+	nodeClass, err := ReadEnumField[NodeClass](ctx, "nodeClass", "NodeClass", ReadEnum(NodeClassByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeClass' field"))
 	}
-	_typeDefinition, _typeDefinitionErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionErr != nil {
-		return nil, errors.Wrap(_typeDefinitionErr, "Error parsing 'typeDefinition' field of ReferenceDescription")
-	}
-	typeDefinition := _typeDefinition.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinition")
+
+	typeDefinition, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinition", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinition' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReferenceDescription"); closeErr != nil {

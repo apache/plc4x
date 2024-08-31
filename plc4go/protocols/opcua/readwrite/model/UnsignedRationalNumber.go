@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func UnsignedRationalNumberParse(ctx context.Context, theBytes []byte, identifie
 	return UnsignedRationalNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UnsignedRationalNumberParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (UnsignedRationalNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UnsignedRationalNumber, error) {
+		return UnsignedRationalNumberParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UnsignedRationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UnsignedRationalNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func UnsignedRationalNumberParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numerator)
-	_numerator, _numeratorErr := /*TODO: migrate me*/ readBuffer.ReadUint32("numerator", 32)
-	if _numeratorErr != nil {
-		return nil, errors.Wrap(_numeratorErr, "Error parsing 'numerator' field of UnsignedRationalNumber")
+	numerator, err := ReadSimpleField(ctx, "numerator", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numerator' field"))
 	}
-	numerator := _numerator
 
-	// Simple Field (denominator)
-	_denominator, _denominatorErr := /*TODO: migrate me*/ readBuffer.ReadUint32("denominator", 32)
-	if _denominatorErr != nil {
-		return nil, errors.Wrap(_denominatorErr, "Error parsing 'denominator' field of UnsignedRationalNumber")
+	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'denominator' field"))
 	}
-	denominator := _denominator
 
 	if closeErr := readBuffer.CloseContext("UnsignedRationalNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for UnsignedRationalNumber")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MediaTransportControlDataSetCategoryParse(ctx context.Context, theBytes []b
 	return MediaTransportControlDataSetCategoryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataSetCategoryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
+		return MediaTransportControlDataSetCategoryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataSetCategoryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSetCategory, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MediaTransportControlDataSetCategoryParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryNumber)
-	_categoryNumber, _categoryNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("categoryNumber", 8)
-	if _categoryNumberErr != nil {
-		return nil, errors.Wrap(_categoryNumberErr, "Error parsing 'categoryNumber' field of MediaTransportControlDataSetCategory")
+	categoryNumber, err := ReadSimpleField(ctx, "categoryNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryNumber' field"))
 	}
-	categoryNumber := _categoryNumber
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSetCategory"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSetCategory")

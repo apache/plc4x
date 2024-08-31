@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDefaultFadeTimeParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDefaultFadeTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultFadeTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultFadeTime, error) {
+		return BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultFadeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDefaultFadeTimeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultFadeTime)
-	if pullErr := readBuffer.PullContext("defaultFadeTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultFadeTime")
-	}
-	_defaultFadeTime, _defaultFadeTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultFadeTimeErr != nil {
-		return nil, errors.Wrap(_defaultFadeTimeErr, "Error parsing 'defaultFadeTime' field of BACnetConstructedDataDefaultFadeTime")
-	}
-	defaultFadeTime := _defaultFadeTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("defaultFadeTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultFadeTime")
+	defaultFadeTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultFadeTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultFadeTime' field"))
 	}
 
 	// Virtual field

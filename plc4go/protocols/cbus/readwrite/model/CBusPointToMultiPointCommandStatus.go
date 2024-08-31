@@ -139,6 +139,12 @@ func CBusPointToMultiPointCommandStatusParse(ctx context.Context, theBytes []byt
 	return CBusPointToMultiPointCommandStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToMultiPointCommandStatusParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToMultiPointCommandStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToMultiPointCommandStatus, error) {
+		return CBusPointToMultiPointCommandStatusParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,17 +166,9 @@ func CBusPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (statusRequest)
-	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
-	}
-	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(ctx, readBuffer)
-	if _statusRequestErr != nil {
-		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToMultiPointCommandStatus")
-	}
-	statusRequest := _statusRequest.(StatusRequest)
-	if closeErr := readBuffer.CloseContext("statusRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusRequest")
+	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusRequest' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToMultiPointCommandStatus"); closeErr != nil {

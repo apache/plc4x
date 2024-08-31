@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLowDiffLimitParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataLowDiffLimitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLowDiffLimitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLowDiffLimit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLowDiffLimit, error) {
+		return BACnetConstructedDataLowDiffLimitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLowDiffLimitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLowDiffLimit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLowDiffLimitParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lowDiffLimit)
-	if pullErr := readBuffer.PullContext("lowDiffLimit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lowDiffLimit")
-	}
-	_lowDiffLimit, _lowDiffLimitErr := BACnetOptionalREALParseWithBuffer(ctx, readBuffer)
-	if _lowDiffLimitErr != nil {
-		return nil, errors.Wrap(_lowDiffLimitErr, "Error parsing 'lowDiffLimit' field of BACnetConstructedDataLowDiffLimit")
-	}
-	lowDiffLimit := _lowDiffLimit.(BACnetOptionalREAL)
-	if closeErr := readBuffer.CloseContext("lowDiffLimit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lowDiffLimit")
+	lowDiffLimit, err := ReadSimpleField[BACnetOptionalREAL](ctx, "lowDiffLimit", ReadComplex[BACnetOptionalREAL](BACnetOptionalREALParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowDiffLimit' field"))
 	}
 
 	// Virtual field

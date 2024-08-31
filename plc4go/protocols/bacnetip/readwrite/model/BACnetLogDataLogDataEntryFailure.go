@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetLogDataLogDataEntryFailureParse(ctx context.Context, theBytes []byte)
 	return BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLogDataLogDataEntryFailureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
+		return BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntryFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetLogDataLogDataEntryFailureParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (failure)
-	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for failure")
-	}
-	_failure, _failureErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(7)))
-	if _failureErr != nil {
-		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogDataLogDataEntryFailure")
-	}
-	failure := _failure.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for failure")
+	failure, err := ReadSimpleField[ErrorEnclosed](ctx, "failure", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(7))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'failure' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogDataLogDataEntryFailure"); closeErr != nil {

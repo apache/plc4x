@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,6 +153,12 @@ func CALDataWriteParse(ctx context.Context, theBytes []byte, commandTypeContaine
 	return CALDataWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
+func CALDataWriteParseWithBufferProducer(commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataWrite, error) {
+		return CALDataWriteParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+	}
+}
+
 func CALDataWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -162,37 +170,19 @@ func CALDataWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
-	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataWrite")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 
-	// Simple Field (code)
-	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadByte("code")
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataWrite")
+	code, err := ReadSimpleField(ctx, "code", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
 
-	// Simple Field (parameterValue)
-	if pullErr := readBuffer.PullContext("parameterValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parameterValue")
-	}
-	_parameterValue, _parameterValueErr := ParameterValueParseWithBuffer(ctx, readBuffer, ParameterType(paramNo.ParameterType()), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2))))
-	if _parameterValueErr != nil {
-		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CALDataWrite")
-	}
-	parameterValue := _parameterValue.(ParameterValue)
-	if closeErr := readBuffer.CloseContext("parameterValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parameterValue")
+	parameterValue, err := ReadSimpleField[ParameterValue](ctx, "parameterValue", ReadComplex[ParameterValue](ParameterValueParseWithBufferProducer[ParameterValue]((ParameterType)(paramNo.ParameterType()), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(2)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataWrite"); closeErr != nil {

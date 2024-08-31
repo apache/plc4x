@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataHigherDeckParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataHigherDeckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataHigherDeckParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataHigherDeck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataHigherDeck, error) {
+		return BACnetConstructedDataHigherDeckParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataHigherDeckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataHigherDeck, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataHigherDeckParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (higherDeck)
-	if pullErr := readBuffer.PullContext("higherDeck"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for higherDeck")
-	}
-	_higherDeck, _higherDeckErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _higherDeckErr != nil {
-		return nil, errors.Wrap(_higherDeckErr, "Error parsing 'higherDeck' field of BACnetConstructedDataHigherDeck")
-	}
-	higherDeck := _higherDeck.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("higherDeck"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for higherDeck")
+	higherDeck, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'higherDeck' field"))
 	}
 
 	// Virtual field

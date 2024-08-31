@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -173,6 +175,12 @@ func NLMUpdateKeyUpdateControlFlagsParse(ctx context.Context, theBytes []byte) (
 	return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NLMUpdateKeyUpdateControlFlagsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
+		return NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdateControlFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,61 +192,45 @@ func NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (set1KeyRevisionActivationTimeExpirationTimePresent)
-	_set1KeyRevisionActivationTimeExpirationTimePresent, _set1KeyRevisionActivationTimeExpirationTimePresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("set1KeyRevisionActivationTimeExpirationTimePresent")
-	if _set1KeyRevisionActivationTimeExpirationTimePresentErr != nil {
-		return nil, errors.Wrap(_set1KeyRevisionActivationTimeExpirationTimePresentErr, "Error parsing 'set1KeyRevisionActivationTimeExpirationTimePresent' field of NLMUpdateKeyUpdateControlFlags")
+	set1KeyRevisionActivationTimeExpirationTimePresent, err := ReadSimpleField(ctx, "set1KeyRevisionActivationTimeExpirationTimePresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyRevisionActivationTimeExpirationTimePresent' field"))
 	}
-	set1KeyRevisionActivationTimeExpirationTimePresent := _set1KeyRevisionActivationTimeExpirationTimePresent
 
-	// Simple Field (set1KeyCountKeyParametersPresent)
-	_set1KeyCountKeyParametersPresent, _set1KeyCountKeyParametersPresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("set1KeyCountKeyParametersPresent")
-	if _set1KeyCountKeyParametersPresentErr != nil {
-		return nil, errors.Wrap(_set1KeyCountKeyParametersPresentErr, "Error parsing 'set1KeyCountKeyParametersPresent' field of NLMUpdateKeyUpdateControlFlags")
+	set1KeyCountKeyParametersPresent, err := ReadSimpleField(ctx, "set1KeyCountKeyParametersPresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyCountKeyParametersPresent' field"))
 	}
-	set1KeyCountKeyParametersPresent := _set1KeyCountKeyParametersPresent
 
-	// Simple Field (set1ShouldBeCleared)
-	_set1ShouldBeCleared, _set1ShouldBeClearedErr := /*TODO: migrate me*/ readBuffer.ReadBit("set1ShouldBeCleared")
-	if _set1ShouldBeClearedErr != nil {
-		return nil, errors.Wrap(_set1ShouldBeClearedErr, "Error parsing 'set1ShouldBeCleared' field of NLMUpdateKeyUpdateControlFlags")
+	set1ShouldBeCleared, err := ReadSimpleField(ctx, "set1ShouldBeCleared", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ShouldBeCleared' field"))
 	}
-	set1ShouldBeCleared := _set1ShouldBeCleared
 
-	// Simple Field (set2KeyRevisionActivationTimeExpirationTimePresent)
-	_set2KeyRevisionActivationTimeExpirationTimePresent, _set2KeyRevisionActivationTimeExpirationTimePresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("set2KeyRevisionActivationTimeExpirationTimePresent")
-	if _set2KeyRevisionActivationTimeExpirationTimePresentErr != nil {
-		return nil, errors.Wrap(_set2KeyRevisionActivationTimeExpirationTimePresentErr, "Error parsing 'set2KeyRevisionActivationTimeExpirationTimePresent' field of NLMUpdateKeyUpdateControlFlags")
+	set2KeyRevisionActivationTimeExpirationTimePresent, err := ReadSimpleField(ctx, "set2KeyRevisionActivationTimeExpirationTimePresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyRevisionActivationTimeExpirationTimePresent' field"))
 	}
-	set2KeyRevisionActivationTimeExpirationTimePresent := _set2KeyRevisionActivationTimeExpirationTimePresent
 
-	// Simple Field (set2KeyCountKeyParametersPresent)
-	_set2KeyCountKeyParametersPresent, _set2KeyCountKeyParametersPresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("set2KeyCountKeyParametersPresent")
-	if _set2KeyCountKeyParametersPresentErr != nil {
-		return nil, errors.Wrap(_set2KeyCountKeyParametersPresentErr, "Error parsing 'set2KeyCountKeyParametersPresent' field of NLMUpdateKeyUpdateControlFlags")
+	set2KeyCountKeyParametersPresent, err := ReadSimpleField(ctx, "set2KeyCountKeyParametersPresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyCountKeyParametersPresent' field"))
 	}
-	set2KeyCountKeyParametersPresent := _set2KeyCountKeyParametersPresent
 
-	// Simple Field (set2ShouldBeCleared)
-	_set2ShouldBeCleared, _set2ShouldBeClearedErr := /*TODO: migrate me*/ readBuffer.ReadBit("set2ShouldBeCleared")
-	if _set2ShouldBeClearedErr != nil {
-		return nil, errors.Wrap(_set2ShouldBeClearedErr, "Error parsing 'set2ShouldBeCleared' field of NLMUpdateKeyUpdateControlFlags")
+	set2ShouldBeCleared, err := ReadSimpleField(ctx, "set2ShouldBeCleared", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ShouldBeCleared' field"))
 	}
-	set2ShouldBeCleared := _set2ShouldBeCleared
 
-	// Simple Field (moreMessagesToBeExpected)
-	_moreMessagesToBeExpected, _moreMessagesToBeExpectedErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreMessagesToBeExpected")
-	if _moreMessagesToBeExpectedErr != nil {
-		return nil, errors.Wrap(_moreMessagesToBeExpectedErr, "Error parsing 'moreMessagesToBeExpected' field of NLMUpdateKeyUpdateControlFlags")
+	moreMessagesToBeExpected, err := ReadSimpleField(ctx, "moreMessagesToBeExpected", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreMessagesToBeExpected' field"))
 	}
-	moreMessagesToBeExpected := _moreMessagesToBeExpected
 
-	// Simple Field (removeAllKeys)
-	_removeAllKeys, _removeAllKeysErr := /*TODO: migrate me*/ readBuffer.ReadBit("removeAllKeys")
-	if _removeAllKeysErr != nil {
-		return nil, errors.Wrap(_removeAllKeysErr, "Error parsing 'removeAllKeys' field of NLMUpdateKeyUpdateControlFlags")
+	removeAllKeys, err := ReadSimpleField(ctx, "removeAllKeys", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeAllKeys' field"))
 	}
-	removeAllKeys := _removeAllKeys
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyUpdateControlFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMUpdateKeyUpdateControlFlags")

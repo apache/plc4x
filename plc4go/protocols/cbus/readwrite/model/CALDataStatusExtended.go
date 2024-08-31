@@ -220,6 +220,12 @@ func CALDataStatusExtendedParse(ctx context.Context, theBytes []byte, commandTyp
 	return CALDataStatusExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
+func CALDataStatusExtendedParseWithBufferProducer(commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataStatusExtended, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataStatusExtended, error) {
+		return CALDataStatusExtendedParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+	}
+}
+
 func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatusExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -231,38 +237,20 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (coding)
-	if pullErr := readBuffer.PullContext("coding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for coding")
-	}
-	_coding, _codingErr := StatusCodingParseWithBuffer(ctx, readBuffer)
-	if _codingErr != nil {
-		return nil, errors.Wrap(_codingErr, "Error parsing 'coding' field of CALDataStatusExtended")
-	}
-	coding := _coding
-	if closeErr := readBuffer.CloseContext("coding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for coding")
+	coding, err := ReadEnumField[StatusCoding](ctx, "coding", "StatusCoding", ReadEnum(StatusCodingByValue, ReadByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'coding' field"))
 	}
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataStatusExtended")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
-	// Simple Field (blockStart)
-	_blockStart, _blockStartErr := /*TODO: migrate me*/ readBuffer.ReadUint8("blockStart", 8)
-	if _blockStartErr != nil {
-		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataStatusExtended")
+	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockStart' field"))
 	}
-	blockStart := _blockStart
 
 	// Virtual field
 	_numberOfStatusBytes := utils.InlineIf((bool(bool((coding) == (StatusCoding_BINARY_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_BINARY_BY_ELSEWHERE)))), func() any { return uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) }, func() any { return uint8((uint8(0))) }).(uint8)

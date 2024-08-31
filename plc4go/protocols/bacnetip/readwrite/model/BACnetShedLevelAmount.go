@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetShedLevelAmountParse(ctx context.Context, theBytes []byte) (BACnetShe
 	return BACnetShedLevelAmountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetShedLevelAmountParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelAmount, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelAmount, error) {
+		return BACnetShedLevelAmountParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetShedLevelAmountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelAmount, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetShedLevelAmountParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (amount)
-	if pullErr := readBuffer.PullContext("amount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for amount")
-	}
-	_amount, _amountErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_REAL))
-	if _amountErr != nil {
-		return nil, errors.Wrap(_amountErr, "Error parsing 'amount' field of BACnetShedLevelAmount")
-	}
-	amount := _amount.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("amount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for amount")
+	amount, err := ReadSimpleField[BACnetContextTagReal](ctx, "amount", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'amount' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevelAmount"); closeErr != nil {

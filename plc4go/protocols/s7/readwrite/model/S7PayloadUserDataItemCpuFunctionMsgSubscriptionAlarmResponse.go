@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -186,6 +188,12 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParse(ctx conte
 	return S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
+		return S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -197,46 +205,30 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponseParseWithBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	_result, _resultErr := /*TODO: migrate me*/ readBuffer.ReadUint8("result", 8)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
-	}
-	result := _result
-
-	// Simple Field (reserved01)
-	_reserved01, _reserved01Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved01", 8)
-	if _reserved01Err != nil {
-		return nil, errors.Wrap(_reserved01Err, "Error parsing 'reserved01' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
-	}
-	reserved01 := _reserved01
-
-	// Simple Field (alarmType)
-	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmType")
-	}
-	_alarmType, _alarmTypeErr := AlarmTypeParseWithBuffer(ctx, readBuffer)
-	if _alarmTypeErr != nil {
-		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
-	}
-	alarmType := _alarmType
-	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmType")
+	result, err := ReadSimpleField(ctx, "result", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
-	// Simple Field (reserved02)
-	_reserved02, _reserved02Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved02", 8)
-	if _reserved02Err != nil {
-		return nil, errors.Wrap(_reserved02Err, "Error parsing 'reserved02' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
+	reserved01, err := ReadSimpleField(ctx, "reserved01", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserved01' field"))
 	}
-	reserved02 := _reserved02
 
-	// Simple Field (reserved03)
-	_reserved03, _reserved03Err := /*TODO: migrate me*/ readBuffer.ReadUint8("reserved03", 8)
-	if _reserved03Err != nil {
-		return nil, errors.Wrap(_reserved03Err, "Error parsing 'reserved03' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")
+	alarmType, err := ReadEnumField[AlarmType](ctx, "alarmType", "AlarmType", ReadEnum(AlarmTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmType' field"))
 	}
-	reserved03 := _reserved03
+
+	reserved02, err := ReadSimpleField(ctx, "reserved02", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserved02' field"))
+	}
+
+	reserved03, err := ReadSimpleField(ctx, "reserved03", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserved03' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7PayloadUserDataItemCpuFunctionMsgSubscriptionAlarmResponse")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLightingOutputTrackingValueParse(ctx context.Context, 
 	return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLightingOutputTrackingValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingOutputTrackingValue, error) {
+		return BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingOutputTrackingValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (trackingValue)
-	if pullErr := readBuffer.PullContext("trackingValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for trackingValue")
-	}
-	_trackingValue, _trackingValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _trackingValueErr != nil {
-		return nil, errors.Wrap(_trackingValueErr, "Error parsing 'trackingValue' field of BACnetConstructedDataLightingOutputTrackingValue")
-	}
-	trackingValue := _trackingValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("trackingValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for trackingValue")
+	trackingValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "trackingValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackingValue' field"))
 	}
 
 	// Virtual field

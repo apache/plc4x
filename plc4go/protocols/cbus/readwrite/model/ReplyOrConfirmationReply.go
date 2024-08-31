@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -139,6 +141,12 @@ func ReplyOrConfirmationReplyParse(ctx context.Context, theBytes []byte, cBusOpt
 	return ReplyOrConfirmationReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func ReplyOrConfirmationReplyParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyOrConfirmationReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyOrConfirmationReply, error) {
+		return ReplyOrConfirmationReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func ReplyOrConfirmationReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (ReplyOrConfirmationReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -150,30 +158,14 @@ func ReplyOrConfirmationReplyParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reply)
-	if pullErr := readBuffer.PullContext("reply"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reply")
-	}
-	_reply, _replyErr := ReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
-	if _replyErr != nil {
-		return nil, errors.Wrap(_replyErr, "Error parsing 'reply' field of ReplyOrConfirmationReply")
-	}
-	reply := _reply.(Reply)
-	if closeErr := readBuffer.CloseContext("reply"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reply")
+	reply, err := ReadSimpleField[Reply](ctx, "reply", ReadComplex[Reply](ReplyParseWithBufferProducer[Reply]((CBusOptions)(cBusOptions), (RequestContext)(requestContext)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reply' field"))
 	}
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := ResponseTerminationParseWithBuffer(ctx, readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of ReplyOrConfirmationReply")
-	}
-	termination := _termination.(ResponseTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
+	termination, err := ReadSimpleField[ResponseTermination](ctx, "termination", ReadComplex[ResponseTermination](ResponseTerminationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'termination' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReplyOrConfirmationReply"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMusterPointParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataMusterPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMusterPointParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMusterPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMusterPoint, error) {
+		return BACnetConstructedDataMusterPointParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMusterPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMusterPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMusterPointParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (musterPoint)
-	if pullErr := readBuffer.PullContext("musterPoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for musterPoint")
-	}
-	_musterPoint, _musterPointErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _musterPointErr != nil {
-		return nil, errors.Wrap(_musterPointErr, "Error parsing 'musterPoint' field of BACnetConstructedDataMusterPoint")
-	}
-	musterPoint := _musterPoint.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("musterPoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for musterPoint")
+	musterPoint, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "musterPoint", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'musterPoint' field"))
 	}
 
 	// Virtual field

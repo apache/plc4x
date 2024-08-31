@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetClientCOVObjectParse(ctx context.Context, theBytes []byte) (BACnetCli
 	return BACnetClientCOVObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetClientCOVObjectParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
+		return BACnetClientCOVObjectParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetClientCOVObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOVObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetClientCOVObjectParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (realIncrement)
-	if pullErr := readBuffer.PullContext("realIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for realIncrement")
-	}
-	_realIncrement, _realIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _realIncrementErr != nil {
-		return nil, errors.Wrap(_realIncrementErr, "Error parsing 'realIncrement' field of BACnetClientCOVObject")
-	}
-	realIncrement := _realIncrement.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("realIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for realIncrement")
+	realIncrement, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realIncrement", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realIncrement' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetClientCOVObject"); closeErr != nil {

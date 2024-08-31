@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTimeOfDeviceRestartParse(ctx context.Context, theBytes
 	return BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTimeOfDeviceRestartParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeOfDeviceRestart, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeOfDeviceRestart, error) {
+		return BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeOfDeviceRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTimeOfDeviceRestartParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeOfDeviceRestart)
-	if pullErr := readBuffer.PullContext("timeOfDeviceRestart"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeOfDeviceRestart")
-	}
-	_timeOfDeviceRestart, _timeOfDeviceRestartErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-	if _timeOfDeviceRestartErr != nil {
-		return nil, errors.Wrap(_timeOfDeviceRestartErr, "Error parsing 'timeOfDeviceRestart' field of BACnetConstructedDataTimeOfDeviceRestart")
-	}
-	timeOfDeviceRestart := _timeOfDeviceRestart.(BACnetTimeStamp)
-	if closeErr := readBuffer.CloseContext("timeOfDeviceRestart"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeOfDeviceRestart")
+	timeOfDeviceRestart, err := ReadSimpleField[BACnetTimeStamp](ctx, "timeOfDeviceRestart", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeOfDeviceRestart' field"))
 	}
 
 	// Virtual field

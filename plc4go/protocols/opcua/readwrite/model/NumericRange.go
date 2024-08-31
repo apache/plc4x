@@ -83,6 +83,12 @@ func NumericRangeParse(ctx context.Context, theBytes []byte) (NumericRange, erro
 	return NumericRangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NumericRangeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
+		return NumericRangeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NumericRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NumericRange, error) {
 	positionAware := readBuffer
 	_ = positionAware

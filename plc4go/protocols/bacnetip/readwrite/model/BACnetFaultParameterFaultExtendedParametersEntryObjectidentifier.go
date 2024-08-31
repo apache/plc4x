@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParse(ctx c
 	return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
+		return BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetFaultParameterFaultExtendedParametersEntryObjectidentifierParseWithBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectidentifierValue)
-	if pullErr := readBuffer.PullContext("objectidentifierValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectidentifierValue")
-	}
-	_objectidentifierValue, _objectidentifierValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _objectidentifierValueErr != nil {
-		return nil, errors.Wrap(_objectidentifierValueErr, "Error parsing 'objectidentifierValue' field of BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier")
-	}
-	objectidentifierValue := _objectidentifierValue.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectidentifierValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectidentifierValue")
+	objectidentifierValue, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "objectidentifierValue", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectidentifierValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetFaultParameterFaultExtendedParametersEntryObjectidentifier"); closeErr != nil {

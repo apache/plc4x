@@ -416,6 +416,12 @@ func BACnetEventParameterExtendedParametersParse(ctx context.Context, theBytes [
 	return BACnetEventParameterExtendedParametersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventParameterExtendedParametersParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterExtendedParameters, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterExtendedParameters, error) {
+		return BACnetEventParameterExtendedParametersParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterExtendedParameters, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -427,17 +433,9 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
-	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterExtendedParameters")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
 	// Peek Field (peekedTagHeader)
@@ -463,13 +461,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 	isClosingTag := bool(_isClosingTag)
 	_ = isClosingTag
 
-	_nullValue, err := ReadOptionalField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagNull, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagNull), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_nullValue, err := ReadOptionalField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagNull](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullValue' field"))
 	}
@@ -478,13 +470,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		nullValue = *_nullValue
 	}
 
-	_realValue, err := ReadOptionalField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagReal, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagReal), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x4))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_realValue, err := ReadOptionalField[BACnetApplicationTagReal](ctx, "realValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x4))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realValue' field"))
 	}
@@ -493,13 +479,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		realValue = *_realValue
 	}
 
-	_unsignedValue, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x2))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_unsignedValue, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "unsignedValue", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x2))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unsignedValue' field"))
 	}
@@ -508,13 +488,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		unsignedValue = *_unsignedValue
 	}
 
-	_booleanValue, err := ReadOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", ReadComplex[BACnetApplicationTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagBoolean, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagBoolean), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x1))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_booleanValue, err := ReadOptionalField[BACnetApplicationTagBoolean](ctx, "booleanValue", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x1))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'booleanValue' field"))
 	}
@@ -523,13 +497,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		booleanValue = *_booleanValue
 	}
 
-	_integerValue, err := ReadOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetApplicationTagSignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagSignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagSignedInteger), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x3))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_integerValue, err := ReadOptionalField[BACnetApplicationTagSignedInteger](ctx, "integerValue", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x3))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integerValue' field"))
 	}
@@ -538,13 +506,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		integerValue = *_integerValue
 	}
 
-	_doubleValue, err := ReadOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagDouble, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagDouble), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x5))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_doubleValue, err := ReadOptionalField[BACnetApplicationTagDouble](ctx, "doubleValue", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x5))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doubleValue' field"))
 	}
@@ -553,13 +515,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		doubleValue = *_doubleValue
 	}
 
-	_octetStringValue, err := ReadOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagOctetString, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagOctetString), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x6))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_octetStringValue, err := ReadOptionalField[BACnetApplicationTagOctetString](ctx, "octetStringValue", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x6))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octetStringValue' field"))
 	}
@@ -568,13 +524,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		octetStringValue = *_octetStringValue
 	}
 
-	_characterStringValue, err := ReadOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagCharacterString, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagCharacterString), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x7))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_characterStringValue, err := ReadOptionalField[BACnetApplicationTagCharacterString](ctx, "characterStringValue", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x7))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterStringValue' field"))
 	}
@@ -583,13 +533,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		characterStringValue = *_characterStringValue
 	}
 
-	_bitStringValue, err := ReadOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", ReadComplex[BACnetApplicationTagBitString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagBitString, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagBitString), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x8))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_bitStringValue, err := ReadOptionalField[BACnetApplicationTagBitString](ctx, "bitStringValue", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x8))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitStringValue' field"))
 	}
@@ -598,13 +542,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		bitStringValue = *_bitStringValue
 	}
 
-	_enumeratedValue, err := ReadOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetApplicationTagEnumerated](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagEnumerated, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagEnumerated), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0x9))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_enumeratedValue, err := ReadOptionalField[BACnetApplicationTagEnumerated](ctx, "enumeratedValue", ReadComplex[BACnetApplicationTagEnumerated](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagEnumerated](), readBuffer), bool(bool(bool((peekedTagNumber) == (0x9))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumeratedValue' field"))
 	}
@@ -613,13 +551,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		enumeratedValue = *_enumeratedValue
 	}
 
-	_dateValue, err := ReadOptionalField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagDate, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagDate), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0xA))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_dateValue, err := ReadOptionalField[BACnetApplicationTagDate](ctx, "dateValue", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer), bool(bool(bool((peekedTagNumber) == (0xA))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateValue' field"))
 	}
@@ -628,13 +560,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		dateValue = *_dateValue
 	}
 
-	_timeValue, err := ReadOptionalField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagTime, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagTime), nil
-	}, readBuffer), bool(bool(bool((peekedTagNumber) == (0xB))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
+	_timeValue, err := ReadOptionalField[BACnetApplicationTagTime](ctx, "timeValue", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer), bool(bool(bool((peekedTagNumber) == (0xB))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
@@ -643,13 +569,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		timeValue = *_timeValue
 	}
 
-	_objectIdentifier, err := ReadOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagObjectIdentifier, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagObjectIdentifier), nil
-	}, readBuffer), bool(bool((peekedTagNumber) == (0xC))) && bool(!(isOpeningTag)))
+	_objectIdentifier, err := ReadOptionalField[BACnetApplicationTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer), bool(bool((peekedTagNumber) == (0xC))) && bool(!(isOpeningTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
@@ -658,13 +578,7 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		objectIdentifier = *_objectIdentifier
 	}
 
-	_reference, err := ReadOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDeviceObjectPropertyReferenceEnclosed, error) {
-		v, err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetDeviceObjectPropertyReferenceEnclosed), nil
-	}, readBuffer), bool(isOpeningTag) && bool(!(isClosingTag)))
+	_reference, err := ReadOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "reference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer), bool(isOpeningTag) && bool(!(isClosingTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reference' field"))
 	}
@@ -673,17 +587,9 @@ func BACnetEventParameterExtendedParametersParseWithBuffer(ctx context.Context, 
 		reference = *_reference
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
-	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(tagNumber))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterExtendedParameters")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(tagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterExtendedParameters"); closeErr != nil {

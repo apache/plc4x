@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,6 +146,12 @@ func COTPPacketDataParse(ctx context.Context, theBytes []byte, cotpLen uint16) (
 	return COTPPacketDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
+func COTPPacketDataParseWithBufferProducer(cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketData, error) {
+		return COTPPacketDataParseWithBuffer(ctx, readBuffer, cotpLen)
+	}
+}
+
 func COTPPacketDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,19 +163,15 @@ func COTPPacketDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eot)
-	_eot, _eotErr := /*TODO: migrate me*/ readBuffer.ReadBit("eot")
-	if _eotErr != nil {
-		return nil, errors.Wrap(_eotErr, "Error parsing 'eot' field of COTPPacketData")
+	eot, err := ReadSimpleField(ctx, "eot", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eot' field"))
 	}
-	eot := _eot
 
-	// Simple Field (tpduRef)
-	_tpduRef, _tpduRefErr := /*TODO: migrate me*/ readBuffer.ReadUint8("tpduRef", 7)
-	if _tpduRefErr != nil {
-		return nil, errors.Wrap(_tpduRefErr, "Error parsing 'tpduRef' field of COTPPacketData")
+	tpduRef, err := ReadSimpleField(ctx, "tpduRef", ReadUnsignedByte(readBuffer, uint8(7)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduRef' field"))
 	}
-	tpduRef := _tpduRef
 
 	if closeErr := readBuffer.CloseContext("COTPPacketData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketData")

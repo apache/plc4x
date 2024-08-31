@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParse(c
 	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumericParseWi
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numericValue)
-	if pullErr := readBuffer.PullContext("numericValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numericValue")
-	}
-	_numericValue, _numericValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _numericValueErr != nil {
-		return nil, errors.Wrap(_numericValueErr, "Error parsing 'numericValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric")
-	}
-	numericValue := _numericValue.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numericValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numericValue")
+	numericValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "numericValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassNumeric"); closeErr != nil {

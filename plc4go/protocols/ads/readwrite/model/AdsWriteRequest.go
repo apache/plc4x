@@ -170,6 +170,12 @@ func AdsWriteRequestParse(ctx context.Context, theBytes []byte) (AdsWriteRequest
 	return AdsWriteRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsWriteRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteRequest, error) {
+		return AdsWriteRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,21 +187,17 @@ func AdsWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
-	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsWriteRequest")
+	indexGroup, err := ReadSimpleField(ctx, "indexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexGroup' field"))
 	}
-	indexGroup := _indexGroup
 
-	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
-	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsWriteRequest")
+	indexOffset, err := ReadSimpleField(ctx, "indexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexOffset' field"))
 	}
-	indexOffset := _indexOffset
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}

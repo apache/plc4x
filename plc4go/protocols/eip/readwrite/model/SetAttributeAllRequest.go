@@ -117,6 +117,12 @@ func SetAttributeAllRequestParse(ctx context.Context, theBytes []byte, connected
 	return SetAttributeAllRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func SetAttributeAllRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeAllRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeAllRequest, error) {
+		return SetAttributeAllRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func SetAttributeAllRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeAllRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

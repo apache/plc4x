@@ -214,6 +214,12 @@ func CipUnconnectedRequestParse(ctx context.Context, theBytes []byte, connected 
 	return CipUnconnectedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipUnconnectedRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipUnconnectedRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipUnconnectedRequest, error) {
+		return CipUnconnectedRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipUnconnectedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -225,81 +231,53 @@ func CipUnconnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, 8))
+	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
 	_ = requestPathSize
 
-	// Simple Field (classSegment)
-	if pullErr := readBuffer.PullContext("classSegment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for classSegment")
-	}
-	_classSegment, _classSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
-	if _classSegmentErr != nil {
-		return nil, errors.Wrap(_classSegmentErr, "Error parsing 'classSegment' field of CipUnconnectedRequest")
-	}
-	classSegment := _classSegment.(PathSegment)
-	if closeErr := readBuffer.CloseContext("classSegment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for classSegment")
+	classSegment, err := ReadSimpleField[PathSegment](ctx, "classSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classSegment' field"))
 	}
 
-	// Simple Field (instanceSegment)
-	if pullErr := readBuffer.PullContext("instanceSegment"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for instanceSegment")
-	}
-	_instanceSegment, _instanceSegmentErr := PathSegmentParseWithBuffer(ctx, readBuffer)
-	if _instanceSegmentErr != nil {
-		return nil, errors.Wrap(_instanceSegmentErr, "Error parsing 'instanceSegment' field of CipUnconnectedRequest")
-	}
-	instanceSegment := _instanceSegment.(PathSegment)
-	if closeErr := readBuffer.CloseContext("instanceSegment"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for instanceSegment")
+	instanceSegment, err := ReadSimpleField[PathSegment](ctx, "instanceSegment", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceSegment' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x9D05))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x9D05))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	messageSize, err := ReadImplicitField[uint16](ctx, "messageSize", ReadUnsignedShort(readBuffer, 16))
+	messageSize, err := ReadImplicitField[uint16](ctx, "messageSize", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageSize' field"))
 	}
 	_ = messageSize
 
-	// Simple Field (unconnectedService)
-	if pullErr := readBuffer.PullContext("unconnectedService"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unconnectedService")
-	}
-	_unconnectedService, _unconnectedServiceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint16(messageSize))
-	if _unconnectedServiceErr != nil {
-		return nil, errors.Wrap(_unconnectedServiceErr, "Error parsing 'unconnectedService' field of CipUnconnectedRequest")
-	}
-	unconnectedService := _unconnectedService.(CipService)
-	if closeErr := readBuffer.CloseContext("unconnectedService"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unconnectedService")
+	unconnectedService, err := ReadSimpleField[CipService](ctx, "unconnectedService", ReadComplex[CipService](CipServiceParseWithBufferProducer[CipService]((bool)(bool(false)), (uint16)(messageSize)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unconnectedService' field"))
 	}
 
-	route, err := ReadConstField[uint16](ctx, "route", ReadUnsignedShort(readBuffer, 16), CipUnconnectedRequest_ROUTE)
+	route, err := ReadConstField[uint16](ctx, "route", ReadUnsignedShort(readBuffer, uint8(16)), CipUnconnectedRequest_ROUTE)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'route' field"))
 	}
 	_ = route
 
-	// Simple Field (backPlane)
-	_backPlane, _backPlaneErr := /*TODO: migrate me*/ readBuffer.ReadInt8("backPlane", 8)
-	if _backPlaneErr != nil {
-		return nil, errors.Wrap(_backPlaneErr, "Error parsing 'backPlane' field of CipUnconnectedRequest")
+	backPlane, err := ReadSimpleField(ctx, "backPlane", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backPlane' field"))
 	}
-	backPlane := _backPlane
 
-	// Simple Field (slot)
-	_slot, _slotErr := /*TODO: migrate me*/ readBuffer.ReadInt8("slot", 8)
-	if _slotErr != nil {
-		return nil, errors.Wrap(_slotErr, "Error parsing 'slot' field of CipUnconnectedRequest")
+	slot, err := ReadSimpleField(ctx, "slot", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slot' field"))
 	}
-	slot := _slot
 
 	if closeErr := readBuffer.CloseContext("CipUnconnectedRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipUnconnectedRequest")

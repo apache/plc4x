@@ -21,11 +21,13 @@ package model
 
 import (
 	"context"
+	"encoding/binary"
 	"fmt"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -299,6 +301,12 @@ func CipIdentityParse(ctx context.Context, theBytes []byte) (CipIdentity, error)
 	return CipIdentityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CipIdentityParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CipIdentity, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipIdentity, error) {
+		return CipIdentityParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipIdentity, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -310,118 +318,94 @@ func CipIdentityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, 16))
+	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 	_ = itemLength
 
-	// Simple Field (encapsulationProtocolVersion)
-	_encapsulationProtocolVersion, _encapsulationProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocolVersion", 16)
-	if _encapsulationProtocolVersionErr != nil {
-		return nil, errors.Wrap(_encapsulationProtocolVersionErr, "Error parsing 'encapsulationProtocolVersion' field of CipIdentity")
+	encapsulationProtocolVersion, err := ReadSimpleField(ctx, "encapsulationProtocolVersion", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encapsulationProtocolVersion' field"))
 	}
-	encapsulationProtocolVersion := _encapsulationProtocolVersion
 
-	// Simple Field (socketAddressFamily)
-	_socketAddressFamily, _socketAddressFamilyErr := /*TODO: migrate me*/ readBuffer.ReadUint16("socketAddressFamily", 16)
-	if _socketAddressFamilyErr != nil {
-		return nil, errors.Wrap(_socketAddressFamilyErr, "Error parsing 'socketAddressFamily' field of CipIdentity")
+	socketAddressFamily, err := ReadSimpleField(ctx, "socketAddressFamily", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'socketAddressFamily' field"))
 	}
-	socketAddressFamily := _socketAddressFamily
 
-	// Simple Field (socketAddressPort)
-	_socketAddressPort, _socketAddressPortErr := /*TODO: migrate me*/ readBuffer.ReadUint16("socketAddressPort", 16)
-	if _socketAddressPortErr != nil {
-		return nil, errors.Wrap(_socketAddressPortErr, "Error parsing 'socketAddressPort' field of CipIdentity")
+	socketAddressPort, err := ReadSimpleField(ctx, "socketAddressPort", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'socketAddressPort' field"))
 	}
-	socketAddressPort := _socketAddressPort
 
-	socketAddressAddress, err := ReadCountArrayField[uint8](ctx, "socketAddressAddress", ReadUnsignedByte(readBuffer, 8), uint64(int32(4)))
+	socketAddressAddress, err := ReadCountArrayField[uint8](ctx, "socketAddressAddress", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'socketAddressAddress' field"))
 	}
 
-	zeroes1, err := ReadConstField[uint32](ctx, "zeroes1", ReadUnsignedInt(readBuffer, 32), CipIdentity_ZEROES1)
+	zeroes1, err := ReadConstField[uint32](ctx, "zeroes1", ReadUnsignedInt(readBuffer, uint8(32)), CipIdentity_ZEROES1)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zeroes1' field"))
 	}
 	_ = zeroes1
 
-	zeroes2, err := ReadConstField[uint32](ctx, "zeroes2", ReadUnsignedInt(readBuffer, 32), CipIdentity_ZEROES2)
+	zeroes2, err := ReadConstField[uint32](ctx, "zeroes2", ReadUnsignedInt(readBuffer, uint8(32)), CipIdentity_ZEROES2)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zeroes2' field"))
 	}
 	_ = zeroes2
 
-	// Simple Field (vendorId)
-	_vendorId, _vendorIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("vendorId", 16)
-	if _vendorIdErr != nil {
-		return nil, errors.Wrap(_vendorIdErr, "Error parsing 'vendorId' field of CipIdentity")
+	vendorId, err := ReadSimpleField(ctx, "vendorId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
-	vendorId := _vendorId
 
-	// Simple Field (deviceType)
-	_deviceType, _deviceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceType", 16)
-	if _deviceTypeErr != nil {
-		return nil, errors.Wrap(_deviceTypeErr, "Error parsing 'deviceType' field of CipIdentity")
+	deviceType, err := ReadSimpleField(ctx, "deviceType", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceType' field"))
 	}
-	deviceType := _deviceType
 
-	// Simple Field (productCode)
-	_productCode, _productCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("productCode", 16)
-	if _productCodeErr != nil {
-		return nil, errors.Wrap(_productCodeErr, "Error parsing 'productCode' field of CipIdentity")
+	productCode, err := ReadSimpleField(ctx, "productCode", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productCode' field"))
 	}
-	productCode := _productCode
 
-	// Simple Field (revisionMajor)
-	_revisionMajor, _revisionMajorErr := /*TODO: migrate me*/ readBuffer.ReadUint8("revisionMajor", 8)
-	if _revisionMajorErr != nil {
-		return nil, errors.Wrap(_revisionMajorErr, "Error parsing 'revisionMajor' field of CipIdentity")
+	revisionMajor, err := ReadSimpleField(ctx, "revisionMajor", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisionMajor' field"))
 	}
-	revisionMajor := _revisionMajor
 
-	// Simple Field (revisionMinor)
-	_revisionMinor, _revisionMinorErr := /*TODO: migrate me*/ readBuffer.ReadUint8("revisionMinor", 8)
-	if _revisionMinorErr != nil {
-		return nil, errors.Wrap(_revisionMinorErr, "Error parsing 'revisionMinor' field of CipIdentity")
+	revisionMinor, err := ReadSimpleField(ctx, "revisionMinor", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisionMinor' field"))
 	}
-	revisionMinor := _revisionMinor
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of CipIdentity")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (serialNumber)
-	_serialNumber, _serialNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serialNumber", 32)
-	if _serialNumberErr != nil {
-		return nil, errors.Wrap(_serialNumberErr, "Error parsing 'serialNumber' field of CipIdentity")
+	serialNumber, err := ReadSimpleField(ctx, "serialNumber", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialNumber' field"))
 	}
-	serialNumber := _serialNumber
 
-	productNameLength, err := ReadImplicitField[uint8](ctx, "productNameLength", ReadUnsignedByte(readBuffer, 8))
+	productNameLength, err := ReadImplicitField[uint8](ctx, "productNameLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productNameLength' field"))
 	}
 	_ = productNameLength
 
-	// Simple Field (productName)
-	_productName, _productNameErr := /*TODO: migrate me*/ readBuffer.ReadString("productName", uint32((productNameLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _productNameErr != nil {
-		return nil, errors.Wrap(_productNameErr, "Error parsing 'productName' field of CipIdentity")
+	productName, err := ReadSimpleField(ctx, "productName", ReadString(readBuffer, uint32(int32(productNameLength)*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productName' field"))
 	}
-	productName := _productName
 
-	// Simple Field (state)
-	_state, _stateErr := /*TODO: migrate me*/ readBuffer.ReadUint8("state", 8)
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of CipIdentity")
+	state, err := ReadSimpleField(ctx, "state", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
-	state := _state
 
 	if closeErr := readBuffer.CloseContext("CipIdentity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipIdentity")

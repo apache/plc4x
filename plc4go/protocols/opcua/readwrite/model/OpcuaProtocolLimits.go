@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func OpcuaProtocolLimitsParse(ctx context.Context, theBytes []byte) (OpcuaProtoc
 	return OpcuaProtocolLimitsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func OpcuaProtocolLimitsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
+		return OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaProtocolLimits, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,33 +152,25 @@ func OpcuaProtocolLimitsParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (receiveBufferSize)
-	_receiveBufferSize, _receiveBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("receiveBufferSize", 32)
-	if _receiveBufferSizeErr != nil {
-		return nil, errors.Wrap(_receiveBufferSizeErr, "Error parsing 'receiveBufferSize' field of OpcuaProtocolLimits")
+	receiveBufferSize, err := ReadSimpleField(ctx, "receiveBufferSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiveBufferSize' field"))
 	}
-	receiveBufferSize := _receiveBufferSize
 
-	// Simple Field (sendBufferSize)
-	_sendBufferSize, _sendBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sendBufferSize", 32)
-	if _sendBufferSizeErr != nil {
-		return nil, errors.Wrap(_sendBufferSizeErr, "Error parsing 'sendBufferSize' field of OpcuaProtocolLimits")
+	sendBufferSize, err := ReadSimpleField(ctx, "sendBufferSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendBufferSize' field"))
 	}
-	sendBufferSize := _sendBufferSize
 
-	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxMessageSize", 32)
-	if _maxMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of OpcuaProtocolLimits")
+	maxMessageSize, err := ReadSimpleField(ctx, "maxMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMessageSize' field"))
 	}
-	maxMessageSize := _maxMessageSize
 
-	// Simple Field (maxChunkCount)
-	_maxChunkCount, _maxChunkCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxChunkCount", 32)
-	if _maxChunkCountErr != nil {
-		return nil, errors.Wrap(_maxChunkCountErr, "Error parsing 'maxChunkCount' field of OpcuaProtocolLimits")
+	maxChunkCount, err := ReadSimpleField(ctx, "maxChunkCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxChunkCount' field"))
 	}
-	maxChunkCount := _maxChunkCount
 
 	if closeErr := readBuffer.CloseContext("OpcuaProtocolLimits"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpcuaProtocolLimits")

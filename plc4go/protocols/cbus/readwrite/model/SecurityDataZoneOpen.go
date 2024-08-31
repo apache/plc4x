@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func SecurityDataZoneOpenParse(ctx context.Context, theBytes []byte) (SecurityDa
 	return SecurityDataZoneOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataZoneOpenParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
+		return SecurityDataZoneOpenParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataZoneOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func SecurityDataZoneOpenParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("zoneNumber", 8)
-	if _zoneNumberErr != nil {
-		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneOpen")
+	zoneNumber, err := ReadSimpleField(ctx, "zoneNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneNumber' field"))
 	}
-	zoneNumber := _zoneNumber
 
 	if closeErr := readBuffer.CloseContext("SecurityDataZoneOpen"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataZoneOpen")

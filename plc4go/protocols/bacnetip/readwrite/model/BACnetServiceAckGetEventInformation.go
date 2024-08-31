@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetServiceAckGetEventInformationParse(ctx context.Context, theBytes []by
 	return BACnetServiceAckGetEventInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
+func BACnetServiceAckGetEventInformationParseWithBufferProducer(serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckGetEventInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckGetEventInformation, error) {
+		return BACnetServiceAckGetEventInformationParseWithBuffer(ctx, readBuffer, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetServiceAckGetEventInformationParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (listOfEventSummaries)
-	if pullErr := readBuffer.PullContext("listOfEventSummaries"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfEventSummaries")
-	}
-	_listOfEventSummaries, _listOfEventSummariesErr := BACnetEventSummariesListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _listOfEventSummariesErr != nil {
-		return nil, errors.Wrap(_listOfEventSummariesErr, "Error parsing 'listOfEventSummaries' field of BACnetServiceAckGetEventInformation")
-	}
-	listOfEventSummaries := _listOfEventSummaries.(BACnetEventSummariesList)
-	if closeErr := readBuffer.CloseContext("listOfEventSummaries"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfEventSummaries")
+	listOfEventSummaries, err := ReadSimpleField[BACnetEventSummariesList](ctx, "listOfEventSummaries", ReadComplex[BACnetEventSummariesList](BACnetEventSummariesListParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfEventSummaries' field"))
 	}
 
-	// Simple Field (moreEvents)
-	if pullErr := readBuffer.PullContext("moreEvents"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for moreEvents")
-	}
-	_moreEvents, _moreEventsErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _moreEventsErr != nil {
-		return nil, errors.Wrap(_moreEventsErr, "Error parsing 'moreEvents' field of BACnetServiceAckGetEventInformation")
-	}
-	moreEvents := _moreEvents.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("moreEvents"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for moreEvents")
+	moreEvents, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "moreEvents", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreEvents' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckGetEventInformation"); closeErr != nil {

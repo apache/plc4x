@@ -108,6 +108,12 @@ func CALDataResetParse(ctx context.Context, theBytes []byte, requestContext Requ
 	return CALDataResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
+func CALDataResetParseWithBufferProducer(requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataReset, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataReset, error) {
+		return CALDataResetParseWithBuffer(ctx, readBuffer, requestContext)
+	}
+}
+
 func CALDataResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataReset, error) {
 	positionAware := readBuffer
 	_ = positionAware

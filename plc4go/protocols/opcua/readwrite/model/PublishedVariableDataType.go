@@ -227,6 +227,12 @@ func PublishedVariableDataTypeParse(ctx context.Context, theBytes []byte, identi
 	return PublishedVariableDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PublishedVariableDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishedVariableDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishedVariableDataType, error) {
+		return PublishedVariableDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishedVariableDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -238,79 +244,45 @@ func PublishedVariableDataTypeParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (publishedVariable)
-	if pullErr := readBuffer.PullContext("publishedVariable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publishedVariable")
-	}
-	_publishedVariable, _publishedVariableErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _publishedVariableErr != nil {
-		return nil, errors.Wrap(_publishedVariableErr, "Error parsing 'publishedVariable' field of PublishedVariableDataType")
-	}
-	publishedVariable := _publishedVariable.(NodeId)
-	if closeErr := readBuffer.CloseContext("publishedVariable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publishedVariable")
+	publishedVariable, err := ReadSimpleField[NodeId](ctx, "publishedVariable", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedVariable' field"))
 	}
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of PublishedVariableDataType")
-	}
-	attributeId := _attributeId
-
-	// Simple Field (samplingIntervalHint)
-	_samplingIntervalHint, _samplingIntervalHintErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingIntervalHint", 64)
-	if _samplingIntervalHintErr != nil {
-		return nil, errors.Wrap(_samplingIntervalHintErr, "Error parsing 'samplingIntervalHint' field of PublishedVariableDataType")
-	}
-	samplingIntervalHint := _samplingIntervalHint
-
-	// Simple Field (deadbandType)
-	_deadbandType, _deadbandTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("deadbandType", 32)
-	if _deadbandTypeErr != nil {
-		return nil, errors.Wrap(_deadbandTypeErr, "Error parsing 'deadbandType' field of PublishedVariableDataType")
-	}
-	deadbandType := _deadbandType
-
-	// Simple Field (deadbandValue)
-	_deadbandValue, _deadbandValueErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("deadbandValue", 64)
-	if _deadbandValueErr != nil {
-		return nil, errors.Wrap(_deadbandValueErr, "Error parsing 'deadbandValue' field of PublishedVariableDataType")
-	}
-	deadbandValue := _deadbandValue
-
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
-	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of PublishedVariableDataType")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
 
-	// Simple Field (substituteValue)
-	if pullErr := readBuffer.PullContext("substituteValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for substituteValue")
-	}
-	_substituteValue, _substituteValueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _substituteValueErr != nil {
-		return nil, errors.Wrap(_substituteValueErr, "Error parsing 'substituteValue' field of PublishedVariableDataType")
-	}
-	substituteValue := _substituteValue.(Variant)
-	if closeErr := readBuffer.CloseContext("substituteValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for substituteValue")
+	samplingIntervalHint, err := ReadSimpleField(ctx, "samplingIntervalHint", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingIntervalHint' field"))
 	}
 
-	// Simple Field (noOfMetaDataProperties)
-	_noOfMetaDataProperties, _noOfMetaDataPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfMetaDataProperties", 32)
-	if _noOfMetaDataPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfMetaDataPropertiesErr, "Error parsing 'noOfMetaDataProperties' field of PublishedVariableDataType")
+	deadbandType, err := ReadSimpleField(ctx, "deadbandType", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandType' field"))
 	}
-	noOfMetaDataProperties := _noOfMetaDataProperties
+
+	deadbandValue, err := ReadSimpleField(ctx, "deadbandValue", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadbandValue' field"))
+	}
+
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
+	}
+
+	substituteValue, err := ReadSimpleField[Variant](ctx, "substituteValue", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'substituteValue' field"))
+	}
+
+	noOfMetaDataProperties, err := ReadSimpleField(ctx, "noOfMetaDataProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfMetaDataProperties' field"))
+	}
 
 	metaDataProperties, err := ReadCountArrayField[QualifiedName](ctx, "metaDataProperties", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer), uint64(noOfMetaDataProperties))
 	if err != nil {

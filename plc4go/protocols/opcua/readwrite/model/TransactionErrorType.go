@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func TransactionErrorTypeParse(ctx context.Context, theBytes []byte, identifier 
 	return TransactionErrorTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TransactionErrorTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TransactionErrorType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TransactionErrorType, error) {
+		return TransactionErrorTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TransactionErrorTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransactionErrorType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,43 +171,19 @@ func TransactionErrorTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (targetId)
-	if pullErr := readBuffer.PullContext("targetId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetId")
-	}
-	_targetId, _targetIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetIdErr != nil {
-		return nil, errors.Wrap(_targetIdErr, "Error parsing 'targetId' field of TransactionErrorType")
-	}
-	targetId := _targetId.(NodeId)
-	if closeErr := readBuffer.CloseContext("targetId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetId")
+	targetId, err := ReadSimpleField[NodeId](ctx, "targetId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetId' field"))
 	}
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
-	}
-	_error, _errorErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of TransactionErrorType")
-	}
-	error := _error.(StatusCode)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
+	error, err := ReadSimpleField[StatusCode](ctx, "error", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of TransactionErrorType")
-	}
-	message := _message.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[LocalizedText](ctx, "message", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TransactionErrorType"); closeErr != nil {

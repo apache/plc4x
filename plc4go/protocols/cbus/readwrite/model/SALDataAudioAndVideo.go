@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataAudioAndVideoParse(ctx context.Context, theBytes []byte, application
 	return SALDataAudioAndVideoParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataAudioAndVideoParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAudioAndVideo, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAudioAndVideo, error) {
+		return SALDataAudioAndVideoParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataAudioAndVideoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAudioAndVideo, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataAudioAndVideoParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (audioVideoData)
-	if pullErr := readBuffer.PullContext("audioVideoData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for audioVideoData")
-	}
-	_audioVideoData, _audioVideoDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _audioVideoDataErr != nil {
-		return nil, errors.Wrap(_audioVideoDataErr, "Error parsing 'audioVideoData' field of SALDataAudioAndVideo")
-	}
-	audioVideoData := _audioVideoData.(LightingData)
-	if closeErr := readBuffer.CloseContext("audioVideoData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for audioVideoData")
+	audioVideoData, err := ReadSimpleField[LightingData](ctx, "audioVideoData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'audioVideoData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAudioAndVideo"); closeErr != nil {

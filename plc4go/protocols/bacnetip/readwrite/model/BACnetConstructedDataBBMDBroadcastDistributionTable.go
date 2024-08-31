@@ -144,6 +144,12 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParse(ctx context.Contex
 	return BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
+		return BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBBMDBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware

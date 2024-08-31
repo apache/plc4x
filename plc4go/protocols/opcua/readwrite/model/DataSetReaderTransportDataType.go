@@ -109,6 +109,12 @@ func DataSetReaderTransportDataTypeParse(ctx context.Context, theBytes []byte, i
 	return DataSetReaderTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataSetReaderTransportDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetReaderTransportDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataSetReaderTransportDataType, error) {
+		return DataSetReaderTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataSetReaderTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataSetReaderTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

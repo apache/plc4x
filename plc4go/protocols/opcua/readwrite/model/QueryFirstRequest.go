@@ -205,6 +205,12 @@ func QueryFirstRequestParse(ctx context.Context, theBytes []byte, identifier str
 	return QueryFirstRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryFirstRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryFirstRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryFirstRequest, error) {
+		return QueryFirstRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryFirstRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -216,76 +222,40 @@ func QueryFirstRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of QueryFirstRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (view)
-	if pullErr := readBuffer.PullContext("view"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for view")
-	}
-	_view, _viewErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("513"))
-	if _viewErr != nil {
-		return nil, errors.Wrap(_viewErr, "Error parsing 'view' field of QueryFirstRequest")
-	}
-	view := _view.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("view"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for view")
+	view, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "view", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("513")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'view' field"))
 	}
 
-	// Simple Field (noOfNodeTypes)
-	_noOfNodeTypes, _noOfNodeTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodeTypes", 32)
-	if _noOfNodeTypesErr != nil {
-		return nil, errors.Wrap(_noOfNodeTypesErr, "Error parsing 'noOfNodeTypes' field of QueryFirstRequest")
+	noOfNodeTypes, err := ReadSimpleField(ctx, "noOfNodeTypes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodeTypes' field"))
 	}
-	noOfNodeTypes := _noOfNodeTypes
 
-	nodeTypes, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodeTypes", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("575"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfNodeTypes))
+	nodeTypes, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "nodeTypes", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("575")), readBuffer), uint64(noOfNodeTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeTypes' field"))
 	}
 
-	// Simple Field (filter)
-	if pullErr := readBuffer.PullContext("filter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filter")
-	}
-	_filter, _filterErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("588"))
-	if _filterErr != nil {
-		return nil, errors.Wrap(_filterErr, "Error parsing 'filter' field of QueryFirstRequest")
-	}
-	filter := _filter.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("filter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filter")
+	filter, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "filter", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("588")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filter' field"))
 	}
 
-	// Simple Field (maxDataSetsToReturn)
-	_maxDataSetsToReturn, _maxDataSetsToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxDataSetsToReturn", 32)
-	if _maxDataSetsToReturnErr != nil {
-		return nil, errors.Wrap(_maxDataSetsToReturnErr, "Error parsing 'maxDataSetsToReturn' field of QueryFirstRequest")
+	maxDataSetsToReturn, err := ReadSimpleField(ctx, "maxDataSetsToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxDataSetsToReturn' field"))
 	}
-	maxDataSetsToReturn := _maxDataSetsToReturn
 
-	// Simple Field (maxReferencesToReturn)
-	_maxReferencesToReturn, _maxReferencesToReturnErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxReferencesToReturn", 32)
-	if _maxReferencesToReturnErr != nil {
-		return nil, errors.Wrap(_maxReferencesToReturnErr, "Error parsing 'maxReferencesToReturn' field of QueryFirstRequest")
+	maxReferencesToReturn, err := ReadSimpleField(ctx, "maxReferencesToReturn", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxReferencesToReturn' field"))
 	}
-	maxReferencesToReturn := _maxReferencesToReturn
 
 	if closeErr := readBuffer.CloseContext("QueryFirstRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for QueryFirstRequest")

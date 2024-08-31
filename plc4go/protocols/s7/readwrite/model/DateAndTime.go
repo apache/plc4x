@@ -26,6 +26,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -173,6 +176,12 @@ func DateAndTimeParse(ctx context.Context, theBytes []byte) (DateAndTime, error)
 	return DateAndTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DateAndTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
+		return DateAndTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateAndTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,61 +193,45 @@ func DateAndTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (year)
-	_year, _yearErr := /*TODO: migrate me*/ readBuffer.ReadUint8("year", 8)
-	if _yearErr != nil {
-		return nil, errors.Wrap(_yearErr, "Error parsing 'year' field of DateAndTime")
+	year, err := ReadSimpleField(ctx, "year", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'year' field"))
 	}
-	year := _year
 
-	// Simple Field (month)
-	_month, _monthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("month", 8)
-	if _monthErr != nil {
-		return nil, errors.Wrap(_monthErr, "Error parsing 'month' field of DateAndTime")
+	month, err := ReadSimpleField(ctx, "month", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'month' field"))
 	}
-	month := _month
 
-	// Simple Field (day)
-	_day, _dayErr := /*TODO: migrate me*/ readBuffer.ReadUint8("day", 8)
-	if _dayErr != nil {
-		return nil, errors.Wrap(_dayErr, "Error parsing 'day' field of DateAndTime")
+	day, err := ReadSimpleField(ctx, "day", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'day' field"))
 	}
-	day := _day
 
-	// Simple Field (hour)
-	_hour, _hourErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hour", 8)
-	if _hourErr != nil {
-		return nil, errors.Wrap(_hourErr, "Error parsing 'hour' field of DateAndTime")
+	hour, err := ReadSimpleField(ctx, "hour", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hour' field"))
 	}
-	hour := _hour
 
-	// Simple Field (minutes)
-	_minutes, _minutesErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minutes", 8)
-	if _minutesErr != nil {
-		return nil, errors.Wrap(_minutesErr, "Error parsing 'minutes' field of DateAndTime")
+	minutes, err := ReadSimpleField(ctx, "minutes", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minutes' field"))
 	}
-	minutes := _minutes
 
-	// Simple Field (seconds)
-	_seconds, _secondsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("seconds", 8)
-	if _secondsErr != nil {
-		return nil, errors.Wrap(_secondsErr, "Error parsing 'seconds' field of DateAndTime")
+	seconds, err := ReadSimpleField(ctx, "seconds", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'seconds' field"))
 	}
-	seconds := _seconds
 
-	// Simple Field (msec)
-	_msec, _msecErr := /*TODO: migrate me*/ readBuffer.ReadUint16("msec", 12)
-	if _msecErr != nil {
-		return nil, errors.Wrap(_msecErr, "Error parsing 'msec' field of DateAndTime")
+	msec, err := ReadSimpleField(ctx, "msec", ReadUnsignedShort(readBuffer, uint8(12)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msec' field"))
 	}
-	msec := _msec
 
-	// Simple Field (dow)
-	_dow, _dowErr := /*TODO: migrate me*/ readBuffer.ReadUint8("dow", 4)
-	if _dowErr != nil {
-		return nil, errors.Wrap(_dowErr, "Error parsing 'dow' field of DateAndTime")
+	dow, err := ReadSimpleField(ctx, "dow", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithEncoding("BCD"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dow' field"))
 	}
-	dow := _dow
 
 	if closeErr := readBuffer.CloseContext("DateAndTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DateAndTime")

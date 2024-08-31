@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetOptionalCharacterStringValueParse(ctx context.Context, theBytes []byt
 	return BACnetOptionalCharacterStringValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalCharacterStringValueParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {
+		return BACnetOptionalCharacterStringValueParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetOptionalCharacterStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetOptionalCharacterStringValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterstring)
-	if pullErr := readBuffer.PullContext("characterstring"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterstring")
-	}
-	_characterstring, _characterstringErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _characterstringErr != nil {
-		return nil, errors.Wrap(_characterstringErr, "Error parsing 'characterstring' field of BACnetOptionalCharacterStringValue")
-	}
-	characterstring := _characterstring.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterstring"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterstring")
+	characterstring, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "characterstring", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterstring' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetOptionalCharacterStringValue"); closeErr != nil {

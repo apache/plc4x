@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func GenericAttributeValueParse(ctx context.Context, theBytes []byte, identifier
 	return GenericAttributeValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func GenericAttributeValueParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (GenericAttributeValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GenericAttributeValue, error) {
+		return GenericAttributeValueParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func GenericAttributeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (GenericAttributeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,24 +160,14 @@ func GenericAttributeValueParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of GenericAttributeValue")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of GenericAttributeValue")
-	}
-	value := _value.(Variant)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GenericAttributeValue"); closeErr != nil {

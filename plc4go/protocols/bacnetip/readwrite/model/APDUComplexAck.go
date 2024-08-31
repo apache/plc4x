@@ -269,6 +269,12 @@ func APDUComplexAckParse(ctx context.Context, theBytes []byte, apduLength uint16
 	return APDUComplexAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUComplexAckParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUComplexAck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUComplexAck, error) {
+		return APDUComplexAckParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUComplexAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -280,38 +286,32 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentedMessage)
-	_segmentedMessage, _segmentedMessageErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentedMessage")
-	if _segmentedMessageErr != nil {
-		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field of APDUComplexAck")
+	segmentedMessage, err := ReadSimpleField(ctx, "segmentedMessage", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentedMessage' field"))
 	}
-	segmentedMessage := _segmentedMessage
 
-	// Simple Field (moreFollows)
-	_moreFollows, _moreFollowsErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreFollows")
-	if _moreFollowsErr != nil {
-		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of APDUComplexAck")
+	moreFollows, err := ReadSimpleField(ctx, "moreFollows", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreFollows' field"))
 	}
-	moreFollows := _moreFollows
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUComplexAck")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
 
-	sequenceNumber, err := ReadOptionalField[uint8](ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	sequenceNumber, err := ReadOptionalField[uint8](ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)), segmentedMessage)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
 
-	proposedWindowSize, err := ReadOptionalField[uint8](ctx, "proposedWindowSize", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	proposedWindowSize, err := ReadOptionalField[uint8](ctx, "proposedWindowSize", ReadUnsignedByte(readBuffer, uint8(8)), segmentedMessage)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proposedWindowSize' field"))
 	}
@@ -321,13 +321,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	apduHeaderReduction := uint16(_apduHeaderReduction)
 	_ = apduHeaderReduction
 
-	_serviceAck, err := ReadOptionalField[BACnetServiceAck](ctx, "serviceAck", ReadComplex[BACnetServiceAck](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetServiceAck, error) {
-		v, err := BACnetServiceAckParseWithBuffer(ctx, readBuffer, (uint32)(uint32(apduLength)-uint32(apduHeaderReduction)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetServiceAck), nil
-	}, readBuffer), !(segmentedMessage))
+	_serviceAck, err := ReadOptionalField[BACnetServiceAck](ctx, "serviceAck", ReadComplex[BACnetServiceAck](BACnetServiceAckParseWithBufferProducer[BACnetServiceAck]((uint32)(uint32(apduLength)-uint32(apduHeaderReduction))), readBuffer), !(segmentedMessage))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceAck' field"))
 	}
@@ -341,7 +335,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service ack should be set"})
 	}
 
-	segmentServiceChoice, err := ReadOptionalField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, 8)), bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))))
+	segmentServiceChoice, err := ReadOptionalField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentServiceChoice' field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSlaveProxyEnableParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSlaveProxyEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSlaveProxyEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSlaveProxyEnable, error) {
+		return BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSlaveProxyEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (slaveProxyEnable)
-	if pullErr := readBuffer.PullContext("slaveProxyEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for slaveProxyEnable")
-	}
-	_slaveProxyEnable, _slaveProxyEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _slaveProxyEnableErr != nil {
-		return nil, errors.Wrap(_slaveProxyEnableErr, "Error parsing 'slaveProxyEnable' field of BACnetConstructedDataSlaveProxyEnable")
-	}
-	slaveProxyEnable := _slaveProxyEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("slaveProxyEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for slaveProxyEnable")
+	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slaveProxyEnable' field"))
 	}
 
 	// Virtual field

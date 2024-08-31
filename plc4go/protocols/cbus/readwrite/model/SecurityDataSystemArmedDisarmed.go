@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func SecurityDataSystemArmedDisarmedParse(ctx context.Context, theBytes []byte) 
 	return SecurityDataSystemArmedDisarmedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataSystemArmedDisarmedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
+		return SecurityDataSystemArmedDisarmedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataSystemArmedDisarmedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataSystemArmedDisarmed, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,17 +148,9 @@ func SecurityDataSystemArmedDisarmedParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (armCodeType)
-	if pullErr := readBuffer.PullContext("armCodeType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for armCodeType")
-	}
-	_armCodeType, _armCodeTypeErr := SecurityArmCodeParseWithBuffer(ctx, readBuffer)
-	if _armCodeTypeErr != nil {
-		return nil, errors.Wrap(_armCodeTypeErr, "Error parsing 'armCodeType' field of SecurityDataSystemArmedDisarmed")
-	}
-	armCodeType := _armCodeType.(SecurityArmCode)
-	if closeErr := readBuffer.CloseContext("armCodeType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for armCodeType")
+	armCodeType, err := ReadSimpleField[SecurityArmCode](ctx, "armCodeType", ReadComplex[SecurityArmCode](SecurityArmCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'armCodeType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SecurityDataSystemArmedDisarmed"); closeErr != nil {

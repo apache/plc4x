@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParse(ctx context.Conte
 	return BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccessEventAuthenticationFactorParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
+		return BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAccessEventAuthenticationFactorParseWithBuffer(ctx con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessEventAuthenticationFactor)
-	if pullErr := readBuffer.PullContext("accessEventAuthenticationFactor"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEventAuthenticationFactor")
-	}
-	_accessEventAuthenticationFactor, _accessEventAuthenticationFactorErr := BACnetAuthenticationFactorParseWithBuffer(ctx, readBuffer)
-	if _accessEventAuthenticationFactorErr != nil {
-		return nil, errors.Wrap(_accessEventAuthenticationFactorErr, "Error parsing 'accessEventAuthenticationFactor' field of BACnetConstructedDataAccessEventAuthenticationFactor")
-	}
-	accessEventAuthenticationFactor := _accessEventAuthenticationFactor.(BACnetAuthenticationFactor)
-	if closeErr := readBuffer.CloseContext("accessEventAuthenticationFactor"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEventAuthenticationFactor")
+	accessEventAuthenticationFactor, err := ReadSimpleField[BACnetAuthenticationFactor](ctx, "accessEventAuthenticationFactor", ReadComplex[BACnetAuthenticationFactor](BACnetAuthenticationFactorParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventAuthenticationFactor' field"))
 	}
 
 	// Virtual field

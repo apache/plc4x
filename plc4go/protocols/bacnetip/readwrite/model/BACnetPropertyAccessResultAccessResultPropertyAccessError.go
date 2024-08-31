@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParse(ctx context.
 	return BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 }
 
+func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBufferProducer(objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
+		return BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+	}
+}
+
 func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyAccessError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyAccessResultAccessResultPropertyAccessErrorParseWithBuffer(ct
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (propertyAccessError)
-	if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyAccessError")
-	}
-	_propertyAccessError, _propertyAccessErrorErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(5)))
-	if _propertyAccessErrorErr != nil {
-		return nil, errors.Wrap(_propertyAccessErrorErr, "Error parsing 'propertyAccessError' field of BACnetPropertyAccessResultAccessResultPropertyAccessError")
-	}
-	propertyAccessError := _propertyAccessError.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyAccessError")
+	propertyAccessError, err := ReadSimpleField[ErrorEnclosed](ctx, "propertyAccessError", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(5))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyAccessError' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyAccessResultAccessResultPropertyAccessError"); closeErr != nil {

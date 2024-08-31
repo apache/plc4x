@@ -140,6 +140,17 @@ func BACnetOptionalCharacterStringParse(ctx context.Context, theBytes []byte) (B
 	return BACnetOptionalCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetOptionalCharacterStringParseWithBufferProducer[T BACnetOptionalCharacterString]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetOptionalCharacterStringParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetOptionalCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetOptionalCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware

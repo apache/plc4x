@@ -148,6 +148,12 @@ func ModbusPDUReadFifoQueueResponseParse(ctx context.Context, theBytes []byte, r
 	return ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadFifoQueueResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFifoQueueResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFifoQueueResponse, error) {
+		return ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,19 +165,19 @@ func ModbusPDUReadFifoQueueResponseParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	byteCount, err := ReadImplicitField[uint16](ctx, "byteCount", ReadUnsignedShort(readBuffer, 16))
+	byteCount, err := ReadImplicitField[uint16](ctx, "byteCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
 	_ = byteCount
 
-	fifoCount, err := ReadImplicitField[uint16](ctx, "fifoCount", ReadUnsignedShort(readBuffer, 16))
+	fifoCount, err := ReadImplicitField[uint16](ctx, "fifoCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoCount' field"))
 	}
 	_ = fifoCount
 
-	fifoValue, err := ReadCountArrayField[uint16](ctx, "fifoValue", ReadUnsignedShort(readBuffer, 16), uint64(fifoCount))
+	fifoValue, err := ReadCountArrayField[uint16](ctx, "fifoValue", ReadUnsignedShort(readBuffer, uint8(16)), uint64(fifoCount))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoValue' field"))
 	}

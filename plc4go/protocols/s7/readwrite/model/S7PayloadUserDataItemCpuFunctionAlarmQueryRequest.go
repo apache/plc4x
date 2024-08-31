@@ -218,6 +218,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParse(ctx context.Context,
 	return S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
+		return S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -229,77 +235,53 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryRequestParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, 8), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_FUNCTIONID)
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_FUNCTIONID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
 	_ = functionId
 
-	numberMessageObj, err := ReadConstField[uint8](ctx, "numberMessageObj", ReadUnsignedByte(readBuffer, 8), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_NUMBERMESSAGEOBJ)
+	numberMessageObj, err := ReadConstField[uint8](ctx, "numberMessageObj", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_NUMBERMESSAGEOBJ)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberMessageObj' field"))
 	}
 	_ = numberMessageObj
 
-	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, 8), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_VARIABLESPEC)
+	variableSpec, err := ReadConstField[uint8](ctx, "variableSpec", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_VARIABLESPEC)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'variableSpec' field"))
 	}
 	_ = variableSpec
 
-	length, err := ReadConstField[uint8](ctx, "length", ReadUnsignedByte(readBuffer, 8), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_LENGTH)
+	length, err := ReadConstField[uint8](ctx, "length", ReadUnsignedByte(readBuffer, uint8(8)), S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_LENGTH)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 	_ = length
 
-	// Simple Field (syntaxId)
-	if pullErr := readBuffer.PullContext("syntaxId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for syntaxId")
-	}
-	_syntaxId, _syntaxIdErr := SyntaxIdTypeParseWithBuffer(ctx, readBuffer)
-	if _syntaxIdErr != nil {
-		return nil, errors.Wrap(_syntaxIdErr, "Error parsing 'syntaxId' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
-	}
-	syntaxId := _syntaxId
-	if closeErr := readBuffer.CloseContext("syntaxId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for syntaxId")
+	syntaxId, err := ReadEnumField[SyntaxIdType](ctx, "syntaxId", "SyntaxIdType", ReadEnum(SyntaxIdTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'syntaxId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (queryType)
-	if pullErr := readBuffer.PullContext("queryType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for queryType")
-	}
-	_queryType, _queryTypeErr := QueryTypeParseWithBuffer(ctx, readBuffer)
-	if _queryTypeErr != nil {
-		return nil, errors.Wrap(_queryTypeErr, "Error parsing 'queryType' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
-	}
-	queryType := _queryType
-	if closeErr := readBuffer.CloseContext("queryType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for queryType")
+	queryType, err := ReadEnumField[QueryType](ctx, "queryType", "QueryType", ReadEnum(QueryTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'queryType' field"))
 	}
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x34))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x34))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (alarmType)
-	if pullErr := readBuffer.PullContext("alarmType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alarmType")
-	}
-	_alarmType, _alarmTypeErr := AlarmTypeParseWithBuffer(ctx, readBuffer)
-	if _alarmTypeErr != nil {
-		return nil, errors.Wrap(_alarmTypeErr, "Error parsing 'alarmType' field of S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
-	}
-	alarmType := _alarmType
-	if closeErr := readBuffer.CloseContext("alarmType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alarmType")
+	alarmType, err := ReadEnumField[AlarmType](ctx, "alarmType", "AlarmType", ReadEnum(AlarmTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionAlarmQueryRequest"); closeErr != nil {

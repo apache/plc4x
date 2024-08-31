@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func StatusByteParse(ctx context.Context, theBytes []byte) (StatusByte, error) {
 	return StatusByteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusByteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
+		return StatusByteParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,56 +152,24 @@ func StatusByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (gav3)
-	if pullErr := readBuffer.PullContext("gav3"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gav3")
-	}
-	_gav3, _gav3Err := GAVStateParseWithBuffer(ctx, readBuffer)
-	if _gav3Err != nil {
-		return nil, errors.Wrap(_gav3Err, "Error parsing 'gav3' field of StatusByte")
-	}
-	gav3 := _gav3
-	if closeErr := readBuffer.CloseContext("gav3"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gav3")
+	gav3, err := ReadEnumField[GAVState](ctx, "gav3", "GAVState", ReadEnum(GAVStateByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gav3' field"))
 	}
 
-	// Simple Field (gav2)
-	if pullErr := readBuffer.PullContext("gav2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gav2")
-	}
-	_gav2, _gav2Err := GAVStateParseWithBuffer(ctx, readBuffer)
-	if _gav2Err != nil {
-		return nil, errors.Wrap(_gav2Err, "Error parsing 'gav2' field of StatusByte")
-	}
-	gav2 := _gav2
-	if closeErr := readBuffer.CloseContext("gav2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gav2")
+	gav2, err := ReadEnumField[GAVState](ctx, "gav2", "GAVState", ReadEnum(GAVStateByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gav2' field"))
 	}
 
-	// Simple Field (gav1)
-	if pullErr := readBuffer.PullContext("gav1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gav1")
-	}
-	_gav1, _gav1Err := GAVStateParseWithBuffer(ctx, readBuffer)
-	if _gav1Err != nil {
-		return nil, errors.Wrap(_gav1Err, "Error parsing 'gav1' field of StatusByte")
-	}
-	gav1 := _gav1
-	if closeErr := readBuffer.CloseContext("gav1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gav1")
+	gav1, err := ReadEnumField[GAVState](ctx, "gav1", "GAVState", ReadEnum(GAVStateByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gav1' field"))
 	}
 
-	// Simple Field (gav0)
-	if pullErr := readBuffer.PullContext("gav0"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gav0")
-	}
-	_gav0, _gav0Err := GAVStateParseWithBuffer(ctx, readBuffer)
-	if _gav0Err != nil {
-		return nil, errors.Wrap(_gav0Err, "Error parsing 'gav0' field of StatusByte")
-	}
-	gav0 := _gav0
-	if closeErr := readBuffer.CloseContext("gav0"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gav0")
+	gav0, err := ReadEnumField[GAVState](ctx, "gav0", "GAVState", ReadEnum(GAVStateByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gav0' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusByte"); closeErr != nil {

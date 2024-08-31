@@ -120,6 +120,12 @@ func ErrorResponseParse(ctx context.Context, theBytes []byte) (ErrorResponse, er
 	return ErrorResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ErrorResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorResponse, error) {
+		return ErrorResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ErrorResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

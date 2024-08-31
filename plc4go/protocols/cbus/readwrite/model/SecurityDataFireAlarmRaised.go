@@ -108,6 +108,12 @@ func SecurityDataFireAlarmRaisedParse(ctx context.Context, theBytes []byte) (Sec
 	return SecurityDataFireAlarmRaisedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataFireAlarmRaisedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataFireAlarmRaised, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataFireAlarmRaised, error) {
+		return SecurityDataFireAlarmRaisedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataFireAlarmRaisedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataFireAlarmRaised, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MeteringDataOtherWaterConsumptionParse(ctx context.Context, theBytes []byte
 	return MeteringDataOtherWaterConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataOtherWaterConsumptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOtherWaterConsumption, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOtherWaterConsumption, error) {
+		return MeteringDataOtherWaterConsumptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataOtherWaterConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataOtherWaterConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MeteringDataOtherWaterConsumptionParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (kL)
-	_kL, _kLErr := /*TODO: migrate me*/ readBuffer.ReadUint32("kL", 32)
-	if _kLErr != nil {
-		return nil, errors.Wrap(_kLErr, "Error parsing 'kL' field of MeteringDataOtherWaterConsumption")
+	kL, err := ReadSimpleField(ctx, "kL", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'kL' field"))
 	}
-	kL := _kL
 
 	if closeErr := readBuffer.CloseContext("MeteringDataOtherWaterConsumption"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataOtherWaterConsumption")

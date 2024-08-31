@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLoggingTypeParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataLoggingTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLoggingTypeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLoggingType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLoggingType, error) {
+		return BACnetConstructedDataLoggingTypeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLoggingTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLoggingTypeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (loggingType)
-	if pullErr := readBuffer.PullContext("loggingType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for loggingType")
-	}
-	_loggingType, _loggingTypeErr := BACnetLoggingTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _loggingTypeErr != nil {
-		return nil, errors.Wrap(_loggingTypeErr, "Error parsing 'loggingType' field of BACnetConstructedDataLoggingType")
-	}
-	loggingType := _loggingType.(BACnetLoggingTypeTagged)
-	if closeErr := readBuffer.CloseContext("loggingType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for loggingType")
+	loggingType, err := ReadSimpleField[BACnetLoggingTypeTagged](ctx, "loggingType", ReadComplex[BACnetLoggingTypeTagged](BACnetLoggingTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'loggingType' field"))
 	}
 
 	// Virtual field

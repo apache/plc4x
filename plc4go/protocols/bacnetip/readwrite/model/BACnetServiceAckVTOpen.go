@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetServiceAckVTOpenParse(ctx context.Context, theBytes []byte, serviceAc
 	return BACnetServiceAckVTOpenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckLength)
 }
 
+func BACnetServiceAckVTOpenParseWithBufferProducer(serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckVTOpen, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckVTOpen, error) {
+		return BACnetServiceAckVTOpenParseWithBuffer(ctx, readBuffer, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckVTOpenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckLength uint32) (BACnetServiceAckVTOpen, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetServiceAckVTOpenParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (remoteVtSessionIdentifier)
-	if pullErr := readBuffer.PullContext("remoteVtSessionIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for remoteVtSessionIdentifier")
-	}
-	_remoteVtSessionIdentifier, _remoteVtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _remoteVtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_remoteVtSessionIdentifierErr, "Error parsing 'remoteVtSessionIdentifier' field of BACnetServiceAckVTOpen")
-	}
-	remoteVtSessionIdentifier := _remoteVtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("remoteVtSessionIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for remoteVtSessionIdentifier")
+	remoteVtSessionIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "remoteVtSessionIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'remoteVtSessionIdentifier' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckVTOpen"); closeErr != nil {

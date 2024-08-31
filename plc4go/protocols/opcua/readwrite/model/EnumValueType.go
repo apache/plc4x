@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func EnumValueTypeParse(ctx context.Context, theBytes []byte, identifier string)
 	return EnumValueTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EnumValueTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EnumValueType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EnumValueType, error) {
+		return EnumValueTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EnumValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EnumValueType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,37 +171,19 @@ func EnumValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadInt64("value", 64)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of EnumValueType")
-	}
-	value := _value
-
-	// Simple Field (displayName)
-	if pullErr := readBuffer.PullContext("displayName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for displayName")
-	}
-	_displayName, _displayNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _displayNameErr != nil {
-		return nil, errors.Wrap(_displayNameErr, "Error parsing 'displayName' field of EnumValueType")
-	}
-	displayName := _displayName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("displayName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for displayName")
+	value, err := ReadSimpleField(ctx, "value", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
+	displayName, err := ReadSimpleField[LocalizedText](ctx, "displayName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'displayName' field"))
 	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of EnumValueType")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EnumValueType"); closeErr != nil {

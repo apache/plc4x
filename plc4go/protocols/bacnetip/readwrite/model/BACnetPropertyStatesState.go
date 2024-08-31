@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesStateParse(ctx context.Context, theBytes []byte, peeked
 	return BACnetPropertyStatesStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesState, error) {
+		return BACnetPropertyStatesStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesStateParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (state)
-	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for state")
-	}
-	_state, _stateErr := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of BACnetPropertyStatesState")
-	}
-	state := _state.(BACnetEventStateTagged)
-	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for state")
+	state, err := ReadSimpleField[BACnetEventStateTagged](ctx, "state", ReadComplex[BACnetEventStateTagged](BACnetEventStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesState"); closeErr != nil {

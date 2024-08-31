@@ -248,6 +248,12 @@ func SetTriggeringResponseParse(ctx context.Context, theBytes []byte, identifier
 	return SetTriggeringResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SetTriggeringResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetTriggeringResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetTriggeringResponse, error) {
+		return SetTriggeringResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -259,61 +265,45 @@ func SetTriggeringResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of SetTriggeringResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (noOfAddResults)
-	_noOfAddResults, _noOfAddResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAddResults", 32)
-	if _noOfAddResultsErr != nil {
-		return nil, errors.Wrap(_noOfAddResultsErr, "Error parsing 'noOfAddResults' field of SetTriggeringResponse")
+	noOfAddResults, err := ReadSimpleField(ctx, "noOfAddResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddResults' field"))
 	}
-	noOfAddResults := _noOfAddResults
 
 	addResults, err := ReadCountArrayField[StatusCode](ctx, "addResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfAddResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addResults' field"))
 	}
 
-	// Simple Field (noOfAddDiagnosticInfos)
-	_noOfAddDiagnosticInfos, _noOfAddDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAddDiagnosticInfos", 32)
-	if _noOfAddDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfAddDiagnosticInfosErr, "Error parsing 'noOfAddDiagnosticInfos' field of SetTriggeringResponse")
+	noOfAddDiagnosticInfos, err := ReadSimpleField(ctx, "noOfAddDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAddDiagnosticInfos' field"))
 	}
-	noOfAddDiagnosticInfos := _noOfAddDiagnosticInfos
 
 	addDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "addDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfAddDiagnosticInfos))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'addDiagnosticInfos' field"))
 	}
 
-	// Simple Field (noOfRemoveResults)
-	_noOfRemoveResults, _noOfRemoveResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRemoveResults", 32)
-	if _noOfRemoveResultsErr != nil {
-		return nil, errors.Wrap(_noOfRemoveResultsErr, "Error parsing 'noOfRemoveResults' field of SetTriggeringResponse")
+	noOfRemoveResults, err := ReadSimpleField(ctx, "noOfRemoveResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveResults' field"))
 	}
-	noOfRemoveResults := _noOfRemoveResults
 
 	removeResults, err := ReadCountArrayField[StatusCode](ctx, "removeResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfRemoveResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeResults' field"))
 	}
 
-	// Simple Field (noOfRemoveDiagnosticInfos)
-	_noOfRemoveDiagnosticInfos, _noOfRemoveDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRemoveDiagnosticInfos", 32)
-	if _noOfRemoveDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfRemoveDiagnosticInfosErr, "Error parsing 'noOfRemoveDiagnosticInfos' field of SetTriggeringResponse")
+	noOfRemoveDiagnosticInfos, err := ReadSimpleField(ctx, "noOfRemoveDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRemoveDiagnosticInfos' field"))
 	}
-	noOfRemoveDiagnosticInfos := _noOfRemoveDiagnosticInfos
 
 	removeDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "removeDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfRemoveDiagnosticInfos))
 	if err != nil {

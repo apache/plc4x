@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func AirConditioningDataZoneTemperatureParse(ctx context.Context, theBytes []byt
 	return AirConditioningDataZoneTemperatureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AirConditioningDataZoneTemperatureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
+		return AirConditioningDataZoneTemperatureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AirConditioningDataZoneTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataZoneTemperature, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,50 +180,24 @@ func AirConditioningDataZoneTemperatureParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataZoneTemperature")
-	}
-	zoneGroup := _zoneGroup
-
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
-	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataZoneTemperature")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
 
-	// Simple Field (temperature)
-	if pullErr := readBuffer.PullContext("temperature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for temperature")
-	}
-	_temperature, _temperatureErr := HVACTemperatureParseWithBuffer(ctx, readBuffer)
-	if _temperatureErr != nil {
-		return nil, errors.Wrap(_temperatureErr, "Error parsing 'temperature' field of AirConditioningDataZoneTemperature")
-	}
-	temperature := _temperature.(HVACTemperature)
-	if closeErr := readBuffer.CloseContext("temperature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for temperature")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
 
-	// Simple Field (sensorStatus)
-	if pullErr := readBuffer.PullContext("sensorStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sensorStatus")
+	temperature, err := ReadSimpleField[HVACTemperature](ctx, "temperature", ReadComplex[HVACTemperature](HVACTemperatureParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperature' field"))
 	}
-	_sensorStatus, _sensorStatusErr := HVACSensorStatusParseWithBuffer(ctx, readBuffer)
-	if _sensorStatusErr != nil {
-		return nil, errors.Wrap(_sensorStatusErr, "Error parsing 'sensorStatus' field of AirConditioningDataZoneTemperature")
-	}
-	sensorStatus := _sensorStatus
-	if closeErr := readBuffer.CloseContext("sensorStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sensorStatus")
+
+	sensorStatus, err := ReadEnumField[HVACSensorStatus](ctx, "sensorStatus", "HVACSensorStatus", ReadEnum(HVACSensorStatusByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sensorStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataZoneTemperature"); closeErr != nil {

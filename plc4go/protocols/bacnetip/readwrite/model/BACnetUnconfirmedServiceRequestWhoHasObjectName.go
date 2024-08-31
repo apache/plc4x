@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParse(ctx context.Context, t
 	return BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
+		return BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHasObjectName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectName)
-	if pullErr := readBuffer.PullContext("objectName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectName")
-	}
-	_objectName, _objectNameErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _objectNameErr != nil {
-		return nil, errors.Wrap(_objectNameErr, "Error parsing 'objectName' field of BACnetUnconfirmedServiceRequestWhoHasObjectName")
-	}
-	objectName := _objectName.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("objectName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectName")
+	objectName, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "objectName", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWhoHasObjectName"); closeErr != nil {

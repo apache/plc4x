@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func SemanticChangeStructureDataTypeParse(ctx context.Context, theBytes []byte, 
 	return SemanticChangeStructureDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SemanticChangeStructureDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticChangeStructureDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticChangeStructureDataType, error) {
+		return SemanticChangeStructureDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SemanticChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SemanticChangeStructureDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func SemanticChangeStructureDataTypeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (affected)
-	if pullErr := readBuffer.PullContext("affected"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for affected")
-	}
-	_affected, _affectedErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _affectedErr != nil {
-		return nil, errors.Wrap(_affectedErr, "Error parsing 'affected' field of SemanticChangeStructureDataType")
-	}
-	affected := _affected.(NodeId)
-	if closeErr := readBuffer.CloseContext("affected"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for affected")
+	affected, err := ReadSimpleField[NodeId](ctx, "affected", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'affected' field"))
 	}
 
-	// Simple Field (affectedType)
-	if pullErr := readBuffer.PullContext("affectedType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for affectedType")
-	}
-	_affectedType, _affectedTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _affectedTypeErr != nil {
-		return nil, errors.Wrap(_affectedTypeErr, "Error parsing 'affectedType' field of SemanticChangeStructureDataType")
-	}
-	affectedType := _affectedType.(NodeId)
-	if closeErr := readBuffer.CloseContext("affectedType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for affectedType")
+	affectedType, err := ReadSimpleField[NodeId](ctx, "affectedType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'affectedType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SemanticChangeStructureDataType"); closeErr != nil {

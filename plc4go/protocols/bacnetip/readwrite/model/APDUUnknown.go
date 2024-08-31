@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func APDUUnknownParse(ctx context.Context, theBytes []byte, apduLength uint16) (
 	return APDUUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUUnknownParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUUnknown, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUUnknown, error) {
+		return APDUUnknownParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,12 +162,10 @@ func APDUUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unknownTypeRest)
-	_unknownTypeRest, _unknownTypeRestErr := /*TODO: migrate me*/ readBuffer.ReadUint8("unknownTypeRest", 4)
-	if _unknownTypeRestErr != nil {
-		return nil, errors.Wrap(_unknownTypeRestErr, "Error parsing 'unknownTypeRest' field of APDUUnknown")
+	unknownTypeRest, err := ReadSimpleField(ctx, "unknownTypeRest", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownTypeRest' field"))
 	}
-	unknownTypeRest := _unknownTypeRest
 
 	unknownBytes, err := readBuffer.ReadByteArray("unknownBytes", int(utils.InlineIf((bool((apduLength) > (0))), func() any { return int32(apduLength) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {

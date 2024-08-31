@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataElevatorGroupParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataElevatorGroupParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataElevatorGroupParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElevatorGroup, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElevatorGroup, error) {
+		return BACnetConstructedDataElevatorGroupParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataElevatorGroupParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElevatorGroup, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataElevatorGroupParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (elevatorGroup)
-	if pullErr := readBuffer.PullContext("elevatorGroup"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for elevatorGroup")
-	}
-	_elevatorGroup, _elevatorGroupErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _elevatorGroupErr != nil {
-		return nil, errors.Wrap(_elevatorGroupErr, "Error parsing 'elevatorGroup' field of BACnetConstructedDataElevatorGroup")
-	}
-	elevatorGroup := _elevatorGroup.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("elevatorGroup"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for elevatorGroup")
+	elevatorGroup, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elevatorGroup' field"))
 	}
 
 	// Virtual field

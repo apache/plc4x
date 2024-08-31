@@ -139,6 +139,12 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParse(ctx context.Context
 	return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), payloadLength)
 }
 
+func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBufferProducer(payloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
+		return DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx, readBuffer, payloadLength)
+	}
+}
+
 func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1CommandResponseMessageProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -150,7 +156,7 @@ func DF1CommandResponseMessageProtectedTypedLogicalReadParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	data, err := ReadLengthArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, 8), int(int32(payloadLength)-int32(int32(8))))
+	data, err := ReadLengthArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, uint8(8)), int(int32(payloadLength)-int32(int32(8))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

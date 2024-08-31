@@ -140,6 +140,17 @@ func BACnetClientCOVParse(ctx context.Context, theBytes []byte) (BACnetClientCOV
 	return BACnetClientCOVParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetClientCOVParseWithBufferProducer[T BACnetClientCOV]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetClientCOVParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetClientCOVParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClientCOV, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func ChannelSecurityTokenParse(ctx context.Context, theBytes []byte, identifier 
 	return ChannelSecurityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ChannelSecurityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelSecurityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelSecurityToken, error) {
+		return ChannelSecurityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ChannelSecurityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ChannelSecurityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,33 +182,25 @@ func ChannelSecurityTokenParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (channelId)
-	_channelId, _channelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("channelId", 32)
-	if _channelIdErr != nil {
-		return nil, errors.Wrap(_channelIdErr, "Error parsing 'channelId' field of ChannelSecurityToken")
+	channelId, err := ReadSimpleField(ctx, "channelId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelId' field"))
 	}
-	channelId := _channelId
 
-	// Simple Field (tokenId)
-	_tokenId, _tokenIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("tokenId", 32)
-	if _tokenIdErr != nil {
-		return nil, errors.Wrap(_tokenIdErr, "Error parsing 'tokenId' field of ChannelSecurityToken")
+	tokenId, err := ReadSimpleField(ctx, "tokenId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tokenId' field"))
 	}
-	tokenId := _tokenId
 
-	// Simple Field (createdAt)
-	_createdAt, _createdAtErr := /*TODO: migrate me*/ readBuffer.ReadInt64("createdAt", 64)
-	if _createdAtErr != nil {
-		return nil, errors.Wrap(_createdAtErr, "Error parsing 'createdAt' field of ChannelSecurityToken")
+	createdAt, err := ReadSimpleField(ctx, "createdAt", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'createdAt' field"))
 	}
-	createdAt := _createdAt
 
-	// Simple Field (revisedLifetime)
-	_revisedLifetime, _revisedLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedLifetime", 32)
-	if _revisedLifetimeErr != nil {
-		return nil, errors.Wrap(_revisedLifetimeErr, "Error parsing 'revisedLifetime' field of ChannelSecurityToken")
+	revisedLifetime, err := ReadSimpleField(ctx, "revisedLifetime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedLifetime' field"))
 	}
-	revisedLifetime := _revisedLifetime
 
 	if closeErr := readBuffer.CloseContext("ChannelSecurityToken"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ChannelSecurityToken")

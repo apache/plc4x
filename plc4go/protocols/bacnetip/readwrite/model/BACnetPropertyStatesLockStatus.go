@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLockStatusParse(ctx context.Context, theBytes []byte, p
 	return BACnetPropertyStatesLockStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLockStatusParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLockStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLockStatus, error) {
+		return BACnetPropertyStatesLockStatusParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLockStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLockStatusParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lockStatus)
-	if pullErr := readBuffer.PullContext("lockStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lockStatus")
-	}
-	_lockStatus, _lockStatusErr := BACnetLockStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lockStatusErr != nil {
-		return nil, errors.Wrap(_lockStatusErr, "Error parsing 'lockStatus' field of BACnetPropertyStatesLockStatus")
-	}
-	lockStatus := _lockStatus.(BACnetLockStatusTagged)
-	if closeErr := readBuffer.CloseContext("lockStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lockStatus")
+	lockStatus, err := ReadSimpleField[BACnetLockStatusTagged](ctx, "lockStatus", ReadComplex[BACnetLockStatusTagged](BACnetLockStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLockStatus"); closeErr != nil {

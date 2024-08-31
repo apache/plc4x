@@ -179,6 +179,12 @@ func ServicesResponseParse(ctx context.Context, theBytes []byte) (ServicesRespon
 	return ServicesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ServicesResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ServicesResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServicesResponse, error) {
+		return ServicesResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -190,42 +196,36 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serviceLen, err := ReadImplicitField[uint16](ctx, "serviceLen", ReadUnsignedShort(readBuffer, 16))
+	serviceLen, err := ReadImplicitField[uint16](ctx, "serviceLen", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceLen' field"))
 	}
 	_ = serviceLen
 
-	// Simple Field (encapsulationProtocol)
-	_encapsulationProtocol, _encapsulationProtocolErr := /*TODO: migrate me*/ readBuffer.ReadUint16("encapsulationProtocol", 16)
-	if _encapsulationProtocolErr != nil {
-		return nil, errors.Wrap(_encapsulationProtocolErr, "Error parsing 'encapsulationProtocol' field of ServicesResponse")
+	encapsulationProtocol, err := ReadSimpleField(ctx, "encapsulationProtocol", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encapsulationProtocol' field"))
 	}
-	encapsulationProtocol := _encapsulationProtocol
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (supportsCIPEncapsulation)
-	_supportsCIPEncapsulation, _supportsCIPEncapsulationErr := /*TODO: migrate me*/ readBuffer.ReadBit("supportsCIPEncapsulation")
-	if _supportsCIPEncapsulationErr != nil {
-		return nil, errors.Wrap(_supportsCIPEncapsulationErr, "Error parsing 'supportsCIPEncapsulation' field of ServicesResponse")
+	supportsCIPEncapsulation, err := ReadSimpleField(ctx, "supportsCIPEncapsulation", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'supportsCIPEncapsulation' field"))
 	}
-	supportsCIPEncapsulation := _supportsCIPEncapsulation
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 12), uint16(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(12)), uint16(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (supportsUDP)
-	_supportsUDP, _supportsUDPErr := /*TODO: migrate me*/ readBuffer.ReadBit("supportsUDP")
-	if _supportsUDPErr != nil {
-		return nil, errors.Wrap(_supportsUDPErr, "Error parsing 'supportsUDP' field of ServicesResponse")
+	supportsUDP, err := ReadSimpleField(ctx, "supportsUDP", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'supportsUDP' field"))
 	}
-	supportsUDP := _supportsUDP
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(serviceLen)-int32(int32(4))))
 	if err != nil {

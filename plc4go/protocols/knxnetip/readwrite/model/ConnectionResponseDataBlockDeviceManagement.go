@@ -110,6 +110,12 @@ func ConnectionResponseDataBlockDeviceManagementParse(ctx context.Context, theBy
 	return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectionResponseDataBlockDeviceManagementParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
+		return ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionResponseDataBlockDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponseDataBlockDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware

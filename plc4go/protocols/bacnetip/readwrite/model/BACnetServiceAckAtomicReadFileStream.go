@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetServiceAckAtomicReadFileStreamParse(ctx context.Context, theBytes []b
 	return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetServiceAckAtomicReadFileStreamParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
+		return BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAtomicReadFileStream, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetServiceAckAtomicReadFileStreamParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileStartPosition)
-	if pullErr := readBuffer.PullContext("fileStartPosition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileStartPosition")
-	}
-	_fileStartPosition, _fileStartPositionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileStartPositionErr != nil {
-		return nil, errors.Wrap(_fileStartPositionErr, "Error parsing 'fileStartPosition' field of BACnetServiceAckAtomicReadFileStream")
-	}
-	fileStartPosition := _fileStartPosition.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("fileStartPosition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileStartPosition")
+	fileStartPosition, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "fileStartPosition", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileStartPosition' field"))
 	}
 
-	// Simple Field (fileData)
-	if pullErr := readBuffer.PullContext("fileData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileData")
-	}
-	_fileData, _fileDataErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _fileDataErr != nil {
-		return nil, errors.Wrap(_fileDataErr, "Error parsing 'fileData' field of BACnetServiceAckAtomicReadFileStream")
-	}
-	fileData := _fileData.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("fileData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileData")
+	fileData, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "fileData", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetServiceAckAtomicReadFileStream"); closeErr != nil {

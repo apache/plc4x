@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLiftCarDriveStatusParse(ctx context.Context, theBytes [
 	return BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLiftCarDriveStatusParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDriveStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftCarDriveStatus, error) {
+		return BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftCarDriveStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLiftCarDriveStatusParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftCarDriveStatus)
-	if pullErr := readBuffer.PullContext("liftCarDriveStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftCarDriveStatus")
-	}
-	_liftCarDriveStatus, _liftCarDriveStatusErr := BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftCarDriveStatusErr != nil {
-		return nil, errors.Wrap(_liftCarDriveStatusErr, "Error parsing 'liftCarDriveStatus' field of BACnetPropertyStatesLiftCarDriveStatus")
-	}
-	liftCarDriveStatus := _liftCarDriveStatus.(BACnetLiftCarDriveStatusTagged)
-	if closeErr := readBuffer.CloseContext("liftCarDriveStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftCarDriveStatus")
+	liftCarDriveStatus, err := ReadSimpleField[BACnetLiftCarDriveStatusTagged](ctx, "liftCarDriveStatus", ReadComplex[BACnetLiftCarDriveStatusTagged](BACnetLiftCarDriveStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftCarDriveStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftCarDriveStatus"); closeErr != nil {

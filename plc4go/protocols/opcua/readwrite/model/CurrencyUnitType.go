@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func CurrencyUnitTypeParse(ctx context.Context, theBytes []byte, identifier stri
 	return CurrencyUnitTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CurrencyUnitTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CurrencyUnitType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CurrencyUnitType, error) {
+		return CurrencyUnitTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CurrencyUnitTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CurrencyUnitType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,44 +182,24 @@ func CurrencyUnitTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numericCode)
-	_numericCode, _numericCodeErr := /*TODO: migrate me*/ readBuffer.ReadInt16("numericCode", 16)
-	if _numericCodeErr != nil {
-		return nil, errors.Wrap(_numericCodeErr, "Error parsing 'numericCode' field of CurrencyUnitType")
-	}
-	numericCode := _numericCode
-
-	// Simple Field (exponent)
-	_exponent, _exponentErr := /*TODO: migrate me*/ readBuffer.ReadInt8("exponent", 8)
-	if _exponentErr != nil {
-		return nil, errors.Wrap(_exponentErr, "Error parsing 'exponent' field of CurrencyUnitType")
-	}
-	exponent := _exponent
-
-	// Simple Field (alphabeticCode)
-	if pullErr := readBuffer.PullContext("alphabeticCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for alphabeticCode")
-	}
-	_alphabeticCode, _alphabeticCodeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _alphabeticCodeErr != nil {
-		return nil, errors.Wrap(_alphabeticCodeErr, "Error parsing 'alphabeticCode' field of CurrencyUnitType")
-	}
-	alphabeticCode := _alphabeticCode.(PascalString)
-	if closeErr := readBuffer.CloseContext("alphabeticCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for alphabeticCode")
+	numericCode, err := ReadSimpleField(ctx, "numericCode", ReadSignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numericCode' field"))
 	}
 
-	// Simple Field (currency)
-	if pullErr := readBuffer.PullContext("currency"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for currency")
+	exponent, err := ReadSimpleField(ctx, "exponent", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exponent' field"))
 	}
-	_currency, _currencyErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _currencyErr != nil {
-		return nil, errors.Wrap(_currencyErr, "Error parsing 'currency' field of CurrencyUnitType")
+
+	alphabeticCode, err := ReadSimpleField[PascalString](ctx, "alphabeticCode", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alphabeticCode' field"))
 	}
-	currency := _currency.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("currency"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for currency")
+
+	currency, err := ReadSimpleField[LocalizedText](ctx, "currency", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currency' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CurrencyUnitType"); closeErr != nil {

@@ -169,6 +169,12 @@ func GetAttributeAllResponseParse(ctx context.Context, theBytes []byte, connecte
 	return GetAttributeAllResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func GetAttributeAllResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (GetAttributeAllResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GetAttributeAllResponse, error) {
+		return GetAttributeAllResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeAllResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -180,32 +186,22 @@ func GetAttributeAllResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of GetAttributeAllResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (extStatus)
-	_extStatus, _extStatusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extStatus", 8)
-	if _extStatusErr != nil {
-		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of GetAttributeAllResponse")
+	extStatus, err := ReadSimpleField(ctx, "extStatus", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extStatus' field"))
 	}
-	extStatus := _extStatus
 
-	_attributes, err := ReadOptionalField[CIPAttributes](ctx, "attributes", ReadComplex[CIPAttributes](func(ctx context.Context, buffer utils.ReadBuffer) (CIPAttributes, error) {
-		v, err := CIPAttributesParseWithBuffer(ctx, readBuffer, (uint16)(uint16(serviceLen)-uint16(uint16(4))))
-		if err != nil {
-			return nil, err
-		}
-		return v.(CIPAttributes), nil
-	}, readBuffer), bool(((serviceLen)-(4)) > (0)))
+	_attributes, err := ReadOptionalField[CIPAttributes](ctx, "attributes", ReadComplex[CIPAttributes](CIPAttributesParseWithBufferProducer((uint16)(uint16(serviceLen)-uint16(uint16(4)))), readBuffer), bool(((serviceLen)-(4)) > (0)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributes' field"))
 	}

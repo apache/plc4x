@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIntegralConstantParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataIntegralConstantParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIntegralConstantParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIntegralConstant, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIntegralConstant, error) {
+		return BACnetConstructedDataIntegralConstantParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIntegralConstantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIntegralConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIntegralConstantParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (integralConstant)
-	if pullErr := readBuffer.PullContext("integralConstant"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for integralConstant")
-	}
-	_integralConstant, _integralConstantErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _integralConstantErr != nil {
-		return nil, errors.Wrap(_integralConstantErr, "Error parsing 'integralConstant' field of BACnetConstructedDataIntegralConstant")
-	}
-	integralConstant := _integralConstant.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("integralConstant"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for integralConstant")
+	integralConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "integralConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integralConstant' field"))
 	}
 
 	// Virtual field

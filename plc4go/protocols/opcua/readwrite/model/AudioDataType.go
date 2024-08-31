@@ -83,6 +83,12 @@ func AudioDataTypeParse(ctx context.Context, theBytes []byte) (AudioDataType, er
 	return AudioDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AudioDataTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AudioDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AudioDataType, error) {
+		return AudioDataTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AudioDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AudioDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

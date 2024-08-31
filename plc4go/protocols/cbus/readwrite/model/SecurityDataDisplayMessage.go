@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func SecurityDataDisplayMessageParse(ctx context.Context, theBytes []byte, comma
 	return SecurityDataDisplayMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func SecurityDataDisplayMessageParseWithBufferProducer(commandTypeContainer SecurityCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataDisplayMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataDisplayMessage, error) {
+		return SecurityDataDisplayMessageParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func SecurityDataDisplayMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer SecurityCommandTypeContainer) (SecurityDataDisplayMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func SecurityDataDisplayMessageParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (message)
-	_message, _messageErr := /*TODO: migrate me*/ readBuffer.ReadString("message", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of SecurityDataDisplayMessage")
+	message, err := ReadSimpleField(ctx, "message", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
-	message := _message
 
 	if closeErr := readBuffer.CloseContext("SecurityDataDisplayMessage"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataDisplayMessage")

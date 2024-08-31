@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataApplicationSoftwareVersionParse(ctx context.Context, t
 	return BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataApplicationSoftwareVersionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataApplicationSoftwareVersion, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataApplicationSoftwareVersion, error) {
+		return BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataApplicationSoftwareVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (applicationSoftwareVersion)
-	if pullErr := readBuffer.PullContext("applicationSoftwareVersion"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationSoftwareVersion")
-	}
-	_applicationSoftwareVersion, _applicationSoftwareVersionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _applicationSoftwareVersionErr != nil {
-		return nil, errors.Wrap(_applicationSoftwareVersionErr, "Error parsing 'applicationSoftwareVersion' field of BACnetConstructedDataApplicationSoftwareVersion")
-	}
-	applicationSoftwareVersion := _applicationSoftwareVersion.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("applicationSoftwareVersion"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationSoftwareVersion")
+	applicationSoftwareVersion, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationSoftwareVersion' field"))
 	}
 
 	// Virtual field

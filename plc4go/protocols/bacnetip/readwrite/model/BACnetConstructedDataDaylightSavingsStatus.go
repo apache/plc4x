@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDaylightSavingsStatusParse(ctx context.Context, theByt
 	return BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDaylightSavingsStatusParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDaylightSavingsStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDaylightSavingsStatus, error) {
+		return BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDaylightSavingsStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDaylightSavingsStatusParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (daylightSavingsStatus)
-	if pullErr := readBuffer.PullContext("daylightSavingsStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for daylightSavingsStatus")
-	}
-	_daylightSavingsStatus, _daylightSavingsStatusErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _daylightSavingsStatusErr != nil {
-		return nil, errors.Wrap(_daylightSavingsStatusErr, "Error parsing 'daylightSavingsStatus' field of BACnetConstructedDataDaylightSavingsStatus")
-	}
-	daylightSavingsStatus := _daylightSavingsStatus.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("daylightSavingsStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for daylightSavingsStatus")
+	daylightSavingsStatus, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "daylightSavingsStatus", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSavingsStatus' field"))
 	}
 
 	// Virtual field

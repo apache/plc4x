@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func BACnetAuthenticationFactorParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetAuthenticationFactorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAuthenticationFactorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
+		return BACnetAuthenticationFactorParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAuthenticationFactor, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func BACnetAuthenticationFactorParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (formatType)
-	if pullErr := readBuffer.PullContext("formatType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for formatType")
-	}
-	_formatType, _formatTypeErr := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _formatTypeErr != nil {
-		return nil, errors.Wrap(_formatTypeErr, "Error parsing 'formatType' field of BACnetAuthenticationFactor")
-	}
-	formatType := _formatType.(BACnetAuthenticationFactorTypeTagged)
-	if closeErr := readBuffer.CloseContext("formatType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for formatType")
+	formatType, err := ReadSimpleField[BACnetAuthenticationFactorTypeTagged](ctx, "formatType", ReadComplex[BACnetAuthenticationFactorTypeTagged](BACnetAuthenticationFactorTypeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'formatType' field"))
 	}
 
-	// Simple Field (formatClass)
-	if pullErr := readBuffer.PullContext("formatClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for formatClass")
-	}
-	_formatClass, _formatClassErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _formatClassErr != nil {
-		return nil, errors.Wrap(_formatClassErr, "Error parsing 'formatClass' field of BACnetAuthenticationFactor")
-	}
-	formatClass := _formatClass.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("formatClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for formatClass")
+	formatClass, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "formatClass", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'formatClass' field"))
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_OCTET_STRING))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationFactor")
-	}
-	value := _value.(BACnetContextTagOctetString)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "value", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactor"); closeErr != nil {

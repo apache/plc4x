@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesNetworkNumberQualityParse(ctx context.Context, theBytes
 	return BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesNetworkNumberQualityParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkNumberQuality, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkNumberQuality, error) {
+		return BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkNumberQuality, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesNetworkNumberQualityParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkNumberQuality)
-	if pullErr := readBuffer.PullContext("networkNumberQuality"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkNumberQuality")
-	}
-	_networkNumberQuality, _networkNumberQualityErr := BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _networkNumberQualityErr != nil {
-		return nil, errors.Wrap(_networkNumberQualityErr, "Error parsing 'networkNumberQuality' field of BACnetPropertyStatesNetworkNumberQuality")
-	}
-	networkNumberQuality := _networkNumberQuality.(BACnetNetworkNumberQualityTagged)
-	if closeErr := readBuffer.CloseContext("networkNumberQuality"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkNumberQuality")
+	networkNumberQuality, err := ReadSimpleField[BACnetNetworkNumberQualityTagged](ctx, "networkNumberQuality", ReadComplex[BACnetNetworkNumberQualityTagged](BACnetNetworkNumberQualityTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumberQuality' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkNumberQuality"); closeErr != nil {

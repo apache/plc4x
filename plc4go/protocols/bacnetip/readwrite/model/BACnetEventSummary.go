@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func BACnetEventSummaryParse(ctx context.Context, theBytes []byte) (BACnetEventS
 	return BACnetEventSummaryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventSummaryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
+		return BACnetEventSummaryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetEventSummaryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventSummary, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,95 +182,39 @@ func BACnetEventSummaryParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (objectIdentifier)
-	if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
-	}
-	_objectIdentifier, _objectIdentifierErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _objectIdentifierErr != nil {
-		return nil, errors.Wrap(_objectIdentifierErr, "Error parsing 'objectIdentifier' field of BACnetEventSummary")
-	}
-	objectIdentifier := _objectIdentifier.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
+	objectIdentifier, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
 	}
 
-	// Simple Field (eventState)
-	if pullErr := readBuffer.PullContext("eventState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventState")
-	}
-	_eventState, _eventStateErr := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventStateErr != nil {
-		return nil, errors.Wrap(_eventStateErr, "Error parsing 'eventState' field of BACnetEventSummary")
-	}
-	eventState := _eventState.(BACnetEventStateTagged)
-	if closeErr := readBuffer.CloseContext("eventState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventState")
+	eventState, err := ReadSimpleField[BACnetEventStateTagged](ctx, "eventState", ReadComplex[BACnetEventStateTagged](BACnetEventStateTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventState' field"))
 	}
 
-	// Simple Field (acknowledgedTransitions)
-	if pullErr := readBuffer.PullContext("acknowledgedTransitions"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for acknowledgedTransitions")
-	}
-	_acknowledgedTransitions, _acknowledgedTransitionsErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _acknowledgedTransitionsErr != nil {
-		return nil, errors.Wrap(_acknowledgedTransitionsErr, "Error parsing 'acknowledgedTransitions' field of BACnetEventSummary")
-	}
-	acknowledgedTransitions := _acknowledgedTransitions.(BACnetEventTransitionBitsTagged)
-	if closeErr := readBuffer.CloseContext("acknowledgedTransitions"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for acknowledgedTransitions")
+	acknowledgedTransitions, err := ReadSimpleField[BACnetEventTransitionBitsTagged](ctx, "acknowledgedTransitions", ReadComplex[BACnetEventTransitionBitsTagged](BACnetEventTransitionBitsTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'acknowledgedTransitions' field"))
 	}
 
-	// Simple Field (eventTimestamps)
-	if pullErr := readBuffer.PullContext("eventTimestamps"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventTimestamps")
-	}
-	_eventTimestamps, _eventTimestampsErr := BACnetEventTimestampsEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _eventTimestampsErr != nil {
-		return nil, errors.Wrap(_eventTimestampsErr, "Error parsing 'eventTimestamps' field of BACnetEventSummary")
-	}
-	eventTimestamps := _eventTimestamps.(BACnetEventTimestampsEnclosed)
-	if closeErr := readBuffer.CloseContext("eventTimestamps"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventTimestamps")
+	eventTimestamps, err := ReadSimpleField[BACnetEventTimestampsEnclosed](ctx, "eventTimestamps", ReadComplex[BACnetEventTimestampsEnclosed](BACnetEventTimestampsEnclosedParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventTimestamps' field"))
 	}
 
-	// Simple Field (notifyType)
-	if pullErr := readBuffer.PullContext("notifyType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notifyType")
-	}
-	_notifyType, _notifyTypeErr := BACnetNotifyTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _notifyTypeErr != nil {
-		return nil, errors.Wrap(_notifyTypeErr, "Error parsing 'notifyType' field of BACnetEventSummary")
-	}
-	notifyType := _notifyType.(BACnetNotifyTypeTagged)
-	if closeErr := readBuffer.CloseContext("notifyType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
+	notifyType, err := ReadSimpleField[BACnetNotifyTypeTagged](ctx, "notifyType", ReadComplex[BACnetNotifyTypeTagged](BACnetNotifyTypeTaggedParseWithBufferProducer((uint8)(uint8(4)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notifyType' field"))
 	}
 
-	// Simple Field (eventEnable)
-	if pullErr := readBuffer.PullContext("eventEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventEnable")
-	}
-	_eventEnable, _eventEnableErr := BACnetEventTransitionBitsTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(5)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _eventEnableErr != nil {
-		return nil, errors.Wrap(_eventEnableErr, "Error parsing 'eventEnable' field of BACnetEventSummary")
-	}
-	eventEnable := _eventEnable.(BACnetEventTransitionBitsTagged)
-	if closeErr := readBuffer.CloseContext("eventEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventEnable")
+	eventEnable, err := ReadSimpleField[BACnetEventTransitionBitsTagged](ctx, "eventEnable", ReadComplex[BACnetEventTransitionBitsTagged](BACnetEventTransitionBitsTaggedParseWithBufferProducer((uint8)(uint8(5)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventEnable' field"))
 	}
 
-	// Simple Field (eventPriorities)
-	if pullErr := readBuffer.PullContext("eventPriorities"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventPriorities")
-	}
-	_eventPriorities, _eventPrioritiesErr := BACnetEventPrioritiesParseWithBuffer(ctx, readBuffer, uint8(uint8(6)))
-	if _eventPrioritiesErr != nil {
-		return nil, errors.Wrap(_eventPrioritiesErr, "Error parsing 'eventPriorities' field of BACnetEventSummary")
-	}
-	eventPriorities := _eventPriorities.(BACnetEventPriorities)
-	if closeErr := readBuffer.CloseContext("eventPriorities"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventPriorities")
+	eventPriorities, err := ReadSimpleField[BACnetEventPriorities](ctx, "eventPriorities", ReadComplex[BACnetEventPriorities](BACnetEventPrioritiesParseWithBufferProducer((uint8)(uint8(6))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventPriorities' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventSummary"); closeErr != nil {

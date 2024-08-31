@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -115,6 +117,12 @@ func PascalByteStringParse(ctx context.Context, theBytes []byte) (PascalByteStri
 	return PascalByteStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PascalByteStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalByteString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PascalByteString, error) {
+		return PascalByteStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PascalByteString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -126,12 +134,10 @@ func PascalByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (stringLength)
-	_stringLength, _stringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("stringLength", 32)
-	if _stringLengthErr != nil {
-		return nil, errors.Wrap(_stringLengthErr, "Error parsing 'stringLength' field of PascalByteString")
+	stringLength, err := ReadSimpleField(ctx, "stringLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringLength' field"))
 	}
-	stringLength := _stringLength
 
 	stringValue, err := readBuffer.ReadByteArray("stringValue", int(utils.InlineIf(bool((stringLength) == (-(1))), func() any { return int32(int32(0)) }, func() any { return int32(stringLength) }).(int32)))
 	if err != nil {

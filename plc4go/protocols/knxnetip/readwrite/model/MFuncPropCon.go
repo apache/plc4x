@@ -109,6 +109,12 @@ func MFuncPropConParse(ctx context.Context, theBytes []byte, size uint16) (MFunc
 	return MFuncPropConParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func MFuncPropConParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MFuncPropCon, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MFuncPropCon, error) {
+		return MFuncPropConParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func MFuncPropConParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (MFuncPropCon, error) {
 	positionAware := readBuffer
 	_ = positionAware

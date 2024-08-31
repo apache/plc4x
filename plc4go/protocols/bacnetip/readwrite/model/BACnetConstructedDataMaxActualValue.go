@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaxActualValueParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataMaxActualValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaxActualValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxActualValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxActualValue, error) {
+		return BACnetConstructedDataMaxActualValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaxActualValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxActualValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaxActualValueParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxActualValue)
-	if pullErr := readBuffer.PullContext("maxActualValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxActualValue")
-	}
-	_maxActualValue, _maxActualValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxActualValueErr != nil {
-		return nil, errors.Wrap(_maxActualValueErr, "Error parsing 'maxActualValue' field of BACnetConstructedDataMaxActualValue")
-	}
-	maxActualValue := _maxActualValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("maxActualValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxActualValue")
+	maxActualValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maxActualValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxActualValue' field"))
 	}
 
 	// Virtual field

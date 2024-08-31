@@ -276,6 +276,12 @@ func BACnetTagHeaderParse(ctx context.Context, theBytes []byte) (BACnetTagHeader
 	return BACnetTagHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTagHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
+		return BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -287,34 +293,22 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tagNumber)
-	_tagNumber, _tagNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("tagNumber", 4)
-	if _tagNumberErr != nil {
-		return nil, errors.Wrap(_tagNumberErr, "Error parsing 'tagNumber' field of BACnetTagHeader")
-	}
-	tagNumber := _tagNumber
-
-	// Simple Field (tagClass)
-	if pullErr := readBuffer.PullContext("tagClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tagClass")
-	}
-	_tagClass, _tagClassErr := TagClassParseWithBuffer(ctx, readBuffer)
-	if _tagClassErr != nil {
-		return nil, errors.Wrap(_tagClassErr, "Error parsing 'tagClass' field of BACnetTagHeader")
-	}
-	tagClass := _tagClass
-	if closeErr := readBuffer.CloseContext("tagClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tagClass")
+	tagNumber, err := ReadSimpleField(ctx, "tagNumber", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagNumber' field"))
 	}
 
-	// Simple Field (lengthValueType)
-	_lengthValueType, _lengthValueTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lengthValueType", 3)
-	if _lengthValueTypeErr != nil {
-		return nil, errors.Wrap(_lengthValueTypeErr, "Error parsing 'lengthValueType' field of BACnetTagHeader")
+	tagClass, err := ReadEnumField[TagClass](ctx, "tagClass", "TagClass", ReadEnum(TagClassByValue, ReadUnsignedByte(readBuffer, uint8(1))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagClass' field"))
 	}
-	lengthValueType := _lengthValueType
 
-	extTagNumber, err := ReadOptionalField[uint8](ctx, "extTagNumber", ReadUnsignedByte(readBuffer, 8), bool((tagNumber) == (15)))
+	lengthValueType, err := ReadSimpleField(ctx, "lengthValueType", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lengthValueType' field"))
+	}
+
+	extTagNumber, err := ReadOptionalField[uint8](ctx, "extTagNumber", ReadUnsignedByte(readBuffer, uint8(8)), bool((tagNumber) == (15)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extTagNumber' field"))
 	}
@@ -339,17 +333,17 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
 	_ = isPrimitiveAndNotBoolean
 
-	extLength, err := ReadOptionalField[uint8](ctx, "extLength", ReadUnsignedByte(readBuffer, 8), bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))))
+	extLength, err := ReadOptionalField[uint8](ctx, "extLength", ReadUnsignedByte(readBuffer, uint8(8)), bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extLength' field"))
 	}
 
-	extExtLength, err := ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, 16), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))))
+	extExtLength, err := ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, uint8(16)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtLength' field"))
 	}
 
-	extExtExtLength, err := ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, 32), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))))
+	extExtExtLength, err := ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, uint8(32)), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtExtLength' field"))
 	}

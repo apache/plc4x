@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func NLMRequestMasterKeyParse(ctx context.Context, theBytes []byte, apduLength u
 	return NLMRequestMasterKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMRequestMasterKeyParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRequestMasterKey, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRequestMasterKey, error) {
+		return NLMRequestMasterKeyParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRequestMasterKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,12 +162,10 @@ func NLMRequestMasterKeyParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfSupportedKeyAlgorithms)
-	_numberOfSupportedKeyAlgorithms, _numberOfSupportedKeyAlgorithmsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfSupportedKeyAlgorithms", 8)
-	if _numberOfSupportedKeyAlgorithmsErr != nil {
-		return nil, errors.Wrap(_numberOfSupportedKeyAlgorithmsErr, "Error parsing 'numberOfSupportedKeyAlgorithms' field of NLMRequestMasterKey")
+	numberOfSupportedKeyAlgorithms, err := ReadSimpleField(ctx, "numberOfSupportedKeyAlgorithms", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfSupportedKeyAlgorithms' field"))
 	}
-	numberOfSupportedKeyAlgorithms := _numberOfSupportedKeyAlgorithms
 
 	encryptionAndSignatureAlgorithms, err := readBuffer.ReadByteArray("encryptionAndSignatureAlgorithms", int(int32(apduLength)-int32(int32(2))))
 	if err != nil {

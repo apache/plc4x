@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func RangeParse(ctx context.Context, theBytes []byte, identifier string) (Range,
 	return RangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RangeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (Range, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Range, error) {
+		return RangeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Range, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func RangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, iden
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (low)
-	_low, _lowErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("low", 64)
-	if _lowErr != nil {
-		return nil, errors.Wrap(_lowErr, "Error parsing 'low' field of Range")
+	low, err := ReadSimpleField(ctx, "low", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'low' field"))
 	}
-	low := _low
 
-	// Simple Field (high)
-	_high, _highErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("high", 64)
-	if _highErr != nil {
-		return nil, errors.Wrap(_highErr, "Error parsing 'high' field of Range")
+	high, err := ReadSimpleField(ctx, "high", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'high' field"))
 	}
-	high := _high
 
 	if closeErr := readBuffer.CloseContext("Range"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Range")

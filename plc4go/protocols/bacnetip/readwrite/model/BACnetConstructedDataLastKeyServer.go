@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastKeyServerParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataLastKeyServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastKeyServerParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastKeyServer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastKeyServer, error) {
+		return BACnetConstructedDataLastKeyServerParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastKeyServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastKeyServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastKeyServerParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastKeyServer)
-	if pullErr := readBuffer.PullContext("lastKeyServer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastKeyServer")
-	}
-	_lastKeyServer, _lastKeyServerErr := BACnetAddressBindingParseWithBuffer(ctx, readBuffer)
-	if _lastKeyServerErr != nil {
-		return nil, errors.Wrap(_lastKeyServerErr, "Error parsing 'lastKeyServer' field of BACnetConstructedDataLastKeyServer")
-	}
-	lastKeyServer := _lastKeyServer.(BACnetAddressBinding)
-	if closeErr := readBuffer.CloseContext("lastKeyServer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastKeyServer")
+	lastKeyServer, err := ReadSimpleField[BACnetAddressBinding](ctx, "lastKeyServer", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastKeyServer' field"))
 	}
 
 	// Virtual field

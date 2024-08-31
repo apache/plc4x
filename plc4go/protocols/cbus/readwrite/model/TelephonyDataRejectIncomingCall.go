@@ -108,6 +108,12 @@ func TelephonyDataRejectIncomingCallParse(ctx context.Context, theBytes []byte) 
 	return TelephonyDataRejectIncomingCallParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataRejectIncomingCallParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
+		return TelephonyDataRejectIncomingCallParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataRejectIncomingCallParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRejectIncomingCall, error) {
 	positionAware := readBuffer
 	_ = positionAware

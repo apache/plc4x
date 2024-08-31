@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTimeSynchronizationIntervalParse(ctx context.Context, 
 	return BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTimeSynchronizationIntervalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTimeSynchronizationInterval, error) {
+		return BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTimeSynchronizationInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timeSynchronization)
-	if pullErr := readBuffer.PullContext("timeSynchronization"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timeSynchronization")
-	}
-	_timeSynchronization, _timeSynchronizationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _timeSynchronizationErr != nil {
-		return nil, errors.Wrap(_timeSynchronizationErr, "Error parsing 'timeSynchronization' field of BACnetConstructedDataTimeSynchronizationInterval")
-	}
-	timeSynchronization := _timeSynchronization.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("timeSynchronization"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timeSynchronization")
+	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronization' field"))
 	}
 
 	// Virtual field

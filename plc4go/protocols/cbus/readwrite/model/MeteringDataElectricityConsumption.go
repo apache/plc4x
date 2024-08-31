@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MeteringDataElectricityConsumptionParse(ctx context.Context, theBytes []byt
 	return MeteringDataElectricityConsumptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeteringDataElectricityConsumptionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
+		return MeteringDataElectricityConsumptionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeteringDataElectricityConsumptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeteringDataElectricityConsumption, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MeteringDataElectricityConsumptionParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (kWhr)
-	_kWhr, _kWhrErr := /*TODO: migrate me*/ readBuffer.ReadUint32("kWhr", 32)
-	if _kWhrErr != nil {
-		return nil, errors.Wrap(_kWhrErr, "Error parsing 'kWhr' field of MeteringDataElectricityConsumption")
+	kWhr, err := ReadSimpleField(ctx, "kWhr", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'kWhr' field"))
 	}
-	kWhr := _kWhr
 
 	if closeErr := readBuffer.CloseContext("MeteringDataElectricityConsumption"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MeteringDataElectricityConsumption")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func RelativeTimestampParse(ctx context.Context, theBytes []byte) (RelativeTimes
 	return RelativeTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RelativeTimestampParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
+		return RelativeTimestampParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RelativeTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func RelativeTimestampParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadUint16("timestamp", 16)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of RelativeTimestamp")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
-	timestamp := _timestamp
 
 	if closeErr := readBuffer.CloseContext("RelativeTimestamp"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RelativeTimestamp")

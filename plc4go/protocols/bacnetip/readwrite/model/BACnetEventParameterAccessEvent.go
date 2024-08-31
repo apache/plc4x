@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -161,6 +163,12 @@ func BACnetEventParameterAccessEventParse(ctx context.Context, theBytes []byte) 
 	return BACnetEventParameterAccessEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventParameterAccessEventParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterAccessEvent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterAccessEvent, error) {
+		return BACnetEventParameterAccessEventParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetEventParameterAccessEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterAccessEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,56 +180,24 @@ func BACnetEventParameterAccessEventParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (openingTag)
-	if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
-	}
-	_openingTag, _openingTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(uint8(13)))
-	if _openingTagErr != nil {
-		return nil, errors.Wrap(_openingTagErr, "Error parsing 'openingTag' field of BACnetEventParameterAccessEvent")
-	}
-	openingTag := _openingTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
+	openingTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(uint8(13))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	// Simple Field (listOfAccessEvents)
-	if pullErr := readBuffer.PullContext("listOfAccessEvents"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for listOfAccessEvents")
-	}
-	_listOfAccessEvents, _listOfAccessEventsErr := BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _listOfAccessEventsErr != nil {
-		return nil, errors.Wrap(_listOfAccessEventsErr, "Error parsing 'listOfAccessEvents' field of BACnetEventParameterAccessEvent")
-	}
-	listOfAccessEvents := _listOfAccessEvents.(BACnetEventParameterAccessEventListOfAccessEvents)
-	if closeErr := readBuffer.CloseContext("listOfAccessEvents"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for listOfAccessEvents")
+	listOfAccessEvents, err := ReadSimpleField[BACnetEventParameterAccessEventListOfAccessEvents](ctx, "listOfAccessEvents", ReadComplex[BACnetEventParameterAccessEventListOfAccessEvents](BACnetEventParameterAccessEventListOfAccessEventsParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfAccessEvents' field"))
 	}
 
-	// Simple Field (accessEventTimeReference)
-	if pullErr := readBuffer.PullContext("accessEventTimeReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTimeReference")
-	}
-	_accessEventTimeReference, _accessEventTimeReferenceErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _accessEventTimeReferenceErr != nil {
-		return nil, errors.Wrap(_accessEventTimeReferenceErr, "Error parsing 'accessEventTimeReference' field of BACnetEventParameterAccessEvent")
-	}
-	accessEventTimeReference := _accessEventTimeReference.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("accessEventTimeReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEventTimeReference")
+	accessEventTimeReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "accessEventTimeReference", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventTimeReference' field"))
 	}
 
-	// Simple Field (closingTag)
-	if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
-	}
-	_closingTag, _closingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(uint8(13)))
-	if _closingTagErr != nil {
-		return nil, errors.Wrap(_closingTagErr, "Error parsing 'closingTag' field of BACnetEventParameterAccessEvent")
-	}
-	closingTag := _closingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for closingTag")
+	closingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(uint8(13))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterAccessEvent"); closeErr != nil {

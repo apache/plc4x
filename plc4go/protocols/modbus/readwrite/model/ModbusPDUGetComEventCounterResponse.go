@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,6 +151,12 @@ func ModbusPDUGetComEventCounterResponseParse(ctx context.Context, theBytes []by
 	return ModbusPDUGetComEventCounterResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUGetComEventCounterResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventCounterResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventCounterResponse, error) {
+		return ModbusPDUGetComEventCounterResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUGetComEventCounterResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventCounterResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,19 +168,15 @@ func ModbusPDUGetComEventCounterResponseParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventCounterResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (eventCount)
-	_eventCount, _eventCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventCount", 16)
-	if _eventCountErr != nil {
-		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventCounterResponse")
+	eventCount, err := ReadSimpleField(ctx, "eventCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventCount' field"))
 	}
-	eventCount := _eventCount
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUGetComEventCounterResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUGetComEventCounterResponse")

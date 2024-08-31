@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,6 +148,12 @@ func DeviceConfigurationRequestParse(ctx context.Context, theBytes []byte, total
 	return DeviceConfigurationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
+func DeviceConfigurationRequestParseWithBufferProducer(totalLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationRequest, error) {
+		return DeviceConfigurationRequestParseWithBuffer(ctx, readBuffer, totalLength)
+	}
+}
+
 func DeviceConfigurationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (DeviceConfigurationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,30 +165,14 @@ func DeviceConfigurationRequestParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceConfigurationRequestDataBlock)
-	if pullErr := readBuffer.PullContext("deviceConfigurationRequestDataBlock"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationRequestDataBlock")
-	}
-	_deviceConfigurationRequestDataBlock, _deviceConfigurationRequestDataBlockErr := DeviceConfigurationRequestDataBlockParseWithBuffer(ctx, readBuffer)
-	if _deviceConfigurationRequestDataBlockErr != nil {
-		return nil, errors.Wrap(_deviceConfigurationRequestDataBlockErr, "Error parsing 'deviceConfigurationRequestDataBlock' field of DeviceConfigurationRequest")
-	}
-	deviceConfigurationRequestDataBlock := _deviceConfigurationRequestDataBlock.(DeviceConfigurationRequestDataBlock)
-	if closeErr := readBuffer.CloseContext("deviceConfigurationRequestDataBlock"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceConfigurationRequestDataBlock")
+	deviceConfigurationRequestDataBlock, err := ReadSimpleField[DeviceConfigurationRequestDataBlock](ctx, "deviceConfigurationRequestDataBlock", ReadComplex[DeviceConfigurationRequestDataBlock](DeviceConfigurationRequestDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceConfigurationRequestDataBlock' field"))
 	}
 
-	// Simple Field (cemi)
-	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
-	}
-	_cemi, _cemiErr := CEMIParseWithBuffer(ctx, readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes(ctx))))))
-	if _cemiErr != nil {
-		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of DeviceConfigurationRequest")
-	}
-	cemi := _cemi.(CEMI)
-	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for cemi")
+	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(deviceConfigurationRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cemi' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationRequest"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func KnxNetIpDeviceManagementParse(ctx context.Context, theBytes []byte) (KnxNet
 	return KnxNetIpDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func KnxNetIpDeviceManagementParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
+		return KnxNetIpDeviceManagementParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func KnxNetIpDeviceManagementParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("version", 8)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of KnxNetIpDeviceManagement")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
 
 	if closeErr := readBuffer.CloseContext("KnxNetIpDeviceManagement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxNetIpDeviceManagement")

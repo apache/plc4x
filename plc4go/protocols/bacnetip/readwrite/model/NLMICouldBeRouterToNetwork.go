@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func NLMICouldBeRouterToNetworkParse(ctx context.Context, theBytes []byte, apduL
 	return NLMICouldBeRouterToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMICouldBeRouterToNetworkParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMICouldBeRouterToNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMICouldBeRouterToNetwork, error) {
+		return NLMICouldBeRouterToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMICouldBeRouterToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func NLMICouldBeRouterToNetworkParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMICouldBeRouterToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
 
-	// Simple Field (performanceIndex)
-	_performanceIndex, _performanceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("performanceIndex", 8)
-	if _performanceIndexErr != nil {
-		return nil, errors.Wrap(_performanceIndexErr, "Error parsing 'performanceIndex' field of NLMICouldBeRouterToNetwork")
+	performanceIndex, err := ReadSimpleField(ctx, "performanceIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performanceIndex' field"))
 	}
-	performanceIndex := _performanceIndex
 
 	if closeErr := readBuffer.CloseContext("NLMICouldBeRouterToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMICouldBeRouterToNetwork")

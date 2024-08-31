@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,6 +146,12 @@ func COTPPacketTpduErrorParse(ctx context.Context, theBytes []byte, cotpLen uint
 	return COTPPacketTpduErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cotpLen)
 }
 
+func COTPPacketTpduErrorParseWithBufferProducer(cotpLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketTpduError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPPacketTpduError, error) {
+		return COTPPacketTpduErrorParseWithBuffer(ctx, readBuffer, cotpLen)
+	}
+}
+
 func COTPPacketTpduErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cotpLen uint16) (COTPPacketTpduError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,19 +163,15 @@ func COTPPacketTpduErrorParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationReference)
-	_destinationReference, _destinationReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationReference", 16)
-	if _destinationReferenceErr != nil {
-		return nil, errors.Wrap(_destinationReferenceErr, "Error parsing 'destinationReference' field of COTPPacketTpduError")
+	destinationReference, err := ReadSimpleField(ctx, "destinationReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationReference' field"))
 	}
-	destinationReference := _destinationReference
 
-	// Simple Field (rejectCause)
-	_rejectCause, _rejectCauseErr := /*TODO: migrate me*/ readBuffer.ReadUint8("rejectCause", 8)
-	if _rejectCauseErr != nil {
-		return nil, errors.Wrap(_rejectCauseErr, "Error parsing 'rejectCause' field of COTPPacketTpduError")
+	rejectCause, err := ReadSimpleField(ctx, "rejectCause", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectCause' field"))
 	}
-	rejectCause := _rejectCause
 
 	if closeErr := readBuffer.CloseContext("COTPPacketTpduError"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPPacketTpduError")

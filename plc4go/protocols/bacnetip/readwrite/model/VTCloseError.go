@@ -145,6 +145,12 @@ func VTCloseErrorParse(ctx context.Context, theBytes []byte, errorChoice BACnetC
 	return VTCloseErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
+func VTCloseErrorParseWithBufferProducer(errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (VTCloseError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VTCloseError, error) {
+		return VTCloseErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+	}
+}
+
 func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (VTCloseError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,26 +162,12 @@ func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
-	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of VTCloseError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
 
-	_listOfVtSessionIdentifiers, err := ReadOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", ReadComplex[VTCloseErrorListOfVTSessionIdentifiers](func(ctx context.Context, buffer utils.ReadBuffer) (VTCloseErrorListOfVTSessionIdentifiers, error) {
-		v, err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(VTCloseErrorListOfVTSessionIdentifiers), nil
-	}, readBuffer), true)
+	_listOfVtSessionIdentifiers, err := ReadOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", ReadComplex[VTCloseErrorListOfVTSessionIdentifiers](VTCloseErrorListOfVTSessionIdentifiersParseWithBufferProducer((uint8)(uint8(1))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfVtSessionIdentifiers' field"))
 	}

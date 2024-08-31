@@ -464,9 +464,11 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             }
             String paramsStringString = paramsString.toString();
             if (StringUtils.isNotBlank(paramsStringString) || typeDefinition.isDiscriminatedChildTypeDefinition()) { // In this case we need to spell the function out
-                return "ReadComplex[" + typeName + "](func(ctx context.Context, buffer utils.ReadBuffer) (" + typeName + ", error) " +
-                    "{v,err:= " + parserCallString + "ParseWithBuffer(ctx,readBuffer" + paramsString + ");" +
-                    "if err!=nil{return nil,err};return v.(" + typeName + "),nil}, readBuffer)";
+                String genericTypeParam = "";
+                if (typeDefinition.isDiscriminatedParentTypeDefinition()) {
+                    genericTypeParam = "["+typeName+"]";
+                }
+                return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBufferProducer" + genericTypeParam + "(" + StringUtils.substring(paramsStringString, 2) + "), readBuffer)";
             } else {
                 return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBuffer, readBuffer)";
             }
@@ -484,26 +486,26 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             case BYTE:
                 return "ReadByte(readBuffer, " + sizeInBits + ")";
             case UINT:
-                if (sizeInBits <= 8) return "ReadUnsignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "ReadUnsignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "ReadUnsignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "ReadUnsignedLong(readBuffer, " + sizeInBits + ")";
-                return "ReadUnsignedBigInteger(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "ReadUnsignedByte(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 16) return "ReadUnsignedShort(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 32) return "ReadUnsignedInt(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadUnsignedLong(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadUnsignedBigInteger(readBuffer, uint8(" + sizeInBits + "))";
             case INT:
-                if (sizeInBits <= 8) return "ReadSignedByte(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 16) return "ReadSignedShort(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 32) return "ReadSignedInt(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "ReadSignedLong(readBuffer, " + sizeInBits + ")";
-                return "ReadSignedBigInteger(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 8) return "ReadSignedByte(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 16) return "ReadSignedShort(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 32) return "ReadSignedInt(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadSignedLong(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadSignedBigInteger(readBuffer, uint8(" + sizeInBits + "))";
             case FLOAT:
-                if (sizeInBits <= 32) return "ReadFloat(readBuffer, " + sizeInBits + ")";
-                if (sizeInBits <= 64) return "ReadDouble(readBuffer, " + sizeInBits + ")";
-                return "ReadBigDecimal(readBuffer, " + sizeInBits + ")";
+                if (sizeInBits <= 32) return "ReadFloat(readBuffer, uint8(" + sizeInBits + "))";
+                if (sizeInBits <= 64) return "ReadDouble(readBuffer, uint8(" + sizeInBits + "))";
+                return "ReadBigDecimal(readBuffer, uint8(" + sizeInBits + "))";
             case STRING:
-                return "ReadString(readBuffer, " + sizeInBits + ")";
+                return "ReadString(readBuffer, uint32(" + sizeInBits + "))";
             case VSTRING:
                 VstringTypeReference vstringTypeReference = (VstringTypeReference) simpleTypeReference;
-                return "ReadString(readBuffer, " + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + ")";
+                return "ReadString(readBuffer, uint32(" + toParseExpression(null, INT_TYPE_REFERENCE, vstringTypeReference.getLengthExpression(), null) + "))";
             case TIME:
                 return "ReadTime(readBuffer)";
             case DATE:

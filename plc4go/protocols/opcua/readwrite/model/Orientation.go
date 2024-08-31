@@ -109,6 +109,12 @@ func OrientationParse(ctx context.Context, theBytes []byte, identifier string) (
 	return OrientationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func OrientationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (Orientation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Orientation, error) {
+		return OrientationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func OrientationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Orientation, error) {
 	positionAware := readBuffer
 	_ = positionAware

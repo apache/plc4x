@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func FourByteNodeIdParse(ctx context.Context, theBytes []byte) (FourByteNodeId, 
 	return FourByteNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func FourByteNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (FourByteNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FourByteNodeId, error) {
+		return FourByteNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func FourByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (FourByteNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func FourByteNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("namespaceIndex", 8)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of FourByteNodeId")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
 
-	// Simple Field (identifier)
-	_identifier, _identifierErr := /*TODO: migrate me*/ readBuffer.ReadUint16("identifier", 16)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of FourByteNodeId")
+	identifier, err := ReadSimpleField(ctx, "identifier", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
-	identifier := _identifier
 
 	if closeErr := readBuffer.CloseContext("FourByteNodeId"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FourByteNodeId")

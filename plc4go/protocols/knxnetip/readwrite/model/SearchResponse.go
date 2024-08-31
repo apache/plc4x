@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +156,12 @@ func SearchResponseParse(ctx context.Context, theBytes []byte) (SearchResponse, 
 	return SearchResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func SearchResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SearchResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SearchResponse, error) {
+		return SearchResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SearchResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SearchResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,43 +173,19 @@ func SearchResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiControlEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiControlEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiControlEndpoint")
-	}
-	_hpaiControlEndpoint, _hpaiControlEndpointErr := HPAIControlEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiControlEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiControlEndpointErr, "Error parsing 'hpaiControlEndpoint' field of SearchResponse")
-	}
-	hpaiControlEndpoint := _hpaiControlEndpoint.(HPAIControlEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiControlEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiControlEndpoint")
+	hpaiControlEndpoint, err := ReadSimpleField[HPAIControlEndpoint](ctx, "hpaiControlEndpoint", ReadComplex[HPAIControlEndpoint](HPAIControlEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiControlEndpoint' field"))
 	}
 
-	// Simple Field (dibDeviceInfo)
-	if pullErr := readBuffer.PullContext("dibDeviceInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibDeviceInfo")
-	}
-	_dibDeviceInfo, _dibDeviceInfoErr := DIBDeviceInfoParseWithBuffer(ctx, readBuffer)
-	if _dibDeviceInfoErr != nil {
-		return nil, errors.Wrap(_dibDeviceInfoErr, "Error parsing 'dibDeviceInfo' field of SearchResponse")
-	}
-	dibDeviceInfo := _dibDeviceInfo.(DIBDeviceInfo)
-	if closeErr := readBuffer.CloseContext("dibDeviceInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibDeviceInfo")
+	dibDeviceInfo, err := ReadSimpleField[DIBDeviceInfo](ctx, "dibDeviceInfo", ReadComplex[DIBDeviceInfo](DIBDeviceInfoParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibDeviceInfo' field"))
 	}
 
-	// Simple Field (dibSuppSvcFamilies)
-	if pullErr := readBuffer.PullContext("dibSuppSvcFamilies"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dibSuppSvcFamilies")
-	}
-	_dibSuppSvcFamilies, _dibSuppSvcFamiliesErr := DIBSuppSvcFamiliesParseWithBuffer(ctx, readBuffer)
-	if _dibSuppSvcFamiliesErr != nil {
-		return nil, errors.Wrap(_dibSuppSvcFamiliesErr, "Error parsing 'dibSuppSvcFamilies' field of SearchResponse")
-	}
-	dibSuppSvcFamilies := _dibSuppSvcFamilies.(DIBSuppSvcFamilies)
-	if closeErr := readBuffer.CloseContext("dibSuppSvcFamilies"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dibSuppSvcFamilies")
+	dibSuppSvcFamilies, err := ReadSimpleField[DIBSuppSvcFamilies](ctx, "dibSuppSvcFamilies", ReadComplex[DIBSuppSvcFamilies](DIBSuppSvcFamiliesParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dibSuppSvcFamilies' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SearchResponse"); closeErr != nil {

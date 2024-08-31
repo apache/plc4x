@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +156,12 @@ func ConnectionRequestParse(ctx context.Context, theBytes []byte) (ConnectionReq
 	return ConnectionRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func ConnectionRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
+		return ConnectionRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,43 +173,19 @@ func ConnectionRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiDiscoveryEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiDiscoveryEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDiscoveryEndpoint")
-	}
-	_hpaiDiscoveryEndpoint, _hpaiDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDiscoveryEndpointErr, "Error parsing 'hpaiDiscoveryEndpoint' field of ConnectionRequest")
-	}
-	hpaiDiscoveryEndpoint := _hpaiDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiDiscoveryEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiDiscoveryEndpoint")
+	hpaiDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDiscoveryEndpoint' field"))
 	}
 
-	// Simple Field (hpaiDataEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
-	}
-	_hpaiDataEndpoint, _hpaiDataEndpointErr := HPAIDataEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiDataEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiDataEndpointErr, "Error parsing 'hpaiDataEndpoint' field of ConnectionRequest")
-	}
-	hpaiDataEndpoint := _hpaiDataEndpoint.(HPAIDataEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiDataEndpoint")
+	hpaiDataEndpoint, err := ReadSimpleField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDataEndpoint' field"))
 	}
 
-	// Simple Field (connectionRequestInformation)
-	if pullErr := readBuffer.PullContext("connectionRequestInformation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for connectionRequestInformation")
-	}
-	_connectionRequestInformation, _connectionRequestInformationErr := ConnectionRequestInformationParseWithBuffer(ctx, readBuffer)
-	if _connectionRequestInformationErr != nil {
-		return nil, errors.Wrap(_connectionRequestInformationErr, "Error parsing 'connectionRequestInformation' field of ConnectionRequest")
-	}
-	connectionRequestInformation := _connectionRequestInformation.(ConnectionRequestInformation)
-	if closeErr := readBuffer.CloseContext("connectionRequestInformation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for connectionRequestInformation")
+	connectionRequestInformation, err := ReadSimpleField[ConnectionRequestInformation](ctx, "connectionRequestInformation", ReadComplex[ConnectionRequestInformation](ConnectionRequestInformationParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionRequestInformation' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionRequest"); closeErr != nil {

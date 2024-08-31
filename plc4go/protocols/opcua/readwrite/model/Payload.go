@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,17 @@ func PayloadParse(ctx context.Context, theBytes []byte, extensible bool, byteCou
 	return PayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), extensible, byteCount)
 }
 
+func PayloadParseWithBufferProducer[T Payload](extensible bool, byteCount uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := PayloadParseWithBuffer(ctx, readBuffer, extensible, byteCount)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, extensible bool, byteCount uint32) (Payload, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,17 +153,9 @@ func PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceHeader)
-	if pullErr := readBuffer.PullContext("sequenceHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sequenceHeader")
-	}
-	_sequenceHeader, _sequenceHeaderErr := SequenceHeaderParseWithBuffer(ctx, readBuffer)
-	if _sequenceHeaderErr != nil {
-		return nil, errors.Wrap(_sequenceHeaderErr, "Error parsing 'sequenceHeader' field of Payload")
-	}
-	sequenceHeader := _sequenceHeader.(SequenceHeader)
-	if closeErr := readBuffer.CloseContext("sequenceHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sequenceHeader")
+	sequenceHeader, err := ReadSimpleField[SequenceHeader](ctx, "sequenceHeader", ReadComplex[SequenceHeader](SequenceHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceHeader' field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

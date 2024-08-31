@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func AdsDiscoveryBlockUserNameParse(ctx context.Context, theBytes []byte) (AdsDi
 	return AdsDiscoveryBlockUserNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockUserNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
+		return AdsDiscoveryBlockUserNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockUserNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockUserName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func AdsDiscoveryBlockUserNameParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
-	}
-	_userName, _userNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of AdsDiscoveryBlockUserName")
-	}
-	userName := _userName.(AmsString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
+	userName, err := ReadSimpleField[AmsString](ctx, "userName", ReadComplex[AmsString](AmsStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockUserName"); closeErr != nil {

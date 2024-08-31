@@ -144,6 +144,17 @@ func EncodedReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpt
 	return EncodedReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func EncodedReplyParseWithBufferProducer[T EncodedReply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := EncodedReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (EncodedReply, error) {
 	positionAware := readBuffer
 	_ = positionAware

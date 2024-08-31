@@ -210,6 +210,12 @@ func RequestCommandParse(ctx context.Context, theBytes []byte, cBusOptions CBusO
 	return RequestCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestCommandParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestCommand, error) {
+		return RequestCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware

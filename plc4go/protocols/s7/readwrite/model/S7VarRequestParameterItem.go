@@ -110,6 +110,17 @@ func S7VarRequestParameterItemParse(ctx context.Context, theBytes []byte) (S7Var
 	return S7VarRequestParameterItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7VarRequestParameterItemParseWithBufferProducer[T S7VarRequestParameterItem]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7VarRequestParameterItemParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func S7VarRequestParameterItemParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, 8))
+	itemType, err := ReadDiscriminatorField[uint8](ctx, "itemType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemType' field"))
 	}

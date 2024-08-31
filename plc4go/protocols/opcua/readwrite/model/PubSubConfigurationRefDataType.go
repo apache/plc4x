@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func PubSubConfigurationRefDataTypeParse(ctx context.Context, theBytes []byte, i
 	return PubSubConfigurationRefDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PubSubConfigurationRefDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConfigurationRefDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConfigurationRefDataType, error) {
+		return PubSubConfigurationRefDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PubSubConfigurationRefDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConfigurationRefDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,39 +182,25 @@ func PubSubConfigurationRefDataTypeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (configurationMask)
-	if pullErr := readBuffer.PullContext("configurationMask"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for configurationMask")
-	}
-	_configurationMask, _configurationMaskErr := PubSubConfigurationRefMaskParseWithBuffer(ctx, readBuffer)
-	if _configurationMaskErr != nil {
-		return nil, errors.Wrap(_configurationMaskErr, "Error parsing 'configurationMask' field of PubSubConfigurationRefDataType")
-	}
-	configurationMask := _configurationMask
-	if closeErr := readBuffer.CloseContext("configurationMask"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for configurationMask")
+	configurationMask, err := ReadEnumField[PubSubConfigurationRefMask](ctx, "configurationMask", "PubSubConfigurationRefMask", ReadEnum(PubSubConfigurationRefMaskByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'configurationMask' field"))
 	}
 
-	// Simple Field (elementIndex)
-	_elementIndex, _elementIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("elementIndex", 16)
-	if _elementIndexErr != nil {
-		return nil, errors.Wrap(_elementIndexErr, "Error parsing 'elementIndex' field of PubSubConfigurationRefDataType")
+	elementIndex, err := ReadSimpleField(ctx, "elementIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementIndex' field"))
 	}
-	elementIndex := _elementIndex
 
-	// Simple Field (connectionIndex)
-	_connectionIndex, _connectionIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("connectionIndex", 16)
-	if _connectionIndexErr != nil {
-		return nil, errors.Wrap(_connectionIndexErr, "Error parsing 'connectionIndex' field of PubSubConfigurationRefDataType")
+	connectionIndex, err := ReadSimpleField(ctx, "connectionIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionIndex' field"))
 	}
-	connectionIndex := _connectionIndex
 
-	// Simple Field (groupIndex)
-	_groupIndex, _groupIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("groupIndex", 16)
-	if _groupIndexErr != nil {
-		return nil, errors.Wrap(_groupIndexErr, "Error parsing 'groupIndex' field of PubSubConfigurationRefDataType")
+	groupIndex, err := ReadSimpleField(ctx, "groupIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupIndex' field"))
 	}
-	groupIndex := _groupIndex
 
 	if closeErr := readBuffer.CloseContext("PubSubConfigurationRefDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PubSubConfigurationRefDataType")

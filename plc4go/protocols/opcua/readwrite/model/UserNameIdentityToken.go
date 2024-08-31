@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func UserNameIdentityTokenParse(ctx context.Context, theBytes []byte, identifier
 	return UserNameIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UserNameIdentityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (UserNameIdentityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UserNameIdentityToken, error) {
+		return UserNameIdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UserNameIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserNameIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,43 +171,19 @@ func UserNameIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (userName)
-	if pullErr := readBuffer.PullContext("userName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userName")
-	}
-	_userName, _userNameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _userNameErr != nil {
-		return nil, errors.Wrap(_userNameErr, "Error parsing 'userName' field of UserNameIdentityToken")
-	}
-	userName := _userName.(PascalString)
-	if closeErr := readBuffer.CloseContext("userName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userName")
+	userName, err := ReadSimpleField[PascalString](ctx, "userName", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}
 
-	// Simple Field (password)
-	if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for password")
-	}
-	_password, _passwordErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _passwordErr != nil {
-		return nil, errors.Wrap(_passwordErr, "Error parsing 'password' field of UserNameIdentityToken")
-	}
-	password := _password.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for password")
+	password, err := ReadSimpleField[PascalByteString](ctx, "password", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
 	}
 
-	// Simple Field (encryptionAlgorithm)
-	if pullErr := readBuffer.PullContext("encryptionAlgorithm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for encryptionAlgorithm")
-	}
-	_encryptionAlgorithm, _encryptionAlgorithmErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _encryptionAlgorithmErr != nil {
-		return nil, errors.Wrap(_encryptionAlgorithmErr, "Error parsing 'encryptionAlgorithm' field of UserNameIdentityToken")
-	}
-	encryptionAlgorithm := _encryptionAlgorithm.(PascalString)
-	if closeErr := readBuffer.CloseContext("encryptionAlgorithm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for encryptionAlgorithm")
+	encryptionAlgorithm, err := ReadSimpleField[PascalString](ctx, "encryptionAlgorithm", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encryptionAlgorithm' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UserNameIdentityToken"); closeErr != nil {

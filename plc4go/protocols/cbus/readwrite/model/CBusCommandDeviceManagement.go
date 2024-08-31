@@ -160,6 +160,12 @@ func CBusCommandDeviceManagementParse(ctx context.Context, theBytes []byte, cBus
 	return CBusCommandDeviceManagementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusCommandDeviceManagementParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandDeviceManagement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusCommandDeviceManagement, error) {
+		return CBusCommandDeviceManagementParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusCommandDeviceManagement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,17 +177,9 @@ func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
-	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CBusCommandDeviceManagement")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 
 	delimiter, err := ReadConstField[byte](ctx, "delimiter", ReadByte(readBuffer, 8), CBusCommandDeviceManagement_DELIMITER)
@@ -190,12 +188,10 @@ func CBusCommandDeviceManagementParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	_ = delimiter
 
-	// Simple Field (parameterValue)
-	_parameterValue, _parameterValueErr := /*TODO: migrate me*/ readBuffer.ReadByte("parameterValue")
-	if _parameterValueErr != nil {
-		return nil, errors.Wrap(_parameterValueErr, "Error parsing 'parameterValue' field of CBusCommandDeviceManagement")
+	parameterValue, err := ReadSimpleField(ctx, "parameterValue", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterValue' field"))
 	}
-	parameterValue := _parameterValue
 
 	if closeErr := readBuffer.CloseContext("CBusCommandDeviceManagement"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CBusCommandDeviceManagement")

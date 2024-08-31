@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetLogRecordLogDatumLogStatusParse(ctx context.Context, theBytes []byte,
 	return BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumLogStatusParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumLogStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumLogStatus, error) {
+		return BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumLogStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetLogRecordLogDatumLogStatusParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (logStatus)
-	if pullErr := readBuffer.PullContext("logStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logStatus")
-	}
-	_logStatus, _logStatusErr := BACnetLogStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _logStatusErr != nil {
-		return nil, errors.Wrap(_logStatusErr, "Error parsing 'logStatus' field of BACnetLogRecordLogDatumLogStatus")
-	}
-	logStatus := _logStatus.(BACnetLogStatusTagged)
-	if closeErr := readBuffer.CloseContext("logStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logStatus")
+	logStatus, err := ReadSimpleField[BACnetLogStatusTagged](ctx, "logStatus", ReadComplex[BACnetLogStatusTagged](BACnetLogStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumLogStatus"); closeErr != nil {

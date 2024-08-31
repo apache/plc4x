@@ -172,6 +172,12 @@ func FindServersOnNetworkResponseParse(ctx context.Context, theBytes []byte, ide
 	return FindServersOnNetworkResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func FindServersOnNetworkResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (FindServersOnNetworkResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FindServersOnNetworkResponse, error) {
+		return FindServersOnNetworkResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func FindServersOnNetworkResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FindServersOnNetworkResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,40 +189,22 @@ func FindServersOnNetworkResponseParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of FindServersOnNetworkResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (lastCounterResetTime)
-	_lastCounterResetTime, _lastCounterResetTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("lastCounterResetTime", 64)
-	if _lastCounterResetTimeErr != nil {
-		return nil, errors.Wrap(_lastCounterResetTimeErr, "Error parsing 'lastCounterResetTime' field of FindServersOnNetworkResponse")
+	lastCounterResetTime, err := ReadSimpleField(ctx, "lastCounterResetTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastCounterResetTime' field"))
 	}
-	lastCounterResetTime := _lastCounterResetTime
 
-	// Simple Field (noOfServers)
-	_noOfServers, _noOfServersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServers", 32)
-	if _noOfServersErr != nil {
-		return nil, errors.Wrap(_noOfServersErr, "Error parsing 'noOfServers' field of FindServersOnNetworkResponse")
+	noOfServers, err := ReadSimpleField(ctx, "noOfServers", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServers' field"))
 	}
-	noOfServers := _noOfServers
 
-	servers, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "servers", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("12191"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfServers))
+	servers, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "servers", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("12191")), readBuffer), uint64(noOfServers))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'servers' field"))
 	}

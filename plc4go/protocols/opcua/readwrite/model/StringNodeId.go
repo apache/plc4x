@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func StringNodeIdParse(ctx context.Context, theBytes []byte) (StringNodeId, erro
 	return StringNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StringNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
+		return StringNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StringNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,24 +132,14 @@ func StringNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of StringNodeId")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
 
-	// Simple Field (identifier)
-	if pullErr := readBuffer.PullContext("identifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for identifier")
-	}
-	_identifier, _identifierErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of StringNodeId")
-	}
-	identifier := _identifier.(PascalString)
-	if closeErr := readBuffer.CloseContext("identifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for identifier")
+	identifier, err := ReadSimpleField[PascalString](ctx, "identifier", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("StringNodeId"); closeErr != nil {

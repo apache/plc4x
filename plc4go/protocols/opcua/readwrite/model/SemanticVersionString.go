@@ -83,6 +83,12 @@ func SemanticVersionStringParse(ctx context.Context, theBytes []byte) (SemanticV
 	return SemanticVersionStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SemanticVersionStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
+		return SemanticVersionStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SemanticVersionStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SemanticVersionString, error) {
 	positionAware := readBuffer
 	_ = positionAware

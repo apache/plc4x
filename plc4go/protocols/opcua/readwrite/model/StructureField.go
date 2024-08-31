@@ -216,6 +216,12 @@ func StructureFieldParse(ctx context.Context, theBytes []byte, identifier string
 	return StructureFieldParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func StructureFieldParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (StructureField, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StructureField, error) {
+		return StructureFieldParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func StructureFieldParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (StructureField, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -227,82 +233,50 @@ func StructureFieldParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of StructureField")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of StructureField")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
-	// Simple Field (dataType)
-	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
-	}
-	_dataType, _dataTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of StructureField")
-	}
-	dataType := _dataType.(NodeId)
-	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataType")
+	dataType, err := ReadSimpleField[NodeId](ctx, "dataType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
 
-	// Simple Field (valueRank)
-	_valueRank, _valueRankErr := /*TODO: migrate me*/ readBuffer.ReadInt32("valueRank", 32)
-	if _valueRankErr != nil {
-		return nil, errors.Wrap(_valueRankErr, "Error parsing 'valueRank' field of StructureField")
+	valueRank, err := ReadSimpleField(ctx, "valueRank", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueRank' field"))
 	}
-	valueRank := _valueRank
 
-	// Simple Field (noOfArrayDimensions)
-	_noOfArrayDimensions, _noOfArrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfArrayDimensions", 32)
-	if _noOfArrayDimensionsErr != nil {
-		return nil, errors.Wrap(_noOfArrayDimensionsErr, "Error parsing 'noOfArrayDimensions' field of StructureField")
+	noOfArrayDimensions, err := ReadSimpleField(ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
 	}
-	noOfArrayDimensions := _noOfArrayDimensions
 
-	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, 32), uint64(noOfArrayDimensions))
+	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfArrayDimensions))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
 
-	// Simple Field (maxStringLength)
-	_maxStringLength, _maxStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxStringLength", 32)
-	if _maxStringLengthErr != nil {
-		return nil, errors.Wrap(_maxStringLengthErr, "Error parsing 'maxStringLength' field of StructureField")
+	maxStringLength, err := ReadSimpleField(ctx, "maxStringLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxStringLength' field"))
 	}
-	maxStringLength := _maxStringLength
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isOptional)
-	_isOptional, _isOptionalErr := /*TODO: migrate me*/ readBuffer.ReadBit("isOptional")
-	if _isOptionalErr != nil {
-		return nil, errors.Wrap(_isOptionalErr, "Error parsing 'isOptional' field of StructureField")
+	isOptional, err := ReadSimpleField(ctx, "isOptional", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOptional' field"))
 	}
-	isOptional := _isOptional
 
 	if closeErr := readBuffer.CloseContext("StructureField"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StructureField")

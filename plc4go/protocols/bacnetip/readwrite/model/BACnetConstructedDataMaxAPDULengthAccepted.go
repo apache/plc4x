@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParse(ctx context.Context, theByt
 	return BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
+		return BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxAPDULengthAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaxAPDULengthAcceptedParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxApduLengthAccepted)
-	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
-	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxApduLengthAcceptedErr != nil {
-		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of BACnetConstructedDataMaxAPDULengthAccepted")
-	}
-	maxApduLengthAccepted := _maxApduLengthAccepted.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxApduLengthAccepted")
+	maxApduLengthAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxApduLengthAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxApduLengthAccepted' field"))
 	}
 
 	// Virtual field

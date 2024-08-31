@@ -113,6 +113,17 @@ func APDUParse(ctx context.Context, theBytes []byte, apduLength uint16) (APDU, e
 	return APDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUParseWithBufferProducer[T APDU](apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := APDUParseWithBuffer(ctx, readBuffer, apduLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func APDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduL
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	apduType, err := ReadDiscriminatorEnumField[ApduType](ctx, "apduType", "ApduType", ReadEnum(ApduTypeByValue, ReadUnsignedByte(readBuffer, 4)))
+	apduType, err := ReadDiscriminatorEnumField[ApduType](ctx, "apduType", "ApduType", ReadEnum(ApduTypeByValue, ReadUnsignedByte(readBuffer, uint8(4))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduType' field"))
 	}

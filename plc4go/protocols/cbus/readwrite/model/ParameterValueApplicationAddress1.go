@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func ParameterValueApplicationAddress1Parse(ctx context.Context, theBytes []byte
 	return ParameterValueApplicationAddress1ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
+func ParameterValueApplicationAddress1ParseWithBufferProducer(parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueApplicationAddress1, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueApplicationAddress1, error) {
+		return ParameterValueApplicationAddress1ParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+	}
+}
+
 func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueApplicationAddress1, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,17 +167,9 @@ func ParameterValueApplicationAddress1ParseWithBuffer(ctx context.Context, readB
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "ApplicationAddress1 has exactly one byte"})
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := ApplicationAddress1ParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueApplicationAddress1")
-	}
-	value := _value.(ApplicationAddress1)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[ApplicationAddress1](ctx, "value", ReadComplex[ApplicationAddress1](ApplicationAddress1ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(1))))

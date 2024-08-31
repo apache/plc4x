@@ -135,6 +135,12 @@ func BACnetServiceAckReadPropertyConditionalParse(ctx context.Context, theBytes 
 	return BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
+func BACnetServiceAckReadPropertyConditionalParseWithBufferProducer(serviceAckPayloadLength uint32, serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckReadPropertyConditional, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckReadPropertyConditional, error) {
+		return BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx, readBuffer, serviceAckPayloadLength, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckReadPropertyConditionalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckReadPropertyConditional, error) {
 	positionAware := readBuffer
 	_ = positionAware

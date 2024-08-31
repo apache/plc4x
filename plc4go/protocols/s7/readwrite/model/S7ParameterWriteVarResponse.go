@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -134,6 +136,12 @@ func S7ParameterWriteVarResponseParse(ctx context.Context, theBytes []byte, mess
 	return S7ParameterWriteVarResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
+func S7ParameterWriteVarResponseParseWithBufferProducer(messageType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterWriteVarResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterWriteVarResponse, error) {
+		return S7ParameterWriteVarResponseParseWithBuffer(ctx, readBuffer, messageType)
+	}
+}
+
 func S7ParameterWriteVarResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterWriteVarResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,12 +153,10 @@ func S7ParameterWriteVarResponseParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numItems)
-	_numItems, _numItemsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numItems", 8)
-	if _numItemsErr != nil {
-		return nil, errors.Wrap(_numItemsErr, "Error parsing 'numItems' field of S7ParameterWriteVarResponse")
+	numItems, err := ReadSimpleField(ctx, "numItems", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numItems' field"))
 	}
-	numItems := _numItems
 
 	if closeErr := readBuffer.CloseContext("S7ParameterWriteVarResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterWriteVarResponse")

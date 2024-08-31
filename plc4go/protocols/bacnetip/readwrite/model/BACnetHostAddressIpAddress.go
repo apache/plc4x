@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetHostAddressIpAddressParse(ctx context.Context, theBytes []byte) (BACn
 	return BACnetHostAddressIpAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetHostAddressIpAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
+		return BACnetHostAddressIpAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetHostAddressIpAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressIpAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetHostAddressIpAddressParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipAddress)
-	if pullErr := readBuffer.PullContext("ipAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipAddress")
-	}
-	_ipAddress, _ipAddressErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_OCTET_STRING))
-	if _ipAddressErr != nil {
-		return nil, errors.Wrap(_ipAddressErr, "Error parsing 'ipAddress' field of BACnetHostAddressIpAddress")
-	}
-	ipAddress := _ipAddress.(BACnetContextTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipAddress")
+	ipAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "ipAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressIpAddress"); closeErr != nil {

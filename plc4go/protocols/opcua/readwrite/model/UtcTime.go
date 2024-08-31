@@ -83,6 +83,12 @@ func UtcTimeParse(ctx context.Context, theBytes []byte) (UtcTime, error) {
 	return UtcTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func UtcTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
+		return UtcTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func UtcTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (UtcTime, error) {
 	positionAware := readBuffer
 	_ = positionAware

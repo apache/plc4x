@@ -449,6 +449,12 @@ func BACnetTagPayloadSignedIntegerParse(ctx context.Context, theBytes []byte, ac
 	return BACnetTagPayloadSignedIntegerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadSignedIntegerParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadSignedInteger, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadSignedInteger, error) {
+		return BACnetTagPayloadSignedIntegerParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadSignedInteger, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -465,7 +471,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt8 := bool(_isInt8)
 	_ = isInt8
 
-	valueInt8, err := ReadOptionalField[int8](ctx, "valueInt8", ReadSignedByte(readBuffer, 8), isInt8)
+	valueInt8, err := ReadOptionalField[int8](ctx, "valueInt8", ReadSignedByte(readBuffer, uint8(8)), isInt8)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt8' field"))
 	}
@@ -475,7 +481,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt16 := bool(_isInt16)
 	_ = isInt16
 
-	valueInt16, err := ReadOptionalField[int16](ctx, "valueInt16", ReadSignedShort(readBuffer, 16), isInt16)
+	valueInt16, err := ReadOptionalField[int16](ctx, "valueInt16", ReadSignedShort(readBuffer, uint8(16)), isInt16)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt16' field"))
 	}
@@ -485,7 +491,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt24 := bool(_isInt24)
 	_ = isInt24
 
-	valueInt24, err := ReadOptionalField[int32](ctx, "valueInt24", ReadSignedInt(readBuffer, 24), isInt24)
+	valueInt24, err := ReadOptionalField[int32](ctx, "valueInt24", ReadSignedInt(readBuffer, uint8(24)), isInt24)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt24' field"))
 	}
@@ -495,7 +501,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt32 := bool(_isInt32)
 	_ = isInt32
 
-	valueInt32, err := ReadOptionalField[int32](ctx, "valueInt32", ReadSignedInt(readBuffer, 32), isInt32)
+	valueInt32, err := ReadOptionalField[int32](ctx, "valueInt32", ReadSignedInt(readBuffer, uint8(32)), isInt32)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt32' field"))
 	}
@@ -505,7 +511,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt40 := bool(_isInt40)
 	_ = isInt40
 
-	valueInt40, err := ReadOptionalField[int64](ctx, "valueInt40", ReadSignedLong(readBuffer, 40), isInt40)
+	valueInt40, err := ReadOptionalField[int64](ctx, "valueInt40", ReadSignedLong(readBuffer, uint8(40)), isInt40)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt40' field"))
 	}
@@ -515,7 +521,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt48 := bool(_isInt48)
 	_ = isInt48
 
-	valueInt48, err := ReadOptionalField[int64](ctx, "valueInt48", ReadSignedLong(readBuffer, 48), isInt48)
+	valueInt48, err := ReadOptionalField[int64](ctx, "valueInt48", ReadSignedLong(readBuffer, uint8(48)), isInt48)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt48' field"))
 	}
@@ -525,7 +531,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt56 := bool(_isInt56)
 	_ = isInt56
 
-	valueInt56, err := ReadOptionalField[int64](ctx, "valueInt56", ReadSignedLong(readBuffer, 56), isInt56)
+	valueInt56, err := ReadOptionalField[int64](ctx, "valueInt56", ReadSignedLong(readBuffer, uint8(56)), isInt56)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt56' field"))
 	}
@@ -535,7 +541,7 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt64 := bool(_isInt64)
 	_ = isInt64
 
-	valueInt64, err := ReadOptionalField[int64](ctx, "valueInt64", ReadSignedLong(readBuffer, 64), isInt64)
+	valueInt64, err := ReadOptionalField[int64](ctx, "valueInt64", ReadSignedLong(readBuffer, uint8(64)), isInt64)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt64' field"))
 	}

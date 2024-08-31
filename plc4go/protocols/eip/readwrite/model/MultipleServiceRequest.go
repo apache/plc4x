@@ -167,6 +167,12 @@ func MultipleServiceRequestParse(ctx context.Context, theBytes []byte, connected
 	return MultipleServiceRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func MultipleServiceRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MultipleServiceRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MultipleServiceRequest, error) {
+		return MultipleServiceRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -178,29 +184,21 @@ func MultipleServiceRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestPathSize, err := ReadConstField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, 8), MultipleServiceRequest_REQUESTPATHSIZE)
+	requestPathSize, err := ReadConstField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)), MultipleServiceRequest_REQUESTPATHSIZE)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
 	_ = requestPathSize
 
-	requestPath, err := ReadConstField[uint32](ctx, "requestPath", ReadUnsignedInt(readBuffer, 32), MultipleServiceRequest_REQUESTPATH)
+	requestPath, err := ReadConstField[uint32](ctx, "requestPath", ReadUnsignedInt(readBuffer, uint8(32)), MultipleServiceRequest_REQUESTPATH)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPath' field"))
 	}
 	_ = requestPath
 
-	// Simple Field (data)
-	if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for data")
-	}
-	_data, _dataErr := ServicesParseWithBuffer(ctx, readBuffer, uint16(uint16(serviceLen)-uint16(uint16(6))))
-	if _dataErr != nil {
-		return nil, errors.Wrap(_dataErr, "Error parsing 'data' field of MultipleServiceRequest")
-	}
-	data := _data.(Services)
-	if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for data")
+	data, err := ReadSimpleField[Services](ctx, "data", ReadComplex[Services](ServicesParseWithBufferProducer((uint16)(uint16(serviceLen)-uint16(uint16(6)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MultipleServiceRequest"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func TransportTypeParse(ctx context.Context, theBytes []byte) (TransportType, er
 	return TransportTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TransportTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
+		return TransportTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TransportType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,26 +142,20 @@ func TransportTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (direction)
-	_direction, _directionErr := /*TODO: migrate me*/ readBuffer.ReadBit("direction")
-	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of TransportType")
+	direction, err := ReadSimpleField(ctx, "direction", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'direction' field"))
 	}
-	direction := _direction
 
-	// Simple Field (trigger)
-	_trigger, _triggerErr := /*TODO: migrate me*/ readBuffer.ReadUint8("trigger", 3)
-	if _triggerErr != nil {
-		return nil, errors.Wrap(_triggerErr, "Error parsing 'trigger' field of TransportType")
+	trigger, err := ReadSimpleField(ctx, "trigger", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trigger' field"))
 	}
-	trigger := _trigger
 
-	// Simple Field (classTransport)
-	_classTransport, _classTransportErr := /*TODO: migrate me*/ readBuffer.ReadUint8("classTransport", 4)
-	if _classTransportErr != nil {
-		return nil, errors.Wrap(_classTransportErr, "Error parsing 'classTransport' field of TransportType")
+	classTransport, err := ReadSimpleField(ctx, "classTransport", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'classTransport' field"))
 	}
-	classTransport := _classTransport
 
 	if closeErr := readBuffer.CloseContext("TransportType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TransportType")

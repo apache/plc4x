@@ -83,6 +83,12 @@ func DurationStringParse(ctx context.Context, theBytes []byte) (DurationString, 
 	return DurationStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DurationStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
+		return DurationStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DurationStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DurationString, error) {
 	positionAware := readBuffer
 	_ = positionAware

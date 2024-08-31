@@ -117,6 +117,12 @@ func ModbusPDUReadExceptionStatusRequestParse(ctx context.Context, theBytes []by
 	return ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadExceptionStatusRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadExceptionStatusRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadExceptionStatusRequest, error) {
+		return ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadExceptionStatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadExceptionStatusRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

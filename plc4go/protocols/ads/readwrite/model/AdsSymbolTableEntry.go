@@ -372,6 +372,12 @@ func AdsSymbolTableEntryParse(ctx context.Context, theBytes []byte) (AdsSymbolTa
 	return AdsSymbolTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsSymbolTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
+		return AdsSymbolTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsSymbolTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -385,194 +391,152 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	var startPos = positionAware.GetPos()
 	_ = startPos
 
-	// Simple Field (entryLength)
-	_entryLength, _entryLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("entryLength", 32)
-	if _entryLengthErr != nil {
-		return nil, errors.Wrap(_entryLengthErr, "Error parsing 'entryLength' field of AdsSymbolTableEntry")
+	entryLength, err := ReadSimpleField(ctx, "entryLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'entryLength' field"))
 	}
-	entryLength := _entryLength
 
-	// Simple Field (group)
-	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("group", 32)
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of AdsSymbolTableEntry")
+	group, err := ReadSimpleField(ctx, "group", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
 
-	// Simple Field (offset)
-	_offset, _offsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("offset", 32)
-	if _offsetErr != nil {
-		return nil, errors.Wrap(_offsetErr, "Error parsing 'offset' field of AdsSymbolTableEntry")
+	offset, err := ReadSimpleField(ctx, "offset", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offset' field"))
 	}
-	offset := _offset
 
-	// Simple Field (size)
-	_size, _sizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("size", 32)
-	if _sizeErr != nil {
-		return nil, errors.Wrap(_sizeErr, "Error parsing 'size' field of AdsSymbolTableEntry")
+	size, err := ReadSimpleField(ctx, "size", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'size' field"))
 	}
-	size := _size
 
-	// Simple Field (dataType)
-	_dataType, _dataTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataType", 32)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of AdsSymbolTableEntry")
+	dataType, err := ReadSimpleField(ctx, "dataType", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
-	dataType := _dataType
 
-	// Simple Field (flagMethodDeref)
-	_flagMethodDeref, _flagMethodDerefErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagMethodDeref")
-	if _flagMethodDerefErr != nil {
-		return nil, errors.Wrap(_flagMethodDerefErr, "Error parsing 'flagMethodDeref' field of AdsSymbolTableEntry")
+	flagMethodDeref, err := ReadSimpleField(ctx, "flagMethodDeref", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagMethodDeref' field"))
 	}
-	flagMethodDeref := _flagMethodDeref
 
-	// Simple Field (flagItfMethodAccess)
-	_flagItfMethodAccess, _flagItfMethodAccessErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagItfMethodAccess")
-	if _flagItfMethodAccessErr != nil {
-		return nil, errors.Wrap(_flagItfMethodAccessErr, "Error parsing 'flagItfMethodAccess' field of AdsSymbolTableEntry")
+	flagItfMethodAccess, err := ReadSimpleField(ctx, "flagItfMethodAccess", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagItfMethodAccess' field"))
 	}
-	flagItfMethodAccess := _flagItfMethodAccess
 
-	// Simple Field (flagReadOnly)
-	_flagReadOnly, _flagReadOnlyErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagReadOnly")
-	if _flagReadOnlyErr != nil {
-		return nil, errors.Wrap(_flagReadOnlyErr, "Error parsing 'flagReadOnly' field of AdsSymbolTableEntry")
+	flagReadOnly, err := ReadSimpleField(ctx, "flagReadOnly", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagReadOnly' field"))
 	}
-	flagReadOnly := _flagReadOnly
 
-	// Simple Field (flagTComInterfacePointer)
-	_flagTComInterfacePointer, _flagTComInterfacePointerErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagTComInterfacePointer")
-	if _flagTComInterfacePointerErr != nil {
-		return nil, errors.Wrap(_flagTComInterfacePointerErr, "Error parsing 'flagTComInterfacePointer' field of AdsSymbolTableEntry")
+	flagTComInterfacePointer, err := ReadSimpleField(ctx, "flagTComInterfacePointer", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagTComInterfacePointer' field"))
 	}
-	flagTComInterfacePointer := _flagTComInterfacePointer
 
-	// Simple Field (flagTypeGuid)
-	_flagTypeGuid, _flagTypeGuidErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagTypeGuid")
-	if _flagTypeGuidErr != nil {
-		return nil, errors.Wrap(_flagTypeGuidErr, "Error parsing 'flagTypeGuid' field of AdsSymbolTableEntry")
+	flagTypeGuid, err := ReadSimpleField(ctx, "flagTypeGuid", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagTypeGuid' field"))
 	}
-	flagTypeGuid := _flagTypeGuid
 
-	// Simple Field (flagReferenceTo)
-	_flagReferenceTo, _flagReferenceToErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagReferenceTo")
-	if _flagReferenceToErr != nil {
-		return nil, errors.Wrap(_flagReferenceToErr, "Error parsing 'flagReferenceTo' field of AdsSymbolTableEntry")
+	flagReferenceTo, err := ReadSimpleField(ctx, "flagReferenceTo", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagReferenceTo' field"))
 	}
-	flagReferenceTo := _flagReferenceTo
 
-	// Simple Field (flagBitValue)
-	_flagBitValue, _flagBitValueErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagBitValue")
-	if _flagBitValueErr != nil {
-		return nil, errors.Wrap(_flagBitValueErr, "Error parsing 'flagBitValue' field of AdsSymbolTableEntry")
+	flagBitValue, err := ReadSimpleField(ctx, "flagBitValue", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagBitValue' field"))
 	}
-	flagBitValue := _flagBitValue
 
-	// Simple Field (flagPersistent)
-	_flagPersistent, _flagPersistentErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagPersistent")
-	if _flagPersistentErr != nil {
-		return nil, errors.Wrap(_flagPersistentErr, "Error parsing 'flagPersistent' field of AdsSymbolTableEntry")
+	flagPersistent, err := ReadSimpleField(ctx, "flagPersistent", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagPersistent' field"))
 	}
-	flagPersistent := _flagPersistent
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 3), uint8(0x00), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(3)), uint8(0x00), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (flagExtendedFlags)
-	_flagExtendedFlags, _flagExtendedFlagsErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagExtendedFlags")
-	if _flagExtendedFlagsErr != nil {
-		return nil, errors.Wrap(_flagExtendedFlagsErr, "Error parsing 'flagExtendedFlags' field of AdsSymbolTableEntry")
+	flagExtendedFlags, err := ReadSimpleField(ctx, "flagExtendedFlags", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagExtendedFlags' field"))
 	}
-	flagExtendedFlags := _flagExtendedFlags
 
-	// Simple Field (flagInitOnReset)
-	_flagInitOnReset, _flagInitOnResetErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagInitOnReset")
-	if _flagInitOnResetErr != nil {
-		return nil, errors.Wrap(_flagInitOnResetErr, "Error parsing 'flagInitOnReset' field of AdsSymbolTableEntry")
+	flagInitOnReset, err := ReadSimpleField(ctx, "flagInitOnReset", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagInitOnReset' field"))
 	}
-	flagInitOnReset := _flagInitOnReset
 
-	// Simple Field (flagStatic)
-	_flagStatic, _flagStaticErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagStatic")
-	if _flagStaticErr != nil {
-		return nil, errors.Wrap(_flagStaticErr, "Error parsing 'flagStatic' field of AdsSymbolTableEntry")
+	flagStatic, err := ReadSimpleField(ctx, "flagStatic", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagStatic' field"))
 	}
-	flagStatic := _flagStatic
 
-	// Simple Field (flagAttributes)
-	_flagAttributes, _flagAttributesErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagAttributes")
-	if _flagAttributesErr != nil {
-		return nil, errors.Wrap(_flagAttributesErr, "Error parsing 'flagAttributes' field of AdsSymbolTableEntry")
+	flagAttributes, err := ReadSimpleField(ctx, "flagAttributes", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagAttributes' field"))
 	}
-	flagAttributes := _flagAttributes
 
-	// Simple Field (flagContextMask)
-	_flagContextMask, _flagContextMaskErr := /*TODO: migrate me*/ readBuffer.ReadBit("flagContextMask")
-	if _flagContextMaskErr != nil {
-		return nil, errors.Wrap(_flagContextMaskErr, "Error parsing 'flagContextMask' field of AdsSymbolTableEntry")
+	flagContextMask, err := ReadSimpleField(ctx, "flagContextMask", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'flagContextMask' field"))
 	}
-	flagContextMask := _flagContextMask
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	nameLength, err := ReadImplicitField[uint16](ctx, "nameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	nameLength, err := ReadImplicitField[uint16](ctx, "nameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nameLength' field"))
 	}
 	_ = nameLength
 
-	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	dataTypeNameLength, err := ReadImplicitField[uint16](ctx, "dataTypeNameLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameLength' field"))
 	}
 	_ = dataTypeNameLength
 
-	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))
+	commentLength, err := ReadImplicitField[uint16](ctx, "commentLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentLength' field"))
 	}
 	_ = commentLength
 
-	// Simple Field (name)
-	_name, _nameErr := /*TODO: migrate me*/ readBuffer.ReadString("name", uint32((nameLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of AdsSymbolTableEntry")
+	name, err := ReadSimpleField(ctx, "name", ReadString(readBuffer, uint32(int32(nameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
-	name := _name
 
-	nameTerminator, err := ReadConstField[uint8](ctx, "nameTerminator", ReadUnsignedByte(readBuffer, 8), AdsSymbolTableEntry_NAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	nameTerminator, err := ReadConstField[uint8](ctx, "nameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsSymbolTableEntry_NAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nameTerminator' field"))
 	}
 	_ = nameTerminator
 
-	// Simple Field (dataTypeName)
-	_dataTypeName, _dataTypeNameErr := /*TODO: migrate me*/ readBuffer.ReadString("dataTypeName", uint32((dataTypeNameLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _dataTypeNameErr != nil {
-		return nil, errors.Wrap(_dataTypeNameErr, "Error parsing 'dataTypeName' field of AdsSymbolTableEntry")
+	dataTypeName, err := ReadSimpleField(ctx, "dataTypeName", ReadString(readBuffer, uint32(int32(dataTypeNameLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeName' field"))
 	}
-	dataTypeName := _dataTypeName
 
-	dataTypeNameTerminator, err := ReadConstField[uint8](ctx, "dataTypeNameTerminator", ReadUnsignedByte(readBuffer, 8), AdsSymbolTableEntry_DATATYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	dataTypeNameTerminator, err := ReadConstField[uint8](ctx, "dataTypeNameTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsSymbolTableEntry_DATATYPENAMETERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeNameTerminator' field"))
 	}
 	_ = dataTypeNameTerminator
 
-	// Simple Field (comment)
-	_comment, _commentErr := /*TODO: migrate me*/ readBuffer.ReadString("comment", uint32((commentLength)*(8)), utils.WithEncoding("UTF-8"))
-	if _commentErr != nil {
-		return nil, errors.Wrap(_commentErr, "Error parsing 'comment' field of AdsSymbolTableEntry")
+	comment, err := ReadSimpleField(ctx, "comment", ReadString(readBuffer, uint32(int32(commentLength)*int32(int32(8)))), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comment' field"))
 	}
-	comment := _comment
 
-	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, 8), AdsSymbolTableEntry_COMMENTTERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
+	commentTerminator, err := ReadConstField[uint8](ctx, "commentTerminator", ReadUnsignedByte(readBuffer, uint8(8)), AdsSymbolTableEntry_COMMENTTERMINATOR, codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commentTerminator' field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BridgeAddressParse(ctx context.Context, theBytes []byte) (BridgeAddress, er
 	return BridgeAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BridgeAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
+		return BridgeAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BridgeAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func BridgeAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadByte("address")
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of BridgeAddress")
+	address, err := ReadSimpleField(ctx, "address", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
 	if closeErr := readBuffer.CloseContext("BridgeAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BridgeAddress")

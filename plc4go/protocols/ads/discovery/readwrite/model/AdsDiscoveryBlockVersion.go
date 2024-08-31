@@ -137,6 +137,12 @@ func AdsDiscoveryBlockVersionParse(ctx context.Context, theBytes []byte) (AdsDis
 	return AdsDiscoveryBlockVersionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockVersionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockVersion, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockVersion, error) {
+		return AdsDiscoveryBlockVersionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockVersion, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,7 +154,7 @@ func AdsDiscoveryBlockVersionParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	versionDataLen, err := ReadImplicitField[uint16](ctx, "versionDataLen", ReadUnsignedShort(readBuffer, 16))
+	versionDataLen, err := ReadImplicitField[uint16](ctx, "versionDataLen", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'versionDataLen' field"))
 	}

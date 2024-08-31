@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesBacnetIpModeParse(ctx context.Context, theBytes []byte,
 	return BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesBacnetIpModeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBacnetIpMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBacnetIpMode, error) {
+		return BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBacnetIpMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesBacnetIpModeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bacnetIpMode)
-	if pullErr := readBuffer.PullContext("bacnetIpMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIpMode")
-	}
-	_bacnetIpMode, _bacnetIpModeErr := BACnetIPModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _bacnetIpModeErr != nil {
-		return nil, errors.Wrap(_bacnetIpModeErr, "Error parsing 'bacnetIpMode' field of BACnetPropertyStatesBacnetIpMode")
-	}
-	bacnetIpMode := _bacnetIpMode.(BACnetIPModeTagged)
-	if closeErr := readBuffer.CloseContext("bacnetIpMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetIpMode")
+	bacnetIpMode, err := ReadSimpleField[BACnetIPModeTagged](ctx, "bacnetIpMode", ReadComplex[BACnetIPModeTagged](BACnetIPModeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIpMode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBacnetIpMode"); closeErr != nil {

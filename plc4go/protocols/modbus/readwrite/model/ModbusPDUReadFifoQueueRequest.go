@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -138,6 +140,12 @@ func ModbusPDUReadFifoQueueRequestParse(ctx context.Context, theBytes []byte, re
 	return ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadFifoQueueRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFifoQueueRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFifoQueueRequest, error) {
+		return ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadFifoQueueRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,12 +157,10 @@ func ModbusPDUReadFifoQueueRequestParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fifoPointerAddress)
-	_fifoPointerAddress, _fifoPointerAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("fifoPointerAddress", 16)
-	if _fifoPointerAddressErr != nil {
-		return nil, errors.Wrap(_fifoPointerAddressErr, "Error parsing 'fifoPointerAddress' field of ModbusPDUReadFifoQueueRequest")
+	fifoPointerAddress, err := ReadSimpleField(ctx, "fifoPointerAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fifoPointerAddress' field"))
 	}
-	fifoPointerAddress := _fifoPointerAddress
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFifoQueueRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFifoQueueRequest")

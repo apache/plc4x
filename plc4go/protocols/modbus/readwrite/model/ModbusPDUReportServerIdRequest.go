@@ -117,6 +117,12 @@ func ModbusPDUReportServerIdRequestParse(ctx context.Context, theBytes []byte, r
 	return ModbusPDUReportServerIdRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReportServerIdRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReportServerIdRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReportServerIdRequest, error) {
+		return ModbusPDUReportServerIdRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReportServerIdRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReportServerIdRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

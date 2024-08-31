@@ -113,6 +113,17 @@ func CEMIParse(ctx context.Context, theBytes []byte, size uint16) (CEMI, error) 
 	return CEMIParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func CEMIParseWithBufferProducer[T CEMI](size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CEMIParseWithBuffer(ctx, readBuffer, size)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (CEMI, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func CEMIParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageCode, err := ReadDiscriminatorField[uint8](ctx, "messageCode", ReadUnsignedByte(readBuffer, 8))
+	messageCode, err := ReadDiscriminatorField[uint8](ctx, "messageCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageCode' field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParse(ctx context.Context,
 	return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
+		return BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeByTimeParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceTime)
-	if pullErr := readBuffer.PullContext("referenceTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTime")
-	}
-	_referenceTime, _referenceTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _referenceTimeErr != nil {
-		return nil, errors.Wrap(_referenceTimeErr, "Error parsing 'referenceTime' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
-	}
-	referenceTime := _referenceTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("referenceTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTime")
+	referenceTime, err := ReadSimpleField[BACnetDateTime](ctx, "referenceTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTime' field"))
 	}
 
-	// Simple Field (count)
-	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for count")
-	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByTime")
-	}
-	count := _count.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for count")
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeByTime"); closeErr != nil {

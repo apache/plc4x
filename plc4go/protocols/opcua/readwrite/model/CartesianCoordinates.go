@@ -109,6 +109,12 @@ func CartesianCoordinatesParse(ctx context.Context, theBytes []byte, identifier 
 	return CartesianCoordinatesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CartesianCoordinatesParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CartesianCoordinates, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CartesianCoordinates, error) {
+		return CartesianCoordinatesParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CartesianCoordinatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CartesianCoordinates, error) {
 	positionAware := readBuffer
 	_ = positionAware

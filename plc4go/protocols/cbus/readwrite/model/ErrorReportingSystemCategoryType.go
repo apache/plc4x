@@ -106,6 +106,17 @@ func ErrorReportingSystemCategoryTypeParse(ctx context.Context, theBytes []byte,
 	return ErrorReportingSystemCategoryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
+func ErrorReportingSystemCategoryTypeParseWithBufferProducer[T ErrorReportingSystemCategoryType](errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ErrorReportingSystemCategoryTypeParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ErrorReportingSystemCategoryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryType, error) {
 	positionAware := readBuffer
 	_ = positionAware

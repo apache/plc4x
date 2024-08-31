@@ -274,6 +274,12 @@ func PubSubKeyPushTargetDataTypeParse(ctx context.Context, theBytes []byte, iden
 	return PubSubKeyPushTargetDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PubSubKeyPushTargetDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubKeyPushTargetDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubKeyPushTargetDataType, error) {
+		return PubSubKeyPushTargetDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubKeyPushTargetDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -285,108 +291,60 @@ func PubSubKeyPushTargetDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (applicationUri)
-	if pullErr := readBuffer.PullContext("applicationUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for applicationUri")
-	}
-	_applicationUri, _applicationUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _applicationUriErr != nil {
-		return nil, errors.Wrap(_applicationUriErr, "Error parsing 'applicationUri' field of PubSubKeyPushTargetDataType")
-	}
-	applicationUri := _applicationUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("applicationUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for applicationUri")
+	applicationUri, err := ReadSimpleField[PascalString](ctx, "applicationUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationUri' field"))
 	}
 
-	// Simple Field (noOfPushTargetFolder)
-	_noOfPushTargetFolder, _noOfPushTargetFolderErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPushTargetFolder", 32)
-	if _noOfPushTargetFolderErr != nil {
-		return nil, errors.Wrap(_noOfPushTargetFolderErr, "Error parsing 'noOfPushTargetFolder' field of PubSubKeyPushTargetDataType")
+	noOfPushTargetFolder, err := ReadSimpleField(ctx, "noOfPushTargetFolder", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetFolder' field"))
 	}
-	noOfPushTargetFolder := _noOfPushTargetFolder
 
 	pushTargetFolder, err := ReadCountArrayField[PascalString](ctx, "pushTargetFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfPushTargetFolder))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetFolder' field"))
 	}
 
-	// Simple Field (endpointUrl)
-	if pullErr := readBuffer.PullContext("endpointUrl"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for endpointUrl")
-	}
-	_endpointUrl, _endpointUrlErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _endpointUrlErr != nil {
-		return nil, errors.Wrap(_endpointUrlErr, "Error parsing 'endpointUrl' field of PubSubKeyPushTargetDataType")
-	}
-	endpointUrl := _endpointUrl.(PascalString)
-	if closeErr := readBuffer.CloseContext("endpointUrl"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for endpointUrl")
+	endpointUrl, err := ReadSimpleField[PascalString](ctx, "endpointUrl", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endpointUrl' field"))
 	}
 
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of PubSubKeyPushTargetDataType")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (userTokenType)
-	if pullErr := readBuffer.PullContext("userTokenType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userTokenType")
-	}
-	_userTokenType, _userTokenTypeErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("306"))
-	if _userTokenTypeErr != nil {
-		return nil, errors.Wrap(_userTokenTypeErr, "Error parsing 'userTokenType' field of PubSubKeyPushTargetDataType")
-	}
-	userTokenType := _userTokenType.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("userTokenType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userTokenType")
+	userTokenType, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "userTokenType", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("306")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userTokenType' field"))
 	}
 
-	// Simple Field (requestedKeyCount)
-	_requestedKeyCount, _requestedKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("requestedKeyCount", 16)
-	if _requestedKeyCountErr != nil {
-		return nil, errors.Wrap(_requestedKeyCountErr, "Error parsing 'requestedKeyCount' field of PubSubKeyPushTargetDataType")
+	requestedKeyCount, err := ReadSimpleField(ctx, "requestedKeyCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedKeyCount' field"))
 	}
-	requestedKeyCount := _requestedKeyCount
 
-	// Simple Field (retryInterval)
-	_retryInterval, _retryIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("retryInterval", 64)
-	if _retryIntervalErr != nil {
-		return nil, errors.Wrap(_retryIntervalErr, "Error parsing 'retryInterval' field of PubSubKeyPushTargetDataType")
+	retryInterval, err := ReadSimpleField(ctx, "retryInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'retryInterval' field"))
 	}
-	retryInterval := _retryInterval
 
-	// Simple Field (noOfPushTargetProperties)
-	_noOfPushTargetProperties, _noOfPushTargetPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPushTargetProperties", 32)
-	if _noOfPushTargetPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfPushTargetPropertiesErr, "Error parsing 'noOfPushTargetProperties' field of PubSubKeyPushTargetDataType")
+	noOfPushTargetProperties, err := ReadSimpleField(ctx, "noOfPushTargetProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPushTargetProperties' field"))
 	}
-	noOfPushTargetProperties := _noOfPushTargetProperties
 
-	pushTargetProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "pushTargetProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfPushTargetProperties))
+	pushTargetProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "pushTargetProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfPushTargetProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pushTargetProperties' field"))
 	}
 
-	// Simple Field (noOfSecurityGroups)
-	_noOfSecurityGroups, _noOfSecurityGroupsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityGroups", 32)
-	if _noOfSecurityGroupsErr != nil {
-		return nil, errors.Wrap(_noOfSecurityGroupsErr, "Error parsing 'noOfSecurityGroups' field of PubSubKeyPushTargetDataType")
+	noOfSecurityGroups, err := ReadSimpleField(ctx, "noOfSecurityGroups", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroups' field"))
 	}
-	noOfSecurityGroups := _noOfSecurityGroups
 
 	securityGroups, err := ReadCountArrayField[PascalString](ctx, "securityGroups", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroups))
 	if err != nil {

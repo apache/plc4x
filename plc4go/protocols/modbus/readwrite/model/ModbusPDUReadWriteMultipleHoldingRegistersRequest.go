@@ -189,6 +189,12 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParse(ctx context.Context,
 	return ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
+		return ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUReadWriteMultipleHoldingRegistersRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -200,35 +206,27 @@ func ModbusPDUReadWriteMultipleHoldingRegistersRequestParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (readStartingAddress)
-	_readStartingAddress, _readStartingAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("readStartingAddress", 16)
-	if _readStartingAddressErr != nil {
-		return nil, errors.Wrap(_readStartingAddressErr, "Error parsing 'readStartingAddress' field of ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	readStartingAddress, err := ReadSimpleField(ctx, "readStartingAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readStartingAddress' field"))
 	}
-	readStartingAddress := _readStartingAddress
 
-	// Simple Field (readQuantity)
-	_readQuantity, _readQuantityErr := /*TODO: migrate me*/ readBuffer.ReadUint16("readQuantity", 16)
-	if _readQuantityErr != nil {
-		return nil, errors.Wrap(_readQuantityErr, "Error parsing 'readQuantity' field of ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	readQuantity, err := ReadSimpleField(ctx, "readQuantity", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readQuantity' field"))
 	}
-	readQuantity := _readQuantity
 
-	// Simple Field (writeStartingAddress)
-	_writeStartingAddress, _writeStartingAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("writeStartingAddress", 16)
-	if _writeStartingAddressErr != nil {
-		return nil, errors.Wrap(_writeStartingAddressErr, "Error parsing 'writeStartingAddress' field of ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	writeStartingAddress, err := ReadSimpleField(ctx, "writeStartingAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeStartingAddress' field"))
 	}
-	writeStartingAddress := _writeStartingAddress
 
-	// Simple Field (writeQuantity)
-	_writeQuantity, _writeQuantityErr := /*TODO: migrate me*/ readBuffer.ReadUint16("writeQuantity", 16)
-	if _writeQuantityErr != nil {
-		return nil, errors.Wrap(_writeQuantityErr, "Error parsing 'writeQuantity' field of ModbusPDUReadWriteMultipleHoldingRegistersRequest")
+	writeQuantity, err := ReadSimpleField(ctx, "writeQuantity", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeQuantity' field"))
 	}
-	writeQuantity := _writeQuantity
 
-	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, 8))
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}

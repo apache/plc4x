@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +158,12 @@ func SysexCommandReportFirmwareResponseParse(ctx context.Context, theBytes []byt
 	return SysexCommandReportFirmwareResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandReportFirmwareResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandReportFirmwareResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SysexCommandReportFirmwareResponse, error) {
+		return SysexCommandReportFirmwareResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommandReportFirmwareResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,19 +175,15 @@ func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("majorVersion", 8)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of SysexCommandReportFirmwareResponse")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minorVersion", 8)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of SysexCommandReportFirmwareResponse")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
 
 	fileName, err := ReadManualByteArrayField(ctx, "fileName", readBuffer, IsSysexEnd(ctx, readBuffer), ParseSysexString(ctx, readBuffer))
 	if err != nil {

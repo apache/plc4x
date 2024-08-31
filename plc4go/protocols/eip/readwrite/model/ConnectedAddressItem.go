@@ -137,6 +137,12 @@ func ConnectedAddressItemParse(ctx context.Context, theBytes []byte) (ConnectedA
 	return ConnectedAddressItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectedAddressItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
+		return ConnectedAddressItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,17 +154,15 @@ func ConnectedAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0004))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0004))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (connectionId)
-	_connectionId, _connectionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("connectionId", 32)
-	if _connectionIdErr != nil {
-		return nil, errors.Wrap(_connectionIdErr, "Error parsing 'connectionId' field of ConnectedAddressItem")
+	connectionId, err := ReadSimpleField(ctx, "connectionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionId' field"))
 	}
-	connectionId := _connectionId
 
 	if closeErr := readBuffer.CloseContext("ConnectedAddressItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConnectedAddressItem")

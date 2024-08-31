@@ -113,6 +113,17 @@ func SysexCommandParse(ctx context.Context, theBytes []byte, response bool) (Sys
 	return SysexCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func SysexCommandParseWithBufferProducer[T SysexCommand](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := SysexCommandParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (SysexCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,7 +135,7 @@ func SysexCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	commandType, err := ReadDiscriminatorField[uint8](ctx, "commandType", ReadUnsignedByte(readBuffer, 8))
+	commandType, err := ReadDiscriminatorField[uint8](ctx, "commandType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}

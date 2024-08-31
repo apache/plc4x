@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func DeviceConfigurationAckParse(ctx context.Context, theBytes []byte) (DeviceCo
 	return DeviceConfigurationAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DeviceConfigurationAckParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
+		return DeviceConfigurationAckParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceConfigurationAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceConfigurationAck, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +151,9 @@ func DeviceConfigurationAckParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceConfigurationAckDataBlock)
-	if pullErr := readBuffer.PullContext("deviceConfigurationAckDataBlock"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for deviceConfigurationAckDataBlock")
-	}
-	_deviceConfigurationAckDataBlock, _deviceConfigurationAckDataBlockErr := DeviceConfigurationAckDataBlockParseWithBuffer(ctx, readBuffer)
-	if _deviceConfigurationAckDataBlockErr != nil {
-		return nil, errors.Wrap(_deviceConfigurationAckDataBlockErr, "Error parsing 'deviceConfigurationAckDataBlock' field of DeviceConfigurationAck")
-	}
-	deviceConfigurationAckDataBlock := _deviceConfigurationAckDataBlock.(DeviceConfigurationAckDataBlock)
-	if closeErr := readBuffer.CloseContext("deviceConfigurationAckDataBlock"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for deviceConfigurationAckDataBlock")
+	deviceConfigurationAckDataBlock, err := ReadSimpleField[DeviceConfigurationAckDataBlock](ctx, "deviceConfigurationAckDataBlock", ReadComplex[DeviceConfigurationAckDataBlock](DeviceConfigurationAckDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceConfigurationAckDataBlock' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DeviceConfigurationAck"); closeErr != nil {

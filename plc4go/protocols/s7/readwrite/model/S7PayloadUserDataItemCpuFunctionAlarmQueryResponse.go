@@ -144,6 +144,12 @@ func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParse(ctx context.Context
 	return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBufferProducer(dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
+		return S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx, readBuffer, dataLength, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCpuFunctionAlarmQueryResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint16, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCpuFunctionAlarmQueryResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

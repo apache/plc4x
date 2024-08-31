@@ -150,6 +150,12 @@ func RelativePathParse(ctx context.Context, theBytes []byte, identifier string) 
 	return RelativePathParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RelativePathParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativePath, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativePath, error) {
+		return RelativePathParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RelativePathParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RelativePath, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,20 +167,12 @@ func RelativePathParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfElements)
-	_noOfElements, _noOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfElements", 32)
-	if _noOfElementsErr != nil {
-		return nil, errors.Wrap(_noOfElementsErr, "Error parsing 'noOfElements' field of RelativePath")
+	noOfElements, err := ReadSimpleField(ctx, "noOfElements", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfElements' field"))
 	}
-	noOfElements := _noOfElements
 
-	elements, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elements", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("539"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfElements))
+	elements, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "elements", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("539")), readBuffer), uint64(noOfElements))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elements' field"))
 	}

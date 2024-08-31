@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ApduDataDeviceDescriptorReadParse(ctx context.Context, theBytes []byte, dat
 	return ApduDataDeviceDescriptorReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataDeviceDescriptorReadParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataDeviceDescriptorRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataDeviceDescriptorRead, error) {
+		return ApduDataDeviceDescriptorReadParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataDeviceDescriptorReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataDeviceDescriptorRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func ApduDataDeviceDescriptorReadParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (descriptorType)
-	_descriptorType, _descriptorTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("descriptorType", 6)
-	if _descriptorTypeErr != nil {
-		return nil, errors.Wrap(_descriptorTypeErr, "Error parsing 'descriptorType' field of ApduDataDeviceDescriptorRead")
+	descriptorType, err := ReadSimpleField(ctx, "descriptorType", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'descriptorType' field"))
 	}
-	descriptorType := _descriptorType
 
 	if closeErr := readBuffer.CloseContext("ApduDataDeviceDescriptorRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApduDataDeviceDescriptorRead")

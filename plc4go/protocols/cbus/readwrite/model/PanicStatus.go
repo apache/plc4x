@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func PanicStatusParse(ctx context.Context, theBytes []byte) (PanicStatus, error)
 	return PanicStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PanicStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
+		return PanicStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PanicStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,12 +161,10 @@ func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of PanicStatus")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
 	// Virtual field
 	_isNoPanic := bool((status) == (0x00))

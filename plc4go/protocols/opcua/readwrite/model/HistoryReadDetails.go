@@ -109,6 +109,12 @@ func HistoryReadDetailsParse(ctx context.Context, theBytes []byte, identifier st
 	return HistoryReadDetailsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryReadDetailsParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadDetails, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryReadDetails, error) {
+		return HistoryReadDetailsParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryReadDetailsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryReadDetails, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func OpcuaCloseRequestParse(ctx context.Context, theBytes []byte, response bool)
 	return OpcuaCloseRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpcuaCloseRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaCloseRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaCloseRequest, error) {
+		return OpcuaCloseRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpcuaCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaCloseRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,30 +166,14 @@ func OpcuaCloseRequestParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityHeader)
-	if pullErr := readBuffer.PullContext("securityHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityHeader")
-	}
-	_securityHeader, _securityHeaderErr := SecurityHeaderParseWithBuffer(ctx, readBuffer)
-	if _securityHeaderErr != nil {
-		return nil, errors.Wrap(_securityHeaderErr, "Error parsing 'securityHeader' field of OpcuaCloseRequest")
-	}
-	securityHeader := _securityHeader.(SecurityHeader)
-	if closeErr := readBuffer.CloseContext("securityHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityHeader")
+	securityHeader, err := ReadSimpleField[SecurityHeader](ctx, "securityHeader", ReadComplex[SecurityHeader](SecurityHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityHeader' field"))
 	}
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := PayloadParseWithBuffer(ctx, readBuffer, bool(bool(false)), uint32(uint32(0)))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of OpcuaCloseRequest")
-	}
-	message := _message.(Payload)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[Payload](ctx, "message", ReadComplex[Payload](PayloadParseWithBufferProducer[Payload]((bool)(bool(false)), (uint32)(uint32(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaCloseRequest"); closeErr != nil {

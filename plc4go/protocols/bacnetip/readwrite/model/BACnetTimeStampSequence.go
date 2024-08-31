@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimeStampSequenceParse(ctx context.Context, theBytes []byte) (BACnetT
 	return BACnetTimeStampSequenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetTimeStampSequenceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
+		return BACnetTimeStampSequenceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetTimeStampSequenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimeStampSequence, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimeStampSequenceParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sequenceNumber)
-	if pullErr := readBuffer.PullContext("sequenceNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sequenceNumber")
-	}
-	_sequenceNumber, _sequenceNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of BACnetTimeStampSequence")
-	}
-	sequenceNumber := _sequenceNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("sequenceNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sequenceNumber")
+	sequenceNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "sequenceNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimeStampSequence"); closeErr != nil {

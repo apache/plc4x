@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,6 +157,12 @@ func AdsTableSizesParse(ctx context.Context, theBytes []byte) (AdsTableSizes, er
 	return AdsTableSizesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AdsTableSizesParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
+		return AdsTableSizesParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsTableSizes, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -165,47 +174,35 @@ func AdsTableSizesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (symbolCount)
-	_symbolCount, _symbolCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("symbolCount", 32)
-	if _symbolCountErr != nil {
-		return nil, errors.Wrap(_symbolCountErr, "Error parsing 'symbolCount' field of AdsTableSizes")
+	symbolCount, err := ReadSimpleField(ctx, "symbolCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolCount' field"))
 	}
-	symbolCount := _symbolCount
 
-	// Simple Field (symbolLength)
-	_symbolLength, _symbolLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("symbolLength", 32)
-	if _symbolLengthErr != nil {
-		return nil, errors.Wrap(_symbolLengthErr, "Error parsing 'symbolLength' field of AdsTableSizes")
+	symbolLength, err := ReadSimpleField(ctx, "symbolLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolLength' field"))
 	}
-	symbolLength := _symbolLength
 
-	// Simple Field (dataTypeCount)
-	_dataTypeCount, _dataTypeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataTypeCount", 32)
-	if _dataTypeCountErr != nil {
-		return nil, errors.Wrap(_dataTypeCountErr, "Error parsing 'dataTypeCount' field of AdsTableSizes")
+	dataTypeCount, err := ReadSimpleField(ctx, "dataTypeCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeCount' field"))
 	}
-	dataTypeCount := _dataTypeCount
 
-	// Simple Field (dataTypeLength)
-	_dataTypeLength, _dataTypeLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("dataTypeLength", 32)
-	if _dataTypeLengthErr != nil {
-		return nil, errors.Wrap(_dataTypeLengthErr, "Error parsing 'dataTypeLength' field of AdsTableSizes")
+	dataTypeLength, err := ReadSimpleField(ctx, "dataTypeLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataTypeLength' field"))
 	}
-	dataTypeLength := _dataTypeLength
 
-	// Simple Field (extraCount)
-	_extraCount, _extraCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("extraCount", 32)
-	if _extraCountErr != nil {
-		return nil, errors.Wrap(_extraCountErr, "Error parsing 'extraCount' field of AdsTableSizes")
+	extraCount, err := ReadSimpleField(ctx, "extraCount", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extraCount' field"))
 	}
-	extraCount := _extraCount
 
-	// Simple Field (extraLength)
-	_extraLength, _extraLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("extraLength", 32)
-	if _extraLengthErr != nil {
-		return nil, errors.Wrap(_extraLengthErr, "Error parsing 'extraLength' field of AdsTableSizes")
+	extraLength, err := ReadSimpleField(ctx, "extraLength", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extraLength' field"))
 	}
-	extraLength := _extraLength
 
 	if closeErr := readBuffer.CloseContext("AdsTableSizes"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsTableSizes")

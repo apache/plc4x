@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParse(ctx context.Conte
 	return BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
+		return BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTrendLogLogDeviceObjectProperty, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTrendLogLogDeviceObjectPropertyParseWithBuffer(ctx con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (logDeviceObjectProperty)
-	if pullErr := readBuffer.PullContext("logDeviceObjectProperty"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for logDeviceObjectProperty")
-	}
-	_logDeviceObjectProperty, _logDeviceObjectPropertyErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _logDeviceObjectPropertyErr != nil {
-		return nil, errors.Wrap(_logDeviceObjectPropertyErr, "Error parsing 'logDeviceObjectProperty' field of BACnetConstructedDataTrendLogLogDeviceObjectProperty")
-	}
-	logDeviceObjectProperty := _logDeviceObjectProperty.(BACnetDeviceObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("logDeviceObjectProperty"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for logDeviceObjectProperty")
+	logDeviceObjectProperty, err := ReadSimpleField[BACnetDeviceObjectPropertyReference](ctx, "logDeviceObjectProperty", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logDeviceObjectProperty' field"))
 	}
 
 	// Virtual field

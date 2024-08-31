@@ -160,6 +160,12 @@ func CALDataStatusParse(ctx context.Context, theBytes []byte, commandTypeContain
 	return CALDataStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
+func CALDataStatusParseWithBufferProducer(commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataStatus, error) {
+		return CALDataStatusParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+	}
+}
+
 func CALDataStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,25 +177,15 @@ func CALDataStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CALDataStatus")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
-	// Simple Field (blockStart)
-	_blockStart, _blockStartErr := /*TODO: migrate me*/ readBuffer.ReadUint8("blockStart", 8)
-	if _blockStartErr != nil {
-		return nil, errors.Wrap(_blockStartErr, "Error parsing 'blockStart' field of CALDataStatus")
+	blockStart, err := ReadSimpleField(ctx, "blockStart", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockStart' field"))
 	}
-	blockStart := _blockStart
 
 	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(int32(commandTypeContainer.NumBytes())-int32(int32(2))))
 	if err != nil {

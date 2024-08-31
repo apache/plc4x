@@ -302,6 +302,12 @@ func APDUConfirmedRequestParse(ctx context.Context, theBytes []byte, apduLength 
 	return APDUConfirmedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUConfirmedRequestParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUConfirmedRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUConfirmedRequest, error) {
+		return APDUConfirmedRequestParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUConfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -313,71 +319,47 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentedMessage)
-	_segmentedMessage, _segmentedMessageErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentedMessage")
-	if _segmentedMessageErr != nil {
-		return nil, errors.Wrap(_segmentedMessageErr, "Error parsing 'segmentedMessage' field of APDUConfirmedRequest")
+	segmentedMessage, err := ReadSimpleField(ctx, "segmentedMessage", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentedMessage' field"))
 	}
-	segmentedMessage := _segmentedMessage
 
-	// Simple Field (moreFollows)
-	_moreFollows, _moreFollowsErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreFollows")
-	if _moreFollowsErr != nil {
-		return nil, errors.Wrap(_moreFollowsErr, "Error parsing 'moreFollows' field of APDUConfirmedRequest")
+	moreFollows, err := ReadSimpleField(ctx, "moreFollows", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreFollows' field"))
 	}
-	moreFollows := _moreFollows
 
-	// Simple Field (segmentedResponseAccepted)
-	_segmentedResponseAccepted, _segmentedResponseAcceptedErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentedResponseAccepted")
-	if _segmentedResponseAcceptedErr != nil {
-		return nil, errors.Wrap(_segmentedResponseAcceptedErr, "Error parsing 'segmentedResponseAccepted' field of APDUConfirmedRequest")
+	segmentedResponseAccepted, err := ReadSimpleField(ctx, "segmentedResponseAccepted", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentedResponseAccepted' field"))
 	}
-	segmentedResponseAccepted := _segmentedResponseAccepted
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (maxSegmentsAccepted)
-	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
-	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := MaxSegmentsAcceptedParseWithBuffer(ctx, readBuffer)
-	if _maxSegmentsAcceptedErr != nil {
-		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of APDUConfirmedRequest")
-	}
-	maxSegmentsAccepted := _maxSegmentsAccepted
-	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxSegmentsAccepted")
+	maxSegmentsAccepted, err := ReadEnumField[MaxSegmentsAccepted](ctx, "maxSegmentsAccepted", "MaxSegmentsAccepted", ReadEnum(MaxSegmentsAcceptedByValue, ReadUnsignedByte(readBuffer, uint8(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxSegmentsAccepted' field"))
 	}
 
-	// Simple Field (maxApduLengthAccepted)
-	if pullErr := readBuffer.PullContext("maxApduLengthAccepted"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxApduLengthAccepted")
-	}
-	_maxApduLengthAccepted, _maxApduLengthAcceptedErr := MaxApduLengthAcceptedParseWithBuffer(ctx, readBuffer)
-	if _maxApduLengthAcceptedErr != nil {
-		return nil, errors.Wrap(_maxApduLengthAcceptedErr, "Error parsing 'maxApduLengthAccepted' field of APDUConfirmedRequest")
-	}
-	maxApduLengthAccepted := _maxApduLengthAccepted
-	if closeErr := readBuffer.CloseContext("maxApduLengthAccepted"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxApduLengthAccepted")
+	maxApduLengthAccepted, err := ReadEnumField[MaxApduLengthAccepted](ctx, "maxApduLengthAccepted", "MaxApduLengthAccepted", ReadEnum(MaxApduLengthAcceptedByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxApduLengthAccepted' field"))
 	}
 
-	// Simple Field (invokeId)
-	_invokeId, _invokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("invokeId", 8)
-	if _invokeIdErr != nil {
-		return nil, errors.Wrap(_invokeIdErr, "Error parsing 'invokeId' field of APDUConfirmedRequest")
+	invokeId, err := ReadSimpleField(ctx, "invokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'invokeId' field"))
 	}
-	invokeId := _invokeId
 
-	sequenceNumber, err := ReadOptionalField[uint8](ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	sequenceNumber, err := ReadOptionalField[uint8](ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)), segmentedMessage)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
 
-	proposedWindowSize, err := ReadOptionalField[uint8](ctx, "proposedWindowSize", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	proposedWindowSize, err := ReadOptionalField[uint8](ctx, "proposedWindowSize", ReadUnsignedByte(readBuffer, uint8(8)), segmentedMessage)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proposedWindowSize' field"))
 	}
@@ -387,13 +369,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	apduHeaderReduction := uint16(_apduHeaderReduction)
 	_ = apduHeaderReduction
 
-	_serviceRequest, err := ReadOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", ReadComplex[BACnetConfirmedServiceRequest](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequest, error) {
-		v, err := BACnetConfirmedServiceRequestParseWithBuffer(ctx, readBuffer, (uint32)(uint32(apduLength)-uint32(apduHeaderReduction)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConfirmedServiceRequest), nil
-	}, readBuffer), !(segmentedMessage))
+	_serviceRequest, err := ReadOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", ReadComplex[BACnetConfirmedServiceRequest](BACnetConfirmedServiceRequestParseWithBufferProducer[BACnetConfirmedServiceRequest]((uint32)(uint32(apduLength)-uint32(apduHeaderReduction))), readBuffer), !(segmentedMessage))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequest' field"))
 	}
@@ -407,7 +383,7 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 
-	segmentServiceChoice, err := ReadOptionalField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, 8)), bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))))
+	segmentServiceChoice, err := ReadOptionalField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentServiceChoice' field"))
 	}

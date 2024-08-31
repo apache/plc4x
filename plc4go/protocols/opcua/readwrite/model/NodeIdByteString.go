@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -160,6 +162,12 @@ func NodeIdByteStringParse(ctx context.Context, theBytes []byte) (NodeIdByteStri
 	return NodeIdByteStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdByteStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdByteString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdByteString, error) {
+		return NodeIdByteStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NodeIdByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdByteString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,24 +179,14 @@ func NodeIdByteStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NodeIdByteString")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
 
-	// Simple Field (id)
-	if pullErr := readBuffer.PullContext("id"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for id")
-	}
-	_id, _idErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _idErr != nil {
-		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of NodeIdByteString")
-	}
-	id := _id.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("id"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for id")
+	id, err := ReadSimpleField[PascalByteString](ctx, "id", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
 
 	// Virtual field

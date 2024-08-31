@@ -108,6 +108,12 @@ func SecurityDataStatus1RequestParse(ctx context.Context, theBytes []byte) (Secu
 	return SecurityDataStatus1RequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataStatus1RequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatus1Request, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatus1Request, error) {
+		return SecurityDataStatus1RequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataStatus1RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataStatus1Request, error) {
 	positionAware := readBuffer
 	_ = positionAware

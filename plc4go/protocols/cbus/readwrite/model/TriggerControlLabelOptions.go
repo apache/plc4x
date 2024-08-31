@@ -132,6 +132,12 @@ func TriggerControlLabelOptionsParse(ctx context.Context, theBytes []byte) (Trig
 	return TriggerControlLabelOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlLabelOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
+		return TriggerControlLabelOptionsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,17 +154,9 @@ func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (labelFlavour)
-	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
-	}
-	_labelFlavour, _labelFlavourErr := TriggerControlLabelFlavourParseWithBuffer(ctx, readBuffer)
-	if _labelFlavourErr != nil {
-		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of TriggerControlLabelOptions")
-	}
-	labelFlavour := _labelFlavour
-	if closeErr := readBuffer.CloseContext("labelFlavour"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
+	labelFlavour, err := ReadEnumField[TriggerControlLabelFlavour](ctx, "labelFlavour", "TriggerControlLabelFlavour", ReadEnum(TriggerControlLabelFlavourByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelFlavour' field"))
 	}
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
@@ -171,17 +169,9 @@ func TriggerControlLabelOptionsParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (labelType)
-	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
-	}
-	_labelType, _labelTypeErr := TriggerControlLabelTypeParseWithBuffer(ctx, readBuffer)
-	if _labelTypeErr != nil {
-		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of TriggerControlLabelOptions")
-	}
-	labelType := _labelType
-	if closeErr := readBuffer.CloseContext("labelType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelType")
+	labelType, err := ReadEnumField[TriggerControlLabelType](ctx, "labelType", "TriggerControlLabelType", ReadEnum(TriggerControlLabelTypeByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelType' field"))
 	}
 
 	reservedField3, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))

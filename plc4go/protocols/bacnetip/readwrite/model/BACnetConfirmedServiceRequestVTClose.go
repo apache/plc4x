@@ -140,6 +140,12 @@ func BACnetConfirmedServiceRequestVTCloseParse(ctx context.Context, theBytes []b
 	return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestPayloadLength, serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestVTCloseParseWithBufferProducer(serviceRequestPayloadLength uint32, serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestVTClose, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestVTClose, error) {
+		return BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx, readBuffer, serviceRequestPayloadLength, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestPayloadLength uint32, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTClose, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,13 +157,7 @@ func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	listOfRemoteVtSessionIdentifiers, err := ReadLengthArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfRemoteVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), int(serviceRequestPayloadLength))
+	listOfRemoteVtSessionIdentifiers, err := ReadLengthArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfRemoteVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), int(serviceRequestPayloadLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfRemoteVtSessionIdentifiers' field"))
 	}

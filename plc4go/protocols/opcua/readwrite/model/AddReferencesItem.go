@@ -192,6 +192,12 @@ func AddReferencesItemParse(ctx context.Context, theBytes []byte, identifier str
 	return AddReferencesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AddReferencesItemParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AddReferencesItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AddReferencesItem, error) {
+		return AddReferencesItemParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AddReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddReferencesItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -203,81 +209,39 @@ func AddReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceNodeId)
-	if pullErr := readBuffer.PullContext("sourceNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceNodeId")
-	}
-	_sourceNodeId, _sourceNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sourceNodeIdErr != nil {
-		return nil, errors.Wrap(_sourceNodeIdErr, "Error parsing 'sourceNodeId' field of AddReferencesItem")
-	}
-	sourceNodeId := _sourceNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sourceNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceNodeId")
+	sourceNodeId, err := ReadSimpleField[NodeId](ctx, "sourceNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNodeId' field"))
 	}
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of AddReferencesItem")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of AddReferencesItem")
-	}
-	isForward := _isForward
-
-	// Simple Field (targetServerUri)
-	if pullErr := readBuffer.PullContext("targetServerUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetServerUri")
-	}
-	_targetServerUri, _targetServerUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _targetServerUriErr != nil {
-		return nil, errors.Wrap(_targetServerUriErr, "Error parsing 'targetServerUri' field of AddReferencesItem")
-	}
-	targetServerUri := _targetServerUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("targetServerUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetServerUri")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
 
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
-	}
-	_targetNodeId, _targetNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of AddReferencesItem")
-	}
-	targetNodeId := _targetNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
+	targetServerUri, err := ReadSimpleField[PascalString](ctx, "targetServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetServerUri' field"))
 	}
 
-	// Simple Field (targetNodeClass)
-	if pullErr := readBuffer.PullContext("targetNodeClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeClass")
+	targetNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
 	}
-	_targetNodeClass, _targetNodeClassErr := NodeClassParseWithBuffer(ctx, readBuffer)
-	if _targetNodeClassErr != nil {
-		return nil, errors.Wrap(_targetNodeClassErr, "Error parsing 'targetNodeClass' field of AddReferencesItem")
-	}
-	targetNodeClass := _targetNodeClass
-	if closeErr := readBuffer.CloseContext("targetNodeClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeClass")
+
+	targetNodeClass, err := ReadEnumField[NodeClass](ctx, "targetNodeClass", "NodeClass", ReadEnum(NodeClassByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeClass' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AddReferencesItem"); closeErr != nil {

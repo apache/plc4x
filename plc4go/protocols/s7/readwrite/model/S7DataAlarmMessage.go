@@ -136,6 +136,17 @@ func S7DataAlarmMessageParse(ctx context.Context, theBytes []byte, cpuFunctionTy
 	return S7DataAlarmMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionType)
 }
 
+func S7DataAlarmMessageParseWithBufferProducer[T S7DataAlarmMessage](cpuFunctionType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7DataAlarmMessageParseWithBuffer(ctx, readBuffer, cpuFunctionType)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionType uint8) (S7DataAlarmMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -147,13 +158,13 @@ func S7DataAlarmMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, 8), S7DataAlarmMessage_FUNCTIONID)
+	functionId, err := ReadConstField[uint8](ctx, "functionId", ReadUnsignedByte(readBuffer, uint8(8)), S7DataAlarmMessage_FUNCTIONID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionId' field"))
 	}
 	_ = functionId
 
-	numberMessageObj, err := ReadConstField[uint8](ctx, "numberMessageObj", ReadUnsignedByte(readBuffer, 8), S7DataAlarmMessage_NUMBERMESSAGEOBJ)
+	numberMessageObj, err := ReadConstField[uint8](ctx, "numberMessageObj", ReadUnsignedByte(readBuffer, uint8(8)), S7DataAlarmMessage_NUMBERMESSAGEOBJ)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberMessageObj' field"))
 	}

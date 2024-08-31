@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func LightingDataOnParse(ctx context.Context, theBytes []byte) (LightingDataOn, 
 	return LightingDataOnParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LightingDataOnParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataOn, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataOn, error) {
+		return LightingDataOnParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LightingDataOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataOn, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,12 +147,10 @@ func LightingDataOnParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataOn")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
 
 	if closeErr := readBuffer.CloseContext("LightingDataOn"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingDataOn")

@@ -140,6 +140,17 @@ func BACnetPropertyStatesParse(ctx context.Context, theBytes []byte) (BACnetProp
 	return BACnetPropertyStatesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetPropertyStatesParseWithBufferProducer[T BACnetPropertyStates]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetPropertyStatesParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetPropertyStatesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStates, error) {
 	positionAware := readBuffer
 	_ = positionAware

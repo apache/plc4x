@@ -172,6 +172,12 @@ func RegisterServer2RequestParse(ctx context.Context, theBytes []byte, identifie
 	return RegisterServer2RequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RegisterServer2RequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterServer2Request, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterServer2Request, error) {
+		return RegisterServer2RequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RegisterServer2RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterServer2Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,46 +189,22 @@ func RegisterServer2RequestParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of RegisterServer2Request")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (server)
-	if pullErr := readBuffer.PullContext("server"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for server")
-	}
-	_server, _serverErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("434"))
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of RegisterServer2Request")
-	}
-	server := _server.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("server"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for server")
+	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("434")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
 
-	// Simple Field (noOfDiscoveryConfiguration)
-	_noOfDiscoveryConfiguration, _noOfDiscoveryConfigurationErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryConfiguration", 32)
-	if _noOfDiscoveryConfigurationErr != nil {
-		return nil, errors.Wrap(_noOfDiscoveryConfigurationErr, "Error parsing 'noOfDiscoveryConfiguration' field of RegisterServer2Request")
+	noOfDiscoveryConfiguration, err := ReadSimpleField(ctx, "noOfDiscoveryConfiguration", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryConfiguration' field"))
 	}
-	noOfDiscoveryConfiguration := _noOfDiscoveryConfiguration
 
-	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
-		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObject), nil
-	}, readBuffer), uint64(noOfDiscoveryConfiguration))
+	discoveryConfiguration, err := ReadCountArrayField[ExtensionObject](ctx, "discoveryConfiguration", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfDiscoveryConfiguration))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryConfiguration' field"))
 	}

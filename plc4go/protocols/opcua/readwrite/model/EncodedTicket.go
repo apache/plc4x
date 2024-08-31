@@ -83,6 +83,12 @@ func EncodedTicketParse(ctx context.Context, theBytes []byte) (EncodedTicket, er
 	return EncodedTicketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EncodedTicketParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
+		return EncodedTicketParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EncodedTicketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EncodedTicket, error) {
 	positionAware := readBuffer
 	_ = positionAware

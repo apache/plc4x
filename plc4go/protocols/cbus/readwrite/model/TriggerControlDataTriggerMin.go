@@ -108,6 +108,12 @@ func TriggerControlDataTriggerMinParse(ctx context.Context, theBytes []byte) (Tr
 	return TriggerControlDataTriggerMinParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlDataTriggerMinParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
+		return TriggerControlDataTriggerMinParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlDataTriggerMinParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataTriggerMin, error) {
 	positionAware := readBuffer
 	_ = positionAware

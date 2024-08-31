@@ -83,6 +83,12 @@ func RsaEncryptedSecretParse(ctx context.Context, theBytes []byte) (RsaEncrypted
 	return RsaEncryptedSecretParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RsaEncryptedSecretParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
+		return RsaEncryptedSecretParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RsaEncryptedSecretParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RsaEncryptedSecret, error) {
 	positionAware := readBuffer
 	_ = positionAware

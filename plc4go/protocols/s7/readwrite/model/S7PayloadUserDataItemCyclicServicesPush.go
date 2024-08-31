@@ -162,6 +162,12 @@ func S7PayloadUserDataItemCyclicServicesPushParse(ctx context.Context, theBytes 
 	return S7PayloadUserDataItemCyclicServicesPushParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
 }
 
+func S7PayloadUserDataItemCyclicServicesPushParseWithBufferProducer(cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesPush, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7PayloadUserDataItemCyclicServicesPush, error) {
+		return S7PayloadUserDataItemCyclicServicesPushParseWithBuffer(ctx, readBuffer, cpuFunctionGroup, cpuFunctionType, cpuSubfunction)
+	}
+}
+
 func S7PayloadUserDataItemCyclicServicesPushParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cpuFunctionGroup uint8, cpuFunctionType uint8, cpuSubfunction uint8) (S7PayloadUserDataItemCyclicServicesPush, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -173,12 +179,10 @@ func S7PayloadUserDataItemCyclicServicesPushParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (itemsCount)
-	_itemsCount, _itemsCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("itemsCount", 16)
-	if _itemsCountErr != nil {
-		return nil, errors.Wrap(_itemsCountErr, "Error parsing 'itemsCount' field of S7PayloadUserDataItemCyclicServicesPush")
+	itemsCount, err := ReadSimpleField(ctx, "itemsCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemsCount' field"))
 	}
-	itemsCount := _itemsCount
 
 	items, err := ReadCountArrayField[AssociatedValueType](ctx, "items", ReadComplex[AssociatedValueType](AssociatedValueTypeParseWithBuffer, readBuffer), uint64(itemsCount))
 	if err != nil {

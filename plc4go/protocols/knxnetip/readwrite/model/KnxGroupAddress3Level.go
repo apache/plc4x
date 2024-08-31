@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func KnxGroupAddress3LevelParse(ctx context.Context, theBytes []byte, numLevels 
 	return KnxGroupAddress3LevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
+func KnxGroupAddress3LevelParseWithBufferProducer(numLevels uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxGroupAddress3Level, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxGroupAddress3Level, error) {
+		return KnxGroupAddress3LevelParseWithBuffer(ctx, readBuffer, numLevels)
+	}
+}
+
 func KnxGroupAddress3LevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddress3Level, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,26 +171,20 @@ func KnxGroupAddress3LevelParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mainGroup)
-	_mainGroup, _mainGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mainGroup", 5)
-	if _mainGroupErr != nil {
-		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxGroupAddress3Level")
+	mainGroup, err := ReadSimpleField(ctx, "mainGroup", ReadUnsignedByte(readBuffer, uint8(5)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainGroup' field"))
 	}
-	mainGroup := _mainGroup
 
-	// Simple Field (middleGroup)
-	_middleGroup, _middleGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("middleGroup", 3)
-	if _middleGroupErr != nil {
-		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field of KnxGroupAddress3Level")
+	middleGroup, err := ReadSimpleField(ctx, "middleGroup", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'middleGroup' field"))
 	}
-	middleGroup := _middleGroup
 
-	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subGroup", 8)
-	if _subGroupErr != nil {
-		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxGroupAddress3Level")
+	subGroup, err := ReadSimpleField(ctx, "subGroup", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subGroup' field"))
 	}
-	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddress3Level"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxGroupAddress3Level")

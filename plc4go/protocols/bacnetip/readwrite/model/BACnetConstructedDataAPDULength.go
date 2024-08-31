@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAPDULengthParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataAPDULengthParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAPDULengthParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDULength, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDULength, error) {
+		return BACnetConstructedDataAPDULengthParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAPDULengthParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDULength, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAPDULengthParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (apduLength)
-	if pullErr := readBuffer.PullContext("apduLength"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apduLength")
-	}
-	_apduLength, _apduLengthErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _apduLengthErr != nil {
-		return nil, errors.Wrap(_apduLengthErr, "Error parsing 'apduLength' field of BACnetConstructedDataAPDULength")
-	}
-	apduLength := _apduLength.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("apduLength"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apduLength")
+	apduLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduLength' field"))
 	}
 
 	// Virtual field

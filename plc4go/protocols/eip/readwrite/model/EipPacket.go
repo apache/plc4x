@@ -171,6 +171,17 @@ func EipPacketParse(ctx context.Context, theBytes []byte, response bool) (EipPac
 	return EipPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func EipPacketParseWithBufferProducer[T EipPacket](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := EipPacketParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -182,42 +193,36 @@ func EipPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	command, err := ReadDiscriminatorField[uint16](ctx, "command", ReadUnsignedShort(readBuffer, 16))
+	command, err := ReadDiscriminatorField[uint16](ctx, "command", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	packetLength, err := ReadImplicitField[uint16](ctx, "packetLength", ReadUnsignedShort(readBuffer, 16))
+	packetLength, err := ReadImplicitField[uint16](ctx, "packetLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetLength' field"))
 	}
 	_ = packetLength
 
-	// Simple Field (sessionHandle)
-	_sessionHandle, _sessionHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sessionHandle", 32)
-	if _sessionHandleErr != nil {
-		return nil, errors.Wrap(_sessionHandleErr, "Error parsing 'sessionHandle' field of EipPacket")
+	sessionHandle, err := ReadSimpleField(ctx, "sessionHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionHandle' field"))
 	}
-	sessionHandle := _sessionHandle
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint32("status", 32)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of EipPacket")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
 	senderContext, err := readBuffer.ReadByteArray("senderContext", int(int32(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderContext' field"))
 	}
 
-	// Simple Field (options)
-	_options, _optionsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("options", 32)
-	if _optionsErr != nil {
-		return nil, errors.Wrap(_optionsErr, "Error parsing 'options' field of EipPacket")
+	options, err := ReadSimpleField(ctx, "options", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'options' field"))
 	}
-	options := _options
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type EipPacketChildSerializeRequirement interface {

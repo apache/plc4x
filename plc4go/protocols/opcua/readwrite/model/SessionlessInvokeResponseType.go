@@ -190,6 +190,12 @@ func SessionlessInvokeResponseTypeParse(ctx context.Context, theBytes []byte, id
 	return SessionlessInvokeResponseTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SessionlessInvokeResponseTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionlessInvokeResponseType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SessionlessInvokeResponseType, error) {
+		return SessionlessInvokeResponseTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SessionlessInvokeResponseType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -201,36 +207,30 @@ func SessionlessInvokeResponseTypeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfNamespaceUris)
-	_noOfNamespaceUris, _noOfNamespaceUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNamespaceUris", 32)
-	if _noOfNamespaceUrisErr != nil {
-		return nil, errors.Wrap(_noOfNamespaceUrisErr, "Error parsing 'noOfNamespaceUris' field of SessionlessInvokeResponseType")
+	noOfNamespaceUris, err := ReadSimpleField(ctx, "noOfNamespaceUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaceUris' field"))
 	}
-	noOfNamespaceUris := _noOfNamespaceUris
 
 	namespaceUris, err := ReadCountArrayField[PascalString](ctx, "namespaceUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaceUris))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUris' field"))
 	}
 
-	// Simple Field (noOfServerUris)
-	_noOfServerUris, _noOfServerUrisErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerUris", 32)
-	if _noOfServerUrisErr != nil {
-		return nil, errors.Wrap(_noOfServerUrisErr, "Error parsing 'noOfServerUris' field of SessionlessInvokeResponseType")
+	noOfServerUris, err := ReadSimpleField(ctx, "noOfServerUris", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerUris' field"))
 	}
-	noOfServerUris := _noOfServerUris
 
 	serverUris, err := ReadCountArrayField[PascalString](ctx, "serverUris", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfServerUris))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUris' field"))
 	}
 
-	// Simple Field (serviceId)
-	_serviceId, _serviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serviceId", 32)
-	if _serviceIdErr != nil {
-		return nil, errors.Wrap(_serviceIdErr, "Error parsing 'serviceId' field of SessionlessInvokeResponseType")
+	serviceId, err := ReadSimpleField(ctx, "serviceId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceId' field"))
 	}
-	serviceId := _serviceId
 
 	if closeErr := readBuffer.CloseContext("SessionlessInvokeResponseType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SessionlessInvokeResponseType")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func ModbusPDUReadFileRecordRequestItemParse(ctx context.Context, theBytes []byt
 	return ModbusPDUReadFileRecordRequestItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ModbusPDUReadFileRecordRequestItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordRequestItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordRequestItem, error) {
+		return ModbusPDUReadFileRecordRequestItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ModbusPDUReadFileRecordRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUReadFileRecordRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,33 +152,25 @@ func ModbusPDUReadFileRecordRequestItemParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceType)
-	_referenceType, _referenceTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("referenceType", 8)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ModbusPDUReadFileRecordRequestItem")
+	referenceType, err := ReadSimpleField(ctx, "referenceType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
-	referenceType := _referenceType
 
-	// Simple Field (fileNumber)
-	_fileNumber, _fileNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("fileNumber", 16)
-	if _fileNumberErr != nil {
-		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of ModbusPDUReadFileRecordRequestItem")
+	fileNumber, err := ReadSimpleField(ctx, "fileNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileNumber' field"))
 	}
-	fileNumber := _fileNumber
 
-	// Simple Field (recordNumber)
-	_recordNumber, _recordNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("recordNumber", 16)
-	if _recordNumberErr != nil {
-		return nil, errors.Wrap(_recordNumberErr, "Error parsing 'recordNumber' field of ModbusPDUReadFileRecordRequestItem")
+	recordNumber, err := ReadSimpleField(ctx, "recordNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordNumber' field"))
 	}
-	recordNumber := _recordNumber
 
-	// Simple Field (recordLength)
-	_recordLength, _recordLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("recordLength", 16)
-	if _recordLengthErr != nil {
-		return nil, errors.Wrap(_recordLengthErr, "Error parsing 'recordLength' field of ModbusPDUReadFileRecordRequestItem")
+	recordLength, err := ReadSimpleField(ctx, "recordLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recordLength' field"))
 	}
-	recordLength := _recordLength
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUReadFileRecordRequestItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUReadFileRecordRequestItem")

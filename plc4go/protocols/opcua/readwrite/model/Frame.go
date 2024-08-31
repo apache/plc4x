@@ -109,6 +109,12 @@ func FrameParse(ctx context.Context, theBytes []byte, identifier string) (Frame,
 	return FrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func FrameParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (Frame, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Frame, error) {
+		return FrameParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func FrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (Frame, error) {
 	positionAware := readBuffer
 	_ = positionAware

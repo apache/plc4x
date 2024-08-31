@@ -110,6 +110,12 @@ func BVLCReadBroadcastDistributionTableParse(ctx context.Context, theBytes []byt
 	return BVLCReadBroadcastDistributionTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCReadBroadcastDistributionTableParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
+		return BVLCReadBroadcastDistributionTableParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCReadBroadcastDistributionTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTable, error) {
 	positionAware := readBuffer
 	_ = positionAware

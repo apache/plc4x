@@ -108,6 +108,12 @@ func TriggerControlDataIndicatorKillParse(ctx context.Context, theBytes []byte) 
 	return TriggerControlDataIndicatorKillParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlDataIndicatorKillParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
+		return TriggerControlDataIndicatorKillParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TriggerControlDataIndicatorKillParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataIndicatorKill, error) {
 	positionAware := readBuffer
 	_ = positionAware

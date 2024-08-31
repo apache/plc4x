@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func MonitoredItemCreateResultParse(ctx context.Context, theBytes []byte, identi
 	return MonitoredItemCreateResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func MonitoredItemCreateResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemCreateResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MonitoredItemCreateResult, error) {
+		return MonitoredItemCreateResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func MonitoredItemCreateResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (MonitoredItemCreateResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,51 +193,29 @@ func MonitoredItemCreateResultParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of MonitoredItemCreateResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (monitoredItemId)
-	_monitoredItemId, _monitoredItemIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemId", 32)
-	if _monitoredItemIdErr != nil {
-		return nil, errors.Wrap(_monitoredItemIdErr, "Error parsing 'monitoredItemId' field of MonitoredItemCreateResult")
+	monitoredItemId, err := ReadSimpleField(ctx, "monitoredItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemId' field"))
 	}
-	monitoredItemId := _monitoredItemId
 
-	// Simple Field (revisedSamplingInterval)
-	_revisedSamplingInterval, _revisedSamplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedSamplingInterval", 64)
-	if _revisedSamplingIntervalErr != nil {
-		return nil, errors.Wrap(_revisedSamplingIntervalErr, "Error parsing 'revisedSamplingInterval' field of MonitoredItemCreateResult")
+	revisedSamplingInterval, err := ReadSimpleField(ctx, "revisedSamplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedSamplingInterval' field"))
 	}
-	revisedSamplingInterval := _revisedSamplingInterval
 
-	// Simple Field (revisedQueueSize)
-	_revisedQueueSize, _revisedQueueSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedQueueSize", 32)
-	if _revisedQueueSizeErr != nil {
-		return nil, errors.Wrap(_revisedQueueSizeErr, "Error parsing 'revisedQueueSize' field of MonitoredItemCreateResult")
+	revisedQueueSize, err := ReadSimpleField(ctx, "revisedQueueSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedQueueSize' field"))
 	}
-	revisedQueueSize := _revisedQueueSize
 
-	// Simple Field (filterResult)
-	if pullErr := readBuffer.PullContext("filterResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for filterResult")
-	}
-	_filterResult, _filterResultErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _filterResultErr != nil {
-		return nil, errors.Wrap(_filterResultErr, "Error parsing 'filterResult' field of MonitoredItemCreateResult")
-	}
-	filterResult := _filterResult.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("filterResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for filterResult")
+	filterResult, err := ReadSimpleField[ExtensionObject](ctx, "filterResult", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'filterResult' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredItemCreateResult"); closeErr != nil {

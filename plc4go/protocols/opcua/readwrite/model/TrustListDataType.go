@@ -248,6 +248,12 @@ func TrustListDataTypeParse(ctx context.Context, theBytes []byte, identifier str
 	return TrustListDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TrustListDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TrustListDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TrustListDataType, error) {
+		return TrustListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TrustListDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -259,55 +265,45 @@ func TrustListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (specifiedLists)
-	_specifiedLists, _specifiedListsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("specifiedLists", 32)
-	if _specifiedListsErr != nil {
-		return nil, errors.Wrap(_specifiedListsErr, "Error parsing 'specifiedLists' field of TrustListDataType")
+	specifiedLists, err := ReadSimpleField(ctx, "specifiedLists", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specifiedLists' field"))
 	}
-	specifiedLists := _specifiedLists
 
-	// Simple Field (noOfTrustedCertificates)
-	_noOfTrustedCertificates, _noOfTrustedCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTrustedCertificates", 32)
-	if _noOfTrustedCertificatesErr != nil {
-		return nil, errors.Wrap(_noOfTrustedCertificatesErr, "Error parsing 'noOfTrustedCertificates' field of TrustListDataType")
+	noOfTrustedCertificates, err := ReadSimpleField(ctx, "noOfTrustedCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTrustedCertificates' field"))
 	}
-	noOfTrustedCertificates := _noOfTrustedCertificates
 
 	trustedCertificates, err := ReadCountArrayField[PascalByteString](ctx, "trustedCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCertificates))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trustedCertificates' field"))
 	}
 
-	// Simple Field (noOfTrustedCrls)
-	_noOfTrustedCrls, _noOfTrustedCrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTrustedCrls", 32)
-	if _noOfTrustedCrlsErr != nil {
-		return nil, errors.Wrap(_noOfTrustedCrlsErr, "Error parsing 'noOfTrustedCrls' field of TrustListDataType")
+	noOfTrustedCrls, err := ReadSimpleField(ctx, "noOfTrustedCrls", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTrustedCrls' field"))
 	}
-	noOfTrustedCrls := _noOfTrustedCrls
 
 	trustedCrls, err := ReadCountArrayField[PascalByteString](ctx, "trustedCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfTrustedCrls))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trustedCrls' field"))
 	}
 
-	// Simple Field (noOfIssuerCertificates)
-	_noOfIssuerCertificates, _noOfIssuerCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfIssuerCertificates", 32)
-	if _noOfIssuerCertificatesErr != nil {
-		return nil, errors.Wrap(_noOfIssuerCertificatesErr, "Error parsing 'noOfIssuerCertificates' field of TrustListDataType")
+	noOfIssuerCertificates, err := ReadSimpleField(ctx, "noOfIssuerCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIssuerCertificates' field"))
 	}
-	noOfIssuerCertificates := _noOfIssuerCertificates
 
 	issuerCertificates, err := ReadCountArrayField[PascalByteString](ctx, "issuerCertificates", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCertificates))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issuerCertificates' field"))
 	}
 
-	// Simple Field (noOfIssuerCrls)
-	_noOfIssuerCrls, _noOfIssuerCrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfIssuerCrls", 32)
-	if _noOfIssuerCrlsErr != nil {
-		return nil, errors.Wrap(_noOfIssuerCrlsErr, "Error parsing 'noOfIssuerCrls' field of TrustListDataType")
+	noOfIssuerCrls, err := ReadSimpleField(ctx, "noOfIssuerCrls", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfIssuerCrls' field"))
 	}
-	noOfIssuerCrls := _noOfIssuerCrls
 
 	issuerCrls, err := ReadCountArrayField[PascalByteString](ctx, "issuerCrls", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer), uint64(noOfIssuerCrls))
 	if err != nil {

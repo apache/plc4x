@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParse(ctx context.Context, t
 	return BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
+		return BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAssignedLandingCallsLandingCallsListEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (floorNumber)
-	if pullErr := readBuffer.PullContext("floorNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for floorNumber")
-	}
-	_floorNumber, _floorNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _floorNumberErr != nil {
-		return nil, errors.Wrap(_floorNumberErr, "Error parsing 'floorNumber' field of BACnetAssignedLandingCallsLandingCallsListEntry")
-	}
-	floorNumber := _floorNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("floorNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for floorNumber")
+	floorNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "floorNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumber' field"))
 	}
 
-	// Simple Field (direction)
-	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for direction")
-	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetAssignedLandingCallsLandingCallsListEntry")
-	}
-	direction := _direction.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for direction")
+	direction, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'direction' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAssignedLandingCallsLandingCallsListEntry"); closeErr != nil {

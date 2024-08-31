@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetHostAddressNullParse(ctx context.Context, theBytes []byte) (BACnetHos
 	return BACnetHostAddressNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetHostAddressNullParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
+		return BACnetHostAddressNullParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetHostAddressNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetHostAddressNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetHostAddressNullParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (none)
-	if pullErr := readBuffer.PullContext("none"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for none")
-	}
-	_none, _noneErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_NULL))
-	if _noneErr != nil {
-		return nil, errors.Wrap(_noneErr, "Error parsing 'none' field of BACnetHostAddressNull")
-	}
-	none := _none.(BACnetContextTagNull)
-	if closeErr := readBuffer.CloseContext("none"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for none")
+	none, err := ReadSimpleField[BACnetContextTagNull](ctx, "none", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'none' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetHostAddressNull"); closeErr != nil {

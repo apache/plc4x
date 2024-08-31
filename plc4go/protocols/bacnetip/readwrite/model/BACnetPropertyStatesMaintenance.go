@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesMaintenanceParse(ctx context.Context, theBytes []byte, 
 	return BACnetPropertyStatesMaintenanceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesMaintenanceParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesMaintenance, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesMaintenance, error) {
+		return BACnetPropertyStatesMaintenanceParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesMaintenanceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesMaintenance, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesMaintenanceParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maintenance)
-	if pullErr := readBuffer.PullContext("maintenance"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maintenance")
-	}
-	_maintenance, _maintenanceErr := BACnetMaintenanceTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _maintenanceErr != nil {
-		return nil, errors.Wrap(_maintenanceErr, "Error parsing 'maintenance' field of BACnetPropertyStatesMaintenance")
-	}
-	maintenance := _maintenance.(BACnetMaintenanceTagged)
-	if closeErr := readBuffer.CloseContext("maintenance"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maintenance")
+	maintenance, err := ReadSimpleField[BACnetMaintenanceTagged](ctx, "maintenance", ReadComplex[BACnetMaintenanceTagged](BACnetMaintenanceTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maintenance' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesMaintenance"); closeErr != nil {

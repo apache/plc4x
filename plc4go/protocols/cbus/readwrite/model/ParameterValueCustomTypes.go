@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ParameterValueCustomTypesParse(ctx context.Context, theBytes []byte, parame
 	return ParameterValueCustomTypesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
+func ParameterValueCustomTypesParseWithBufferProducer(parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueCustomTypes, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueCustomTypes, error) {
+		return ParameterValueCustomTypesParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+	}
+}
+
 func ParameterValueCustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueCustomTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func ParameterValueCustomTypesParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := CustomTypesParseWithBuffer(ctx, readBuffer, uint8(numBytes))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueCustomTypes")
-	}
-	value := _value.(CustomTypes)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[CustomTypes](ctx, "value", ReadComplex[CustomTypes](CustomTypesParseWithBufferProducer((uint8)(numBytes)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueCustomTypes"); closeErr != nil {

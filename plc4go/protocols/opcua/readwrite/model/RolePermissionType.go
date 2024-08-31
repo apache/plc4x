@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func RolePermissionTypeParse(ctx context.Context, theBytes []byte, identifier st
 	return RolePermissionTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RolePermissionTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RolePermissionType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RolePermissionType, error) {
+		return RolePermissionTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RolePermissionTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RolePermissionType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func RolePermissionTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (roleId)
-	if pullErr := readBuffer.PullContext("roleId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for roleId")
-	}
-	_roleId, _roleIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _roleIdErr != nil {
-		return nil, errors.Wrap(_roleIdErr, "Error parsing 'roleId' field of RolePermissionType")
-	}
-	roleId := _roleId.(NodeId)
-	if closeErr := readBuffer.CloseContext("roleId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for roleId")
+	roleId, err := ReadSimpleField[NodeId](ctx, "roleId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'roleId' field"))
 	}
 
-	// Simple Field (permissions)
-	if pullErr := readBuffer.PullContext("permissions"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for permissions")
-	}
-	_permissions, _permissionsErr := PermissionTypeParseWithBuffer(ctx, readBuffer)
-	if _permissionsErr != nil {
-		return nil, errors.Wrap(_permissionsErr, "Error parsing 'permissions' field of RolePermissionType")
-	}
-	permissions := _permissions
-	if closeErr := readBuffer.CloseContext("permissions"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for permissions")
+	permissions, err := ReadEnumField[PermissionType](ctx, "permissions", "PermissionType", ReadEnum(PermissionTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'permissions' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RolePermissionType"); closeErr != nil {

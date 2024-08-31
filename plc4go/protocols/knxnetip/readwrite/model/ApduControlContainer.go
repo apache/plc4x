@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func ApduControlContainerParse(ctx context.Context, theBytes []byte, dataLength 
 	return ApduControlContainerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduControlContainerParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlContainer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControlContainer, error) {
+		return ApduControlContainerParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduControlContainerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduControlContainer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,17 +152,9 @@ func ApduControlContainerParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (controlApdu)
-	if pullErr := readBuffer.PullContext("controlApdu"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for controlApdu")
-	}
-	_controlApdu, _controlApduErr := ApduControlParseWithBuffer(ctx, readBuffer)
-	if _controlApduErr != nil {
-		return nil, errors.Wrap(_controlApduErr, "Error parsing 'controlApdu' field of ApduControlContainer")
-	}
-	controlApdu := _controlApdu.(ApduControl)
-	if closeErr := readBuffer.CloseContext("controlApdu"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for controlApdu")
+	controlApdu, err := ReadSimpleField[ApduControl](ctx, "controlApdu", ReadComplex[ApduControl](ApduControlParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlApdu' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ApduControlContainer"); closeErr != nil {

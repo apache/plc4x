@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func AdsDeleteDeviceNotificationResponseParse(ctx context.Context, theBytes []by
 	return AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDeleteDeviceNotificationResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
+		return AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,17 +160,9 @@ func AdsDeleteDeviceNotificationResponseParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsDeleteDeviceNotificationResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDeleteDeviceNotificationResponse"); closeErr != nil {

@@ -106,6 +106,17 @@ func AdsMultiRequestItemParse(ctx context.Context, theBytes []byte, indexGroup u
 	return AdsMultiRequestItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), indexGroup)
 }
 
+func AdsMultiRequestItemParseWithBufferProducer[T AdsMultiRequestItem](indexGroup uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := AdsMultiRequestItemParseWithBuffer(ctx, readBuffer, indexGroup)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func AdsMultiRequestItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, indexGroup uint32) (AdsMultiRequestItem, error) {
 	positionAware := readBuffer
 	_ = positionAware

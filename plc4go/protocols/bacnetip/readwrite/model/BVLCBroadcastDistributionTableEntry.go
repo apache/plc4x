@@ -129,6 +129,12 @@ func BVLCBroadcastDistributionTableEntryParse(ctx context.Context, theBytes []by
 	return BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BVLCBroadcastDistributionTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
+		return BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCBroadcastDistributionTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,19 +146,17 @@ func BVLCBroadcastDistributionTableEntryParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, 8), uint64(int32(4)))
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
 
-	// Simple Field (port)
-	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCBroadcastDistributionTableEntry")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
 
-	broadcastDistributionMap, err := ReadCountArrayField[uint8](ctx, "broadcastDistributionMap", ReadUnsignedByte(readBuffer, 8), uint64(int32(4)))
+	broadcastDistributionMap, err := ReadCountArrayField[uint8](ctx, "broadcastDistributionMap", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'broadcastDistributionMap' field"))
 	}

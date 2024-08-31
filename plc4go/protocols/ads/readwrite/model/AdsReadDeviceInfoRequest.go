@@ -120,6 +120,12 @@ func AdsReadDeviceInfoRequestParse(ctx context.Context, theBytes []byte) (AdsRea
 	return AdsReadDeviceInfoRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadDeviceInfoRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
+		return AdsReadDeviceInfoRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadDeviceInfoRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadDeviceInfoRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

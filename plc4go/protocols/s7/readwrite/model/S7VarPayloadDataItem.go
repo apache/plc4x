@@ -137,6 +137,12 @@ func S7VarPayloadDataItemParse(ctx context.Context, theBytes []byte) (S7VarPaylo
 	return S7VarPayloadDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7VarPayloadDataItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadDataItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadDataItem, error) {
+		return S7VarPayloadDataItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,33 +154,17 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
-	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadDataItem")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
 
-	// Simple Field (transportSize)
-	if pullErr := readBuffer.PullContext("transportSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transportSize")
-	}
-	_transportSize, _transportSizeErr := DataTransportSizeParseWithBuffer(ctx, readBuffer)
-	if _transportSizeErr != nil {
-		return nil, errors.Wrap(_transportSizeErr, "Error parsing 'transportSize' field of S7VarPayloadDataItem")
-	}
-	transportSize := _transportSize
-	if closeErr := readBuffer.CloseContext("transportSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
+	transportSize, err := ReadEnumField[DataTransportSize](ctx, "transportSize", "DataTransportSize", ReadEnum(DataTransportSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
 
-	dataLength, err := ReadImplicitField[uint16](ctx, "dataLength", ReadUnsignedShort(readBuffer, 16))
+	dataLength, err := ReadImplicitField[uint16](ctx, "dataLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataLength' field"))
 	}
@@ -185,7 +175,7 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
-	if err := ReadPaddingField(ctx, ReadUnsignedByte(readBuffer, 8), (int)(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return uint8((uint8(uint8(len(data))) % uint8(uint8(2)))) }, func() any { return uint8(uint8(0)) }).(uint8))); err != nil {
+	if err := ReadPaddingField(ctx, ReadUnsignedByte(readBuffer, uint8(8)), (int)(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return uint8((uint8(uint8(len(data))) % uint8(uint8(2)))) }, func() any { return uint8(uint8(0)) }).(uint8))); err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing padding field"))
 	}
 

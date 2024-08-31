@@ -177,6 +177,12 @@ func CipRRDataParse(ctx context.Context, theBytes []byte, response bool) (CipRRD
 	return CipRRDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func CipRRDataParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipRRData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipRRData, error) {
+		return CipRRDataParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (CipRRData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -188,21 +194,17 @@ func CipRRDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceHandle)
-	_interfaceHandle, _interfaceHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("interfaceHandle", 32)
-	if _interfaceHandleErr != nil {
-		return nil, errors.Wrap(_interfaceHandleErr, "Error parsing 'interfaceHandle' field of CipRRData")
+	interfaceHandle, err := ReadSimpleField(ctx, "interfaceHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceHandle' field"))
 	}
-	interfaceHandle := _interfaceHandle
 
-	// Simple Field (timeout)
-	_timeout, _timeoutErr := /*TODO: migrate me*/ readBuffer.ReadUint16("timeout", 16)
-	if _timeoutErr != nil {
-		return nil, errors.Wrap(_timeoutErr, "Error parsing 'timeout' field of CipRRData")
+	timeout, err := ReadSimpleField(ctx, "timeout", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeout' field"))
 	}
-	timeout := _timeout
 
-	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, 16))
+	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}

@@ -134,6 +134,12 @@ func NLMRouterBusyToNetworkParse(ctx context.Context, theBytes []byte, apduLengt
 	return NLMRouterBusyToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMRouterBusyToNetworkParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRouterBusyToNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMRouterBusyToNetwork, error) {
+		return NLMRouterBusyToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMRouterBusyToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMRouterBusyToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,7 +151,7 @@ func NLMRouterBusyToNetworkParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	destinationNetworkAddresses, err := ReadLengthArrayField[uint16](ctx, "destinationNetworkAddresses", ReadUnsignedShort(readBuffer, 16), int(int32(apduLength)-int32(int32(1))))
+	destinationNetworkAddresses, err := ReadLengthArrayField[uint16](ctx, "destinationNetworkAddresses", ReadUnsignedShort(readBuffer, uint8(16)), int(int32(apduLength)-int32(int32(1))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddresses' field"))
 	}

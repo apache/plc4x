@@ -232,6 +232,12 @@ func DataValueParse(ctx context.Context, theBytes []byte) (DataValue, error) {
 	return DataValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DataValueParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DataValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataValue, error) {
+		return DataValueParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DataValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -243,52 +249,40 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(2)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (serverPicosecondsSpecified)
-	_serverPicosecondsSpecified, _serverPicosecondsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverPicosecondsSpecified")
-	if _serverPicosecondsSpecifiedErr != nil {
-		return nil, errors.Wrap(_serverPicosecondsSpecifiedErr, "Error parsing 'serverPicosecondsSpecified' field of DataValue")
+	serverPicosecondsSpecified, err := ReadSimpleField(ctx, "serverPicosecondsSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverPicosecondsSpecified' field"))
 	}
-	serverPicosecondsSpecified := _serverPicosecondsSpecified
 
-	// Simple Field (sourcePicosecondsSpecified)
-	_sourcePicosecondsSpecified, _sourcePicosecondsSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourcePicosecondsSpecified")
-	if _sourcePicosecondsSpecifiedErr != nil {
-		return nil, errors.Wrap(_sourcePicosecondsSpecifiedErr, "Error parsing 'sourcePicosecondsSpecified' field of DataValue")
+	sourcePicosecondsSpecified, err := ReadSimpleField(ctx, "sourcePicosecondsSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourcePicosecondsSpecified' field"))
 	}
-	sourcePicosecondsSpecified := _sourcePicosecondsSpecified
 
-	// Simple Field (serverTimestampSpecified)
-	_serverTimestampSpecified, _serverTimestampSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("serverTimestampSpecified")
-	if _serverTimestampSpecifiedErr != nil {
-		return nil, errors.Wrap(_serverTimestampSpecifiedErr, "Error parsing 'serverTimestampSpecified' field of DataValue")
+	serverTimestampSpecified, err := ReadSimpleField(ctx, "serverTimestampSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverTimestampSpecified' field"))
 	}
-	serverTimestampSpecified := _serverTimestampSpecified
 
-	// Simple Field (sourceTimestampSpecified)
-	_sourceTimestampSpecified, _sourceTimestampSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourceTimestampSpecified")
-	if _sourceTimestampSpecifiedErr != nil {
-		return nil, errors.Wrap(_sourceTimestampSpecifiedErr, "Error parsing 'sourceTimestampSpecified' field of DataValue")
+	sourceTimestampSpecified, err := ReadSimpleField(ctx, "sourceTimestampSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceTimestampSpecified' field"))
 	}
-	sourceTimestampSpecified := _sourceTimestampSpecified
 
-	// Simple Field (statusCodeSpecified)
-	_statusCodeSpecified, _statusCodeSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("statusCodeSpecified")
-	if _statusCodeSpecifiedErr != nil {
-		return nil, errors.Wrap(_statusCodeSpecifiedErr, "Error parsing 'statusCodeSpecified' field of DataValue")
+	statusCodeSpecified, err := ReadSimpleField(ctx, "statusCodeSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCodeSpecified' field"))
 	}
-	statusCodeSpecified := _statusCodeSpecified
 
-	// Simple Field (valueSpecified)
-	_valueSpecified, _valueSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("valueSpecified")
-	if _valueSpecifiedErr != nil {
-		return nil, errors.Wrap(_valueSpecifiedErr, "Error parsing 'valueSpecified' field of DataValue")
+	valueSpecified, err := ReadSimpleField(ctx, "valueSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSpecified' field"))
 	}
-	valueSpecified := _valueSpecified
 
 	_value, err := ReadOptionalField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), valueSpecified)
 	if err != nil {
@@ -308,22 +302,22 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		statusCode = *_statusCode
 	}
 
-	sourceTimestamp, err := ReadOptionalField[int64](ctx, "sourceTimestamp", ReadSignedLong(readBuffer, 64), sourceTimestampSpecified)
+	sourceTimestamp, err := ReadOptionalField[int64](ctx, "sourceTimestamp", ReadSignedLong(readBuffer, uint8(64)), sourceTimestampSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceTimestamp' field"))
 	}
 
-	sourcePicoseconds, err := ReadOptionalField[uint16](ctx, "sourcePicoseconds", ReadUnsignedShort(readBuffer, 16), sourcePicosecondsSpecified)
+	sourcePicoseconds, err := ReadOptionalField[uint16](ctx, "sourcePicoseconds", ReadUnsignedShort(readBuffer, uint8(16)), sourcePicosecondsSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourcePicoseconds' field"))
 	}
 
-	serverTimestamp, err := ReadOptionalField[int64](ctx, "serverTimestamp", ReadSignedLong(readBuffer, 64), serverTimestampSpecified)
+	serverTimestamp, err := ReadOptionalField[int64](ctx, "serverTimestamp", ReadSignedLong(readBuffer, uint8(64)), serverTimestampSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverTimestamp' field"))
 	}
 
-	serverPicoseconds, err := ReadOptionalField[uint16](ctx, "serverPicoseconds", ReadUnsignedShort(readBuffer, 16), serverPicosecondsSpecified)
+	serverPicoseconds, err := ReadOptionalField[uint16](ctx, "serverPicoseconds", ReadUnsignedShort(readBuffer, uint8(16)), serverPicosecondsSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverPicoseconds' field"))
 	}

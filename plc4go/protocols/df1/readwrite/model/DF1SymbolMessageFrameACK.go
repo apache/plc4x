@@ -110,6 +110,12 @@ func DF1SymbolMessageFrameACKParse(ctx context.Context, theBytes []byte) (DF1Sym
 	return DF1SymbolMessageFrameACKParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DF1SymbolMessageFrameACKParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameACK, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameACK, error) {
+		return DF1SymbolMessageFrameACKParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1SymbolMessageFrameACKParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrameACK, error) {
 	positionAware := readBuffer
 	_ = positionAware

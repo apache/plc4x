@@ -152,6 +152,12 @@ func InterfaceOptions3Parse(ctx context.Context, theBytes []byte) (InterfaceOpti
 	return InterfaceOptions3ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func InterfaceOptions3ParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
+		return InterfaceOptions3ParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func InterfaceOptions3ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions3, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,33 +189,25 @@ func InterfaceOptions3ParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (exstat)
-	_exstat, _exstatErr := /*TODO: migrate me*/ readBuffer.ReadBit("exstat")
-	if _exstatErr != nil {
-		return nil, errors.Wrap(_exstatErr, "Error parsing 'exstat' field of InterfaceOptions3")
+	exstat, err := ReadSimpleField(ctx, "exstat", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exstat' field"))
 	}
-	exstat := _exstat
 
-	// Simple Field (pun)
-	_pun, _punErr := /*TODO: migrate me*/ readBuffer.ReadBit("pun")
-	if _punErr != nil {
-		return nil, errors.Wrap(_punErr, "Error parsing 'pun' field of InterfaceOptions3")
+	pun, err := ReadSimpleField(ctx, "pun", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pun' field"))
 	}
-	pun := _pun
 
-	// Simple Field (localSal)
-	_localSal, _localSalErr := /*TODO: migrate me*/ readBuffer.ReadBit("localSal")
-	if _localSalErr != nil {
-		return nil, errors.Wrap(_localSalErr, "Error parsing 'localSal' field of InterfaceOptions3")
+	localSal, err := ReadSimpleField(ctx, "localSal", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localSal' field"))
 	}
-	localSal := _localSal
 
-	// Simple Field (pcn)
-	_pcn, _pcnErr := /*TODO: migrate me*/ readBuffer.ReadBit("pcn")
-	if _pcnErr != nil {
-		return nil, errors.Wrap(_pcnErr, "Error parsing 'pcn' field of InterfaceOptions3")
+	pcn, err := ReadSimpleField(ctx, "pcn", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pcn' field"))
 	}
-	pcn := _pcn
 
 	if closeErr := readBuffer.CloseContext("InterfaceOptions3"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for InterfaceOptions3")

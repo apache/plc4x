@@ -109,6 +109,12 @@ func ReaderGroupTransportDataTypeParse(ctx context.Context, theBytes []byte, ide
 	return ReaderGroupTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReaderGroupTransportDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReaderGroupTransportDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReaderGroupTransportDataType, error) {
+		return ReaderGroupTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReaderGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReaderGroupTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

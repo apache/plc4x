@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataAirConditioningParse(ctx context.Context, theBytes []byte, applicati
 	return SALDataAirConditioningParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataAirConditioningParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAirConditioning, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAirConditioning, error) {
+		return SALDataAirConditioningParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataAirConditioningParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAirConditioning, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataAirConditioningParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (airConditioningData)
-	if pullErr := readBuffer.PullContext("airConditioningData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for airConditioningData")
-	}
-	_airConditioningData, _airConditioningDataErr := AirConditioningDataParseWithBuffer(ctx, readBuffer)
-	if _airConditioningDataErr != nil {
-		return nil, errors.Wrap(_airConditioningDataErr, "Error parsing 'airConditioningData' field of SALDataAirConditioning")
-	}
-	airConditioningData := _airConditioningData.(AirConditioningData)
-	if closeErr := readBuffer.CloseContext("airConditioningData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for airConditioningData")
+	airConditioningData, err := ReadSimpleField[AirConditioningData](ctx, "airConditioningData", ReadComplex[AirConditioningData](AirConditioningDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'airConditioningData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAirConditioning"); closeErr != nil {

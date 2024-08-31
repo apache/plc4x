@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func EnableControlDataParse(ctx context.Context, theBytes []byte) (EnableControl
 	return EnableControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func EnableControlDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {
+		return EnableControlDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (EnableControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,17 +166,9 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := EnableControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of EnableControlData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[EnableControlCommandTypeContainer](ctx, "commandTypeContainer", "EnableControlCommandTypeContainer", ReadEnum(EnableControlCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -176,19 +176,15 @@ func EnableControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	commandType := EnableControlCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (enableNetworkVariable)
-	_enableNetworkVariable, _enableNetworkVariableErr := /*TODO: migrate me*/ readBuffer.ReadByte("enableNetworkVariable")
-	if _enableNetworkVariableErr != nil {
-		return nil, errors.Wrap(_enableNetworkVariableErr, "Error parsing 'enableNetworkVariable' field of EnableControlData")
+	enableNetworkVariable, err := ReadSimpleField(ctx, "enableNetworkVariable", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enableNetworkVariable' field"))
 	}
-	enableNetworkVariable := _enableNetworkVariable
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadByte("value")
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of EnableControlData")
+	value, err := ReadSimpleField(ctx, "value", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("EnableControlData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EnableControlData")

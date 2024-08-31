@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSetpointReferenceParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSetpointReferenceParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetpointReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSetpointReference, error) {
+		return BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSetpointReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSetpointReferenceParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (setpointReference)
-	if pullErr := readBuffer.PullContext("setpointReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for setpointReference")
-	}
-	_setpointReference, _setpointReferenceErr := BACnetSetpointReferenceParseWithBuffer(ctx, readBuffer)
-	if _setpointReferenceErr != nil {
-		return nil, errors.Wrap(_setpointReferenceErr, "Error parsing 'setpointReference' field of BACnetConstructedDataSetpointReference")
-	}
-	setpointReference := _setpointReference.(BACnetSetpointReference)
-	if closeErr := readBuffer.CloseContext("setpointReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for setpointReference")
+	setpointReference, err := ReadSimpleField[BACnetSetpointReference](ctx, "setpointReference", ReadComplex[BACnetSetpointReference](BACnetSetpointReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpointReference' field"))
 	}
 
 	// Virtual field

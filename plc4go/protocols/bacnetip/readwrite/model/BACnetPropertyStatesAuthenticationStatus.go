@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesAuthenticationStatusParse(ctx context.Context, theBytes
 	return BACnetPropertyStatesAuthenticationStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesAuthenticationStatusParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAuthenticationStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesAuthenticationStatus, error) {
+		return BACnetPropertyStatesAuthenticationStatusParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesAuthenticationStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesAuthenticationStatusParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (authenticationStatus)
-	if pullErr := readBuffer.PullContext("authenticationStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationStatus")
-	}
-	_authenticationStatus, _authenticationStatusErr := BACnetAuthenticationStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _authenticationStatusErr != nil {
-		return nil, errors.Wrap(_authenticationStatusErr, "Error parsing 'authenticationStatus' field of BACnetPropertyStatesAuthenticationStatus")
-	}
-	authenticationStatus := _authenticationStatus.(BACnetAuthenticationStatusTagged)
-	if closeErr := readBuffer.CloseContext("authenticationStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationStatus")
+	authenticationStatus, err := ReadSimpleField[BACnetAuthenticationStatusTagged](ctx, "authenticationStatus", ReadComplex[BACnetAuthenticationStatusTagged](BACnetAuthenticationStatusTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationStatus' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesAuthenticationStatus"); closeErr != nil {

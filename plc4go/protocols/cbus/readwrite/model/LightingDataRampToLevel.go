@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -139,6 +141,12 @@ func LightingDataRampToLevelParse(ctx context.Context, theBytes []byte) (Lightin
 	return LightingDataRampToLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LightingDataRampToLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
+		return LightingDataRampToLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LightingDataRampToLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataRampToLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -150,19 +158,15 @@ func LightingDataRampToLevelParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataRampToLevel")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
-	group := _group
 
-	// Simple Field (level)
-	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadByte("level")
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of LightingDataRampToLevel")
+	level, err := ReadSimpleField(ctx, "level", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	level := _level
 
 	if closeErr := readBuffer.CloseContext("LightingDataRampToLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LightingDataRampToLevel")

@@ -146,6 +146,12 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParse(ctx context.Context, t
 	return BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
+		return BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestReinitializeDevice, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,26 +163,12 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reinitializedStateOfDevice)
-	if pullErr := readBuffer.PullContext("reinitializedStateOfDevice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reinitializedStateOfDevice")
-	}
-	_reinitializedStateOfDevice, _reinitializedStateOfDeviceErr := BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _reinitializedStateOfDeviceErr != nil {
-		return nil, errors.Wrap(_reinitializedStateOfDeviceErr, "Error parsing 'reinitializedStateOfDevice' field of BACnetConfirmedServiceRequestReinitializeDevice")
-	}
-	reinitializedStateOfDevice := _reinitializedStateOfDevice.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged)
-	if closeErr := readBuffer.CloseContext("reinitializedStateOfDevice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reinitializedStateOfDevice")
+	reinitializedStateOfDevice, err := ReadSimpleField[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged](ctx, "reinitializedStateOfDevice", ReadComplex[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTagged](BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reinitializedStateOfDevice' field"))
 	}
 
-	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagCharacterString), nil
-	}, readBuffer), true)
+	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
 	}

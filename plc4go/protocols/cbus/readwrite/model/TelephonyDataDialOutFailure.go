@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func TelephonyDataDialOutFailureParse(ctx context.Context, theBytes []byte) (Tel
 	return TelephonyDataDialOutFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataDialOutFailureParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
+		return TelephonyDataDialOutFailureParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataDialOutFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDialOutFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,17 +148,9 @@ func TelephonyDataDialOutFailureParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reason)
-	if pullErr := readBuffer.PullContext("reason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reason")
-	}
-	_reason, _reasonErr := DialOutFailureReasonParseWithBuffer(ctx, readBuffer)
-	if _reasonErr != nil {
-		return nil, errors.Wrap(_reasonErr, "Error parsing 'reason' field of TelephonyDataDialOutFailure")
-	}
-	reason := _reason
-	if closeErr := readBuffer.CloseContext("reason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reason")
+	reason, err := ReadEnumField[DialOutFailureReason](ctx, "reason", "DialOutFailureReason", ReadEnum(DialOutFailureReasonByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataDialOutFailure"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAPDUSegmentTimeoutParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAPDUSegmentTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDUSegmentTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDUSegmentTimeout, error) {
+		return BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUSegmentTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAPDUSegmentTimeoutParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (apduSegmentTimeout)
-	if pullErr := readBuffer.PullContext("apduSegmentTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apduSegmentTimeout")
-	}
-	_apduSegmentTimeout, _apduSegmentTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _apduSegmentTimeoutErr != nil {
-		return nil, errors.Wrap(_apduSegmentTimeoutErr, "Error parsing 'apduSegmentTimeout' field of BACnetConstructedDataAPDUSegmentTimeout")
-	}
-	apduSegmentTimeout := _apduSegmentTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("apduSegmentTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apduSegmentTimeout")
+	apduSegmentTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduSegmentTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduSegmentTimeout' field"))
 	}
 
 	// Virtual field

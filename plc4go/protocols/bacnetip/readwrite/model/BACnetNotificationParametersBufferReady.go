@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func BACnetNotificationParametersBufferReadyParse(ctx context.Context, theBytes 
 	return BACnetNotificationParametersBufferReadyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber, tagNumber, objectTypeArgument)
 }
 
+func BACnetNotificationParametersBufferReadyParseWithBufferProducer(peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersBufferReady, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetNotificationParametersBufferReady, error) {
+		return BACnetNotificationParametersBufferReadyParseWithBuffer(ctx, readBuffer, peekedTagNumber, tagNumber, objectTypeArgument)
+	}
+}
+
 func BACnetNotificationParametersBufferReadyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8, tagNumber uint8, objectTypeArgument BACnetObjectType) (BACnetNotificationParametersBufferReady, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,69 +193,29 @@ func BACnetNotificationParametersBufferReadyParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (innerOpeningTag)
-	if pullErr := readBuffer.PullContext("innerOpeningTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerOpeningTag")
-	}
-	_innerOpeningTag, _innerOpeningTagErr := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
-	if _innerOpeningTagErr != nil {
-		return nil, errors.Wrap(_innerOpeningTagErr, "Error parsing 'innerOpeningTag' field of BACnetNotificationParametersBufferReady")
-	}
-	innerOpeningTag := _innerOpeningTag.(BACnetOpeningTag)
-	if closeErr := readBuffer.CloseContext("innerOpeningTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
+	innerOpeningTag, err := ReadSimpleField[BACnetOpeningTag](ctx, "innerOpeningTag", ReadComplex[BACnetOpeningTag](BACnetOpeningTagParseWithBufferProducer((uint8)(peekedTagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
 
-	// Simple Field (bufferProperty)
-	if pullErr := readBuffer.PullContext("bufferProperty"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bufferProperty")
-	}
-	_bufferProperty, _bufferPropertyErr := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _bufferPropertyErr != nil {
-		return nil, errors.Wrap(_bufferPropertyErr, "Error parsing 'bufferProperty' field of BACnetNotificationParametersBufferReady")
-	}
-	bufferProperty := _bufferProperty.(BACnetDeviceObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("bufferProperty"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bufferProperty")
+	bufferProperty, err := ReadSimpleField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "bufferProperty", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](BACnetDeviceObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bufferProperty' field"))
 	}
 
-	// Simple Field (previousNotification)
-	if pullErr := readBuffer.PullContext("previousNotification"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for previousNotification")
-	}
-	_previousNotification, _previousNotificationErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _previousNotificationErr != nil {
-		return nil, errors.Wrap(_previousNotificationErr, "Error parsing 'previousNotification' field of BACnetNotificationParametersBufferReady")
-	}
-	previousNotification := _previousNotification.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("previousNotification"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for previousNotification")
+	previousNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'previousNotification' field"))
 	}
 
-	// Simple Field (currentNotification)
-	if pullErr := readBuffer.PullContext("currentNotification"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for currentNotification")
-	}
-	_currentNotification, _currentNotificationErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _currentNotificationErr != nil {
-		return nil, errors.Wrap(_currentNotificationErr, "Error parsing 'currentNotification' field of BACnetNotificationParametersBufferReady")
-	}
-	currentNotification := _currentNotification.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("currentNotification"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for currentNotification")
+	currentNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "currentNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentNotification' field"))
 	}
 
-	// Simple Field (innerClosingTag)
-	if pullErr := readBuffer.PullContext("innerClosingTag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for innerClosingTag")
-	}
-	_innerClosingTag, _innerClosingTagErr := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber))
-	if _innerClosingTagErr != nil {
-		return nil, errors.Wrap(_innerClosingTagErr, "Error parsing 'innerClosingTag' field of BACnetNotificationParametersBufferReady")
-	}
-	innerClosingTag := _innerClosingTag.(BACnetClosingTag)
-	if closeErr := readBuffer.CloseContext("innerClosingTag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for innerClosingTag")
+	innerClosingTag, err := ReadSimpleField[BACnetClosingTag](ctx, "innerClosingTag", ReadComplex[BACnetClosingTag](BACnetClosingTagParseWithBufferProducer((uint8)(peekedTagNumber)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerClosingTag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotificationParametersBufferReady"); closeErr != nil {

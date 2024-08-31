@@ -211,6 +211,17 @@ func LevelInformationParse(ctx context.Context, theBytes []byte) (LevelInformati
 	return LevelInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LevelInformationParseWithBufferProducer[T LevelInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := LevelInformationParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware

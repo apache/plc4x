@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -211,6 +213,12 @@ func ClockAndTimekeepingDataUpdateTimeParse(ctx context.Context, theBytes []byte
 	return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClockAndTimekeepingDataUpdateTimeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
+		return ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingDataUpdateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -222,33 +230,25 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hours)
-	_hours, _hoursErr := /*TODO: migrate me*/ readBuffer.ReadUint8("hours", 8)
-	if _hoursErr != nil {
-		return nil, errors.Wrap(_hoursErr, "Error parsing 'hours' field of ClockAndTimekeepingDataUpdateTime")
+	hours, err := ReadSimpleField(ctx, "hours", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hours' field"))
 	}
-	hours := _hours
 
-	// Simple Field (minute)
-	_minute, _minuteErr := /*TODO: migrate me*/ readBuffer.ReadUint8("minute", 8)
-	if _minuteErr != nil {
-		return nil, errors.Wrap(_minuteErr, "Error parsing 'minute' field of ClockAndTimekeepingDataUpdateTime")
+	minute, err := ReadSimpleField(ctx, "minute", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minute' field"))
 	}
-	minute := _minute
 
-	// Simple Field (second)
-	_second, _secondErr := /*TODO: migrate me*/ readBuffer.ReadUint8("second", 8)
-	if _secondErr != nil {
-		return nil, errors.Wrap(_secondErr, "Error parsing 'second' field of ClockAndTimekeepingDataUpdateTime")
+	second, err := ReadSimpleField(ctx, "second", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'second' field"))
 	}
-	second := _second
 
-	// Simple Field (daylightSaving)
-	_daylightSaving, _daylightSavingErr := /*TODO: migrate me*/ readBuffer.ReadByte("daylightSaving")
-	if _daylightSavingErr != nil {
-		return nil, errors.Wrap(_daylightSavingErr, "Error parsing 'daylightSaving' field of ClockAndTimekeepingDataUpdateTime")
+	daylightSaving, err := ReadSimpleField(ctx, "daylightSaving", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daylightSaving' field"))
 	}
-	daylightSaving := _daylightSaving
 
 	// Virtual field
 	_isNoDaylightSavings := bool((daylightSaving) == (0x00))

@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +145,12 @@ func ConnectionStateResponseParse(ctx context.Context, theBytes []byte) (Connect
 	return ConnectionStateResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func ConnectionStateResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {
+		return ConnectionStateResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,24 +162,14 @@ func ConnectionStateResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of ConnectionStateResponse")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
-	}
-	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionStateResponse")
-	}
-	status := _status
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
+	status, err := ReadEnumField[Status](ctx, "status", "Status", ReadEnum(StatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionStateResponse"); closeErr != nil {

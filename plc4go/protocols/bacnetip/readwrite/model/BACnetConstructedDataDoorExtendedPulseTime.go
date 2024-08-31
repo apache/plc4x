@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDoorExtendedPulseTimeParse(ctx context.Context, theByt
 	return BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDoorExtendedPulseTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorExtendedPulseTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorExtendedPulseTime, error) {
+		return BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorExtendedPulseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDoorExtendedPulseTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorExtendedPulseTime)
-	if pullErr := readBuffer.PullContext("doorExtendedPulseTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorExtendedPulseTime")
-	}
-	_doorExtendedPulseTime, _doorExtendedPulseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorExtendedPulseTimeErr != nil {
-		return nil, errors.Wrap(_doorExtendedPulseTimeErr, "Error parsing 'doorExtendedPulseTime' field of BACnetConstructedDataDoorExtendedPulseTime")
-	}
-	doorExtendedPulseTime := _doorExtendedPulseTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorExtendedPulseTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorExtendedPulseTime")
+	doorExtendedPulseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorExtendedPulseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorExtendedPulseTime' field"))
 	}
 
 	// Virtual field

@@ -117,6 +117,12 @@ func ByteStringArrayParse(ctx context.Context, theBytes []byte) (ByteStringArray
 	return ByteStringArrayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ByteStringArrayParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
+		return ByteStringArrayParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ByteStringArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -128,14 +134,12 @@ func ByteStringArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (arrayLength)
-	_arrayLength, _arrayLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("arrayLength", 32)
-	if _arrayLengthErr != nil {
-		return nil, errors.Wrap(_arrayLengthErr, "Error parsing 'arrayLength' field of ByteStringArray")
+	arrayLength, err := ReadSimpleField(ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}
-	arrayLength := _arrayLength
 
-	value, err := ReadCountArrayField[uint8](ctx, "value", ReadUnsignedByte(readBuffer, 8), uint64(arrayLength))
+	value, err := ReadCountArrayField[uint8](ctx, "value", ReadUnsignedByte(readBuffer, uint8(8)), uint64(arrayLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

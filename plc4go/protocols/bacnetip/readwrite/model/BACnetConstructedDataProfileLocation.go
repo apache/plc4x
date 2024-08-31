@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProfileLocationParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataProfileLocationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProfileLocationParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProfileLocation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProfileLocation, error) {
+		return BACnetConstructedDataProfileLocationParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProfileLocationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProfileLocation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProfileLocationParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (profileLocation)
-	if pullErr := readBuffer.PullContext("profileLocation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for profileLocation")
-	}
-	_profileLocation, _profileLocationErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _profileLocationErr != nil {
-		return nil, errors.Wrap(_profileLocationErr, "Error parsing 'profileLocation' field of BACnetConstructedDataProfileLocation")
-	}
-	profileLocation := _profileLocation.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("profileLocation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for profileLocation")
+	profileLocation, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "profileLocation", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'profileLocation' field"))
 	}
 
 	// Virtual field

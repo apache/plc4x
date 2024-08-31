@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func GuidNodeIdParse(ctx context.Context, theBytes []byte) (GuidNodeId, error) {
 	return GuidNodeIdParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func GuidNodeIdParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (GuidNodeId, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GuidNodeId, error) {
+		return GuidNodeIdParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func GuidNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GuidNodeId, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,24 +132,14 @@ func GuidNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint16("namespaceIndex", 16)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of GuidNodeId")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
 
-	// Simple Field (identifier)
-	if pullErr := readBuffer.PullContext("identifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for identifier")
-	}
-	_identifier, _identifierErr := GuidValueParseWithBuffer(ctx, readBuffer)
-	if _identifierErr != nil {
-		return nil, errors.Wrap(_identifierErr, "Error parsing 'identifier' field of GuidNodeId")
-	}
-	identifier := _identifier.(GuidValue)
-	if closeErr := readBuffer.CloseContext("identifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for identifier")
+	identifier, err := ReadSimpleField[GuidValue](ctx, "identifier", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GuidNodeId"); closeErr != nil {

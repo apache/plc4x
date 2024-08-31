@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataChangeOfStateTimeParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataChangeOfStateTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangeOfStateTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangeOfStateTime, error) {
+		return BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataChangeOfStateTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changeOfStateTime)
-	if pullErr := readBuffer.PullContext("changeOfStateTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changeOfStateTime")
-	}
-	_changeOfStateTime, _changeOfStateTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _changeOfStateTimeErr != nil {
-		return nil, errors.Wrap(_changeOfStateTimeErr, "Error parsing 'changeOfStateTime' field of BACnetConstructedDataChangeOfStateTime")
-	}
-	changeOfStateTime := _changeOfStateTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("changeOfStateTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changeOfStateTime")
+	changeOfStateTime, err := ReadSimpleField[BACnetDateTime](ctx, "changeOfStateTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeOfStateTime' field"))
 	}
 
 	// Virtual field

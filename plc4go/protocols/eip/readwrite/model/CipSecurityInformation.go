@@ -137,6 +137,12 @@ func CipSecurityInformationParse(ctx context.Context, theBytes []byte) (CipSecur
 	return CipSecurityInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CipSecurityInformationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {
+		return CipSecurityInformationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CipSecurityInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,13 +154,13 @@ func CipSecurityInformationParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, 16))
+	itemLength, err := ReadImplicitField[uint16](ctx, "itemLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 	_ = itemLength
 
-	todoImplement, err := ReadCountArrayField[uint8](ctx, "todoImplement", ReadUnsignedByte(readBuffer, 8), uint64(itemLength))
+	todoImplement, err := ReadCountArrayField[uint8](ctx, "todoImplement", ReadUnsignedByte(readBuffer, uint8(8)), uint64(itemLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'todoImplement' field"))
 	}

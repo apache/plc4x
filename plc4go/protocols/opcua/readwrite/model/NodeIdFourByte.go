@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -160,6 +162,12 @@ func NodeIdFourByteParse(ctx context.Context, theBytes []byte) (NodeIdFourByte, 
 	return NodeIdFourByteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdFourByteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdFourByte, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdFourByte, error) {
+		return NodeIdFourByteParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NodeIdFourByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdFourByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,19 +179,15 @@ func NodeIdFourByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceIndex)
-	_namespaceIndex, _namespaceIndexErr := /*TODO: migrate me*/ readBuffer.ReadUint8("namespaceIndex", 8)
-	if _namespaceIndexErr != nil {
-		return nil, errors.Wrap(_namespaceIndexErr, "Error parsing 'namespaceIndex' field of NodeIdFourByte")
+	namespaceIndex, err := ReadSimpleField(ctx, "namespaceIndex", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceIndex' field"))
 	}
-	namespaceIndex := _namespaceIndex
 
-	// Simple Field (id)
-	_id, _idErr := /*TODO: migrate me*/ readBuffer.ReadUint16("id", 16)
-	if _idErr != nil {
-		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of NodeIdFourByte")
+	id, err := ReadSimpleField(ctx, "id", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
-	id := _id
 
 	// Virtual field
 	_identifier := id

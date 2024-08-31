@@ -172,6 +172,17 @@ func DF1ResponseMessageParse(ctx context.Context, theBytes []byte, payloadLength
 	return DF1ResponseMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), payloadLength)
 }
 
+func DF1ResponseMessageParseWithBufferProducer[T DF1ResponseMessage](payloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DF1ResponseMessageParseWithBuffer(ctx, readBuffer, payloadLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, payloadLength uint16) (DF1ResponseMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,48 +194,40 @@ func DF1ResponseMessageParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("destinationAddress", 8)
-	if _destinationAddressErr != nil {
-		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1ResponseMessage")
+	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
-	destinationAddress := _destinationAddress
 
-	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sourceAddress", 8)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1ResponseMessage")
+	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
-	sourceAddress := _sourceAddress
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, 8))
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1ResponseMessage")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionCounter", 16)
-	if _transactionCounterErr != nil {
-		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1ResponseMessage")
+	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionCounter' field"))
 	}
-	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type DF1ResponseMessageChildSerializeRequirement interface {

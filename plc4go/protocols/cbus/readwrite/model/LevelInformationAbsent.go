@@ -114,6 +114,12 @@ func LevelInformationAbsentParse(ctx context.Context, theBytes []byte) (LevelInf
 	return LevelInformationAbsentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LevelInformationAbsentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
+		return LevelInformationAbsentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LevelInformationAbsentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationAbsent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -125,7 +131,7 @@ func LevelInformationAbsentParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

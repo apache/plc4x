@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSecurityPDUTimeoutParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSecurityPDUTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecurityPDUTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecurityPDUTimeout, error) {
+		return BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecurityPDUTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securityPduTimeout)
-	if pullErr := readBuffer.PullContext("securityPduTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPduTimeout")
-	}
-	_securityPduTimeout, _securityPduTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _securityPduTimeoutErr != nil {
-		return nil, errors.Wrap(_securityPduTimeoutErr, "Error parsing 'securityPduTimeout' field of BACnetConstructedDataSecurityPDUTimeout")
-	}
-	securityPduTimeout := _securityPduTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("securityPduTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPduTimeout")
+	securityPduTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityPduTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPduTimeout' field"))
 	}
 
 	// Virtual field

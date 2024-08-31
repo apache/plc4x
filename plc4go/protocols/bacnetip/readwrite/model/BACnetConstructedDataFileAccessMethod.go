@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFileAccessMethodParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFileAccessMethodParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFileAccessMethod, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFileAccessMethod, error) {
+		return BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFileAccessMethodParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileAccessMethod)
-	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
-	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _fileAccessMethodErr != nil {
-		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetConstructedDataFileAccessMethod")
-	}
-	fileAccessMethod := _fileAccessMethod.(BACnetFileAccessMethodTagged)
-	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileAccessMethod")
+	fileAccessMethod, err := ReadSimpleField[BACnetFileAccessMethodTagged](ctx, "fileAccessMethod", ReadComplex[BACnetFileAccessMethodTagged](BACnetFileAccessMethodTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileAccessMethod' field"))
 	}
 
 	// Virtual field

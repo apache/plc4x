@@ -117,6 +117,12 @@ func SetAttributeSingleResponseParse(ctx context.Context, theBytes []byte, conne
 	return SetAttributeSingleResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func SetAttributeSingleResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeSingleResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeSingleResponse, error) {
+		return SetAttributeSingleResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func SetAttributeSingleResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeSingleResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

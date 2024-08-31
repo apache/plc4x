@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParse(ctx context.Contex
 	return BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
 }
 
+func BACnetPropertyAccessResultAccessResultPropertyValueParseWithBufferProducer(objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
+		return BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, propertyArrayIndexArgument)
+	}
+}
+
 func BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, propertyArrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPropertyAccessResultAccessResultPropertyValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyAccessResultAccessResultPropertyValueParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (propertyValue)
-	if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
-	}
-	_propertyValue, _propertyValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(4)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), propertyArrayIndexArgument)
-	if _propertyValueErr != nil {
-		return nil, errors.Wrap(_propertyValueErr, "Error parsing 'propertyValue' field of BACnetPropertyAccessResultAccessResultPropertyValue")
-	}
-	propertyValue := _propertyValue.(BACnetConstructedData)
-	if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
+	propertyValue, err := ReadSimpleField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(4)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(propertyArrayIndexArgument)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyAccessResultAccessResultPropertyValue"); closeErr != nil {

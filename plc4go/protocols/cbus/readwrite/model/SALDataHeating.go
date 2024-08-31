@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataHeatingParse(ctx context.Context, theBytes []byte, applicationId App
 	return SALDataHeatingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataHeatingParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataHeating, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataHeating, error) {
+		return SALDataHeatingParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataHeatingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataHeating, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataHeatingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (heatingData)
-	if pullErr := readBuffer.PullContext("heatingData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for heatingData")
-	}
-	_heatingData, _heatingDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _heatingDataErr != nil {
-		return nil, errors.Wrap(_heatingDataErr, "Error parsing 'heatingData' field of SALDataHeating")
-	}
-	heatingData := _heatingData.(LightingData)
-	if closeErr := readBuffer.CloseContext("heatingData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for heatingData")
+	heatingData, err := ReadSimpleField[LightingData](ctx, "heatingData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'heatingData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataHeating"); closeErr != nil {

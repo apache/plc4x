@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBACnetIPNATTraversalParse(ctx context.Context, theByte
 	return BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBACnetIPNATTraversalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPNATTraversal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPNATTraversal, error) {
+		return BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPNATTraversal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bacnetIPNATTraversal)
-	if pullErr := readBuffer.PullContext("bacnetIPNATTraversal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bacnetIPNATTraversal")
-	}
-	_bacnetIPNATTraversal, _bacnetIPNATTraversalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bacnetIPNATTraversalErr != nil {
-		return nil, errors.Wrap(_bacnetIPNATTraversalErr, "Error parsing 'bacnetIPNATTraversal' field of BACnetConstructedDataBACnetIPNATTraversal")
-	}
-	bacnetIPNATTraversal := _bacnetIPNATTraversal.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("bacnetIPNATTraversal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bacnetIPNATTraversal")
+	bacnetIPNATTraversal, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIPNATTraversal' field"))
 	}
 
 	// Virtual field

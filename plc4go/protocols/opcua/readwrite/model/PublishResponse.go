@@ -252,6 +252,12 @@ func PublishResponseParse(ctx context.Context, theBytes []byte, identifier strin
 	return PublishResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PublishResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishResponse, error) {
+		return PublishResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -263,81 +269,55 @@ func PublishResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of PublishResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of PublishResponse")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (noOfAvailableSequenceNumbers)
-	_noOfAvailableSequenceNumbers, _noOfAvailableSequenceNumbersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAvailableSequenceNumbers", 32)
-	if _noOfAvailableSequenceNumbersErr != nil {
-		return nil, errors.Wrap(_noOfAvailableSequenceNumbersErr, "Error parsing 'noOfAvailableSequenceNumbers' field of PublishResponse")
+	noOfAvailableSequenceNumbers, err := ReadSimpleField(ctx, "noOfAvailableSequenceNumbers", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAvailableSequenceNumbers' field"))
 	}
-	noOfAvailableSequenceNumbers := _noOfAvailableSequenceNumbers
 
-	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, 32), uint64(noOfAvailableSequenceNumbers))
+	availableSequenceNumbers, err := ReadCountArrayField[uint32](ctx, "availableSequenceNumbers", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfAvailableSequenceNumbers))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'availableSequenceNumbers' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (moreNotifications)
-	_moreNotifications, _moreNotificationsErr := /*TODO: migrate me*/ readBuffer.ReadBit("moreNotifications")
-	if _moreNotificationsErr != nil {
-		return nil, errors.Wrap(_moreNotificationsErr, "Error parsing 'moreNotifications' field of PublishResponse")
-	}
-	moreNotifications := _moreNotifications
-
-	// Simple Field (notificationMessage)
-	if pullErr := readBuffer.PullContext("notificationMessage"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for notificationMessage")
-	}
-	_notificationMessage, _notificationMessageErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("805"))
-	if _notificationMessageErr != nil {
-		return nil, errors.Wrap(_notificationMessageErr, "Error parsing 'notificationMessage' field of PublishResponse")
-	}
-	notificationMessage := _notificationMessage.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("notificationMessage"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for notificationMessage")
+	moreNotifications, err := ReadSimpleField(ctx, "moreNotifications", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreNotifications' field"))
 	}
 
-	// Simple Field (noOfResults)
-	_noOfResults, _noOfResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfResults", 32)
-	if _noOfResultsErr != nil {
-		return nil, errors.Wrap(_noOfResultsErr, "Error parsing 'noOfResults' field of PublishResponse")
+	notificationMessage, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "notificationMessage", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("805")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationMessage' field"))
 	}
-	noOfResults := _noOfResults
+
+	noOfResults, err := ReadSimpleField(ctx, "noOfResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfResults' field"))
+	}
 
 	results, err := ReadCountArrayField[StatusCode](ctx, "results", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'results' field"))
 	}
 
-	// Simple Field (noOfDiagnosticInfos)
-	_noOfDiagnosticInfos, _noOfDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiagnosticInfos", 32)
-	if _noOfDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfDiagnosticInfosErr, "Error parsing 'noOfDiagnosticInfos' field of PublishResponse")
+	noOfDiagnosticInfos, err := ReadSimpleField(ctx, "noOfDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiagnosticInfos' field"))
 	}
-	noOfDiagnosticInfos := _noOfDiagnosticInfos
 
 	diagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "diagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfDiagnosticInfos))
 	if err != nil {

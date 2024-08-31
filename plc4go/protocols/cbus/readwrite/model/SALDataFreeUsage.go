@@ -111,6 +111,12 @@ func SALDataFreeUsageParse(ctx context.Context, theBytes []byte, applicationId A
 	return SALDataFreeUsageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataFreeUsageParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataFreeUsage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataFreeUsage, error) {
+		return SALDataFreeUsageParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataFreeUsageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataFreeUsage, error) {
 	positionAware := readBuffer
 	_ = positionAware

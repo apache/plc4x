@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,6 +220,12 @@ func MediaTransportControlDataFastForwardParse(ctx context.Context, theBytes []b
 	return MediaTransportControlDataFastForwardParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataFastForwardParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
+		return MediaTransportControlDataFastForwardParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataFastForwardParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataFastForward, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -229,12 +237,10 @@ func MediaTransportControlDataFastForwardParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operation)
-	_operation, _operationErr := /*TODO: migrate me*/ readBuffer.ReadByte("operation")
-	if _operationErr != nil {
-		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataFastForward")
+	operation, err := ReadSimpleField(ctx, "operation", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
-	operation := _operation
 
 	// Virtual field
 	_isCeaseFastForward := bool((operation) == (0x00))

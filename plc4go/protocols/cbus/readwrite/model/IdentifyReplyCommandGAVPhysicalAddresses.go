@@ -132,6 +132,12 @@ func IdentifyReplyCommandGAVPhysicalAddressesParse(ctx context.Context, theBytes
 	return IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandGAVPhysicalAddressesParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
+		return IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandGAVPhysicalAddressesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandGAVPhysicalAddresses, error) {
 	positionAware := readBuffer
 	_ = positionAware

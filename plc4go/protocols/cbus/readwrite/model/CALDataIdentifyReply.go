@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func CALDataIdentifyReplyParse(ctx context.Context, theBytes []byte, commandType
 	return CALDataIdentifyReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer, requestContext)
 }
 
+func CALDataIdentifyReplyParseWithBufferProducer(commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataIdentifyReply, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataIdentifyReply, error) {
+		return CALDataIdentifyReplyParseWithBuffer(ctx, readBuffer, commandTypeContainer, requestContext)
+	}
+}
+
 func CALDataIdentifyReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer CALCommandTypeContainer, requestContext RequestContext) (CALDataIdentifyReply, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,30 +159,14 @@ func CALDataIdentifyReplyParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (attribute)
-	if pullErr := readBuffer.PullContext("attribute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for attribute")
-	}
-	_attribute, _attributeErr := AttributeParseWithBuffer(ctx, readBuffer)
-	if _attributeErr != nil {
-		return nil, errors.Wrap(_attributeErr, "Error parsing 'attribute' field of CALDataIdentifyReply")
-	}
-	attribute := _attribute
-	if closeErr := readBuffer.CloseContext("attribute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for attribute")
+	attribute, err := ReadEnumField[Attribute](ctx, "attribute", "Attribute", ReadEnum(AttributeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attribute' field"))
 	}
 
-	// Simple Field (identifyReplyCommand)
-	if pullErr := readBuffer.PullContext("identifyReplyCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for identifyReplyCommand")
-	}
-	_identifyReplyCommand, _identifyReplyCommandErr := IdentifyReplyCommandParseWithBuffer(ctx, readBuffer, Attribute(attribute), uint8(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1))))
-	if _identifyReplyCommandErr != nil {
-		return nil, errors.Wrap(_identifyReplyCommandErr, "Error parsing 'identifyReplyCommand' field of CALDataIdentifyReply")
-	}
-	identifyReplyCommand := _identifyReplyCommand.(IdentifyReplyCommand)
-	if closeErr := readBuffer.CloseContext("identifyReplyCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for identifyReplyCommand")
+	identifyReplyCommand, err := ReadSimpleField[IdentifyReplyCommand](ctx, "identifyReplyCommand", ReadComplex[IdentifyReplyCommand](IdentifyReplyCommandParseWithBufferProducer[IdentifyReplyCommand]((Attribute)(attribute), (uint8)(uint8(commandTypeContainer.NumBytes())-uint8(uint8(1)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifyReplyCommand' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CALDataIdentifyReply"); closeErr != nil {

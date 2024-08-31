@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetTimerStateChangeValueConstructedValueParse(ctx context.Context, theBy
 	return BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetTimerStateChangeValueConstructedValueParseWithBufferProducer(objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueConstructedValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTimerStateChangeValueConstructedValue, error) {
+		return BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+	}
+}
+
 func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValueConstructedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetTimerStateChangeValueConstructedValueParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (constructedValue)
-	if pullErr := readBuffer.PullContext("constructedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for constructedValue")
-	}
-	_constructedValue, _constructedValueErr := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), nil)
-	if _constructedValueErr != nil {
-		return nil, errors.Wrap(_constructedValueErr, "Error parsing 'constructedValue' field of BACnetTimerStateChangeValueConstructedValue")
-	}
-	constructedValue := _constructedValue.(BACnetConstructedData)
-	if closeErr := readBuffer.CloseContext("constructedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for constructedValue")
+	constructedValue, err := ReadSimpleField[BACnetConstructedData](ctx, "constructedValue", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(uint8(1)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'constructedValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerStateChangeValueConstructedValue"); closeErr != nil {

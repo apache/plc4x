@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func ChannelInformationParse(ctx context.Context, theBytes []byte) (ChannelInfor
 	return ChannelInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ChannelInformationParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
+		return ChannelInformationParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ChannelInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func ChannelInformationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numChannels)
-	_numChannels, _numChannelsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numChannels", 3)
-	if _numChannelsErr != nil {
-		return nil, errors.Wrap(_numChannelsErr, "Error parsing 'numChannels' field of ChannelInformation")
+	numChannels, err := ReadSimpleField(ctx, "numChannels", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numChannels' field"))
 	}
-	numChannels := _numChannels
 
-	// Simple Field (channelCode)
-	_channelCode, _channelCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("channelCode", 13)
-	if _channelCodeErr != nil {
-		return nil, errors.Wrap(_channelCodeErr, "Error parsing 'channelCode' field of ChannelInformation")
+	channelCode, err := ReadSimpleField(ctx, "channelCode", ReadUnsignedShort(readBuffer, uint8(13)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelCode' field"))
 	}
-	channelCode := _channelCode
 
 	if closeErr := readBuffer.CloseContext("ChannelInformation"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ChannelInformation")

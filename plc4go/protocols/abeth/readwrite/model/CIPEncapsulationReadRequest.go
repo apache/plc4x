@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -136,6 +139,12 @@ func CIPEncapsulationReadRequestParse(ctx context.Context, theBytes []byte) (CIP
 	return CIPEncapsulationReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func CIPEncapsulationReadRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationReadRequest, error) {
+		return CIPEncapsulationReadRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CIPEncapsulationReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -147,17 +156,9 @@ func CIPEncapsulationReadRequestParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (request)
-	if pullErr := readBuffer.PullContext("request"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for request")
-	}
-	_request, _requestErr := DF1RequestMessageParseWithBuffer(ctx, readBuffer)
-	if _requestErr != nil {
-		return nil, errors.Wrap(_requestErr, "Error parsing 'request' field of CIPEncapsulationReadRequest")
-	}
-	request := _request.(DF1RequestMessage)
-	if closeErr := readBuffer.CloseContext("request"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for request")
+	request, err := ReadSimpleField[DF1RequestMessage](ctx, "request", ReadComplex[DF1RequestMessage](DF1RequestMessageParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'request' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationReadRequest"); closeErr != nil {

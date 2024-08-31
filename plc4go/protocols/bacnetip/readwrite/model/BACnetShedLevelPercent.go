@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetShedLevelPercentParse(ctx context.Context, theBytes []byte) (BACnetSh
 	return BACnetShedLevelPercentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetShedLevelPercentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
+		return BACnetShedLevelPercentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetShedLevelPercentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelPercent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetShedLevelPercentParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (percent)
-	if pullErr := readBuffer.PullContext("percent"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for percent")
-	}
-	_percent, _percentErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _percentErr != nil {
-		return nil, errors.Wrap(_percentErr, "Error parsing 'percent' field of BACnetShedLevelPercent")
-	}
-	percent := _percent.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("percent"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for percent")
+	percent, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "percent", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'percent' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevelPercent"); closeErr != nil {

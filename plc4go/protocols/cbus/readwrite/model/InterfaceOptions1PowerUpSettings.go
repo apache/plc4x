@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func InterfaceOptions1PowerUpSettingsParse(ctx context.Context, theBytes []byte)
 	return InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func InterfaceOptions1PowerUpSettingsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
+		return InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (InterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (interfaceOptions1)
-	if pullErr := readBuffer.PullContext("interfaceOptions1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for interfaceOptions1")
-	}
-	_interfaceOptions1, _interfaceOptions1Err := InterfaceOptions1ParseWithBuffer(ctx, readBuffer)
-	if _interfaceOptions1Err != nil {
-		return nil, errors.Wrap(_interfaceOptions1Err, "Error parsing 'interfaceOptions1' field of InterfaceOptions1PowerUpSettings")
-	}
-	interfaceOptions1 := _interfaceOptions1.(InterfaceOptions1)
-	if closeErr := readBuffer.CloseContext("interfaceOptions1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for interfaceOptions1")
+	interfaceOptions1, err := ReadSimpleField[InterfaceOptions1](ctx, "interfaceOptions1", ReadComplex[InterfaceOptions1](InterfaceOptions1ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'interfaceOptions1' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("InterfaceOptions1PowerUpSettings"); closeErr != nil {

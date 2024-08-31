@@ -117,6 +117,12 @@ func GetAttributeSingleRequestParse(ctx context.Context, theBytes []byte, connec
 	return GetAttributeSingleRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func GetAttributeSingleRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (GetAttributeSingleRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GetAttributeSingleRequest, error) {
+		return GetAttributeSingleRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func GetAttributeSingleRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (GetAttributeSingleRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

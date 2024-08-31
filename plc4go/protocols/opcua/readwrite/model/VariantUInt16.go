@@ -152,6 +152,12 @@ func VariantUInt16Parse(ctx context.Context, theBytes []byte, arrayLengthSpecifi
 	return VariantUInt16ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), arrayLengthSpecified)
 }
 
+func VariantUInt16ParseWithBufferProducer(arrayLengthSpecified bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantUInt16, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (VariantUInt16, error) {
+		return VariantUInt16ParseWithBuffer(ctx, readBuffer, arrayLengthSpecified)
+	}
+}
+
 func VariantUInt16ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, arrayLengthSpecified bool) (VariantUInt16, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,12 +169,12 @@ func VariantUInt16ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, 32), arrayLengthSpecified)
+	arrayLength, err := ReadOptionalField[int32](ctx, "arrayLength", ReadSignedInt(readBuffer, uint8(32)), arrayLengthSpecified)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayLength' field"))
 	}
 
-	value, err := ReadCountArrayField[uint16](ctx, "value", ReadUnsignedShort(readBuffer, 16), uint64(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
+	value, err := ReadCountArrayField[uint16](ctx, "value", ReadUnsignedShort(readBuffer, uint8(16)), uint64(utils.InlineIf(bool((arrayLength) == (nil)), func() any { return int32(int32(1)) }, func() any { return int32((*arrayLength)) }).(int32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

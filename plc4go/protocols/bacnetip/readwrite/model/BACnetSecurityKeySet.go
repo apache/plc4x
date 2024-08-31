@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func BACnetSecurityKeySetParse(ctx context.Context, theBytes []byte) (BACnetSecu
 	return BACnetSecurityKeySetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSecurityKeySetParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
+		return BACnetSecurityKeySetParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSecurityKeySet, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,56 +152,24 @@ func BACnetSecurityKeySetParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (keyRevision)
-	if pullErr := readBuffer.PullContext("keyRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for keyRevision")
-	}
-	_keyRevision, _keyRevisionErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _keyRevisionErr != nil {
-		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of BACnetSecurityKeySet")
-	}
-	keyRevision := _keyRevision.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("keyRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for keyRevision")
+	keyRevision, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "keyRevision", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyRevision' field"))
 	}
 
-	// Simple Field (activationTime)
-	if pullErr := readBuffer.PullContext("activationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for activationTime")
-	}
-	_activationTime, _activationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _activationTimeErr != nil {
-		return nil, errors.Wrap(_activationTimeErr, "Error parsing 'activationTime' field of BACnetSecurityKeySet")
-	}
-	activationTime := _activationTime.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("activationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for activationTime")
+	activationTime, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "activationTime", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activationTime' field"))
 	}
 
-	// Simple Field (expirationTime)
-	if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
-	}
-	_expirationTime, _expirationTimeErr := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _expirationTimeErr != nil {
-		return nil, errors.Wrap(_expirationTimeErr, "Error parsing 'expirationTime' field of BACnetSecurityKeySet")
-	}
-	expirationTime := _expirationTime.(BACnetDateTimeEnclosed)
-	if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
+	expirationTime, err := ReadSimpleField[BACnetDateTimeEnclosed](ctx, "expirationTime", ReadComplex[BACnetDateTimeEnclosed](BACnetDateTimeEnclosedParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expirationTime' field"))
 	}
 
-	// Simple Field (keyIds)
-	if pullErr := readBuffer.PullContext("keyIds"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for keyIds")
-	}
-	_keyIds, _keyIdsErr := BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx, readBuffer, uint8(uint8(3)))
-	if _keyIdsErr != nil {
-		return nil, errors.Wrap(_keyIdsErr, "Error parsing 'keyIds' field of BACnetSecurityKeySet")
-	}
-	keyIds := _keyIds.(BACnetSecurityKeySetKeyIds)
-	if closeErr := readBuffer.CloseContext("keyIds"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for keyIds")
+	keyIds, err := ReadSimpleField[BACnetSecurityKeySetKeyIds](ctx, "keyIds", ReadComplex[BACnetSecurityKeySetKeyIds](BACnetSecurityKeySetKeyIdsParseWithBufferProducer((uint8)(uint8(3))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyIds' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSecurityKeySet"); closeErr != nil {

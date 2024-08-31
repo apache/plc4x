@@ -150,6 +150,12 @@ func NLMInitializeRoutingTableParse(ctx context.Context, theBytes []byte, apduLe
 	return NLMInitializeRoutingTableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMInitializeRoutingTableParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMInitializeRoutingTable, error) {
+		return NLMInitializeRoutingTableParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMInitializeRoutingTableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMInitializeRoutingTable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,12 +167,10 @@ func NLMInitializeRoutingTableParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfPorts)
-	_numberOfPorts, _numberOfPortsErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfPorts", 8)
-	if _numberOfPortsErr != nil {
-		return nil, errors.Wrap(_numberOfPortsErr, "Error parsing 'numberOfPorts' field of NLMInitializeRoutingTable")
+	numberOfPorts, err := ReadSimpleField(ctx, "numberOfPorts", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfPorts' field"))
 	}
-	numberOfPorts := _numberOfPorts
 
 	portMappings, err := ReadCountArrayField[NLMInitializeRoutingTablePortMapping](ctx, "portMappings", ReadComplex[NLMInitializeRoutingTablePortMapping](NLMInitializeRoutingTablePortMappingParseWithBuffer, readBuffer), uint64(numberOfPorts))
 	if err != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func OpcuaAcknowledgeResponseParse(ctx context.Context, theBytes []byte, respons
 	return OpcuaAcknowledgeResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpcuaAcknowledgeResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAcknowledgeResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaAcknowledgeResponse, error) {
+		return OpcuaAcknowledgeResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpcuaAcknowledgeResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,24 +166,14 @@ func OpcuaAcknowledgeResponseParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (version)
-	_version, _versionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("version", 32)
-	if _versionErr != nil {
-		return nil, errors.Wrap(_versionErr, "Error parsing 'version' field of OpcuaAcknowledgeResponse")
+	version, err := ReadSimpleField(ctx, "version", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'version' field"))
 	}
-	version := _version
 
-	// Simple Field (limits)
-	if pullErr := readBuffer.PullContext("limits"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for limits")
-	}
-	_limits, _limitsErr := OpcuaProtocolLimitsParseWithBuffer(ctx, readBuffer)
-	if _limitsErr != nil {
-		return nil, errors.Wrap(_limitsErr, "Error parsing 'limits' field of OpcuaAcknowledgeResponse")
-	}
-	limits := _limits.(OpcuaProtocolLimits)
-	if closeErr := readBuffer.CloseContext("limits"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for limits")
+	limits, err := ReadSimpleField[OpcuaProtocolLimits](ctx, "limits", ReadComplex[OpcuaProtocolLimits](OpcuaProtocolLimitsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'limits' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpcuaAcknowledgeResponse"); closeErr != nil {

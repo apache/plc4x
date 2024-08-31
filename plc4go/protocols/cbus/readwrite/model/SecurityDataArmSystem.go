@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -198,6 +200,12 @@ func SecurityDataArmSystemParse(ctx context.Context, theBytes []byte) (SecurityD
 	return SecurityDataArmSystemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataArmSystemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
+		return SecurityDataArmSystemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataArmSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -209,12 +217,10 @@ func SecurityDataArmSystemParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (armMode)
-	_armMode, _armModeErr := /*TODO: migrate me*/ readBuffer.ReadByte("armMode")
-	if _armModeErr != nil {
-		return nil, errors.Wrap(_armModeErr, "Error parsing 'armMode' field of SecurityDataArmSystem")
+	armMode, err := ReadSimpleField(ctx, "armMode", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'armMode' field"))
 	}
-	armMode := _armMode
 
 	// Virtual field
 	_isReserved := bool(bool((armMode) == (0x00))) || bool((bool(bool((armMode) >= (0x05))) && bool(bool((armMode) <= (0xFE)))))

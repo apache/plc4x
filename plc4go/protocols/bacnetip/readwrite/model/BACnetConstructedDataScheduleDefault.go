@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataScheduleDefaultParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataScheduleDefaultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataScheduleDefaultParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScheduleDefault, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataScheduleDefault, error) {
+		return BACnetConstructedDataScheduleDefaultParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataScheduleDefaultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataScheduleDefault, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataScheduleDefaultParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (scheduleDefault)
-	if pullErr := readBuffer.PullContext("scheduleDefault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for scheduleDefault")
-	}
-	_scheduleDefault, _scheduleDefaultErr := BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, BACnetObjectType(objectTypeArgument), BACnetPropertyIdentifier(propertyIdentifierArgument), nil)
-	if _scheduleDefaultErr != nil {
-		return nil, errors.Wrap(_scheduleDefaultErr, "Error parsing 'scheduleDefault' field of BACnetConstructedDataScheduleDefault")
-	}
-	scheduleDefault := _scheduleDefault.(BACnetConstructedDataElement)
-	if closeErr := readBuffer.CloseContext("scheduleDefault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for scheduleDefault")
+	scheduleDefault, err := ReadSimpleField[BACnetConstructedDataElement](ctx, "scheduleDefault", ReadComplex[BACnetConstructedDataElement](BACnetConstructedDataElementParseWithBufferProducer((BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(nil)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scheduleDefault' field"))
 	}
 
 	// Virtual field

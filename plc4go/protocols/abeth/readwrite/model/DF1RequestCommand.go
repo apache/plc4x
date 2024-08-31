@@ -110,6 +110,17 @@ func DF1RequestCommandParse(ctx context.Context, theBytes []byte) (DF1RequestCom
 	return DF1RequestCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1RequestCommandParseWithBufferProducer[T DF1RequestCommand]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DF1RequestCommandParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func DF1RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	functionCode, err := ReadDiscriminatorField[uint8](ctx, "functionCode", ReadUnsignedByte(readBuffer, 8))
+	functionCode, err := ReadDiscriminatorField[uint8](ctx, "functionCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'functionCode' field"))
 	}

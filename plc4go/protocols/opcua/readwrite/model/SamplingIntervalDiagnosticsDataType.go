@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func SamplingIntervalDiagnosticsDataTypeParse(ctx context.Context, theBytes []by
 	return SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SamplingIntervalDiagnosticsDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SamplingIntervalDiagnosticsDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SamplingIntervalDiagnosticsDataType, error) {
+		return SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SamplingIntervalDiagnosticsDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,33 +182,25 @@ func SamplingIntervalDiagnosticsDataTypeParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (samplingInterval)
-	_samplingInterval, _samplingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("samplingInterval", 64)
-	if _samplingIntervalErr != nil {
-		return nil, errors.Wrap(_samplingIntervalErr, "Error parsing 'samplingInterval' field of SamplingIntervalDiagnosticsDataType")
+	samplingInterval, err := ReadSimpleField(ctx, "samplingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samplingInterval' field"))
 	}
-	samplingInterval := _samplingInterval
 
-	// Simple Field (monitoredItemCount)
-	_monitoredItemCount, _monitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("monitoredItemCount", 32)
-	if _monitoredItemCountErr != nil {
-		return nil, errors.Wrap(_monitoredItemCountErr, "Error parsing 'monitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
+	monitoredItemCount, err := ReadSimpleField(ctx, "monitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredItemCount' field"))
 	}
-	monitoredItemCount := _monitoredItemCount
 
-	// Simple Field (maxMonitoredItemCount)
-	_maxMonitoredItemCount, _maxMonitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxMonitoredItemCount", 32)
-	if _maxMonitoredItemCountErr != nil {
-		return nil, errors.Wrap(_maxMonitoredItemCountErr, "Error parsing 'maxMonitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
+	maxMonitoredItemCount, err := ReadSimpleField(ctx, "maxMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMonitoredItemCount' field"))
 	}
-	maxMonitoredItemCount := _maxMonitoredItemCount
 
-	// Simple Field (disabledMonitoredItemCount)
-	_disabledMonitoredItemCount, _disabledMonitoredItemCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("disabledMonitoredItemCount", 32)
-	if _disabledMonitoredItemCountErr != nil {
-		return nil, errors.Wrap(_disabledMonitoredItemCountErr, "Error parsing 'disabledMonitoredItemCount' field of SamplingIntervalDiagnosticsDataType")
+	disabledMonitoredItemCount, err := ReadSimpleField(ctx, "disabledMonitoredItemCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'disabledMonitoredItemCount' field"))
 	}
-	disabledMonitoredItemCount := _disabledMonitoredItemCount
 
 	if closeErr := readBuffer.CloseContext("SamplingIntervalDiagnosticsDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SamplingIntervalDiagnosticsDataType")

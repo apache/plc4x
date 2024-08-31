@@ -165,6 +165,17 @@ func DF1RequestMessageParse(ctx context.Context, theBytes []byte) (DF1RequestMes
 	return DF1RequestMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1RequestMessageParseWithBufferProducer[T DF1RequestMessage]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := DF1RequestMessageParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -176,43 +187,35 @@ func DF1RequestMessageParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("destinationAddress", 8)
-	if _destinationAddressErr != nil {
-		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1RequestMessage")
+	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
-	destinationAddress := _destinationAddress
 
-	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sourceAddress", 8)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1RequestMessage")
+	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
-	sourceAddress := _sourceAddress
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, 8))
+	commandCode, err := ReadDiscriminatorField[uint8](ctx, "commandCode", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandCode' field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of DF1RequestMessage")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (transactionCounter)
-	_transactionCounter, _transactionCounterErr := /*TODO: migrate me*/ readBuffer.ReadUint16("transactionCounter", 16)
-	if _transactionCounterErr != nil {
-		return nil, errors.Wrap(_transactionCounterErr, "Error parsing 'transactionCounter' field of DF1RequestMessage")
+	transactionCounter, err := ReadSimpleField(ctx, "transactionCounter", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionCounter' field"))
 	}
-	transactionCounter := _transactionCounter
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type DF1RequestMessageChildSerializeRequirement interface {

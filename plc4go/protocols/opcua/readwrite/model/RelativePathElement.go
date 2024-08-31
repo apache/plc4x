@@ -170,6 +170,12 @@ func RelativePathElementParse(ctx context.Context, theBytes []byte, identifier s
 	return RelativePathElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RelativePathElementParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativePathElement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RelativePathElement, error) {
+		return RelativePathElementParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RelativePathElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RelativePathElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,49 +187,29 @@ func RelativePathElementParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of RelativePathElement")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 6), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(6)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (includeSubtypes)
-	_includeSubtypes, _includeSubtypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubtypes")
-	if _includeSubtypesErr != nil {
-		return nil, errors.Wrap(_includeSubtypesErr, "Error parsing 'includeSubtypes' field of RelativePathElement")
+	includeSubtypes, err := ReadSimpleField(ctx, "includeSubtypes", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubtypes' field"))
 	}
-	includeSubtypes := _includeSubtypes
 
-	// Simple Field (isInverse)
-	_isInverse, _isInverseErr := /*TODO: migrate me*/ readBuffer.ReadBit("isInverse")
-	if _isInverseErr != nil {
-		return nil, errors.Wrap(_isInverseErr, "Error parsing 'isInverse' field of RelativePathElement")
+	isInverse, err := ReadSimpleField(ctx, "isInverse", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isInverse' field"))
 	}
-	isInverse := _isInverse
 
-	// Simple Field (targetName)
-	if pullErr := readBuffer.PullContext("targetName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetName")
-	}
-	_targetName, _targetNameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _targetNameErr != nil {
-		return nil, errors.Wrap(_targetNameErr, "Error parsing 'targetName' field of RelativePathElement")
-	}
-	targetName := _targetName.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("targetName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetName")
+	targetName, err := ReadSimpleField[QualifiedName](ctx, "targetName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RelativePathElement"); closeErr != nil {

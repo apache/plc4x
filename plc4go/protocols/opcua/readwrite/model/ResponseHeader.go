@@ -205,6 +205,12 @@ func ResponseHeaderParse(ctx context.Context, theBytes []byte, identifier string
 	return ResponseHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ResponseHeaderParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ResponseHeader, error) {
+		return ResponseHeaderParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ResponseHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ResponseHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -216,69 +222,39 @@ func ResponseHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadInt64("timestamp", 64)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ResponseHeader")
-	}
-	timestamp := _timestamp
-
-	// Simple Field (requestHandle)
-	_requestHandle, _requestHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestHandle", 32)
-	if _requestHandleErr != nil {
-		return nil, errors.Wrap(_requestHandleErr, "Error parsing 'requestHandle' field of ResponseHeader")
-	}
-	requestHandle := _requestHandle
-
-	// Simple Field (serviceResult)
-	if pullErr := readBuffer.PullContext("serviceResult"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceResult")
-	}
-	_serviceResult, _serviceResultErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _serviceResultErr != nil {
-		return nil, errors.Wrap(_serviceResultErr, "Error parsing 'serviceResult' field of ResponseHeader")
-	}
-	serviceResult := _serviceResult.(StatusCode)
-	if closeErr := readBuffer.CloseContext("serviceResult"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceResult")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	// Simple Field (serviceDiagnostics)
-	if pullErr := readBuffer.PullContext("serviceDiagnostics"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceDiagnostics")
-	}
-	_serviceDiagnostics, _serviceDiagnosticsErr := DiagnosticInfoParseWithBuffer(ctx, readBuffer)
-	if _serviceDiagnosticsErr != nil {
-		return nil, errors.Wrap(_serviceDiagnosticsErr, "Error parsing 'serviceDiagnostics' field of ResponseHeader")
-	}
-	serviceDiagnostics := _serviceDiagnostics.(DiagnosticInfo)
-	if closeErr := readBuffer.CloseContext("serviceDiagnostics"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceDiagnostics")
+	requestHandle, err := ReadSimpleField(ctx, "requestHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHandle' field"))
 	}
 
-	// Simple Field (noOfStringTable)
-	_noOfStringTable, _noOfStringTableErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfStringTable", 32)
-	if _noOfStringTableErr != nil {
-		return nil, errors.Wrap(_noOfStringTableErr, "Error parsing 'noOfStringTable' field of ResponseHeader")
+	serviceResult, err := ReadSimpleField[StatusCode](ctx, "serviceResult", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceResult' field"))
 	}
-	noOfStringTable := _noOfStringTable
+
+	serviceDiagnostics, err := ReadSimpleField[DiagnosticInfo](ctx, "serviceDiagnostics", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceDiagnostics' field"))
+	}
+
+	noOfStringTable, err := ReadSimpleField(ctx, "noOfStringTable", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStringTable' field"))
+	}
 
 	stringTable, err := ReadCountArrayField[PascalString](ctx, "stringTable", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfStringTable))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stringTable' field"))
 	}
 
-	// Simple Field (additionalHeader)
-	if pullErr := readBuffer.PullContext("additionalHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for additionalHeader")
-	}
-	_additionalHeader, _additionalHeaderErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _additionalHeaderErr != nil {
-		return nil, errors.Wrap(_additionalHeaderErr, "Error parsing 'additionalHeader' field of ResponseHeader")
-	}
-	additionalHeader := _additionalHeader.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("additionalHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for additionalHeader")
+	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalHeader' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ResponseHeader"); closeErr != nil {

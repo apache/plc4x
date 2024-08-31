@@ -108,6 +108,12 @@ func TelephonyDataClearDiversionParse(ctx context.Context, theBytes []byte) (Tel
 	return TelephonyDataClearDiversionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataClearDiversionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
+		return TelephonyDataClearDiversionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataClearDiversionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataClearDiversion, error) {
 	positionAware := readBuffer
 	_ = positionAware

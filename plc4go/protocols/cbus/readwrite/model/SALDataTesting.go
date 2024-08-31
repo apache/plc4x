@@ -111,6 +111,12 @@ func SALDataTestingParse(ctx context.Context, theBytes []byte, applicationId App
 	return SALDataTestingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataTestingParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTesting, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTesting, error) {
+		return SALDataTestingParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataTestingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTesting, error) {
 	positionAware := readBuffer
 	_ = positionAware

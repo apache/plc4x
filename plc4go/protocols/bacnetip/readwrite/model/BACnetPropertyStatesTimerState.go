@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesTimerStateParse(ctx context.Context, theBytes []byte, p
 	return BACnetPropertyStatesTimerStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesTimerStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesTimerState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesTimerState, error) {
+		return BACnetPropertyStatesTimerStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesTimerStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesTimerState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesTimerStateParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timerState)
-	if pullErr := readBuffer.PullContext("timerState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timerState")
-	}
-	_timerState, _timerStateErr := BACnetTimerStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _timerStateErr != nil {
-		return nil, errors.Wrap(_timerStateErr, "Error parsing 'timerState' field of BACnetPropertyStatesTimerState")
-	}
-	timerState := _timerState.(BACnetTimerStateTagged)
-	if closeErr := readBuffer.CloseContext("timerState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timerState")
+	timerState, err := ReadSimpleField[BACnetTimerStateTagged](ctx, "timerState", ReadComplex[BACnetTimerStateTagged](BACnetTimerStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesTimerState"); closeErr != nil {

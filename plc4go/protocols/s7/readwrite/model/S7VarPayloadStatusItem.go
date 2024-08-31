@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func S7VarPayloadStatusItemParse(ctx context.Context, theBytes []byte) (S7VarPay
 	return S7VarPayloadStatusItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7VarPayloadStatusItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
+		return S7VarPayloadStatusItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7VarPayloadStatusItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarPayloadStatusItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func S7VarPayloadStatusItemParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (returnCode)
-	if pullErr := readBuffer.PullContext("returnCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for returnCode")
-	}
-	_returnCode, _returnCodeErr := DataTransportErrorCodeParseWithBuffer(ctx, readBuffer)
-	if _returnCodeErr != nil {
-		return nil, errors.Wrap(_returnCodeErr, "Error parsing 'returnCode' field of S7VarPayloadStatusItem")
-	}
-	returnCode := _returnCode
-	if closeErr := readBuffer.CloseContext("returnCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for returnCode")
+	returnCode, err := ReadEnumField[DataTransportErrorCode](ctx, "returnCode", "DataTransportErrorCode", ReadEnum(DataTransportErrorCodeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnCode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarPayloadStatusItem"); closeErr != nil {

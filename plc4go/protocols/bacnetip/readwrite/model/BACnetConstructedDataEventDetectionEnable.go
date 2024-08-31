@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEventDetectionEnableParse(ctx context.Context, theByte
 	return BACnetConstructedDataEventDetectionEnableParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEventDetectionEnableParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventDetectionEnable, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEventDetectionEnable, error) {
+		return BACnetConstructedDataEventDetectionEnableParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEventDetectionEnableParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEventDetectionEnable, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEventDetectionEnableParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (eventDetectionEnable)
-	if pullErr := readBuffer.PullContext("eventDetectionEnable"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eventDetectionEnable")
-	}
-	_eventDetectionEnable, _eventDetectionEnableErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _eventDetectionEnableErr != nil {
-		return nil, errors.Wrap(_eventDetectionEnableErr, "Error parsing 'eventDetectionEnable' field of BACnetConstructedDataEventDetectionEnable")
-	}
-	eventDetectionEnable := _eventDetectionEnable.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("eventDetectionEnable"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eventDetectionEnable")
+	eventDetectionEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventDetectionEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventDetectionEnable' field"))
 	}
 
 	// Virtual field

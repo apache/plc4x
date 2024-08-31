@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesBinaryValueParse(ctx context.Context, theBytes []byte, 
 	return BACnetPropertyStatesBinaryValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesBinaryValueParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBinaryValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBinaryValue, error) {
+		return BACnetPropertyStatesBinaryValueParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesBinaryValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesBinaryValueParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (binaryValue)
-	if pullErr := readBuffer.PullContext("binaryValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for binaryValue")
-	}
-	_binaryValue, _binaryValueErr := BACnetBinaryPVTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _binaryValueErr != nil {
-		return nil, errors.Wrap(_binaryValueErr, "Error parsing 'binaryValue' field of BACnetPropertyStatesBinaryValue")
-	}
-	binaryValue := _binaryValue.(BACnetBinaryPVTagged)
-	if closeErr := readBuffer.CloseContext("binaryValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for binaryValue")
+	binaryValue, err := ReadSimpleField[BACnetBinaryPVTagged](ctx, "binaryValue", ReadComplex[BACnetBinaryPVTagged](BACnetBinaryPVTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBinaryValue"); closeErr != nil {

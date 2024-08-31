@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func PriorityMappingEntryTypeParse(ctx context.Context, theBytes []byte, identif
 	return PriorityMappingEntryTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PriorityMappingEntryTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PriorityMappingEntryType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PriorityMappingEntryType, error) {
+		return PriorityMappingEntryTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PriorityMappingEntryTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PriorityMappingEntryType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,45 +182,25 @@ func PriorityMappingEntryTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mappingUri)
-	if pullErr := readBuffer.PullContext("mappingUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mappingUri")
-	}
-	_mappingUri, _mappingUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _mappingUriErr != nil {
-		return nil, errors.Wrap(_mappingUriErr, "Error parsing 'mappingUri' field of PriorityMappingEntryType")
-	}
-	mappingUri := _mappingUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("mappingUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mappingUri")
+	mappingUri, err := ReadSimpleField[PascalString](ctx, "mappingUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mappingUri' field"))
 	}
 
-	// Simple Field (priorityLabel)
-	if pullErr := readBuffer.PullContext("priorityLabel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priorityLabel")
-	}
-	_priorityLabel, _priorityLabelErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _priorityLabelErr != nil {
-		return nil, errors.Wrap(_priorityLabelErr, "Error parsing 'priorityLabel' field of PriorityMappingEntryType")
-	}
-	priorityLabel := _priorityLabel.(PascalString)
-	if closeErr := readBuffer.CloseContext("priorityLabel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priorityLabel")
+	priorityLabel, err := ReadSimpleField[PascalString](ctx, "priorityLabel", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityLabel' field"))
 	}
 
-	// Simple Field (priorityValue_PCP)
-	_priorityValue_PCP, _priorityValue_PCPErr := /*TODO: migrate me*/ readBuffer.ReadUint8("priorityValue_PCP", 8)
-	if _priorityValue_PCPErr != nil {
-		return nil, errors.Wrap(_priorityValue_PCPErr, "Error parsing 'priorityValue_PCP' field of PriorityMappingEntryType")
+	priorityValue_PCP, err := ReadSimpleField(ctx, "priorityValue_PCP", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue_PCP' field"))
 	}
-	priorityValue_PCP := _priorityValue_PCP
 
-	// Simple Field (priorityValue_DSCP)
-	_priorityValue_DSCP, _priorityValue_DSCPErr := /*TODO: migrate me*/ readBuffer.ReadUint32("priorityValue_DSCP", 32)
-	if _priorityValue_DSCPErr != nil {
-		return nil, errors.Wrap(_priorityValue_DSCPErr, "Error parsing 'priorityValue_DSCP' field of PriorityMappingEntryType")
+	priorityValue_DSCP, err := ReadSimpleField(ctx, "priorityValue_DSCP", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityValue_DSCP' field"))
 	}
-	priorityValue_DSCP := _priorityValue_DSCP
 
 	if closeErr := readBuffer.CloseContext("PriorityMappingEntryType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PriorityMappingEntryType")

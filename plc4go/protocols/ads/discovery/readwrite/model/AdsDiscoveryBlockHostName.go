@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func AdsDiscoveryBlockHostNameParse(ctx context.Context, theBytes []byte) (AdsDi
 	return AdsDiscoveryBlockHostNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockHostNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
+		return AdsDiscoveryBlockHostNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockHostNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockHostName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func AdsDiscoveryBlockHostNameParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hostName)
-	if pullErr := readBuffer.PullContext("hostName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hostName")
-	}
-	_hostName, _hostNameErr := AmsStringParseWithBuffer(ctx, readBuffer)
-	if _hostNameErr != nil {
-		return nil, errors.Wrap(_hostNameErr, "Error parsing 'hostName' field of AdsDiscoveryBlockHostName")
-	}
-	hostName := _hostName.(AmsString)
-	if closeErr := readBuffer.CloseContext("hostName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hostName")
+	hostName, err := ReadSimpleField[AmsString](ctx, "hostName", ReadComplex[AmsString](AmsStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hostName' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockHostName"); closeErr != nil {

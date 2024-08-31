@@ -117,6 +117,12 @@ func BACnetPortPermissionParse(ctx context.Context, theBytes []byte) (BACnetPort
 	return BACnetPortPermissionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetPortPermissionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
+		return BACnetPortPermissionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPortPermission, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -128,26 +134,12 @@ func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (port)
-	if pullErr := readBuffer.PullContext("port"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for port")
-	}
-	_port, _portErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BACnetPortPermission")
-	}
-	port := _port.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("port"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for port")
+	port, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "port", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
 
-	_enable, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "enable", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagBoolean), nil
-	}, readBuffer), true)
+	_enable, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "enable", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}

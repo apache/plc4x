@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataSecuredStatusParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataSecuredStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataSecuredStatusParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecuredStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataSecuredStatus, error) {
+		return BACnetConstructedDataSecuredStatusParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataSecuredStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataSecuredStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataSecuredStatusParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (securedStatus)
-	if pullErr := readBuffer.PullContext("securedStatus"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securedStatus")
-	}
-	_securedStatus, _securedStatusErr := BACnetDoorSecuredStatusTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _securedStatusErr != nil {
-		return nil, errors.Wrap(_securedStatusErr, "Error parsing 'securedStatus' field of BACnetConstructedDataSecuredStatus")
-	}
-	securedStatus := _securedStatus.(BACnetDoorSecuredStatusTagged)
-	if closeErr := readBuffer.CloseContext("securedStatus"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securedStatus")
+	securedStatus, err := ReadSimpleField[BACnetDoorSecuredStatusTagged](ctx, "securedStatus", ReadComplex[BACnetDoorSecuredStatusTagged](BACnetDoorSecuredStatusTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securedStatus' field"))
 	}
 
 	// Virtual field

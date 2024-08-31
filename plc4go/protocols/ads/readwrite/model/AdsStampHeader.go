@@ -132,6 +132,12 @@ func AdsStampHeaderParse(ctx context.Context, theBytes []byte) (AdsStampHeader, 
 	return AdsStampHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsStampHeaderParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
+		return AdsStampHeaderParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsStampHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,19 +149,15 @@ func AdsStampHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadUint64("timestamp", 64)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of AdsStampHeader")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadUnsignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
-	timestamp := _timestamp
 
-	// Simple Field (samples)
-	_samples, _samplesErr := /*TODO: migrate me*/ readBuffer.ReadUint32("samples", 32)
-	if _samplesErr != nil {
-		return nil, errors.Wrap(_samplesErr, "Error parsing 'samples' field of AdsStampHeader")
+	samples, err := ReadSimpleField(ctx, "samples", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'samples' field"))
 	}
-	samples := _samples
 
 	adsNotificationSamples, err := ReadCountArrayField[AdsNotificationSample](ctx, "adsNotificationSamples", ReadComplex[AdsNotificationSample](AdsNotificationSampleParseWithBuffer, readBuffer), uint64(samples))
 	if err != nil {

@@ -192,6 +192,12 @@ func S7AddressAnyParse(ctx context.Context, theBytes []byte) (S7AddressAny, erro
 	return S7AddressAnyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7AddressAnyParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {
+		return S7AddressAnyParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7AddressAny, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -203,56 +209,40 @@ func S7AddressAnyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, 8)))
+	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, uint8(8))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
 
-	// Simple Field (numberOfElements)
-	_numberOfElements, _numberOfElementsErr := /*TODO: migrate me*/ readBuffer.ReadUint16("numberOfElements", 16)
-	if _numberOfElementsErr != nil {
-		return nil, errors.Wrap(_numberOfElementsErr, "Error parsing 'numberOfElements' field of S7AddressAny")
-	}
-	numberOfElements := _numberOfElements
-
-	// Simple Field (dbNumber)
-	_dbNumber, _dbNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dbNumber", 16)
-	if _dbNumberErr != nil {
-		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of S7AddressAny")
-	}
-	dbNumber := _dbNumber
-
-	// Simple Field (area)
-	if pullErr := readBuffer.PullContext("area"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for area")
-	}
-	_area, _areaErr := MemoryAreaParseWithBuffer(ctx, readBuffer)
-	if _areaErr != nil {
-		return nil, errors.Wrap(_areaErr, "Error parsing 'area' field of S7AddressAny")
-	}
-	area := _area
-	if closeErr := readBuffer.CloseContext("area"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for area")
+	numberOfElements, err := ReadSimpleField(ctx, "numberOfElements", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfElements' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 5), uint8(0x00))
+	dbNumber, err := ReadSimpleField(ctx, "dbNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dbNumber' field"))
+	}
+
+	area, err := ReadEnumField[MemoryArea](ctx, "area", "MemoryArea", ReadEnum(MemoryAreaByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'area' field"))
+	}
+
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(5)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (byteAddress)
-	_byteAddress, _byteAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("byteAddress", 16)
-	if _byteAddressErr != nil {
-		return nil, errors.Wrap(_byteAddressErr, "Error parsing 'byteAddress' field of S7AddressAny")
+	byteAddress, err := ReadSimpleField(ctx, "byteAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteAddress' field"))
 	}
-	byteAddress := _byteAddress
 
-	// Simple Field (bitAddress)
-	_bitAddress, _bitAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("bitAddress", 3)
-	if _bitAddressErr != nil {
-		return nil, errors.Wrap(_bitAddressErr, "Error parsing 'bitAddress' field of S7AddressAny")
+	bitAddress, err := ReadSimpleField(ctx, "bitAddress", ReadUnsignedByte(readBuffer, uint8(3)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitAddress' field"))
 	}
-	bitAddress := _bitAddress
 
 	if closeErr := readBuffer.CloseContext("S7AddressAny"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7AddressAny")

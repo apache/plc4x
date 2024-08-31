@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func NLMChallengeRequestParse(ctx context.Context, theBytes []byte, apduLength u
 	return NLMChallengeRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMChallengeRequestParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMChallengeRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMChallengeRequest, error) {
+		return NLMChallengeRequestParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMChallengeRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMChallengeRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,26 +171,20 @@ func NLMChallengeRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (messageChallenge)
-	_messageChallenge, _messageChallengeErr := /*TODO: migrate me*/ readBuffer.ReadByte("messageChallenge")
-	if _messageChallengeErr != nil {
-		return nil, errors.Wrap(_messageChallengeErr, "Error parsing 'messageChallenge' field of NLMChallengeRequest")
+	messageChallenge, err := ReadSimpleField(ctx, "messageChallenge", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageChallenge' field"))
 	}
-	messageChallenge := _messageChallenge
 
-	// Simple Field (originalMessageId)
-	_originalMessageId, _originalMessageIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originalMessageId", 32)
-	if _originalMessageIdErr != nil {
-		return nil, errors.Wrap(_originalMessageIdErr, "Error parsing 'originalMessageId' field of NLMChallengeRequest")
+	originalMessageId, err := ReadSimpleField(ctx, "originalMessageId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalMessageId' field"))
 	}
-	originalMessageId := _originalMessageId
 
-	// Simple Field (originalTimestamp)
-	_originalTimestamp, _originalTimestampErr := /*TODO: migrate me*/ readBuffer.ReadUint32("originalTimestamp", 32)
-	if _originalTimestampErr != nil {
-		return nil, errors.Wrap(_originalTimestampErr, "Error parsing 'originalTimestamp' field of NLMChallengeRequest")
+	originalTimestamp, err := ReadSimpleField(ctx, "originalTimestamp", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalTimestamp' field"))
 	}
-	originalTimestamp := _originalTimestamp
 
 	if closeErr := readBuffer.CloseContext("NLMChallengeRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMChallengeRequest")

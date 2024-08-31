@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,6 +108,12 @@ func BACnetClosingTagParse(ctx context.Context, theBytes []byte, tagNumberArgume
 	return BACnetClosingTagParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumberArgument)
 }
 
+func BACnetClosingTagParseWithBufferProducer(tagNumberArgument uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClosingTag, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetClosingTag, error) {
+		return BACnetClosingTagParseWithBuffer(ctx, readBuffer, tagNumberArgument)
+	}
+}
+
 func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumberArgument uint8) (BACnetClosingTag, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -117,17 +125,9 @@ func BACnetClosingTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (header)
-	if pullErr := readBuffer.PullContext("header"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for header")
-	}
-	_header, _headerErr := BACnetTagHeaderParseWithBuffer(ctx, readBuffer)
-	if _headerErr != nil {
-		return nil, errors.Wrap(_headerErr, "Error parsing 'header' field of BACnetClosingTag")
-	}
-	header := _header.(BACnetTagHeader)
-	if closeErr := readBuffer.CloseContext("header"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for header")
+	header, err := ReadSimpleField[BACnetTagHeader](ctx, "header", ReadComplex[BACnetTagHeader](BACnetTagHeaderParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'header' field"))
 	}
 
 	// Validation

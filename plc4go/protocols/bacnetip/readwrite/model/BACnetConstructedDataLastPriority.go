@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLastPriorityParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataLastPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLastPriorityParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastPriority, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLastPriority, error) {
+		return BACnetConstructedDataLastPriorityParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLastPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLastPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLastPriorityParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lastPriority)
-	if pullErr := readBuffer.PullContext("lastPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lastPriority")
-	}
-	_lastPriority, _lastPriorityErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lastPriorityErr != nil {
-		return nil, errors.Wrap(_lastPriorityErr, "Error parsing 'lastPriority' field of BACnetConstructedDataLastPriority")
-	}
-	lastPriority := _lastPriority.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lastPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lastPriority")
+	lastPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastPriority' field"))
 	}
 
 	// Virtual field

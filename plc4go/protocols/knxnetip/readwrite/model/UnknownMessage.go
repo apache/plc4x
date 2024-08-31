@@ -137,6 +137,12 @@ func UnknownMessageParse(ctx context.Context, theBytes []byte, totalLength uint1
 	return UnknownMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
+func UnknownMessageParseWithBufferProducer(totalLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (UnknownMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UnknownMessage, error) {
+		return UnknownMessageParseWithBuffer(ctx, readBuffer, totalLength)
+	}
+}
+
 func UnknownMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (UnknownMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware

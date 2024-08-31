@@ -147,6 +147,12 @@ func ModbusPDUWriteFileRecordRequestParse(ctx context.Context, theBytes []byte, 
 	return ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUWriteFileRecordRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUWriteFileRecordRequest, error) {
+		return ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUWriteFileRecordRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,7 +164,7 @@ func ModbusPDUWriteFileRecordRequestParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, 8))
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}

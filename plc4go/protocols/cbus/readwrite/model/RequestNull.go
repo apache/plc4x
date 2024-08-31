@@ -133,6 +133,12 @@ func RequestNullParse(ctx context.Context, theBytes []byte, cBusOptions CBusOpti
 	return RequestNullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestNullParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestNull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestNull, error) {
+		return RequestNullParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestNull, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,7 +150,7 @@ func RequestNullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nullIndicator, err := ReadConstField[uint32](ctx, "nullIndicator", ReadUnsignedInt(readBuffer, 32), RequestNull_NULLINDICATOR)
+	nullIndicator, err := ReadConstField[uint32](ctx, "nullIndicator", ReadUnsignedInt(readBuffer, uint8(32)), RequestNull_NULLINDICATOR)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nullIndicator' field"))
 	}

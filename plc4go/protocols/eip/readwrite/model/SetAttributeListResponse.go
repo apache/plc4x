@@ -117,6 +117,12 @@ func SetAttributeListResponseParse(ctx context.Context, theBytes []byte, connect
 	return SetAttributeListResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func SetAttributeListResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeListResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetAttributeListResponse, error) {
+		return SetAttributeListResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func SetAttributeListResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (SetAttributeListResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func ChecksumParse(ctx context.Context, theBytes []byte) (Checksum, error) {
 	return ChecksumParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ChecksumParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
+		return ChecksumParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Checksum, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func ChecksumParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadByte("value")
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of Checksum")
+	value, err := ReadSimpleField(ctx, "value", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("Checksum"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for Checksum")

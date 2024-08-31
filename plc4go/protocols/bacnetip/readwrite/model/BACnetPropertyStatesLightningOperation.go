@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLightningOperationParse(ctx context.Context, theBytes [
 	return BACnetPropertyStatesLightningOperationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLightningOperationParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningOperation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningOperation, error) {
+		return BACnetPropertyStatesLightningOperationParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLightningOperationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningOperation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLightningOperationParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightningOperation)
-	if pullErr := readBuffer.PullContext("lightningOperation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightningOperation")
-	}
-	_lightningOperation, _lightningOperationErr := BACnetLightingOperationTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lightningOperationErr != nil {
-		return nil, errors.Wrap(_lightningOperationErr, "Error parsing 'lightningOperation' field of BACnetPropertyStatesLightningOperation")
-	}
-	lightningOperation := _lightningOperation.(BACnetLightingOperationTagged)
-	if closeErr := readBuffer.CloseContext("lightningOperation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightningOperation")
+	lightningOperation, err := ReadSimpleField[BACnetLightingOperationTagged](ctx, "lightningOperation", ReadComplex[BACnetLightingOperationTagged](BACnetLightingOperationTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightningOperation' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningOperation"); closeErr != nil {

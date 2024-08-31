@@ -109,6 +109,12 @@ func ApduDataExtWriteRoutingTableRequestParse(ctx context.Context, theBytes []by
 	return ApduDataExtWriteRoutingTableRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtWriteRoutingTableRequestParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtWriteRoutingTableRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtWriteRoutingTableRequest, error) {
+		return ApduDataExtWriteRoutingTableRequestParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtWriteRoutingTableRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtWriteRoutingTableRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func ErrorParse(ctx context.Context, theBytes []byte) (Error, error) {
 	return ErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ErrorParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
+		return ErrorParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Error, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func ErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (Err
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorClass)
-	if pullErr := readBuffer.PullContext("errorClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorClass")
-	}
-	_errorClass, _errorClassErr := ErrorClassTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _errorClassErr != nil {
-		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of Error")
-	}
-	errorClass := _errorClass.(ErrorClassTagged)
-	if closeErr := readBuffer.CloseContext("errorClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorClass")
+	errorClass, err := ReadSimpleField[ErrorClassTagged](ctx, "errorClass", ReadComplex[ErrorClassTagged](ErrorClassTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorClass' field"))
 	}
 
-	// Simple Field (errorCode)
-	if pullErr := readBuffer.PullContext("errorCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorCode")
-	}
-	_errorCode, _errorCodeErr := ErrorCodeTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of Error")
-	}
-	errorCode := _errorCode.(ErrorCodeTagged)
-	if closeErr := readBuffer.CloseContext("errorCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorCode")
+	errorCode, err := ReadSimpleField[ErrorCodeTagged](ctx, "errorCode", ReadComplex[ErrorCodeTagged](ErrorCodeTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("Error"); closeErr != nil {

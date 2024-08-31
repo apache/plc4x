@@ -83,6 +83,12 @@ func ImageGIFParse(ctx context.Context, theBytes []byte) (ImageGIF, error) {
 	return ImageGIFParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImageGIFParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
+		return ImageGIFParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImageGIFParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageGIF, error) {
 	positionAware := readBuffer
 	_ = positionAware

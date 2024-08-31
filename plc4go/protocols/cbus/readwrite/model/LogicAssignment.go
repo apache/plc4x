@@ -164,6 +164,12 @@ func LogicAssignmentParse(ctx context.Context, theBytes []byte) (LogicAssignment
 	return LogicAssignmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LogicAssignmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
+		return LogicAssignmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicAssignment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -175,19 +181,15 @@ func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (greaterOfOrLogic)
-	_greaterOfOrLogic, _greaterOfOrLogicErr := /*TODO: migrate me*/ readBuffer.ReadBit("greaterOfOrLogic")
-	if _greaterOfOrLogicErr != nil {
-		return nil, errors.Wrap(_greaterOfOrLogicErr, "Error parsing 'greaterOfOrLogic' field of LogicAssignment")
+	greaterOfOrLogic, err := ReadSimpleField(ctx, "greaterOfOrLogic", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'greaterOfOrLogic' field"))
 	}
-	greaterOfOrLogic := _greaterOfOrLogic
 
-	// Simple Field (reStrikeDelay)
-	_reStrikeDelay, _reStrikeDelayErr := /*TODO: migrate me*/ readBuffer.ReadBit("reStrikeDelay")
-	if _reStrikeDelayErr != nil {
-		return nil, errors.Wrap(_reStrikeDelayErr, "Error parsing 'reStrikeDelay' field of LogicAssignment")
+	reStrikeDelay, err := ReadSimpleField(ctx, "reStrikeDelay", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reStrikeDelay' field"))
 	}
-	reStrikeDelay := _reStrikeDelay
 
 	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
@@ -199,33 +201,25 @@ func LogicAssignmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (assignedToGav16)
-	_assignedToGav16, _assignedToGav16Err := /*TODO: migrate me*/ readBuffer.ReadBit("assignedToGav16")
-	if _assignedToGav16Err != nil {
-		return nil, errors.Wrap(_assignedToGav16Err, "Error parsing 'assignedToGav16' field of LogicAssignment")
+	assignedToGav16, err := ReadSimpleField(ctx, "assignedToGav16", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav16' field"))
 	}
-	assignedToGav16 := _assignedToGav16
 
-	// Simple Field (assignedToGav15)
-	_assignedToGav15, _assignedToGav15Err := /*TODO: migrate me*/ readBuffer.ReadBit("assignedToGav15")
-	if _assignedToGav15Err != nil {
-		return nil, errors.Wrap(_assignedToGav15Err, "Error parsing 'assignedToGav15' field of LogicAssignment")
+	assignedToGav15, err := ReadSimpleField(ctx, "assignedToGav15", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav15' field"))
 	}
-	assignedToGav15 := _assignedToGav15
 
-	// Simple Field (assignedToGav14)
-	_assignedToGav14, _assignedToGav14Err := /*TODO: migrate me*/ readBuffer.ReadBit("assignedToGav14")
-	if _assignedToGav14Err != nil {
-		return nil, errors.Wrap(_assignedToGav14Err, "Error parsing 'assignedToGav14' field of LogicAssignment")
+	assignedToGav14, err := ReadSimpleField(ctx, "assignedToGav14", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav14' field"))
 	}
-	assignedToGav14 := _assignedToGav14
 
-	// Simple Field (assignedToGav13)
-	_assignedToGav13, _assignedToGav13Err := /*TODO: migrate me*/ readBuffer.ReadBit("assignedToGav13")
-	if _assignedToGav13Err != nil {
-		return nil, errors.Wrap(_assignedToGav13Err, "Error parsing 'assignedToGav13' field of LogicAssignment")
+	assignedToGav13, err := ReadSimpleField(ctx, "assignedToGav13", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedToGav13' field"))
 	}
-	assignedToGav13 := _assignedToGav13
 
 	if closeErr := readBuffer.CloseContext("LogicAssignment"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for LogicAssignment")

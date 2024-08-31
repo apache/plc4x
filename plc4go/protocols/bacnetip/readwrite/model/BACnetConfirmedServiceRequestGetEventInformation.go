@@ -135,6 +135,12 @@ func BACnetConfirmedServiceRequestGetEventInformationParse(ctx context.Context, 
 	return BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestGetEventInformationParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEventInformation, error) {
+		return BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestGetEventInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,13 +152,7 @@ func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_lastReceivedObjectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagObjectIdentifier), nil
-	}, readBuffer), true)
+	_lastReceivedObjectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastReceivedObjectIdentifier' field"))
 	}

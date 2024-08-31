@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParse(ctx context.Contex
 	return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
+		return BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommandDefaultPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightingCommandDefaultPriority)
-	if pullErr := readBuffer.PullContext("lightingCommandDefaultPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommandDefaultPriority")
-	}
-	_lightingCommandDefaultPriority, _lightingCommandDefaultPriorityErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lightingCommandDefaultPriorityErr != nil {
-		return nil, errors.Wrap(_lightingCommandDefaultPriorityErr, "Error parsing 'lightingCommandDefaultPriority' field of BACnetConstructedDataLightingCommandDefaultPriority")
-	}
-	lightingCommandDefaultPriority := _lightingCommandDefaultPriority.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("lightingCommandDefaultPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightingCommandDefaultPriority")
+	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommandDefaultPriority' field"))
 	}
 
 	// Virtual field

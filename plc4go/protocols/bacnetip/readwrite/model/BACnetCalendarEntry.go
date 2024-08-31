@@ -140,6 +140,17 @@ func BACnetCalendarEntryParse(ctx context.Context, theBytes []byte) (BACnetCalen
 	return BACnetCalendarEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetCalendarEntryParseWithBufferProducer[T BACnetCalendarEntry]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetCalendarEntryParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware

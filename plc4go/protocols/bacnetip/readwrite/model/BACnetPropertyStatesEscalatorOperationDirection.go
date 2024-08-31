@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesEscalatorOperationDirectionParse(ctx context.Context, t
 	return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesEscalatorOperationDirectionParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesEscalatorOperationDirection, error) {
+		return BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesEscalatorOperationDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesEscalatorOperationDirectionParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (escalatorOperationDirection)
-	if pullErr := readBuffer.PullContext("escalatorOperationDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for escalatorOperationDirection")
-	}
-	_escalatorOperationDirection, _escalatorOperationDirectionErr := BACnetEscalatorOperationDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _escalatorOperationDirectionErr != nil {
-		return nil, errors.Wrap(_escalatorOperationDirectionErr, "Error parsing 'escalatorOperationDirection' field of BACnetPropertyStatesEscalatorOperationDirection")
-	}
-	escalatorOperationDirection := _escalatorOperationDirection.(BACnetEscalatorOperationDirectionTagged)
-	if closeErr := readBuffer.CloseContext("escalatorOperationDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for escalatorOperationDirection")
+	escalatorOperationDirection, err := ReadSimpleField[BACnetEscalatorOperationDirectionTagged](ctx, "escalatorOperationDirection", ReadComplex[BACnetEscalatorOperationDirectionTagged](BACnetEscalatorOperationDirectionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalatorOperationDirection' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesEscalatorOperationDirection"); closeErr != nil {

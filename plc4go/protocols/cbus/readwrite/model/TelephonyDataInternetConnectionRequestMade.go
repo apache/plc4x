@@ -108,6 +108,12 @@ func TelephonyDataInternetConnectionRequestMadeParse(ctx context.Context, theByt
 	return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataInternetConnectionRequestMadeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
+		return TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataInternetConnectionRequestMadeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataInternetConnectionRequestMade, error) {
 	positionAware := readBuffer
 	_ = positionAware

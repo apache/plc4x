@@ -140,6 +140,17 @@ func BACnetShedLevelParse(ctx context.Context, theBytes []byte) (BACnetShedLevel
 	return BACnetShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetShedLevelParseWithBufferProducer[T BACnetShedLevel]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetShedLevelParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware

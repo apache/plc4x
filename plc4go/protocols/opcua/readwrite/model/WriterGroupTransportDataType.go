@@ -109,6 +109,12 @@ func WriterGroupTransportDataTypeParse(ctx context.Context, theBytes []byte, ide
 	return WriterGroupTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func WriterGroupTransportDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (WriterGroupTransportDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (WriterGroupTransportDataType, error) {
+		return WriterGroupTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func WriterGroupTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (WriterGroupTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

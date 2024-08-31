@@ -189,6 +189,12 @@ func AxisInformationParse(ctx context.Context, theBytes []byte, identifier strin
 	return AxisInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AxisInformationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AxisInformation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AxisInformation, error) {
+		return AxisInformationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AxisInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -200,66 +206,32 @@ func AxisInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (engineeringUnits)
-	if pullErr := readBuffer.PullContext("engineeringUnits"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for engineeringUnits")
-	}
-	_engineeringUnits, _engineeringUnitsErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("889"))
-	if _engineeringUnitsErr != nil {
-		return nil, errors.Wrap(_engineeringUnitsErr, "Error parsing 'engineeringUnits' field of AxisInformation")
-	}
-	engineeringUnits := _engineeringUnits.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("engineeringUnits"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for engineeringUnits")
+	engineeringUnits, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "engineeringUnits", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("889")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'engineeringUnits' field"))
 	}
 
-	// Simple Field (eURange)
-	if pullErr := readBuffer.PullContext("eURange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for eURange")
-	}
-	_eURange, _eURangeErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("886"))
-	if _eURangeErr != nil {
-		return nil, errors.Wrap(_eURangeErr, "Error parsing 'eURange' field of AxisInformation")
-	}
-	eURange := _eURange.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("eURange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for eURange")
+	eURange, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "eURange", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("886")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eURange' field"))
 	}
 
-	// Simple Field (title)
-	if pullErr := readBuffer.PullContext("title"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for title")
-	}
-	_title, _titleErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _titleErr != nil {
-		return nil, errors.Wrap(_titleErr, "Error parsing 'title' field of AxisInformation")
-	}
-	title := _title.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("title"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for title")
+	title, err := ReadSimpleField[LocalizedText](ctx, "title", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'title' field"))
 	}
 
-	// Simple Field (axisScaleType)
-	if pullErr := readBuffer.PullContext("axisScaleType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for axisScaleType")
-	}
-	_axisScaleType, _axisScaleTypeErr := AxisScaleEnumerationParseWithBuffer(ctx, readBuffer)
-	if _axisScaleTypeErr != nil {
-		return nil, errors.Wrap(_axisScaleTypeErr, "Error parsing 'axisScaleType' field of AxisInformation")
-	}
-	axisScaleType := _axisScaleType
-	if closeErr := readBuffer.CloseContext("axisScaleType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for axisScaleType")
+	axisScaleType, err := ReadEnumField[AxisScaleEnumeration](ctx, "axisScaleType", "AxisScaleEnumeration", ReadEnum(AxisScaleEnumerationByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'axisScaleType' field"))
 	}
 
-	// Simple Field (noOfAxisSteps)
-	_noOfAxisSteps, _noOfAxisStepsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfAxisSteps", 32)
-	if _noOfAxisStepsErr != nil {
-		return nil, errors.Wrap(_noOfAxisStepsErr, "Error parsing 'noOfAxisSteps' field of AxisInformation")
+	noOfAxisSteps, err := ReadSimpleField(ctx, "noOfAxisSteps", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfAxisSteps' field"))
 	}
-	noOfAxisSteps := _noOfAxisSteps
 
-	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, 64), uint64(noOfAxisSteps))
+	axisSteps, err := ReadCountArrayField[float64](ctx, "axisSteps", ReadDouble(readBuffer, uint8(64)), uint64(noOfAxisSteps))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'axisSteps' field"))
 	}

@@ -109,6 +109,12 @@ func PublishedDataSetSourceDataTypeParse(ctx context.Context, theBytes []byte, i
 	return PublishedDataSetSourceDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PublishedDataSetSourceDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishedDataSetSourceDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PublishedDataSetSourceDataType, error) {
+		return PublishedDataSetSourceDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PublishedDataSetSourceDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PublishedDataSetSourceDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

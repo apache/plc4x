@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MediaTransportControlDataSelectionNameParse(ctx context.Context, theBytes [
 	return MediaTransportControlDataSelectionNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func MediaTransportControlDataSelectionNameParseWithBufferProducer(commandTypeContainer MediaTransportControlCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSelectionName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSelectionName, error) {
+		return MediaTransportControlDataSelectionNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func MediaTransportControlDataSelectionNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataSelectionName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MediaTransportControlDataSelectionNameParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (selectionName)
-	_selectionName, _selectionNameErr := /*TODO: migrate me*/ readBuffer.ReadString("selectionName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
-	if _selectionNameErr != nil {
-		return nil, errors.Wrap(_selectionNameErr, "Error parsing 'selectionName' field of MediaTransportControlDataSelectionName")
+	selectionName, err := ReadSimpleField(ctx, "selectionName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'selectionName' field"))
 	}
-	selectionName := _selectionName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSelectionName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSelectionName")

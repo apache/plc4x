@@ -141,6 +141,12 @@ func BVLCReadBroadcastDistributionTableAckParse(ctx context.Context, theBytes []
 	return BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
+func BVLCReadBroadcastDistributionTableAckParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTableAck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadBroadcastDistributionTableAck, error) {
+		return BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx, readBuffer, bvlcPayloadLength)
+	}
+}
+
 func BVLCReadBroadcastDistributionTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadBroadcastDistributionTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware

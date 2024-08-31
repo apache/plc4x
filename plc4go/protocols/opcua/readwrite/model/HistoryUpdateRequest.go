@@ -161,6 +161,12 @@ func HistoryUpdateRequestParse(ctx context.Context, theBytes []byte, identifier 
 	return HistoryUpdateRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryUpdateRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryUpdateRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryUpdateRequest, error) {
+		return HistoryUpdateRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryUpdateRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func HistoryUpdateRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of HistoryUpdateRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfHistoryUpdateDetails)
-	_noOfHistoryUpdateDetails, _noOfHistoryUpdateDetailsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfHistoryUpdateDetails", 32)
-	if _noOfHistoryUpdateDetailsErr != nil {
-		return nil, errors.Wrap(_noOfHistoryUpdateDetailsErr, "Error parsing 'noOfHistoryUpdateDetails' field of HistoryUpdateRequest")
+	noOfHistoryUpdateDetails, err := ReadSimpleField(ctx, "noOfHistoryUpdateDetails", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfHistoryUpdateDetails' field"))
 	}
-	noOfHistoryUpdateDetails := _noOfHistoryUpdateDetails
 
-	historyUpdateDetails, err := ReadCountArrayField[ExtensionObject](ctx, "historyUpdateDetails", ReadComplex[ExtensionObject](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObject, error) {
-		v, err := ExtensionObjectParseWithBuffer(ctx, readBuffer, (bool)(bool(true)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObject), nil
-	}, readBuffer), uint64(noOfHistoryUpdateDetails))
+	historyUpdateDetails, err := ReadCountArrayField[ExtensionObject](ctx, "historyUpdateDetails", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer), uint64(noOfHistoryUpdateDetails))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'historyUpdateDetails' field"))
 	}

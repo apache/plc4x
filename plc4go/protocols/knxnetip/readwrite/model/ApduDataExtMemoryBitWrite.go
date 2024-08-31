@@ -109,6 +109,12 @@ func ApduDataExtMemoryBitWriteParse(ctx context.Context, theBytes []byte, length
 	return ApduDataExtMemoryBitWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtMemoryBitWriteParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtMemoryBitWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtMemoryBitWrite, error) {
+		return ApduDataExtMemoryBitWriteParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtMemoryBitWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtMemoryBitWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

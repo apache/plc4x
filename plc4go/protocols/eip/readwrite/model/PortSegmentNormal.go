@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func PortSegmentNormalParse(ctx context.Context, theBytes []byte) (PortSegmentNo
 	return PortSegmentNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PortSegmentNormalParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentNormal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentNormal, error) {
+		return PortSegmentNormalParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func PortSegmentNormalParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (port)
-	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint8("port", 4)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentNormal")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
 
-	// Simple Field (linkAddress)
-	_linkAddress, _linkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("linkAddress", 8)
-	if _linkAddressErr != nil {
-		return nil, errors.Wrap(_linkAddressErr, "Error parsing 'linkAddress' field of PortSegmentNormal")
+	linkAddress, err := ReadSimpleField(ctx, "linkAddress", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkAddress' field"))
 	}
-	linkAddress := _linkAddress
 
 	if closeErr := readBuffer.CloseContext("PortSegmentNormal"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortSegmentNormal")

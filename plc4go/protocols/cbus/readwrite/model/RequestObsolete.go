@@ -168,6 +168,12 @@ func RequestObsoleteParse(ctx context.Context, theBytes []byte, cBusOptions CBus
 	return RequestObsoleteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestObsoleteParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestObsolete, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestObsolete, error) {
+		return RequestObsoleteParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (RequestObsolete, error) {
 	positionAware := readBuffer
 	_ = positionAware

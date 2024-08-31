@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -185,6 +187,12 @@ func OpenSecureChannelRequestParse(ctx context.Context, theBytes []byte, identif
 	return OpenSecureChannelRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func OpenSecureChannelRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenSecureChannelRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenSecureChannelRequest, error) {
+		return OpenSecureChannelRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpenSecureChannelRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,71 +204,35 @@ func OpenSecureChannelRequestParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of OpenSecureChannelRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (clientProtocolVersion)
-	_clientProtocolVersion, _clientProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("clientProtocolVersion", 32)
-	if _clientProtocolVersionErr != nil {
-		return nil, errors.Wrap(_clientProtocolVersionErr, "Error parsing 'clientProtocolVersion' field of OpenSecureChannelRequest")
-	}
-	clientProtocolVersion := _clientProtocolVersion
-
-	// Simple Field (requestType)
-	if pullErr := readBuffer.PullContext("requestType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestType")
-	}
-	_requestType, _requestTypeErr := SecurityTokenRequestTypeParseWithBuffer(ctx, readBuffer)
-	if _requestTypeErr != nil {
-		return nil, errors.Wrap(_requestTypeErr, "Error parsing 'requestType' field of OpenSecureChannelRequest")
-	}
-	requestType := _requestType
-	if closeErr := readBuffer.CloseContext("requestType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestType")
+	clientProtocolVersion, err := ReadSimpleField(ctx, "clientProtocolVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientProtocolVersion' field"))
 	}
 
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
-	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of OpenSecureChannelRequest")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
+	requestType, err := ReadEnumField[SecurityTokenRequestType](ctx, "requestType", "SecurityTokenRequestType", ReadEnum(SecurityTokenRequestTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestType' field"))
 	}
 
-	// Simple Field (clientNonce)
-	if pullErr := readBuffer.PullContext("clientNonce"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for clientNonce")
-	}
-	_clientNonce, _clientNonceErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _clientNonceErr != nil {
-		return nil, errors.Wrap(_clientNonceErr, "Error parsing 'clientNonce' field of OpenSecureChannelRequest")
-	}
-	clientNonce := _clientNonce.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("clientNonce"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for clientNonce")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 
-	// Simple Field (requestedLifetime)
-	_requestedLifetime, _requestedLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestedLifetime", 32)
-	if _requestedLifetimeErr != nil {
-		return nil, errors.Wrap(_requestedLifetimeErr, "Error parsing 'requestedLifetime' field of OpenSecureChannelRequest")
+	clientNonce, err := ReadSimpleField[PascalByteString](ctx, "clientNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'clientNonce' field"))
 	}
-	requestedLifetime := _requestedLifetime
+
+	requestedLifetime, err := ReadSimpleField(ctx, "requestedLifetime", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedLifetime' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("OpenSecureChannelRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for OpenSecureChannelRequest")

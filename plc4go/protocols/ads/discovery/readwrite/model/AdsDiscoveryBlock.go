@@ -110,6 +110,17 @@ func AdsDiscoveryBlockParse(ctx context.Context, theBytes []byte) (AdsDiscoveryB
 	return AdsDiscoveryBlockParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockParseWithBufferProducer[T AdsDiscoveryBlock]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := AdsDiscoveryBlockParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlock, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func AdsDiscoveryBlockParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	blockType, err := ReadDiscriminatorEnumField[AdsDiscoveryBlockType](ctx, "blockType", "AdsDiscoveryBlockType", ReadEnum(AdsDiscoveryBlockTypeByValue, ReadUnsignedShort(readBuffer, 16)))
+	blockType, err := ReadDiscriminatorEnumField[AdsDiscoveryBlockType](ctx, "blockType", "AdsDiscoveryBlockType", ReadEnum(AdsDiscoveryBlockTypeByValue, ReadUnsignedShort(readBuffer, uint8(16))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blockType' field"))
 	}

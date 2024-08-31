@@ -109,6 +109,12 @@ func ApduDataExtDomainAddressResponseParse(ctx context.Context, theBytes []byte,
 	return ApduDataExtDomainAddressResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtDomainAddressResponseParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressResponse, error) {
+		return ApduDataExtDomainAddressResponseParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtDomainAddressResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

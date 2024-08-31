@@ -159,6 +159,12 @@ func BACnetUnconfirmedServiceRequestWhoHasParse(ctx context.Context, theBytes []
 	return BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestWhoHasParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHas, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWhoHas, error) {
+		return BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWhoHas, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,13 +176,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_deviceInstanceRangeLowLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_deviceInstanceRangeLowLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeLowLimit' field"))
 	}
@@ -185,13 +185,7 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 		deviceInstanceRangeLowLimit = *_deviceInstanceRangeLowLimit
 	}
 
-	_deviceInstanceRangeHighLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), bool((deviceInstanceRangeLowLimit) != (nil)))
+	_deviceInstanceRangeHighLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), bool((deviceInstanceRangeLowLimit) != (nil)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeHighLimit' field"))
 	}
@@ -200,17 +194,9 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 		deviceInstanceRangeHighLimit = *_deviceInstanceRangeHighLimit
 	}
 
-	// Simple Field (object)
-	if pullErr := readBuffer.PullContext("object"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for object")
-	}
-	_object, _objectErr := BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer(ctx, readBuffer)
-	if _objectErr != nil {
-		return nil, errors.Wrap(_objectErr, "Error parsing 'object' field of BACnetUnconfirmedServiceRequestWhoHas")
-	}
-	object := _object.(BACnetUnconfirmedServiceRequestWhoHasObject)
-	if closeErr := readBuffer.CloseContext("object"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for object")
+	object, err := ReadSimpleField[BACnetUnconfirmedServiceRequestWhoHasObject](ctx, "object", ReadComplex[BACnetUnconfirmedServiceRequestWhoHasObject](BACnetUnconfirmedServiceRequestWhoHasObjectParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'object' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWhoHas"); closeErr != nil {

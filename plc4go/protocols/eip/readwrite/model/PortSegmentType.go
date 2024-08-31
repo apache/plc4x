@@ -110,6 +110,17 @@ func PortSegmentTypeParse(ctx context.Context, theBytes []byte) (PortSegmentType
 	return PortSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PortSegmentTypeParseWithBufferProducer[T PortSegmentType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := PortSegmentTypeParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func PortSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware

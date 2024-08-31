@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -185,6 +187,12 @@ func ServerStatusDataTypeParse(ctx context.Context, theBytes []byte, identifier 
 	return ServerStatusDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ServerStatusDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerStatusDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServerStatusDataType, error) {
+		return ServerStatusDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ServerStatusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServerStatusDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,64 +204,34 @@ func ServerStatusDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (startTime)
-	_startTime, _startTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("startTime", 64)
-	if _startTimeErr != nil {
-		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field of ServerStatusDataType")
-	}
-	startTime := _startTime
-
-	// Simple Field (currentTime)
-	_currentTime, _currentTimeErr := /*TODO: migrate me*/ readBuffer.ReadInt64("currentTime", 64)
-	if _currentTimeErr != nil {
-		return nil, errors.Wrap(_currentTimeErr, "Error parsing 'currentTime' field of ServerStatusDataType")
-	}
-	currentTime := _currentTime
-
-	// Simple Field (state)
-	if pullErr := readBuffer.PullContext("state"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for state")
-	}
-	_state, _stateErr := ServerStateParseWithBuffer(ctx, readBuffer)
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of ServerStatusDataType")
-	}
-	state := _state
-	if closeErr := readBuffer.CloseContext("state"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for state")
+	startTime, err := ReadSimpleField(ctx, "startTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startTime' field"))
 	}
 
-	// Simple Field (buildInfo)
-	if pullErr := readBuffer.PullContext("buildInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for buildInfo")
-	}
-	_buildInfo, _buildInfoErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("340"))
-	if _buildInfoErr != nil {
-		return nil, errors.Wrap(_buildInfoErr, "Error parsing 'buildInfo' field of ServerStatusDataType")
-	}
-	buildInfo := _buildInfo.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("buildInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for buildInfo")
+	currentTime, err := ReadSimpleField(ctx, "currentTime", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentTime' field"))
 	}
 
-	// Simple Field (secondsTillShutdown)
-	_secondsTillShutdown, _secondsTillShutdownErr := /*TODO: migrate me*/ readBuffer.ReadUint32("secondsTillShutdown", 32)
-	if _secondsTillShutdownErr != nil {
-		return nil, errors.Wrap(_secondsTillShutdownErr, "Error parsing 'secondsTillShutdown' field of ServerStatusDataType")
+	state, err := ReadEnumField[ServerState](ctx, "state", "ServerState", ReadEnum(ServerStateByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
-	secondsTillShutdown := _secondsTillShutdown
 
-	// Simple Field (shutdownReason)
-	if pullErr := readBuffer.PullContext("shutdownReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for shutdownReason")
+	buildInfo, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "buildInfo", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("340")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'buildInfo' field"))
 	}
-	_shutdownReason, _shutdownReasonErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _shutdownReasonErr != nil {
-		return nil, errors.Wrap(_shutdownReasonErr, "Error parsing 'shutdownReason' field of ServerStatusDataType")
+
+	secondsTillShutdown, err := ReadSimpleField(ctx, "secondsTillShutdown", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondsTillShutdown' field"))
 	}
-	shutdownReason := _shutdownReason.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("shutdownReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for shutdownReason")
+
+	shutdownReason, err := ReadSimpleField[LocalizedText](ctx, "shutdownReason", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'shutdownReason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ServerStatusDataType"); closeErr != nil {

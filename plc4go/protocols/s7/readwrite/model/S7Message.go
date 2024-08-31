@@ -184,6 +184,17 @@ func S7MessageParse(ctx context.Context, theBytes []byte) (S7Message, error) {
 	return S7MessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7MessageParseWithBufferProducer[T S7Message]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7MessageParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7Message, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -195,36 +206,34 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	protocolId, err := ReadConstField[uint8](ctx, "protocolId", ReadUnsignedByte(readBuffer, 8), S7Message_PROTOCOLID)
+	protocolId, err := ReadConstField[uint8](ctx, "protocolId", ReadUnsignedByte(readBuffer, uint8(8)), S7Message_PROTOCOLID)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolId' field"))
 	}
 	_ = protocolId
 
-	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 8))
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (tpduReference)
-	_tpduReference, _tpduReferenceErr := /*TODO: migrate me*/ readBuffer.ReadUint16("tpduReference", 16)
-	if _tpduReferenceErr != nil {
-		return nil, errors.Wrap(_tpduReferenceErr, "Error parsing 'tpduReference' field of S7Message")
+	tpduReference, err := ReadSimpleField(ctx, "tpduReference", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduReference' field"))
 	}
-	tpduReference := _tpduReference
 
-	parameterLength, err := ReadImplicitField[uint16](ctx, "parameterLength", ReadUnsignedShort(readBuffer, 16))
+	parameterLength, err := ReadImplicitField[uint16](ctx, "parameterLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}
 	_ = parameterLength
 
-	payloadLength, err := ReadImplicitField[uint16](ctx, "payloadLength", ReadUnsignedShort(readBuffer, 16))
+	payloadLength, err := ReadImplicitField[uint16](ctx, "payloadLength", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadLength' field"))
 	}
@@ -256,13 +265,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_child = _childTemp.(S7MessageChildSerializeRequirement)
 
-	_parameter, err := ReadOptionalField[S7Parameter](ctx, "parameter", ReadComplex[S7Parameter](func(ctx context.Context, buffer utils.ReadBuffer) (S7Parameter, error) {
-		v, err := S7ParameterParseWithBuffer(ctx, readBuffer, (uint8)(messageType))
-		if err != nil {
-			return nil, err
-		}
-		return v.(S7Parameter), nil
-	}, readBuffer), bool((parameterLength) > (0)))
+	_parameter, err := ReadOptionalField[S7Parameter](ctx, "parameter", ReadComplex[S7Parameter](S7ParameterParseWithBufferProducer[S7Parameter]((uint8)(messageType)), readBuffer), bool((parameterLength) > (0)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameter' field"))
 	}
@@ -271,13 +274,7 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 		parameter = *_parameter
 	}
 
-	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](func(ctx context.Context, buffer utils.ReadBuffer) (S7Payload, error) {
-		v, err := S7PayloadParseWithBuffer(ctx, readBuffer, (uint8)(messageType), (S7Parameter)((parameter)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(S7Payload), nil
-	}, readBuffer), bool((payloadLength) > (0)))
+	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](S7PayloadParseWithBufferProducer[S7Payload]((uint8)(messageType), (S7Parameter)((parameter))), readBuffer), bool((payloadLength) > (0)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
 	}

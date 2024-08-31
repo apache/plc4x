@@ -110,6 +110,17 @@ func ApduControlParse(ctx context.Context, theBytes []byte) (ApduControl, error)
 	return ApduControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ApduControlParseWithBufferProducer[T ApduControl]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ApduControlParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ApduControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func ApduControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	controlType, err := ReadDiscriminatorField[uint8](ctx, "controlType", ReadUnsignedByte(readBuffer, 2))
+	controlType, err := ReadDiscriminatorField[uint8](ctx, "controlType", ReadUnsignedByte(readBuffer, uint8(2)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlType' field"))
 	}

@@ -109,6 +109,12 @@ func OpcuaVectorParse(ctx context.Context, theBytes []byte, identifier string) (
 	return OpcuaVectorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func OpcuaVectorParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaVector, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpcuaVector, error) {
+		return OpcuaVectorParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func OpcuaVectorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpcuaVector, error) {
 	positionAware := readBuffer
 	_ = positionAware

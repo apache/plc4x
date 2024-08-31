@@ -124,6 +124,17 @@ func CBusPointToMultiPointCommandParse(ctx context.Context, theBytes []byte, cBu
 	return CBusPointToMultiPointCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToMultiPointCommandParseWithBufferProducer[T CBusPointToMultiPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CBusPointToMultiPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware

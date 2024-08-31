@@ -154,6 +154,17 @@ func BACnetTimerStateChangeValueParse(ctx context.Context, theBytes []byte, obje
 	return BACnetTimerStateChangeValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetTimerStateChangeValueParseWithBufferProducer[T BACnetTimerStateChangeValue](objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetTimerStateChangeValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetTimerStateChangeValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetTimerStateChangeValue, error) {
 	positionAware := readBuffer
 	_ = positionAware

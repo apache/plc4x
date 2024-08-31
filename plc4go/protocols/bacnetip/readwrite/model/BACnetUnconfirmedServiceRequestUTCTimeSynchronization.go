@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParse(ctx context.Cont
 	return BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
+		return BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUTCTimeSynchronization, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,30 +161,14 @@ func BACnetUnconfirmedServiceRequestUTCTimeSynchronizationParseWithBuffer(ctx co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (synchronizedDate)
-	if pullErr := readBuffer.PullContext("synchronizedDate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedDate")
-	}
-	_synchronizedDate, _synchronizedDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _synchronizedDateErr != nil {
-		return nil, errors.Wrap(_synchronizedDateErr, "Error parsing 'synchronizedDate' field of BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
-	}
-	synchronizedDate := _synchronizedDate.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("synchronizedDate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for synchronizedDate")
+	synchronizedDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "synchronizedDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'synchronizedDate' field"))
 	}
 
-	// Simple Field (synchronizedTime)
-	if pullErr := readBuffer.PullContext("synchronizedTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for synchronizedTime")
-	}
-	_synchronizedTime, _synchronizedTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _synchronizedTimeErr != nil {
-		return nil, errors.Wrap(_synchronizedTimeErr, "Error parsing 'synchronizedTime' field of BACnetUnconfirmedServiceRequestUTCTimeSynchronization")
-	}
-	synchronizedTime := _synchronizedTime.(BACnetApplicationTagTime)
-	if closeErr := readBuffer.CloseContext("synchronizedTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for synchronizedTime")
+	synchronizedTime, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "synchronizedTime", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'synchronizedTime' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUTCTimeSynchronization"); closeErr != nil {

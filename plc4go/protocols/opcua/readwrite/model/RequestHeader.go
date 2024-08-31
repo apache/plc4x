@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,6 +198,12 @@ func RequestHeaderParse(ctx context.Context, theBytes []byte, identifier string)
 	return RequestHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RequestHeaderParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestHeader, error) {
+		return RequestHeaderParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RequestHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RequestHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -207,71 +215,39 @@ func RequestHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (authenticationToken)
-	if pullErr := readBuffer.PullContext("authenticationToken"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationToken")
-	}
-	_authenticationToken, _authenticationTokenErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _authenticationTokenErr != nil {
-		return nil, errors.Wrap(_authenticationTokenErr, "Error parsing 'authenticationToken' field of RequestHeader")
-	}
-	authenticationToken := _authenticationToken.(NodeId)
-	if closeErr := readBuffer.CloseContext("authenticationToken"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationToken")
+	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationToken' field"))
 	}
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadInt64("timestamp", 64)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of RequestHeader")
-	}
-	timestamp := _timestamp
-
-	// Simple Field (requestHandle)
-	_requestHandle, _requestHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("requestHandle", 32)
-	if _requestHandleErr != nil {
-		return nil, errors.Wrap(_requestHandleErr, "Error parsing 'requestHandle' field of RequestHeader")
-	}
-	requestHandle := _requestHandle
-
-	// Simple Field (returnDiagnostics)
-	_returnDiagnostics, _returnDiagnosticsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("returnDiagnostics", 32)
-	if _returnDiagnosticsErr != nil {
-		return nil, errors.Wrap(_returnDiagnosticsErr, "Error parsing 'returnDiagnostics' field of RequestHeader")
-	}
-	returnDiagnostics := _returnDiagnostics
-
-	// Simple Field (auditEntryId)
-	if pullErr := readBuffer.PullContext("auditEntryId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for auditEntryId")
-	}
-	_auditEntryId, _auditEntryIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _auditEntryIdErr != nil {
-		return nil, errors.Wrap(_auditEntryIdErr, "Error parsing 'auditEntryId' field of RequestHeader")
-	}
-	auditEntryId := _auditEntryId.(PascalString)
-	if closeErr := readBuffer.CloseContext("auditEntryId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for auditEntryId")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
 
-	// Simple Field (timeoutHint)
-	_timeoutHint, _timeoutHintErr := /*TODO: migrate me*/ readBuffer.ReadUint32("timeoutHint", 32)
-	if _timeoutHintErr != nil {
-		return nil, errors.Wrap(_timeoutHintErr, "Error parsing 'timeoutHint' field of RequestHeader")
+	requestHandle, err := ReadSimpleField(ctx, "requestHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHandle' field"))
 	}
-	timeoutHint := _timeoutHint
 
-	// Simple Field (additionalHeader)
-	if pullErr := readBuffer.PullContext("additionalHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for additionalHeader")
+	returnDiagnostics, err := ReadSimpleField(ctx, "returnDiagnostics", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'returnDiagnostics' field"))
 	}
-	_additionalHeader, _additionalHeaderErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _additionalHeaderErr != nil {
-		return nil, errors.Wrap(_additionalHeaderErr, "Error parsing 'additionalHeader' field of RequestHeader")
+
+	auditEntryId, err := ReadSimpleField[PascalString](ctx, "auditEntryId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auditEntryId' field"))
 	}
-	additionalHeader := _additionalHeader.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("additionalHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for additionalHeader")
+
+	timeoutHint, err := ReadSimpleField(ctx, "timeoutHint", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeoutHint' field"))
+	}
+
+	additionalHeader, err := ReadSimpleField[ExtensionObject](ctx, "additionalHeader", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalHeader' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestHeader"); closeErr != nil {

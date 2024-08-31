@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaxFailedAttemptsParse(ctx context.Context, theBytes [
 	return BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaxFailedAttemptsParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxFailedAttempts, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxFailedAttempts, error) {
+		return BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxFailedAttempts, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaxFailedAttemptsParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxFailedAttempts)
-	if pullErr := readBuffer.PullContext("maxFailedAttempts"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxFailedAttempts")
-	}
-	_maxFailedAttempts, _maxFailedAttemptsErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxFailedAttemptsErr != nil {
-		return nil, errors.Wrap(_maxFailedAttemptsErr, "Error parsing 'maxFailedAttempts' field of BACnetConstructedDataMaxFailedAttempts")
-	}
-	maxFailedAttempts := _maxFailedAttempts.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxFailedAttempts"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxFailedAttempts")
+	maxFailedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxFailedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxFailedAttempts' field"))
 	}
 
 	// Virtual field

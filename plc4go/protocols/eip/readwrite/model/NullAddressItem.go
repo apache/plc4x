@@ -116,6 +116,12 @@ func NullAddressItemParse(ctx context.Context, theBytes []byte) (NullAddressItem
 	return NullAddressItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NullAddressItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {
+		return NullAddressItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NullAddressItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -127,7 +133,7 @@ func NullAddressItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

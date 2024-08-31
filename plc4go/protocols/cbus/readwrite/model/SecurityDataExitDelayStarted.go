@@ -108,6 +108,12 @@ func SecurityDataExitDelayStartedParse(ctx context.Context, theBytes []byte) (Se
 	return SecurityDataExitDelayStartedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataExitDelayStartedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataExitDelayStarted, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataExitDelayStarted, error) {
+		return SecurityDataExitDelayStartedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataExitDelayStartedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataExitDelayStarted, error) {
 	positionAware := readBuffer
 	_ = positionAware

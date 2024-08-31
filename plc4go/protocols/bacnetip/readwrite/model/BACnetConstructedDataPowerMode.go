@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataPowerModeParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataPowerModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataPowerModeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPowerMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataPowerMode, error) {
+		return BACnetConstructedDataPowerModeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataPowerModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataPowerMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataPowerModeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (powerMode)
-	if pullErr := readBuffer.PullContext("powerMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for powerMode")
-	}
-	_powerMode, _powerModeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _powerModeErr != nil {
-		return nil, errors.Wrap(_powerModeErr, "Error parsing 'powerMode' field of BACnetConstructedDataPowerMode")
-	}
-	powerMode := _powerMode.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("powerMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for powerMode")
+	powerMode, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "powerMode", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerMode' field"))
 	}
 
 	// Virtual field

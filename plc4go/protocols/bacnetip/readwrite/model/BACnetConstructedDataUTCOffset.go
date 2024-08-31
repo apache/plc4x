@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataUTCOffsetParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataUTCOffsetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataUTCOffsetParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUTCOffset, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataUTCOffset, error) {
+		return BACnetConstructedDataUTCOffsetParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataUTCOffsetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataUTCOffset, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataUTCOffsetParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (utcOffset)
-	if pullErr := readBuffer.PullContext("utcOffset"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for utcOffset")
-	}
-	_utcOffset, _utcOffsetErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _utcOffsetErr != nil {
-		return nil, errors.Wrap(_utcOffsetErr, "Error parsing 'utcOffset' field of BACnetConstructedDataUTCOffset")
-	}
-	utcOffset := _utcOffset.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("utcOffset"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for utcOffset")
+	utcOffset, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "utcOffset", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcOffset' field"))
 	}
 
 	// Virtual field

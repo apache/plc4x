@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPv6AddressParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataIPv6AddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPv6AddressParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6Address, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6Address, error) {
+		return BACnetConstructedDataIPv6AddressParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPv6AddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6Address, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPv6AddressParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipv6Address)
-	if pullErr := readBuffer.PullContext("ipv6Address"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6Address")
-	}
-	_ipv6Address, _ipv6AddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipv6AddressErr != nil {
-		return nil, errors.Wrap(_ipv6AddressErr, "Error parsing 'ipv6Address' field of BACnetConstructedDataIPv6Address")
-	}
-	ipv6Address := _ipv6Address.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipv6Address"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6Address")
+	ipv6Address, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6Address", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6Address' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetLogRecordLogDatumFailureParse(ctx context.Context, theBytes []byte, t
 	return BACnetLogRecordLogDatumFailureParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumFailureParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumFailure, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumFailure, error) {
+		return BACnetLogRecordLogDatumFailureParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumFailureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumFailure, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetLogRecordLogDatumFailureParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (failure)
-	if pullErr := readBuffer.PullContext("failure"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for failure")
-	}
-	_failure, _failureErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(8)))
-	if _failureErr != nil {
-		return nil, errors.Wrap(_failureErr, "Error parsing 'failure' field of BACnetLogRecordLogDatumFailure")
-	}
-	failure := _failure.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("failure"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for failure")
+	failure, err := ReadSimpleField[ErrorEnclosed](ctx, "failure", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(8))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'failure' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumFailure"); closeErr != nil {

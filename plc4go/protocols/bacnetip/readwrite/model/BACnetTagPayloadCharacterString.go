@@ -26,6 +26,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -135,6 +138,12 @@ func BACnetTagPayloadCharacterStringParse(ctx context.Context, theBytes []byte, 
 	return BACnetTagPayloadCharacterStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength)
 }
 
+func BACnetTagPayloadCharacterStringParseWithBufferProducer(actualLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadCharacterString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetTagPayloadCharacterString, error) {
+		return BACnetTagPayloadCharacterStringParseWithBuffer(ctx, readBuffer, actualLength)
+	}
+}
+
 func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32) (BACnetTagPayloadCharacterString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,17 +155,9 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (encoding)
-	if pullErr := readBuffer.PullContext("encoding"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for encoding")
-	}
-	_encoding, _encodingErr := BACnetCharacterEncodingParseWithBuffer(ctx, readBuffer)
-	if _encodingErr != nil {
-		return nil, errors.Wrap(_encodingErr, "Error parsing 'encoding' field of BACnetTagPayloadCharacterString")
-	}
-	encoding := _encoding
-	if closeErr := readBuffer.CloseContext("encoding"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for encoding")
+	encoding, err := ReadEnumField[BACnetCharacterEncoding](ctx, "encoding", "BACnetCharacterEncoding", ReadEnum(BACnetCharacterEncodingByValue, ReadByte(readBuffer, 8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encoding' field"))
 	}
 
 	// Virtual field
@@ -164,12 +165,10 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	actualLengthInBit := uint16(_actualLengthInBit)
 	_ = actualLengthInBit
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadString("value", uint32(actualLengthInBit), utils.WithEncoding("UTF-8"))
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTagPayloadCharacterString")
+	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(actualLengthInBit)), codegen.WithEncoding("UTF-8"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadCharacterString")

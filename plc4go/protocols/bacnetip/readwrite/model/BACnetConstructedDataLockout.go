@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLockoutParse(ctx context.Context, theBytes []byte, tag
 	return BACnetConstructedDataLockoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLockoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLockout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLockout, error) {
+		return BACnetConstructedDataLockoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLockoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLockout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLockoutParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lockout)
-	if pullErr := readBuffer.PullContext("lockout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lockout")
-	}
-	_lockout, _lockoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _lockoutErr != nil {
-		return nil, errors.Wrap(_lockoutErr, "Error parsing 'lockout' field of BACnetConstructedDataLockout")
-	}
-	lockout := _lockout.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("lockout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lockout")
+	lockout, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "lockout", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockout' field"))
 	}
 
 	// Virtual field

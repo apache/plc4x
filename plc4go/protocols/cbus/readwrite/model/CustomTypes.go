@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -106,6 +108,12 @@ func CustomTypesParse(ctx context.Context, theBytes []byte, numBytes uint8) (Cus
 	return CustomTypesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numBytes)
 }
 
+func CustomTypesParseWithBufferProducer(numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (CustomTypes, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CustomTypes, error) {
+		return CustomTypesParseWithBuffer(ctx, readBuffer, numBytes)
+	}
+}
+
 func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numBytes uint8) (CustomTypes, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -117,12 +125,10 @@ func CustomTypesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (customString)
-	_customString, _customStringErr := /*TODO: migrate me*/ readBuffer.ReadString("customString", uint32((8)*(numBytes)), utils.WithEncoding("UTF-8"))
-	if _customStringErr != nil {
-		return nil, errors.Wrap(_customStringErr, "Error parsing 'customString' field of CustomTypes")
+	customString, err := ReadSimpleField(ctx, "customString", ReadString(readBuffer, uint32(int32(int32(8))*int32(numBytes))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'customString' field"))
 	}
-	customString := _customString
 
 	if closeErr := readBuffer.CloseContext("CustomTypes"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CustomTypes")

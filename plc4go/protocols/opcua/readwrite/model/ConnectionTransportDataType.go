@@ -109,6 +109,12 @@ func ConnectionTransportDataTypeParse(ctx context.Context, theBytes []byte, iden
 	return ConnectionTransportDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ConnectionTransportDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionTransportDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionTransportDataType, error) {
+		return ConnectionTransportDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ConnectionTransportDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ConnectionTransportDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -109,6 +109,12 @@ func DiscoveryConfigurationParse(ctx context.Context, theBytes []byte, identifie
 	return DiscoveryConfigurationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DiscoveryConfigurationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DiscoveryConfiguration, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DiscoveryConfiguration, error) {
+		return DiscoveryConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DiscoveryConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DiscoveryConfiguration, error) {
 	positionAware := readBuffer
 	_ = positionAware

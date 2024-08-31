@@ -175,6 +175,12 @@ func CycServiceItemAnyTypeParse(ctx context.Context, theBytes []byte) (CycServic
 	return CycServiceItemAnyTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CycServiceItemAnyTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemAnyType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemAnyType, error) {
+		return CycServiceItemAnyTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CycServiceItemAnyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemAnyType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -186,44 +192,30 @@ func CycServiceItemAnyTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, 8)))
+	transportSize, err := ReadEnumField[TransportSize](ctx, "transportSize", "TransportSize", ReadEnum[TransportSize, uint8](TransportSizeFirstEnumForFieldCode, ReadUnsignedByte(readBuffer, uint8(8))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transportSize' field"))
 	}
 
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("length", 16)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of CycServiceItemAnyType")
-	}
-	length := _length
-
-	// Simple Field (dbNumber)
-	_dbNumber, _dbNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint16("dbNumber", 16)
-	if _dbNumberErr != nil {
-		return nil, errors.Wrap(_dbNumberErr, "Error parsing 'dbNumber' field of CycServiceItemAnyType")
-	}
-	dbNumber := _dbNumber
-
-	// Simple Field (memoryArea)
-	if pullErr := readBuffer.PullContext("memoryArea"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for memoryArea")
-	}
-	_memoryArea, _memoryAreaErr := MemoryAreaParseWithBuffer(ctx, readBuffer)
-	if _memoryAreaErr != nil {
-		return nil, errors.Wrap(_memoryAreaErr, "Error parsing 'memoryArea' field of CycServiceItemAnyType")
-	}
-	memoryArea := _memoryArea
-	if closeErr := readBuffer.CloseContext("memoryArea"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for memoryArea")
+	length, err := ReadSimpleField(ctx, "length", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadUint32("address", 24)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of CycServiceItemAnyType")
+	dbNumber, err := ReadSimpleField(ctx, "dbNumber", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dbNumber' field"))
 	}
-	address := _address
+
+	memoryArea, err := ReadEnumField[MemoryArea](ctx, "memoryArea", "MemoryArea", ReadEnum(MemoryAreaByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'memoryArea' field"))
+	}
+
+	address, err := ReadSimpleField(ctx, "address", ReadUnsignedInt(readBuffer, uint8(24)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("CycServiceItemAnyType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CycServiceItemAnyType")

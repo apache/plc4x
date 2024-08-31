@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func NetworkAddressDataTypeParse(ctx context.Context, theBytes []byte, identifie
 	return NetworkAddressDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NetworkAddressDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkAddressDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkAddressDataType, error) {
+		return NetworkAddressDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NetworkAddressDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NetworkAddressDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func NetworkAddressDataTypeParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkInterface)
-	if pullErr := readBuffer.PullContext("networkInterface"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkInterface")
-	}
-	_networkInterface, _networkInterfaceErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _networkInterfaceErr != nil {
-		return nil, errors.Wrap(_networkInterfaceErr, "Error parsing 'networkInterface' field of NetworkAddressDataType")
-	}
-	networkInterface := _networkInterface.(PascalString)
-	if closeErr := readBuffer.CloseContext("networkInterface"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkInterface")
+	networkInterface, err := ReadSimpleField[PascalString](ctx, "networkInterface", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterface' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NetworkAddressDataType"); closeErr != nil {

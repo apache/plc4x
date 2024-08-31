@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func TelephonyDataDivertParse(ctx context.Context, theBytes []byte, commandTypeC
 	return TelephonyDataDivertParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func TelephonyDataDivertParseWithBufferProducer(commandTypeContainer TelephonyCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDivert, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataDivert, error) {
+		return TelephonyDataDivertParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataDivert, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func TelephonyDataDivertParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (number)
-	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataDivert")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataDivert"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataDivert")

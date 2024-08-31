@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -154,6 +156,17 @@ func ClockAndTimekeepingDataParse(ctx context.Context, theBytes []byte) (ClockAn
 	return ClockAndTimekeepingDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ClockAndTimekeepingDataParseWithBufferProducer[T ClockAndTimekeepingData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ClockAndTimekeepingDataParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ClockAndTimekeepingData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,17 +183,9 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := ClockAndTimekeepingCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of ClockAndTimekeepingData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[ClockAndTimekeepingCommandTypeContainer](ctx, "commandTypeContainer", "ClockAndTimekeepingCommandTypeContainer", ReadEnum(ClockAndTimekeepingCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -188,12 +193,10 @@ func ClockAndTimekeepingDataParseWithBuffer(ctx context.Context, readBuffer util
 	commandType := ClockAndTimekeepingCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (argument)
-	_argument, _argumentErr := /*TODO: migrate me*/ readBuffer.ReadByte("argument")
-	if _argumentErr != nil {
-		return nil, errors.Wrap(_argumentErr, "Error parsing 'argument' field of ClockAndTimekeepingData")
+	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'argument' field"))
 	}
-	argument := _argument
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ClockAndTimekeepingDataChildSerializeRequirement interface {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ServiceCounterDataTypeParse(ctx context.Context, theBytes []byte, identifie
 	return ServiceCounterDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ServiceCounterDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ServiceCounterDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ServiceCounterDataType, error) {
+		return ServiceCounterDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ServiceCounterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ServiceCounterDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func ServiceCounterDataTypeParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (totalCount)
-	_totalCount, _totalCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("totalCount", 32)
-	if _totalCountErr != nil {
-		return nil, errors.Wrap(_totalCountErr, "Error parsing 'totalCount' field of ServiceCounterDataType")
+	totalCount, err := ReadSimpleField(ctx, "totalCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalCount' field"))
 	}
-	totalCount := _totalCount
 
-	// Simple Field (errorCount)
-	_errorCount, _errorCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("errorCount", 32)
-	if _errorCountErr != nil {
-		return nil, errors.Wrap(_errorCountErr, "Error parsing 'errorCount' field of ServiceCounterDataType")
+	errorCount, err := ReadSimpleField(ctx, "errorCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCount' field"))
 	}
-	errorCount := _errorCount
 
 	if closeErr := readBuffer.CloseContext("ServiceCounterDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ServiceCounterDataType")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParse(ctx context.Cont
 	return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
+		return BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestReadRangeRangeByPosition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func BACnetConfirmedServiceRequestReadRangeRangeByPositionParseWithBuffer(ctx co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceIndex)
-	if pullErr := readBuffer.PullContext("referenceIndex"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceIndex")
-	}
-	_referenceIndex, _referenceIndexErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _referenceIndexErr != nil {
-		return nil, errors.Wrap(_referenceIndexErr, "Error parsing 'referenceIndex' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
-	}
-	referenceIndex := _referenceIndex.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("referenceIndex"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceIndex")
+	referenceIndex, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceIndex", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceIndex' field"))
 	}
 
-	// Simple Field (count)
-	if pullErr := readBuffer.PullContext("count"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for count")
-	}
-	_count, _countErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _countErr != nil {
-		return nil, errors.Wrap(_countErr, "Error parsing 'count' field of BACnetConfirmedServiceRequestReadRangeRangeByPosition")
-	}
-	count := _count.(BACnetApplicationTagSignedInteger)
-	if closeErr := readBuffer.CloseContext("count"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for count")
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRangeRangeByPosition"); closeErr != nil {

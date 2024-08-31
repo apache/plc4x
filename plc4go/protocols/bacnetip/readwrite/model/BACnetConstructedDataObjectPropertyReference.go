@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataObjectPropertyReferenceParse(ctx context.Context, theB
 	return BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataObjectPropertyReferenceParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataObjectPropertyReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataObjectPropertyReference, error) {
+		return BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataObjectPropertyReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataObjectPropertyReferenceParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (propertyReference)
-	if pullErr := readBuffer.PullContext("propertyReference"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for propertyReference")
-	}
-	_propertyReference, _propertyReferenceErr := BACnetDeviceObjectPropertyReferenceParseWithBuffer(ctx, readBuffer)
-	if _propertyReferenceErr != nil {
-		return nil, errors.Wrap(_propertyReferenceErr, "Error parsing 'propertyReference' field of BACnetConstructedDataObjectPropertyReference")
-	}
-	propertyReference := _propertyReference.(BACnetDeviceObjectPropertyReference)
-	if closeErr := readBuffer.CloseContext("propertyReference"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for propertyReference")
+	propertyReference, err := ReadSimpleField[BACnetDeviceObjectPropertyReference](ctx, "propertyReference", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyReference' field"))
 	}
 
 	// Virtual field

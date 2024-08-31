@@ -109,6 +109,12 @@ func ApduDataExtDomainAddressSelectiveReadParse(ctx context.Context, theBytes []
 	return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtDomainAddressSelectiveReadParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressSelectiveRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtDomainAddressSelectiveRead, error) {
+		return ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtDomainAddressSelectiveReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtDomainAddressSelectiveRead, error) {
 	positionAware := readBuffer
 	_ = positionAware

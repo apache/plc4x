@@ -111,6 +111,12 @@ func SALDataRoomControlSystemParse(ctx context.Context, theBytes []byte, applica
 	return SALDataRoomControlSystemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataRoomControlSystemParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataRoomControlSystem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataRoomControlSystem, error) {
+		return SALDataRoomControlSystemParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataRoomControlSystemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataRoomControlSystem, error) {
 	positionAware := readBuffer
 	_ = positionAware

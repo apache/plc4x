@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func ParameterValueSerialNumberParse(ctx context.Context, theBytes []byte, param
 	return ParameterValueSerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
+func ParameterValueSerialNumberParseWithBufferProducer(parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueSerialNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueSerialNumber, error) {
+		return ParameterValueSerialNumberParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+	}
+}
+
 func ParameterValueSerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueSerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,17 +167,9 @@ func ParameterValueSerialNumberParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "SerialNumber has exactly four bytes"})
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := SerialNumberParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueSerialNumber")
-	}
-	value := _value.(SerialNumber)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[SerialNumber](ctx, "value", ReadComplex[SerialNumber](SerialNumberParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(numBytes)-int32(int32(4))))

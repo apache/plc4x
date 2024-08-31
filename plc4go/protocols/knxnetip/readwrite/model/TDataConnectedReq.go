@@ -109,6 +109,12 @@ func TDataConnectedReqParse(ctx context.Context, theBytes []byte, size uint16) (
 	return TDataConnectedReqParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func TDataConnectedReqParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataConnectedReq, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TDataConnectedReq, error) {
+		return TDataConnectedReqParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func TDataConnectedReqParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (TDataConnectedReq, error) {
 	positionAware := readBuffer
 	_ = positionAware

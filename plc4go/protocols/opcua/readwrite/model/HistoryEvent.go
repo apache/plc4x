@@ -150,6 +150,12 @@ func HistoryEventParse(ctx context.Context, theBytes []byte, identifier string) 
 	return HistoryEventParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryEventParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryEvent, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryEvent, error) {
+		return HistoryEventParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryEvent, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,20 +167,12 @@ func HistoryEventParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfEvents)
-	_noOfEvents, _noOfEventsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEvents", 32)
-	if _noOfEventsErr != nil {
-		return nil, errors.Wrap(_noOfEventsErr, "Error parsing 'noOfEvents' field of HistoryEvent")
+	noOfEvents, err := ReadSimpleField(ctx, "noOfEvents", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEvents' field"))
 	}
-	noOfEvents := _noOfEvents
 
-	events, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "events", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("922"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfEvents))
+	events, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "events", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("922")), readBuffer), uint64(noOfEvents))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'events' field"))
 	}

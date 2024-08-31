@@ -158,6 +158,12 @@ func LDataIndParse(ctx context.Context, theBytes []byte, size uint16) (LDataInd,
 	return LDataIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func LDataIndParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataInd, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LDataInd, error) {
+		return LDataIndParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func LDataIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LDataInd, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,29 +175,19 @@ func LDataIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, s
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (additionalInformationLength)
-	_additionalInformationLength, _additionalInformationLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint8("additionalInformationLength", 8)
-	if _additionalInformationLengthErr != nil {
-		return nil, errors.Wrap(_additionalInformationLengthErr, "Error parsing 'additionalInformationLength' field of LDataInd")
+	additionalInformationLength, err := ReadSimpleField(ctx, "additionalInformationLength", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInformationLength' field"))
 	}
-	additionalInformationLength := _additionalInformationLength
 
 	additionalInformation, err := ReadLengthArrayField[CEMIAdditionalInformation](ctx, "additionalInformation", ReadComplex[CEMIAdditionalInformation](CEMIAdditionalInformationParseWithBuffer, readBuffer), int(additionalInformationLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInformation' field"))
 	}
 
-	// Simple Field (dataFrame)
-	if pullErr := readBuffer.PullContext("dataFrame"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataFrame")
-	}
-	_dataFrame, _dataFrameErr := LDataFrameParseWithBuffer(ctx, readBuffer)
-	if _dataFrameErr != nil {
-		return nil, errors.Wrap(_dataFrameErr, "Error parsing 'dataFrame' field of LDataInd")
-	}
-	dataFrame := _dataFrame.(LDataFrame)
-	if closeErr := readBuffer.CloseContext("dataFrame"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataFrame")
+	dataFrame, err := ReadSimpleField[LDataFrame](ctx, "dataFrame", ReadComplex[LDataFrame](LDataFrameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataFrame' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("LDataInd"); closeErr != nil {

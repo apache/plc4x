@@ -122,6 +122,12 @@ func NetworkRouteParse(ctx context.Context, theBytes []byte) (NetworkRoute, erro
 	return NetworkRouteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NetworkRouteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
+		return NetworkRouteParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NetworkRoute, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -133,17 +139,9 @@ func NetworkRouteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkPCI)
-	if pullErr := readBuffer.PullContext("networkPCI"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPCI")
-	}
-	_networkPCI, _networkPCIErr := NetworkProtocolControlInformationParseWithBuffer(ctx, readBuffer)
-	if _networkPCIErr != nil {
-		return nil, errors.Wrap(_networkPCIErr, "Error parsing 'networkPCI' field of NetworkRoute")
-	}
-	networkPCI := _networkPCI.(NetworkProtocolControlInformation)
-	if closeErr := readBuffer.CloseContext("networkPCI"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPCI")
+	networkPCI, err := ReadSimpleField[NetworkProtocolControlInformation](ctx, "networkPCI", ReadComplex[NetworkProtocolControlInformation](NetworkProtocolControlInformationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPCI' field"))
 	}
 
 	additionalBridgeAddresses, err := ReadCountArrayField[BridgeAddress](ctx, "additionalBridgeAddresses", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer), uint64(int32(networkPCI.GetStackDepth())-int32(int32(1))))

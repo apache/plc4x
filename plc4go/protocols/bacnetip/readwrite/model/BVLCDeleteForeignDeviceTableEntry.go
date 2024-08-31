@@ -147,6 +147,12 @@ func BVLCDeleteForeignDeviceTableEntryParse(ctx context.Context, theBytes []byte
 	return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func BVLCDeleteForeignDeviceTableEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
+		return BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCDeleteForeignDeviceTableEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,17 +164,15 @@ func BVLCDeleteForeignDeviceTableEntryParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, 8), uint64(int32(4)), codegen.WithByteOrder(binary.BigEndian))
+	ip, err := ReadCountArrayField[uint8](ctx, "ip", ReadUnsignedByte(readBuffer, uint8(8)), uint64(int32(4)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ip' field"))
 	}
 
-	// Simple Field (port)
-	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint16("port", 16)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of BVLCDeleteForeignDeviceTableEntry")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
 
 	if closeErr := readBuffer.CloseContext("BVLCDeleteForeignDeviceTableEntry"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BVLCDeleteForeignDeviceTableEntry")

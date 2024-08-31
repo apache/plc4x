@@ -109,6 +109,12 @@ func ApduDataExtKeyWriteParse(ctx context.Context, theBytes []byte, length uint8
 	return ApduDataExtKeyWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), length)
 }
 
+func ApduDataExtKeyWriteParseWithBufferProducer(length uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtKeyWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataExtKeyWrite, error) {
+		return ApduDataExtKeyWriteParseWithBuffer(ctx, readBuffer, length)
+	}
+}
+
 func ApduDataExtKeyWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, length uint8) (ApduDataExtKeyWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

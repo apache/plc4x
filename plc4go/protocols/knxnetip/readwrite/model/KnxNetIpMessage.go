@@ -138,6 +138,17 @@ func KnxNetIpMessageParse(ctx context.Context, theBytes []byte) (KnxNetIpMessage
 	return KnxNetIpMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func KnxNetIpMessageParseWithBufferProducer[T KnxNetIpMessage]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := KnxNetIpMessageParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxNetIpMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,24 +160,24 @@ func KnxNetIpMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, 8), codegen.WithByteOrder(binary.BigEndian))
+	headerLength, err := ReadImplicitField[uint8](ctx, "headerLength", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'headerLength' field"))
 	}
 	_ = headerLength
 
-	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, 8), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
+	protocolVersion, err := ReadConstField[uint8](ctx, "protocolVersion", ReadUnsignedByte(readBuffer, uint8(8)), KnxNetIpMessage_PROTOCOLVERSION, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersion' field"))
 	}
 	_ = protocolVersion
 
-	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	msgType, err := ReadDiscriminatorField[uint16](ctx, "msgType", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msgType' field"))
 	}
 
-	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.BigEndian))
+	totalLength, err := ReadImplicitField[uint16](ctx, "totalLength", ReadUnsignedShort(readBuffer, uint8(16)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}

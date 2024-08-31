@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -168,6 +170,12 @@ func LevelInformationNormalParse(ctx context.Context, theBytes []byte) (LevelInf
 	return LevelInformationNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LevelInformationNormalParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
+		return LevelInformationNormalParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LevelInformationNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LevelInformationNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,30 +187,14 @@ func LevelInformationNormalParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pair1)
-	if pullErr := readBuffer.PullContext("pair1"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pair1")
-	}
-	_pair1, _pair1Err := LevelInformationNibblePairParseWithBuffer(ctx, readBuffer)
-	if _pair1Err != nil {
-		return nil, errors.Wrap(_pair1Err, "Error parsing 'pair1' field of LevelInformationNormal")
-	}
-	pair1 := _pair1
-	if closeErr := readBuffer.CloseContext("pair1"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pair1")
+	pair1, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair1", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pair1' field"))
 	}
 
-	// Simple Field (pair2)
-	if pullErr := readBuffer.PullContext("pair2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pair2")
-	}
-	_pair2, _pair2Err := LevelInformationNibblePairParseWithBuffer(ctx, readBuffer)
-	if _pair2Err != nil {
-		return nil, errors.Wrap(_pair2Err, "Error parsing 'pair2' field of LevelInformationNormal")
-	}
-	pair2 := _pair2
-	if closeErr := readBuffer.CloseContext("pair2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pair2")
+	pair2, err := ReadEnumField[LevelInformationNibblePair](ctx, "pair2", "LevelInformationNibblePair", ReadEnum(LevelInformationNibblePairByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pair2' field"))
 	}
 
 	// Virtual field

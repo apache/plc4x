@@ -156,6 +156,12 @@ func CipReadRequestParse(ctx context.Context, theBytes []byte, connected bool, s
 	return CipReadRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipReadRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipReadRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipReadRequest, error) {
+		return CipReadRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipReadRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -167,7 +173,7 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, 8))
+	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
@@ -178,12 +184,10 @@ func CipReadRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tag' field"))
 	}
 
-	// Simple Field (elementNb)
-	_elementNb, _elementNbErr := /*TODO: migrate me*/ readBuffer.ReadUint16("elementNb", 16)
-	if _elementNbErr != nil {
-		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field of CipReadRequest")
+	elementNb, err := ReadSimpleField(ctx, "elementNb", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementNb' field"))
 	}
-	elementNb := _elementNb
 
 	if closeErr := readBuffer.CloseContext("CipReadRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CipReadRequest")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAPDUTimeoutParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAPDUTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDUTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAPDUTimeout, error) {
+		return BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAPDUTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAPDUTimeoutParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (apduTimeout)
-	if pullErr := readBuffer.PullContext("apduTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for apduTimeout")
-	}
-	_apduTimeout, _apduTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _apduTimeoutErr != nil {
-		return nil, errors.Wrap(_apduTimeoutErr, "Error parsing 'apduTimeout' field of BACnetConstructedDataAPDUTimeout")
-	}
-	apduTimeout := _apduTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("apduTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for apduTimeout")
+	apduTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduTimeout' field"))
 	}
 
 	// Virtual field

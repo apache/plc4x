@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataValueSourceParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataValueSourceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataValueSourceParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueSource, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValueSource, error) {
+		return BACnetConstructedDataValueSourceParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValueSource, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataValueSourceParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (valueSource)
-	if pullErr := readBuffer.PullContext("valueSource"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueSource")
-	}
-	_valueSource, _valueSourceErr := BACnetValueSourceParseWithBuffer(ctx, readBuffer)
-	if _valueSourceErr != nil {
-		return nil, errors.Wrap(_valueSourceErr, "Error parsing 'valueSource' field of BACnetConstructedDataValueSource")
-	}
-	valueSource := _valueSource.(BACnetValueSource)
-	if closeErr := readBuffer.CloseContext("valueSource"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueSource")
+	valueSource, err := ReadSimpleField[BACnetValueSource](ctx, "valueSource", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueSource' field"))
 	}
 
 	// Virtual field

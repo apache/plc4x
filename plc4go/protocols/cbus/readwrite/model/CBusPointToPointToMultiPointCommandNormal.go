@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func CBusPointToPointToMultiPointCommandNormalParse(ctx context.Context, theByte
 	return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToPointToMultiPointCommandNormalParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointToMultiPointCommandNormal, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointToMultiPointCommandNormal, error) {
+		return CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandNormal, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func CBusPointToPointToMultiPointCommandNormalParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (application)
-	if pullErr := readBuffer.PullContext("application"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for application")
-	}
-	_application, _applicationErr := ApplicationIdContainerParseWithBuffer(ctx, readBuffer)
-	if _applicationErr != nil {
-		return nil, errors.Wrap(_applicationErr, "Error parsing 'application' field of CBusPointToPointToMultiPointCommandNormal")
-	}
-	application := _application
-	if closeErr := readBuffer.CloseContext("application"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for application")
+	application, err := ReadEnumField[ApplicationIdContainer](ctx, "application", "ApplicationIdContainer", ReadEnum(ApplicationIdContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'application' field"))
 	}
 
-	// Simple Field (salData)
-	if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for salData")
-	}
-	_salData, _salDataErr := SALDataParseWithBuffer(ctx, readBuffer, ApplicationId(application.ApplicationId()))
-	if _salDataErr != nil {
-		return nil, errors.Wrap(_salDataErr, "Error parsing 'salData' field of CBusPointToPointToMultiPointCommandNormal")
-	}
-	salData := _salData.(SALData)
-	if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for salData")
+	salData, err := ReadSimpleField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(application.ApplicationId())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultiPointCommandNormal"); closeErr != nil {

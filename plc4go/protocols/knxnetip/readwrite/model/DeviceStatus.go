@@ -110,6 +110,12 @@ func DeviceStatusParse(ctx context.Context, theBytes []byte) (DeviceStatus, erro
 	return DeviceStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DeviceStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
+		return DeviceStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DeviceStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,17 +127,15 @@ func DeviceStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (programMode)
-	_programMode, _programModeErr := /*TODO: migrate me*/ readBuffer.ReadBit("programMode")
-	if _programModeErr != nil {
-		return nil, errors.Wrap(_programModeErr, "Error parsing 'programMode' field of DeviceStatus")
+	programMode, err := ReadSimpleField(ctx, "programMode", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programMode' field"))
 	}
-	programMode := _programMode
 
 	if closeErr := readBuffer.CloseContext("DeviceStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeviceStatus")

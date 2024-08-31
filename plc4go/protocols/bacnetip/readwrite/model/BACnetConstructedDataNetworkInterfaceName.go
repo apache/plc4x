@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNetworkInterfaceNameParse(ctx context.Context, theByte
 	return BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNetworkInterfaceNameParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkInterfaceName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNetworkInterfaceName, error) {
+		return BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNetworkInterfaceName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkInterfaceName)
-	if pullErr := readBuffer.PullContext("networkInterfaceName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkInterfaceName")
-	}
-	_networkInterfaceName, _networkInterfaceNameErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _networkInterfaceNameErr != nil {
-		return nil, errors.Wrap(_networkInterfaceNameErr, "Error parsing 'networkInterfaceName' field of BACnetConstructedDataNetworkInterfaceName")
-	}
-	networkInterfaceName := _networkInterfaceName.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("networkInterfaceName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkInterfaceName")
+	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterfaceName' field"))
 	}
 
 	// Virtual field

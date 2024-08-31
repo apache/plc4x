@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func ApduDataGroupValueResponseParse(ctx context.Context, theBytes []byte, dataL
 	return ApduDataGroupValueResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataGroupValueResponseParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataGroupValueResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataGroupValueResponse, error) {
+		return ApduDataGroupValueResponseParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataGroupValueResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataGroupValueResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,12 +162,10 @@ func ApduDataGroupValueResponseParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dataFirstByte)
-	_dataFirstByte, _dataFirstByteErr := /*TODO: migrate me*/ readBuffer.ReadInt8("dataFirstByte", 6)
-	if _dataFirstByteErr != nil {
-		return nil, errors.Wrap(_dataFirstByteErr, "Error parsing 'dataFirstByte' field of ApduDataGroupValueResponse")
+	dataFirstByte, err := ReadSimpleField(ctx, "dataFirstByte", ReadSignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataFirstByte' field"))
 	}
-	dataFirstByte := _dataFirstByte
 
 	data, err := readBuffer.ReadByteArray("data", int(utils.InlineIf((bool((dataLength) < (1))), func() any { return int32(int32(0)) }, func() any { return int32(int32(dataLength) - int32(int32(1))) }).(int32)))
 	if err != nil {

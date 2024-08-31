@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLargeAnalogValueResolutionParse(ctx context.Context, t
 	return BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLargeAnalogValueResolutionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLargeAnalogValueResolution, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLargeAnalogValueResolution, error) {
+		return BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLargeAnalogValueResolution, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLargeAnalogValueResolutionParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (resolution)
-	if pullErr := readBuffer.PullContext("resolution"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for resolution")
-	}
-	_resolution, _resolutionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _resolutionErr != nil {
-		return nil, errors.Wrap(_resolutionErr, "Error parsing 'resolution' field of BACnetConstructedDataLargeAnalogValueResolution")
-	}
-	resolution := _resolution.(BACnetApplicationTagDouble)
-	if closeErr := readBuffer.CloseContext("resolution"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for resolution")
+	resolution, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "resolution", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resolution' field"))
 	}
 
 	// Virtual field

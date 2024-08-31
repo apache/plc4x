@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func ReplyNetworkParse(ctx context.Context, theBytes []byte) (ReplyNetwork, erro
 	return ReplyNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ReplyNetworkParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
+		return ReplyNetworkParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ReplyNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ReplyNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,30 +132,14 @@ func ReplyNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkRoute)
-	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
-	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
-	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of ReplyNetwork")
-	}
-	networkRoute := _networkRoute.(NetworkRoute)
-	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
+	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
 
-	// Simple Field (unitAddress)
-	if pullErr := readBuffer.PullContext("unitAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unitAddress")
-	}
-	_unitAddress, _unitAddressErr := UnitAddressParseWithBuffer(ctx, readBuffer)
-	if _unitAddressErr != nil {
-		return nil, errors.Wrap(_unitAddressErr, "Error parsing 'unitAddress' field of ReplyNetwork")
-	}
-	unitAddress := _unitAddress.(UnitAddress)
-	if closeErr := readBuffer.CloseContext("unitAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unitAddress")
+	unitAddress, err := ReadSimpleField[UnitAddress](ctx, "unitAddress", ReadComplex[UnitAddress](UnitAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unitAddress' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReplyNetwork"); closeErr != nil {

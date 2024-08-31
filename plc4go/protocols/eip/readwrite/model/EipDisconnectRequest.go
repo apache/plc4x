@@ -122,6 +122,12 @@ func EipDisconnectRequestParse(ctx context.Context, theBytes []byte, response bo
 	return EipDisconnectRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func EipDisconnectRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (EipDisconnectRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipDisconnectRequest, error) {
+		return EipDisconnectRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func EipDisconnectRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipDisconnectRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

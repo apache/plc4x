@@ -216,6 +216,12 @@ func BACnetConstructedDataElementParse(ctx context.Context, theBytes []byte, obj
 	return BACnetConstructedDataElementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataElementParseWithBufferProducer(objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataElement, error) {
+		return BACnetConstructedDataElementParseWithBuffer(ctx, readBuffer, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataElement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -269,13 +275,7 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 		applicationTag = *_applicationTag
 	}
 
-	_contextTag, err := ReadOptionalField[BACnetContextTag](ctx, "contextTag", ReadComplex[BACnetContextTag](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTag, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNKNOWN))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTag), nil
-	}, readBuffer), isContextTag)
+	_contextTag, err := ReadOptionalField[BACnetContextTag](ctx, "contextTag", ReadComplex[BACnetContextTag](BACnetContextTagParseWithBufferProducer[BACnetContextTag]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNKNOWN)), readBuffer), isContextTag)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'contextTag' field"))
 	}
@@ -284,13 +284,7 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 		contextTag = *_contextTag
 	}
 
-	_constructedData, err := ReadOptionalField[BACnetConstructedData](ctx, "constructedData", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
-		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(peekedTagNumber), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConstructedData), nil
-	}, readBuffer), isConstructedData)
+	_constructedData, err := ReadOptionalField[BACnetConstructedData](ctx, "constructedData", ReadComplex[BACnetConstructedData](BACnetConstructedDataParseWithBufferProducer[BACnetConstructedData]((uint8)(peekedTagNumber), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument)), readBuffer), isConstructedData)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'constructedData' field"))
 	}

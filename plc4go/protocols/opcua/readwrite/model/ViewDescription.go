@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func ViewDescriptionParse(ctx context.Context, theBytes []byte, identifier strin
 	return ViewDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ViewDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ViewDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ViewDescription, error) {
+		return ViewDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ViewDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ViewDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,32 +171,20 @@ func ViewDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (viewId)
-	if pullErr := readBuffer.PullContext("viewId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for viewId")
-	}
-	_viewId, _viewIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _viewIdErr != nil {
-		return nil, errors.Wrap(_viewIdErr, "Error parsing 'viewId' field of ViewDescription")
-	}
-	viewId := _viewId.(NodeId)
-	if closeErr := readBuffer.CloseContext("viewId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for viewId")
+	viewId, err := ReadSimpleField[NodeId](ctx, "viewId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewId' field"))
 	}
 
-	// Simple Field (timestamp)
-	_timestamp, _timestampErr := /*TODO: migrate me*/ readBuffer.ReadInt64("timestamp", 64)
-	if _timestampErr != nil {
-		return nil, errors.Wrap(_timestampErr, "Error parsing 'timestamp' field of ViewDescription")
+	timestamp, err := ReadSimpleField(ctx, "timestamp", ReadSignedLong(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamp' field"))
 	}
-	timestamp := _timestamp
 
-	// Simple Field (viewVersion)
-	_viewVersion, _viewVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("viewVersion", 32)
-	if _viewVersionErr != nil {
-		return nil, errors.Wrap(_viewVersionErr, "Error parsing 'viewVersion' field of ViewDescription")
+	viewVersion, err := ReadSimpleField(ctx, "viewVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'viewVersion' field"))
 	}
-	viewVersion := _viewVersion
 
 	if closeErr := readBuffer.CloseContext("ViewDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ViewDescription")

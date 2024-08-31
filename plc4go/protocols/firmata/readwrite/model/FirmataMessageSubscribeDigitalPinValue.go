@@ -150,6 +150,12 @@ func FirmataMessageSubscribeDigitalPinValueParse(ctx context.Context, theBytes [
 	return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
+func FirmataMessageSubscribeDigitalPinValueParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageSubscribeDigitalPinValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataMessageSubscribeDigitalPinValue, error) {
+		return FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessageSubscribeDigitalPinValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,24 +167,20 @@ func FirmataMessageSubscribeDigitalPinValueParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (pin)
-	_pin, _pinErr := /*TODO: migrate me*/ readBuffer.ReadUint8("pin", 4)
-	if _pinErr != nil {
-		return nil, errors.Wrap(_pinErr, "Error parsing 'pin' field of FirmataMessageSubscribeDigitalPinValue")
+	pin, err := ReadSimpleField(ctx, "pin", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pin' field"))
 	}
-	pin := _pin
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (enable)
-	_enable, _enableErr := /*TODO: migrate me*/ readBuffer.ReadBit("enable")
-	if _enableErr != nil {
-		return nil, errors.Wrap(_enableErr, "Error parsing 'enable' field of FirmataMessageSubscribeDigitalPinValue")
+	enable, err := ReadSimpleField(ctx, "enable", ReadBoolean(readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}
-	enable := _enable
 
 	if closeErr := readBuffer.CloseContext("FirmataMessageSubscribeDigitalPinValue"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for FirmataMessageSubscribeDigitalPinValue")

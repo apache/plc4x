@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func XVTypeParse(ctx context.Context, theBytes []byte, identifier string) (XVTyp
 	return XVTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func XVTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (XVType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (XVType, error) {
+		return XVTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func XVTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (XVType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func XVTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ide
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (x)
-	_x, _xErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("x", 64)
-	if _xErr != nil {
-		return nil, errors.Wrap(_xErr, "Error parsing 'x' field of XVType")
+	x, err := ReadSimpleField(ctx, "x", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'x' field"))
 	}
-	x := _x
 
-	// Simple Field (value)
-	_value, _valueErr := /*TODO: migrate me*/ readBuffer.ReadFloat32("value", 32)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of XVType")
+	value, err := ReadSimpleField(ctx, "value", ReadFloat(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
-	value := _value
 
 	if closeErr := readBuffer.CloseContext("XVType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for XVType")

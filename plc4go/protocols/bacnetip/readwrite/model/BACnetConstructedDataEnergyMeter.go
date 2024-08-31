@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEnergyMeterParse(ctx context.Context, theBytes []byte,
 	return BACnetConstructedDataEnergyMeterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEnergyMeterParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEnergyMeter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEnergyMeter, error) {
+		return BACnetConstructedDataEnergyMeterParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEnergyMeterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEnergyMeter, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEnergyMeterParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (energyMeter)
-	if pullErr := readBuffer.PullContext("energyMeter"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for energyMeter")
-	}
-	_energyMeter, _energyMeterErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _energyMeterErr != nil {
-		return nil, errors.Wrap(_energyMeterErr, "Error parsing 'energyMeter' field of BACnetConstructedDataEnergyMeter")
-	}
-	energyMeter := _energyMeter.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("energyMeter"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for energyMeter")
+	energyMeter, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "energyMeter", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'energyMeter' field"))
 	}
 
 	// Virtual field

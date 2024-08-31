@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBufferSizeParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataBufferSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBufferSizeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBufferSize, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBufferSize, error) {
+		return BACnetConstructedDataBufferSizeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBufferSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBufferSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBufferSizeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bufferSize)
-	if pullErr := readBuffer.PullContext("bufferSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bufferSize")
-	}
-	_bufferSize, _bufferSizeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bufferSizeErr != nil {
-		return nil, errors.Wrap(_bufferSizeErr, "Error parsing 'bufferSize' field of BACnetConstructedDataBufferSize")
-	}
-	bufferSize := _bufferSize.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("bufferSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bufferSize")
+	bufferSize, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "bufferSize", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bufferSize' field"))
 	}
 
 	// Virtual field

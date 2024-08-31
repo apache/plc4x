@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func NLMEstablishConnectionToNetworkParse(ctx context.Context, theBytes []byte, 
 	return NLMEstablishConnectionToNetworkParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMEstablishConnectionToNetworkParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMEstablishConnectionToNetwork, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMEstablishConnectionToNetwork, error) {
+		return NLMEstablishConnectionToNetworkParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMEstablishConnectionToNetworkParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMEstablishConnectionToNetwork, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func NLMEstablishConnectionToNetworkParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationNetworkAddress)
-	_destinationNetworkAddress, _destinationNetworkAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
-	if _destinationNetworkAddressErr != nil {
-		return nil, errors.Wrap(_destinationNetworkAddressErr, "Error parsing 'destinationNetworkAddress' field of NLMEstablishConnectionToNetwork")
+	destinationNetworkAddress, err := ReadSimpleField(ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
-	destinationNetworkAddress := _destinationNetworkAddress
 
-	// Simple Field (terminationTime)
-	_terminationTime, _terminationTimeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("terminationTime", 8)
-	if _terminationTimeErr != nil {
-		return nil, errors.Wrap(_terminationTimeErr, "Error parsing 'terminationTime' field of NLMEstablishConnectionToNetwork")
+	terminationTime, err := ReadSimpleField(ctx, "terminationTime", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminationTime' field"))
 	}
-	terminationTime := _terminationTime
 
 	if closeErr := readBuffer.CloseContext("NLMEstablishConnectionToNetwork"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NLMEstablishConnectionToNetwork")

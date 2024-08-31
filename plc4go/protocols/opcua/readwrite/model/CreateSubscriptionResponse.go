@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func CreateSubscriptionResponseParse(ctx context.Context, theBytes []byte, ident
 	return CreateSubscriptionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CreateSubscriptionResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSubscriptionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSubscriptionResponse, error) {
+		return CreateSubscriptionResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CreateSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSubscriptionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,46 +193,30 @@ func CreateSubscriptionResponseParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CreateSubscriptionResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of CreateSubscriptionResponse")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (revisedPublishingInterval)
-	_revisedPublishingInterval, _revisedPublishingIntervalErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedPublishingInterval", 64)
-	if _revisedPublishingIntervalErr != nil {
-		return nil, errors.Wrap(_revisedPublishingIntervalErr, "Error parsing 'revisedPublishingInterval' field of CreateSubscriptionResponse")
+	revisedPublishingInterval, err := ReadSimpleField(ctx, "revisedPublishingInterval", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedPublishingInterval' field"))
 	}
-	revisedPublishingInterval := _revisedPublishingInterval
 
-	// Simple Field (revisedLifetimeCount)
-	_revisedLifetimeCount, _revisedLifetimeCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedLifetimeCount", 32)
-	if _revisedLifetimeCountErr != nil {
-		return nil, errors.Wrap(_revisedLifetimeCountErr, "Error parsing 'revisedLifetimeCount' field of CreateSubscriptionResponse")
+	revisedLifetimeCount, err := ReadSimpleField(ctx, "revisedLifetimeCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedLifetimeCount' field"))
 	}
-	revisedLifetimeCount := _revisedLifetimeCount
 
-	// Simple Field (revisedMaxKeepAliveCount)
-	_revisedMaxKeepAliveCount, _revisedMaxKeepAliveCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("revisedMaxKeepAliveCount", 32)
-	if _revisedMaxKeepAliveCountErr != nil {
-		return nil, errors.Wrap(_revisedMaxKeepAliveCountErr, "Error parsing 'revisedMaxKeepAliveCount' field of CreateSubscriptionResponse")
+	revisedMaxKeepAliveCount, err := ReadSimpleField(ctx, "revisedMaxKeepAliveCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedMaxKeepAliveCount' field"))
 	}
-	revisedMaxKeepAliveCount := _revisedMaxKeepAliveCount
 
 	if closeErr := readBuffer.CloseContext("CreateSubscriptionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CreateSubscriptionResponse")

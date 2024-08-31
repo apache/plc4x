@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataStopWhenFullParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataStopWhenFullParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataStopWhenFullParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStopWhenFull, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataStopWhenFull, error) {
+		return BACnetConstructedDataStopWhenFullParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataStopWhenFullParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataStopWhenFull, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataStopWhenFullParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (stopWhenFull)
-	if pullErr := readBuffer.PullContext("stopWhenFull"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for stopWhenFull")
-	}
-	_stopWhenFull, _stopWhenFullErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _stopWhenFullErr != nil {
-		return nil, errors.Wrap(_stopWhenFullErr, "Error parsing 'stopWhenFull' field of BACnetConstructedDataStopWhenFull")
-	}
-	stopWhenFull := _stopWhenFull.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("stopWhenFull"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for stopWhenFull")
+	stopWhenFull, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "stopWhenFull", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stopWhenFull' field"))
 	}
 
 	// Virtual field

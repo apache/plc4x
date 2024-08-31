@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataTriggerControlParse(ctx context.Context, theBytes []byte, applicatio
 	return SALDataTriggerControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataTriggerControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTriggerControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTriggerControl, error) {
+		return SALDataTriggerControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataTriggerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTriggerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataTriggerControlParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (triggerControlData)
-	if pullErr := readBuffer.PullContext("triggerControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlData")
-	}
-	_triggerControlData, _triggerControlDataErr := TriggerControlDataParseWithBuffer(ctx, readBuffer)
-	if _triggerControlDataErr != nil {
-		return nil, errors.Wrap(_triggerControlDataErr, "Error parsing 'triggerControlData' field of SALDataTriggerControl")
-	}
-	triggerControlData := _triggerControlData.(TriggerControlData)
-	if closeErr := readBuffer.CloseContext("triggerControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for triggerControlData")
+	triggerControlData, err := ReadSimpleField[TriggerControlData](ctx, "triggerControlData", ReadComplex[TriggerControlData](TriggerControlDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggerControlData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTriggerControl"); closeErr != nil {

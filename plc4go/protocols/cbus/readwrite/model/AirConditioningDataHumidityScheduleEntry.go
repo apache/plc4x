@@ -211,6 +211,12 @@ func AirConditioningDataHumidityScheduleEntryParse(ctx context.Context, theBytes
 	return AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AirConditioningDataHumidityScheduleEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
+		return AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AirConditioningDataHumidityScheduleEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -222,64 +228,34 @@ func AirConditioningDataHumidityScheduleEntryParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneGroup)
-	_zoneGroup, _zoneGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("zoneGroup")
-	if _zoneGroupErr != nil {
-		return nil, errors.Wrap(_zoneGroupErr, "Error parsing 'zoneGroup' field of AirConditioningDataHumidityScheduleEntry")
-	}
-	zoneGroup := _zoneGroup
-
-	// Simple Field (zoneList)
-	if pullErr := readBuffer.PullContext("zoneList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneList")
-	}
-	_zoneList, _zoneListErr := HVACZoneListParseWithBuffer(ctx, readBuffer)
-	if _zoneListErr != nil {
-		return nil, errors.Wrap(_zoneListErr, "Error parsing 'zoneList' field of AirConditioningDataHumidityScheduleEntry")
-	}
-	zoneList := _zoneList.(HVACZoneList)
-	if closeErr := readBuffer.CloseContext("zoneList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneList")
+	zoneGroup, err := ReadSimpleField(ctx, "zoneGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneGroup' field"))
 	}
 
-	// Simple Field (entry)
-	_entry, _entryErr := /*TODO: migrate me*/ readBuffer.ReadUint8("entry", 8)
-	if _entryErr != nil {
-		return nil, errors.Wrap(_entryErr, "Error parsing 'entry' field of AirConditioningDataHumidityScheduleEntry")
-	}
-	entry := _entry
-
-	// Simple Field (format)
-	_format, _formatErr := /*TODO: migrate me*/ readBuffer.ReadByte("format")
-	if _formatErr != nil {
-		return nil, errors.Wrap(_formatErr, "Error parsing 'format' field of AirConditioningDataHumidityScheduleEntry")
-	}
-	format := _format
-
-	// Simple Field (humidityModeAndFlags)
-	if pullErr := readBuffer.PullContext("humidityModeAndFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for humidityModeAndFlags")
-	}
-	_humidityModeAndFlags, _humidityModeAndFlagsErr := HVACHumidityModeAndFlagsParseWithBuffer(ctx, readBuffer)
-	if _humidityModeAndFlagsErr != nil {
-		return nil, errors.Wrap(_humidityModeAndFlagsErr, "Error parsing 'humidityModeAndFlags' field of AirConditioningDataHumidityScheduleEntry")
-	}
-	humidityModeAndFlags := _humidityModeAndFlags.(HVACHumidityModeAndFlags)
-	if closeErr := readBuffer.CloseContext("humidityModeAndFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for humidityModeAndFlags")
+	zoneList, err := ReadSimpleField[HVACZoneList](ctx, "zoneList", ReadComplex[HVACZoneList](HVACZoneListParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneList' field"))
 	}
 
-	// Simple Field (startTime)
-	if pullErr := readBuffer.PullContext("startTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for startTime")
+	entry, err := ReadSimpleField(ctx, "entry", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'entry' field"))
 	}
-	_startTime, _startTimeErr := HVACStartTimeParseWithBuffer(ctx, readBuffer)
-	if _startTimeErr != nil {
-		return nil, errors.Wrap(_startTimeErr, "Error parsing 'startTime' field of AirConditioningDataHumidityScheduleEntry")
+
+	format, err := ReadSimpleField(ctx, "format", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'format' field"))
 	}
-	startTime := _startTime.(HVACStartTime)
-	if closeErr := readBuffer.CloseContext("startTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for startTime")
+
+	humidityModeAndFlags, err := ReadSimpleField[HVACHumidityModeAndFlags](ctx, "humidityModeAndFlags", ReadComplex[HVACHumidityModeAndFlags](HVACHumidityModeAndFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityModeAndFlags' field"))
+	}
+
+	startTime, err := ReadSimpleField[HVACStartTime](ctx, "startTime", ReadComplex[HVACStartTime](HVACStartTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startTime' field"))
 	}
 
 	_level, err := ReadOptionalField[HVACHumidity](ctx, "level", ReadComplex[HVACHumidity](HVACHumidityParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsLevelHumidity())

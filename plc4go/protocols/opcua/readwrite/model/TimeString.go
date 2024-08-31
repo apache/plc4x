@@ -83,6 +83,12 @@ func TimeStringParse(ctx context.Context, theBytes []byte) (TimeString, error) {
 	return TimeStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TimeStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
+		return TimeStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TimeStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TimeString, error) {
 	positionAware := readBuffer
 	_ = positionAware

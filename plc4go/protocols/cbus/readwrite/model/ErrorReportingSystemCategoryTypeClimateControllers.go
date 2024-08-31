@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +133,12 @@ func ErrorReportingSystemCategoryTypeClimateControllersParse(ctx context.Context
 	return ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorReportingSystemCategoryClass)
 }
 
+func ErrorReportingSystemCategoryTypeClimateControllersParseWithBufferProducer(errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
+		return ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx, readBuffer, errorReportingSystemCategoryClass)
+	}
+}
+
 func ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorReportingSystemCategoryClass ErrorReportingSystemCategoryClass) (ErrorReportingSystemCategoryTypeClimateControllers, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +150,9 @@ func ErrorReportingSystemCategoryTypeClimateControllersParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryForType)
-	if pullErr := readBuffer.PullContext("categoryForType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for categoryForType")
-	}
-	_categoryForType, _categoryForTypeErr := ErrorReportingSystemCategoryTypeForClimateControllersParseWithBuffer(ctx, readBuffer)
-	if _categoryForTypeErr != nil {
-		return nil, errors.Wrap(_categoryForTypeErr, "Error parsing 'categoryForType' field of ErrorReportingSystemCategoryTypeClimateControllers")
-	}
-	categoryForType := _categoryForType
-	if closeErr := readBuffer.CloseContext("categoryForType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for categoryForType")
+	categoryForType, err := ReadEnumField[ErrorReportingSystemCategoryTypeForClimateControllers](ctx, "categoryForType", "ErrorReportingSystemCategoryTypeForClimateControllers", ReadEnum(ErrorReportingSystemCategoryTypeForClimateControllersByValue, ReadUnsignedByte(readBuffer, uint8(4))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryForType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ErrorReportingSystemCategoryTypeClimateControllers"); closeErr != nil {

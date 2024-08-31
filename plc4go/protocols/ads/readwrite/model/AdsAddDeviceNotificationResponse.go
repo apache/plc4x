@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func AdsAddDeviceNotificationResponseParse(ctx context.Context, theBytes []byte)
 	return AdsAddDeviceNotificationResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsAddDeviceNotificationResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
+		return AdsAddDeviceNotificationResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsAddDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,25 +171,15 @@ func AdsAddDeviceNotificationResponseParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsAddDeviceNotificationResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
-	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationHandle", 32)
-	if _notificationHandleErr != nil {
-		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsAddDeviceNotificationResponse")
+	notificationHandle, err := ReadSimpleField(ctx, "notificationHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationHandle' field"))
 	}
-	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsAddDeviceNotificationResponse")

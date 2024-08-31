@@ -113,6 +113,12 @@ func PowerUpParse(ctx context.Context, theBytes []byte) (PowerUp, error) {
 	return PowerUpParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PowerUpParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
+		return PowerUpParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PowerUpParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PowerUp, error) {
 	positionAware := readBuffer
 	_ = positionAware

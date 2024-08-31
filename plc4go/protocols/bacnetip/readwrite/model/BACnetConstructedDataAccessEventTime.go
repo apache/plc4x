@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAccessEventTimeParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataAccessEventTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAccessEventTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAccessEventTime, error) {
+		return BACnetConstructedDataAccessEventTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAccessEventTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAccessEventTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAccessEventTimeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessEventTime)
-	if pullErr := readBuffer.PullContext("accessEventTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessEventTime")
-	}
-	_accessEventTime, _accessEventTimeErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-	if _accessEventTimeErr != nil {
-		return nil, errors.Wrap(_accessEventTimeErr, "Error parsing 'accessEventTime' field of BACnetConstructedDataAccessEventTime")
-	}
-	accessEventTime := _accessEventTime.(BACnetTimeStamp)
-	if closeErr := readBuffer.CloseContext("accessEventTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessEventTime")
+	accessEventTime, err := ReadSimpleField[BACnetTimeStamp](ctx, "accessEventTime", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventTime' field"))
 	}
 
 	// Virtual field

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func AdsDeleteDeviceNotificationRequestParse(ctx context.Context, theBytes []byt
 	return AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDeleteDeviceNotificationRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
+		return AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeleteDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,12 +160,10 @@ func AdsDeleteDeviceNotificationRequestParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationHandle", 32)
-	if _notificationHandleErr != nil {
-		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsDeleteDeviceNotificationRequest")
+	notificationHandle, err := ReadSimpleField(ctx, "notificationHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationHandle' field"))
 	}
-	notificationHandle := _notificationHandle
 
 	if closeErr := readBuffer.CloseContext("AdsDeleteDeviceNotificationRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDeleteDeviceNotificationRequest")

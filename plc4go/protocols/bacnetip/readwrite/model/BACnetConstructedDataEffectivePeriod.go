@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataEffectivePeriodParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataEffectivePeriodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataEffectivePeriodParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEffectivePeriod, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataEffectivePeriod, error) {
+		return BACnetConstructedDataEffectivePeriodParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataEffectivePeriodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataEffectivePeriod, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataEffectivePeriodParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (dateRange)
-	if pullErr := readBuffer.PullContext("dateRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dateRange")
-	}
-	_dateRange, _dateRangeErr := BACnetDateRangeParseWithBuffer(ctx, readBuffer)
-	if _dateRangeErr != nil {
-		return nil, errors.Wrap(_dateRangeErr, "Error parsing 'dateRange' field of BACnetConstructedDataEffectivePeriod")
-	}
-	dateRange := _dateRange.(BACnetDateRange)
-	if closeErr := readBuffer.CloseContext("dateRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dateRange")
+	dateRange, err := ReadSimpleField[BACnetDateRange](ctx, "dateRange", ReadComplex[BACnetDateRange](BACnetDateRangeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateRange' field"))
 	}
 
 	// Virtual field

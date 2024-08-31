@@ -119,6 +119,12 @@ func BACnetVMACEntryParse(ctx context.Context, theBytes []byte) (BACnetVMACEntry
 	return BACnetVMACEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetVMACEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
+		return BACnetVMACEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetVMACEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -130,13 +136,7 @@ func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_virtualMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagOctetString), nil
-	}, readBuffer), true)
+	_virtualMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'virtualMacAddress' field"))
 	}
@@ -145,13 +145,7 @@ func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		virtualMacAddress = *_virtualMacAddress
 	}
 
-	_nativeMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagOctetString), nil
-	}, readBuffer), true)
+	_nativeMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nativeMacAddress' field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func SignatureDataParse(ctx context.Context, theBytes []byte, identifier string)
 	return SignatureDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SignatureDataParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SignatureData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SignatureData, error) {
+		return SignatureDataParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SignatureDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SignatureData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func SignatureDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (algorithm)
-	if pullErr := readBuffer.PullContext("algorithm"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for algorithm")
-	}
-	_algorithm, _algorithmErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _algorithmErr != nil {
-		return nil, errors.Wrap(_algorithmErr, "Error parsing 'algorithm' field of SignatureData")
-	}
-	algorithm := _algorithm.(PascalString)
-	if closeErr := readBuffer.CloseContext("algorithm"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for algorithm")
+	algorithm, err := ReadSimpleField[PascalString](ctx, "algorithm", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'algorithm' field"))
 	}
 
-	// Simple Field (signature)
-	if pullErr := readBuffer.PullContext("signature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for signature")
-	}
-	_signature, _signatureErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _signatureErr != nil {
-		return nil, errors.Wrap(_signatureErr, "Error parsing 'signature' field of SignatureData")
-	}
-	signature := _signature.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("signature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for signature")
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SignatureData"); closeErr != nil {

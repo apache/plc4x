@@ -150,6 +150,12 @@ func HistoryDataParse(ctx context.Context, theBytes []byte, identifier string) (
 	return HistoryDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func HistoryDataParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HistoryData, error) {
+		return HistoryDataParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (HistoryData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,12 +167,10 @@ func HistoryDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfDataValues)
-	_noOfDataValues, _noOfDataValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDataValues", 32)
-	if _noOfDataValuesErr != nil {
-		return nil, errors.Wrap(_noOfDataValuesErr, "Error parsing 'noOfDataValues' field of HistoryData")
+	noOfDataValues, err := ReadSimpleField(ctx, "noOfDataValues", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDataValues' field"))
 	}
-	noOfDataValues := _noOfDataValues
 
 	dataValues, err := ReadCountArrayField[DataValue](ctx, "dataValues", ReadComplex[DataValue](DataValueParseWithBuffer, readBuffer), uint64(noOfDataValues))
 	if err != nil {

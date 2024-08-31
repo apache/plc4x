@@ -138,6 +138,12 @@ func ConnectionRequestInformationTunnelConnectionParse(ctx context.Context, theB
 	return ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectionRequestInformationTunnelConnectionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
+		return ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformationTunnelConnection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -149,20 +155,12 @@ func ConnectionRequestInformationTunnelConnectionParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (knxLayer)
-	if pullErr := readBuffer.PullContext("knxLayer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for knxLayer")
-	}
-	_knxLayer, _knxLayerErr := KnxLayerParseWithBuffer(ctx, readBuffer)
-	if _knxLayerErr != nil {
-		return nil, errors.Wrap(_knxLayerErr, "Error parsing 'knxLayer' field of ConnectionRequestInformationTunnelConnection")
-	}
-	knxLayer := _knxLayer
-	if closeErr := readBuffer.CloseContext("knxLayer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for knxLayer")
+	knxLayer, err := ReadEnumField[KnxLayer](ctx, "knxLayer", "KnxLayer", ReadEnum(KnxLayerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'knxLayer' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

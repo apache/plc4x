@@ -149,6 +149,12 @@ func CycServiceItemDbReadTypeParse(ctx context.Context, theBytes []byte) (CycSer
 	return CycServiceItemDbReadTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func CycServiceItemDbReadTypeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemDbReadType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemDbReadType, error) {
+		return CycServiceItemDbReadTypeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func CycServiceItemDbReadTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (CycServiceItemDbReadType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,12 +166,10 @@ func CycServiceItemDbReadTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfAreas)
-	_numberOfAreas, _numberOfAreasErr := /*TODO: migrate me*/ readBuffer.ReadUint8("numberOfAreas", 8)
-	if _numberOfAreasErr != nil {
-		return nil, errors.Wrap(_numberOfAreasErr, "Error parsing 'numberOfAreas' field of CycServiceItemDbReadType")
+	numberOfAreas, err := ReadSimpleField(ctx, "numberOfAreas", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfAreas' field"))
 	}
-	numberOfAreas := _numberOfAreas
 
 	items, err := ReadCountArrayField[SubItem](ctx, "items", ReadComplex[SubItem](SubItemParseWithBuffer, readBuffer), uint64(numberOfAreas))
 	if err != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataControlledVariableValueParse(ctx context.Context, theB
 	return BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataControlledVariableValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataControlledVariableValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataControlledVariableValue, error) {
+		return BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataControlledVariableValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (controlledVariableValue)
-	if pullErr := readBuffer.PullContext("controlledVariableValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for controlledVariableValue")
-	}
-	_controlledVariableValue, _controlledVariableValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _controlledVariableValueErr != nil {
-		return nil, errors.Wrap(_controlledVariableValueErr, "Error parsing 'controlledVariableValue' field of BACnetConstructedDataControlledVariableValue")
-	}
-	controlledVariableValue := _controlledVariableValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("controlledVariableValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for controlledVariableValue")
+	controlledVariableValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "controlledVariableValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlledVariableValue' field"))
 	}
 
 	// Virtual field

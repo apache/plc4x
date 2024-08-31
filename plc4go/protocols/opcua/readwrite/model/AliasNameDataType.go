@@ -161,6 +161,12 @@ func AliasNameDataTypeParse(ctx context.Context, theBytes []byte, identifier str
 	return AliasNameDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AliasNameDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AliasNameDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AliasNameDataType, error) {
+		return AliasNameDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AliasNameDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AliasNameDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,25 +178,15 @@ func AliasNameDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (aliasName)
-	if pullErr := readBuffer.PullContext("aliasName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for aliasName")
-	}
-	_aliasName, _aliasNameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _aliasNameErr != nil {
-		return nil, errors.Wrap(_aliasNameErr, "Error parsing 'aliasName' field of AliasNameDataType")
-	}
-	aliasName := _aliasName.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("aliasName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for aliasName")
+	aliasName, err := ReadSimpleField[QualifiedName](ctx, "aliasName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'aliasName' field"))
 	}
 
-	// Simple Field (noOfReferencedNodes)
-	_noOfReferencedNodes, _noOfReferencedNodesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferencedNodes", 32)
-	if _noOfReferencedNodesErr != nil {
-		return nil, errors.Wrap(_noOfReferencedNodesErr, "Error parsing 'noOfReferencedNodes' field of AliasNameDataType")
+	noOfReferencedNodes, err := ReadSimpleField(ctx, "noOfReferencedNodes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodes' field"))
 	}
-	noOfReferencedNodes := _noOfReferencedNodes
 
 	referencedNodes, err := ReadCountArrayField[ExpandedNodeId](ctx, "referencedNodes", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodes))
 	if err != nil {

@@ -262,6 +262,12 @@ func FieldMetaDataParse(ctx context.Context, theBytes []byte, identifier string)
 	return FieldMetaDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func FieldMetaDataParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (FieldMetaData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FieldMetaData, error) {
+		return FieldMetaDataParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (FieldMetaData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -273,118 +279,62 @@ func FieldMetaDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of FieldMetaData")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of FieldMetaData")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
 
-	// Simple Field (fieldFlags)
-	if pullErr := readBuffer.PullContext("fieldFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fieldFlags")
-	}
-	_fieldFlags, _fieldFlagsErr := DataSetFieldFlagsParseWithBuffer(ctx, readBuffer)
-	if _fieldFlagsErr != nil {
-		return nil, errors.Wrap(_fieldFlagsErr, "Error parsing 'fieldFlags' field of FieldMetaData")
-	}
-	fieldFlags := _fieldFlags
-	if closeErr := readBuffer.CloseContext("fieldFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fieldFlags")
+	fieldFlags, err := ReadEnumField[DataSetFieldFlags](ctx, "fieldFlags", "DataSetFieldFlags", ReadEnum(DataSetFieldFlagsByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fieldFlags' field"))
 	}
 
-	// Simple Field (builtInType)
-	_builtInType, _builtInTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("builtInType", 8)
-	if _builtInTypeErr != nil {
-		return nil, errors.Wrap(_builtInTypeErr, "Error parsing 'builtInType' field of FieldMetaData")
-	}
-	builtInType := _builtInType
-
-	// Simple Field (dataType)
-	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
-	}
-	_dataType, _dataTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of FieldMetaData")
-	}
-	dataType := _dataType.(NodeId)
-	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataType")
+	builtInType, err := ReadSimpleField(ctx, "builtInType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'builtInType' field"))
 	}
 
-	// Simple Field (valueRank)
-	_valueRank, _valueRankErr := /*TODO: migrate me*/ readBuffer.ReadInt32("valueRank", 32)
-	if _valueRankErr != nil {
-		return nil, errors.Wrap(_valueRankErr, "Error parsing 'valueRank' field of FieldMetaData")
+	dataType, err := ReadSimpleField[NodeId](ctx, "dataType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
-	valueRank := _valueRank
 
-	// Simple Field (noOfArrayDimensions)
-	_noOfArrayDimensions, _noOfArrayDimensionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfArrayDimensions", 32)
-	if _noOfArrayDimensionsErr != nil {
-		return nil, errors.Wrap(_noOfArrayDimensionsErr, "Error parsing 'noOfArrayDimensions' field of FieldMetaData")
+	valueRank, err := ReadSimpleField(ctx, "valueRank", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueRank' field"))
 	}
-	noOfArrayDimensions := _noOfArrayDimensions
 
-	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, 32), uint64(noOfArrayDimensions))
+	noOfArrayDimensions, err := ReadSimpleField(ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
+	}
+
+	arrayDimensions, err := ReadCountArrayField[uint32](ctx, "arrayDimensions", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfArrayDimensions))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayDimensions' field"))
 	}
 
-	// Simple Field (maxStringLength)
-	_maxStringLength, _maxStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxStringLength", 32)
-	if _maxStringLengthErr != nil {
-		return nil, errors.Wrap(_maxStringLengthErr, "Error parsing 'maxStringLength' field of FieldMetaData")
-	}
-	maxStringLength := _maxStringLength
-
-	// Simple Field (dataSetFieldId)
-	if pullErr := readBuffer.PullContext("dataSetFieldId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataSetFieldId")
-	}
-	_dataSetFieldId, _dataSetFieldIdErr := GuidValueParseWithBuffer(ctx, readBuffer)
-	if _dataSetFieldIdErr != nil {
-		return nil, errors.Wrap(_dataSetFieldIdErr, "Error parsing 'dataSetFieldId' field of FieldMetaData")
-	}
-	dataSetFieldId := _dataSetFieldId.(GuidValue)
-	if closeErr := readBuffer.CloseContext("dataSetFieldId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataSetFieldId")
+	maxStringLength, err := ReadSimpleField(ctx, "maxStringLength", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxStringLength' field"))
 	}
 
-	// Simple Field (noOfProperties)
-	_noOfProperties, _noOfPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfProperties", 32)
-	if _noOfPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfPropertiesErr, "Error parsing 'noOfProperties' field of FieldMetaData")
+	dataSetFieldId, err := ReadSimpleField[GuidValue](ctx, "dataSetFieldId", ReadComplex[GuidValue](GuidValueParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataSetFieldId' field"))
 	}
-	noOfProperties := _noOfProperties
 
-	properties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "properties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfProperties))
+	noOfProperties, err := ReadSimpleField(ctx, "noOfProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfProperties' field"))
+	}
+
+	properties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "properties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'properties' field"))
 	}

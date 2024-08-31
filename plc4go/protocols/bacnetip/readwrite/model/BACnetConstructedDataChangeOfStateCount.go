@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataChangeOfStateCountParse(ctx context.Context, theBytes 
 	return BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataChangeOfStateCountParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangeOfStateCount, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataChangeOfStateCount, error) {
+		return BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataChangeOfStateCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataChangeOfStateCountParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (changeIfStateCount)
-	if pullErr := readBuffer.PullContext("changeIfStateCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changeIfStateCount")
-	}
-	_changeIfStateCount, _changeIfStateCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _changeIfStateCountErr != nil {
-		return nil, errors.Wrap(_changeIfStateCountErr, "Error parsing 'changeIfStateCount' field of BACnetConstructedDataChangeOfStateCount")
-	}
-	changeIfStateCount := _changeIfStateCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("changeIfStateCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changeIfStateCount")
+	changeIfStateCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "changeIfStateCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeIfStateCount' field"))
 	}
 
 	// Virtual field

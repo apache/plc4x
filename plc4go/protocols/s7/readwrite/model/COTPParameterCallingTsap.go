@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func COTPParameterCallingTsapParse(ctx context.Context, theBytes []byte, rest ui
 	return COTPParameterCallingTsapParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
+func COTPParameterCallingTsapParseWithBufferProducer(rest uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterCallingTsap, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterCallingTsap, error) {
+		return COTPParameterCallingTsapParseWithBuffer(ctx, readBuffer, rest)
+	}
+}
+
 func COTPParameterCallingTsapParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterCallingTsap, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func COTPParameterCallingTsapParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tsapId)
-	_tsapId, _tsapIdErr := /*TODO: migrate me*/ readBuffer.ReadUint16("tsapId", 16)
-	if _tsapIdErr != nil {
-		return nil, errors.Wrap(_tsapIdErr, "Error parsing 'tsapId' field of COTPParameterCallingTsap")
+	tsapId, err := ReadSimpleField(ctx, "tsapId", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tsapId' field"))
 	}
-	tsapId := _tsapId
 
 	if closeErr := readBuffer.CloseContext("COTPParameterCallingTsap"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for COTPParameterCallingTsap")

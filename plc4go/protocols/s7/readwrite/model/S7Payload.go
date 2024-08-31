@@ -112,6 +112,17 @@ func S7PayloadParse(ctx context.Context, theBytes []byte, messageType uint8, par
 	return S7PayloadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType, parameter)
 }
 
+func S7PayloadParseWithBufferProducer[T S7Payload](messageType uint8, parameter S7Parameter) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := S7PayloadParseWithBuffer(ctx, readBuffer, messageType, parameter)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func S7PayloadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8, parameter S7Parameter) (S7Payload, error) {
 	positionAware := readBuffer
 	_ = positionAware

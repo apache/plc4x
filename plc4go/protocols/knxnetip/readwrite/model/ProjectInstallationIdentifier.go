@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -113,6 +115,12 @@ func ProjectInstallationIdentifierParse(ctx context.Context, theBytes []byte) (P
 	return ProjectInstallationIdentifierParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ProjectInstallationIdentifierParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
+		return ProjectInstallationIdentifierParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ProjectInstallationIdentifier, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,19 +132,15 @@ func ProjectInstallationIdentifierParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (projectNumber)
-	_projectNumber, _projectNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("projectNumber", 8)
-	if _projectNumberErr != nil {
-		return nil, errors.Wrap(_projectNumberErr, "Error parsing 'projectNumber' field of ProjectInstallationIdentifier")
+	projectNumber, err := ReadSimpleField(ctx, "projectNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'projectNumber' field"))
 	}
-	projectNumber := _projectNumber
 
-	// Simple Field (installationNumber)
-	_installationNumber, _installationNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("installationNumber", 8)
-	if _installationNumberErr != nil {
-		return nil, errors.Wrap(_installationNumberErr, "Error parsing 'installationNumber' field of ProjectInstallationIdentifier")
+	installationNumber, err := ReadSimpleField(ctx, "installationNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'installationNumber' field"))
 	}
-	installationNumber := _installationNumber
 
 	if closeErr := readBuffer.CloseContext("ProjectInstallationIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ProjectInstallationIdentifier")

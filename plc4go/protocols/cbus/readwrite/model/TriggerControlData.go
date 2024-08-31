@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,17 @@ func TriggerControlDataParse(ctx context.Context, theBytes []byte) (TriggerContr
 	return TriggerControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TriggerControlDataParseWithBufferProducer[T TriggerControlData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := TriggerControlDataParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,17 +192,9 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := TriggerControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of TriggerControlData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[TriggerControlCommandTypeContainer](ctx, "commandTypeContainer", "TriggerControlCommandTypeContainer", ReadEnum(TriggerControlCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -197,12 +202,10 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	commandType := TriggerControlCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (triggerGroup)
-	_triggerGroup, _triggerGroupErr := /*TODO: migrate me*/ readBuffer.ReadByte("triggerGroup")
-	if _triggerGroupErr != nil {
-		return nil, errors.Wrap(_triggerGroupErr, "Error parsing 'triggerGroup' field of TriggerControlData")
+	triggerGroup, err := ReadSimpleField(ctx, "triggerGroup", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggerGroup' field"))
 	}
-	triggerGroup := _triggerGroup
 
 	// Virtual field
 	_isUnused := bool((triggerGroup) > (0xFE))

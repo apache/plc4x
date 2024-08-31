@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func NLMUpdateKeyDistributionKeyParse(ctx context.Context, theBytes []byte, apdu
 	return NLMUpdateKeyDistributionKeyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMUpdateKeyDistributionKeyParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyDistributionKey, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyDistributionKey, error) {
+		return NLMUpdateKeyDistributionKeyParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyDistributionKey, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,24 +160,14 @@ func NLMUpdateKeyDistributionKeyParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (keyRevision)
-	_keyRevision, _keyRevisionErr := /*TODO: migrate me*/ readBuffer.ReadByte("keyRevision")
-	if _keyRevisionErr != nil {
-		return nil, errors.Wrap(_keyRevisionErr, "Error parsing 'keyRevision' field of NLMUpdateKeyDistributionKey")
+	keyRevision, err := ReadSimpleField(ctx, "keyRevision", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyRevision' field"))
 	}
-	keyRevision := _keyRevision
 
-	// Simple Field (key)
-	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for key")
-	}
-	_key, _keyErr := NLMUpdateKeyUpdateKeyEntryParseWithBuffer(ctx, readBuffer)
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of NLMUpdateKeyDistributionKey")
-	}
-	key := _key.(NLMUpdateKeyUpdateKeyEntry)
-	if closeErr := readBuffer.CloseContext("key"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for key")
+	key, err := ReadSimpleField[NLMUpdateKeyUpdateKeyEntry](ctx, "key", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NLMUpdateKeyDistributionKey"); closeErr != nil {

@@ -109,6 +109,12 @@ func QosDataTypeParse(ctx context.Context, theBytes []byte, identifier string) (
 	return QosDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QosDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QosDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QosDataType, error) {
+		return QosDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QosDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QosDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware

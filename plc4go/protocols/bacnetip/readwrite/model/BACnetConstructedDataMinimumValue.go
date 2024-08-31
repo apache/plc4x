@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMinimumValueParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataMinimumValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMinimumValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumValue, error) {
+		return BACnetConstructedDataMinimumValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMinimumValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMinimumValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumValue)
-	if pullErr := readBuffer.PullContext("minimumValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumValue")
-	}
-	_minimumValue, _minimumValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minimumValueErr != nil {
-		return nil, errors.Wrap(_minimumValueErr, "Error parsing 'minimumValue' field of BACnetConstructedDataMinimumValue")
-	}
-	minimumValue := _minimumValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("minimumValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumValue")
+	minimumValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumValue' field"))
 	}
 
 	// Virtual field

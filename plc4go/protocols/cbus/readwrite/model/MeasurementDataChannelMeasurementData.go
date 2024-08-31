@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -212,6 +214,12 @@ func MeasurementDataChannelMeasurementDataParse(ctx context.Context, theBytes []
 	return MeasurementDataChannelMeasurementDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MeasurementDataChannelMeasurementDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
+		return MeasurementDataChannelMeasurementDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MeasurementDataChannelMeasurementData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -223,53 +231,35 @@ func MeasurementDataChannelMeasurementDataParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (deviceId)
-	_deviceId, _deviceIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("deviceId", 8)
-	if _deviceIdErr != nil {
-		return nil, errors.Wrap(_deviceIdErr, "Error parsing 'deviceId' field of MeasurementDataChannelMeasurementData")
-	}
-	deviceId := _deviceId
-
-	// Simple Field (channel)
-	_channel, _channelErr := /*TODO: migrate me*/ readBuffer.ReadUint8("channel", 8)
-	if _channelErr != nil {
-		return nil, errors.Wrap(_channelErr, "Error parsing 'channel' field of MeasurementDataChannelMeasurementData")
-	}
-	channel := _channel
-
-	// Simple Field (units)
-	if pullErr := readBuffer.PullContext("units"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for units")
-	}
-	_units, _unitsErr := MeasurementUnitsParseWithBuffer(ctx, readBuffer)
-	if _unitsErr != nil {
-		return nil, errors.Wrap(_unitsErr, "Error parsing 'units' field of MeasurementDataChannelMeasurementData")
-	}
-	units := _units
-	if closeErr := readBuffer.CloseContext("units"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for units")
+	deviceId, err := ReadSimpleField(ctx, "deviceId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceId' field"))
 	}
 
-	// Simple Field (multiplier)
-	_multiplier, _multiplierErr := /*TODO: migrate me*/ readBuffer.ReadInt8("multiplier", 8)
-	if _multiplierErr != nil {
-		return nil, errors.Wrap(_multiplierErr, "Error parsing 'multiplier' field of MeasurementDataChannelMeasurementData")
+	channel, err := ReadSimpleField(ctx, "channel", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channel' field"))
 	}
-	multiplier := _multiplier
 
-	// Simple Field (msb)
-	_msb, _msbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("msb", 8)
-	if _msbErr != nil {
-		return nil, errors.Wrap(_msbErr, "Error parsing 'msb' field of MeasurementDataChannelMeasurementData")
+	units, err := ReadEnumField[MeasurementUnits](ctx, "units", "MeasurementUnits", ReadEnum(MeasurementUnitsByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'units' field"))
 	}
-	msb := _msb
 
-	// Simple Field (lsb)
-	_lsb, _lsbErr := /*TODO: migrate me*/ readBuffer.ReadUint8("lsb", 8)
-	if _lsbErr != nil {
-		return nil, errors.Wrap(_lsbErr, "Error parsing 'lsb' field of MeasurementDataChannelMeasurementData")
+	multiplier, err := ReadSimpleField(ctx, "multiplier", ReadSignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'multiplier' field"))
 	}
-	lsb := _lsb
+
+	msb, err := ReadSimpleField(ctx, "msb", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'msb' field"))
+	}
+
+	lsb, err := ReadSimpleField(ctx, "lsb", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lsb' field"))
+	}
 
 	// Virtual field
 	_rawValue := msb<<uint16(8) | lsb

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func PortableQualifiedNameParse(ctx context.Context, theBytes []byte, identifier
 	return PortableQualifiedNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PortableQualifiedNameParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PortableQualifiedName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PortableQualifiedName, error) {
+		return PortableQualifiedNameParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PortableQualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PortableQualifiedName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func PortableQualifiedNameParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (namespaceUri)
-	if pullErr := readBuffer.PullContext("namespaceUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for namespaceUri")
-	}
-	_namespaceUri, _namespaceUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _namespaceUriErr != nil {
-		return nil, errors.Wrap(_namespaceUriErr, "Error parsing 'namespaceUri' field of PortableQualifiedName")
-	}
-	namespaceUri := _namespaceUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("namespaceUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for namespaceUri")
+	namespaceUri, err := ReadSimpleField[PascalString](ctx, "namespaceUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceUri' field"))
 	}
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of PortableQualifiedName")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PortableQualifiedName"); closeErr != nil {

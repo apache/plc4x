@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -142,6 +144,12 @@ func TamperStatusParse(ctx context.Context, theBytes []byte) (TamperStatus, erro
 	return TamperStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TamperStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TamperStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TamperStatus, error) {
+		return TamperStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TamperStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,12 +161,10 @@ func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of TamperStatus")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
 	// Virtual field
 	_isNoTamper := bool((status) == (0x00))

@@ -202,6 +202,12 @@ func SetTriggeringRequestParse(ctx context.Context, theBytes []byte, identifier 
 	return SetTriggeringRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SetTriggeringRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SetTriggeringRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SetTriggeringRequest, error) {
+		return SetTriggeringRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SetTriggeringRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -213,53 +219,37 @@ func SetTriggeringRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of SetTriggeringRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (subscriptionId)
-	_subscriptionId, _subscriptionIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("subscriptionId", 32)
-	if _subscriptionIdErr != nil {
-		return nil, errors.Wrap(_subscriptionIdErr, "Error parsing 'subscriptionId' field of SetTriggeringRequest")
+	subscriptionId, err := ReadSimpleField(ctx, "subscriptionId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionId' field"))
 	}
-	subscriptionId := _subscriptionId
 
-	// Simple Field (triggeringItemId)
-	_triggeringItemId, _triggeringItemIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("triggeringItemId", 32)
-	if _triggeringItemIdErr != nil {
-		return nil, errors.Wrap(_triggeringItemIdErr, "Error parsing 'triggeringItemId' field of SetTriggeringRequest")
+	triggeringItemId, err := ReadSimpleField(ctx, "triggeringItemId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggeringItemId' field"))
 	}
-	triggeringItemId := _triggeringItemId
 
-	// Simple Field (noOfLinksToAdd)
-	_noOfLinksToAdd, _noOfLinksToAddErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLinksToAdd", 32)
-	if _noOfLinksToAddErr != nil {
-		return nil, errors.Wrap(_noOfLinksToAddErr, "Error parsing 'noOfLinksToAdd' field of SetTriggeringRequest")
+	noOfLinksToAdd, err := ReadSimpleField(ctx, "noOfLinksToAdd", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToAdd' field"))
 	}
-	noOfLinksToAdd := _noOfLinksToAdd
 
-	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, 32), uint64(noOfLinksToAdd))
+	linksToAdd, err := ReadCountArrayField[uint32](ctx, "linksToAdd", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToAdd))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToAdd' field"))
 	}
 
-	// Simple Field (noOfLinksToRemove)
-	_noOfLinksToRemove, _noOfLinksToRemoveErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfLinksToRemove", 32)
-	if _noOfLinksToRemoveErr != nil {
-		return nil, errors.Wrap(_noOfLinksToRemoveErr, "Error parsing 'noOfLinksToRemove' field of SetTriggeringRequest")
+	noOfLinksToRemove, err := ReadSimpleField(ctx, "noOfLinksToRemove", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfLinksToRemove' field"))
 	}
-	noOfLinksToRemove := _noOfLinksToRemove
 
-	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, 32), uint64(noOfLinksToRemove))
+	linksToRemove, err := ReadCountArrayField[uint32](ctx, "linksToRemove", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfLinksToRemove))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linksToRemove' field"))
 	}

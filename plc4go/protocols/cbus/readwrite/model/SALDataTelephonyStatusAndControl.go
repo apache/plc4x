@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataTelephonyStatusAndControlParse(ctx context.Context, theBytes []byte,
 	return SALDataTelephonyStatusAndControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataTelephonyStatusAndControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTelephonyStatusAndControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataTelephonyStatusAndControl, error) {
+		return SALDataTelephonyStatusAndControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataTelephonyStatusAndControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataTelephonyStatusAndControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataTelephonyStatusAndControlParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (telephonyData)
-	if pullErr := readBuffer.PullContext("telephonyData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for telephonyData")
-	}
-	_telephonyData, _telephonyDataErr := TelephonyDataParseWithBuffer(ctx, readBuffer)
-	if _telephonyDataErr != nil {
-		return nil, errors.Wrap(_telephonyDataErr, "Error parsing 'telephonyData' field of SALDataTelephonyStatusAndControl")
-	}
-	telephonyData := _telephonyData.(TelephonyData)
-	if closeErr := readBuffer.CloseContext("telephonyData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for telephonyData")
+	telephonyData, err := ReadSimpleField[TelephonyData](ctx, "telephonyData", ReadComplex[TelephonyData](TelephonyDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'telephonyData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataTelephonyStatusAndControl"); closeErr != nil {

@@ -137,6 +137,12 @@ func BACnetContextTagUnknownParse(ctx context.Context, theBytes []byte, actualLe
 	return BACnetContextTagUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), actualLength, tagNumberArgument, dataType)
 }
 
+func BACnetContextTagUnknownParseWithBufferProducer(actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagUnknown, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetContextTagUnknown, error) {
+		return BACnetContextTagUnknownParseWithBuffer(ctx, readBuffer, actualLength, tagNumberArgument, dataType)
+	}
+}
+
 func BACnetContextTagUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, actualLength uint32, tagNumberArgument uint8, dataType BACnetDataType) (BACnetContextTagUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware

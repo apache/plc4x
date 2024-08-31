@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaxSegmentsAcceptedParse(ctx context.Context, theBytes
 	return BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaxSegmentsAcceptedParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxSegmentsAccepted, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaxSegmentsAccepted, error) {
+		return BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaxSegmentsAccepted, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaxSegmentsAcceptedParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maxSegmentsAccepted)
-	if pullErr := readBuffer.PullContext("maxSegmentsAccepted"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maxSegmentsAccepted")
-	}
-	_maxSegmentsAccepted, _maxSegmentsAcceptedErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _maxSegmentsAcceptedErr != nil {
-		return nil, errors.Wrap(_maxSegmentsAcceptedErr, "Error parsing 'maxSegmentsAccepted' field of BACnetConstructedDataMaxSegmentsAccepted")
-	}
-	maxSegmentsAccepted := _maxSegmentsAccepted.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("maxSegmentsAccepted"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maxSegmentsAccepted")
+	maxSegmentsAccepted, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "maxSegmentsAccepted", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxSegmentsAccepted' field"))
 	}
 
 	// Virtual field

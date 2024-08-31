@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataFirmwareRevisionParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataFirmwareRevisionParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFirmwareRevision, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataFirmwareRevision, error) {
+		return BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataFirmwareRevision, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataFirmwareRevisionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (firmwareRevision)
-	if pullErr := readBuffer.PullContext("firmwareRevision"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firmwareRevision")
-	}
-	_firmwareRevision, _firmwareRevisionErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _firmwareRevisionErr != nil {
-		return nil, errors.Wrap(_firmwareRevisionErr, "Error parsing 'firmwareRevision' field of BACnetConstructedDataFirmwareRevision")
-	}
-	firmwareRevision := _firmwareRevision.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("firmwareRevision"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firmwareRevision")
+	firmwareRevision, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "firmwareRevision", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firmwareRevision' field"))
 	}
 
 	// Virtual field

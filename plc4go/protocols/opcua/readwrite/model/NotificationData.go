@@ -109,6 +109,12 @@ func NotificationDataParse(ctx context.Context, theBytes []byte, identifier stri
 	return NotificationDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NotificationDataParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NotificationData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NotificationData, error) {
+		return NotificationDataParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NotificationDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NotificationData, error) {
 	positionAware := readBuffer
 	_ = positionAware

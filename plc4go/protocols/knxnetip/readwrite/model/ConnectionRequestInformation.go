@@ -113,6 +113,17 @@ func ConnectionRequestInformationParse(ctx context.Context, theBytes []byte) (Co
 	return ConnectionRequestInformationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectionRequestInformationParseWithBufferProducer[T ConnectionRequestInformation]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ConnectionRequestInformationParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionRequestInformation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,13 +135,13 @@ func ConnectionRequestInformationParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, 8))
+	structureLength, err := ReadImplicitField[uint8](ctx, "structureLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureLength' field"))
 	}
 	_ = structureLength
 
-	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, 8))
+	connectionType, err := ReadDiscriminatorField[uint8](ctx, "connectionType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionType' field"))
 	}

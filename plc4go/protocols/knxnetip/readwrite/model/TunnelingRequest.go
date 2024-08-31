@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,6 +148,12 @@ func TunnelingRequestParse(ctx context.Context, theBytes []byte, totalLength uin
 	return TunnelingRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), totalLength)
 }
 
+func TunnelingRequestParseWithBufferProducer(totalLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TunnelingRequest, error) {
+		return TunnelingRequestParseWithBuffer(ctx, readBuffer, totalLength)
+	}
+}
+
 func TunnelingRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, totalLength uint16) (TunnelingRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,30 +165,14 @@ func TunnelingRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tunnelingRequestDataBlock)
-	if pullErr := readBuffer.PullContext("tunnelingRequestDataBlock"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tunnelingRequestDataBlock")
-	}
-	_tunnelingRequestDataBlock, _tunnelingRequestDataBlockErr := TunnelingRequestDataBlockParseWithBuffer(ctx, readBuffer)
-	if _tunnelingRequestDataBlockErr != nil {
-		return nil, errors.Wrap(_tunnelingRequestDataBlockErr, "Error parsing 'tunnelingRequestDataBlock' field of TunnelingRequest")
-	}
-	tunnelingRequestDataBlock := _tunnelingRequestDataBlock.(TunnelingRequestDataBlock)
-	if closeErr := readBuffer.CloseContext("tunnelingRequestDataBlock"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tunnelingRequestDataBlock")
+	tunnelingRequestDataBlock, err := ReadSimpleField[TunnelingRequestDataBlock](ctx, "tunnelingRequestDataBlock", ReadComplex[TunnelingRequestDataBlock](TunnelingRequestDataBlockParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tunnelingRequestDataBlock' field"))
 	}
 
-	// Simple Field (cemi)
-	if pullErr := readBuffer.PullContext("cemi"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for cemi")
-	}
-	_cemi, _cemiErr := CEMIParseWithBuffer(ctx, readBuffer, uint16(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx))))))
-	if _cemiErr != nil {
-		return nil, errors.Wrap(_cemiErr, "Error parsing 'cemi' field of TunnelingRequest")
-	}
-	cemi := _cemi.(CEMI)
-	if closeErr := readBuffer.CloseContext("cemi"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for cemi")
+	cemi, err := ReadSimpleField[CEMI](ctx, "cemi", ReadComplex[CEMI](CEMIParseWithBufferProducer[CEMI]((uint16)(uint16(totalLength)-uint16((uint16(uint16(6))+uint16(tunnelingRequestDataBlock.GetLengthInBytes(ctx)))))), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cemi' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("TunnelingRequest"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataIPv6PrefixLengthParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataIPv6PrefixLengthParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6PrefixLength, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataIPv6PrefixLength, error) {
+		return BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataIPv6PrefixLength, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipv6PrefixLength)
-	if pullErr := readBuffer.PullContext("ipv6PrefixLength"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6PrefixLength")
-	}
-	_ipv6PrefixLength, _ipv6PrefixLengthErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipv6PrefixLengthErr != nil {
-		return nil, errors.Wrap(_ipv6PrefixLengthErr, "Error parsing 'ipv6PrefixLength' field of BACnetConstructedDataIPv6PrefixLength")
-	}
-	ipv6PrefixLength := _ipv6PrefixLength.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("ipv6PrefixLength"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6PrefixLength")
+	ipv6PrefixLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6PrefixLength' field"))
 	}
 
 	// Virtual field

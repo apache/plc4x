@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesBinaryLightningValueParse(ctx context.Context, theBytes
 	return BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesBinaryLightningValueParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBinaryLightningValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesBinaryLightningValue, error) {
+		return BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesBinaryLightningValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesBinaryLightningValueParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (binaryLightningValue)
-	if pullErr := readBuffer.PullContext("binaryLightningValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for binaryLightningValue")
-	}
-	_binaryLightningValue, _binaryLightningValueErr := BACnetBinaryLightingPVTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _binaryLightningValueErr != nil {
-		return nil, errors.Wrap(_binaryLightningValueErr, "Error parsing 'binaryLightningValue' field of BACnetPropertyStatesBinaryLightningValue")
-	}
-	binaryLightningValue := _binaryLightningValue.(BACnetBinaryLightingPVTagged)
-	if closeErr := readBuffer.CloseContext("binaryLightningValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for binaryLightningValue")
+	binaryLightningValue, err := ReadSimpleField[BACnetBinaryLightingPVTagged](ctx, "binaryLightningValue", ReadComplex[BACnetBinaryLightingPVTagged](BACnetBinaryLightingPVTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryLightningValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesBinaryLightningValue"); closeErr != nil {

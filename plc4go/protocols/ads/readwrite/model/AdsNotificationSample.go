@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -125,6 +127,12 @@ func AdsNotificationSampleParse(ctx context.Context, theBytes []byte) (AdsNotifi
 	return AdsNotificationSampleParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsNotificationSampleParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
+		return AdsNotificationSampleParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsNotificationSample, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -136,19 +144,15 @@ func AdsNotificationSampleParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (notificationHandle)
-	_notificationHandle, _notificationHandleErr := /*TODO: migrate me*/ readBuffer.ReadUint32("notificationHandle", 32)
-	if _notificationHandleErr != nil {
-		return nil, errors.Wrap(_notificationHandleErr, "Error parsing 'notificationHandle' field of AdsNotificationSample")
+	notificationHandle, err := ReadSimpleField(ctx, "notificationHandle", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationHandle' field"))
 	}
-	notificationHandle := _notificationHandle
 
-	// Simple Field (sampleSize)
-	_sampleSize, _sampleSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("sampleSize", 32)
-	if _sampleSizeErr != nil {
-		return nil, errors.Wrap(_sampleSizeErr, "Error parsing 'sampleSize' field of AdsNotificationSample")
+	sampleSize, err := ReadSimpleField(ctx, "sampleSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sampleSize' field"))
 	}
-	sampleSize := _sampleSize
 
 	data, err := readBuffer.ReadByteArray("data", int(sampleSize))
 	if err != nil {

@@ -83,6 +83,12 @@ func ImagePNGParse(ctx context.Context, theBytes []byte) (ImagePNG, error) {
 	return ImagePNGParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImagePNGParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
+		return ImagePNGParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImagePNGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImagePNG, error) {
 	positionAware := readBuffer
 	_ = positionAware

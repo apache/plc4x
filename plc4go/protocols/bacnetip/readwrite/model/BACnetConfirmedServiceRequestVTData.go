@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,6 +155,12 @@ func BACnetConfirmedServiceRequestVTDataParse(ctx context.Context, theBytes []by
 	return BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetConfirmedServiceRequestVTDataParseWithBufferProducer(serviceRequestLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestVTData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestVTData, error) {
+		return BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint32) (BACnetConfirmedServiceRequestVTData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -164,43 +172,19 @@ func BACnetConfirmedServiceRequestVTDataParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (vtSessionIdentifier)
-	if pullErr := readBuffer.PullContext("vtSessionIdentifier"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtSessionIdentifier")
-	}
-	_vtSessionIdentifier, _vtSessionIdentifierErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _vtSessionIdentifierErr != nil {
-		return nil, errors.Wrap(_vtSessionIdentifierErr, "Error parsing 'vtSessionIdentifier' field of BACnetConfirmedServiceRequestVTData")
-	}
-	vtSessionIdentifier := _vtSessionIdentifier.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("vtSessionIdentifier"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtSessionIdentifier")
+	vtSessionIdentifier, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "vtSessionIdentifier", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtSessionIdentifier' field"))
 	}
 
-	// Simple Field (vtNewData)
-	if pullErr := readBuffer.PullContext("vtNewData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtNewData")
-	}
-	_vtNewData, _vtNewDataErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _vtNewDataErr != nil {
-		return nil, errors.Wrap(_vtNewDataErr, "Error parsing 'vtNewData' field of BACnetConfirmedServiceRequestVTData")
-	}
-	vtNewData := _vtNewData.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("vtNewData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtNewData")
+	vtNewData, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "vtNewData", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtNewData' field"))
 	}
 
-	// Simple Field (vtDataFlag)
-	if pullErr := readBuffer.PullContext("vtDataFlag"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for vtDataFlag")
-	}
-	_vtDataFlag, _vtDataFlagErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _vtDataFlagErr != nil {
-		return nil, errors.Wrap(_vtDataFlagErr, "Error parsing 'vtDataFlag' field of BACnetConfirmedServiceRequestVTData")
-	}
-	vtDataFlag := _vtDataFlag.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("vtDataFlag"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for vtDataFlag")
+	vtDataFlag, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "vtDataFlag", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtDataFlag' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestVTData"); closeErr != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataCurrentCommandPriorityParse(ctx context.Context, theBy
 	return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCurrentCommandPriorityParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCurrentCommandPriority, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCurrentCommandPriority, error) {
+		return BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCurrentCommandPriority, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataCurrentCommandPriorityParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (currentCommandPriority)
-	if pullErr := readBuffer.PullContext("currentCommandPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for currentCommandPriority")
-	}
-	_currentCommandPriority, _currentCommandPriorityErr := BACnetOptionalUnsignedParseWithBuffer(ctx, readBuffer)
-	if _currentCommandPriorityErr != nil {
-		return nil, errors.Wrap(_currentCommandPriorityErr, "Error parsing 'currentCommandPriority' field of BACnetConstructedDataCurrentCommandPriority")
-	}
-	currentCommandPriority := _currentCommandPriority.(BACnetOptionalUnsigned)
-	if closeErr := readBuffer.CloseContext("currentCommandPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for currentCommandPriority")
+	currentCommandPriority, err := ReadSimpleField[BACnetOptionalUnsigned](ctx, "currentCommandPriority", ReadComplex[BACnetOptionalUnsigned](BACnetOptionalUnsignedParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentCommandPriority' field"))
 	}
 
 	// Virtual field

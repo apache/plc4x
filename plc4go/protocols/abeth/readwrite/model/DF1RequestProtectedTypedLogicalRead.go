@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func DF1RequestProtectedTypedLogicalReadParse(ctx context.Context, theBytes []by
 	return DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1RequestProtectedTypedLogicalReadParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
+		return DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1RequestProtectedTypedLogicalRead, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,40 +193,30 @@ func DF1RequestProtectedTypedLogicalReadParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (byteSize)
-	_byteSize, _byteSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("byteSize", 8)
-	if _byteSizeErr != nil {
-		return nil, errors.Wrap(_byteSizeErr, "Error parsing 'byteSize' field of DF1RequestProtectedTypedLogicalRead")
+	byteSize, err := ReadSimpleField(ctx, "byteSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteSize' field"))
 	}
-	byteSize := _byteSize
 
-	// Simple Field (fileNumber)
-	_fileNumber, _fileNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("fileNumber", 8)
-	if _fileNumberErr != nil {
-		return nil, errors.Wrap(_fileNumberErr, "Error parsing 'fileNumber' field of DF1RequestProtectedTypedLogicalRead")
+	fileNumber, err := ReadSimpleField(ctx, "fileNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileNumber' field"))
 	}
-	fileNumber := _fileNumber
 
-	// Simple Field (fileType)
-	_fileType, _fileTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("fileType", 8)
-	if _fileTypeErr != nil {
-		return nil, errors.Wrap(_fileTypeErr, "Error parsing 'fileType' field of DF1RequestProtectedTypedLogicalRead")
+	fileType, err := ReadSimpleField(ctx, "fileType", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileType' field"))
 	}
-	fileType := _fileType
 
-	// Simple Field (elementNumber)
-	_elementNumber, _elementNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("elementNumber", 8)
-	if _elementNumberErr != nil {
-		return nil, errors.Wrap(_elementNumberErr, "Error parsing 'elementNumber' field of DF1RequestProtectedTypedLogicalRead")
+	elementNumber, err := ReadSimpleField(ctx, "elementNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementNumber' field"))
 	}
-	elementNumber := _elementNumber
 
-	// Simple Field (subElementNumber)
-	_subElementNumber, _subElementNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subElementNumber", 8)
-	if _subElementNumberErr != nil {
-		return nil, errors.Wrap(_subElementNumberErr, "Error parsing 'subElementNumber' field of DF1RequestProtectedTypedLogicalRead")
+	subElementNumber, err := ReadSimpleField(ctx, "subElementNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subElementNumber' field"))
 	}
-	subElementNumber := _subElementNumber
 
 	if closeErr := readBuffer.CloseContext("DF1RequestProtectedTypedLogicalRead"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DF1RequestProtectedTypedLogicalRead")

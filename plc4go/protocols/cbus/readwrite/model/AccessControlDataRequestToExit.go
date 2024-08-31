@@ -109,6 +109,12 @@ func AccessControlDataRequestToExitParse(ctx context.Context, theBytes []byte) (
 	return AccessControlDataRequestToExitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AccessControlDataRequestToExitParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
+		return AccessControlDataRequestToExitParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AccessControlDataRequestToExitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataRequestToExit, error) {
 	positionAware := readBuffer
 	_ = positionAware

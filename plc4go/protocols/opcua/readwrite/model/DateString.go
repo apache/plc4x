@@ -83,6 +83,12 @@ func DateStringParse(ctx context.Context, theBytes []byte) (DateString, error) {
 	return DateStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DateStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
+		return DateStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DateStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DateString, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -149,6 +151,12 @@ func NodeIdTwoByteParse(ctx context.Context, theBytes []byte) (NodeIdTwoByte, er
 	return NodeIdTwoByteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NodeIdTwoByteParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdTwoByte, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdTwoByte, error) {
+		return NodeIdTwoByteParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NodeIdTwoByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NodeIdTwoByte, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -160,12 +168,10 @@ func NodeIdTwoByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (id)
-	_id, _idErr := /*TODO: migrate me*/ readBuffer.ReadUint8("id", 8)
-	if _idErr != nil {
-		return nil, errors.Wrap(_idErr, "Error parsing 'id' field of NodeIdTwoByte")
+	id, err := ReadSimpleField(ctx, "id", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'id' field"))
 	}
-	id := _id
 
 	// Virtual field
 	_identifier := id

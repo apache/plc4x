@@ -168,6 +168,12 @@ func TriggerControlDataLabelParse(ctx context.Context, theBytes []byte, commandT
 	return TriggerControlDataLabelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func TriggerControlDataLabelParseWithBufferProducer(commandTypeContainer TriggerControlCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataLabel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TriggerControlDataLabel, error) {
+		return TriggerControlDataLabelParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TriggerControlCommandTypeContainer) (TriggerControlDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,27 +185,17 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (triggerControlOptions)
-	if pullErr := readBuffer.PullContext("triggerControlOptions"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for triggerControlOptions")
-	}
-	_triggerControlOptions, _triggerControlOptionsErr := TriggerControlLabelOptionsParseWithBuffer(ctx, readBuffer)
-	if _triggerControlOptionsErr != nil {
-		return nil, errors.Wrap(_triggerControlOptionsErr, "Error parsing 'triggerControlOptions' field of TriggerControlDataLabel")
-	}
-	triggerControlOptions := _triggerControlOptions.(TriggerControlLabelOptions)
-	if closeErr := readBuffer.CloseContext("triggerControlOptions"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for triggerControlOptions")
+	triggerControlOptions, err := ReadSimpleField[TriggerControlLabelOptions](ctx, "triggerControlOptions", ReadComplex[TriggerControlLabelOptions](TriggerControlLabelOptionsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'triggerControlOptions' field"))
 	}
 
-	// Simple Field (actionSelector)
-	_actionSelector, _actionSelectorErr := /*TODO: migrate me*/ readBuffer.ReadByte("actionSelector")
-	if _actionSelectorErr != nil {
-		return nil, errors.Wrap(_actionSelectorErr, "Error parsing 'actionSelector' field of TriggerControlDataLabel")
+	actionSelector, err := ReadSimpleField(ctx, "actionSelector", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionSelector' field"))
 	}
-	actionSelector := _actionSelector
 
-	language, err := ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, 8)), bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON)))
+	language, err := ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'language' field"))
 	}

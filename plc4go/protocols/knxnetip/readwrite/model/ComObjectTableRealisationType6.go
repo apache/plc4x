@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ComObjectTableRealisationType6Parse(ctx context.Context, theBytes []byte, f
 	return ComObjectTableRealisationType6ParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), firmwareType)
 }
 
+func ComObjectTableRealisationType6ParseWithBufferProducer(firmwareType FirmwareType) func(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectTableRealisationType6, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ComObjectTableRealisationType6, error) {
+		return ComObjectTableRealisationType6ParseWithBuffer(ctx, readBuffer, firmwareType)
+	}
+}
+
 func ComObjectTableRealisationType6ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, firmwareType FirmwareType) (ComObjectTableRealisationType6, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func ComObjectTableRealisationType6ParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (comObjectDescriptors)
-	if pullErr := readBuffer.PullContext("comObjectDescriptors"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for comObjectDescriptors")
-	}
-	_comObjectDescriptors, _comObjectDescriptorsErr := GroupObjectDescriptorRealisationType6ParseWithBuffer(ctx, readBuffer)
-	if _comObjectDescriptorsErr != nil {
-		return nil, errors.Wrap(_comObjectDescriptorsErr, "Error parsing 'comObjectDescriptors' field of ComObjectTableRealisationType6")
-	}
-	comObjectDescriptors := _comObjectDescriptors.(GroupObjectDescriptorRealisationType6)
-	if closeErr := readBuffer.CloseContext("comObjectDescriptors"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for comObjectDescriptors")
+	comObjectDescriptors, err := ReadSimpleField[GroupObjectDescriptorRealisationType6](ctx, "comObjectDescriptors", ReadComplex[GroupObjectDescriptorRealisationType6](GroupObjectDescriptorRealisationType6ParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'comObjectDescriptors' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ComObjectTableRealisationType6"); closeErr != nil {

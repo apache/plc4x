@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -171,6 +173,12 @@ func PortSegmentExtendedParse(ctx context.Context, theBytes []byte) (PortSegment
 	return PortSegmentExtendedParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PortSegmentExtendedParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentExtended, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentExtended, error) {
+		return PortSegmentExtendedParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegmentExtended, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -182,31 +190,25 @@ func PortSegmentExtendedParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (port)
-	_port, _portErr := /*TODO: migrate me*/ readBuffer.ReadUint8("port", 4)
-	if _portErr != nil {
-		return nil, errors.Wrap(_portErr, "Error parsing 'port' field of PortSegmentExtended")
+	port, err := ReadSimpleField(ctx, "port", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'port' field"))
 	}
-	port := _port
 
-	// Simple Field (linkAddressSize)
-	_linkAddressSize, _linkAddressSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("linkAddressSize", 8)
-	if _linkAddressSizeErr != nil {
-		return nil, errors.Wrap(_linkAddressSizeErr, "Error parsing 'linkAddressSize' field of PortSegmentExtended")
+	linkAddressSize, err := ReadSimpleField(ctx, "linkAddressSize", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkAddressSize' field"))
 	}
-	linkAddressSize := _linkAddressSize
 
 	// Virtual field
 	_paddingByte := uint8(linkAddressSize) % uint8(uint8(2))
 	paddingByte := uint8(_paddingByte)
 	_ = paddingByte
 
-	// Simple Field (address)
-	_address, _addressErr := /*TODO: migrate me*/ readBuffer.ReadString("address", uint32(((linkAddressSize)*(8))+((paddingByte)*(8))), utils.WithEncoding("UTF-8"))
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of PortSegmentExtended")
+	address, err := ReadSimpleField(ctx, "address", ReadString(readBuffer, uint32(int32((int32(linkAddressSize)*int32(int32(8))))+int32((int32(paddingByte)*int32(int32(8)))))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
-	address := _address
 
 	if closeErr := readBuffer.CloseContext("PortSegmentExtended"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PortSegmentExtended")

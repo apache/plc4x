@@ -161,6 +161,12 @@ func RegisterNodesRequestParse(ctx context.Context, theBytes []byte, identifier 
 	return RegisterNodesRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RegisterNodesRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterNodesRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterNodesRequest, error) {
+		return RegisterNodesRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RegisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterNodesRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,25 +178,15 @@ func RegisterNodesRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of RegisterNodesRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfNodesToRegister)
-	_noOfNodesToRegister, _noOfNodesToRegisterErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNodesToRegister", 32)
-	if _noOfNodesToRegisterErr != nil {
-		return nil, errors.Wrap(_noOfNodesToRegisterErr, "Error parsing 'noOfNodesToRegister' field of RegisterNodesRequest")
+	noOfNodesToRegister, err := ReadSimpleField(ctx, "noOfNodesToRegister", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNodesToRegister' field"))
 	}
-	noOfNodesToRegister := _noOfNodesToRegister
 
 	nodesToRegister, err := ReadCountArrayField[NodeId](ctx, "nodesToRegister", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfNodesToRegister))
 	if err != nil {

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func WritePropertyMultipleErrorParse(ctx context.Context, theBytes []byte, error
 	return WritePropertyMultipleErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
+func WritePropertyMultipleErrorParseWithBufferProducer(errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (WritePropertyMultipleError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (WritePropertyMultipleError, error) {
+		return WritePropertyMultipleErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+	}
+}
+
 func WritePropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (WritePropertyMultipleError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func WritePropertyMultipleErrorParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
-	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of WritePropertyMultipleError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
 
-	// Simple Field (firstFailedWriteAttempt)
-	if pullErr := readBuffer.PullContext("firstFailedWriteAttempt"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedWriteAttempt")
-	}
-	_firstFailedWriteAttempt, _firstFailedWriteAttemptErr := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _firstFailedWriteAttemptErr != nil {
-		return nil, errors.Wrap(_firstFailedWriteAttemptErr, "Error parsing 'firstFailedWriteAttempt' field of WritePropertyMultipleError")
-	}
-	firstFailedWriteAttempt := _firstFailedWriteAttempt.(BACnetObjectPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("firstFailedWriteAttempt"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firstFailedWriteAttempt")
+	firstFailedWriteAttempt, err := ReadSimpleField[BACnetObjectPropertyReferenceEnclosed](ctx, "firstFailedWriteAttempt", ReadComplex[BACnetObjectPropertyReferenceEnclosed](BACnetObjectPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstFailedWriteAttempt' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("WritePropertyMultipleError"); closeErr != nil {

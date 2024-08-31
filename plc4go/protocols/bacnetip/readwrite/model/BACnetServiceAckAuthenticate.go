@@ -135,6 +135,12 @@ func BACnetServiceAckAuthenticateParse(ctx context.Context, theBytes []byte, ser
 	return BACnetServiceAckAuthenticateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceAckPayloadLength, serviceAckLength)
 }
 
+func BACnetServiceAckAuthenticateParseWithBufferProducer(serviceAckPayloadLength uint32, serviceAckLength uint32) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAuthenticate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetServiceAckAuthenticate, error) {
+		return BACnetServiceAckAuthenticateParseWithBuffer(ctx, readBuffer, serviceAckPayloadLength, serviceAckLength)
+	}
+}
+
 func BACnetServiceAckAuthenticateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceAckPayloadLength uint32, serviceAckLength uint32) (BACnetServiceAckAuthenticate, error) {
 	positionAware := readBuffer
 	_ = positionAware

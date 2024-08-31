@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -218,6 +220,12 @@ func MediaTransportControlDataRewindParse(ctx context.Context, theBytes []byte) 
 	return MediaTransportControlDataRewindParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataRewindParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
+		return MediaTransportControlDataRewindParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRewind, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -229,12 +237,10 @@ func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operation)
-	_operation, _operationErr := /*TODO: migrate me*/ readBuffer.ReadByte("operation")
-	if _operationErr != nil {
-		return nil, errors.Wrap(_operationErr, "Error parsing 'operation' field of MediaTransportControlDataRewind")
+	operation, err := ReadSimpleField(ctx, "operation", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operation' field"))
 	}
-	operation := _operation
 
 	// Virtual field
 	_isCeaseRewind := bool((operation) == (0x00))

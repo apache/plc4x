@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBitMaskParse(ctx context.Context, theBytes []byte, tag
 	return BACnetConstructedDataBitMaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBitMaskParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBitMask, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBitMask, error) {
+		return BACnetConstructedDataBitMaskParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBitMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBitMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBitMaskParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitString)
-	if pullErr := readBuffer.PullContext("bitString"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitString")
-	}
-	_bitString, _bitStringErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _bitStringErr != nil {
-		return nil, errors.Wrap(_bitStringErr, "Error parsing 'bitString' field of BACnetConstructedDataBitMask")
-	}
-	bitString := _bitString.(BACnetApplicationTagBitString)
-	if closeErr := readBuffer.CloseContext("bitString"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitString")
+	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitString' field"))
 	}
 
 	// Virtual field

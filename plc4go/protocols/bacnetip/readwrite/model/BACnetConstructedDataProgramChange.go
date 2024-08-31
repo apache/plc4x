@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProgramChangeParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataProgramChangeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProgramChangeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProgramChange, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProgramChange, error) {
+		return BACnetConstructedDataProgramChangeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProgramChangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProgramChange, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProgramChangeParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (programChange)
-	if pullErr := readBuffer.PullContext("programChange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for programChange")
-	}
-	_programChange, _programChangeErr := BACnetProgramRequestTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), TagClass(TagClass_APPLICATION_TAGS))
-	if _programChangeErr != nil {
-		return nil, errors.Wrap(_programChangeErr, "Error parsing 'programChange' field of BACnetConstructedDataProgramChange")
-	}
-	programChange := _programChange.(BACnetProgramRequestTagged)
-	if closeErr := readBuffer.CloseContext("programChange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for programChange")
+	programChange, err := ReadSimpleField[BACnetProgramRequestTagged](ctx, "programChange", ReadComplex[BACnetProgramRequestTagged](BACnetProgramRequestTaggedParseWithBufferProducer((uint8)(uint8(0)), (TagClass)(TagClass_APPLICATION_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'programChange' field"))
 	}
 
 	// Virtual field

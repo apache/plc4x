@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -173,6 +175,12 @@ func GroupObjectDescriptorRealisationTypeBParse(ctx context.Context, theBytes []
 	return GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func GroupObjectDescriptorRealisationTypeBParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationTypeB, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationTypeB, error) {
+		return GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GroupObjectDescriptorRealisationTypeB, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -184,72 +192,44 @@ func GroupObjectDescriptorRealisationTypeBParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (updateEnable)
-	_updateEnable, _updateEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("updateEnable")
-	if _updateEnableErr != nil {
-		return nil, errors.Wrap(_updateEnableErr, "Error parsing 'updateEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	updateEnable := _updateEnable
-
-	// Simple Field (transmitEnable)
-	_transmitEnable, _transmitEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("transmitEnable")
-	if _transmitEnableErr != nil {
-		return nil, errors.Wrap(_transmitEnableErr, "Error parsing 'transmitEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	transmitEnable := _transmitEnable
-
-	// Simple Field (segmentSelectorEnable)
-	_segmentSelectorEnable, _segmentSelectorEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("segmentSelectorEnable")
-	if _segmentSelectorEnableErr != nil {
-		return nil, errors.Wrap(_segmentSelectorEnableErr, "Error parsing 'segmentSelectorEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	segmentSelectorEnable := _segmentSelectorEnable
-
-	// Simple Field (writeEnable)
-	_writeEnable, _writeEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("writeEnable")
-	if _writeEnableErr != nil {
-		return nil, errors.Wrap(_writeEnableErr, "Error parsing 'writeEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	writeEnable := _writeEnable
-
-	// Simple Field (readEnable)
-	_readEnable, _readEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("readEnable")
-	if _readEnableErr != nil {
-		return nil, errors.Wrap(_readEnableErr, "Error parsing 'readEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	readEnable := _readEnable
-
-	// Simple Field (communicationEnable)
-	_communicationEnable, _communicationEnableErr := /*TODO: migrate me*/ readBuffer.ReadBit("communicationEnable")
-	if _communicationEnableErr != nil {
-		return nil, errors.Wrap(_communicationEnableErr, "Error parsing 'communicationEnable' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	communicationEnable := _communicationEnable
-
-	// Simple Field (priority)
-	if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for priority")
-	}
-	_priority, _priorityErr := CEMIPriorityParseWithBuffer(ctx, readBuffer)
-	if _priorityErr != nil {
-		return nil, errors.Wrap(_priorityErr, "Error parsing 'priority' field of GroupObjectDescriptorRealisationTypeB")
-	}
-	priority := _priority
-	if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for priority")
+	updateEnable, err := ReadSimpleField(ctx, "updateEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'updateEnable' field"))
 	}
 
-	// Simple Field (valueType)
-	if pullErr := readBuffer.PullContext("valueType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for valueType")
+	transmitEnable, err := ReadSimpleField(ctx, "transmitEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transmitEnable' field"))
 	}
-	_valueType, _valueTypeErr := ComObjectValueTypeParseWithBuffer(ctx, readBuffer)
-	if _valueTypeErr != nil {
-		return nil, errors.Wrap(_valueTypeErr, "Error parsing 'valueType' field of GroupObjectDescriptorRealisationTypeB")
+
+	segmentSelectorEnable, err := ReadSimpleField(ctx, "segmentSelectorEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentSelectorEnable' field"))
 	}
-	valueType := _valueType
-	if closeErr := readBuffer.CloseContext("valueType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for valueType")
+
+	writeEnable, err := ReadSimpleField(ctx, "writeEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeEnable' field"))
+	}
+
+	readEnable, err := ReadSimpleField(ctx, "readEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readEnable' field"))
+	}
+
+	communicationEnable, err := ReadSimpleField(ctx, "communicationEnable", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationEnable' field"))
+	}
+
+	priority, err := ReadEnumField[CEMIPriority](ctx, "priority", "CEMIPriority", ReadEnum(CEMIPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
+	}
+
+	valueType, err := ReadEnumField[ComObjectValueType](ctx, "valueType", "ComObjectValueType", ReadEnum(ComObjectValueTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("GroupObjectDescriptorRealisationTypeB"); closeErr != nil {

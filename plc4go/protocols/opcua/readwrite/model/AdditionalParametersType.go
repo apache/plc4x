@@ -150,6 +150,12 @@ func AdditionalParametersTypeParse(ctx context.Context, theBytes []byte, identif
 	return AdditionalParametersTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AdditionalParametersTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AdditionalParametersType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdditionalParametersType, error) {
+		return AdditionalParametersTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AdditionalParametersTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AdditionalParametersType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,20 +167,12 @@ func AdditionalParametersTypeParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfParameters)
-	_noOfParameters, _noOfParametersErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfParameters", 32)
-	if _noOfParametersErr != nil {
-		return nil, errors.Wrap(_noOfParametersErr, "Error parsing 'noOfParameters' field of AdditionalParametersType")
+	noOfParameters, err := ReadSimpleField(ctx, "noOfParameters", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfParameters' field"))
 	}
-	noOfParameters := _noOfParameters
 
-	parameters, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parameters", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfParameters))
+	parameters, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "parameters", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfParameters))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}

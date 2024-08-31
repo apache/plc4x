@@ -161,6 +161,12 @@ func BrowsePathResultParse(ctx context.Context, theBytes []byte, identifier stri
 	return BrowsePathResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowsePathResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePathResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowsePathResult, error) {
+		return BrowsePathResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowsePathResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowsePathResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -172,33 +178,17 @@ func BrowsePathResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of BrowsePathResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (noOfTargets)
-	_noOfTargets, _noOfTargetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfTargets", 32)
-	if _noOfTargetsErr != nil {
-		return nil, errors.Wrap(_noOfTargetsErr, "Error parsing 'noOfTargets' field of BrowsePathResult")
+	noOfTargets, err := ReadSimpleField(ctx, "noOfTargets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfTargets' field"))
 	}
-	noOfTargets := _noOfTargets
 
-	targets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "targets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("548"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfTargets))
+	targets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "targets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("548")), readBuffer), uint64(noOfTargets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targets' field"))
 	}

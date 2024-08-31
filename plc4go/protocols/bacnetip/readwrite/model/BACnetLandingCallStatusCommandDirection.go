@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetLandingCallStatusCommandDirectionParse(ctx context.Context, theBytes 
 	return BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingCallStatusCommandDirectionParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
+		return BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingCallStatusCommandDirection, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetLandingCallStatusCommandDirectionParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (direction)
-	if pullErr := readBuffer.PullContext("direction"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for direction")
-	}
-	_direction, _directionErr := BACnetLiftCarDirectionTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _directionErr != nil {
-		return nil, errors.Wrap(_directionErr, "Error parsing 'direction' field of BACnetLandingCallStatusCommandDirection")
-	}
-	direction := _direction.(BACnetLiftCarDirectionTagged)
-	if closeErr := readBuffer.CloseContext("direction"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for direction")
+	direction, err := ReadSimpleField[BACnetLiftCarDirectionTagged](ctx, "direction", ReadComplex[BACnetLiftCarDirectionTagged](BACnetLiftCarDirectionTaggedParseWithBufferProducer((uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'direction' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatusCommandDirection"); closeErr != nil {

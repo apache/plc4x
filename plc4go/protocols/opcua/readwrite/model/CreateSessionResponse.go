@@ -267,6 +267,12 @@ func CreateSessionResponseParse(ctx context.Context, theBytes []byte, identifier
 	return CreateSessionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CreateSessionResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSessionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CreateSessionResponse, error) {
+		return CreateSessionResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CreateSessionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -278,133 +284,65 @@ func CreateSessionResponseParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of CreateSessionResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (sessionId)
-	if pullErr := readBuffer.PullContext("sessionId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sessionId")
-	}
-	_sessionId, _sessionIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sessionIdErr != nil {
-		return nil, errors.Wrap(_sessionIdErr, "Error parsing 'sessionId' field of CreateSessionResponse")
-	}
-	sessionId := _sessionId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sessionId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sessionId")
+	sessionId, err := ReadSimpleField[NodeId](ctx, "sessionId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sessionId' field"))
 	}
 
-	// Simple Field (authenticationToken)
-	if pullErr := readBuffer.PullContext("authenticationToken"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for authenticationToken")
-	}
-	_authenticationToken, _authenticationTokenErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _authenticationTokenErr != nil {
-		return nil, errors.Wrap(_authenticationTokenErr, "Error parsing 'authenticationToken' field of CreateSessionResponse")
-	}
-	authenticationToken := _authenticationToken.(NodeId)
-	if closeErr := readBuffer.CloseContext("authenticationToken"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for authenticationToken")
+	authenticationToken, err := ReadSimpleField[NodeId](ctx, "authenticationToken", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationToken' field"))
 	}
 
-	// Simple Field (revisedSessionTimeout)
-	_revisedSessionTimeout, _revisedSessionTimeoutErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("revisedSessionTimeout", 64)
-	if _revisedSessionTimeoutErr != nil {
-		return nil, errors.Wrap(_revisedSessionTimeoutErr, "Error parsing 'revisedSessionTimeout' field of CreateSessionResponse")
-	}
-	revisedSessionTimeout := _revisedSessionTimeout
-
-	// Simple Field (serverNonce)
-	if pullErr := readBuffer.PullContext("serverNonce"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverNonce")
-	}
-	_serverNonce, _serverNonceErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _serverNonceErr != nil {
-		return nil, errors.Wrap(_serverNonceErr, "Error parsing 'serverNonce' field of CreateSessionResponse")
-	}
-	serverNonce := _serverNonce.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("serverNonce"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverNonce")
+	revisedSessionTimeout, err := ReadSimpleField(ctx, "revisedSessionTimeout", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'revisedSessionTimeout' field"))
 	}
 
-	// Simple Field (serverCertificate)
-	if pullErr := readBuffer.PullContext("serverCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverCertificate")
-	}
-	_serverCertificate, _serverCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _serverCertificateErr != nil {
-		return nil, errors.Wrap(_serverCertificateErr, "Error parsing 'serverCertificate' field of CreateSessionResponse")
-	}
-	serverCertificate := _serverCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("serverCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverCertificate")
+	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNonce' field"))
 	}
 
-	// Simple Field (noOfServerEndpoints)
-	_noOfServerEndpoints, _noOfServerEndpointsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerEndpoints", 32)
-	if _noOfServerEndpointsErr != nil {
-		return nil, errors.Wrap(_noOfServerEndpointsErr, "Error parsing 'noOfServerEndpoints' field of CreateSessionResponse")
+	serverCertificate, err := ReadSimpleField[PascalByteString](ctx, "serverCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverCertificate' field"))
 	}
-	noOfServerEndpoints := _noOfServerEndpoints
 
-	serverEndpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverEndpoints", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("314"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfServerEndpoints))
+	noOfServerEndpoints, err := ReadSimpleField(ctx, "noOfServerEndpoints", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerEndpoints' field"))
+	}
+
+	serverEndpoints, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverEndpoints", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("314")), readBuffer), uint64(noOfServerEndpoints))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverEndpoints' field"))
 	}
 
-	// Simple Field (noOfServerSoftwareCertificates)
-	_noOfServerSoftwareCertificates, _noOfServerSoftwareCertificatesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerSoftwareCertificates", 32)
-	if _noOfServerSoftwareCertificatesErr != nil {
-		return nil, errors.Wrap(_noOfServerSoftwareCertificatesErr, "Error parsing 'noOfServerSoftwareCertificates' field of CreateSessionResponse")
+	noOfServerSoftwareCertificates, err := ReadSimpleField(ctx, "noOfServerSoftwareCertificates", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerSoftwareCertificates' field"))
 	}
-	noOfServerSoftwareCertificates := _noOfServerSoftwareCertificates
 
-	serverSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("346"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfServerSoftwareCertificates))
+	serverSoftwareCertificates, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "serverSoftwareCertificates", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("346")), readBuffer), uint64(noOfServerSoftwareCertificates))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverSoftwareCertificates' field"))
 	}
 
-	// Simple Field (serverSignature)
-	if pullErr := readBuffer.PullContext("serverSignature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverSignature")
-	}
-	_serverSignature, _serverSignatureErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("458"))
-	if _serverSignatureErr != nil {
-		return nil, errors.Wrap(_serverSignatureErr, "Error parsing 'serverSignature' field of CreateSessionResponse")
-	}
-	serverSignature := _serverSignature.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("serverSignature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverSignature")
+	serverSignature, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "serverSignature", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("458")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverSignature' field"))
 	}
 
-	// Simple Field (maxRequestMessageSize)
-	_maxRequestMessageSize, _maxRequestMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxRequestMessageSize", 32)
-	if _maxRequestMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxRequestMessageSizeErr, "Error parsing 'maxRequestMessageSize' field of CreateSessionResponse")
+	maxRequestMessageSize, err := ReadSimpleField(ctx, "maxRequestMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxRequestMessageSize' field"))
 	}
-	maxRequestMessageSize := _maxRequestMessageSize
 
 	if closeErr := readBuffer.CloseContext("CreateSessionResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CreateSessionResponse")

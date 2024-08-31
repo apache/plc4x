@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDefaultRampRateParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataDefaultRampRateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDefaultRampRateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultRampRate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultRampRate, error) {
+		return BACnetConstructedDataDefaultRampRateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDefaultRampRateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultRampRate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDefaultRampRateParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultRampRate)
-	if pullErr := readBuffer.PullContext("defaultRampRate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultRampRate")
-	}
-	_defaultRampRate, _defaultRampRateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultRampRateErr != nil {
-		return nil, errors.Wrap(_defaultRampRateErr, "Error parsing 'defaultRampRate' field of BACnetConstructedDataDefaultRampRate")
-	}
-	defaultRampRate := _defaultRampRate.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("defaultRampRate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultRampRate")
+	defaultRampRate, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "defaultRampRate", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultRampRate' field"))
 	}
 
 	// Virtual field

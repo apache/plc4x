@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDoorPulseTimeParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataDoorPulseTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDoorPulseTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorPulseTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorPulseTime, error) {
+		return BACnetConstructedDataDoorPulseTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDoorPulseTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorPulseTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDoorPulseTimeParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorPulseTime)
-	if pullErr := readBuffer.PullContext("doorPulseTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorPulseTime")
-	}
-	_doorPulseTime, _doorPulseTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorPulseTimeErr != nil {
-		return nil, errors.Wrap(_doorPulseTimeErr, "Error parsing 'doorPulseTime' field of BACnetConstructedDataDoorPulseTime")
-	}
-	doorPulseTime := _doorPulseTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorPulseTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorPulseTime")
+	doorPulseTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorPulseTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorPulseTime' field"))
 	}
 
 	// Virtual field

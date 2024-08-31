@@ -137,6 +137,12 @@ func APDUUnconfirmedRequestParse(ctx context.Context, theBytes []byte, apduLengt
 	return APDUUnconfirmedRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUUnconfirmedRequestParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUUnconfirmedRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUUnconfirmedRequest, error) {
+		return APDUUnconfirmedRequestParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUUnconfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUUnconfirmedRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,22 +154,14 @@ func APDUUnconfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 4), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (serviceRequest)
-	if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
-	}
-	_serviceRequest, _serviceRequestErr := BACnetUnconfirmedServiceRequestParseWithBuffer(ctx, readBuffer, uint16(uint16(apduLength)-uint16(uint16(1))))
-	if _serviceRequestErr != nil {
-		return nil, errors.Wrap(_serviceRequestErr, "Error parsing 'serviceRequest' field of APDUUnconfirmedRequest")
-	}
-	serviceRequest := _serviceRequest.(BACnetUnconfirmedServiceRequest)
-	if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serviceRequest")
+	serviceRequest, err := ReadSimpleField[BACnetUnconfirmedServiceRequest](ctx, "serviceRequest", ReadComplex[BACnetUnconfirmedServiceRequest](BACnetUnconfirmedServiceRequestParseWithBufferProducer[BACnetUnconfirmedServiceRequest]((uint16)(uint16(apduLength)-uint16(uint16(1)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequest' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUUnconfirmedRequest"); closeErr != nil {

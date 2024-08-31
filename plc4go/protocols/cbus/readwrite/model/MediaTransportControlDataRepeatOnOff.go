@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -168,6 +170,12 @@ func MediaTransportControlDataRepeatOnOffParse(ctx context.Context, theBytes []b
 	return MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataRepeatOnOffParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
+		return MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataRepeatOnOff, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,12 +187,10 @@ func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (repeatType)
-	_repeatType, _repeatTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("repeatType")
-	if _repeatTypeErr != nil {
-		return nil, errors.Wrap(_repeatTypeErr, "Error parsing 'repeatType' field of MediaTransportControlDataRepeatOnOff")
+	repeatType, err := ReadSimpleField(ctx, "repeatType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'repeatType' field"))
 	}
-	repeatType := _repeatType
 
 	// Virtual field
 	_isOff := bool((repeatType) == (0x00))

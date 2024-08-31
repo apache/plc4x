@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParse(ctx context.Context,
 	return BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
+		return BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataReliabilityEvaluationInhibit, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataReliabilityEvaluationInhibitParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (reliabilityEvaluationInhibit)
-	if pullErr := readBuffer.PullContext("reliabilityEvaluationInhibit"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for reliabilityEvaluationInhibit")
-	}
-	_reliabilityEvaluationInhibit, _reliabilityEvaluationInhibitErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _reliabilityEvaluationInhibitErr != nil {
-		return nil, errors.Wrap(_reliabilityEvaluationInhibitErr, "Error parsing 'reliabilityEvaluationInhibit' field of BACnetConstructedDataReliabilityEvaluationInhibit")
-	}
-	reliabilityEvaluationInhibit := _reliabilityEvaluationInhibit.(BACnetApplicationTagBoolean)
-	if closeErr := readBuffer.CloseContext("reliabilityEvaluationInhibit"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for reliabilityEvaluationInhibit")
+	reliabilityEvaluationInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "reliabilityEvaluationInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reliabilityEvaluationInhibit' field"))
 	}
 
 	// Virtual field

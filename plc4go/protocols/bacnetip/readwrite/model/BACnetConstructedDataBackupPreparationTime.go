@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBackupPreparationTimeParse(ctx context.Context, theByt
 	return BACnetConstructedDataBackupPreparationTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBackupPreparationTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupPreparationTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupPreparationTime, error) {
+		return BACnetConstructedDataBackupPreparationTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBackupPreparationTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupPreparationTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBackupPreparationTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (backupPreparationTime)
-	if pullErr := readBuffer.PullContext("backupPreparationTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for backupPreparationTime")
-	}
-	_backupPreparationTime, _backupPreparationTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _backupPreparationTimeErr != nil {
-		return nil, errors.Wrap(_backupPreparationTimeErr, "Error parsing 'backupPreparationTime' field of BACnetConstructedDataBackupPreparationTime")
-	}
-	backupPreparationTime := _backupPreparationTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("backupPreparationTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for backupPreparationTime")
+	backupPreparationTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupPreparationTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupPreparationTime' field"))
 	}
 
 	// Virtual field

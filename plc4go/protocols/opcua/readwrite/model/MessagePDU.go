@@ -136,6 +136,17 @@ func MessagePDUParse(ctx context.Context, theBytes []byte, response bool) (Messa
 	return MessagePDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func MessagePDUParseWithBufferProducer[T MessagePDU](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := MessagePDUParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (MessagePDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -147,25 +158,17 @@ func MessagePDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageType, err := ReadDiscriminatorField[string](ctx, "messageType", ReadString(readBuffer, 24))
+	messageType, err := ReadDiscriminatorField[string](ctx, "messageType", ReadString(readBuffer, uint32(24)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}
 
-	// Simple Field (chunk)
-	if pullErr := readBuffer.PullContext("chunk"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for chunk")
-	}
-	_chunk, _chunkErr := ChunkTypeParseWithBuffer(ctx, readBuffer)
-	if _chunkErr != nil {
-		return nil, errors.Wrap(_chunkErr, "Error parsing 'chunk' field of MessagePDU")
-	}
-	chunk := _chunk
-	if closeErr := readBuffer.CloseContext("chunk"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for chunk")
+	chunk, err := ReadEnumField[ChunkType](ctx, "chunk", "ChunkType", ReadEnum(ChunkTypeByValue, ReadString(readBuffer, uint32(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chunk' field"))
 	}
 
-	totalLength, err := ReadImplicitField[uint32](ctx, "totalLength", ReadUnsignedInt(readBuffer, 32))
+	totalLength, err := ReadImplicitField[uint32](ctx, "totalLength", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalLength' field"))
 	}

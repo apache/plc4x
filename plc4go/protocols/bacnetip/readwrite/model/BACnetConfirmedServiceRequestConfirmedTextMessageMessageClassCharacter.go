@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
+		return BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacterParse
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (characterValue)
-	if pullErr := readBuffer.PullContext("characterValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for characterValue")
-	}
-	_characterValue, _characterValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _characterValueErr != nil {
-		return nil, errors.Wrap(_characterValueErr, "Error parsing 'characterValue' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter")
-	}
-	characterValue := _characterValue.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("characterValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for characterValue")
+	characterValue, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "characterValue", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'characterValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassCharacter"); closeErr != nil {

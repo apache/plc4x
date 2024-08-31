@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func AnnotationDataTypeParse(ctx context.Context, theBytes []byte, identifier st
 	return AnnotationDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AnnotationDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AnnotationDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AnnotationDataType, error) {
+		return AnnotationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AnnotationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AnnotationDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,43 +171,19 @@ func AnnotationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (annotation)
-	if pullErr := readBuffer.PullContext("annotation"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for annotation")
-	}
-	_annotation, _annotationErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _annotationErr != nil {
-		return nil, errors.Wrap(_annotationErr, "Error parsing 'annotation' field of AnnotationDataType")
-	}
-	annotation := _annotation.(PascalString)
-	if closeErr := readBuffer.CloseContext("annotation"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for annotation")
+	annotation, err := ReadSimpleField[PascalString](ctx, "annotation", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'annotation' field"))
 	}
 
-	// Simple Field (discipline)
-	if pullErr := readBuffer.PullContext("discipline"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for discipline")
-	}
-	_discipline, _disciplineErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _disciplineErr != nil {
-		return nil, errors.Wrap(_disciplineErr, "Error parsing 'discipline' field of AnnotationDataType")
-	}
-	discipline := _discipline.(PascalString)
-	if closeErr := readBuffer.CloseContext("discipline"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for discipline")
+	discipline, err := ReadSimpleField[PascalString](ctx, "discipline", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discipline' field"))
 	}
 
-	// Simple Field (uri)
-	if pullErr := readBuffer.PullContext("uri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for uri")
-	}
-	_uri, _uriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _uriErr != nil {
-		return nil, errors.Wrap(_uriErr, "Error parsing 'uri' field of AnnotationDataType")
-	}
-	uri := _uri.(PascalString)
-	if closeErr := readBuffer.CloseContext("uri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for uri")
+	uri, err := ReadSimpleField[PascalString](ctx, "uri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'uri' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AnnotationDataType"); closeErr != nil {

@@ -109,6 +109,12 @@ func ApduDataIndividualAddressWriteParse(ctx context.Context, theBytes []byte, d
 	return ApduDataIndividualAddressWriteParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataIndividualAddressWriteParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataIndividualAddressWrite, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataIndividualAddressWrite, error) {
+		return ApduDataIndividualAddressWriteParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataIndividualAddressWriteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataIndividualAddressWrite, error) {
 	positionAware := readBuffer
 	_ = positionAware

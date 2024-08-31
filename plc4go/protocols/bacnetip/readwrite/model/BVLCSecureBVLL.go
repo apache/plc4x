@@ -137,6 +137,12 @@ func BVLCSecureBVLLParse(ctx context.Context, theBytes []byte, bvlcPayloadLength
 	return BVLCSecureBVLLParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
+func BVLCSecureBVLLParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCSecureBVLL, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCSecureBVLL, error) {
+		return BVLCSecureBVLLParseWithBuffer(ctx, readBuffer, bvlcPayloadLength)
+	}
+}
+
 func BVLCSecureBVLLParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCSecureBVLL, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -172,6 +172,12 @@ func TransferSubscriptionsRequestParse(ctx context.Context, theBytes []byte, ide
 	return TransferSubscriptionsRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func TransferSubscriptionsRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (TransferSubscriptionsRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TransferSubscriptionsRequest, error) {
+		return TransferSubscriptionsRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (TransferSubscriptionsRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,42 +189,30 @@ func TransferSubscriptionsRequestParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of TransferSubscriptionsRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (noOfSubscriptionIds)
-	_noOfSubscriptionIds, _noOfSubscriptionIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSubscriptionIds", 32)
-	if _noOfSubscriptionIdsErr != nil {
-		return nil, errors.Wrap(_noOfSubscriptionIdsErr, "Error parsing 'noOfSubscriptionIds' field of TransferSubscriptionsRequest")
+	noOfSubscriptionIds, err := ReadSimpleField(ctx, "noOfSubscriptionIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSubscriptionIds' field"))
 	}
-	noOfSubscriptionIds := _noOfSubscriptionIds
 
-	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, 32), uint64(noOfSubscriptionIds))
+	subscriptionIds, err := ReadCountArrayField[uint32](ctx, "subscriptionIds", ReadUnsignedInt(readBuffer, uint8(32)), uint64(noOfSubscriptionIds))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscriptionIds' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (sendInitialValues)
-	_sendInitialValues, _sendInitialValuesErr := /*TODO: migrate me*/ readBuffer.ReadBit("sendInitialValues")
-	if _sendInitialValuesErr != nil {
-		return nil, errors.Wrap(_sendInitialValuesErr, "Error parsing 'sendInitialValues' field of TransferSubscriptionsRequest")
+	sendInitialValues, err := ReadSimpleField(ctx, "sendInitialValues", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendInitialValues' field"))
 	}
-	sendInitialValues := _sendInitialValues
 
 	if closeErr := readBuffer.CloseContext("TransferSubscriptionsRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TransferSubscriptionsRequest")

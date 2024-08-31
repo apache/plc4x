@@ -159,6 +159,12 @@ func APDUErrorParse(ctx context.Context, theBytes []byte, apduLength uint16) (AP
 	return APDUErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDUErrorParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUError, error) {
+		return APDUErrorParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,42 +176,24 @@ func APDUErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 4), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUError")
-	}
-	originalInvokeId := _originalInvokeId
-
-	// Simple Field (errorChoice)
-	if pullErr := readBuffer.PullContext("errorChoice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorChoice")
-	}
-	_errorChoice, _errorChoiceErr := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-	if _errorChoiceErr != nil {
-		return nil, errors.Wrap(_errorChoiceErr, "Error parsing 'errorChoice' field of APDUError")
-	}
-	errorChoice := _errorChoice
-	if closeErr := readBuffer.CloseContext("errorChoice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorChoice")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
 
-	// Simple Field (error)
-	if pullErr := readBuffer.PullContext("error"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for error")
+	errorChoice, err := ReadEnumField[BACnetConfirmedServiceChoice](ctx, "errorChoice", "BACnetConfirmedServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorChoice' field"))
 	}
-	_error, _errorErr := BACnetErrorParseWithBuffer(ctx, readBuffer, BACnetConfirmedServiceChoice(errorChoice))
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of APDUError")
-	}
-	error := _error.(BACnetError)
-	if closeErr := readBuffer.CloseContext("error"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for error")
+
+	error, err := ReadSimpleField[BACnetError](ctx, "error", ReadComplex[BACnetError](BACnetErrorParseWithBufferProducer[BACnetError]((BACnetConfirmedServiceChoice)(errorChoice)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUError"); closeErr != nil {

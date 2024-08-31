@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ConfigurationVersionDataTypeParse(ctx context.Context, theBytes []byte, ide
 	return ConfigurationVersionDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ConfigurationVersionDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ConfigurationVersionDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConfigurationVersionDataType, error) {
+		return ConfigurationVersionDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ConfigurationVersionDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ConfigurationVersionDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func ConfigurationVersionDataTypeParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (majorVersion)
-	_majorVersion, _majorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("majorVersion", 32)
-	if _majorVersionErr != nil {
-		return nil, errors.Wrap(_majorVersionErr, "Error parsing 'majorVersion' field of ConfigurationVersionDataType")
+	majorVersion, err := ReadSimpleField(ctx, "majorVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'majorVersion' field"))
 	}
-	majorVersion := _majorVersion
 
-	// Simple Field (minorVersion)
-	_minorVersion, _minorVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("minorVersion", 32)
-	if _minorVersionErr != nil {
-		return nil, errors.Wrap(_minorVersionErr, "Error parsing 'minorVersion' field of ConfigurationVersionDataType")
+	minorVersion, err := ReadSimpleField(ctx, "minorVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minorVersion' field"))
 	}
-	minorVersion := _minorVersion
 
 	if closeErr := readBuffer.CloseContext("ConfigurationVersionDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ConfigurationVersionDataType")

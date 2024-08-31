@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func COTPParameterTpduSizeParse(ctx context.Context, theBytes []byte, rest uint8
 	return COTPParameterTpduSizeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
+func COTPParameterTpduSizeParseWithBufferProducer(rest uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterTpduSize, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (COTPParameterTpduSize, error) {
+		return COTPParameterTpduSizeParseWithBuffer(ctx, readBuffer, rest)
+	}
+}
+
 func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameterTpduSize, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func COTPParameterTpduSizeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (tpduSize)
-	if pullErr := readBuffer.PullContext("tpduSize"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tpduSize")
-	}
-	_tpduSize, _tpduSizeErr := COTPTpduSizeParseWithBuffer(ctx, readBuffer)
-	if _tpduSizeErr != nil {
-		return nil, errors.Wrap(_tpduSizeErr, "Error parsing 'tpduSize' field of COTPParameterTpduSize")
-	}
-	tpduSize := _tpduSize
-	if closeErr := readBuffer.CloseContext("tpduSize"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tpduSize")
+	tpduSize, err := ReadEnumField[COTPTpduSize](ctx, "tpduSize", "COTPTpduSize", ReadEnum(COTPTpduSizeByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tpduSize' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPParameterTpduSize"); closeErr != nil {

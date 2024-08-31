@@ -130,6 +130,12 @@ func ExtensionObjectEncodingMaskParse(ctx context.Context, theBytes []byte) (Ext
 	return ExtensionObjectEncodingMaskParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ExtensionObjectEncodingMaskParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionObjectEncodingMask, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionObjectEncodingMask, error) {
+		return ExtensionObjectEncodingMaskParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ExtensionObjectEncodingMaskParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionObjectEncodingMask, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,31 +147,25 @@ func ExtensionObjectEncodingMaskParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, 5), int8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, uint8(5)), int8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (typeIdSpecified)
-	_typeIdSpecified, _typeIdSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("typeIdSpecified")
-	if _typeIdSpecifiedErr != nil {
-		return nil, errors.Wrap(_typeIdSpecifiedErr, "Error parsing 'typeIdSpecified' field of ExtensionObjectEncodingMask")
+	typeIdSpecified, err := ReadSimpleField(ctx, "typeIdSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdSpecified' field"))
 	}
-	typeIdSpecified := _typeIdSpecified
 
-	// Simple Field (xmlbody)
-	_xmlbody, _xmlbodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("xmlbody")
-	if _xmlbodyErr != nil {
-		return nil, errors.Wrap(_xmlbodyErr, "Error parsing 'xmlbody' field of ExtensionObjectEncodingMask")
+	xmlbody, err := ReadSimpleField(ctx, "xmlbody", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'xmlbody' field"))
 	}
-	xmlbody := _xmlbody
 
-	// Simple Field (binaryBody)
-	_binaryBody, _binaryBodyErr := /*TODO: migrate me*/ readBuffer.ReadBit("binaryBody")
-	if _binaryBodyErr != nil {
-		return nil, errors.Wrap(_binaryBodyErr, "Error parsing 'binaryBody' field of ExtensionObjectEncodingMask")
+	binaryBody, err := ReadSimpleField(ctx, "binaryBody", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryBody' field"))
 	}
-	binaryBody := _binaryBody
 
 	if closeErr := readBuffer.CloseContext("ExtensionObjectEncodingMask"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ExtensionObjectEncodingMask")

@@ -130,6 +130,17 @@ func SALDataParse(ctx context.Context, theBytes []byte, applicationId Applicatio
 	return SALDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataParseWithBufferProducer[T SALData](applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := SALDataParseWithBuffer(ctx, readBuffer, applicationId)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func SALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -205,13 +216,7 @@ func SALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, ap
 	}
 	_child = _childTemp.(SALDataChildSerializeRequirement)
 
-	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](func(ctx context.Context, buffer utils.ReadBuffer) (SALData, error) {
-		v, err := SALDataParseWithBuffer(ctx, readBuffer, (ApplicationId)(applicationId))
-		if err != nil {
-			return nil, err
-		}
-		return v.(SALData), nil
-	}, readBuffer), true)
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](SALDataParseWithBufferProducer[SALData]((ApplicationId)(applicationId)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
 	}

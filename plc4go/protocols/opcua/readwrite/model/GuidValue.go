@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -147,6 +149,12 @@ func GuidValueParse(ctx context.Context, theBytes []byte) (GuidValue, error) {
 	return GuidValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func GuidValueParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (GuidValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (GuidValue, error) {
+		return GuidValueParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (GuidValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -158,26 +166,20 @@ func GuidValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (data1)
-	_data1, _data1Err := /*TODO: migrate me*/ readBuffer.ReadUint32("data1", 32)
-	if _data1Err != nil {
-		return nil, errors.Wrap(_data1Err, "Error parsing 'data1' field of GuidValue")
+	data1, err := ReadSimpleField(ctx, "data1", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data1' field"))
 	}
-	data1 := _data1
 
-	// Simple Field (data2)
-	_data2, _data2Err := /*TODO: migrate me*/ readBuffer.ReadUint16("data2", 16)
-	if _data2Err != nil {
-		return nil, errors.Wrap(_data2Err, "Error parsing 'data2' field of GuidValue")
+	data2, err := ReadSimpleField(ctx, "data2", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data2' field"))
 	}
-	data2 := _data2
 
-	// Simple Field (data3)
-	_data3, _data3Err := /*TODO: migrate me*/ readBuffer.ReadUint16("data3", 16)
-	if _data3Err != nil {
-		return nil, errors.Wrap(_data3Err, "Error parsing 'data3' field of GuidValue")
+	data3, err := ReadSimpleField(ctx, "data3", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data3' field"))
 	}
-	data3 := _data3
 
 	data4, err := readBuffer.ReadByteArray("data4", int(int32(2)))
 	if err != nil {

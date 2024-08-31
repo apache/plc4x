@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,6 +160,12 @@ func MediaTransportControlDataSourcePowerControlParse(ctx context.Context, theBy
 	return MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func MediaTransportControlDataSourcePowerControlParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
+		return MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataSourcePowerControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,12 +177,10 @@ func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (state)
-	_state, _stateErr := /*TODO: migrate me*/ readBuffer.ReadByte("state")
-	if _stateErr != nil {
-		return nil, errors.Wrap(_stateErr, "Error parsing 'state' field of MediaTransportControlDataSourcePowerControl")
+	state, err := ReadSimpleField(ctx, "state", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'state' field"))
 	}
-	state := _state
 
 	// Virtual field
 	_isShouldPowerOn := bool((state) == (0x00))

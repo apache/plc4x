@@ -186,6 +186,12 @@ func DF1SymbolMessageFrameParse(ctx context.Context, theBytes []byte) (DF1Symbol
 	return DF1SymbolMessageFrameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func DF1SymbolMessageFrameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
+		return DF1SymbolMessageFrameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1SymbolMessageFrame, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -197,46 +203,34 @@ func DF1SymbolMessageFrameParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (destinationAddress)
-	_destinationAddress, _destinationAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("destinationAddress", 8)
-	if _destinationAddressErr != nil {
-		return nil, errors.Wrap(_destinationAddressErr, "Error parsing 'destinationAddress' field of DF1SymbolMessageFrame")
-	}
-	destinationAddress := _destinationAddress
-
-	// Simple Field (sourceAddress)
-	_sourceAddress, _sourceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sourceAddress", 8)
-	if _sourceAddressErr != nil {
-		return nil, errors.Wrap(_sourceAddressErr, "Error parsing 'sourceAddress' field of DF1SymbolMessageFrame")
-	}
-	sourceAddress := _sourceAddress
-
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
-	}
-	_command, _commandErr := DF1CommandParseWithBuffer(ctx, readBuffer)
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of DF1SymbolMessageFrame")
-	}
-	command := _command.(DF1Command)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	destinationAddress, err := ReadSimpleField(ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
 
-	messageEnd, err := ReadConstField[uint8](ctx, "messageEnd", ReadUnsignedByte(readBuffer, 8), DF1SymbolMessageFrame_MESSAGEEND, codegen.WithByteOrder(binary.BigEndian))
+	sourceAddress, err := ReadSimpleField(ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
+	}
+
+	command, err := ReadSimpleField[DF1Command](ctx, "command", ReadComplex[DF1Command](DF1CommandParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
+	}
+
+	messageEnd, err := ReadConstField[uint8](ctx, "messageEnd", ReadUnsignedByte(readBuffer, uint8(8)), DF1SymbolMessageFrame_MESSAGEEND, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageEnd' field"))
 	}
 	_ = messageEnd
 
-	endTransaction, err := ReadConstField[uint8](ctx, "endTransaction", ReadUnsignedByte(readBuffer, 8), DF1SymbolMessageFrame_ENDTRANSACTION, codegen.WithByteOrder(binary.BigEndian))
+	endTransaction, err := ReadConstField[uint8](ctx, "endTransaction", ReadUnsignedByte(readBuffer, uint8(8)), DF1SymbolMessageFrame_ENDTRANSACTION, codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endTransaction' field"))
 	}
 	_ = endTransaction
 
-	crc, err := ReadChecksumField[uint16](ctx, "crc", ReadUnsignedShort(readBuffer, 16), CrcCheck(ctx, destinationAddress, sourceAddress, command), codegen.WithByteOrder(binary.BigEndian))
+	crc, err := ReadChecksumField[uint16](ctx, "crc", ReadUnsignedShort(readBuffer, uint8(16)), CrcCheck(ctx, destinationAddress, sourceAddress, command), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'crc' field"))
 	}

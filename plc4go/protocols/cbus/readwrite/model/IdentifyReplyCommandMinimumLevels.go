@@ -132,6 +132,12 @@ func IdentifyReplyCommandMinimumLevelsParse(ctx context.Context, theBytes []byte
 	return IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), attribute, numBytes)
 }
 
+func IdentifyReplyCommandMinimumLevelsParseWithBufferProducer(attribute Attribute, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandMinimumLevels, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (IdentifyReplyCommandMinimumLevels, error) {
+		return IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx, readBuffer, attribute, numBytes)
+	}
+}
+
 func IdentifyReplyCommandMinimumLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, attribute Attribute, numBytes uint8) (IdentifyReplyCommandMinimumLevels, error) {
 	positionAware := readBuffer
 	_ = positionAware

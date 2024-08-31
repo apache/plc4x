@@ -150,6 +150,12 @@ func EndpointUrlListDataTypeParse(ctx context.Context, theBytes []byte, identifi
 	return EndpointUrlListDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EndpointUrlListDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointUrlListDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointUrlListDataType, error) {
+		return EndpointUrlListDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointUrlListDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -161,12 +167,10 @@ func EndpointUrlListDataTypeParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfEndpointUrlList)
-	_noOfEndpointUrlList, _noOfEndpointUrlListErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEndpointUrlList", 32)
-	if _noOfEndpointUrlListErr != nil {
-		return nil, errors.Wrap(_noOfEndpointUrlListErr, "Error parsing 'noOfEndpointUrlList' field of EndpointUrlListDataType")
+	noOfEndpointUrlList, err := ReadSimpleField(ctx, "noOfEndpointUrlList", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEndpointUrlList' field"))
 	}
-	noOfEndpointUrlList := _noOfEndpointUrlList
 
 	endpointUrlList, err := ReadCountArrayField[PascalString](ctx, "endpointUrlList", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfEndpointUrlList))
 	if err != nil {

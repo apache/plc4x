@@ -109,6 +109,12 @@ func FirmataCommandSystemResetParse(ctx context.Context, theBytes []byte, respon
 	return FirmataCommandSystemResetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandSystemResetParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSystemReset, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSystemReset, error) {
+		return FirmataCommandSystemResetParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataCommandSystemResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSystemReset, error) {
 	positionAware := readBuffer
 	_ = positionAware

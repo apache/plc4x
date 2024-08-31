@@ -163,6 +163,12 @@ func S7ParameterSetupCommunicationParse(ctx context.Context, theBytes []byte, me
 	return S7ParameterSetupCommunicationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
+func S7ParameterSetupCommunicationParseWithBufferProducer(messageType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterSetupCommunication, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterSetupCommunication, error) {
+		return S7ParameterSetupCommunicationParseWithBuffer(ctx, readBuffer, messageType)
+	}
+}
+
 func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterSetupCommunication, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,31 +180,25 @@ func S7ParameterSetupCommunicationParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (maxAmqCaller)
-	_maxAmqCaller, _maxAmqCallerErr := /*TODO: migrate me*/ readBuffer.ReadUint16("maxAmqCaller", 16)
-	if _maxAmqCallerErr != nil {
-		return nil, errors.Wrap(_maxAmqCallerErr, "Error parsing 'maxAmqCaller' field of S7ParameterSetupCommunication")
+	maxAmqCaller, err := ReadSimpleField(ctx, "maxAmqCaller", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxAmqCaller' field"))
 	}
-	maxAmqCaller := _maxAmqCaller
 
-	// Simple Field (maxAmqCallee)
-	_maxAmqCallee, _maxAmqCalleeErr := /*TODO: migrate me*/ readBuffer.ReadUint16("maxAmqCallee", 16)
-	if _maxAmqCalleeErr != nil {
-		return nil, errors.Wrap(_maxAmqCalleeErr, "Error parsing 'maxAmqCallee' field of S7ParameterSetupCommunication")
+	maxAmqCallee, err := ReadSimpleField(ctx, "maxAmqCallee", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxAmqCallee' field"))
 	}
-	maxAmqCallee := _maxAmqCallee
 
-	// Simple Field (pduLength)
-	_pduLength, _pduLengthErr := /*TODO: migrate me*/ readBuffer.ReadUint16("pduLength", 16)
-	if _pduLengthErr != nil {
-		return nil, errors.Wrap(_pduLengthErr, "Error parsing 'pduLength' field of S7ParameterSetupCommunication")
+	pduLength, err := ReadSimpleField(ctx, "pduLength", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pduLength' field"))
 	}
-	pduLength := _pduLength
 
 	if closeErr := readBuffer.CloseContext("S7ParameterSetupCommunication"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterSetupCommunication")

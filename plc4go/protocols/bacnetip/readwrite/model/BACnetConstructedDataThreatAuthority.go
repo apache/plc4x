@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataThreatAuthorityParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataThreatAuthorityParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataThreatAuthorityParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataThreatAuthority, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataThreatAuthority, error) {
+		return BACnetConstructedDataThreatAuthorityParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataThreatAuthorityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataThreatAuthority, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataThreatAuthorityParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (threatAuthority)
-	if pullErr := readBuffer.PullContext("threatAuthority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for threatAuthority")
-	}
-	_threatAuthority, _threatAuthorityErr := BACnetAccessThreatLevelParseWithBuffer(ctx, readBuffer)
-	if _threatAuthorityErr != nil {
-		return nil, errors.Wrap(_threatAuthorityErr, "Error parsing 'threatAuthority' field of BACnetConstructedDataThreatAuthority")
-	}
-	threatAuthority := _threatAuthority.(BACnetAccessThreatLevel)
-	if closeErr := readBuffer.CloseContext("threatAuthority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for threatAuthority")
+	threatAuthority, err := ReadSimpleField[BACnetAccessThreatLevel](ctx, "threatAuthority", ReadComplex[BACnetAccessThreatLevel](BACnetAccessThreatLevelParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'threatAuthority' field"))
 	}
 
 	// Virtual field

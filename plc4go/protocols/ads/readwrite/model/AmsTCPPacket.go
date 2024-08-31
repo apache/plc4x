@@ -115,6 +115,12 @@ func AmsTCPPacketParse(ctx context.Context, theBytes []byte) (AmsTCPPacket, erro
 	return AmsTCPPacketParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.LittleEndian)))
 }
 
+func AmsTCPPacketParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
+		return AmsTCPPacketParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsTCPPacket, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -126,28 +132,20 @@ func AmsTCPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32), codegen.WithByteOrder(binary.LittleEndian))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)), codegen.WithByteOrder(binary.LittleEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
 	_ = length
 
-	// Simple Field (userdata)
-	if pullErr := readBuffer.PullContext("userdata"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userdata")
-	}
-	_userdata, _userdataErr := AmsPacketParseWithBuffer(ctx, readBuffer)
-	if _userdataErr != nil {
-		return nil, errors.Wrap(_userdataErr, "Error parsing 'userdata' field of AmsTCPPacket")
-	}
-	userdata := _userdata.(AmsPacket)
-	if closeErr := readBuffer.CloseContext("userdata"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userdata")
+	userdata, err := ReadSimpleField[AmsPacket](ctx, "userdata", ReadComplex[AmsPacket](AmsPacketParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userdata' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AmsTCPPacket"); closeErr != nil {

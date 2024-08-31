@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLoggingObjectParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataLoggingObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLoggingObjectParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLoggingObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLoggingObject, error) {
+		return BACnetConstructedDataLoggingObjectParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLoggingObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLoggingObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLoggingObjectParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (loggingObject)
-	if pullErr := readBuffer.PullContext("loggingObject"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for loggingObject")
-	}
-	_loggingObject, _loggingObjectErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _loggingObjectErr != nil {
-		return nil, errors.Wrap(_loggingObjectErr, "Error parsing 'loggingObject' field of BACnetConstructedDataLoggingObject")
-	}
-	loggingObject := _loggingObject.(BACnetApplicationTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("loggingObject"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for loggingObject")
+	loggingObject, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "loggingObject", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'loggingObject' field"))
 	}
 
 	// Virtual field

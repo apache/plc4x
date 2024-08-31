@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParse(ctx context.Context, t
 	return BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
+		return BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBACnetIPv6MulticastAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBACnetIPv6MulticastAddressParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ipv6MulticastAddress)
-	if pullErr := readBuffer.PullContext("ipv6MulticastAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ipv6MulticastAddress")
-	}
-	_ipv6MulticastAddress, _ipv6MulticastAddressErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _ipv6MulticastAddressErr != nil {
-		return nil, errors.Wrap(_ipv6MulticastAddressErr, "Error parsing 'ipv6MulticastAddress' field of BACnetConstructedDataBACnetIPv6MulticastAddress")
-	}
-	ipv6MulticastAddress := _ipv6MulticastAddress.(BACnetApplicationTagOctetString)
-	if closeErr := readBuffer.CloseContext("ipv6MulticastAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ipv6MulticastAddress")
+	ipv6MulticastAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipv6MulticastAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6MulticastAddress' field"))
 	}
 
 	// Virtual field

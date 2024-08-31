@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -131,6 +134,12 @@ func SearchRequestParse(ctx context.Context, theBytes []byte) (SearchRequest, er
 	return SearchRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func SearchRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SearchRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SearchRequest, error) {
+		return SearchRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SearchRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SearchRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -142,17 +151,9 @@ func SearchRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (hpaiIDiscoveryEndpoint)
-	if pullErr := readBuffer.PullContext("hpaiIDiscoveryEndpoint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for hpaiIDiscoveryEndpoint")
-	}
-	_hpaiIDiscoveryEndpoint, _hpaiIDiscoveryEndpointErr := HPAIDiscoveryEndpointParseWithBuffer(ctx, readBuffer)
-	if _hpaiIDiscoveryEndpointErr != nil {
-		return nil, errors.Wrap(_hpaiIDiscoveryEndpointErr, "Error parsing 'hpaiIDiscoveryEndpoint' field of SearchRequest")
-	}
-	hpaiIDiscoveryEndpoint := _hpaiIDiscoveryEndpoint.(HPAIDiscoveryEndpoint)
-	if closeErr := readBuffer.CloseContext("hpaiIDiscoveryEndpoint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for hpaiIDiscoveryEndpoint")
+	hpaiIDiscoveryEndpoint, err := ReadSimpleField[HPAIDiscoveryEndpoint](ctx, "hpaiIDiscoveryEndpoint", ReadComplex[HPAIDiscoveryEndpoint](HPAIDiscoveryEndpointParseWithBuffer, readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiIDiscoveryEndpoint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SearchRequest"); closeErr != nil {

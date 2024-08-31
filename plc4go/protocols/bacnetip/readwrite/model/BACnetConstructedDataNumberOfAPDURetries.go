@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNumberOfAPDURetriesParse(ctx context.Context, theBytes
 	return BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNumberOfAPDURetriesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfAPDURetries, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfAPDURetries, error) {
+		return BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAPDURetries, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfApduRetries)
-	if pullErr := readBuffer.PullContext("numberOfApduRetries"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numberOfApduRetries")
-	}
-	_numberOfApduRetries, _numberOfApduRetriesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _numberOfApduRetriesErr != nil {
-		return nil, errors.Wrap(_numberOfApduRetriesErr, "Error parsing 'numberOfApduRetries' field of BACnetConstructedDataNumberOfAPDURetries")
-	}
-	numberOfApduRetries := _numberOfApduRetries.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numberOfApduRetries"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numberOfApduRetries")
+	numberOfApduRetries, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfApduRetries' field"))
 	}
 
 	// Virtual field

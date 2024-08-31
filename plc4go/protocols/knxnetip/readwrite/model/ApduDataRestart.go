@@ -109,6 +109,12 @@ func ApduDataRestartParse(ctx context.Context, theBytes []byte, dataLength uint8
 	return ApduDataRestartParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), dataLength)
 }
 
+func ApduDataRestartParseWithBufferProducer(dataLength uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataRestart, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ApduDataRestart, error) {
+		return ApduDataRestartParseWithBuffer(ctx, readBuffer, dataLength)
+	}
+}
+
 func ApduDataRestartParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, dataLength uint8) (ApduDataRestart, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDefaultStepIncrementParse(ctx context.Context, theByte
 	return BACnetConstructedDataDefaultStepIncrementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDefaultStepIncrementParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultStepIncrement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDefaultStepIncrement, error) {
+		return BACnetConstructedDataDefaultStepIncrementParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDefaultStepIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDefaultStepIncrementParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (defaultStepIncrement)
-	if pullErr := readBuffer.PullContext("defaultStepIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for defaultStepIncrement")
-	}
-	_defaultStepIncrement, _defaultStepIncrementErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _defaultStepIncrementErr != nil {
-		return nil, errors.Wrap(_defaultStepIncrementErr, "Error parsing 'defaultStepIncrement' field of BACnetConstructedDataDefaultStepIncrement")
-	}
-	defaultStepIncrement := _defaultStepIncrement.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("defaultStepIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for defaultStepIncrement")
+	defaultStepIncrement, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "defaultStepIncrement", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultStepIncrement' field"))
 	}
 
 	// Virtual field

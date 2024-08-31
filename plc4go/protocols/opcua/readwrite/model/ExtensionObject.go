@@ -151,6 +151,12 @@ func ExtensionObjectParse(ctx context.Context, theBytes []byte, includeEncodingM
 	return ExtensionObjectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), includeEncodingMask)
 }
 
+func ExtensionObjectParseWithBufferProducer(includeEncodingMask bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionObject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ExtensionObject, error) {
+		return ExtensionObjectParseWithBuffer(ctx, readBuffer, includeEncodingMask)
+	}
+}
+
 func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, includeEncodingMask bool) (ExtensionObject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -162,17 +168,9 @@ func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (typeId)
-	if pullErr := readBuffer.PullContext("typeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeId")
-	}
-	_typeId, _typeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeIdErr != nil {
-		return nil, errors.Wrap(_typeIdErr, "Error parsing 'typeId' field of ExtensionObject")
-	}
-	typeId := _typeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeId")
+	typeId, err := ReadSimpleField[ExpandedNodeId](ctx, "typeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeId' field"))
 	}
 
 	_encodingMask, err := ReadOptionalField[ExtensionObjectEncodingMask](ctx, "encodingMask", ReadComplex[ExtensionObjectEncodingMask](ExtensionObjectEncodingMaskParseWithBuffer, readBuffer), includeEncodingMask)
@@ -189,17 +187,9 @@ func ExtensionObjectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	identifier := fmt.Sprintf("%v", _identifier)
 	_ = identifier
 
-	// Simple Field (body)
-	if pullErr := readBuffer.PullContext("body"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for body")
-	}
-	_body, _bodyErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string(identifier))
-	if _bodyErr != nil {
-		return nil, errors.Wrap(_bodyErr, "Error parsing 'body' field of ExtensionObject")
-	}
-	body := _body.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("body"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for body")
+	body, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "body", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)(identifier)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'body' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ExtensionObject"); closeErr != nil {

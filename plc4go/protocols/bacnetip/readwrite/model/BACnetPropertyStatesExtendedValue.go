@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesExtendedValueParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesExtendedValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesExtendedValueParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesExtendedValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesExtendedValue, error) {
+		return BACnetPropertyStatesExtendedValueParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesExtendedValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesExtendedValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesExtendedValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (extendedValue)
-	if pullErr := readBuffer.PullContext("extendedValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for extendedValue")
-	}
-	_extendedValue, _extendedValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _extendedValueErr != nil {
-		return nil, errors.Wrap(_extendedValueErr, "Error parsing 'extendedValue' field of BACnetPropertyStatesExtendedValue")
-	}
-	extendedValue := _extendedValue.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("extendedValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for extendedValue")
+	extendedValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesExtendedValue"); closeErr != nil {

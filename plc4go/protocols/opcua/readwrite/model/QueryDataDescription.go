@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,6 +154,12 @@ func QueryDataDescriptionParse(ctx context.Context, theBytes []byte, identifier 
 	return QueryDataDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryDataDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryDataDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryDataDescription, error) {
+		return QueryDataDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryDataDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryDataDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -163,37 +171,19 @@ func QueryDataDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (relativePath)
-	if pullErr := readBuffer.PullContext("relativePath"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for relativePath")
-	}
-	_relativePath, _relativePathErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("542"))
-	if _relativePathErr != nil {
-		return nil, errors.Wrap(_relativePathErr, "Error parsing 'relativePath' field of QueryDataDescription")
-	}
-	relativePath := _relativePath.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("relativePath"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for relativePath")
+	relativePath, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "relativePath", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("542")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relativePath' field"))
 	}
 
-	// Simple Field (attributeId)
-	_attributeId, _attributeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint32("attributeId", 32)
-	if _attributeIdErr != nil {
-		return nil, errors.Wrap(_attributeIdErr, "Error parsing 'attributeId' field of QueryDataDescription")
+	attributeId, err := ReadSimpleField(ctx, "attributeId", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'attributeId' field"))
 	}
-	attributeId := _attributeId
 
-	// Simple Field (indexRange)
-	if pullErr := readBuffer.PullContext("indexRange"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for indexRange")
-	}
-	_indexRange, _indexRangeErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _indexRangeErr != nil {
-		return nil, errors.Wrap(_indexRangeErr, "Error parsing 'indexRange' field of QueryDataDescription")
-	}
-	indexRange := _indexRange.(PascalString)
-	if closeErr := readBuffer.CloseContext("indexRange"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for indexRange")
+	indexRange, err := ReadSimpleField[PascalString](ctx, "indexRange", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexRange' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("QueryDataDescription"); closeErr != nil {

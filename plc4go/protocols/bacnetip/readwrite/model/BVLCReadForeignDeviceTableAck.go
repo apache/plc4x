@@ -141,6 +141,12 @@ func BVLCReadForeignDeviceTableAckParse(ctx context.Context, theBytes []byte, bv
 	return BVLCReadForeignDeviceTableAckParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), bvlcPayloadLength)
 }
 
+func BVLCReadForeignDeviceTableAckParseWithBufferProducer(bvlcPayloadLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTableAck, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BVLCReadForeignDeviceTableAck, error) {
+		return BVLCReadForeignDeviceTableAckParseWithBuffer(ctx, readBuffer, bvlcPayloadLength)
+	}
+}
+
 func BVLCReadForeignDeviceTableAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, bvlcPayloadLength uint16) (BVLCReadForeignDeviceTableAck, error) {
 	positionAware := readBuffer
 	_ = positionAware

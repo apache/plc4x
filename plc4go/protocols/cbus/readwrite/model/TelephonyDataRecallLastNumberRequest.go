@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -158,6 +160,12 @@ func TelephonyDataRecallLastNumberRequestParse(ctx context.Context, theBytes []b
 	return TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func TelephonyDataRecallLastNumberRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {
+		return TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumberRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -169,12 +177,10 @@ func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recallLastNumberType)
-	_recallLastNumberType, _recallLastNumberTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("recallLastNumberType")
-	if _recallLastNumberTypeErr != nil {
-		return nil, errors.Wrap(_recallLastNumberTypeErr, "Error parsing 'recallLastNumberType' field of TelephonyDataRecallLastNumberRequest")
+	recallLastNumberType, err := ReadSimpleField(ctx, "recallLastNumberType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recallLastNumberType' field"))
 	}
-	recallLastNumberType := _recallLastNumberType
 
 	// Virtual field
 	_isNumberOfLastOutgoingCall := bool((recallLastNumberType) == (0x01))

@@ -125,6 +125,17 @@ func ReplyParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions, r
 	return ReplyParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func ReplyParseWithBufferProducer[T Reply](cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ReplyParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (Reply, error) {
 	positionAware := readBuffer
 	_ = positionAware

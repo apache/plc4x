@@ -188,6 +188,12 @@ func S7ParameterModeTransitionParse(ctx context.Context, theBytes []byte, messag
 	return S7ParameterModeTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), messageType)
 }
 
+func S7ParameterModeTransitionParseWithBufferProducer(messageType uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterModeTransition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7ParameterModeTransition, error) {
+		return S7ParameterModeTransitionParseWithBuffer(ctx, readBuffer, messageType)
+	}
+}
+
 func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, messageType uint8) (S7ParameterModeTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -199,51 +205,41 @@ func S7ParameterModeTransitionParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0010))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, uint8(16)), uint16(0x0010))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, 8))
+	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 	_ = itemLength
 
-	// Simple Field (method)
-	_method, _methodErr := /*TODO: migrate me*/ readBuffer.ReadUint8("method", 8)
-	if _methodErr != nil {
-		return nil, errors.Wrap(_methodErr, "Error parsing 'method' field of S7ParameterModeTransition")
+	method, err := ReadSimpleField(ctx, "method", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'method' field"))
 	}
-	method := _method
 
-	// Simple Field (cpuFunctionType)
-	_cpuFunctionType, _cpuFunctionTypeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionType", 4)
-	if _cpuFunctionTypeErr != nil {
-		return nil, errors.Wrap(_cpuFunctionTypeErr, "Error parsing 'cpuFunctionType' field of S7ParameterModeTransition")
+	cpuFunctionType, err := ReadSimpleField(ctx, "cpuFunctionType", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionType' field"))
 	}
-	cpuFunctionType := _cpuFunctionType
 
-	// Simple Field (cpuFunctionGroup)
-	_cpuFunctionGroup, _cpuFunctionGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("cpuFunctionGroup", 4)
-	if _cpuFunctionGroupErr != nil {
-		return nil, errors.Wrap(_cpuFunctionGroupErr, "Error parsing 'cpuFunctionGroup' field of S7ParameterModeTransition")
+	cpuFunctionGroup, err := ReadSimpleField(ctx, "cpuFunctionGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cpuFunctionGroup' field"))
 	}
-	cpuFunctionGroup := _cpuFunctionGroup
 
-	// Simple Field (currentMode)
-	_currentMode, _currentModeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("currentMode", 8)
-	if _currentModeErr != nil {
-		return nil, errors.Wrap(_currentModeErr, "Error parsing 'currentMode' field of S7ParameterModeTransition")
+	currentMode, err := ReadSimpleField(ctx, "currentMode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentMode' field"))
 	}
-	currentMode := _currentMode
 
-	// Simple Field (sequenceNumber)
-	_sequenceNumber, _sequenceNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
-	if _sequenceNumberErr != nil {
-		return nil, errors.Wrap(_sequenceNumberErr, "Error parsing 'sequenceNumber' field of S7ParameterModeTransition")
+	sequenceNumber, err := ReadSimpleField(ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
-	sequenceNumber := _sequenceNumber
 
 	if closeErr := readBuffer.CloseContext("S7ParameterModeTransition"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7ParameterModeTransition")

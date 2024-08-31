@@ -171,6 +171,12 @@ func ConnectionResponseParse(ctx context.Context, theBytes []byte) (ConnectionRe
 	return ConnectionResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)))
 }
 
+func ConnectionResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
+		return ConnectionResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectionResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -182,24 +188,14 @@ func ConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (communicationChannelId)
-	_communicationChannelId, _communicationChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("communicationChannelId", 8)
-	if _communicationChannelIdErr != nil {
-		return nil, errors.Wrap(_communicationChannelIdErr, "Error parsing 'communicationChannelId' field of ConnectionResponse")
+	communicationChannelId, err := ReadSimpleField(ctx, "communicationChannelId", ReadUnsignedByte(readBuffer, uint8(8)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'communicationChannelId' field"))
 	}
-	communicationChannelId := _communicationChannelId
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
-	}
-	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ConnectionResponse")
-	}
-	status := _status
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
+	status, err := ReadEnumField[Status](ctx, "status", "Status", ReadEnum(StatusByValue, ReadUnsignedByte(readBuffer, uint8(8))), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
 	_hpaiDataEndpoint, err := ReadOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), bool((status) == (Status_NO_ERROR)), codegen.WithByteOrder(binary.BigEndian))

@@ -151,6 +151,12 @@ func AdsDiscoveryBlockStatusParse(ctx context.Context, theBytes []byte) (AdsDisc
 	return AdsDiscoveryBlockStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
+		return AdsDiscoveryBlockStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -162,23 +168,15 @@ func AdsDiscoveryBlockStatusParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	statusLength, err := ReadConstField[uint16](ctx, "statusLength", ReadUnsignedShort(readBuffer, 16), AdsDiscoveryBlockStatus_STATUSLENGTH)
+	statusLength, err := ReadConstField[uint16](ctx, "statusLength", ReadUnsignedShort(readBuffer, uint8(16)), AdsDiscoveryBlockStatus_STATUSLENGTH)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusLength' field"))
 	}
 	_ = statusLength
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
-	}
-	_status, _statusErr := StatusParseWithBuffer(ctx, readBuffer)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of AdsDiscoveryBlockStatus")
-	}
-	status := _status
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
+	status, err := ReadEnumField[Status](ctx, "status", "Status", ReadEnum(StatusByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockStatus"); closeErr != nil {

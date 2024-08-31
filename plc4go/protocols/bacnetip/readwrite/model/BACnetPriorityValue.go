@@ -154,6 +154,17 @@ func BACnetPriorityValueParse(ctx context.Context, theBytes []byte, objectTypeAr
 	return BACnetPriorityValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument)
 }
 
+func BACnetPriorityValueParseWithBufferProducer[T BACnetPriorityValue](objectTypeArgument BACnetObjectType) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetPriorityValueParseWithBuffer(ctx, readBuffer, objectTypeArgument)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetPriorityValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType) (BACnetPriorityValue, error) {
 	positionAware := readBuffer
 	_ = positionAware

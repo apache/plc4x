@@ -272,6 +272,12 @@ func NLMUpdateKeyUpdateParse(ctx context.Context, theBytes []byte, apduLength ui
 	return NLMUpdateKeyUpdateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMUpdateKeyUpdateParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NLMUpdateKeyUpdate, error) {
+		return NLMUpdateKeyUpdateParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLMUpdateKeyUpdate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -283,17 +289,9 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (controlFlags)
-	if pullErr := readBuffer.PullContext("controlFlags"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for controlFlags")
-	}
-	_controlFlags, _controlFlagsErr := NLMUpdateKeyUpdateControlFlagsParseWithBuffer(ctx, readBuffer)
-	if _controlFlagsErr != nil {
-		return nil, errors.Wrap(_controlFlagsErr, "Error parsing 'controlFlags' field of NLMUpdateKeyUpdate")
-	}
-	controlFlags := _controlFlags.(NLMUpdateKeyUpdateControlFlags)
-	if closeErr := readBuffer.CloseContext("controlFlags"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for controlFlags")
+	controlFlags, err := ReadSimpleField[NLMUpdateKeyUpdateControlFlags](ctx, "controlFlags", ReadComplex[NLMUpdateKeyUpdateControlFlags](NLMUpdateKeyUpdateControlFlagsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlFlags' field"))
 	}
 
 	set1KeyRevision, err := ReadOptionalField[byte](ctx, "set1KeyRevision", ReadByte(readBuffer, 8), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
@@ -301,17 +299,17 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyRevision' field"))
 	}
 
-	set1ActivationTime, err := ReadOptionalField[uint32](ctx, "set1ActivationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	set1ActivationTime, err := ReadOptionalField[uint32](ctx, "set1ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ActivationTime' field"))
 	}
 
-	set1ExpirationTime, err := ReadOptionalField[uint32](ctx, "set1ExpirationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	set1ExpirationTime, err := ReadOptionalField[uint32](ctx, "set1ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyCountKeyParametersPresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ExpirationTime' field"))
 	}
 
-	set1KeyCount, err := ReadOptionalField[uint8](ctx, "set1KeyCount", ReadUnsignedByte(readBuffer, 8), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	set1KeyCount, err := ReadOptionalField[uint8](ctx, "set1KeyCount", ReadUnsignedByte(readBuffer, uint8(8)), controlFlags.GetSet1KeyCountKeyParametersPresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyCount' field"))
 	}
@@ -326,17 +324,17 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyRevision' field"))
 	}
 
-	set2ActivationTime, err := ReadOptionalField[uint32](ctx, "set2ActivationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	set2ActivationTime, err := ReadOptionalField[uint32](ctx, "set2ActivationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ActivationTime' field"))
 	}
 
-	set2ExpirationTime, err := ReadOptionalField[uint32](ctx, "set2ExpirationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	set2ExpirationTime, err := ReadOptionalField[uint32](ctx, "set2ExpirationTime", ReadUnsignedInt(readBuffer, uint8(32)), controlFlags.GetSet1KeyCountKeyParametersPresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ExpirationTime' field"))
 	}
 
-	set2KeyCount, err := ReadOptionalField[uint8](ctx, "set2KeyCount", ReadUnsignedByte(readBuffer, 8), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	set2KeyCount, err := ReadOptionalField[uint8](ctx, "set2KeyCount", ReadUnsignedByte(readBuffer, uint8(8)), controlFlags.GetSet1KeyCountKeyParametersPresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyCount' field"))
 	}

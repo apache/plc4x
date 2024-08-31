@@ -140,6 +140,17 @@ func BACnetLogDataLogDataEntryParse(ctx context.Context, theBytes []byte) (BACne
 	return BACnetLogDataLogDataEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLogDataLogDataEntryParseWithBufferProducer[T BACnetLogDataLogDataEntry]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetLogDataLogDataEntryParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetLogDataLogDataEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogDataLogDataEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware

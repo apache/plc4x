@@ -83,6 +83,12 @@ func NormalizedStringParse(ctx context.Context, theBytes []byte) (NormalizedStri
 	return NormalizedStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NormalizedStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NormalizedString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NormalizedString, error) {
+		return NormalizedStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NormalizedStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NormalizedString, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataAccessControlParse(ctx context.Context, theBytes []byte, application
 	return SALDataAccessControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataAccessControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAccessControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataAccessControl, error) {
+		return SALDataAccessControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataAccessControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataAccessControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataAccessControlParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessControlData)
-	if pullErr := readBuffer.PullContext("accessControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessControlData")
-	}
-	_accessControlData, _accessControlDataErr := AccessControlDataParseWithBuffer(ctx, readBuffer)
-	if _accessControlDataErr != nil {
-		return nil, errors.Wrap(_accessControlDataErr, "Error parsing 'accessControlData' field of SALDataAccessControl")
-	}
-	accessControlData := _accessControlData.(AccessControlData)
-	if closeErr := readBuffer.CloseContext("accessControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessControlData")
+	accessControlData, err := ReadSimpleField[AccessControlData](ctx, "accessControlData", ReadComplex[AccessControlData](AccessControlDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessControlData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataAccessControl"); closeErr != nil {

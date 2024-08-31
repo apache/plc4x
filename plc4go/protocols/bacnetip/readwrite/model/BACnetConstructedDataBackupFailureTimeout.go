@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataBackupFailureTimeoutParse(ctx context.Context, theByte
 	return BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataBackupFailureTimeoutParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupFailureTimeout, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataBackupFailureTimeout, error) {
+		return BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataBackupFailureTimeout, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataBackupFailureTimeoutParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (backupFailureTimeout)
-	if pullErr := readBuffer.PullContext("backupFailureTimeout"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for backupFailureTimeout")
-	}
-	_backupFailureTimeout, _backupFailureTimeoutErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _backupFailureTimeoutErr != nil {
-		return nil, errors.Wrap(_backupFailureTimeoutErr, "Error parsing 'backupFailureTimeout' field of BACnetConstructedDataBackupFailureTimeout")
-	}
-	backupFailureTimeout := _backupFailureTimeout.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("backupFailureTimeout"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for backupFailureTimeout")
+	backupFailureTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupFailureTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupFailureTimeout' field"))
 	}
 
 	// Virtual field

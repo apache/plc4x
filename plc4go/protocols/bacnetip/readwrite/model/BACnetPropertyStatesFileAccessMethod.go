@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesFileAccessMethodParse(ctx context.Context, theBytes []b
 	return BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesFileAccessMethodParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesFileAccessMethod, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesFileAccessMethod, error) {
+		return BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesFileAccessMethod, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesFileAccessMethodParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (fileAccessMethod)
-	if pullErr := readBuffer.PullContext("fileAccessMethod"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for fileAccessMethod")
-	}
-	_fileAccessMethod, _fileAccessMethodErr := BACnetFileAccessMethodTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _fileAccessMethodErr != nil {
-		return nil, errors.Wrap(_fileAccessMethodErr, "Error parsing 'fileAccessMethod' field of BACnetPropertyStatesFileAccessMethod")
-	}
-	fileAccessMethod := _fileAccessMethod.(BACnetFileAccessMethodTagged)
-	if closeErr := readBuffer.CloseContext("fileAccessMethod"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for fileAccessMethod")
+	fileAccessMethod, err := ReadSimpleField[BACnetFileAccessMethodTagged](ctx, "fileAccessMethod", ReadComplex[BACnetFileAccessMethodTagged](BACnetFileAccessMethodTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileAccessMethod' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesFileAccessMethod"); closeErr != nil {

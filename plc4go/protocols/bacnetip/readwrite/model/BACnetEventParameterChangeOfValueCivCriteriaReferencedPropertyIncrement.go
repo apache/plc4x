@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	return BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
+		return BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referencedPropertyIncrement)
-	if pullErr := readBuffer.PullContext("referencedPropertyIncrement"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referencedPropertyIncrement")
-	}
-	_referencedPropertyIncrement, _referencedPropertyIncrementErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_REAL))
-	if _referencedPropertyIncrementErr != nil {
-		return nil, errors.Wrap(_referencedPropertyIncrementErr, "Error parsing 'referencedPropertyIncrement' field of BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement")
-	}
-	referencedPropertyIncrement := _referencedPropertyIncrement.(BACnetContextTagReal)
-	if closeErr := readBuffer.CloseContext("referencedPropertyIncrement"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referencedPropertyIncrement")
+	referencedPropertyIncrement, err := ReadSimpleField[BACnetContextTagReal](ctx, "referencedPropertyIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencedPropertyIncrement' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrement"); closeErr != nil {

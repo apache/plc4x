@@ -168,6 +168,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParse(ctx context.Cont
 	return BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
+		return BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestUnconfirmedTextMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,26 +185,12 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (textMessageSourceDevice)
-	if pullErr := readBuffer.PullContext("textMessageSourceDevice"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for textMessageSourceDevice")
-	}
-	_textMessageSourceDevice, _textMessageSourceDeviceErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
-	if _textMessageSourceDeviceErr != nil {
-		return nil, errors.Wrap(_textMessageSourceDeviceErr, "Error parsing 'textMessageSourceDevice' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
-	}
-	textMessageSourceDevice := _textMessageSourceDevice.(BACnetContextTagObjectIdentifier)
-	if closeErr := readBuffer.CloseContext("textMessageSourceDevice"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for textMessageSourceDevice")
+	textMessageSourceDevice, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "textMessageSourceDevice", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'textMessageSourceDevice' field"))
 	}
 
-	_messageClass, err := ReadOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", ReadComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
-		v, err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass), nil
-	}, readBuffer), true)
+	_messageClass, err := ReadOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", ReadComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBufferProducer[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass]((uint8)(uint8(1))), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageClass' field"))
 	}
@@ -207,30 +199,14 @@ func BACnetUnconfirmedServiceRequestUnconfirmedTextMessageParseWithBuffer(ctx co
 		messageClass = *_messageClass
 	}
 
-	// Simple Field (messagePriority)
-	if pullErr := readBuffer.PullContext("messagePriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for messagePriority")
-	}
-	_messagePriority, _messagePriorityErr := BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _messagePriorityErr != nil {
-		return nil, errors.Wrap(_messagePriorityErr, "Error parsing 'messagePriority' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
-	}
-	messagePriority := _messagePriority.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged)
-	if closeErr := readBuffer.CloseContext("messagePriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for messagePriority")
+	messagePriority, err := ReadSimpleField[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged](ctx, "messagePriority", ReadComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged](BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParseWithBufferProducer((uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messagePriority' field"))
 	}
 
-	// Simple Field (message)
-	if pullErr := readBuffer.PullContext("message"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for message")
-	}
-	_message, _messageErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(3)), BACnetDataType(BACnetDataType_CHARACTER_STRING))
-	if _messageErr != nil {
-		return nil, errors.Wrap(_messageErr, "Error parsing 'message' field of BACnetUnconfirmedServiceRequestUnconfirmedTextMessage")
-	}
-	message := _message.(BACnetContextTagCharacterString)
-	if closeErr := readBuffer.CloseContext("message"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for message")
+	message, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "message", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'message' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedTextMessage"); closeErr != nil {

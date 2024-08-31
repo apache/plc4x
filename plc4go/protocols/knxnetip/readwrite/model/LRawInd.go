@@ -109,6 +109,12 @@ func LRawIndParse(ctx context.Context, theBytes []byte, size uint16) (LRawInd, e
 	return LRawIndParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), size)
 }
 
+func LRawIndParseWithBufferProducer(size uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (LRawInd, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LRawInd, error) {
+		return LRawIndParseWithBuffer(ctx, readBuffer, size)
+	}
+}
+
 func LRawIndParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, size uint16) (LRawInd, error) {
 	positionAware := readBuffer
 	_ = positionAware

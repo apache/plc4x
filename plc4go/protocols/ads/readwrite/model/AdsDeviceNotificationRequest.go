@@ -172,6 +172,12 @@ func AdsDeviceNotificationRequestParse(ctx context.Context, theBytes []byte) (Ad
 	return AdsDeviceNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDeviceNotificationRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
+		return AdsDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,19 +189,15 @@ func AdsDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsDeviceNotificationRequest")
+	length, err := ReadSimpleField(ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	length := _length
 
-	// Simple Field (stamps)
-	_stamps, _stampsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("stamps", 32)
-	if _stampsErr != nil {
-		return nil, errors.Wrap(_stampsErr, "Error parsing 'stamps' field of AdsDeviceNotificationRequest")
+	stamps, err := ReadSimpleField(ctx, "stamps", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stamps' field"))
 	}
-	stamps := _stamps
 
 	adsStampHeaders, err := ReadCountArrayField[AdsStampHeader](ctx, "adsStampHeaders", ReadComplex[AdsStampHeader](AdsStampHeaderParseWithBuffer, readBuffer), uint64(stamps))
 	if err != nil {

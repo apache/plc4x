@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,6 +145,12 @@ func AccessControlDataValidAccessRequestParse(ctx context.Context, theBytes []by
 	return AccessControlDataValidAccessRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func AccessControlDataValidAccessRequestParseWithBufferProducer(commandTypeContainer AccessControlCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataValidAccessRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlDataValidAccessRequest, error) {
+		return AccessControlDataValidAccessRequestParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func AccessControlDataValidAccessRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer AccessControlCommandTypeContainer) (AccessControlDataValidAccessRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -154,17 +162,9 @@ func AccessControlDataValidAccessRequestParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (accessControlDirection)
-	if pullErr := readBuffer.PullContext("accessControlDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for accessControlDirection")
-	}
-	_accessControlDirection, _accessControlDirectionErr := AccessControlDirectionParseWithBuffer(ctx, readBuffer)
-	if _accessControlDirectionErr != nil {
-		return nil, errors.Wrap(_accessControlDirectionErr, "Error parsing 'accessControlDirection' field of AccessControlDataValidAccessRequest")
-	}
-	accessControlDirection := _accessControlDirection
-	if closeErr := readBuffer.CloseContext("accessControlDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for accessControlDirection")
+	accessControlDirection, err := ReadEnumField[AccessControlDirection](ctx, "accessControlDirection", "AccessControlDirection", ReadEnum(AccessControlDirectionByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessControlDirection' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(commandTypeContainer.NumBytes())-int32(int32(3))))

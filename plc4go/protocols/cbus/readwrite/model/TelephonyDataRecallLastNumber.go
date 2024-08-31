@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -169,6 +171,12 @@ func TelephonyDataRecallLastNumberParse(ctx context.Context, theBytes []byte, co
 	return TelephonyDataRecallLastNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func TelephonyDataRecallLastNumberParseWithBufferProducer(commandTypeContainer TelephonyCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (TelephonyDataRecallLastNumber, error) {
+		return TelephonyDataRecallLastNumberParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer TelephonyCommandTypeContainer) (TelephonyDataRecallLastNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -180,12 +188,10 @@ func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (recallLastNumberType)
-	_recallLastNumberType, _recallLastNumberTypeErr := /*TODO: migrate me*/ readBuffer.ReadByte("recallLastNumberType")
-	if _recallLastNumberTypeErr != nil {
-		return nil, errors.Wrap(_recallLastNumberTypeErr, "Error parsing 'recallLastNumberType' field of TelephonyDataRecallLastNumber")
+	recallLastNumberType, err := ReadSimpleField(ctx, "recallLastNumberType", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recallLastNumberType' field"))
 	}
-	recallLastNumberType := _recallLastNumberType
 
 	// Virtual field
 	_isNumberOfLastOutgoingCall := bool((recallLastNumberType) == (0x01))
@@ -197,12 +203,10 @@ func TelephonyDataRecallLastNumberParseWithBuffer(ctx context.Context, readBuffe
 	isNumberOfLastIncomingCall := bool(_isNumberOfLastIncomingCall)
 	_ = isNumberOfLastIncomingCall
 
-	// Simple Field (number)
-	_number, _numberErr := /*TODO: migrate me*/ readBuffer.ReadString("number", uint32(((commandTypeContainer.NumBytes())-(2))*(8)), utils.WithEncoding("UTF-8"))
-	if _numberErr != nil {
-		return nil, errors.Wrap(_numberErr, "Error parsing 'number' field of TelephonyDataRecallLastNumber")
+	number, err := ReadSimpleField(ctx, "number", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(2))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'number' field"))
 	}
-	number := _number
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataRecallLastNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRecallLastNumber")

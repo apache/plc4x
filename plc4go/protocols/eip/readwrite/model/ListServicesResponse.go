@@ -155,6 +155,12 @@ func ListServicesResponseParse(ctx context.Context, theBytes []byte, response bo
 	return ListServicesResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ListServicesResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ListServicesResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ListServicesResponse, error) {
+		return ListServicesResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ListServicesResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -166,7 +172,7 @@ func ListServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, 16))
+	typeIdCount, err := ReadImplicitField[uint16](ctx, "typeIdCount", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeIdCount' field"))
 	}

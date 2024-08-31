@@ -140,6 +140,17 @@ func BACnetEventParameterParse(ctx context.Context, theBytes []byte) (BACnetEven
 	return BACnetEventParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventParameterParseWithBufferProducer[T BACnetEventParameter]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetEventParameterParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetEventParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware

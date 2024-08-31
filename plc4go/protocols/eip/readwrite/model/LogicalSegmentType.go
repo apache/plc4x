@@ -110,6 +110,17 @@ func LogicalSegmentTypeParse(ctx context.Context, theBytes []byte) (LogicalSegme
 	return LogicalSegmentTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LogicalSegmentTypeParseWithBufferProducer[T LogicalSegmentType]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := LogicalSegmentTypeParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LogicalSegmentType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -121,7 +132,7 @@ func LogicalSegmentTypeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	logicalSegmentType, err := ReadDiscriminatorField[uint8](ctx, "logicalSegmentType", ReadUnsignedByte(readBuffer, 3))
+	logicalSegmentType, err := ReadDiscriminatorField[uint8](ctx, "logicalSegmentType", ReadUnsignedByte(readBuffer, uint8(3)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logicalSegmentType' field"))
 	}

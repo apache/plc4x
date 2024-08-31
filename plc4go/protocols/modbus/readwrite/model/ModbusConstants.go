@@ -105,6 +105,12 @@ func ModbusConstantsParse(ctx context.Context, theBytes []byte) (ModbusConstants
 	return ModbusConstantsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ModbusConstantsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {
+		return ModbusConstantsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusConstants, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -116,7 +122,7 @@ func ModbusConstantsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	modbusTcpDefaultPort, err := ReadConstField[uint16](ctx, "modbusTcpDefaultPort", ReadUnsignedShort(readBuffer, 16), ModbusConstants_MODBUSTCPDEFAULTPORT)
+	modbusTcpDefaultPort, err := ReadConstField[uint16](ctx, "modbusTcpDefaultPort", ReadUnsignedShort(readBuffer, uint8(16)), ModbusConstants_MODBUSTCPDEFAULTPORT)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'modbusTcpDefaultPort' field"))
 	}

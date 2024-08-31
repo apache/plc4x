@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func PortSegmentParse(ctx context.Context, theBytes []byte) (PortSegment, error)
 	return PortSegmentParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func PortSegmentParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegment, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegment, error) {
+		return PortSegmentParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func PortSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (PortSegment, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func PortSegmentParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (segmentType)
-	if pullErr := readBuffer.PullContext("segmentType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for segmentType")
-	}
-	_segmentType, _segmentTypeErr := PortSegmentTypeParseWithBuffer(ctx, readBuffer)
-	if _segmentTypeErr != nil {
-		return nil, errors.Wrap(_segmentTypeErr, "Error parsing 'segmentType' field of PortSegment")
-	}
-	segmentType := _segmentType.(PortSegmentType)
-	if closeErr := readBuffer.CloseContext("segmentType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for segmentType")
+	segmentType, err := ReadSimpleField[PortSegmentType](ctx, "segmentType", ReadComplex[PortSegmentType](PortSegmentTypeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("PortSegment"); closeErr != nil {

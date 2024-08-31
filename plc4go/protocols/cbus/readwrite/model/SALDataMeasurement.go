@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataMeasurementParse(ctx context.Context, theBytes []byte, applicationId
 	return SALDataMeasurementParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataMeasurementParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataMeasurement, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataMeasurement, error) {
+		return SALDataMeasurementParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataMeasurementParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMeasurement, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataMeasurementParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (measurementData)
-	if pullErr := readBuffer.PullContext("measurementData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for measurementData")
-	}
-	_measurementData, _measurementDataErr := MeasurementDataParseWithBuffer(ctx, readBuffer)
-	if _measurementDataErr != nil {
-		return nil, errors.Wrap(_measurementDataErr, "Error parsing 'measurementData' field of SALDataMeasurement")
-	}
-	measurementData := _measurementData.(MeasurementData)
-	if closeErr := readBuffer.CloseContext("measurementData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for measurementData")
+	measurementData, err := ReadSimpleField[MeasurementData](ctx, "measurementData", ReadComplex[MeasurementData](MeasurementDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'measurementData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataMeasurement"); closeErr != nil {

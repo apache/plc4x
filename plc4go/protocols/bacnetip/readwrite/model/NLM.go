@@ -134,6 +134,17 @@ func NLMParse(ctx context.Context, theBytes []byte, apduLength uint16) (NLM, err
 	return NLMParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func NLMParseWithBufferProducer[T NLM](apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := NLMParseWithBuffer(ctx, readBuffer, apduLength)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (NLM, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -145,7 +156,7 @@ func NLMParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 8))
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}

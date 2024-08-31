@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLocalDateParse(ctx context.Context, theBytes []byte, t
 	return BACnetConstructedDataLocalDateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLocalDateParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalDate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLocalDate, error) {
+		return BACnetConstructedDataLocalDateParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLocalDateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLocalDate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLocalDateParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (localDate)
-	if pullErr := readBuffer.PullContext("localDate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for localDate")
-	}
-	_localDate, _localDateErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _localDateErr != nil {
-		return nil, errors.Wrap(_localDateErr, "Error parsing 'localDate' field of BACnetConstructedDataLocalDate")
-	}
-	localDate := _localDate.(BACnetApplicationTagDate)
-	if closeErr := readBuffer.CloseContext("localDate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for localDate")
+	localDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "localDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localDate' field"))
 	}
 
 	// Virtual field

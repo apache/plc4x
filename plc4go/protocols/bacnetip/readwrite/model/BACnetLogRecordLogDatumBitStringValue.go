@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func BACnetLogRecordLogDatumBitStringValueParse(ctx context.Context, theBytes []
 	return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber)
 }
 
+func BACnetLogRecordLogDatumBitStringValueParseWithBufferProducer(tagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumBitStringValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLogRecordLogDatumBitStringValue, error) {
+		return BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx, readBuffer, tagNumber)
+	}
+}
+
 func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8) (BACnetLogRecordLogDatumBitStringValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func BACnetLogRecordLogDatumBitStringValueParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bitStringValue)
-	if pullErr := readBuffer.PullContext("bitStringValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bitStringValue")
-	}
-	_bitStringValue, _bitStringValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(6)), BACnetDataType(BACnetDataType_BIT_STRING))
-	if _bitStringValueErr != nil {
-		return nil, errors.Wrap(_bitStringValueErr, "Error parsing 'bitStringValue' field of BACnetLogRecordLogDatumBitStringValue")
-	}
-	bitStringValue := _bitStringValue.(BACnetContextTagBitString)
-	if closeErr := readBuffer.CloseContext("bitStringValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bitStringValue")
+	bitStringValue, err := ReadSimpleField[BACnetContextTagBitString](ctx, "bitStringValue", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer[BACnetContextTagBitString]((uint8)(uint8(6)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitStringValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLogRecordLogDatumBitStringValue"); closeErr != nil {

@@ -137,6 +137,12 @@ func FirmataCommandSysexParse(ctx context.Context, theBytes []byte, response boo
 	return FirmataCommandSysexParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func FirmataCommandSysexParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSysex, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (FirmataCommandSysex, error) {
+		return FirmataCommandSysexParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func FirmataCommandSysexParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataCommandSysex, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,20 +154,12 @@ func FirmataCommandSysexParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (command)
-	if pullErr := readBuffer.PullContext("command"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for command")
-	}
-	_command, _commandErr := SysexCommandParseWithBuffer(ctx, readBuffer, bool(response))
-	if _commandErr != nil {
-		return nil, errors.Wrap(_commandErr, "Error parsing 'command' field of FirmataCommandSysex")
-	}
-	command := _command.(SysexCommand)
-	if closeErr := readBuffer.CloseContext("command"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for command")
+	command, err := ReadSimpleField[SysexCommand](ctx, "command", ReadComplex[SysexCommand](SysexCommandParseWithBufferProducer[SysexCommand]((bool)(response)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'command' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0xF7))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0xF7))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

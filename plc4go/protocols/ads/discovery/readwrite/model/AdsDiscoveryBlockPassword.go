@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func AdsDiscoveryBlockPasswordParse(ctx context.Context, theBytes []byte) (AdsDi
 	return AdsDiscoveryBlockPasswordParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsDiscoveryBlockPasswordParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
+		return AdsDiscoveryBlockPasswordParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsDiscoveryBlockPasswordParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsDiscoveryBlockPassword, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,17 +149,9 @@ func AdsDiscoveryBlockPasswordParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (password)
-	if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for password")
-	}
-	_password, _passwordErr := AmsStringParseWithBuffer(ctx, readBuffer)
-	if _passwordErr != nil {
-		return nil, errors.Wrap(_passwordErr, "Error parsing 'password' field of AdsDiscoveryBlockPassword")
-	}
-	password := _password.(AmsString)
-	if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for password")
+	password, err := ReadSimpleField[AmsString](ctx, "password", ReadComplex[AmsString](AmsStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsDiscoveryBlockPassword"); closeErr != nil {

@@ -146,6 +146,12 @@ func StatusChangeNotificationParse(ctx context.Context, theBytes []byte, identif
 	return StatusChangeNotificationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func StatusChangeNotificationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusChangeNotification, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusChangeNotification, error) {
+		return StatusChangeNotificationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func StatusChangeNotificationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (StatusChangeNotification, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,36 +163,20 @@ func StatusChangeNotificationParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, 32))
+	notificationLength, err := ReadImplicitField[int32](ctx, "notificationLength", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationLength' field"))
 	}
 	_ = notificationLength
 
-	// Simple Field (status)
-	if pullErr := readBuffer.PullContext("status"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for status")
-	}
-	_status, _statusErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of StatusChangeNotification")
-	}
-	status := _status.(StatusCode)
-	if closeErr := readBuffer.CloseContext("status"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for status")
+	status, err := ReadSimpleField[StatusCode](ctx, "status", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
 
-	// Simple Field (diagnosticInfo)
-	if pullErr := readBuffer.PullContext("diagnosticInfo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for diagnosticInfo")
-	}
-	_diagnosticInfo, _diagnosticInfoErr := DiagnosticInfoParseWithBuffer(ctx, readBuffer)
-	if _diagnosticInfoErr != nil {
-		return nil, errors.Wrap(_diagnosticInfoErr, "Error parsing 'diagnosticInfo' field of StatusChangeNotification")
-	}
-	diagnosticInfo := _diagnosticInfo.(DiagnosticInfo)
-	if closeErr := readBuffer.CloseContext("diagnosticInfo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for diagnosticInfo")
+	diagnosticInfo, err := ReadSimpleField[DiagnosticInfo](ctx, "diagnosticInfo", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'diagnosticInfo' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("StatusChangeNotification"); closeErr != nil {

@@ -108,6 +108,12 @@ func CALReplyShortParse(ctx context.Context, theBytes []byte, cBusOptions CBusOp
 	return CALReplyShortParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions, requestContext)
 }
 
+func CALReplyShortParseWithBufferProducer(cBusOptions CBusOptions, requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALReplyShort, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALReplyShort, error) {
+		return CALReplyShortParseWithBuffer(ctx, readBuffer, cBusOptions, requestContext)
+	}
+}
+
 func CALReplyShortParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions, requestContext RequestContext) (CALReplyShort, error) {
 	positionAware := readBuffer
 	_ = positionAware

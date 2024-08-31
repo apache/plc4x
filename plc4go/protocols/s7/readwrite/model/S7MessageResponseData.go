@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,6 +147,12 @@ func S7MessageResponseDataParse(ctx context.Context, theBytes []byte) (S7Message
 	return S7MessageResponseDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7MessageResponseDataParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
+		return S7MessageResponseDataParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7MessageResponseDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7MessageResponseData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -156,19 +164,15 @@ func S7MessageResponseDataParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorClass)
-	_errorClass, _errorClassErr := /*TODO: migrate me*/ readBuffer.ReadUint8("errorClass", 8)
-	if _errorClassErr != nil {
-		return nil, errors.Wrap(_errorClassErr, "Error parsing 'errorClass' field of S7MessageResponseData")
+	errorClass, err := ReadSimpleField(ctx, "errorClass", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorClass' field"))
 	}
-	errorClass := _errorClass
 
-	// Simple Field (errorCode)
-	_errorCode, _errorCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("errorCode", 8)
-	if _errorCodeErr != nil {
-		return nil, errors.Wrap(_errorCodeErr, "Error parsing 'errorCode' field of S7MessageResponseData")
+	errorCode, err := ReadSimpleField(ctx, "errorCode", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorCode' field"))
 	}
-	errorCode := _errorCode
 
 	if closeErr := readBuffer.CloseContext("S7MessageResponseData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for S7MessageResponseData")

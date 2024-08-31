@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesDoorAlarmStateParse(ctx context.Context, theBytes []byt
 	return BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesDoorAlarmStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesDoorAlarmState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesDoorAlarmState, error) {
+		return BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesDoorAlarmState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesDoorAlarmStateParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorAlarmState)
-	if pullErr := readBuffer.PullContext("doorAlarmState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorAlarmState")
-	}
-	_doorAlarmState, _doorAlarmStateErr := BACnetDoorAlarmStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _doorAlarmStateErr != nil {
-		return nil, errors.Wrap(_doorAlarmStateErr, "Error parsing 'doorAlarmState' field of BACnetPropertyStatesDoorAlarmState")
-	}
-	doorAlarmState := _doorAlarmState.(BACnetDoorAlarmStateTagged)
-	if closeErr := readBuffer.CloseContext("doorAlarmState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorAlarmState")
+	doorAlarmState, err := ReadSimpleField[BACnetDoorAlarmStateTagged](ctx, "doorAlarmState", ReadComplex[BACnetDoorAlarmStateTagged](BACnetDoorAlarmStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorAlarmState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesDoorAlarmState"); closeErr != nil {

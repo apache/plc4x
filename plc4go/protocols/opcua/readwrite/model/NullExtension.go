@@ -109,6 +109,12 @@ func NullExtensionParse(ctx context.Context, theBytes []byte, identifier string)
 	return NullExtensionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NullExtensionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NullExtension, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NullExtension, error) {
+		return NullExtensionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NullExtensionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NullExtension, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -199,6 +199,12 @@ func HVACHumidityStatusFlagsParse(ctx context.Context, theBytes []byte) (HVACHum
 	return HVACHumidityStatusFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACHumidityStatusFlagsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
+		return HVACHumidityStatusFlagsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACHumidityStatusFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityStatusFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -210,38 +216,30 @@ func HVACHumidityStatusFlagsParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (expansion)
-	_expansion, _expansionErr := /*TODO: migrate me*/ readBuffer.ReadBit("expansion")
-	if _expansionErr != nil {
-		return nil, errors.Wrap(_expansionErr, "Error parsing 'expansion' field of HVACHumidityStatusFlags")
+	expansion, err := ReadSimpleField(ctx, "expansion", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expansion' field"))
 	}
-	expansion := _expansion
 
-	// Simple Field (error)
-	_error, _errorErr := /*TODO: migrate me*/ readBuffer.ReadBit("error")
-	if _errorErr != nil {
-		return nil, errors.Wrap(_errorErr, "Error parsing 'error' field of HVACHumidityStatusFlags")
+	error, err := ReadSimpleField(ctx, "error", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'error' field"))
 	}
-	error := _error
 
-	// Simple Field (busy)
-	_busy, _busyErr := /*TODO: migrate me*/ readBuffer.ReadBit("busy")
-	if _busyErr != nil {
-		return nil, errors.Wrap(_busyErr, "Error parsing 'busy' field of HVACHumidityStatusFlags")
+	busy, err := ReadSimpleField(ctx, "busy", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'busy' field"))
 	}
-	busy := _busy
 
 	reservedField0, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (damperState)
-	_damperState, _damperStateErr := /*TODO: migrate me*/ readBuffer.ReadBit("damperState")
-	if _damperStateErr != nil {
-		return nil, errors.Wrap(_damperStateErr, "Error parsing 'damperState' field of HVACHumidityStatusFlags")
+	damperState, err := ReadSimpleField(ctx, "damperState", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'damperState' field"))
 	}
-	damperState := _damperState
 
 	// Virtual field
 	_isDamperStateClosed := !(damperState)
@@ -253,26 +251,20 @@ func HVACHumidityStatusFlagsParseWithBuffer(ctx context.Context, readBuffer util
 	isDamperStateOpen := bool(_isDamperStateOpen)
 	_ = isDamperStateOpen
 
-	// Simple Field (fanActive)
-	_fanActive, _fanActiveErr := /*TODO: migrate me*/ readBuffer.ReadBit("fanActive")
-	if _fanActiveErr != nil {
-		return nil, errors.Wrap(_fanActiveErr, "Error parsing 'fanActive' field of HVACHumidityStatusFlags")
+	fanActive, err := ReadSimpleField(ctx, "fanActive", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fanActive' field"))
 	}
-	fanActive := _fanActive
 
-	// Simple Field (dehumidifyingPlant)
-	_dehumidifyingPlant, _dehumidifyingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("dehumidifyingPlant")
-	if _dehumidifyingPlantErr != nil {
-		return nil, errors.Wrap(_dehumidifyingPlantErr, "Error parsing 'dehumidifyingPlant' field of HVACHumidityStatusFlags")
+	dehumidifyingPlant, err := ReadSimpleField(ctx, "dehumidifyingPlant", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dehumidifyingPlant' field"))
 	}
-	dehumidifyingPlant := _dehumidifyingPlant
 
-	// Simple Field (humidifyingPlant)
-	_humidifyingPlant, _humidifyingPlantErr := /*TODO: migrate me*/ readBuffer.ReadBit("humidifyingPlant")
-	if _humidifyingPlantErr != nil {
-		return nil, errors.Wrap(_humidifyingPlantErr, "Error parsing 'humidifyingPlant' field of HVACHumidityStatusFlags")
+	humidifyingPlant, err := ReadSimpleField(ctx, "humidifyingPlant", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidifyingPlant' field"))
 	}
-	humidifyingPlant := _humidifyingPlant
 
 	if closeErr := readBuffer.CloseContext("HVACHumidityStatusFlags"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACHumidityStatusFlags")

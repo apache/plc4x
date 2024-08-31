@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataIrrigationControlParse(ctx context.Context, theBytes []byte, applica
 	return SALDataIrrigationControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataIrrigationControlParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataIrrigationControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataIrrigationControl, error) {
+		return SALDataIrrigationControlParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataIrrigationControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataIrrigationControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataIrrigationControlParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (irrigationControlData)
-	if pullErr := readBuffer.PullContext("irrigationControlData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for irrigationControlData")
-	}
-	_irrigationControlData, _irrigationControlDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _irrigationControlDataErr != nil {
-		return nil, errors.Wrap(_irrigationControlDataErr, "Error parsing 'irrigationControlData' field of SALDataIrrigationControl")
-	}
-	irrigationControlData := _irrigationControlData.(LightingData)
-	if closeErr := readBuffer.CloseContext("irrigationControlData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for irrigationControlData")
+	irrigationControlData, err := ReadSimpleField[LightingData](ctx, "irrigationControlData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'irrigationControlData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataIrrigationControl"); closeErr != nil {

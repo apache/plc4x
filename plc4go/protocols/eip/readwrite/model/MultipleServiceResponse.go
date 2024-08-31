@@ -193,6 +193,12 @@ func MultipleServiceResponseParse(ctx context.Context, theBytes []byte, connecte
 	return MultipleServiceResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func MultipleServiceResponseParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (MultipleServiceResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MultipleServiceResponse, error) {
+		return MultipleServiceResponseParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (MultipleServiceResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -204,33 +210,27 @@ func MultipleServiceResponseParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("status", 8)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of MultipleServiceResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (extStatus)
-	_extStatus, _extStatusErr := /*TODO: migrate me*/ readBuffer.ReadUint8("extStatus", 8)
-	if _extStatusErr != nil {
-		return nil, errors.Wrap(_extStatusErr, "Error parsing 'extStatus' field of MultipleServiceResponse")
+	extStatus, err := ReadSimpleField(ctx, "extStatus", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extStatus' field"))
 	}
-	extStatus := _extStatus
 
-	// Simple Field (serviceNb)
-	_serviceNb, _serviceNbErr := /*TODO: migrate me*/ readBuffer.ReadUint16("serviceNb", 16)
-	if _serviceNbErr != nil {
-		return nil, errors.Wrap(_serviceNbErr, "Error parsing 'serviceNb' field of MultipleServiceResponse")
+	serviceNb, err := ReadSimpleField(ctx, "serviceNb", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceNb' field"))
 	}
-	serviceNb := _serviceNb
 
-	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, 16), uint64(serviceNb))
+	offsets, err := ReadCountArrayField[uint16](ctx, "offsets", ReadUnsignedShort(readBuffer, uint8(16)), uint64(serviceNb))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'offsets' field"))
 	}

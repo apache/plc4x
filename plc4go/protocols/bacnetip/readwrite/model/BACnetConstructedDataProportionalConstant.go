@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataProportionalConstantParse(ctx context.Context, theByte
 	return BACnetConstructedDataProportionalConstantParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataProportionalConstantParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProportionalConstant, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataProportionalConstant, error) {
+		return BACnetConstructedDataProportionalConstantParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataProportionalConstantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataProportionalConstant, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataProportionalConstantParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (proportionalConstant)
-	if pullErr := readBuffer.PullContext("proportionalConstant"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for proportionalConstant")
-	}
-	_proportionalConstant, _proportionalConstantErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _proportionalConstantErr != nil {
-		return nil, errors.Wrap(_proportionalConstantErr, "Error parsing 'proportionalConstant' field of BACnetConstructedDataProportionalConstant")
-	}
-	proportionalConstant := _proportionalConstant.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("proportionalConstant"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for proportionalConstant")
+	proportionalConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "proportionalConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proportionalConstant' field"))
 	}
 
 	// Virtual field

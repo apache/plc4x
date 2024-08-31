@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func RegisterServerRequestParse(ctx context.Context, theBytes []byte, identifier
 	return RegisterServerRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RegisterServerRequestParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterServerRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisterServerRequest, error) {
+		return RegisterServerRequestParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RegisterServerRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisterServerRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func RegisterServerRequestParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (requestHeader)
-	if pullErr := readBuffer.PullContext("requestHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestHeader")
-	}
-	_requestHeader, _requestHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("391"))
-	if _requestHeaderErr != nil {
-		return nil, errors.Wrap(_requestHeaderErr, "Error parsing 'requestHeader' field of RegisterServerRequest")
-	}
-	requestHeader := _requestHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("requestHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestHeader")
+	requestHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "requestHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("391")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestHeader' field"))
 	}
 
-	// Simple Field (server)
-	if pullErr := readBuffer.PullContext("server"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for server")
-	}
-	_server, _serverErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("434"))
-	if _serverErr != nil {
-		return nil, errors.Wrap(_serverErr, "Error parsing 'server' field of RegisterServerRequest")
-	}
-	server := _server.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("server"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for server")
+	server, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "server", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("434")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'server' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RegisterServerRequest"); closeErr != nil {

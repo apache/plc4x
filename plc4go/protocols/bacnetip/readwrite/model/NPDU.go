@@ -307,6 +307,12 @@ func NPDUParse(ctx context.Context, theBytes []byte, npduLength uint16) (NPDU, e
 	return NPDUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), npduLength)
 }
 
+func NPDUParseWithBufferProducer(npduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDU, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDU, error) {
+		return NPDUParseWithBuffer(ctx, readBuffer, npduLength)
+	}
+}
+
 func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduLength uint16) (NPDU, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -318,37 +324,27 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (protocolVersionNumber)
-	_protocolVersionNumber, _protocolVersionNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("protocolVersionNumber", 8)
-	if _protocolVersionNumberErr != nil {
-		return nil, errors.Wrap(_protocolVersionNumberErr, "Error parsing 'protocolVersionNumber' field of NPDU")
-	}
-	protocolVersionNumber := _protocolVersionNumber
-
-	// Simple Field (control)
-	if pullErr := readBuffer.PullContext("control"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for control")
-	}
-	_control, _controlErr := NPDUControlParseWithBuffer(ctx, readBuffer)
-	if _controlErr != nil {
-		return nil, errors.Wrap(_controlErr, "Error parsing 'control' field of NPDU")
-	}
-	control := _control.(NPDUControl)
-	if closeErr := readBuffer.CloseContext("control"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for control")
+	protocolVersionNumber, err := ReadSimpleField(ctx, "protocolVersionNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'protocolVersionNumber' field"))
 	}
 
-	destinationNetworkAddress, err := ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, 16), control.GetDestinationSpecified())
+	control, err := ReadSimpleField[NPDUControl](ctx, "control", ReadComplex[NPDUControl](NPDUControlParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'control' field"))
+	}
+
+	destinationNetworkAddress, err := ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetDestinationSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
 
-	destinationLength, err := ReadOptionalField[uint8](ctx, "destinationLength", ReadUnsignedByte(readBuffer, 8), control.GetDestinationSpecified())
+	destinationLength, err := ReadOptionalField[uint8](ctx, "destinationLength", ReadUnsignedByte(readBuffer, uint8(8)), control.GetDestinationSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationLength' field"))
 	}
 
-	destinationAddress, err := ReadCountArrayField[uint8](ctx, "destinationAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetDestinationSpecified(), func() any { return int32((*destinationLength)) }, func() any { return int32(int32(0)) }).(int32)))
+	destinationAddress, err := ReadCountArrayField[uint8](ctx, "destinationAddress", ReadUnsignedByte(readBuffer, uint8(8)), uint64(utils.InlineIf(control.GetDestinationSpecified(), func() any { return int32((*destinationLength)) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationAddress' field"))
 	}
@@ -358,17 +354,17 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	destinationLengthAddon := uint16(_destinationLengthAddon)
 	_ = destinationLengthAddon
 
-	sourceNetworkAddress, err := ReadOptionalField[uint16](ctx, "sourceNetworkAddress", ReadUnsignedShort(readBuffer, 16), control.GetSourceSpecified())
+	sourceNetworkAddress, err := ReadOptionalField[uint16](ctx, "sourceNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetSourceSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNetworkAddress' field"))
 	}
 
-	sourceLength, err := ReadOptionalField[uint8](ctx, "sourceLength", ReadUnsignedByte(readBuffer, 8), control.GetSourceSpecified())
+	sourceLength, err := ReadOptionalField[uint8](ctx, "sourceLength", ReadUnsignedByte(readBuffer, uint8(8)), control.GetSourceSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceLength' field"))
 	}
 
-	sourceAddress, err := ReadCountArrayField[uint8](ctx, "sourceAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetSourceSpecified(), func() any { return int32((*sourceLength)) }, func() any { return int32(int32(0)) }).(int32)))
+	sourceAddress, err := ReadCountArrayField[uint8](ctx, "sourceAddress", ReadUnsignedByte(readBuffer, uint8(8)), uint64(utils.InlineIf(control.GetSourceSpecified(), func() any { return int32((*sourceLength)) }, func() any { return int32(int32(0)) }).(int32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceAddress' field"))
 	}
@@ -378,7 +374,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	sourceLengthAddon := uint16(_sourceLengthAddon)
 	_ = sourceLengthAddon
 
-	hopCount, err := ReadOptionalField[uint8](ctx, "hopCount", ReadUnsignedByte(readBuffer, 8), control.GetDestinationSpecified())
+	hopCount, err := ReadOptionalField[uint8](ctx, "hopCount", ReadUnsignedByte(readBuffer, uint8(8)), control.GetDestinationSpecified())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hopCount' field"))
 	}
@@ -388,13 +384,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	payloadSubtraction := uint16(_payloadSubtraction)
 	_ = payloadSubtraction
 
-	_nlm, err := ReadOptionalField[NLM](ctx, "nlm", ReadComplex[NLM](func(ctx context.Context, buffer utils.ReadBuffer) (NLM, error) {
-		v, err := NLMParseWithBuffer(ctx, readBuffer, (uint16)(uint16(npduLength)-uint16(payloadSubtraction)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(NLM), nil
-	}, readBuffer), control.GetMessageTypeFieldPresent())
+	_nlm, err := ReadOptionalField[NLM](ctx, "nlm", ReadComplex[NLM](NLMParseWithBufferProducer[NLM]((uint16)(uint16(npduLength)-uint16(payloadSubtraction))), readBuffer), control.GetMessageTypeFieldPresent())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nlm' field"))
 	}
@@ -403,13 +393,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		nlm = *_nlm
 	}
 
-	_apdu, err := ReadOptionalField[APDU](ctx, "apdu", ReadComplex[APDU](func(ctx context.Context, buffer utils.ReadBuffer) (APDU, error) {
-		v, err := APDUParseWithBuffer(ctx, readBuffer, (uint16)(uint16(npduLength)-uint16(payloadSubtraction)))
-		if err != nil {
-			return nil, err
-		}
-		return v.(APDU), nil
-	}, readBuffer), !(control.GetMessageTypeFieldPresent()))
+	_apdu, err := ReadOptionalField[APDU](ctx, "apdu", ReadComplex[APDU](APDUParseWithBufferProducer[APDU]((uint16)(uint16(npduLength)-uint16(payloadSubtraction))), readBuffer), !(control.GetMessageTypeFieldPresent()))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apdu' field"))
 	}

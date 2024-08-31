@@ -140,6 +140,17 @@ func BACnetRecipientParse(ctx context.Context, theBytes []byte) (BACnetRecipient
 	return BACnetRecipientParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetRecipientParseWithBufferProducer[T BACnetRecipient]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetRecipientParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetRecipientParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetRecipient, error) {
 	positionAware := readBuffer
 	_ = positionAware

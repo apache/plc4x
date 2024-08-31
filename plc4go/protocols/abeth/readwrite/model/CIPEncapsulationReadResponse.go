@@ -27,6 +27,9 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -139,6 +142,12 @@ func CIPEncapsulationReadResponseParse(ctx context.Context, theBytes []byte, pac
 	return CIPEncapsulationReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), packetLen)
 }
 
+func CIPEncapsulationReadResponseParseWithBufferProducer(packetLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationReadResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CIPEncapsulationReadResponse, error) {
+		return CIPEncapsulationReadResponseParseWithBuffer(ctx, readBuffer, packetLen)
+	}
+}
+
 func CIPEncapsulationReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, packetLen uint16) (CIPEncapsulationReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -150,17 +159,9 @@ func CIPEncapsulationReadResponseParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (response)
-	if pullErr := readBuffer.PullContext("response"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for response")
-	}
-	_response, _responseErr := DF1ResponseMessageParseWithBuffer(ctx, readBuffer, uint16(packetLen))
-	if _responseErr != nil {
-		return nil, errors.Wrap(_responseErr, "Error parsing 'response' field of CIPEncapsulationReadResponse")
-	}
-	response := _response.(DF1ResponseMessage)
-	if closeErr := readBuffer.CloseContext("response"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for response")
+	response, err := ReadSimpleField[DF1ResponseMessage](ctx, "response", ReadComplex[DF1ResponseMessage](DF1ResponseMessageParseWithBufferProducer[DF1ResponseMessage]((uint16)(packetLen)), readBuffer), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'response' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CIPEncapsulationReadResponse"); closeErr != nil {

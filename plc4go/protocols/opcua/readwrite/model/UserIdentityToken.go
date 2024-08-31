@@ -146,6 +146,12 @@ func UserIdentityTokenParse(ctx context.Context, theBytes []byte, identifier str
 	return UserIdentityTokenParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func UserIdentityTokenParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (UserIdentityToken, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (UserIdentityToken, error) {
+		return UserIdentityTokenParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (UserIdentityToken, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,36 +163,20 @@ func UserIdentityTokenParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	policyLength, err := ReadImplicitField[int32](ctx, "policyLength", ReadSignedInt(readBuffer, 32))
+	policyLength, err := ReadImplicitField[int32](ctx, "policyLength", ReadSignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyLength' field"))
 	}
 	_ = policyLength
 
-	// Simple Field (policyId)
-	if pullErr := readBuffer.PullContext("policyId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for policyId")
-	}
-	_policyId, _policyIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _policyIdErr != nil {
-		return nil, errors.Wrap(_policyIdErr, "Error parsing 'policyId' field of UserIdentityToken")
-	}
-	policyId := _policyId.(PascalString)
-	if closeErr := readBuffer.CloseContext("policyId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for policyId")
+	policyId, err := ReadSimpleField[PascalString](ctx, "policyId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'policyId' field"))
 	}
 
-	// Simple Field (userIdentityTokenDefinition)
-	if pullErr := readBuffer.PullContext("userIdentityTokenDefinition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for userIdentityTokenDefinition")
-	}
-	_userIdentityTokenDefinition, _userIdentityTokenDefinitionErr := UserIdentityTokenDefinitionParseWithBuffer(ctx, readBuffer, string(policyId.GetStringValue()))
-	if _userIdentityTokenDefinitionErr != nil {
-		return nil, errors.Wrap(_userIdentityTokenDefinitionErr, "Error parsing 'userIdentityTokenDefinition' field of UserIdentityToken")
-	}
-	userIdentityTokenDefinition := _userIdentityTokenDefinition.(UserIdentityTokenDefinition)
-	if closeErr := readBuffer.CloseContext("userIdentityTokenDefinition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for userIdentityTokenDefinition")
+	userIdentityTokenDefinition, err := ReadSimpleField[UserIdentityTokenDefinition](ctx, "userIdentityTokenDefinition", ReadComplex[UserIdentityTokenDefinition](UserIdentityTokenDefinitionParseWithBufferProducer[UserIdentityTokenDefinition]((string)(policyId.GetStringValue())), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userIdentityTokenDefinition' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("UserIdentityToken"); closeErr != nil {

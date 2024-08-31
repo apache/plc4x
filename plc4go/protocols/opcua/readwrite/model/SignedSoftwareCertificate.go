@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func SignedSoftwareCertificateParse(ctx context.Context, theBytes []byte, identi
 	return SignedSoftwareCertificateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SignedSoftwareCertificateParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SignedSoftwareCertificate, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SignedSoftwareCertificate, error) {
+		return SignedSoftwareCertificateParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SignedSoftwareCertificateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SignedSoftwareCertificate, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func SignedSoftwareCertificateParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (certificateData)
-	if pullErr := readBuffer.PullContext("certificateData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for certificateData")
-	}
-	_certificateData, _certificateDataErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _certificateDataErr != nil {
-		return nil, errors.Wrap(_certificateDataErr, "Error parsing 'certificateData' field of SignedSoftwareCertificate")
-	}
-	certificateData := _certificateData.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("certificateData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for certificateData")
+	certificateData, err := ReadSimpleField[PascalByteString](ctx, "certificateData", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'certificateData' field"))
 	}
 
-	// Simple Field (signature)
-	if pullErr := readBuffer.PullContext("signature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for signature")
-	}
-	_signature, _signatureErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _signatureErr != nil {
-		return nil, errors.Wrap(_signatureErr, "Error parsing 'signature' field of SignedSoftwareCertificate")
-	}
-	signature := _signature.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("signature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for signature")
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SignedSoftwareCertificate"); closeErr != nil {

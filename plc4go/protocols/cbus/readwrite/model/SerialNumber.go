@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -133,6 +135,12 @@ func SerialNumberParse(ctx context.Context, theBytes []byte) (SerialNumber, erro
 	return SerialNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SerialNumberParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {
+		return SerialNumberParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SerialNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -144,33 +152,25 @@ func SerialNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (octet1)
-	_octet1, _octet1Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet1")
-	if _octet1Err != nil {
-		return nil, errors.Wrap(_octet1Err, "Error parsing 'octet1' field of SerialNumber")
+	octet1, err := ReadSimpleField(ctx, "octet1", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet1' field"))
 	}
-	octet1 := _octet1
 
-	// Simple Field (octet2)
-	_octet2, _octet2Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet2")
-	if _octet2Err != nil {
-		return nil, errors.Wrap(_octet2Err, "Error parsing 'octet2' field of SerialNumber")
+	octet2, err := ReadSimpleField(ctx, "octet2", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet2' field"))
 	}
-	octet2 := _octet2
 
-	// Simple Field (octet3)
-	_octet3, _octet3Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet3")
-	if _octet3Err != nil {
-		return nil, errors.Wrap(_octet3Err, "Error parsing 'octet3' field of SerialNumber")
+	octet3, err := ReadSimpleField(ctx, "octet3", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet3' field"))
 	}
-	octet3 := _octet3
 
-	// Simple Field (octet4)
-	_octet4, _octet4Err := /*TODO: migrate me*/ readBuffer.ReadByte("octet4")
-	if _octet4Err != nil {
-		return nil, errors.Wrap(_octet4Err, "Error parsing 'octet4' field of SerialNumber")
+	octet4, err := ReadSimpleField(ctx, "octet4", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'octet4' field"))
 	}
-	octet4 := _octet4
 
 	if closeErr := readBuffer.CloseContext("SerialNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SerialNumber")

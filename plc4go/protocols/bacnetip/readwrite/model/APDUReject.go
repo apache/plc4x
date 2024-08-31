@@ -148,6 +148,12 @@ func APDURejectParse(ctx context.Context, theBytes []byte, apduLength uint16) (A
 	return APDURejectParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), apduLength)
 }
 
+func APDURejectParseWithBufferProducer(apduLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUReject, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (APDUReject, error) {
+		return APDURejectParseWithBuffer(ctx, readBuffer, apduLength)
+	}
+}
+
 func APDURejectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, apduLength uint16) (APDUReject, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -159,29 +165,19 @@ func APDURejectParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 4), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(4)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (originalInvokeId)
-	_originalInvokeId, _originalInvokeIdErr := /*TODO: migrate me*/ readBuffer.ReadUint8("originalInvokeId", 8)
-	if _originalInvokeIdErr != nil {
-		return nil, errors.Wrap(_originalInvokeIdErr, "Error parsing 'originalInvokeId' field of APDUReject")
+	originalInvokeId, err := ReadSimpleField(ctx, "originalInvokeId", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'originalInvokeId' field"))
 	}
-	originalInvokeId := _originalInvokeId
 
-	// Simple Field (rejectReason)
-	if pullErr := readBuffer.PullContext("rejectReason"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for rejectReason")
-	}
-	_rejectReason, _rejectReasonErr := BACnetRejectReasonTaggedParseWithBuffer(ctx, readBuffer, uint32(uint32(1)))
-	if _rejectReasonErr != nil {
-		return nil, errors.Wrap(_rejectReasonErr, "Error parsing 'rejectReason' field of APDUReject")
-	}
-	rejectReason := _rejectReason.(BACnetRejectReasonTagged)
-	if closeErr := readBuffer.CloseContext("rejectReason"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for rejectReason")
+	rejectReason, err := ReadSimpleField[BACnetRejectReasonTagged](ctx, "rejectReason", ReadComplex[BACnetRejectReasonTagged](BACnetRejectReasonTaggedParseWithBufferProducer((uint32)(uint32(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rejectReason' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("APDUReject"); closeErr != nil {

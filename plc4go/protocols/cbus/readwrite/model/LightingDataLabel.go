@@ -167,6 +167,12 @@ func LightingDataLabelParse(ctx context.Context, theBytes []byte, commandTypeCon
 	return LightingDataLabelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func LightingDataLabelParseWithBufferProducer(commandTypeContainer LightingCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataLabel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingDataLabel, error) {
+		return LightingDataLabelParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer LightingCommandTypeContainer) (LightingDataLabel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -178,27 +184,17 @@ func LightingDataLabelParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (group)
-	_group, _groupErr := /*TODO: migrate me*/ readBuffer.ReadByte("group")
-	if _groupErr != nil {
-		return nil, errors.Wrap(_groupErr, "Error parsing 'group' field of LightingDataLabel")
-	}
-	group := _group
-
-	// Simple Field (labelOptions)
-	if pullErr := readBuffer.PullContext("labelOptions"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelOptions")
-	}
-	_labelOptions, _labelOptionsErr := LightingLabelOptionsParseWithBuffer(ctx, readBuffer)
-	if _labelOptionsErr != nil {
-		return nil, errors.Wrap(_labelOptionsErr, "Error parsing 'labelOptions' field of LightingDataLabel")
-	}
-	labelOptions := _labelOptions.(LightingLabelOptions)
-	if closeErr := readBuffer.CloseContext("labelOptions"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelOptions")
+	group, err := ReadSimpleField(ctx, "group", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'group' field"))
 	}
 
-	language, err := ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, 8)), bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON)))
+	labelOptions, err := ReadSimpleField[LightingLabelOptions](ctx, "labelOptions", ReadComplex[LightingLabelOptions](LightingLabelOptionsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelOptions' field"))
+	}
+
+	language, err := ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((labelOptions.GetLabelType()) != (LightingLabelType_LOAD_DYNAMIC_ICON)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'language' field"))
 	}

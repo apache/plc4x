@@ -175,6 +175,17 @@ func CALDataParse(ctx context.Context, theBytes []byte, requestContext RequestCo
 	return CALDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
+func CALDataParseWithBufferProducer[T CALData](requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CALDataParseWithBuffer(ctx, readBuffer, requestContext)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -191,17 +202,9 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := CALCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of CALData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[CALCommandTypeContainer](ctx, "commandTypeContainer", "CALCommandTypeContainer", ReadEnum(CALCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -252,13 +255,7 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 	}
 	_child = _childTemp.(CALDataChildSerializeRequirement)
 
-	_additionalData, err := ReadOptionalField[CALData](ctx, "additionalData", ReadComplex[CALData](func(ctx context.Context, buffer utils.ReadBuffer) (CALData, error) {
-		v, err := CALDataParseWithBuffer(ctx, readBuffer, (RequestContext)(nil))
-		if err != nil {
-			return nil, err
-		}
-		return v.(CALData), nil
-	}, readBuffer), true)
+	_additionalData, err := ReadOptionalField[CALData](ctx, "additionalData", ReadComplex[CALData](CALDataParseWithBufferProducer[CALData]((RequestContext)(nil)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalData' field"))
 	}

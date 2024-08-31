@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BACnetLandingDoorStatusParse(ctx context.Context, theBytes []byte) (BACnetL
 	return BACnetLandingDoorStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetLandingDoorStatusParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
+		return BACnetLandingDoorStatusParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetLandingDoorStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetLandingDoorStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func BACnetLandingDoorStatusParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (landingDoors)
-	if pullErr := readBuffer.PullContext("landingDoors"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for landingDoors")
-	}
-	_landingDoors, _landingDoorsErr := BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _landingDoorsErr != nil {
-		return nil, errors.Wrap(_landingDoorsErr, "Error parsing 'landingDoors' field of BACnetLandingDoorStatus")
-	}
-	landingDoors := _landingDoors.(BACnetLandingDoorStatusLandingDoorsList)
-	if closeErr := readBuffer.CloseContext("landingDoors"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for landingDoors")
+	landingDoors, err := ReadSimpleField[BACnetLandingDoorStatusLandingDoorsList](ctx, "landingDoors", ReadComplex[BACnetLandingDoorStatusLandingDoorsList](BACnetLandingDoorStatusLandingDoorsListParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingDoors' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingDoorStatus"); closeErr != nil {

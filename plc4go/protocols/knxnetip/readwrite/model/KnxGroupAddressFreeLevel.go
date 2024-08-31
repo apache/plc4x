@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func KnxGroupAddressFreeLevelParse(ctx context.Context, theBytes []byte, numLeve
 	return KnxGroupAddressFreeLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), numLevels)
 }
 
+func KnxGroupAddressFreeLevelParseWithBufferProducer(numLevels uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxGroupAddressFreeLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxGroupAddressFreeLevel, error) {
+		return KnxGroupAddressFreeLevelParseWithBuffer(ctx, readBuffer, numLevels)
+	}
+}
+
 func KnxGroupAddressFreeLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, numLevels uint8) (KnxGroupAddressFreeLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -141,12 +149,10 @@ func KnxGroupAddressFreeLevelParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint16("subGroup", 16)
-	if _subGroupErr != nil {
-		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxGroupAddressFreeLevel")
+	subGroup, err := ReadSimpleField(ctx, "subGroup", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subGroup' field"))
 	}
-	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxGroupAddressFreeLevel"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxGroupAddressFreeLevel")

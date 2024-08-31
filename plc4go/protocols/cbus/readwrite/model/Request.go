@@ -190,6 +190,17 @@ func RequestParse(ctx context.Context, theBytes []byte, cBusOptions CBusOptions)
 	return RequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func RequestParseWithBufferProducer[T Request](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := RequestParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (Request, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -216,12 +227,12 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 
 	readBuffer.Reset(currentPos)
 
-	startingCR, err := ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((peekedByte) == (RequestType_EMPTY)))
+	startingCR, err := ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_EMPTY)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startingCR' field"))
 	}
 
-	resetMode, err := ReadOptionalField[RequestType](ctx, "resetMode", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((peekedByte) == (RequestType_RESET)))
+	resetMode, err := ReadOptionalField[RequestType](ctx, "resetMode", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_RESET)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resetMode' field"))
 	}
@@ -278,17 +289,9 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 	}
 	_child = _childTemp.(RequestChildSerializeRequirement)
 
-	// Simple Field (termination)
-	if pullErr := readBuffer.PullContext("termination"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for termination")
-	}
-	_termination, _terminationErr := RequestTerminationParseWithBuffer(ctx, readBuffer)
-	if _terminationErr != nil {
-		return nil, errors.Wrap(_terminationErr, "Error parsing 'termination' field of Request")
-	}
-	termination := _termination.(RequestTermination)
-	if closeErr := readBuffer.CloseContext("termination"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for termination")
+	termination, err := ReadSimpleField[RequestTermination](ctx, "termination", ReadComplex[RequestTermination](RequestTerminationParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'termination' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("Request"); closeErr != nil {

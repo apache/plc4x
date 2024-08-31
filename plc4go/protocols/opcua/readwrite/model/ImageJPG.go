@@ -83,6 +83,12 @@ func ImageJPGParse(ctx context.Context, theBytes []byte) (ImageJPG, error) {
 	return ImageJPGParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ImageJPGParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageJPG, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ImageJPG, error) {
+		return ImageJPGParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ImageJPGParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ImageJPG, error) {
 	positionAware := readBuffer
 	_ = positionAware

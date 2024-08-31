@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func SecurityDataZoneNameParse(ctx context.Context, theBytes []byte) (SecurityDa
 	return SecurityDataZoneNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func SecurityDataZoneNameParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
+		return SecurityDataZoneNameParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityDataZoneName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,19 +159,15 @@ func SecurityDataZoneNameParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneNumber)
-	_zoneNumber, _zoneNumberErr := /*TODO: migrate me*/ readBuffer.ReadUint8("zoneNumber", 8)
-	if _zoneNumberErr != nil {
-		return nil, errors.Wrap(_zoneNumberErr, "Error parsing 'zoneNumber' field of SecurityDataZoneName")
+	zoneNumber, err := ReadSimpleField(ctx, "zoneNumber", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneNumber' field"))
 	}
-	zoneNumber := _zoneNumber
 
-	// Simple Field (zoneName)
-	_zoneName, _zoneNameErr := /*TODO: migrate me*/ readBuffer.ReadString("zoneName", uint32(88), utils.WithEncoding("UTF-8"))
-	if _zoneNameErr != nil {
-		return nil, errors.Wrap(_zoneNameErr, "Error parsing 'zoneName' field of SecurityDataZoneName")
+	zoneName, err := ReadSimpleField(ctx, "zoneName", ReadString(readBuffer, uint32(88)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneName' field"))
 	}
-	zoneName := _zoneName
 
 	if closeErr := readBuffer.CloseContext("SecurityDataZoneName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataZoneName")

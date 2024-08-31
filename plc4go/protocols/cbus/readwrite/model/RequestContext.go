@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func RequestContextParse(ctx context.Context, theBytes []byte) (RequestContext, 
 	return RequestContextParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func RequestContextParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
+		return RequestContextParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (RequestContext, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func RequestContextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sendIdentifyRequestBefore)
-	_sendIdentifyRequestBefore, _sendIdentifyRequestBeforeErr := /*TODO: migrate me*/ readBuffer.ReadBit("sendIdentifyRequestBefore")
-	if _sendIdentifyRequestBeforeErr != nil {
-		return nil, errors.Wrap(_sendIdentifyRequestBeforeErr, "Error parsing 'sendIdentifyRequestBefore' field of RequestContext")
+	sendIdentifyRequestBefore, err := ReadSimpleField(ctx, "sendIdentifyRequestBefore", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
 	}
-	sendIdentifyRequestBefore := _sendIdentifyRequestBefore
 
 	if closeErr := readBuffer.CloseContext("RequestContext"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RequestContext")

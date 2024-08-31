@@ -239,6 +239,12 @@ func PubSubGroupDataTypeParse(ctx context.Context, theBytes []byte, identifier s
 	return PubSubGroupDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PubSubGroupDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubGroupDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubGroupDataType, error) {
+		return PubSubGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubGroupDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -250,96 +256,52 @@ func PubSubGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of PubSubGroupDataType")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (enabled)
-	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
-	if _enabledErr != nil {
-		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubGroupDataType")
-	}
-	enabled := _enabled
-
-	// Simple Field (securityMode)
-	if pullErr := readBuffer.PullContext("securityMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityMode")
-	}
-	_securityMode, _securityModeErr := MessageSecurityModeParseWithBuffer(ctx, readBuffer)
-	if _securityModeErr != nil {
-		return nil, errors.Wrap(_securityModeErr, "Error parsing 'securityMode' field of PubSubGroupDataType")
-	}
-	securityMode := _securityMode
-	if closeErr := readBuffer.CloseContext("securityMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityMode")
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
 
-	// Simple Field (securityGroupId)
-	if pullErr := readBuffer.PullContext("securityGroupId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityGroupId")
-	}
-	_securityGroupId, _securityGroupIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityGroupIdErr != nil {
-		return nil, errors.Wrap(_securityGroupIdErr, "Error parsing 'securityGroupId' field of PubSubGroupDataType")
-	}
-	securityGroupId := _securityGroupId.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityGroupId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityGroupId")
+	securityMode, err := ReadEnumField[MessageSecurityMode](ctx, "securityMode", "MessageSecurityMode", ReadEnum(MessageSecurityModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityMode' field"))
 	}
 
-	// Simple Field (noOfSecurityKeyServices)
-	_noOfSecurityKeyServices, _noOfSecurityKeyServicesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityKeyServices", 32)
-	if _noOfSecurityKeyServicesErr != nil {
-		return nil, errors.Wrap(_noOfSecurityKeyServicesErr, "Error parsing 'noOfSecurityKeyServices' field of PubSubGroupDataType")
+	securityGroupId, err := ReadSimpleField[PascalString](ctx, "securityGroupId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroupId' field"))
 	}
-	noOfSecurityKeyServices := _noOfSecurityKeyServices
 
-	securityKeyServices, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "securityKeyServices", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("314"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfSecurityKeyServices))
+	noOfSecurityKeyServices, err := ReadSimpleField(ctx, "noOfSecurityKeyServices", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityKeyServices' field"))
+	}
+
+	securityKeyServices, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "securityKeyServices", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("314")), readBuffer), uint64(noOfSecurityKeyServices))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityKeyServices' field"))
 	}
 
-	// Simple Field (maxNetworkMessageSize)
-	_maxNetworkMessageSize, _maxNetworkMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxNetworkMessageSize", 32)
-	if _maxNetworkMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxNetworkMessageSizeErr, "Error parsing 'maxNetworkMessageSize' field of PubSubGroupDataType")
+	maxNetworkMessageSize, err := ReadSimpleField(ctx, "maxNetworkMessageSize", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNetworkMessageSize' field"))
 	}
-	maxNetworkMessageSize := _maxNetworkMessageSize
 
-	// Simple Field (noOfGroupProperties)
-	_noOfGroupProperties, _noOfGroupPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfGroupProperties", 32)
-	if _noOfGroupPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfGroupPropertiesErr, "Error parsing 'noOfGroupProperties' field of PubSubGroupDataType")
+	noOfGroupProperties, err := ReadSimpleField(ctx, "noOfGroupProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfGroupProperties' field"))
 	}
-	noOfGroupProperties := _noOfGroupProperties
 
-	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfGroupProperties))
+	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfGroupProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupProperties' field"))
 	}

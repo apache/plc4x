@@ -188,6 +188,12 @@ func NodeReferenceParse(ctx context.Context, theBytes []byte, identifier string)
 	return NodeReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NodeReferenceParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeReference, error) {
+		return NodeReferenceParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NodeReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -199,50 +205,30 @@ func NodeReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of NodeReference")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of NodeReference")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of NodeReference")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
 
-	// Simple Field (noOfReferencedNodeIds)
-	_noOfReferencedNodeIds, _noOfReferencedNodeIdsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfReferencedNodeIds", 32)
-	if _noOfReferencedNodeIdsErr != nil {
-		return nil, errors.Wrap(_noOfReferencedNodeIdsErr, "Error parsing 'noOfReferencedNodeIds' field of NodeReference")
+	noOfReferencedNodeIds, err := ReadSimpleField(ctx, "noOfReferencedNodeIds", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfReferencedNodeIds' field"))
 	}
-	noOfReferencedNodeIds := _noOfReferencedNodeIds
 
 	referencedNodeIds, err := ReadCountArrayField[NodeId](ctx, "referencedNodeIds", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer), uint64(noOfReferencedNodeIds))
 	if err != nil {

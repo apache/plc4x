@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataWindowIntervalParse(ctx context.Context, theBytes []by
 	return BACnetConstructedDataWindowIntervalParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataWindowIntervalParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataWindowInterval, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataWindowInterval, error) {
+		return BACnetConstructedDataWindowIntervalParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataWindowIntervalParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataWindowInterval, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataWindowIntervalParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (windowInterval)
-	if pullErr := readBuffer.PullContext("windowInterval"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for windowInterval")
-	}
-	_windowInterval, _windowIntervalErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _windowIntervalErr != nil {
-		return nil, errors.Wrap(_windowIntervalErr, "Error parsing 'windowInterval' field of BACnetConstructedDataWindowInterval")
-	}
-	windowInterval := _windowInterval.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("windowInterval"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for windowInterval")
+	windowInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'windowInterval' field"))
 	}
 
 	// Virtual field

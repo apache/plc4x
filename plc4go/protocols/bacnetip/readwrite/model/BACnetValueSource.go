@@ -140,6 +140,17 @@ func BACnetValueSourceParse(ctx context.Context, theBytes []byte) (BACnetValueSo
 	return BACnetValueSourceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetValueSourceParseWithBufferProducer[T BACnetValueSource]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := BACnetValueSourceParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func BACnetValueSourceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetValueSource, error) {
 	positionAware := readBuffer
 	_ = positionAware

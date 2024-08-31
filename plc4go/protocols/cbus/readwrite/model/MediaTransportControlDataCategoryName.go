@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,6 +131,12 @@ func MediaTransportControlDataCategoryNameParse(ctx context.Context, theBytes []
 	return MediaTransportControlDataCategoryNameParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), commandTypeContainer)
 }
 
+func MediaTransportControlDataCategoryNameParseWithBufferProducer(commandTypeContainer MediaTransportControlCommandTypeContainer) func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataCategoryName, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (MediaTransportControlDataCategoryName, error) {
+		return MediaTransportControlDataCategoryNameParseWithBuffer(ctx, readBuffer, commandTypeContainer)
+	}
+}
+
 func MediaTransportControlDataCategoryNameParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, commandTypeContainer MediaTransportControlCommandTypeContainer) (MediaTransportControlDataCategoryName, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -140,12 +148,10 @@ func MediaTransportControlDataCategoryNameParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (categoryName)
-	_categoryName, _categoryNameErr := /*TODO: migrate me*/ readBuffer.ReadString("categoryName", uint32(((commandTypeContainer.NumBytes())-(1))*(8)), utils.WithEncoding("UTF-8"))
-	if _categoryNameErr != nil {
-		return nil, errors.Wrap(_categoryNameErr, "Error parsing 'categoryName' field of MediaTransportControlDataCategoryName")
+	categoryName, err := ReadSimpleField(ctx, "categoryName", ReadString(readBuffer, uint32(int32((int32(commandTypeContainer.NumBytes())-int32(int32(1))))*int32(int32(8)))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'categoryName' field"))
 	}
-	categoryName := _categoryName
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataCategoryName"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataCategoryName")

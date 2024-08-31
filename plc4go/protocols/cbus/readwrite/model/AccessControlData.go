@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,17 @@ func AccessControlDataParse(ctx context.Context, theBytes []byte) (AccessControl
 	return AccessControlDataParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AccessControlDataParseWithBufferProducer[T AccessControlData]() func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := AccessControlDataParseWithBuffer(ctx, readBuffer)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AccessControlData, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,17 +192,9 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "no command type could be found"})
 	}
 
-	// Simple Field (commandTypeContainer)
-	if pullErr := readBuffer.PullContext("commandTypeContainer"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for commandTypeContainer")
-	}
-	_commandTypeContainer, _commandTypeContainerErr := AccessControlCommandTypeContainerParseWithBuffer(ctx, readBuffer)
-	if _commandTypeContainerErr != nil {
-		return nil, errors.Wrap(_commandTypeContainerErr, "Error parsing 'commandTypeContainer' field of AccessControlData")
-	}
-	commandTypeContainer := _commandTypeContainer
-	if closeErr := readBuffer.CloseContext("commandTypeContainer"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for commandTypeContainer")
+	commandTypeContainer, err := ReadEnumField[AccessControlCommandTypeContainer](ctx, "commandTypeContainer", "AccessControlCommandTypeContainer", ReadEnum(AccessControlCommandTypeContainerByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandTypeContainer' field"))
 	}
 
 	// Virtual field
@@ -197,19 +202,15 @@ func AccessControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	commandType := AccessControlCommandType(_commandType)
 	_ = commandType
 
-	// Simple Field (networkId)
-	_networkId, _networkIdErr := /*TODO: migrate me*/ readBuffer.ReadByte("networkId")
-	if _networkIdErr != nil {
-		return nil, errors.Wrap(_networkIdErr, "Error parsing 'networkId' field of AccessControlData")
+	networkId, err := ReadSimpleField(ctx, "networkId", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkId' field"))
 	}
-	networkId := _networkId
 
-	// Simple Field (accessPointId)
-	_accessPointId, _accessPointIdErr := /*TODO: migrate me*/ readBuffer.ReadByte("accessPointId")
-	if _accessPointIdErr != nil {
-		return nil, errors.Wrap(_accessPointIdErr, "Error parsing 'accessPointId' field of AccessControlData")
+	accessPointId, err := ReadSimpleField(ctx, "accessPointId", ReadByte(readBuffer, 8))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessPointId' field"))
 	}
-	accessPointId := _accessPointId
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type AccessControlDataChildSerializeRequirement interface {

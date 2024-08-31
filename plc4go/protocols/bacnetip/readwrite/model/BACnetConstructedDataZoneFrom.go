@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataZoneFromParse(ctx context.Context, theBytes []byte, ta
 	return BACnetConstructedDataZoneFromParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataZoneFromParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataZoneFrom, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataZoneFrom, error) {
+		return BACnetConstructedDataZoneFromParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataZoneFromParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataZoneFrom, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataZoneFromParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneFrom)
-	if pullErr := readBuffer.PullContext("zoneFrom"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneFrom")
-	}
-	_zoneFrom, _zoneFromErr := BACnetDeviceObjectReferenceParseWithBuffer(ctx, readBuffer)
-	if _zoneFromErr != nil {
-		return nil, errors.Wrap(_zoneFromErr, "Error parsing 'zoneFrom' field of BACnetConstructedDataZoneFrom")
-	}
-	zoneFrom := _zoneFrom.(BACnetDeviceObjectReference)
-	if closeErr := readBuffer.CloseContext("zoneFrom"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneFrom")
+	zoneFrom, err := ReadSimpleField[BACnetDeviceObjectReference](ctx, "zoneFrom", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneFrom' field"))
 	}
 
 	// Virtual field

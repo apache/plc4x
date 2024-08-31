@@ -250,6 +250,12 @@ func RegisteredServerParse(ctx context.Context, theBytes []byte, identifier stri
 	return RegisteredServerParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RegisteredServerParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisteredServer, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RegisteredServer, error) {
+		return RegisteredServerParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RegisteredServer, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -261,106 +267,60 @@ func RegisteredServerParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (serverUri)
-	if pullErr := readBuffer.PullContext("serverUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverUri")
-	}
-	_serverUri, _serverUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _serverUriErr != nil {
-		return nil, errors.Wrap(_serverUriErr, "Error parsing 'serverUri' field of RegisteredServer")
-	}
-	serverUri := _serverUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("serverUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverUri")
+	serverUri, err := ReadSimpleField[PascalString](ctx, "serverUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverUri' field"))
 	}
 
-	// Simple Field (productUri)
-	if pullErr := readBuffer.PullContext("productUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for productUri")
-	}
-	_productUri, _productUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _productUriErr != nil {
-		return nil, errors.Wrap(_productUriErr, "Error parsing 'productUri' field of RegisteredServer")
-	}
-	productUri := _productUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("productUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for productUri")
+	productUri, err := ReadSimpleField[PascalString](ctx, "productUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'productUri' field"))
 	}
 
-	// Simple Field (noOfServerNames)
-	_noOfServerNames, _noOfServerNamesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfServerNames", 32)
-	if _noOfServerNamesErr != nil {
-		return nil, errors.Wrap(_noOfServerNamesErr, "Error parsing 'noOfServerNames' field of RegisteredServer")
+	noOfServerNames, err := ReadSimpleField(ctx, "noOfServerNames", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfServerNames' field"))
 	}
-	noOfServerNames := _noOfServerNames
 
 	serverNames, err := ReadCountArrayField[LocalizedText](ctx, "serverNames", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer), uint64(noOfServerNames))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNames' field"))
 	}
 
-	// Simple Field (serverType)
-	if pullErr := readBuffer.PullContext("serverType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverType")
-	}
-	_serverType, _serverTypeErr := ApplicationTypeParseWithBuffer(ctx, readBuffer)
-	if _serverTypeErr != nil {
-		return nil, errors.Wrap(_serverTypeErr, "Error parsing 'serverType' field of RegisteredServer")
-	}
-	serverType := _serverType
-	if closeErr := readBuffer.CloseContext("serverType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverType")
+	serverType, err := ReadEnumField[ApplicationType](ctx, "serverType", "ApplicationType", ReadEnum(ApplicationTypeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverType' field"))
 	}
 
-	// Simple Field (gatewayServerUri)
-	if pullErr := readBuffer.PullContext("gatewayServerUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for gatewayServerUri")
-	}
-	_gatewayServerUri, _gatewayServerUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _gatewayServerUriErr != nil {
-		return nil, errors.Wrap(_gatewayServerUriErr, "Error parsing 'gatewayServerUri' field of RegisteredServer")
-	}
-	gatewayServerUri := _gatewayServerUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("gatewayServerUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for gatewayServerUri")
+	gatewayServerUri, err := ReadSimpleField[PascalString](ctx, "gatewayServerUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'gatewayServerUri' field"))
 	}
 
-	// Simple Field (noOfDiscoveryUrls)
-	_noOfDiscoveryUrls, _noOfDiscoveryUrlsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfDiscoveryUrls", 32)
-	if _noOfDiscoveryUrlsErr != nil {
-		return nil, errors.Wrap(_noOfDiscoveryUrlsErr, "Error parsing 'noOfDiscoveryUrls' field of RegisteredServer")
+	noOfDiscoveryUrls, err := ReadSimpleField(ctx, "noOfDiscoveryUrls", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfDiscoveryUrls' field"))
 	}
-	noOfDiscoveryUrls := _noOfDiscoveryUrls
 
 	discoveryUrls, err := ReadCountArrayField[PascalString](ctx, "discoveryUrls", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfDiscoveryUrls))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'discoveryUrls' field"))
 	}
 
-	// Simple Field (semaphoreFilePath)
-	if pullErr := readBuffer.PullContext("semaphoreFilePath"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for semaphoreFilePath")
-	}
-	_semaphoreFilePath, _semaphoreFilePathErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _semaphoreFilePathErr != nil {
-		return nil, errors.Wrap(_semaphoreFilePathErr, "Error parsing 'semaphoreFilePath' field of RegisteredServer")
-	}
-	semaphoreFilePath := _semaphoreFilePath.(PascalString)
-	if closeErr := readBuffer.CloseContext("semaphoreFilePath"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for semaphoreFilePath")
+	semaphoreFilePath, err := ReadSimpleField[PascalString](ctx, "semaphoreFilePath", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'semaphoreFilePath' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isOnline)
-	_isOnline, _isOnlineErr := /*TODO: migrate me*/ readBuffer.ReadBit("isOnline")
-	if _isOnlineErr != nil {
-		return nil, errors.Wrap(_isOnlineErr, "Error parsing 'isOnline' field of RegisteredServer")
+	isOnline, err := ReadSimpleField(ctx, "isOnline", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOnline' field"))
 	}
-	isOnline := _isOnline
 
 	if closeErr := readBuffer.CloseContext("RegisteredServer"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RegisteredServer")

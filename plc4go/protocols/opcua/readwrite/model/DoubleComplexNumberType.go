@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func DoubleComplexNumberTypeParse(ctx context.Context, theBytes []byte, identifi
 	return DoubleComplexNumberTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DoubleComplexNumberTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DoubleComplexNumberType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DoubleComplexNumberType, error) {
+		return DoubleComplexNumberTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DoubleComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DoubleComplexNumberType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func DoubleComplexNumberTypeParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (real)
-	_real, _realErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("real", 64)
-	if _realErr != nil {
-		return nil, errors.Wrap(_realErr, "Error parsing 'real' field of DoubleComplexNumberType")
+	real, err := ReadSimpleField(ctx, "real", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'real' field"))
 	}
-	real := _real
 
-	// Simple Field (imaginary)
-	_imaginary, _imaginaryErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("imaginary", 64)
-	if _imaginaryErr != nil {
-		return nil, errors.Wrap(_imaginaryErr, "Error parsing 'imaginary' field of DoubleComplexNumberType")
+	imaginary, err := ReadSimpleField(ctx, "imaginary", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'imaginary' field"))
 	}
-	imaginary := _imaginary
 
 	if closeErr := readBuffer.CloseContext("DoubleComplexNumberType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DoubleComplexNumberType")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataLightingCommandParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataLightingCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataLightingCommandParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingCommand, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataLightingCommand, error) {
+		return BACnetConstructedDataLightingCommandParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataLightingCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataLightingCommandParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightingCommand)
-	if pullErr := readBuffer.PullContext("lightingCommand"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightingCommand")
-	}
-	_lightingCommand, _lightingCommandErr := BACnetLightingCommandParseWithBuffer(ctx, readBuffer)
-	if _lightingCommandErr != nil {
-		return nil, errors.Wrap(_lightingCommandErr, "Error parsing 'lightingCommand' field of BACnetConstructedDataLightingCommand")
-	}
-	lightingCommand := _lightingCommand.(BACnetLightingCommand)
-	if closeErr := readBuffer.CloseContext("lightingCommand"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightingCommand")
+	lightingCommand, err := ReadSimpleField[BACnetLightingCommand](ctx, "lightingCommand", ReadComplex[BACnetLightingCommand](BACnetLightingCommandParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommand' field"))
 	}
 
 	// Virtual field

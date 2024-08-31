@@ -168,6 +168,12 @@ func BACnetUnconfirmedServiceRequestWriteGroupParse(ctx context.Context, theByte
 	return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), serviceRequestLength)
 }
 
+func BACnetUnconfirmedServiceRequestWriteGroupParseWithBufferProducer(serviceRequestLength uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
+		return BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx, readBuffer, serviceRequestLength)
+	}
+}
+
 func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, serviceRequestLength uint16) (BACnetUnconfirmedServiceRequestWriteGroup, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -179,52 +185,22 @@ func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (groupNumber)
-	if pullErr := readBuffer.PullContext("groupNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for groupNumber")
-	}
-	_groupNumber, _groupNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(0)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _groupNumberErr != nil {
-		return nil, errors.Wrap(_groupNumberErr, "Error parsing 'groupNumber' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	groupNumber := _groupNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("groupNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for groupNumber")
+	groupNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "groupNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupNumber' field"))
 	}
 
-	// Simple Field (writePriority)
-	if pullErr := readBuffer.PullContext("writePriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for writePriority")
-	}
-	_writePriority, _writePriorityErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _writePriorityErr != nil {
-		return nil, errors.Wrap(_writePriorityErr, "Error parsing 'writePriority' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	writePriority := _writePriority.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("writePriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for writePriority")
+	writePriority, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "writePriority", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writePriority' field"))
 	}
 
-	// Simple Field (changeList)
-	if pullErr := readBuffer.PullContext("changeList"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for changeList")
-	}
-	_changeList, _changeListErr := BACnetGroupChannelValueListParseWithBuffer(ctx, readBuffer, uint8(uint8(2)))
-	if _changeListErr != nil {
-		return nil, errors.Wrap(_changeListErr, "Error parsing 'changeList' field of BACnetUnconfirmedServiceRequestWriteGroup")
-	}
-	changeList := _changeList.(BACnetGroupChannelValueList)
-	if closeErr := readBuffer.CloseContext("changeList"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for changeList")
+	changeList, err := ReadSimpleField[BACnetGroupChannelValueList](ctx, "changeList", ReadComplex[BACnetGroupChannelValueList](BACnetGroupChannelValueListParseWithBufferProducer((uint8)(uint8(2))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeList' field"))
 	}
 
-	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagUnsignedInteger), nil
-	}, readBuffer), true)
+	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inhibitDelay' field"))
 	}

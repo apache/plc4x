@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func OpenChannelMessageResponseParse(ctx context.Context, theBytes []byte, respo
 	return OpenChannelMessageResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpenChannelMessageResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenChannelMessageResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenChannelMessageResponse, error) {
+		return OpenChannelMessageResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func OpenChannelMessageResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpenChannelMessageResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,50 +182,24 @@ func OpenChannelMessageResponseParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (secureChannelId)
-	_secureChannelId, _secureChannelIdErr := /*TODO: migrate me*/ readBuffer.ReadInt32("secureChannelId", 32)
-	if _secureChannelIdErr != nil {
-		return nil, errors.Wrap(_secureChannelIdErr, "Error parsing 'secureChannelId' field of OpenChannelMessageResponse")
-	}
-	secureChannelId := _secureChannelId
-
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of OpenChannelMessageResponse")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	secureChannelId, err := ReadSimpleField(ctx, "secureChannelId", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secureChannelId' field"))
 	}
 
-	// Simple Field (senderCertificate)
-	if pullErr := readBuffer.PullContext("senderCertificate"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for senderCertificate")
-	}
-	_senderCertificate, _senderCertificateErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _senderCertificateErr != nil {
-		return nil, errors.Wrap(_senderCertificateErr, "Error parsing 'senderCertificate' field of OpenChannelMessageResponse")
-	}
-	senderCertificate := _senderCertificate.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("senderCertificate"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for senderCertificate")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (receiverCertificateThumbprint)
-	if pullErr := readBuffer.PullContext("receiverCertificateThumbprint"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for receiverCertificateThumbprint")
+	senderCertificate, err := ReadSimpleField[PascalByteString](ctx, "senderCertificate", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'senderCertificate' field"))
 	}
-	_receiverCertificateThumbprint, _receiverCertificateThumbprintErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _receiverCertificateThumbprintErr != nil {
-		return nil, errors.Wrap(_receiverCertificateThumbprintErr, "Error parsing 'receiverCertificateThumbprint' field of OpenChannelMessageResponse")
-	}
-	receiverCertificateThumbprint := _receiverCertificateThumbprint.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("receiverCertificateThumbprint"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for receiverCertificateThumbprint")
+
+	receiverCertificateThumbprint, err := ReadSimpleField[PascalByteString](ctx, "receiverCertificateThumbprint", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'receiverCertificateThumbprint' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpenChannelMessageResponse"); closeErr != nil {

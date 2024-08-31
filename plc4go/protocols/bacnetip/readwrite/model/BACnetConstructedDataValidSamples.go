@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataValidSamplesParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataValidSamplesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataValidSamplesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValidSamples, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataValidSamples, error) {
+		return BACnetConstructedDataValidSamplesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataValidSamplesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataValidSamples, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataValidSamplesParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (validSamples)
-	if pullErr := readBuffer.PullContext("validSamples"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for validSamples")
-	}
-	_validSamples, _validSamplesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _validSamplesErr != nil {
-		return nil, errors.Wrap(_validSamplesErr, "Error parsing 'validSamples' field of BACnetConstructedDataValidSamples")
-	}
-	validSamples := _validSamples.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("validSamples"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for validSamples")
+	validSamples, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "validSamples", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validSamples' field"))
 	}
 
 	// Virtual field

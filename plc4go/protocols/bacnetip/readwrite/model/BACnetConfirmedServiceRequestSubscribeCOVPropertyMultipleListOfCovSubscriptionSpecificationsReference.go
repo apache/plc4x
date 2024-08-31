@@ -127,6 +127,12 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
+		return BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReferenceParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -138,26 +144,12 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (monitoredProperty)
-	if pullErr := readBuffer.PullContext("monitoredProperty"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for monitoredProperty")
-	}
-	_monitoredProperty, _monitoredPropertyErr := BACnetPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(1)))
-	if _monitoredPropertyErr != nil {
-		return nil, errors.Wrap(_monitoredPropertyErr, "Error parsing 'monitoredProperty' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference")
-	}
-	monitoredProperty := _monitoredProperty.(BACnetPropertyReferenceEnclosed)
-	if closeErr := readBuffer.CloseContext("monitoredProperty"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for monitoredProperty")
+	monitoredProperty, err := ReadSimpleField[BACnetPropertyReferenceEnclosed](ctx, "monitoredProperty", ReadComplex[BACnetPropertyReferenceEnclosed](BACnetPropertyReferenceEnclosedParseWithBufferProducer((uint8)(uint8(1))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monitoredProperty' field"))
 	}
 
-	_covIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "covIncrement", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
-		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetContextTagReal), nil
-	}, readBuffer), true)
+	_covIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "covIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}
@@ -166,17 +158,9 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscript
 		covIncrement = *_covIncrement
 	}
 
-	// Simple Field (timestamped)
-	if pullErr := readBuffer.PullContext("timestamped"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for timestamped")
-	}
-	_timestamped, _timestampedErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(2)), BACnetDataType(BACnetDataType_BOOLEAN))
-	if _timestampedErr != nil {
-		return nil, errors.Wrap(_timestampedErr, "Error parsing 'timestamped' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference")
-	}
-	timestamped := _timestamped.(BACnetContextTagBoolean)
-	if closeErr := readBuffer.CloseContext("timestamped"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for timestamped")
+	timestamped, err := ReadSimpleField[BACnetContextTagBoolean](ctx, "timestamped", ReadComplex[BACnetContextTagBoolean](BACnetContextTagParseWithBufferProducer[BACnetContextTagBoolean]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_BOOLEAN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timestamped' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleListOfCovSubscriptionSpecificationsReference"); closeErr != nil {

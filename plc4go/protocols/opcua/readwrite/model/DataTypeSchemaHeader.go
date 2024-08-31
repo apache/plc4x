@@ -237,6 +237,12 @@ func DataTypeSchemaHeaderParse(ctx context.Context, theBytes []byte, identifier 
 	return DataTypeSchemaHeaderParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DataTypeSchemaHeaderParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeSchemaHeader, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DataTypeSchemaHeader, error) {
+		return DataTypeSchemaHeaderParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DataTypeSchemaHeader, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -248,68 +254,42 @@ func DataTypeSchemaHeaderParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfNamespaces)
-	_noOfNamespaces, _noOfNamespacesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfNamespaces", 32)
-	if _noOfNamespacesErr != nil {
-		return nil, errors.Wrap(_noOfNamespacesErr, "Error parsing 'noOfNamespaces' field of DataTypeSchemaHeader")
+	noOfNamespaces, err := ReadSimpleField(ctx, "noOfNamespaces", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfNamespaces' field"))
 	}
-	noOfNamespaces := _noOfNamespaces
 
 	namespaces, err := ReadCountArrayField[PascalString](ctx, "namespaces", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfNamespaces))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaces' field"))
 	}
 
-	// Simple Field (noOfStructureDataTypes)
-	_noOfStructureDataTypes, _noOfStructureDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfStructureDataTypes", 32)
-	if _noOfStructureDataTypesErr != nil {
-		return nil, errors.Wrap(_noOfStructureDataTypesErr, "Error parsing 'noOfStructureDataTypes' field of DataTypeSchemaHeader")
+	noOfStructureDataTypes, err := ReadSimpleField(ctx, "noOfStructureDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfStructureDataTypes' field"))
 	}
-	noOfStructureDataTypes := _noOfStructureDataTypes
 
-	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(DataTypeDescription), nil
-	}, readBuffer), uint64(noOfStructureDataTypes))
+	structureDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "structureDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfStructureDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'structureDataTypes' field"))
 	}
 
-	// Simple Field (noOfEnumDataTypes)
-	_noOfEnumDataTypes, _noOfEnumDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfEnumDataTypes", 32)
-	if _noOfEnumDataTypesErr != nil {
-		return nil, errors.Wrap(_noOfEnumDataTypesErr, "Error parsing 'noOfEnumDataTypes' field of DataTypeSchemaHeader")
+	noOfEnumDataTypes, err := ReadSimpleField(ctx, "noOfEnumDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfEnumDataTypes' field"))
 	}
-	noOfEnumDataTypes := _noOfEnumDataTypes
 
-	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(DataTypeDescription), nil
-	}, readBuffer), uint64(noOfEnumDataTypes))
+	enumDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "enumDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfEnumDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enumDataTypes' field"))
 	}
 
-	// Simple Field (noOfSimpleDataTypes)
-	_noOfSimpleDataTypes, _noOfSimpleDataTypesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSimpleDataTypes", 32)
-	if _noOfSimpleDataTypesErr != nil {
-		return nil, errors.Wrap(_noOfSimpleDataTypesErr, "Error parsing 'noOfSimpleDataTypes' field of DataTypeSchemaHeader")
+	noOfSimpleDataTypes, err := ReadSimpleField(ctx, "noOfSimpleDataTypes", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSimpleDataTypes' field"))
 	}
-	noOfSimpleDataTypes := _noOfSimpleDataTypes
 
-	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](func(ctx context.Context, buffer utils.ReadBuffer) (DataTypeDescription, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14525"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(DataTypeDescription), nil
-	}, readBuffer), uint64(noOfSimpleDataTypes))
+	simpleDataTypes, err := ReadCountArrayField[DataTypeDescription](ctx, "simpleDataTypes", ReadComplex[DataTypeDescription](ExtensionObjectDefinitionParseWithBufferProducer[DataTypeDescription]((string)("14525")), readBuffer), uint64(noOfSimpleDataTypes))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'simpleDataTypes' field"))
 	}

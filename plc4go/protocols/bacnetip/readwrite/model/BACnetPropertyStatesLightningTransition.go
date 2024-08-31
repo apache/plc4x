@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLightningTransitionParse(ctx context.Context, theBytes 
 	return BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLightningTransitionParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningTransition, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLightningTransition, error) {
+		return BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLightningTransition, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLightningTransitionParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (lightningTransition)
-	if pullErr := readBuffer.PullContext("lightningTransition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for lightningTransition")
-	}
-	_lightningTransition, _lightningTransitionErr := BACnetLightingTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _lightningTransitionErr != nil {
-		return nil, errors.Wrap(_lightningTransitionErr, "Error parsing 'lightningTransition' field of BACnetPropertyStatesLightningTransition")
-	}
-	lightningTransition := _lightningTransition.(BACnetLightingTransitionTagged)
-	if closeErr := readBuffer.CloseContext("lightningTransition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for lightningTransition")
+	lightningTransition, err := ReadSimpleField[BACnetLightingTransitionTagged](ctx, "lightningTransition", ReadComplex[BACnetLightingTransitionTagged](BACnetLightingTransitionTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightningTransition' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLightningTransition"); closeErr != nil {

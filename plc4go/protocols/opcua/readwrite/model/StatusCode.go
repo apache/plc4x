@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func StatusCodeParse(ctx context.Context, theBytes []byte) (StatusCode, error) {
 	return StatusCodeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func StatusCodeParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
+		return StatusCodeParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (StatusCode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,12 +122,10 @@ func StatusCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	_statusCode, _statusCodeErr := /*TODO: migrate me*/ readBuffer.ReadUint32("statusCode", 32)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of StatusCode")
+	statusCode, err := ReadSimpleField(ctx, "statusCode", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
-	statusCode := _statusCode
 
 	if closeErr := readBuffer.CloseContext("StatusCode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for StatusCode")

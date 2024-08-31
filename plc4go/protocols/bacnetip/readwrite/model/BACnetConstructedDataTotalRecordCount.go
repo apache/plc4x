@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataTotalRecordCountParse(ctx context.Context, theBytes []
 	return BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataTotalRecordCountParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTotalRecordCount, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataTotalRecordCount, error) {
+		return BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataTotalRecordCount, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (totalRecordCount)
-	if pullErr := readBuffer.PullContext("totalRecordCount"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for totalRecordCount")
-	}
-	_totalRecordCount, _totalRecordCountErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _totalRecordCountErr != nil {
-		return nil, errors.Wrap(_totalRecordCountErr, "Error parsing 'totalRecordCount' field of BACnetConstructedDataTotalRecordCount")
-	}
-	totalRecordCount := _totalRecordCount.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("totalRecordCount"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for totalRecordCount")
+	totalRecordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "totalRecordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalRecordCount' field"))
 	}
 
 	// Virtual field

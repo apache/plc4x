@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,6 +142,12 @@ func CALDataAcknowledgeParse(ctx context.Context, theBytes []byte, requestContex
 	return CALDataAcknowledgeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), requestContext)
 }
 
+func CALDataAcknowledgeParseWithBufferProducer(requestContext RequestContext) func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataAcknowledge, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CALDataAcknowledge, error) {
+		return CALDataAcknowledgeParseWithBuffer(ctx, readBuffer, requestContext)
+	}
+}
+
 func CALDataAcknowledgeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, requestContext RequestContext) (CALDataAcknowledge, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -151,25 +159,15 @@ func CALDataAcknowledgeParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (paramNo)
-	if pullErr := readBuffer.PullContext("paramNo"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for paramNo")
-	}
-	_paramNo, _paramNoErr := ParameterParseWithBuffer(ctx, readBuffer)
-	if _paramNoErr != nil {
-		return nil, errors.Wrap(_paramNoErr, "Error parsing 'paramNo' field of CALDataAcknowledge")
-	}
-	paramNo := _paramNo
-	if closeErr := readBuffer.CloseContext("paramNo"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for paramNo")
+	paramNo, err := ReadEnumField[Parameter](ctx, "paramNo", "Parameter", ReadEnum(ParameterByValue, ReadUnsignedByte(readBuffer, uint8(8))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'paramNo' field"))
 	}
 
-	// Simple Field (code)
-	_code, _codeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("code", 8)
-	if _codeErr != nil {
-		return nil, errors.Wrap(_codeErr, "Error parsing 'code' field of CALDataAcknowledge")
+	code, err := ReadSimpleField(ctx, "code", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'code' field"))
 	}
-	code := _code
 
 	if closeErr := readBuffer.CloseContext("CALDataAcknowledge"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for CALDataAcknowledge")

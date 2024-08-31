@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParse(ctx context.Contex
 	return BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
+		return BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataNumberOfAuthenticationPolicies, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numberOfAuthenticationPolicies)
-	if pullErr := readBuffer.PullContext("numberOfAuthenticationPolicies"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for numberOfAuthenticationPolicies")
-	}
-	_numberOfAuthenticationPolicies, _numberOfAuthenticationPoliciesErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _numberOfAuthenticationPoliciesErr != nil {
-		return nil, errors.Wrap(_numberOfAuthenticationPoliciesErr, "Error parsing 'numberOfAuthenticationPolicies' field of BACnetConstructedDataNumberOfAuthenticationPolicies")
-	}
-	numberOfAuthenticationPolicies := _numberOfAuthenticationPolicies.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("numberOfAuthenticationPolicies"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for numberOfAuthenticationPolicies")
+	numberOfAuthenticationPolicies, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfAuthenticationPolicies", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfAuthenticationPolicies' field"))
 	}
 
 	// Virtual field

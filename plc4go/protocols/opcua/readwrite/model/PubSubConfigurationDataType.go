@@ -195,6 +195,12 @@ func PubSubConfigurationDataTypeParse(ctx context.Context, theBytes []byte, iden
 	return PubSubConfigurationDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func PubSubConfigurationDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConfigurationDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (PubSubConfigurationDataType, error) {
+		return PubSubConfigurationDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (PubSubConfigurationDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -206,53 +212,35 @@ func PubSubConfigurationDataTypeParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (noOfPublishedDataSets)
-	_noOfPublishedDataSets, _noOfPublishedDataSetsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfPublishedDataSets", 32)
-	if _noOfPublishedDataSetsErr != nil {
-		return nil, errors.Wrap(_noOfPublishedDataSetsErr, "Error parsing 'noOfPublishedDataSets' field of PubSubConfigurationDataType")
+	noOfPublishedDataSets, err := ReadSimpleField(ctx, "noOfPublishedDataSets", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfPublishedDataSets' field"))
 	}
-	noOfPublishedDataSets := _noOfPublishedDataSets
 
-	publishedDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "publishedDataSets", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15580"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfPublishedDataSets))
+	publishedDataSets, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "publishedDataSets", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15580")), readBuffer), uint64(noOfPublishedDataSets))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publishedDataSets' field"))
 	}
 
-	// Simple Field (noOfConnections)
-	_noOfConnections, _noOfConnectionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfConnections", 32)
-	if _noOfConnectionsErr != nil {
-		return nil, errors.Wrap(_noOfConnectionsErr, "Error parsing 'noOfConnections' field of PubSubConfigurationDataType")
+	noOfConnections, err := ReadSimpleField(ctx, "noOfConnections", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfConnections' field"))
 	}
-	noOfConnections := _noOfConnections
 
-	connections, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connections", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("15619"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfConnections))
+	connections, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "connections", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("15619")), readBuffer), uint64(noOfConnections))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connections' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (enabled)
-	_enabled, _enabledErr := /*TODO: migrate me*/ readBuffer.ReadBit("enabled")
-	if _enabledErr != nil {
-		return nil, errors.Wrap(_enabledErr, "Error parsing 'enabled' field of PubSubConfigurationDataType")
+	enabled, err := ReadSimpleField(ctx, "enabled", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enabled' field"))
 	}
-	enabled := _enabled
 
 	if closeErr := readBuffer.CloseContext("PubSubConfigurationDataType"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PubSubConfigurationDataType")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataAverageValueParse(ctx context.Context, theBytes []byte
 	return BACnetConstructedDataAverageValueParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataAverageValueParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAverageValue, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataAverageValue, error) {
+		return BACnetConstructedDataAverageValueParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataAverageValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataAverageValue, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataAverageValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (averageValue)
-	if pullErr := readBuffer.PullContext("averageValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for averageValue")
-	}
-	_averageValue, _averageValueErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _averageValueErr != nil {
-		return nil, errors.Wrap(_averageValueErr, "Error parsing 'averageValue' field of BACnetConstructedDataAverageValue")
-	}
-	averageValue := _averageValue.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("averageValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for averageValue")
+	averageValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "averageValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'averageValue' field"))
 	}
 
 	// Virtual field

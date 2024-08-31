@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetShedLevelLevelParse(ctx context.Context, theBytes []byte) (BACnetShed
 	return BACnetShedLevelLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetShedLevelLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelLevel, error) {
+		return BACnetShedLevelLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetShedLevelLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetShedLevelLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetShedLevelLevelParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (level)
-	if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for level")
-	}
-	_level, _levelErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of BACnetShedLevelLevel")
-	}
-	level := _level.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for level")
+	level, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "level", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedLevelLevel"); closeErr != nil {

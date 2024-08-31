@@ -185,6 +185,12 @@ func DeleteReferencesItemParse(ctx context.Context, theBytes []byte, identifier 
 	return DeleteReferencesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func DeleteReferencesItemParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteReferencesItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DeleteReferencesItem, error) {
+		return DeleteReferencesItemParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func DeleteReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (DeleteReferencesItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -196,68 +202,40 @@ func DeleteReferencesItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (sourceNodeId)
-	if pullErr := readBuffer.PullContext("sourceNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for sourceNodeId")
-	}
-	_sourceNodeId, _sourceNodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _sourceNodeIdErr != nil {
-		return nil, errors.Wrap(_sourceNodeIdErr, "Error parsing 'sourceNodeId' field of DeleteReferencesItem")
-	}
-	sourceNodeId := _sourceNodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("sourceNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for sourceNodeId")
+	sourceNodeId, err := ReadSimpleField[NodeId](ctx, "sourceNodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNodeId' field"))
 	}
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of DeleteReferencesItem")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of DeleteReferencesItem")
-	}
-	isForward := _isForward
-
-	// Simple Field (targetNodeId)
-	if pullErr := readBuffer.PullContext("targetNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNodeId")
-	}
-	_targetNodeId, _targetNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeIdErr != nil {
-		return nil, errors.Wrap(_targetNodeIdErr, "Error parsing 'targetNodeId' field of DeleteReferencesItem")
-	}
-	targetNodeId := _targetNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNodeId")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	targetNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNodeId' field"))
+	}
+
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (deleteBidirectional)
-	_deleteBidirectional, _deleteBidirectionalErr := /*TODO: migrate me*/ readBuffer.ReadBit("deleteBidirectional")
-	if _deleteBidirectionalErr != nil {
-		return nil, errors.Wrap(_deleteBidirectionalErr, "Error parsing 'deleteBidirectional' field of DeleteReferencesItem")
+	deleteBidirectional, err := ReadSimpleField(ctx, "deleteBidirectional", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deleteBidirectional' field"))
 	}
-	deleteBidirectional := _deleteBidirectional
 
 	if closeErr := readBuffer.CloseContext("DeleteReferencesItem"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for DeleteReferencesItem")

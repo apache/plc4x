@@ -110,6 +110,17 @@ func ModbusADUParse(ctx context.Context, theBytes []byte, driverType DriverType,
 	return ModbusADUParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), driverType, response)
 }
 
+func ModbusADUParseWithBufferProducer[T ModbusADU](driverType DriverType, response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := ModbusADUParseWithBuffer(ctx, readBuffer, driverType, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func ModbusADUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, driverType DriverType, response bool) (ModbusADU, error) {
 	positionAware := readBuffer
 	_ = positionAware

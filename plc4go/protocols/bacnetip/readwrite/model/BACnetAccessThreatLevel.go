@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -103,6 +105,12 @@ func BACnetAccessThreatLevelParse(ctx context.Context, theBytes []byte) (BACnetA
 	return BACnetAccessThreatLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetAccessThreatLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
+		return BACnetAccessThreatLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetAccessThreatLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -114,17 +122,9 @@ func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (threatLevel)
-	if pullErr := readBuffer.PullContext("threatLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for threatLevel")
-	}
-	_threatLevel, _threatLevelErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _threatLevelErr != nil {
-		return nil, errors.Wrap(_threatLevelErr, "Error parsing 'threatLevel' field of BACnetAccessThreatLevel")
-	}
-	threatLevel := _threatLevel.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("threatLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for threatLevel")
+	threatLevel, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "threatLevel", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'threatLevel' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessThreatLevel"); closeErr != nil {

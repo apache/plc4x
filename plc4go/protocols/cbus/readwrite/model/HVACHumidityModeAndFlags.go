@@ -239,6 +239,12 @@ func HVACHumidityModeAndFlagsParse(ctx context.Context, theBytes []byte) (HVACHu
 	return HVACHumidityModeAndFlagsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACHumidityModeAndFlagsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
+		return HVACHumidityModeAndFlagsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACHumidityModeAndFlags, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -255,12 +261,10 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (auxiliaryLevel)
-	_auxiliaryLevel, _auxiliaryLevelErr := /*TODO: migrate me*/ readBuffer.ReadBit("auxiliaryLevel")
-	if _auxiliaryLevelErr != nil {
-		return nil, errors.Wrap(_auxiliaryLevelErr, "Error parsing 'auxiliaryLevel' field of HVACHumidityModeAndFlags")
+	auxiliaryLevel, err := ReadSimpleField(ctx, "auxiliaryLevel", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auxiliaryLevel' field"))
 	}
-	auxiliaryLevel := _auxiliaryLevel
 
 	// Virtual field
 	_isAuxLevelUnused := !(auxiliaryLevel)
@@ -272,12 +276,10 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	isAuxLevelUsed := bool(_isAuxLevelUsed)
 	_ = isAuxLevelUsed
 
-	// Simple Field (guard)
-	_guard, _guardErr := /*TODO: migrate me*/ readBuffer.ReadBit("guard")
-	if _guardErr != nil {
-		return nil, errors.Wrap(_guardErr, "Error parsing 'guard' field of HVACHumidityModeAndFlags")
+	guard, err := ReadSimpleField(ctx, "guard", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'guard' field"))
 	}
-	guard := _guard
 
 	// Virtual field
 	_isGuardDisabled := !(guard)
@@ -289,12 +291,10 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	isGuardEnabled := bool(_isGuardEnabled)
 	_ = isGuardEnabled
 
-	// Simple Field (setback)
-	_setback, _setbackErr := /*TODO: migrate me*/ readBuffer.ReadBit("setback")
-	if _setbackErr != nil {
-		return nil, errors.Wrap(_setbackErr, "Error parsing 'setback' field of HVACHumidityModeAndFlags")
+	setback, err := ReadSimpleField(ctx, "setback", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setback' field"))
 	}
-	setback := _setback
 
 	// Virtual field
 	_isSetbackDisabled := !(setback)
@@ -306,12 +306,10 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	isSetbackEnabled := bool(_isSetbackEnabled)
 	_ = isSetbackEnabled
 
-	// Simple Field (level)
-	_level, _levelErr := /*TODO: migrate me*/ readBuffer.ReadBit("level")
-	if _levelErr != nil {
-		return nil, errors.Wrap(_levelErr, "Error parsing 'level' field of HVACHumidityModeAndFlags")
+	level, err := ReadSimpleField(ctx, "level", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
 	}
-	level := _level
 
 	// Virtual field
 	_isLevelHumidity := !(level)
@@ -323,17 +321,9 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	isLevelRaw := bool(_isLevelRaw)
 	_ = isLevelRaw
 
-	// Simple Field (mode)
-	if pullErr := readBuffer.PullContext("mode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for mode")
-	}
-	_mode, _modeErr := HVACHumidityModeAndFlagsModeParseWithBuffer(ctx, readBuffer)
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACHumidityModeAndFlags")
-	}
-	mode := _mode
-	if closeErr := readBuffer.CloseContext("mode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for mode")
+	mode, err := ReadEnumField[HVACHumidityModeAndFlagsMode](ctx, "mode", "HVACHumidityModeAndFlagsMode", ReadEnum(HVACHumidityModeAndFlagsModeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("HVACHumidityModeAndFlags"); closeErr != nil {

@@ -137,6 +137,12 @@ func CBusPointToPointToMultiPointCommandStatusParse(ctx context.Context, theByte
 	return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToPointToMultiPointCommandStatusParseWithBufferProducer(cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointToMultiPointCommandStatus, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CBusPointToPointToMultiPointCommandStatus, error) {
+		return CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx, readBuffer, cBusOptions)
+	}
+}
+
 func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommandStatus, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -153,17 +159,9 @@ func CBusPointToPointToMultiPointCommandStatusParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (statusRequest)
-	if pullErr := readBuffer.PullContext("statusRequest"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusRequest")
-	}
-	_statusRequest, _statusRequestErr := StatusRequestParseWithBuffer(ctx, readBuffer)
-	if _statusRequestErr != nil {
-		return nil, errors.Wrap(_statusRequestErr, "Error parsing 'statusRequest' field of CBusPointToPointToMultiPointCommandStatus")
-	}
-	statusRequest := _statusRequest.(StatusRequest)
-	if closeErr := readBuffer.CloseContext("statusRequest"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusRequest")
+	statusRequest, err := ReadSimpleField[StatusRequest](ctx, "statusRequest", ReadComplex[StatusRequest](StatusRequestParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusRequest' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CBusPointToPointToMultiPointCommandStatus"); closeErr != nil {

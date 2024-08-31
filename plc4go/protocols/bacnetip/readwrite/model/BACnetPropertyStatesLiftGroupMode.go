@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesLiftGroupModeParse(ctx context.Context, theBytes []byte
 	return BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesLiftGroupModeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftGroupMode, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesLiftGroupMode, error) {
+		return BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesLiftGroupMode, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesLiftGroupModeParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (liftGroupMode)
-	if pullErr := readBuffer.PullContext("liftGroupMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for liftGroupMode")
-	}
-	_liftGroupMode, _liftGroupModeErr := BACnetLiftGroupModeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _liftGroupModeErr != nil {
-		return nil, errors.Wrap(_liftGroupModeErr, "Error parsing 'liftGroupMode' field of BACnetPropertyStatesLiftGroupMode")
-	}
-	liftGroupMode := _liftGroupMode.(BACnetLiftGroupModeTagged)
-	if closeErr := readBuffer.CloseContext("liftGroupMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for liftGroupMode")
+	liftGroupMode, err := ReadSimpleField[BACnetLiftGroupModeTagged](ctx, "liftGroupMode", ReadComplex[BACnetLiftGroupModeTagged](BACnetLiftGroupModeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'liftGroupMode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesLiftGroupMode"); closeErr != nil {

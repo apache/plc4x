@@ -122,6 +122,12 @@ func EipListIdentityRequestParse(ctx context.Context, theBytes []byte, response 
 	return EipListIdentityRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func EipListIdentityRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (EipListIdentityRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EipListIdentityRequest, error) {
+		return EipListIdentityRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func EipListIdentityRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (EipListIdentityRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

@@ -363,6 +363,12 @@ func BACnetPriorityArrayParse(ctx context.Context, theBytes []byte, objectTypeAr
 	return BACnetPriorityArrayParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), objectTypeArgument, tagNumber, arrayIndexArgument)
 }
 
+func BACnetPriorityArrayParseWithBufferProducer(objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityArray, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPriorityArray, error) {
+		return BACnetPriorityArrayParseWithBuffer(ctx, readBuffer, objectTypeArgument, tagNumber, arrayIndexArgument)
+	}
+}
+
 func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, objectTypeArgument BACnetObjectType, tagNumber uint8, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetPriorityArray, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -379,13 +385,7 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	zero := uint64(_zero)
 	_ = zero
 
-	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetApplicationTagUnsignedInteger, error) {
-		v, err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetApplicationTagUnsignedInteger), nil
-	}, readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
+	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfDataElements' field"))
 	}
@@ -394,13 +394,7 @@ func BACnetPriorityArrayParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		numberOfDataElements = *_numberOfDataElements
 	}
 
-	data, err := ReadTerminatedArrayField[BACnetPriorityValue](ctx, "data", ReadComplex[BACnetPriorityValue](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetPriorityValue, error) {
-		v, err := BACnetPriorityValueParseWithBuffer(ctx, readBuffer, (BACnetObjectType)(objectTypeArgument))
-		if err != nil {
-			return nil, err
-		}
-		return v.(BACnetPriorityValue), nil
-	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	data, err := ReadTerminatedArrayField[BACnetPriorityValue](ctx, "data", ReadComplex[BACnetPriorityValue](BACnetPriorityValueParseWithBufferProducer[BACnetPriorityValue]((BACnetObjectType)(objectTypeArgument)), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

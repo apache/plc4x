@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDirectReadingParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataDirectReadingParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDirectReadingParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDirectReading, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDirectReading, error) {
+		return BACnetConstructedDataDirectReadingParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDirectReadingParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDirectReading, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDirectReadingParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (directReading)
-	if pullErr := readBuffer.PullContext("directReading"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for directReading")
-	}
-	_directReading, _directReadingErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _directReadingErr != nil {
-		return nil, errors.Wrap(_directReadingErr, "Error parsing 'directReading' field of BACnetConstructedDataDirectReading")
-	}
-	directReading := _directReading.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("directReading"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for directReading")
+	directReading, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "directReading", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'directReading' field"))
 	}
 
 	// Virtual field

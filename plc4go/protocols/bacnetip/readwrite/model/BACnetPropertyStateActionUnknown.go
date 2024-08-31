@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStateActionUnknownParse(ctx context.Context, theBytes []byte,
 	return BACnetPropertyStateActionUnknownParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStateActionUnknownParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStateActionUnknown, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStateActionUnknown, error) {
+		return BACnetPropertyStateActionUnknownParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStateActionUnknownParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStateActionUnknown, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStateActionUnknownParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (unknownValue)
-	if pullErr := readBuffer.PullContext("unknownValue"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for unknownValue")
-	}
-	_unknownValue, _unknownValueErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), BACnetDataType(BACnetDataType_UNKNOWN))
-	if _unknownValueErr != nil {
-		return nil, errors.Wrap(_unknownValueErr, "Error parsing 'unknownValue' field of BACnetPropertyStateActionUnknown")
-	}
-	unknownValue := _unknownValue.(BACnetContextTagUnknown)
-	if closeErr := readBuffer.CloseContext("unknownValue"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for unknownValue")
+	unknownValue, err := ReadSimpleField[BACnetContextTagUnknown](ctx, "unknownValue", ReadComplex[BACnetContextTagUnknown](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnknown]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNKNOWN)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStateActionUnknown"); closeErr != nil {

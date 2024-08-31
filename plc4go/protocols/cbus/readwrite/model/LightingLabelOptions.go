@@ -132,6 +132,12 @@ func LightingLabelOptionsParse(ctx context.Context, theBytes []byte) (LightingLa
 	return LightingLabelOptionsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func LightingLabelOptionsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
+		return LightingLabelOptionsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (LightingLabelOptions, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -148,17 +154,9 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (labelFlavour)
-	if pullErr := readBuffer.PullContext("labelFlavour"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelFlavour")
-	}
-	_labelFlavour, _labelFlavourErr := LightingLabelFlavourParseWithBuffer(ctx, readBuffer)
-	if _labelFlavourErr != nil {
-		return nil, errors.Wrap(_labelFlavourErr, "Error parsing 'labelFlavour' field of LightingLabelOptions")
-	}
-	labelFlavour := _labelFlavour
-	if closeErr := readBuffer.CloseContext("labelFlavour"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelFlavour")
+	labelFlavour, err := ReadEnumField[LightingLabelFlavour](ctx, "labelFlavour", "LightingLabelFlavour", ReadEnum(LightingLabelFlavourByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelFlavour' field"))
 	}
 
 	reservedField1, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))
@@ -171,17 +169,9 @@ func LightingLabelOptionsParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (labelType)
-	if pullErr := readBuffer.PullContext("labelType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for labelType")
-	}
-	_labelType, _labelTypeErr := LightingLabelTypeParseWithBuffer(ctx, readBuffer)
-	if _labelTypeErr != nil {
-		return nil, errors.Wrap(_labelTypeErr, "Error parsing 'labelType' field of LightingLabelOptions")
-	}
-	labelType := _labelType
-	if closeErr := readBuffer.CloseContext("labelType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for labelType")
+	labelType, err := ReadEnumField[LightingLabelType](ctx, "labelType", "LightingLabelType", ReadEnum(LightingLabelTypeByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'labelType' field"))
 	}
 
 	reservedField3, err := ReadReservedField(ctx, "reserved", ReadBoolean(readBuffer), bool(false))

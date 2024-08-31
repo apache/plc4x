@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataCountChangeTimeParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataCountChangeTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataCountChangeTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCountChangeTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataCountChangeTime, error) {
+		return BACnetConstructedDataCountChangeTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataCountChangeTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataCountChangeTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataCountChangeTimeParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (countChangeTime)
-	if pullErr := readBuffer.PullContext("countChangeTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for countChangeTime")
-	}
-	_countChangeTime, _countChangeTimeErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _countChangeTimeErr != nil {
-		return nil, errors.Wrap(_countChangeTimeErr, "Error parsing 'countChangeTime' field of BACnetConstructedDataCountChangeTime")
-	}
-	countChangeTime := _countChangeTime.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("countChangeTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for countChangeTime")
+	countChangeTime, err := ReadSimpleField[BACnetDateTime](ctx, "countChangeTime", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'countChangeTime' field"))
 	}
 
 	// Virtual field

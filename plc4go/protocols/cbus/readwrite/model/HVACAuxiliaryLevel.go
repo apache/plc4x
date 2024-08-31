@@ -169,6 +169,12 @@ func HVACAuxiliaryLevelParse(ctx context.Context, theBytes []byte) (HVACAuxiliar
 	return HVACAuxiliaryLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func HVACAuxiliaryLevelParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
+		return HVACAuxiliaryLevelParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (HVACAuxiliaryLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,12 +191,10 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (fanMode)
-	_fanMode, _fanModeErr := /*TODO: migrate me*/ readBuffer.ReadBit("fanMode")
-	if _fanModeErr != nil {
-		return nil, errors.Wrap(_fanModeErr, "Error parsing 'fanMode' field of HVACAuxiliaryLevel")
+	fanMode, err := ReadSimpleField(ctx, "fanMode", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fanMode' field"))
 	}
-	fanMode := _fanMode
 
 	// Virtual field
 	_isFanModeAutomatic := !(fanMode)
@@ -202,12 +206,10 @@ func HVACAuxiliaryLevelParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	isFanModeContinuous := bool(_isFanModeContinuous)
 	_ = isFanModeContinuous
 
-	// Simple Field (mode)
-	_mode, _modeErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mode", 6)
-	if _modeErr != nil {
-		return nil, errors.Wrap(_modeErr, "Error parsing 'mode' field of HVACAuxiliaryLevel")
+	mode, err := ReadSimpleField(ctx, "mode", ReadUnsignedByte(readBuffer, uint8(6)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mode' field"))
 	}
-	mode := _mode
 
 	// Virtual field
 	_isFanSpeedAtDefaultSpeed := bool((mode) == (0x00))

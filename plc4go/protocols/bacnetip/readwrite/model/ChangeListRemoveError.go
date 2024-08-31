@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func ChangeListRemoveErrorParse(ctx context.Context, theBytes []byte, errorChoic
 	return ChangeListRemoveErrorParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), errorChoice)
 }
 
+func ChangeListRemoveErrorParseWithBufferProducer(errorChoice BACnetConfirmedServiceChoice) func(ctx context.Context, readBuffer utils.ReadBuffer) (ChangeListRemoveError, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ChangeListRemoveError, error) {
+		return ChangeListRemoveErrorParseWithBuffer(ctx, readBuffer, errorChoice)
+	}
+}
+
 func ChangeListRemoveErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, errorChoice BACnetConfirmedServiceChoice) (ChangeListRemoveError, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func ChangeListRemoveErrorParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (errorType)
-	if pullErr := readBuffer.PullContext("errorType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for errorType")
-	}
-	_errorType, _errorTypeErr := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _errorTypeErr != nil {
-		return nil, errors.Wrap(_errorTypeErr, "Error parsing 'errorType' field of ChangeListRemoveError")
-	}
-	errorType := _errorType.(ErrorEnclosed)
-	if closeErr := readBuffer.CloseContext("errorType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for errorType")
+	errorType, err := ReadSimpleField[ErrorEnclosed](ctx, "errorType", ReadComplex[ErrorEnclosed](ErrorEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorType' field"))
 	}
 
-	// Simple Field (firstFailedElementNumber)
-	if pullErr := readBuffer.PullContext("firstFailedElementNumber"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for firstFailedElementNumber")
-	}
-	_firstFailedElementNumber, _firstFailedElementNumberErr := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(uint8(1)), BACnetDataType(BACnetDataType_UNSIGNED_INTEGER))
-	if _firstFailedElementNumberErr != nil {
-		return nil, errors.Wrap(_firstFailedElementNumberErr, "Error parsing 'firstFailedElementNumber' field of ChangeListRemoveError")
-	}
-	firstFailedElementNumber := _firstFailedElementNumber.(BACnetContextTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("firstFailedElementNumber"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for firstFailedElementNumber")
+	firstFailedElementNumber, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "firstFailedElementNumber", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstFailedElementNumber' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ChangeListRemoveError"); closeErr != nil {

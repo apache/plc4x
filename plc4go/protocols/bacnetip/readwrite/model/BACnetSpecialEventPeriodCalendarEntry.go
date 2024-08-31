@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetSpecialEventPeriodCalendarEntryParse(ctx context.Context, theBytes []
 	return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetSpecialEventPeriodCalendarEntryParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
+		return BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetSpecialEventPeriodCalendarEntry, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetSpecialEventPeriodCalendarEntryParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (calendarEntry)
-	if pullErr := readBuffer.PullContext("calendarEntry"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for calendarEntry")
-	}
-	_calendarEntry, _calendarEntryErr := BACnetCalendarEntryEnclosedParseWithBuffer(ctx, readBuffer, uint8(uint8(0)))
-	if _calendarEntryErr != nil {
-		return nil, errors.Wrap(_calendarEntryErr, "Error parsing 'calendarEntry' field of BACnetSpecialEventPeriodCalendarEntry")
-	}
-	calendarEntry := _calendarEntry.(BACnetCalendarEntryEnclosed)
-	if closeErr := readBuffer.CloseContext("calendarEntry"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for calendarEntry")
+	calendarEntry, err := ReadSimpleField[BACnetCalendarEntryEnclosed](ctx, "calendarEntry", ReadComplex[BACnetCalendarEntryEnclosed](BACnetCalendarEntryEnclosedParseWithBufferProducer((uint8)(uint8(0))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calendarEntry' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSpecialEventPeriodCalendarEntry"); closeErr != nil {

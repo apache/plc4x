@@ -135,6 +135,12 @@ func S7VarRequestParameterItemAddressParse(ctx context.Context, theBytes []byte)
 	return S7VarRequestParameterItemAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func S7VarRequestParameterItemAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
+		return S7VarRequestParameterItemAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (S7VarRequestParameterItemAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,23 +152,15 @@ func S7VarRequestParameterItemAddressParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, 8))
+	itemLength, err := ReadImplicitField[uint8](ctx, "itemLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'itemLength' field"))
 	}
 	_ = itemLength
 
-	// Simple Field (address)
-	if pullErr := readBuffer.PullContext("address"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for address")
-	}
-	_address, _addressErr := S7AddressParseWithBuffer(ctx, readBuffer)
-	if _addressErr != nil {
-		return nil, errors.Wrap(_addressErr, "Error parsing 'address' field of S7VarRequestParameterItemAddress")
-	}
-	address := _address.(S7Address)
-	if closeErr := readBuffer.CloseContext("address"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for address")
+	address, err := ReadSimpleField[S7Address](ctx, "address", ReadComplex[S7Address](S7AddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'address' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarRequestParameterItemAddress"); closeErr != nil {

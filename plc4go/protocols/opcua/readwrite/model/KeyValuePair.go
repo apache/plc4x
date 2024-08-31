@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func KeyValuePairParse(ctx context.Context, theBytes []byte, identifier string) 
 	return KeyValuePairParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func KeyValuePairParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (KeyValuePair, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KeyValuePair, error) {
+		return KeyValuePairParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func KeyValuePairParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (KeyValuePair, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func KeyValuePairParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (key)
-	if pullErr := readBuffer.PullContext("key"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for key")
-	}
-	_key, _keyErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _keyErr != nil {
-		return nil, errors.Wrap(_keyErr, "Error parsing 'key' field of KeyValuePair")
-	}
-	key := _key.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("key"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for key")
+	key, err := ReadSimpleField[QualifiedName](ctx, "key", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'key' field"))
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := VariantParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of KeyValuePair")
-	}
-	value := _value.(Variant)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("KeyValuePair"); closeErr != nil {

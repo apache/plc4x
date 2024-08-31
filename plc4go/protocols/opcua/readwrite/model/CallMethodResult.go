@@ -219,6 +219,12 @@ func CallMethodResultParse(ctx context.Context, theBytes []byte, identifier stri
 	return CallMethodResultParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func CallMethodResultParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (CallMethodResult, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CallMethodResult, error) {
+		return CallMethodResultParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (CallMethodResult, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -230,49 +236,35 @@ func CallMethodResultParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (statusCode)
-	if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-	}
-	_statusCode, _statusCodeErr := StatusCodeParseWithBuffer(ctx, readBuffer)
-	if _statusCodeErr != nil {
-		return nil, errors.Wrap(_statusCodeErr, "Error parsing 'statusCode' field of CallMethodResult")
-	}
-	statusCode := _statusCode.(StatusCode)
-	if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for statusCode")
+	statusCode, err := ReadSimpleField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
 	}
 
-	// Simple Field (noOfInputArgumentResults)
-	_noOfInputArgumentResults, _noOfInputArgumentResultsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArgumentResults", 32)
-	if _noOfInputArgumentResultsErr != nil {
-		return nil, errors.Wrap(_noOfInputArgumentResultsErr, "Error parsing 'noOfInputArgumentResults' field of CallMethodResult")
+	noOfInputArgumentResults, err := ReadSimpleField(ctx, "noOfInputArgumentResults", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentResults' field"))
 	}
-	noOfInputArgumentResults := _noOfInputArgumentResults
 
 	inputArgumentResults, err := ReadCountArrayField[StatusCode](ctx, "inputArgumentResults", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), uint64(noOfInputArgumentResults))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentResults' field"))
 	}
 
-	// Simple Field (noOfInputArgumentDiagnosticInfos)
-	_noOfInputArgumentDiagnosticInfos, _noOfInputArgumentDiagnosticInfosErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfInputArgumentDiagnosticInfos", 32)
-	if _noOfInputArgumentDiagnosticInfosErr != nil {
-		return nil, errors.Wrap(_noOfInputArgumentDiagnosticInfosErr, "Error parsing 'noOfInputArgumentDiagnosticInfos' field of CallMethodResult")
+	noOfInputArgumentDiagnosticInfos, err := ReadSimpleField(ctx, "noOfInputArgumentDiagnosticInfos", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfInputArgumentDiagnosticInfos' field"))
 	}
-	noOfInputArgumentDiagnosticInfos := _noOfInputArgumentDiagnosticInfos
 
 	inputArgumentDiagnosticInfos, err := ReadCountArrayField[DiagnosticInfo](ctx, "inputArgumentDiagnosticInfos", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), uint64(noOfInputArgumentDiagnosticInfos))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inputArgumentDiagnosticInfos' field"))
 	}
 
-	// Simple Field (noOfOutputArguments)
-	_noOfOutputArguments, _noOfOutputArgumentsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfOutputArguments", 32)
-	if _noOfOutputArgumentsErr != nil {
-		return nil, errors.Wrap(_noOfOutputArgumentsErr, "Error parsing 'noOfOutputArguments' field of CallMethodResult")
+	noOfOutputArguments, err := ReadSimpleField(ctx, "noOfOutputArguments", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfOutputArguments' field"))
 	}
-	noOfOutputArguments := _noOfOutputArguments
 
 	outputArguments, err := ReadCountArrayField[Variant](ctx, "outputArguments", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfOutputArguments))
 	if err != nil {

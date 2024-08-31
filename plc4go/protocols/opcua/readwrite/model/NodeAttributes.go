@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -174,6 +176,12 @@ func NodeAttributesParse(ctx context.Context, theBytes []byte, identifier string
 	return NodeAttributesParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func NodeAttributesParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeAttributes, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NodeAttributes, error) {
+		return NodeAttributesParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func NodeAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (NodeAttributes, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -185,52 +193,30 @@ func NodeAttributesParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (specifiedAttributes)
-	_specifiedAttributes, _specifiedAttributesErr := /*TODO: migrate me*/ readBuffer.ReadUint32("specifiedAttributes", 32)
-	if _specifiedAttributesErr != nil {
-		return nil, errors.Wrap(_specifiedAttributesErr, "Error parsing 'specifiedAttributes' field of NodeAttributes")
-	}
-	specifiedAttributes := _specifiedAttributes
-
-	// Simple Field (displayName)
-	if pullErr := readBuffer.PullContext("displayName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for displayName")
-	}
-	_displayName, _displayNameErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _displayNameErr != nil {
-		return nil, errors.Wrap(_displayNameErr, "Error parsing 'displayName' field of NodeAttributes")
-	}
-	displayName := _displayName.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("displayName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for displayName")
+	specifiedAttributes, err := ReadSimpleField(ctx, "specifiedAttributes", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specifiedAttributes' field"))
 	}
 
-	// Simple Field (description)
-	if pullErr := readBuffer.PullContext("description"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for description")
-	}
-	_description, _descriptionErr := LocalizedTextParseWithBuffer(ctx, readBuffer)
-	if _descriptionErr != nil {
-		return nil, errors.Wrap(_descriptionErr, "Error parsing 'description' field of NodeAttributes")
-	}
-	description := _description.(LocalizedText)
-	if closeErr := readBuffer.CloseContext("description"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for description")
+	displayName, err := ReadSimpleField[LocalizedText](ctx, "displayName", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'displayName' field"))
 	}
 
-	// Simple Field (writeMask)
-	_writeMask, _writeMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("writeMask", 32)
-	if _writeMaskErr != nil {
-		return nil, errors.Wrap(_writeMaskErr, "Error parsing 'writeMask' field of NodeAttributes")
+	description, err := ReadSimpleField[LocalizedText](ctx, "description", ReadComplex[LocalizedText](LocalizedTextParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'description' field"))
 	}
-	writeMask := _writeMask
 
-	// Simple Field (userWriteMask)
-	_userWriteMask, _userWriteMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("userWriteMask", 32)
-	if _userWriteMaskErr != nil {
-		return nil, errors.Wrap(_userWriteMaskErr, "Error parsing 'userWriteMask' field of NodeAttributes")
+	writeMask, err := ReadSimpleField(ctx, "writeMask", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeMask' field"))
 	}
-	userWriteMask := _userWriteMask
+
+	userWriteMask, err := ReadSimpleField(ctx, "userWriteMask", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userWriteMask' field"))
+	}
 
 	if closeErr := readBuffer.CloseContext("NodeAttributes"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeAttributes")

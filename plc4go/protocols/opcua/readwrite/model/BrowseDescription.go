@@ -192,6 +192,12 @@ func BrowseDescriptionParse(ctx context.Context, theBytes []byte, identifier str
 	return BrowseDescriptionParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func BrowseDescriptionParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseDescription, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BrowseDescription, error) {
+		return BrowseDescriptionParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func BrowseDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (BrowseDescription, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -203,70 +209,40 @@ func BrowseDescriptionParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of BrowseDescription")
-	}
-	nodeId := _nodeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[NodeId](ctx, "nodeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (browseDirection)
-	if pullErr := readBuffer.PullContext("browseDirection"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browseDirection")
-	}
-	_browseDirection, _browseDirectionErr := BrowseDirectionParseWithBuffer(ctx, readBuffer)
-	if _browseDirectionErr != nil {
-		return nil, errors.Wrap(_browseDirectionErr, "Error parsing 'browseDirection' field of BrowseDescription")
-	}
-	browseDirection := _browseDirection
-	if closeErr := readBuffer.CloseContext("browseDirection"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browseDirection")
+	browseDirection, err := ReadEnumField[BrowseDirection](ctx, "browseDirection", "BrowseDirection", ReadEnum(BrowseDirectionByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseDirection' field"))
 	}
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of BrowseDescription")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (includeSubtypes)
-	_includeSubtypes, _includeSubtypesErr := /*TODO: migrate me*/ readBuffer.ReadBit("includeSubtypes")
-	if _includeSubtypesErr != nil {
-		return nil, errors.Wrap(_includeSubtypesErr, "Error parsing 'includeSubtypes' field of BrowseDescription")
+	includeSubtypes, err := ReadSimpleField(ctx, "includeSubtypes", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'includeSubtypes' field"))
 	}
-	includeSubtypes := _includeSubtypes
 
-	// Simple Field (nodeClassMask)
-	_nodeClassMask, _nodeClassMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("nodeClassMask", 32)
-	if _nodeClassMaskErr != nil {
-		return nil, errors.Wrap(_nodeClassMaskErr, "Error parsing 'nodeClassMask' field of BrowseDescription")
+	nodeClassMask, err := ReadSimpleField(ctx, "nodeClassMask", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeClassMask' field"))
 	}
-	nodeClassMask := _nodeClassMask
 
-	// Simple Field (resultMask)
-	_resultMask, _resultMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint32("resultMask", 32)
-	if _resultMaskErr != nil {
-		return nil, errors.Wrap(_resultMaskErr, "Error parsing 'resultMask' field of BrowseDescription")
+	resultMask, err := ReadSimpleField(ctx, "resultMask", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resultMask' field"))
 	}
-	resultMask := _resultMask
 
 	if closeErr := readBuffer.CloseContext("BrowseDescription"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BrowseDescription")

@@ -120,6 +120,12 @@ func AdsInvalidRequestParse(ctx context.Context, theBytes []byte) (AdsInvalidReq
 	return AdsInvalidRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsInvalidRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsInvalidRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsInvalidRequest, error) {
+		return AdsInvalidRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsInvalidRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsInvalidRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware

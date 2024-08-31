@@ -159,6 +159,12 @@ func ReferenceListEntryDataTypeParse(ctx context.Context, theBytes []byte, ident
 	return ReferenceListEntryDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func ReferenceListEntryDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceListEntryDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ReferenceListEntryDataType, error) {
+		return ReferenceListEntryDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func ReferenceListEntryDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (ReferenceListEntryDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -170,42 +176,24 @@ func ReferenceListEntryDataTypeParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceType)
-	if pullErr := readBuffer.PullContext("referenceType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceType")
-	}
-	_referenceType, _referenceTypeErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeErr != nil {
-		return nil, errors.Wrap(_referenceTypeErr, "Error parsing 'referenceType' field of ReferenceListEntryDataType")
-	}
-	referenceType := _referenceType.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceType")
+	referenceType, err := ReadSimpleField[NodeId](ctx, "referenceType", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceType' field"))
 	}
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (isForward)
-	_isForward, _isForwardErr := /*TODO: migrate me*/ readBuffer.ReadBit("isForward")
-	if _isForwardErr != nil {
-		return nil, errors.Wrap(_isForwardErr, "Error parsing 'isForward' field of ReferenceListEntryDataType")
+	isForward, err := ReadSimpleField(ctx, "isForward", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isForward' field"))
 	}
-	isForward := _isForward
 
-	// Simple Field (targetNode)
-	if pullErr := readBuffer.PullContext("targetNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for targetNode")
-	}
-	_targetNode, _targetNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _targetNodeErr != nil {
-		return nil, errors.Wrap(_targetNodeErr, "Error parsing 'targetNode' field of ReferenceListEntryDataType")
-	}
-	targetNode := _targetNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("targetNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for targetNode")
+	targetNode, err := ReadSimpleField[ExpandedNodeId](ctx, "targetNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetNode' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ReferenceListEntryDataType"); closeErr != nil {

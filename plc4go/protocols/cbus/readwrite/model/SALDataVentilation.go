@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataVentilationParse(ctx context.Context, theBytes []byte, applicationId
 	return SALDataVentilationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataVentilationParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataVentilation, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataVentilation, error) {
+		return SALDataVentilationParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataVentilationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataVentilation, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataVentilationParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (ventilationData)
-	if pullErr := readBuffer.PullContext("ventilationData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for ventilationData")
-	}
-	_ventilationData, _ventilationDataErr := LightingDataParseWithBuffer(ctx, readBuffer)
-	if _ventilationDataErr != nil {
-		return nil, errors.Wrap(_ventilationDataErr, "Error parsing 'ventilationData' field of SALDataVentilation")
-	}
-	ventilationData := _ventilationData.(LightingData)
-	if closeErr := readBuffer.CloseContext("ventilationData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for ventilationData")
+	ventilationData, err := ReadSimpleField[LightingData](ctx, "ventilationData", ReadComplex[LightingData](LightingDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ventilationData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataVentilation"); closeErr != nil {

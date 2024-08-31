@@ -274,6 +274,12 @@ func SecurityGroupDataTypeParse(ctx context.Context, theBytes []byte, identifier
 	return SecurityGroupDataTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func SecurityGroupDataTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityGroupDataType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SecurityGroupDataType, error) {
+		return SecurityGroupDataTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (SecurityGroupDataType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -285,110 +291,62 @@ func SecurityGroupDataTypeParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (name)
-	if pullErr := readBuffer.PullContext("name"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for name")
-	}
-	_name, _nameErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _nameErr != nil {
-		return nil, errors.Wrap(_nameErr, "Error parsing 'name' field of SecurityGroupDataType")
-	}
-	name := _name.(PascalString)
-	if closeErr := readBuffer.CloseContext("name"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for name")
+	name, err := ReadSimpleField[PascalString](ctx, "name", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'name' field"))
 	}
 
-	// Simple Field (noOfSecurityGroupFolder)
-	_noOfSecurityGroupFolder, _noOfSecurityGroupFolderErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfSecurityGroupFolder", 32)
-	if _noOfSecurityGroupFolderErr != nil {
-		return nil, errors.Wrap(_noOfSecurityGroupFolderErr, "Error parsing 'noOfSecurityGroupFolder' field of SecurityGroupDataType")
+	noOfSecurityGroupFolder, err := ReadSimpleField(ctx, "noOfSecurityGroupFolder", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfSecurityGroupFolder' field"))
 	}
-	noOfSecurityGroupFolder := _noOfSecurityGroupFolder
 
 	securityGroupFolder, err := ReadCountArrayField[PascalString](ctx, "securityGroupFolder", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), uint64(noOfSecurityGroupFolder))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroupFolder' field"))
 	}
 
-	// Simple Field (keyLifetime)
-	_keyLifetime, _keyLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadFloat64("keyLifetime", 64)
-	if _keyLifetimeErr != nil {
-		return nil, errors.Wrap(_keyLifetimeErr, "Error parsing 'keyLifetime' field of SecurityGroupDataType")
-	}
-	keyLifetime := _keyLifetime
-
-	// Simple Field (securityPolicyUri)
-	if pullErr := readBuffer.PullContext("securityPolicyUri"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityPolicyUri")
-	}
-	_securityPolicyUri, _securityPolicyUriErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityPolicyUriErr != nil {
-		return nil, errors.Wrap(_securityPolicyUriErr, "Error parsing 'securityPolicyUri' field of SecurityGroupDataType")
-	}
-	securityPolicyUri := _securityPolicyUri.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityPolicyUri"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityPolicyUri")
+	keyLifetime, err := ReadSimpleField(ctx, "keyLifetime", ReadDouble(readBuffer, uint8(64)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyLifetime' field"))
 	}
 
-	// Simple Field (maxFutureKeyCount)
-	_maxFutureKeyCount, _maxFutureKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxFutureKeyCount", 32)
-	if _maxFutureKeyCountErr != nil {
-		return nil, errors.Wrap(_maxFutureKeyCountErr, "Error parsing 'maxFutureKeyCount' field of SecurityGroupDataType")
-	}
-	maxFutureKeyCount := _maxFutureKeyCount
-
-	// Simple Field (maxPastKeyCount)
-	_maxPastKeyCount, _maxPastKeyCountErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxPastKeyCount", 32)
-	if _maxPastKeyCountErr != nil {
-		return nil, errors.Wrap(_maxPastKeyCountErr, "Error parsing 'maxPastKeyCount' field of SecurityGroupDataType")
-	}
-	maxPastKeyCount := _maxPastKeyCount
-
-	// Simple Field (securityGroupId)
-	if pullErr := readBuffer.PullContext("securityGroupId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityGroupId")
-	}
-	_securityGroupId, _securityGroupIdErr := PascalStringParseWithBuffer(ctx, readBuffer)
-	if _securityGroupIdErr != nil {
-		return nil, errors.Wrap(_securityGroupIdErr, "Error parsing 'securityGroupId' field of SecurityGroupDataType")
-	}
-	securityGroupId := _securityGroupId.(PascalString)
-	if closeErr := readBuffer.CloseContext("securityGroupId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityGroupId")
+	securityPolicyUri, err := ReadSimpleField[PascalString](ctx, "securityPolicyUri", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPolicyUri' field"))
 	}
 
-	// Simple Field (noOfRolePermissions)
-	_noOfRolePermissions, _noOfRolePermissionsErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfRolePermissions", 32)
-	if _noOfRolePermissionsErr != nil {
-		return nil, errors.Wrap(_noOfRolePermissionsErr, "Error parsing 'noOfRolePermissions' field of SecurityGroupDataType")
+	maxFutureKeyCount, err := ReadSimpleField(ctx, "maxFutureKeyCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxFutureKeyCount' field"))
 	}
-	noOfRolePermissions := _noOfRolePermissions
 
-	rolePermissions, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "rolePermissions", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("98"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfRolePermissions))
+	maxPastKeyCount, err := ReadSimpleField(ctx, "maxPastKeyCount", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxPastKeyCount' field"))
+	}
+
+	securityGroupId, err := ReadSimpleField[PascalString](ctx, "securityGroupId", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityGroupId' field"))
+	}
+
+	noOfRolePermissions, err := ReadSimpleField(ctx, "noOfRolePermissions", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfRolePermissions' field"))
+	}
+
+	rolePermissions, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "rolePermissions", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("98")), readBuffer), uint64(noOfRolePermissions))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rolePermissions' field"))
 	}
 
-	// Simple Field (noOfGroupProperties)
-	_noOfGroupProperties, _noOfGroupPropertiesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfGroupProperties", 32)
-	if _noOfGroupPropertiesErr != nil {
-		return nil, errors.Wrap(_noOfGroupPropertiesErr, "Error parsing 'noOfGroupProperties' field of SecurityGroupDataType")
+	noOfGroupProperties, err := ReadSimpleField(ctx, "noOfGroupProperties", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfGroupProperties' field"))
 	}
-	noOfGroupProperties := _noOfGroupProperties
 
-	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](func(ctx context.Context, buffer utils.ReadBuffer) (ExtensionObjectDefinition, error) {
-		v, err := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, (string)("14535"))
-		if err != nil {
-			return nil, err
-		}
-		return v.(ExtensionObjectDefinition), nil
-	}, readBuffer), uint64(noOfGroupProperties))
+	groupProperties, err := ReadCountArrayField[ExtensionObjectDefinition](ctx, "groupProperties", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("14535")), readBuffer), uint64(noOfGroupProperties))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'groupProperties' field"))
 	}

@@ -115,6 +115,17 @@ func FirmataMessageParse(ctx context.Context, theBytes []byte, response bool) (F
 	return FirmataMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes, utils.WithByteOrderForReadBufferByteBased(binary.BigEndian)), response)
 }
 
+func FirmataMessageParseWithBufferProducer[T FirmataMessage](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := FirmataMessageParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (FirmataMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -126,7 +137,7 @@ func FirmataMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, 4), codegen.WithByteOrder(binary.BigEndian))
+	messageType, err := ReadDiscriminatorField[uint8](ctx, "messageType", ReadUnsignedByte(readBuffer, uint8(4)), codegen.WithByteOrder(binary.BigEndian))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageType' field"))
 	}

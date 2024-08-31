@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -132,6 +134,12 @@ func SALDataMeteringParse(ctx context.Context, theBytes []byte, applicationId Ap
 	return SALDataMeteringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), applicationId)
 }
 
+func SALDataMeteringParseWithBufferProducer(applicationId ApplicationId) func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataMetering, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (SALDataMetering, error) {
+		return SALDataMeteringParseWithBuffer(ctx, readBuffer, applicationId)
+	}
+}
+
 func SALDataMeteringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, applicationId ApplicationId) (SALDataMetering, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -143,17 +151,9 @@ func SALDataMeteringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (meteringData)
-	if pullErr := readBuffer.PullContext("meteringData"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for meteringData")
-	}
-	_meteringData, _meteringDataErr := MeteringDataParseWithBuffer(ctx, readBuffer)
-	if _meteringDataErr != nil {
-		return nil, errors.Wrap(_meteringDataErr, "Error parsing 'meteringData' field of SALDataMetering")
-	}
-	meteringData := _meteringData.(MeteringData)
-	if closeErr := readBuffer.CloseContext("meteringData"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for meteringData")
+	meteringData, err := ReadSimpleField[MeteringData](ctx, "meteringData", ReadComplex[MeteringData](MeteringDataParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'meteringData' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("SALDataMetering"); closeErr != nil {

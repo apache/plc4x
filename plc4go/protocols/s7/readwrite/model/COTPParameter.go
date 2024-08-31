@@ -116,6 +116,17 @@ func COTPParameterParse(ctx context.Context, theBytes []byte, rest uint8) (COTPP
 	return COTPParameterParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), rest)
 }
 
+func COTPParameterParseWithBufferProducer[T COTPParameter](rest uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := COTPParameterParseWithBuffer(ctx, readBuffer, rest)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, rest uint8) (COTPParameter, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -127,12 +138,12 @@ func COTPParameterParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	parameterType, err := ReadDiscriminatorField[uint8](ctx, "parameterType", ReadUnsignedByte(readBuffer, 8))
+	parameterType, err := ReadDiscriminatorField[uint8](ctx, "parameterType", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterType' field"))
 	}
 
-	parameterLength, err := ReadImplicitField[uint8](ctx, "parameterLength", ReadUnsignedByte(readBuffer, 8))
+	parameterLength, err := ReadImplicitField[uint8](ctx, "parameterLength", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameterLength' field"))
 	}

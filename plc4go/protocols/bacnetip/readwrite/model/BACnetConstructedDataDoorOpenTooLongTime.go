@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataDoorOpenTooLongTimeParse(ctx context.Context, theBytes
 	return BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataDoorOpenTooLongTimeParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorOpenTooLongTime, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataDoorOpenTooLongTime, error) {
+		return BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataDoorOpenTooLongTime, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataDoorOpenTooLongTimeParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (doorOpenTooLongTime)
-	if pullErr := readBuffer.PullContext("doorOpenTooLongTime"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for doorOpenTooLongTime")
-	}
-	_doorOpenTooLongTime, _doorOpenTooLongTimeErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _doorOpenTooLongTimeErr != nil {
-		return nil, errors.Wrap(_doorOpenTooLongTimeErr, "Error parsing 'doorOpenTooLongTime' field of BACnetConstructedDataDoorOpenTooLongTime")
-	}
-	doorOpenTooLongTime := _doorOpenTooLongTime.(BACnetApplicationTagUnsignedInteger)
-	if closeErr := readBuffer.CloseContext("doorOpenTooLongTime"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for doorOpenTooLongTime")
+	doorOpenTooLongTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorOpenTooLongTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorOpenTooLongTime' field"))
 	}
 
 	// Virtual field

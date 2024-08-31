@@ -207,6 +207,12 @@ func AdsAddDeviceNotificationRequestParse(ctx context.Context, theBytes []byte) 
 	return AdsAddDeviceNotificationRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsAddDeviceNotificationRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
+		return AdsAddDeviceNotificationRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsAddDeviceNotificationRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -218,60 +224,42 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (indexGroup)
-	_indexGroup, _indexGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexGroup", 32)
-	if _indexGroupErr != nil {
-		return nil, errors.Wrap(_indexGroupErr, "Error parsing 'indexGroup' field of AdsAddDeviceNotificationRequest")
-	}
-	indexGroup := _indexGroup
-
-	// Simple Field (indexOffset)
-	_indexOffset, _indexOffsetErr := /*TODO: migrate me*/ readBuffer.ReadUint32("indexOffset", 32)
-	if _indexOffsetErr != nil {
-		return nil, errors.Wrap(_indexOffsetErr, "Error parsing 'indexOffset' field of AdsAddDeviceNotificationRequest")
-	}
-	indexOffset := _indexOffset
-
-	// Simple Field (length)
-	_length, _lengthErr := /*TODO: migrate me*/ readBuffer.ReadUint32("length", 32)
-	if _lengthErr != nil {
-		return nil, errors.Wrap(_lengthErr, "Error parsing 'length' field of AdsAddDeviceNotificationRequest")
-	}
-	length := _length
-
-	// Simple Field (transmissionMode)
-	if pullErr := readBuffer.PullContext("transmissionMode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for transmissionMode")
-	}
-	_transmissionMode, _transmissionModeErr := AdsTransModeParseWithBuffer(ctx, readBuffer)
-	if _transmissionModeErr != nil {
-		return nil, errors.Wrap(_transmissionModeErr, "Error parsing 'transmissionMode' field of AdsAddDeviceNotificationRequest")
-	}
-	transmissionMode := _transmissionMode
-	if closeErr := readBuffer.CloseContext("transmissionMode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for transmissionMode")
+	indexGroup, err := ReadSimpleField(ctx, "indexGroup", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexGroup' field"))
 	}
 
-	// Simple Field (maxDelayInMs)
-	_maxDelayInMs, _maxDelayInMsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("maxDelayInMs", 32)
-	if _maxDelayInMsErr != nil {
-		return nil, errors.Wrap(_maxDelayInMsErr, "Error parsing 'maxDelayInMs' field of AdsAddDeviceNotificationRequest")
+	indexOffset, err := ReadSimpleField(ctx, "indexOffset", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'indexOffset' field"))
 	}
-	maxDelayInMs := _maxDelayInMs
 
-	// Simple Field (cycleTimeInMs)
-	_cycleTimeInMs, _cycleTimeInMsErr := /*TODO: migrate me*/ readBuffer.ReadUint32("cycleTimeInMs", 32)
-	if _cycleTimeInMsErr != nil {
-		return nil, errors.Wrap(_cycleTimeInMsErr, "Error parsing 'cycleTimeInMs' field of AdsAddDeviceNotificationRequest")
+	length, err := ReadSimpleField(ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}
-	cycleTimeInMs := _cycleTimeInMs
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, 64), uint64(0x0000))
+	transmissionMode, err := ReadEnumField[AdsTransMode](ctx, "transmissionMode", "AdsTransMode", ReadEnum(AdsTransModeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transmissionMode' field"))
+	}
+
+	maxDelayInMs, err := ReadSimpleField(ctx, "maxDelayInMs", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxDelayInMs' field"))
+	}
+
+	cycleTimeInMs, err := ReadSimpleField(ctx, "cycleTimeInMs", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cycleTimeInMs' field"))
+	}
+
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, uint8(64)), uint64(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, 64), uint64(0x0000))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, uint8(64)), uint64(0x0000))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

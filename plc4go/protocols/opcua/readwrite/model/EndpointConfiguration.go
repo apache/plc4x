@@ -225,6 +225,12 @@ func EndpointConfigurationParse(ctx context.Context, theBytes []byte, identifier
 	return EndpointConfigurationParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EndpointConfigurationParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointConfiguration, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EndpointConfiguration, error) {
+		return EndpointConfigurationParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EndpointConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EndpointConfiguration, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -236,73 +242,55 @@ func EndpointConfigurationParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (operationTimeout)
-	_operationTimeout, _operationTimeoutErr := /*TODO: migrate me*/ readBuffer.ReadInt32("operationTimeout", 32)
-	if _operationTimeoutErr != nil {
-		return nil, errors.Wrap(_operationTimeoutErr, "Error parsing 'operationTimeout' field of EndpointConfiguration")
+	operationTimeout, err := ReadSimpleField(ctx, "operationTimeout", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'operationTimeout' field"))
 	}
-	operationTimeout := _operationTimeout
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 7), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(7)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (useBinaryEncoding)
-	_useBinaryEncoding, _useBinaryEncodingErr := /*TODO: migrate me*/ readBuffer.ReadBit("useBinaryEncoding")
-	if _useBinaryEncodingErr != nil {
-		return nil, errors.Wrap(_useBinaryEncodingErr, "Error parsing 'useBinaryEncoding' field of EndpointConfiguration")
+	useBinaryEncoding, err := ReadSimpleField(ctx, "useBinaryEncoding", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'useBinaryEncoding' field"))
 	}
-	useBinaryEncoding := _useBinaryEncoding
 
-	// Simple Field (maxStringLength)
-	_maxStringLength, _maxStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxStringLength", 32)
-	if _maxStringLengthErr != nil {
-		return nil, errors.Wrap(_maxStringLengthErr, "Error parsing 'maxStringLength' field of EndpointConfiguration")
+	maxStringLength, err := ReadSimpleField(ctx, "maxStringLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxStringLength' field"))
 	}
-	maxStringLength := _maxStringLength
 
-	// Simple Field (maxByteStringLength)
-	_maxByteStringLength, _maxByteStringLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxByteStringLength", 32)
-	if _maxByteStringLengthErr != nil {
-		return nil, errors.Wrap(_maxByteStringLengthErr, "Error parsing 'maxByteStringLength' field of EndpointConfiguration")
+	maxByteStringLength, err := ReadSimpleField(ctx, "maxByteStringLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxByteStringLength' field"))
 	}
-	maxByteStringLength := _maxByteStringLength
 
-	// Simple Field (maxArrayLength)
-	_maxArrayLength, _maxArrayLengthErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxArrayLength", 32)
-	if _maxArrayLengthErr != nil {
-		return nil, errors.Wrap(_maxArrayLengthErr, "Error parsing 'maxArrayLength' field of EndpointConfiguration")
+	maxArrayLength, err := ReadSimpleField(ctx, "maxArrayLength", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxArrayLength' field"))
 	}
-	maxArrayLength := _maxArrayLength
 
-	// Simple Field (maxMessageSize)
-	_maxMessageSize, _maxMessageSizeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxMessageSize", 32)
-	if _maxMessageSizeErr != nil {
-		return nil, errors.Wrap(_maxMessageSizeErr, "Error parsing 'maxMessageSize' field of EndpointConfiguration")
+	maxMessageSize, err := ReadSimpleField(ctx, "maxMessageSize", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxMessageSize' field"))
 	}
-	maxMessageSize := _maxMessageSize
 
-	// Simple Field (maxBufferSize)
-	_maxBufferSize, _maxBufferSizeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("maxBufferSize", 32)
-	if _maxBufferSizeErr != nil {
-		return nil, errors.Wrap(_maxBufferSizeErr, "Error parsing 'maxBufferSize' field of EndpointConfiguration")
+	maxBufferSize, err := ReadSimpleField(ctx, "maxBufferSize", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxBufferSize' field"))
 	}
-	maxBufferSize := _maxBufferSize
 
-	// Simple Field (channelLifetime)
-	_channelLifetime, _channelLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("channelLifetime", 32)
-	if _channelLifetimeErr != nil {
-		return nil, errors.Wrap(_channelLifetimeErr, "Error parsing 'channelLifetime' field of EndpointConfiguration")
+	channelLifetime, err := ReadSimpleField(ctx, "channelLifetime", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channelLifetime' field"))
 	}
-	channelLifetime := _channelLifetime
 
-	// Simple Field (securityTokenLifetime)
-	_securityTokenLifetime, _securityTokenLifetimeErr := /*TODO: migrate me*/ readBuffer.ReadInt32("securityTokenLifetime", 32)
-	if _securityTokenLifetimeErr != nil {
-		return nil, errors.Wrap(_securityTokenLifetimeErr, "Error parsing 'securityTokenLifetime' field of EndpointConfiguration")
+	securityTokenLifetime, err := ReadSimpleField(ctx, "securityTokenLifetime", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityTokenLifetime' field"))
 	}
-	securityTokenLifetime := _securityTokenLifetime
 
 	if closeErr := readBuffer.CloseContext("EndpointConfiguration"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for EndpointConfiguration")

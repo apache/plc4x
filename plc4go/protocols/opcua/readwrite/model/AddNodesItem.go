@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,6 +198,12 @@ func AddNodesItemParse(ctx context.Context, theBytes []byte, identifier string) 
 	return AddNodesItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func AddNodesItemParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AddNodesItem, error) {
+		return AddNodesItemParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func AddNodesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (AddNodesItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -207,95 +215,39 @@ func AddNodesItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (parentNodeId)
-	if pullErr := readBuffer.PullContext("parentNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for parentNodeId")
-	}
-	_parentNodeId, _parentNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _parentNodeIdErr != nil {
-		return nil, errors.Wrap(_parentNodeIdErr, "Error parsing 'parentNodeId' field of AddNodesItem")
-	}
-	parentNodeId := _parentNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("parentNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for parentNodeId")
+	parentNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "parentNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parentNodeId' field"))
 	}
 
-	// Simple Field (referenceTypeId)
-	if pullErr := readBuffer.PullContext("referenceTypeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for referenceTypeId")
-	}
-	_referenceTypeId, _referenceTypeIdErr := NodeIdParseWithBuffer(ctx, readBuffer)
-	if _referenceTypeIdErr != nil {
-		return nil, errors.Wrap(_referenceTypeIdErr, "Error parsing 'referenceTypeId' field of AddNodesItem")
-	}
-	referenceTypeId := _referenceTypeId.(NodeId)
-	if closeErr := readBuffer.CloseContext("referenceTypeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for referenceTypeId")
+	referenceTypeId, err := ReadSimpleField[NodeId](ctx, "referenceTypeId", ReadComplex[NodeId](NodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceTypeId' field"))
 	}
 
-	// Simple Field (requestedNewNodeId)
-	if pullErr := readBuffer.PullContext("requestedNewNodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for requestedNewNodeId")
-	}
-	_requestedNewNodeId, _requestedNewNodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _requestedNewNodeIdErr != nil {
-		return nil, errors.Wrap(_requestedNewNodeIdErr, "Error parsing 'requestedNewNodeId' field of AddNodesItem")
-	}
-	requestedNewNodeId := _requestedNewNodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("requestedNewNodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for requestedNewNodeId")
+	requestedNewNodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "requestedNewNodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestedNewNodeId' field"))
 	}
 
-	// Simple Field (browseName)
-	if pullErr := readBuffer.PullContext("browseName"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for browseName")
-	}
-	_browseName, _browseNameErr := QualifiedNameParseWithBuffer(ctx, readBuffer)
-	if _browseNameErr != nil {
-		return nil, errors.Wrap(_browseNameErr, "Error parsing 'browseName' field of AddNodesItem")
-	}
-	browseName := _browseName.(QualifiedName)
-	if closeErr := readBuffer.CloseContext("browseName"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for browseName")
+	browseName, err := ReadSimpleField[QualifiedName](ctx, "browseName", ReadComplex[QualifiedName](QualifiedNameParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'browseName' field"))
 	}
 
-	// Simple Field (nodeClass)
-	if pullErr := readBuffer.PullContext("nodeClass"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeClass")
-	}
-	_nodeClass, _nodeClassErr := NodeClassParseWithBuffer(ctx, readBuffer)
-	if _nodeClassErr != nil {
-		return nil, errors.Wrap(_nodeClassErr, "Error parsing 'nodeClass' field of AddNodesItem")
-	}
-	nodeClass := _nodeClass
-	if closeErr := readBuffer.CloseContext("nodeClass"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeClass")
+	nodeClass, err := ReadEnumField[NodeClass](ctx, "nodeClass", "NodeClass", ReadEnum(NodeClassByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeClass' field"))
 	}
 
-	// Simple Field (nodeAttributes)
-	if pullErr := readBuffer.PullContext("nodeAttributes"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeAttributes")
-	}
-	_nodeAttributes, _nodeAttributesErr := ExtensionObjectParseWithBuffer(ctx, readBuffer, bool(bool(true)))
-	if _nodeAttributesErr != nil {
-		return nil, errors.Wrap(_nodeAttributesErr, "Error parsing 'nodeAttributes' field of AddNodesItem")
-	}
-	nodeAttributes := _nodeAttributes.(ExtensionObject)
-	if closeErr := readBuffer.CloseContext("nodeAttributes"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeAttributes")
+	nodeAttributes, err := ReadSimpleField[ExtensionObject](ctx, "nodeAttributes", ReadComplex[ExtensionObject](ExtensionObjectParseWithBufferProducer((bool)(bool(true))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeAttributes' field"))
 	}
 
-	// Simple Field (typeDefinition)
-	if pullErr := readBuffer.PullContext("typeDefinition"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinition")
-	}
-	_typeDefinition, _typeDefinitionErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionErr != nil {
-		return nil, errors.Wrap(_typeDefinitionErr, "Error parsing 'typeDefinition' field of AddNodesItem")
-	}
-	typeDefinition := _typeDefinition.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinition"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinition")
+	typeDefinition, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinition", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinition' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AddNodesItem"); closeErr != nil {

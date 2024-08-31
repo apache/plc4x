@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func OptionSetParse(ctx context.Context, theBytes []byte, identifier string) (Op
 	return OptionSetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func OptionSetParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (OptionSet, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OptionSet, error) {
+		return OptionSetParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func OptionSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OptionSet, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func OptionSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of OptionSet")
-	}
-	value := _value.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[PascalByteString](ctx, "value", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
-	// Simple Field (validBits)
-	if pullErr := readBuffer.PullContext("validBits"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for validBits")
-	}
-	_validBits, _validBitsErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _validBitsErr != nil {
-		return nil, errors.Wrap(_validBitsErr, "Error parsing 'validBits' field of OptionSet")
-	}
-	validBits := _validBits.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("validBits"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for validBits")
+	validBits, err := ReadSimpleField[PascalByteString](ctx, "validBits", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validBits' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OptionSet"); closeErr != nil {

@@ -180,6 +180,12 @@ func CipWriteRequestParse(ctx context.Context, theBytes []byte, connected bool, 
 	return CipWriteRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), connected, serviceLen)
 }
 
+func CipWriteRequestParseWithBufferProducer(connected bool, serviceLen uint16) func(ctx context.Context, readBuffer utils.ReadBuffer) (CipWriteRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (CipWriteRequest, error) {
+		return CipWriteRequestParseWithBuffer(ctx, readBuffer, connected, serviceLen)
+	}
+}
+
 func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, connected bool, serviceLen uint16) (CipWriteRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -191,7 +197,7 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, 8))
+	requestPathSize, err := ReadImplicitField[uint8](ctx, "requestPathSize", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'requestPathSize' field"))
 	}
@@ -202,25 +208,15 @@ func CipWriteRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tag' field"))
 	}
 
-	// Simple Field (dataType)
-	if pullErr := readBuffer.PullContext("dataType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for dataType")
-	}
-	_dataType, _dataTypeErr := CIPDataTypeCodeParseWithBuffer(ctx, readBuffer)
-	if _dataTypeErr != nil {
-		return nil, errors.Wrap(_dataTypeErr, "Error parsing 'dataType' field of CipWriteRequest")
-	}
-	dataType := _dataType
-	if closeErr := readBuffer.CloseContext("dataType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for dataType")
+	dataType, err := ReadEnumField[CIPDataTypeCode](ctx, "dataType", "CIPDataTypeCode", ReadEnum(CIPDataTypeCodeByValue, ReadUnsignedShort(readBuffer, uint8(16))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dataType' field"))
 	}
 
-	// Simple Field (elementNb)
-	_elementNb, _elementNbErr := /*TODO: migrate me*/ readBuffer.ReadUint16("elementNb", 16)
-	if _elementNbErr != nil {
-		return nil, errors.Wrap(_elementNbErr, "Error parsing 'elementNb' field of CipWriteRequest")
+	elementNb, err := ReadSimpleField(ctx, "elementNb", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elementNb' field"))
 	}
-	elementNb := _elementNb
 
 	data, err := readBuffer.ReadByteArray("data", int(int32(dataType.Size())*int32(elementNb)))
 	if err != nil {

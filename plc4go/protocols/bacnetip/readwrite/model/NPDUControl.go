@@ -154,6 +154,12 @@ func NPDUControlParse(ctx context.Context, theBytes []byte) (NPDUControl, error)
 	return NPDUControlParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func NPDUControlParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
+		return NPDUControlParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (NPDUControl, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -165,55 +171,39 @@ func NPDUControlParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (messageTypeFieldPresent)
-	_messageTypeFieldPresent, _messageTypeFieldPresentErr := /*TODO: migrate me*/ readBuffer.ReadBit("messageTypeFieldPresent")
-	if _messageTypeFieldPresentErr != nil {
-		return nil, errors.Wrap(_messageTypeFieldPresentErr, "Error parsing 'messageTypeFieldPresent' field of NPDUControl")
+	messageTypeFieldPresent, err := ReadSimpleField(ctx, "messageTypeFieldPresent", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageTypeFieldPresent' field"))
 	}
-	messageTypeFieldPresent := _messageTypeFieldPresent
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 1), uint8(0))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (destinationSpecified)
-	_destinationSpecified, _destinationSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("destinationSpecified")
-	if _destinationSpecifiedErr != nil {
-		return nil, errors.Wrap(_destinationSpecifiedErr, "Error parsing 'destinationSpecified' field of NPDUControl")
+	destinationSpecified, err := ReadSimpleField(ctx, "destinationSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationSpecified' field"))
 	}
-	destinationSpecified := _destinationSpecified
 
-	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 1), uint8(0))
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(1)), uint8(0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Simple Field (sourceSpecified)
-	_sourceSpecified, _sourceSpecifiedErr := /*TODO: migrate me*/ readBuffer.ReadBit("sourceSpecified")
-	if _sourceSpecifiedErr != nil {
-		return nil, errors.Wrap(_sourceSpecifiedErr, "Error parsing 'sourceSpecified' field of NPDUControl")
+	sourceSpecified, err := ReadSimpleField(ctx, "sourceSpecified", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceSpecified' field"))
 	}
-	sourceSpecified := _sourceSpecified
 
-	// Simple Field (expectingReply)
-	_expectingReply, _expectingReplyErr := /*TODO: migrate me*/ readBuffer.ReadBit("expectingReply")
-	if _expectingReplyErr != nil {
-		return nil, errors.Wrap(_expectingReplyErr, "Error parsing 'expectingReply' field of NPDUControl")
+	expectingReply, err := ReadSimpleField(ctx, "expectingReply", ReadBoolean(readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expectingReply' field"))
 	}
-	expectingReply := _expectingReply
 
-	// Simple Field (networkPriority)
-	if pullErr := readBuffer.PullContext("networkPriority"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkPriority")
-	}
-	_networkPriority, _networkPriorityErr := NPDUNetworkPriorityParseWithBuffer(ctx, readBuffer)
-	if _networkPriorityErr != nil {
-		return nil, errors.Wrap(_networkPriorityErr, "Error parsing 'networkPriority' field of NPDUControl")
-	}
-	networkPriority := _networkPriority
-	if closeErr := readBuffer.CloseContext("networkPriority"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkPriority")
+	networkPriority, err := ReadEnumField[NPDUNetworkPriority](ctx, "networkPriority", "NPDUNetworkPriority", ReadEnum(NPDUNetworkPriorityByValue, ReadUnsignedByte(readBuffer, uint8(2))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPriority' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDUControl"); closeErr != nil {

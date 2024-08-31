@@ -83,6 +83,12 @@ func ContinuationPointParse(ctx context.Context, theBytes []byte) (ContinuationP
 	return ContinuationPointParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ContinuationPointParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
+		return ContinuationPointParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ContinuationPointParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ContinuationPoint, error) {
 	positionAware := readBuffer
 	_ = positionAware

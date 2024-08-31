@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataActualShedLevelParse(ctx context.Context, theBytes []b
 	return BACnetConstructedDataActualShedLevelParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataActualShedLevelParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActualShedLevel, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataActualShedLevel, error) {
+		return BACnetConstructedDataActualShedLevelParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataActualShedLevelParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataActualShedLevel, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataActualShedLevelParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (actualShedLevel)
-	if pullErr := readBuffer.PullContext("actualShedLevel"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for actualShedLevel")
-	}
-	_actualShedLevel, _actualShedLevelErr := BACnetShedLevelParseWithBuffer(ctx, readBuffer)
-	if _actualShedLevelErr != nil {
-		return nil, errors.Wrap(_actualShedLevelErr, "Error parsing 'actualShedLevel' field of BACnetConstructedDataActualShedLevel")
-	}
-	actualShedLevel := _actualShedLevel.(BACnetShedLevel)
-	if closeErr := readBuffer.CloseContext("actualShedLevel"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for actualShedLevel")
+	actualShedLevel, err := ReadSimpleField[BACnetShedLevel](ctx, "actualShedLevel", ReadComplex[BACnetShedLevel](BACnetShedLevelParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualShedLevel' field"))
 	}
 
 	// Virtual field

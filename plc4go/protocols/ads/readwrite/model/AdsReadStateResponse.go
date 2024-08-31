@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func AdsReadStateResponseParse(ctx context.Context, theBytes []byte) (AdsReadSta
 	return AdsReadStateResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsReadStateResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateResponse, error) {
+		return AdsReadStateResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsReadStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsReadStateResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,32 +182,20 @@ func AdsReadStateResponseParseWithBuffer(ctx context.Context, readBuffer utils.R
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (result)
-	if pullErr := readBuffer.PullContext("result"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for result")
-	}
-	_result, _resultErr := ReturnCodeParseWithBuffer(ctx, readBuffer)
-	if _resultErr != nil {
-		return nil, errors.Wrap(_resultErr, "Error parsing 'result' field of AdsReadStateResponse")
-	}
-	result := _result
-	if closeErr := readBuffer.CloseContext("result"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for result")
+	result, err := ReadEnumField[ReturnCode](ctx, "result", "ReturnCode", ReadEnum(ReturnCodeByValue, ReadUnsignedInt(readBuffer, uint8(32))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'result' field"))
 	}
 
-	// Simple Field (adsState)
-	_adsState, _adsStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("adsState", 16)
-	if _adsStateErr != nil {
-		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field of AdsReadStateResponse")
+	adsState, err := ReadSimpleField(ctx, "adsState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsState' field"))
 	}
-	adsState := _adsState
 
-	// Simple Field (deviceState)
-	_deviceState, _deviceStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceState", 16)
-	if _deviceStateErr != nil {
-		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field of AdsReadStateResponse")
+	deviceState, err := ReadSimpleField(ctx, "deviceState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceState' field"))
 	}
-	deviceState := _deviceState
 
 	if closeErr := readBuffer.CloseContext("AdsReadStateResponse"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsReadStateResponse")

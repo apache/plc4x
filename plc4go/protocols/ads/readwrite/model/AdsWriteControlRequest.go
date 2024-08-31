@@ -170,6 +170,12 @@ func AdsWriteControlRequestParse(ctx context.Context, theBytes []byte) (AdsWrite
 	return AdsWriteControlRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AdsWriteControlRequestParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
+		return AdsWriteControlRequestParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AdsWriteControlRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AdsWriteControlRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -181,21 +187,17 @@ func AdsWriteControlRequestParseWithBuffer(ctx context.Context, readBuffer utils
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (adsState)
-	_adsState, _adsStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("adsState", 16)
-	if _adsStateErr != nil {
-		return nil, errors.Wrap(_adsStateErr, "Error parsing 'adsState' field of AdsWriteControlRequest")
+	adsState, err := ReadSimpleField(ctx, "adsState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'adsState' field"))
 	}
-	adsState := _adsState
 
-	// Simple Field (deviceState)
-	_deviceState, _deviceStateErr := /*TODO: migrate me*/ readBuffer.ReadUint16("deviceState", 16)
-	if _deviceStateErr != nil {
-		return nil, errors.Wrap(_deviceStateErr, "Error parsing 'deviceState' field of AdsWriteControlRequest")
+	deviceState, err := ReadSimpleField(ctx, "deviceState", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceState' field"))
 	}
-	deviceState := _deviceState
 
-	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32))
+	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, uint8(32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'length' field"))
 	}

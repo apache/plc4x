@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func BACnetEventTimestampsParse(ctx context.Context, theBytes []byte) (BACnetEve
 	return BACnetEventTimestampsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func BACnetEventTimestampsParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
+		return BACnetEventTimestampsParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func BACnetEventTimestampsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetEventTimestamps, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,43 +142,19 @@ func BACnetEventTimestampsParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (toOffnormal)
-	if pullErr := readBuffer.PullContext("toOffnormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toOffnormal")
-	}
-	_toOffnormal, _toOffnormalErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-	if _toOffnormalErr != nil {
-		return nil, errors.Wrap(_toOffnormalErr, "Error parsing 'toOffnormal' field of BACnetEventTimestamps")
-	}
-	toOffnormal := _toOffnormal.(BACnetTimeStamp)
-	if closeErr := readBuffer.CloseContext("toOffnormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toOffnormal")
+	toOffnormal, err := ReadSimpleField[BACnetTimeStamp](ctx, "toOffnormal", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
 	}
 
-	// Simple Field (toFault)
-	if pullErr := readBuffer.PullContext("toFault"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toFault")
-	}
-	_toFault, _toFaultErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-	if _toFaultErr != nil {
-		return nil, errors.Wrap(_toFaultErr, "Error parsing 'toFault' field of BACnetEventTimestamps")
-	}
-	toFault := _toFault.(BACnetTimeStamp)
-	if closeErr := readBuffer.CloseContext("toFault"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toFault")
+	toFault, err := ReadSimpleField[BACnetTimeStamp](ctx, "toFault", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
 	}
 
-	// Simple Field (toNormal)
-	if pullErr := readBuffer.PullContext("toNormal"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for toNormal")
-	}
-	_toNormal, _toNormalErr := BACnetTimeStampParseWithBuffer(ctx, readBuffer)
-	if _toNormalErr != nil {
-		return nil, errors.Wrap(_toNormalErr, "Error parsing 'toNormal' field of BACnetEventTimestamps")
-	}
-	toNormal := _toNormal.(BACnetTimeStamp)
-	if closeErr := readBuffer.CloseContext("toNormal"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for toNormal")
+	toNormal, err := ReadSimpleField[BACnetTimeStamp](ctx, "toNormal", ReadComplex[BACnetTimeStamp](BACnetTimeStampParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTimestamps"); closeErr != nil {

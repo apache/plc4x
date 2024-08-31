@@ -172,6 +172,12 @@ func QueryDataSetParse(ctx context.Context, theBytes []byte, identifier string) 
 	return QueryDataSetParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func QueryDataSetParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryDataSet, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (QueryDataSet, error) {
+		return QueryDataSetParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (QueryDataSet, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -183,38 +189,20 @@ func QueryDataSetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (nodeId)
-	if pullErr := readBuffer.PullContext("nodeId"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for nodeId")
-	}
-	_nodeId, _nodeIdErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _nodeIdErr != nil {
-		return nil, errors.Wrap(_nodeIdErr, "Error parsing 'nodeId' field of QueryDataSet")
-	}
-	nodeId := _nodeId.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("nodeId"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for nodeId")
+	nodeId, err := ReadSimpleField[ExpandedNodeId](ctx, "nodeId", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeId' field"))
 	}
 
-	// Simple Field (typeDefinitionNode)
-	if pullErr := readBuffer.PullContext("typeDefinitionNode"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for typeDefinitionNode")
-	}
-	_typeDefinitionNode, _typeDefinitionNodeErr := ExpandedNodeIdParseWithBuffer(ctx, readBuffer)
-	if _typeDefinitionNodeErr != nil {
-		return nil, errors.Wrap(_typeDefinitionNodeErr, "Error parsing 'typeDefinitionNode' field of QueryDataSet")
-	}
-	typeDefinitionNode := _typeDefinitionNode.(ExpandedNodeId)
-	if closeErr := readBuffer.CloseContext("typeDefinitionNode"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for typeDefinitionNode")
+	typeDefinitionNode, err := ReadSimpleField[ExpandedNodeId](ctx, "typeDefinitionNode", ReadComplex[ExpandedNodeId](ExpandedNodeIdParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'typeDefinitionNode' field"))
 	}
 
-	// Simple Field (noOfValues)
-	_noOfValues, _noOfValuesErr := /*TODO: migrate me*/ readBuffer.ReadInt32("noOfValues", 32)
-	if _noOfValuesErr != nil {
-		return nil, errors.Wrap(_noOfValuesErr, "Error parsing 'noOfValues' field of QueryDataSet")
+	noOfValues, err := ReadSimpleField(ctx, "noOfValues", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfValues' field"))
 	}
-	noOfValues := _noOfValues
 
 	values, err := ReadCountArrayField[Variant](ctx, "values", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), uint64(noOfValues))
 	if err != nil {

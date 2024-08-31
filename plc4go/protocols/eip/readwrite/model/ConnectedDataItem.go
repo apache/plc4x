@@ -146,6 +146,12 @@ func ConnectedDataItemParse(ctx context.Context, theBytes []byte) (ConnectedData
 	return ConnectedDataItemParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func ConnectedDataItemParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedDataItem, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedDataItem, error) {
+		return ConnectedDataItemParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (ConnectedDataItem, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -157,30 +163,20 @@ func ConnectedDataItemParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, 16))
+	packetSize, err := ReadImplicitField[uint16](ctx, "packetSize", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetSize' field"))
 	}
 	_ = packetSize
 
-	// Simple Field (sequenceCount)
-	_sequenceCount, _sequenceCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("sequenceCount", 16)
-	if _sequenceCountErr != nil {
-		return nil, errors.Wrap(_sequenceCountErr, "Error parsing 'sequenceCount' field of ConnectedDataItem")
+	sequenceCount, err := ReadSimpleField(ctx, "sequenceCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceCount' field"))
 	}
-	sequenceCount := _sequenceCount
 
-	// Simple Field (service)
-	if pullErr := readBuffer.PullContext("service"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for service")
-	}
-	_service, _serviceErr := CipServiceParseWithBuffer(ctx, readBuffer, bool(bool(true)), uint16(uint16(packetSize)-uint16(uint16(2))))
-	if _serviceErr != nil {
-		return nil, errors.Wrap(_serviceErr, "Error parsing 'service' field of ConnectedDataItem")
-	}
-	service := _service.(CipService)
-	if closeErr := readBuffer.CloseContext("service"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for service")
+	service, err := ReadSimpleField[CipService](ctx, "service", ReadComplex[CipService](CipServiceParseWithBufferProducer[CipService]((bool)(bool(true)), (uint16)(uint16(packetSize)-uint16(uint16(2)))), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'service' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectedDataItem"); closeErr != nil {

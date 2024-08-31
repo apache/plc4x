@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -160,6 +162,12 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParse(ctx context.Context, theBytes
 	return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
+		return ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUMaskWriteHoldingRegisterRequest, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -171,26 +179,20 @@ func ModbusPDUMaskWriteHoldingRegisterRequestParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (referenceAddress)
-	_referenceAddress, _referenceAddressErr := /*TODO: migrate me*/ readBuffer.ReadUint16("referenceAddress", 16)
-	if _referenceAddressErr != nil {
-		return nil, errors.Wrap(_referenceAddressErr, "Error parsing 'referenceAddress' field of ModbusPDUMaskWriteHoldingRegisterRequest")
+	referenceAddress, err := ReadSimpleField(ctx, "referenceAddress", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceAddress' field"))
 	}
-	referenceAddress := _referenceAddress
 
-	// Simple Field (andMask)
-	_andMask, _andMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint16("andMask", 16)
-	if _andMaskErr != nil {
-		return nil, errors.Wrap(_andMaskErr, "Error parsing 'andMask' field of ModbusPDUMaskWriteHoldingRegisterRequest")
+	andMask, err := ReadSimpleField(ctx, "andMask", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'andMask' field"))
 	}
-	andMask := _andMask
 
-	// Simple Field (orMask)
-	_orMask, _orMaskErr := /*TODO: migrate me*/ readBuffer.ReadUint16("orMask", 16)
-	if _orMaskErr != nil {
-		return nil, errors.Wrap(_orMaskErr, "Error parsing 'orMask' field of ModbusPDUMaskWriteHoldingRegisterRequest")
+	orMask, err := ReadSimpleField(ctx, "orMask", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'orMask' field"))
 	}
-	orMask := _orMask
 
 	if closeErr := readBuffer.CloseContext("ModbusPDUMaskWriteHoldingRegisterRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ModbusPDUMaskWriteHoldingRegisterRequest")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesNetworkTypeParse(ctx context.Context, theBytes []byte, 
 	return BACnetPropertyStatesNetworkTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesNetworkTypeParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesNetworkType, error) {
+		return BACnetPropertyStatesNetworkTypeParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesNetworkTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesNetworkType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesNetworkTypeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (networkType)
-	if pullErr := readBuffer.PullContext("networkType"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkType")
-	}
-	_networkType, _networkTypeErr := BACnetNetworkTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _networkTypeErr != nil {
-		return nil, errors.Wrap(_networkTypeErr, "Error parsing 'networkType' field of BACnetPropertyStatesNetworkType")
-	}
-	networkType := _networkType.(BACnetNetworkTypeTagged)
-	if closeErr := readBuffer.CloseContext("networkType"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkType")
+	networkType, err := ReadSimpleField[BACnetNetworkTypeTagged](ctx, "networkType", ReadComplex[BACnetNetworkTypeTagged](BACnetNetworkTypeTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkType' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesNetworkType"); closeErr != nil {

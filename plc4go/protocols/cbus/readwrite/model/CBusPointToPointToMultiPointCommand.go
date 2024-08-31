@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -144,6 +146,17 @@ func CBusPointToPointToMultiPointCommandParse(ctx context.Context, theBytes []by
 	return CBusPointToPointToMultiPointCommandParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), cBusOptions)
 }
 
+func CBusPointToPointToMultiPointCommandParseWithBufferProducer[T CBusPointToPointToMultiPointCommand](cBusOptions CBusOptions) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := CBusPointToPointToMultiPointCommandParseWithBuffer(ctx, readBuffer, cBusOptions)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBusOptions CBusOptions) (CBusPointToPointToMultiPointCommand, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -155,30 +168,14 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (bridgeAddress)
-	if pullErr := readBuffer.PullContext("bridgeAddress"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for bridgeAddress")
-	}
-	_bridgeAddress, _bridgeAddressErr := BridgeAddressParseWithBuffer(ctx, readBuffer)
-	if _bridgeAddressErr != nil {
-		return nil, errors.Wrap(_bridgeAddressErr, "Error parsing 'bridgeAddress' field of CBusPointToPointToMultiPointCommand")
-	}
-	bridgeAddress := _bridgeAddress.(BridgeAddress)
-	if closeErr := readBuffer.CloseContext("bridgeAddress"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for bridgeAddress")
+	bridgeAddress, err := ReadSimpleField[BridgeAddress](ctx, "bridgeAddress", ReadComplex[BridgeAddress](BridgeAddressParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeAddress' field"))
 	}
 
-	// Simple Field (networkRoute)
-	if pullErr := readBuffer.PullContext("networkRoute"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for networkRoute")
-	}
-	_networkRoute, _networkRouteErr := NetworkRouteParseWithBuffer(ctx, readBuffer)
-	if _networkRouteErr != nil {
-		return nil, errors.Wrap(_networkRouteErr, "Error parsing 'networkRoute' field of CBusPointToPointToMultiPointCommand")
-	}
-	networkRoute := _networkRoute.(NetworkRoute)
-	if closeErr := readBuffer.CloseContext("networkRoute"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for networkRoute")
+	networkRoute, err := ReadSimpleField[NetworkRoute](ctx, "networkRoute", ReadComplex[NetworkRoute](NetworkRouteParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
 
 	// Peek Field (peekedApplication)

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMinimumOutputParse(ctx context.Context, theBytes []byt
 	return BACnetConstructedDataMinimumOutputParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMinimumOutputParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumOutput, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMinimumOutput, error) {
+		return BACnetConstructedDataMinimumOutputParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMinimumOutputParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMinimumOutput, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMinimumOutputParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (minimumOutput)
-	if pullErr := readBuffer.PullContext("minimumOutput"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for minimumOutput")
-	}
-	_minimumOutput, _minimumOutputErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _minimumOutputErr != nil {
-		return nil, errors.Wrap(_minimumOutputErr, "Error parsing 'minimumOutput' field of BACnetConstructedDataMinimumOutput")
-	}
-	minimumOutput := _minimumOutput.(BACnetApplicationTagReal)
-	if closeErr := readBuffer.CloseContext("minimumOutput"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for minimumOutput")
+	minimumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOutput' field"))
 	}
 
 	// Virtual field

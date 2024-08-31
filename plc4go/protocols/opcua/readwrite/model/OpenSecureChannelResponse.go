@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,6 +165,12 @@ func OpenSecureChannelResponseParse(ctx context.Context, theBytes []byte, identi
 	return OpenSecureChannelResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func OpenSecureChannelResponseParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenSecureChannelResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (OpenSecureChannelResponse, error) {
+		return OpenSecureChannelResponseParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func OpenSecureChannelResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (OpenSecureChannelResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -174,50 +182,24 @@ func OpenSecureChannelResponseParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (responseHeader)
-	if pullErr := readBuffer.PullContext("responseHeader"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for responseHeader")
-	}
-	_responseHeader, _responseHeaderErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("394"))
-	if _responseHeaderErr != nil {
-		return nil, errors.Wrap(_responseHeaderErr, "Error parsing 'responseHeader' field of OpenSecureChannelResponse")
-	}
-	responseHeader := _responseHeader.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("responseHeader"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for responseHeader")
+	responseHeader, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "responseHeader", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("394")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'responseHeader' field"))
 	}
 
-	// Simple Field (serverProtocolVersion)
-	_serverProtocolVersion, _serverProtocolVersionErr := /*TODO: migrate me*/ readBuffer.ReadUint32("serverProtocolVersion", 32)
-	if _serverProtocolVersionErr != nil {
-		return nil, errors.Wrap(_serverProtocolVersionErr, "Error parsing 'serverProtocolVersion' field of OpenSecureChannelResponse")
-	}
-	serverProtocolVersion := _serverProtocolVersion
-
-	// Simple Field (securityToken)
-	if pullErr := readBuffer.PullContext("securityToken"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for securityToken")
-	}
-	_securityToken, _securityTokenErr := ExtensionObjectDefinitionParseWithBuffer(ctx, readBuffer, string("443"))
-	if _securityTokenErr != nil {
-		return nil, errors.Wrap(_securityTokenErr, "Error parsing 'securityToken' field of OpenSecureChannelResponse")
-	}
-	securityToken := _securityToken.(ExtensionObjectDefinition)
-	if closeErr := readBuffer.CloseContext("securityToken"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for securityToken")
+	serverProtocolVersion, err := ReadSimpleField(ctx, "serverProtocolVersion", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverProtocolVersion' field"))
 	}
 
-	// Simple Field (serverNonce)
-	if pullErr := readBuffer.PullContext("serverNonce"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for serverNonce")
+	securityToken, err := ReadSimpleField[ExtensionObjectDefinition](ctx, "securityToken", ReadComplex[ExtensionObjectDefinition](ExtensionObjectDefinitionParseWithBufferProducer[ExtensionObjectDefinition]((string)("443")), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityToken' field"))
 	}
-	_serverNonce, _serverNonceErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _serverNonceErr != nil {
-		return nil, errors.Wrap(_serverNonceErr, "Error parsing 'serverNonce' field of OpenSecureChannelResponse")
-	}
-	serverNonce := _serverNonce.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("serverNonce"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for serverNonce")
+
+	serverNonce, err := ReadSimpleField[PascalByteString](ctx, "serverNonce", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverNonce' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("OpenSecureChannelResponse"); closeErr != nil {

@@ -178,6 +178,12 @@ func ModbusPDUGetComEventLogResponseParse(ctx context.Context, theBytes []byte, 
 	return ModbusPDUGetComEventLogResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func ModbusPDUGetComEventLogResponseParseWithBufferProducer(response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventLogResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ModbusPDUGetComEventLogResponse, error) {
+		return ModbusPDUGetComEventLogResponseParseWithBuffer(ctx, readBuffer, response)
+	}
+}
+
 func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (ModbusPDUGetComEventLogResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -189,32 +195,26 @@ func ModbusPDUGetComEventLogResponseParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, 8))
+	byteCount, err := ReadImplicitField[uint8](ctx, "byteCount", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'byteCount' field"))
 	}
 	_ = byteCount
 
-	// Simple Field (status)
-	_status, _statusErr := /*TODO: migrate me*/ readBuffer.ReadUint16("status", 16)
-	if _statusErr != nil {
-		return nil, errors.Wrap(_statusErr, "Error parsing 'status' field of ModbusPDUGetComEventLogResponse")
+	status, err := ReadSimpleField(ctx, "status", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'status' field"))
 	}
-	status := _status
 
-	// Simple Field (eventCount)
-	_eventCount, _eventCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("eventCount", 16)
-	if _eventCountErr != nil {
-		return nil, errors.Wrap(_eventCountErr, "Error parsing 'eventCount' field of ModbusPDUGetComEventLogResponse")
+	eventCount, err := ReadSimpleField(ctx, "eventCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventCount' field"))
 	}
-	eventCount := _eventCount
 
-	// Simple Field (messageCount)
-	_messageCount, _messageCountErr := /*TODO: migrate me*/ readBuffer.ReadUint16("messageCount", 16)
-	if _messageCountErr != nil {
-		return nil, errors.Wrap(_messageCountErr, "Error parsing 'messageCount' field of ModbusPDUGetComEventLogResponse")
+	messageCount, err := ReadSimpleField(ctx, "messageCount", ReadUnsignedShort(readBuffer, uint8(16)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageCount' field"))
 	}
-	messageCount := _messageCount
 
 	events, err := readBuffer.ReadByteArray("events", int(int32(byteCount)-int32(int32(6))))
 	if err != nil {

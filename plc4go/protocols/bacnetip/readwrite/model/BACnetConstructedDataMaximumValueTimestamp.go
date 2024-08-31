@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataMaximumValueTimestampParse(ctx context.Context, theByt
 	return BACnetConstructedDataMaximumValueTimestampParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataMaximumValueTimestampParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaximumValueTimestamp, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataMaximumValueTimestamp, error) {
+		return BACnetConstructedDataMaximumValueTimestampParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataMaximumValueTimestampParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataMaximumValueTimestamp, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataMaximumValueTimestampParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (maximumValueTimestamp)
-	if pullErr := readBuffer.PullContext("maximumValueTimestamp"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for maximumValueTimestamp")
-	}
-	_maximumValueTimestamp, _maximumValueTimestampErr := BACnetDateTimeParseWithBuffer(ctx, readBuffer)
-	if _maximumValueTimestampErr != nil {
-		return nil, errors.Wrap(_maximumValueTimestampErr, "Error parsing 'maximumValueTimestamp' field of BACnetConstructedDataMaximumValueTimestamp")
-	}
-	maximumValueTimestamp := _maximumValueTimestamp.(BACnetDateTime)
-	if closeErr := readBuffer.CloseContext("maximumValueTimestamp"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for maximumValueTimestamp")
+	maximumValueTimestamp, err := ReadSimpleField[BACnetDateTime](ctx, "maximumValueTimestamp", ReadComplex[BACnetDateTime](BACnetDateTimeParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumValueTimestamp' field"))
 	}
 
 	// Virtual field

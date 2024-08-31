@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -123,6 +125,12 @@ func KnxAddressParse(ctx context.Context, theBytes []byte) (KnxAddress, error) {
 	return KnxAddressParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func KnxAddressParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
+		return KnxAddressParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (KnxAddress, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -134,26 +142,20 @@ func KnxAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer)
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (mainGroup)
-	_mainGroup, _mainGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("mainGroup", 4)
-	if _mainGroupErr != nil {
-		return nil, errors.Wrap(_mainGroupErr, "Error parsing 'mainGroup' field of KnxAddress")
+	mainGroup, err := ReadSimpleField(ctx, "mainGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'mainGroup' field"))
 	}
-	mainGroup := _mainGroup
 
-	// Simple Field (middleGroup)
-	_middleGroup, _middleGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("middleGroup", 4)
-	if _middleGroupErr != nil {
-		return nil, errors.Wrap(_middleGroupErr, "Error parsing 'middleGroup' field of KnxAddress")
+	middleGroup, err := ReadSimpleField(ctx, "middleGroup", ReadUnsignedByte(readBuffer, uint8(4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'middleGroup' field"))
 	}
-	middleGroup := _middleGroup
 
-	// Simple Field (subGroup)
-	_subGroup, _subGroupErr := /*TODO: migrate me*/ readBuffer.ReadUint8("subGroup", 8)
-	if _subGroupErr != nil {
-		return nil, errors.Wrap(_subGroupErr, "Error parsing 'subGroup' field of KnxAddress")
+	subGroup, err := ReadSimpleField(ctx, "subGroup", ReadUnsignedByte(readBuffer, uint8(8)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subGroup' field"))
 	}
-	subGroup := _subGroup
 
 	if closeErr := readBuffer.CloseContext("KnxAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for KnxAddress")

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -130,6 +132,12 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParse(ctx context.Context, th
 	return ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), parameterType, numBytes)
 }
 
+func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBufferProducer(parameterType ParameterType, numBytes uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
+		return ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer, parameterType, numBytes)
+	}
+}
+
 func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, parameterType ParameterType, numBytes uint8) (ParameterValueInterfaceOptions1PowerUpSettings, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -146,17 +154,9 @@ func ParameterValueInterfaceOptions1PowerUpSettingsParseWithBuffer(ctx context.C
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "InterfaceOptions1PowerUpSettings has exactly one byte"})
 	}
 
-	// Simple Field (value)
-	if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for value")
-	}
-	_value, _valueErr := InterfaceOptions1PowerUpSettingsParseWithBuffer(ctx, readBuffer)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of ParameterValueInterfaceOptions1PowerUpSettings")
-	}
-	value := _value.(InterfaceOptions1PowerUpSettings)
-	if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for value")
+	value, err := ReadSimpleField[InterfaceOptions1PowerUpSettings](ctx, "value", ReadComplex[InterfaceOptions1PowerUpSettings](InterfaceOptions1PowerUpSettingsParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ParameterValueInterfaceOptions1PowerUpSettings"); closeErr != nil {

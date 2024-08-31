@@ -134,6 +134,12 @@ func DF1UnprotectedReadResponseParse(ctx context.Context, theBytes []byte) (DF1U
 	return DF1UnprotectedReadResponseParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func DF1UnprotectedReadResponseParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {
+		return DF1UnprotectedReadResponseParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func DF1UnprotectedReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (DF1UnprotectedReadResponse, error) {
 	positionAware := readBuffer
 	_ = positionAware

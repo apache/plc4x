@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
@@ -113,6 +114,12 @@ func AmsStringParse(ctx context.Context, theBytes []byte) (AmsString, error) {
 	return AmsStringParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes))
 }
 
+func AmsStringParseWithBufferProducer() func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsString, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (AmsString, error) {
+		return AmsStringParseWithBuffer(ctx, readBuffer)
+	}
+}
+
 func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (AmsString, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -124,20 +131,18 @@ func AmsStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	strLen, err := ReadImplicitField[uint16](ctx, "strLen", ReadUnsignedShort(readBuffer, 16))
+	strLen, err := ReadImplicitField[uint16](ctx, "strLen", ReadUnsignedShort(readBuffer, uint8(16)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'strLen' field"))
 	}
 	_ = strLen
 
-	// Simple Field (text)
-	_text, _textErr := /*TODO: migrate me*/ readBuffer.ReadString("text", uint32((8)*((strLen)-(1))), utils.WithEncoding("UTF-8"))
-	if _textErr != nil {
-		return nil, errors.Wrap(_textErr, "Error parsing 'text' field of AmsString")
+	text, err := ReadSimpleField(ctx, "text", ReadString(readBuffer, uint32(int32(int32(8))*int32((int32(strLen)-int32(int32(1)))))), codegen.WithEncoding("UTF-8"))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'text' field"))
 	}
-	text := _text
 
-	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 8), uint8(0x00))
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, uint8(8)), uint8(0x00))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}

@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func RationalNumberParse(ctx context.Context, theBytes []byte, identifier string
 	return RationalNumberParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func RationalNumberParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (RationalNumber, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (RationalNumber, error) {
+		return RationalNumberParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func RationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (RationalNumber, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,19 +160,15 @@ func RationalNumberParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (numerator)
-	_numerator, _numeratorErr := /*TODO: migrate me*/ readBuffer.ReadInt32("numerator", 32)
-	if _numeratorErr != nil {
-		return nil, errors.Wrap(_numeratorErr, "Error parsing 'numerator' field of RationalNumber")
+	numerator, err := ReadSimpleField(ctx, "numerator", ReadSignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numerator' field"))
 	}
-	numerator := _numerator
 
-	// Simple Field (denominator)
-	_denominator, _denominatorErr := /*TODO: migrate me*/ readBuffer.ReadUint32("denominator", 32)
-	if _denominatorErr != nil {
-		return nil, errors.Wrap(_denominatorErr, "Error parsing 'denominator' field of RationalNumber")
+	denominator, err := ReadSimpleField(ctx, "denominator", ReadUnsignedInt(readBuffer, uint8(32)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'denominator' field"))
 	}
-	denominator := _denominator
 
 	if closeErr := readBuffer.CloseContext("RationalNumber"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for RationalNumber")

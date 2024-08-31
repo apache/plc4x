@@ -106,6 +106,17 @@ func OpenChannelMessageParse(ctx context.Context, theBytes []byte, response bool
 	return OpenChannelMessageParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), response)
 }
 
+func OpenChannelMessageParseWithBufferProducer[T OpenChannelMessage](response bool) func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (T, error) {
+		buffer, err := OpenChannelMessageParseWithBuffer(ctx, readBuffer, response)
+		if err != nil {
+			var zero T
+			return zero, err
+		}
+		return buffer.(T), err
+	}
+}
+
 func OpenChannelMessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, response bool) (OpenChannelMessage, error) {
 	positionAware := readBuffer
 	_ = positionAware

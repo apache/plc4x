@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -141,6 +143,12 @@ func EphemeralKeyTypeParse(ctx context.Context, theBytes []byte, identifier stri
 	return EphemeralKeyTypeParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), identifier)
 }
 
+func EphemeralKeyTypeParseWithBufferProducer(identifier string) func(ctx context.Context, readBuffer utils.ReadBuffer) (EphemeralKeyType, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (EphemeralKeyType, error) {
+		return EphemeralKeyTypeParseWithBuffer(ctx, readBuffer, identifier)
+	}
+}
+
 func EphemeralKeyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, identifier string) (EphemeralKeyType, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -152,30 +160,14 @@ func EphemeralKeyTypeParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (publicKey)
-	if pullErr := readBuffer.PullContext("publicKey"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for publicKey")
-	}
-	_publicKey, _publicKeyErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _publicKeyErr != nil {
-		return nil, errors.Wrap(_publicKeyErr, "Error parsing 'publicKey' field of EphemeralKeyType")
-	}
-	publicKey := _publicKey.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("publicKey"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for publicKey")
+	publicKey, err := ReadSimpleField[PascalByteString](ctx, "publicKey", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'publicKey' field"))
 	}
 
-	// Simple Field (signature)
-	if pullErr := readBuffer.PullContext("signature"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for signature")
-	}
-	_signature, _signatureErr := PascalByteStringParseWithBuffer(ctx, readBuffer)
-	if _signatureErr != nil {
-		return nil, errors.Wrap(_signatureErr, "Error parsing 'signature' field of EphemeralKeyType")
-	}
-	signature := _signature.(PascalByteString)
-	if closeErr := readBuffer.CloseContext("signature"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for signature")
+	signature, err := ReadSimpleField[PascalByteString](ctx, "signature", ReadComplex[PascalByteString](PascalByteStringParseWithBuffer, readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'signature' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("EphemeralKeyType"); closeErr != nil {

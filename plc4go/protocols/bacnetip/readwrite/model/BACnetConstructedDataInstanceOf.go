@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -157,6 +159,12 @@ func BACnetConstructedDataInstanceOfParse(ctx context.Context, theBytes []byte, 
 	return BACnetConstructedDataInstanceOfParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
 }
 
+func BACnetConstructedDataInstanceOfParseWithBufferProducer(tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInstanceOf, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetConstructedDataInstanceOf, error) {
+		return BACnetConstructedDataInstanceOfParseWithBuffer(ctx, readBuffer, tagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
+	}
+}
+
 func BACnetConstructedDataInstanceOfParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, tagNumber uint8, objectTypeArgument BACnetObjectType, propertyIdentifierArgument BACnetPropertyIdentifier, arrayIndexArgument BACnetTagPayloadUnsignedInteger) (BACnetConstructedDataInstanceOf, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -168,17 +176,9 @@ func BACnetConstructedDataInstanceOfParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (instanceOf)
-	if pullErr := readBuffer.PullContext("instanceOf"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for instanceOf")
-	}
-	_instanceOf, _instanceOfErr := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-	if _instanceOfErr != nil {
-		return nil, errors.Wrap(_instanceOfErr, "Error parsing 'instanceOf' field of BACnetConstructedDataInstanceOf")
-	}
-	instanceOf := _instanceOf.(BACnetApplicationTagCharacterString)
-	if closeErr := readBuffer.CloseContext("instanceOf"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for instanceOf")
+	instanceOf, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "instanceOf", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceOf' field"))
 	}
 
 	// Virtual field

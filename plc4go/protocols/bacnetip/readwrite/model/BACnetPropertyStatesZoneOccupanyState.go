@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -128,6 +130,12 @@ func BACnetPropertyStatesZoneOccupanyStateParse(ctx context.Context, theBytes []
 	return BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(ctx, utils.NewReadBufferByteBased(theBytes), peekedTagNumber)
 }
 
+func BACnetPropertyStatesZoneOccupanyStateParseWithBufferProducer(peekedTagNumber uint8) func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesZoneOccupanyState, error) {
+	return func(ctx context.Context, readBuffer utils.ReadBuffer) (BACnetPropertyStatesZoneOccupanyState, error) {
+		return BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(ctx, readBuffer, peekedTagNumber)
+	}
+}
+
 func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, peekedTagNumber uint8) (BACnetPropertyStatesZoneOccupanyState, error) {
 	positionAware := readBuffer
 	_ = positionAware
@@ -139,17 +147,9 @@ func BACnetPropertyStatesZoneOccupanyStateParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Simple Field (zoneOccupanyState)
-	if pullErr := readBuffer.PullContext("zoneOccupanyState"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for zoneOccupanyState")
-	}
-	_zoneOccupanyState, _zoneOccupanyStateErr := BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx, readBuffer, uint8(peekedTagNumber), TagClass(TagClass_CONTEXT_SPECIFIC_TAGS))
-	if _zoneOccupanyStateErr != nil {
-		return nil, errors.Wrap(_zoneOccupanyStateErr, "Error parsing 'zoneOccupanyState' field of BACnetPropertyStatesZoneOccupanyState")
-	}
-	zoneOccupanyState := _zoneOccupanyState.(BACnetAccessZoneOccupancyStateTagged)
-	if closeErr := readBuffer.CloseContext("zoneOccupanyState"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for zoneOccupanyState")
+	zoneOccupanyState, err := ReadSimpleField[BACnetAccessZoneOccupancyStateTagged](ctx, "zoneOccupanyState", ReadComplex[BACnetAccessZoneOccupancyStateTagged](BACnetAccessZoneOccupancyStateTaggedParseWithBufferProducer((uint8)(peekedTagNumber), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS)), readBuffer))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zoneOccupanyState' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPropertyStatesZoneOccupanyState"); closeErr != nil {
