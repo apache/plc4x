@@ -165,16 +165,12 @@ func (m *_ParameterChange) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for ParameterChange")
 	}
 
-	// Const Field (specialChar1)
-	_specialChar1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("specialChar1", 0x3D)
-	if _specialChar1Err != nil {
-		return errors.Wrap(_specialChar1Err, "Error serializing 'specialChar1' field")
+	if err := WriteConstField(ctx, "specialChar1", ParameterChange_SPECIALCHAR1, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'specialChar1' field")
 	}
 
-	// Const Field (specialChar2)
-	_specialChar2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("specialChar2", 0x3D)
-	if _specialChar2Err != nil {
-		return errors.Wrap(_specialChar2Err, "Error serializing 'specialChar2' field")
+	if err := WriteConstField(ctx, "specialChar2", ParameterChange_SPECIALCHAR2, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'specialChar2' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ParameterChange"); popErr != nil {

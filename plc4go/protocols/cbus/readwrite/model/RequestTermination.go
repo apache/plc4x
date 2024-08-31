@@ -151,10 +151,8 @@ func (m *_RequestTermination) SerializeWithWriteBuffer(ctx context.Context, writ
 		return errors.Wrap(pushErr, "Error pushing for RequestTermination")
 	}
 
-	// Const Field (cr)
-	_crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("cr", 0x0D)
-	if _crErr != nil {
-		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	if err := WriteConstField(ctx, "cr", RequestTermination_CR, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'cr' field")
 	}
 
 	if popErr := writeBuffer.PopContext("RequestTermination"); popErr != nil {

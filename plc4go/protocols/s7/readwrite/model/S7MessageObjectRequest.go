@@ -277,16 +277,12 @@ func (m *_S7MessageObjectRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for S7MessageObjectRequest")
 		}
 
-		// Const Field (variableSpec)
-		_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
-		if _variableSpecErr != nil {
-			return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
+		if err := WriteConstField(ctx, "variableSpec", S7MessageObjectRequest_VARIABLESPEC, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'variableSpec' field")
 		}
 
-		// Const Field (length)
-		_lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("length", 8, uint8(0x08))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteConstField(ctx, "length", S7MessageObjectRequest_LENGTH, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
 		// Simple Field (syntaxId)

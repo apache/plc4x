@@ -262,10 +262,8 @@ func (m *_RequestDirectCommandAccess) SerializeWithWriteBuffer(ctx context.Conte
 			return errors.Wrap(pushErr, "Error pushing for RequestDirectCommandAccess")
 		}
 
-		// Const Field (at)
-		_atErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("at", 0x40)
-		if _atErr != nil {
-			return errors.Wrap(_atErr, "Error serializing 'at' field")
+		if err := WriteConstField(ctx, "at", RequestDirectCommandAccess_AT, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'at' field")
 		}
 
 		// Manual Field (calData)

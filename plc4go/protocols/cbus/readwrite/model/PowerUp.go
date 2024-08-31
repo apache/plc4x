@@ -165,16 +165,12 @@ func (m *_PowerUp) SerializeWithWriteBuffer(ctx context.Context, writeBuffer uti
 		return errors.Wrap(pushErr, "Error pushing for PowerUp")
 	}
 
-	// Const Field (powerUpIndicator1)
-	_powerUpIndicator1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("powerUpIndicator1", 0x2B)
-	if _powerUpIndicator1Err != nil {
-		return errors.Wrap(_powerUpIndicator1Err, "Error serializing 'powerUpIndicator1' field")
+	if err := WriteConstField(ctx, "powerUpIndicator1", PowerUp_POWERUPINDICATOR1, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'powerUpIndicator1' field")
 	}
 
-	// Const Field (powerUpIndicator2)
-	_powerUpIndicator2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("powerUpIndicator2", 0x2B)
-	if _powerUpIndicator2Err != nil {
-		return errors.Wrap(_powerUpIndicator2Err, "Error serializing 'powerUpIndicator2' field")
+	if err := WriteConstField(ctx, "powerUpIndicator2", PowerUp_POWERUPINDICATOR2, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'powerUpIndicator2' field")
 	}
 
 	if popErr := writeBuffer.PopContext("PowerUp"); popErr != nil {

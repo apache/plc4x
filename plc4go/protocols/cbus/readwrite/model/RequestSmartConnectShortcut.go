@@ -228,10 +228,8 @@ func (m *_RequestSmartConnectShortcut) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(pushErr, "Error pushing for RequestSmartConnectShortcut")
 		}
 
-		// Const Field (pipe)
-		_pipeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("pipe", 0x7C)
-		if _pipeErr != nil {
-			return errors.Wrap(_pipeErr, "Error serializing 'pipe' field")
+		if err := WriteConstField(ctx, "pipe", RequestSmartConnectShortcut_PIPE, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'pipe' field")
 		}
 
 		// Optional Field (secondPipe) (Can be skipped, if the value is null)

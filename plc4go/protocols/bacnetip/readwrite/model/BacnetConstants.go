@@ -151,10 +151,8 @@ func (m *_BacnetConstants) SerializeWithWriteBuffer(ctx context.Context, writeBu
 		return errors.Wrap(pushErr, "Error pushing for BacnetConstants")
 	}
 
-	// Const Field (bacnetUdpDefaultPort)
-	_bacnetUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("bacnetUdpDefaultPort", 16, uint16(47808))
-	if _bacnetUdpDefaultPortErr != nil {
-		return errors.Wrap(_bacnetUdpDefaultPortErr, "Error serializing 'bacnetUdpDefaultPort' field")
+	if err := WriteConstField(ctx, "bacnetUdpDefaultPort", BacnetConstants_BACNETUDPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bacnetUdpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("BacnetConstants"); popErr != nil {

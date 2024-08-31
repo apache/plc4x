@@ -183,10 +183,8 @@ func (m *_ServerErrorReply) SerializeWithWriteBuffer(ctx context.Context, writeB
 			return errors.Wrap(pushErr, "Error pushing for ServerErrorReply")
 		}
 
-		// Const Field (errorMarker)
-		_errorMarkerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("errorMarker", 0x21)
-		if _errorMarkerErr != nil {
-			return errors.Wrap(_errorMarkerErr, "Error serializing 'errorMarker' field")
+		if err := WriteConstField(ctx, "errorMarker", ServerErrorReply_ERRORMARKER, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'errorMarker' field")
 		}
 
 		if popErr := writeBuffer.PopContext("ServerErrorReply"); popErr != nil {

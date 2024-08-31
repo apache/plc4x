@@ -480,16 +480,12 @@ func (m *_CipIdentity) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(err, "Error serializing 'socketAddressAddress' field")
 		}
 
-		// Const Field (zeroes1)
-		_zeroes1Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("zeroes1", 32, uint32(0x00000000))
-		if _zeroes1Err != nil {
-			return errors.Wrap(_zeroes1Err, "Error serializing 'zeroes1' field")
+		if err := WriteConstField(ctx, "zeroes1", CipIdentity_ZEROES1, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zeroes1' field")
 		}
 
-		// Const Field (zeroes2)
-		_zeroes2Err := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("zeroes2", 32, uint32(0x00000000))
-		if _zeroes2Err != nil {
-			return errors.Wrap(_zeroes2Err, "Error serializing 'zeroes2' field")
+		if err := WriteConstField(ctx, "zeroes2", CipIdentity_ZEROES2, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'zeroes2' field")
 		}
 
 		// Simple Field (vendorId)

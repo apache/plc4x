@@ -262,10 +262,8 @@ func (m *_ModbusTcpADU) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(_transactionIdentifierErr, "Error serializing 'transactionIdentifier' field")
 		}
 
-		// Const Field (protocolIdentifier)
-		_protocolIdentifierErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("protocolIdentifier", 16, uint16(0x0000))
-		if _protocolIdentifierErr != nil {
-			return errors.Wrap(_protocolIdentifierErr, "Error serializing 'protocolIdentifier' field")
+		if err := WriteConstField(ctx, "protocolIdentifier", ModbusTcpADU_PROTOCOLIDENTIFIER, WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolIdentifier' field")
 		}
 
 		// Implicit Field (length) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

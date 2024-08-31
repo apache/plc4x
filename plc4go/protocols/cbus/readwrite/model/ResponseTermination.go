@@ -165,16 +165,12 @@ func (m *_ResponseTermination) SerializeWithWriteBuffer(ctx context.Context, wri
 		return errors.Wrap(pushErr, "Error pushing for ResponseTermination")
 	}
 
-	// Const Field (cr)
-	_crErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("cr", 0x0D)
-	if _crErr != nil {
-		return errors.Wrap(_crErr, "Error serializing 'cr' field")
+	if err := WriteConstField(ctx, "cr", ResponseTermination_CR, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'cr' field")
 	}
 
-	// Const Field (lf)
-	_lfErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("lf", 0x0A)
-	if _lfErr != nil {
-		return errors.Wrap(_lfErr, "Error serializing 'lf' field")
+	if err := WriteConstField(ctx, "lf", ResponseTermination_LF, WriteByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'lf' field")
 	}
 
 	if popErr := writeBuffer.PopContext("ResponseTermination"); popErr != nil {

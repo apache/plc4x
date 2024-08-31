@@ -522,46 +522,32 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_commandIdErr, "Error serializing 'commandId' field")
 	}
 
-	// Const Field (initCommand)
-	_initCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("initCommand", false)
-	if _initCommandErr != nil {
-		return errors.Wrap(_initCommandErr, "Error serializing 'initCommand' field")
+	if err := WriteConstField(ctx, "initCommand", AmsPacket_INITCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'initCommand' field")
 	}
 
-	// Const Field (updCommand)
-	_updCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("updCommand", false)
-	if _updCommandErr != nil {
-		return errors.Wrap(_updCommandErr, "Error serializing 'updCommand' field")
+	if err := WriteConstField(ctx, "updCommand", AmsPacket_UPDCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'updCommand' field")
 	}
 
-	// Const Field (timestampAdded)
-	_timestampAddedErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("timestampAdded", false)
-	if _timestampAddedErr != nil {
-		return errors.Wrap(_timestampAddedErr, "Error serializing 'timestampAdded' field")
+	if err := WriteConstField(ctx, "timestampAdded", AmsPacket_TIMESTAMPADDED, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'timestampAdded' field")
 	}
 
-	// Const Field (highPriorityCommand)
-	_highPriorityCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("highPriorityCommand", false)
-	if _highPriorityCommandErr != nil {
-		return errors.Wrap(_highPriorityCommandErr, "Error serializing 'highPriorityCommand' field")
+	if err := WriteConstField(ctx, "highPriorityCommand", AmsPacket_HIGHPRIORITYCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'highPriorityCommand' field")
 	}
 
-	// Const Field (systemCommand)
-	_systemCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("systemCommand", false)
-	if _systemCommandErr != nil {
-		return errors.Wrap(_systemCommandErr, "Error serializing 'systemCommand' field")
+	if err := WriteConstField(ctx, "systemCommand", AmsPacket_SYSTEMCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'systemCommand' field")
 	}
 
-	// Const Field (adsCommand)
-	_adsCommandErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("adsCommand", true)
-	if _adsCommandErr != nil {
-		return errors.Wrap(_adsCommandErr, "Error serializing 'adsCommand' field")
+	if err := WriteConstField(ctx, "adsCommand", AmsPacket_ADSCOMMAND, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsCommand' field")
 	}
 
-	// Const Field (noReturn)
-	_noReturnErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("noReturn", false)
-	if _noReturnErr != nil {
-		return errors.Wrap(_noReturnErr, "Error serializing 'noReturn' field")
+	if err := WriteConstField(ctx, "noReturn", AmsPacket_NORETURN, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'noReturn' field")
 	}
 
 	// Discriminator Field (response) (Used as input to a switch field)
@@ -572,10 +558,8 @@ func (pm *_AmsPacket) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(_responseErr, "Error serializing 'response' field")
 	}
 
-	// Const Field (broadcast)
-	_broadcastErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteBit("broadcast", false)
-	if _broadcastErr != nil {
-		return errors.Wrap(_broadcastErr, "Error serializing 'broadcast' field")
+	if err := WriteConstField(ctx, "broadcast", AmsPacket_BROADCAST, WriteBoolean(writeBuffer)); err != nil {
+		return errors.Wrap(err, "Error serializing 'broadcast' field")
 	}
 
 	// Reserved Field (reserved)

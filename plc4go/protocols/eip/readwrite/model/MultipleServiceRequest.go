@@ -232,16 +232,12 @@ func (m *_MultipleServiceRequest) SerializeWithWriteBuffer(ctx context.Context, 
 			return errors.Wrap(pushErr, "Error pushing for MultipleServiceRequest")
 		}
 
-		// Const Field (requestPathSize)
-		_requestPathSizeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("requestPathSize", 8, uint8(0x02))
-		if _requestPathSizeErr != nil {
-			return errors.Wrap(_requestPathSizeErr, "Error serializing 'requestPathSize' field")
+		if err := WriteConstField(ctx, "requestPathSize", MultipleServiceRequest_REQUESTPATHSIZE, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPathSize' field")
 		}
 
-		// Const Field (requestPath)
-		_requestPathErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("requestPath", 32, uint32(0x01240220))
-		if _requestPathErr != nil {
-			return errors.Wrap(_requestPathErr, "Error serializing 'requestPath' field")
+		if err := WriteConstField(ctx, "requestPath", MultipleServiceRequest_REQUESTPATH, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'requestPath' field")
 		}
 
 		// Simple Field (data)

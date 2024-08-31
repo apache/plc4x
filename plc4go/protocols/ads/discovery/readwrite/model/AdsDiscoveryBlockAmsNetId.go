@@ -208,10 +208,8 @@ func (m *_AdsDiscoveryBlockAmsNetId) SerializeWithWriteBuffer(ctx context.Contex
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockAmsNetId")
 		}
 
-		// Const Field (amsNetIdLength)
-		_amsNetIdLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("amsNetIdLength", 16, uint16(0x0006))
-		if _amsNetIdLengthErr != nil {
-			return errors.Wrap(_amsNetIdLengthErr, "Error serializing 'amsNetIdLength' field")
+		if err := WriteConstField(ctx, "amsNetIdLength", AdsDiscoveryBlockAmsNetId_AMSNETIDLENGTH, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'amsNetIdLength' field")
 		}
 
 		// Simple Field (amsNetId)

@@ -259,10 +259,8 @@ func (m *_AdsDiscovery) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscovery")
 	}
 
-	// Const Field (header)
-	_headerErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("header", 32, uint32(0x71146603))
-	if _headerErr != nil {
-		return errors.Wrap(_headerErr, "Error serializing 'header' field")
+	if err := WriteConstField(ctx, "header", AdsDiscovery_HEADER, WriteUnsignedInt(writeBuffer, 32), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'header' field")
 	}
 
 	// Simple Field (requestId)

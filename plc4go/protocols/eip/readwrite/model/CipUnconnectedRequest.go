@@ -381,10 +381,8 @@ func (m *_CipUnconnectedRequest) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_unconnectedServiceErr, "Error serializing 'unconnectedService' field")
 		}
 
-		// Const Field (route)
-		_routeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("route", 16, uint16(0x0001))
-		if _routeErr != nil {
-			return errors.Wrap(_routeErr, "Error serializing 'route' field")
+		if err := WriteConstField(ctx, "route", CipUnconnectedRequest_ROUTE, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'route' field")
 		}
 
 		// Simple Field (backPlane)

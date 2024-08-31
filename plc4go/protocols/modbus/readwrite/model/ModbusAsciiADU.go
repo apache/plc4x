@@ -232,7 +232,6 @@ func (m *_ModbusAsciiADU) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(_pduErr, "Error serializing 'pdu' field")
 		}
 
-		// Checksum Field (checksum) (Calculated)
 		if err := WriteChecksumField[uint8](ctx, "crc", AsciiLrcCheck(ctx, m.GetAddress(), m.GetPdu()), WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'crc' field")
 		}

@@ -590,10 +590,8 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_dataTypeNameErr, "Error serializing 'dataTypeName' field")
 	}
 
-	// Const Field (dataTypeNameTerminator)
-	_dataTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("dataTypeNameTerminator", 8, uint8(0x00))
-	if _dataTypeNameTerminatorErr != nil {
-		return errors.Wrap(_dataTypeNameTerminatorErr, "Error serializing 'dataTypeNameTerminator' field")
+	if err := WriteConstField(ctx, "dataTypeNameTerminator", AdsDataTypeTableEntry_DATATYPENAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataTypeNameTerminator' field")
 	}
 
 	// Simple Field (simpleTypeName)
@@ -603,10 +601,8 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_simpleTypeNameErr, "Error serializing 'simpleTypeName' field")
 	}
 
-	// Const Field (simpleTypeNameTerminator)
-	_simpleTypeNameTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("simpleTypeNameTerminator", 8, uint8(0x00))
-	if _simpleTypeNameTerminatorErr != nil {
-		return errors.Wrap(_simpleTypeNameTerminatorErr, "Error serializing 'simpleTypeNameTerminator' field")
+	if err := WriteConstField(ctx, "simpleTypeNameTerminator", AdsDataTypeTableEntry_SIMPLETYPENAMETERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'simpleTypeNameTerminator' field")
 	}
 
 	// Simple Field (comment)
@@ -616,10 +612,8 @@ func (m *_AdsDataTypeTableEntry) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_commentErr, "Error serializing 'comment' field")
 	}
 
-	// Const Field (commentTerminator)
-	_commentTerminatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("commentTerminator", 8, uint8(0x00))
-	if _commentTerminatorErr != nil {
-		return errors.Wrap(_commentTerminatorErr, "Error serializing 'commentTerminator' field")
+	if err := WriteConstField(ctx, "commentTerminator", AdsDataTypeTableEntry_COMMENTTERMINATOR, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.LittleEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'commentTerminator' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "arrayInfo", m.GetArrayInfo(), writeBuffer, codegen.WithByteOrder(binary.LittleEndian)); err != nil {

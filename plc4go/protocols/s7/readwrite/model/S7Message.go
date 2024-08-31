@@ -303,10 +303,8 @@ func (pm *_S7Message) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for S7Message")
 	}
 
-	// Const Field (protocolId)
-	_protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolId", 8, uint8(0x32))
-	if _protocolIdErr != nil {
-		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
+	if err := WriteConstField(ctx, "protocolId", S7Message_PROTOCOLID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolId' field")
 	}
 
 	// Discriminator Field (messageType) (Used as input to a switch field)

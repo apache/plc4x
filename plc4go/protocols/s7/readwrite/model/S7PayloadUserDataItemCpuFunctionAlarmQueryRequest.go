@@ -317,28 +317,20 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmQueryRequest) SerializeWithWriteB
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmQueryRequest")
 		}
 
-		// Const Field (functionId)
-		_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
-		if _functionIdErr != nil {
-			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+		if err := WriteConstField(ctx, "functionId", S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'functionId' field")
 		}
 
-		// Const Field (numberMessageObj)
-		_numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
-		if _numberMessageObjErr != nil {
-			return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
+		if err := WriteConstField(ctx, "numberMessageObj", S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_NUMBERMESSAGEOBJ, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'numberMessageObj' field")
 		}
 
-		// Const Field (variableSpec)
-		_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
-		if _variableSpecErr != nil {
-			return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
+		if err := WriteConstField(ctx, "variableSpec", S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_VARIABLESPEC, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'variableSpec' field")
 		}
 
-		// Const Field (length)
-		_lengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("length", 8, uint8(0x08))
-		if _lengthErr != nil {
-			return errors.Wrap(_lengthErr, "Error serializing 'length' field")
+		if err := WriteConstField(ctx, "length", S7PayloadUserDataItemCpuFunctionAlarmQueryRequest_LENGTH, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'length' field")
 		}
 
 		// Simple Field (syntaxId)

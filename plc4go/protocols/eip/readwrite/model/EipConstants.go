@@ -165,16 +165,12 @@ func (m *_EipConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for EipConstants")
 	}
 
-	// Const Field (eipUdpDiscoveryDefaultPort)
-	_eipUdpDiscoveryDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("eipUdpDiscoveryDefaultPort", 16, uint16(44818))
-	if _eipUdpDiscoveryDefaultPortErr != nil {
-		return errors.Wrap(_eipUdpDiscoveryDefaultPortErr, "Error serializing 'eipUdpDiscoveryDefaultPort' field")
+	if err := WriteConstField(ctx, "eipUdpDiscoveryDefaultPort", EipConstants_EIPUDPDISCOVERYDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eipUdpDiscoveryDefaultPort' field")
 	}
 
-	// Const Field (eipTcpDefaultPort)
-	_eipTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("eipTcpDefaultPort", 16, uint16(44818))
-	if _eipTcpDefaultPortErr != nil {
-		return errors.Wrap(_eipTcpDefaultPortErr, "Error serializing 'eipTcpDefaultPort' field")
+	if err := WriteConstField(ctx, "eipTcpDefaultPort", EipConstants_EIPTCPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'eipTcpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("EipConstants"); popErr != nil {

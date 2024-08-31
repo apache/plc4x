@@ -209,16 +209,12 @@ func (m *_EipConnectionRequest) SerializeWithWriteBuffer(ctx context.Context, wr
 			return errors.Wrap(pushErr, "Error pushing for EipConnectionRequest")
 		}
 
-		// Const Field (protocolVersion)
-		_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("protocolVersion", 16, uint16(0x01))
-		if _protocolVersionErr != nil {
-			return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+		if err := WriteConstField(ctx, "protocolVersion", EipConnectionRequest_PROTOCOLVERSION, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 		}
 
-		// Const Field (flags)
-		_flagsErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("flags", 16, uint16(0x00))
-		if _flagsErr != nil {
-			return errors.Wrap(_flagsErr, "Error serializing 'flags' field")
+		if err := WriteConstField(ctx, "flags", EipConnectionRequest_FLAGS, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'flags' field")
 		}
 
 		if popErr := writeBuffer.PopContext("EipConnectionRequest"); popErr != nil {

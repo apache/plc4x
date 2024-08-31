@@ -317,10 +317,8 @@ func (m *_ModbusPDUReadDeviceIdentificationResponse) SerializeWithWriteBuffer(ct
 			return errors.Wrap(pushErr, "Error pushing for ModbusPDUReadDeviceIdentificationResponse")
 		}
 
-		// Const Field (meiType)
-		_meiTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("meiType", 8, uint8(0x0E))
-		if _meiTypeErr != nil {
-			return errors.Wrap(_meiTypeErr, "Error serializing 'meiType' field")
+		if err := WriteConstField(ctx, "meiType", ModbusPDUReadDeviceIdentificationResponse_MEITYPE, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'meiType' field")
 		}
 
 		// Simple Field (level)

@@ -262,10 +262,8 @@ func (pm *_BVLC) SerializeParent(ctx context.Context, writeBuffer utils.WriteBuf
 		return errors.Wrap(pushErr, "Error pushing for BVLC")
 	}
 
-	// Const Field (bacnetType)
-	_bacnetTypeErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("bacnetType", 8, uint8(0x81))
-	if _bacnetTypeErr != nil {
-		return errors.Wrap(_bacnetTypeErr, "Error serializing 'bacnetType' field")
+	if err := WriteConstField(ctx, "bacnetType", BVLC_BACNETTYPE, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'bacnetType' field")
 	}
 
 	// Discriminator Field (bvlcFunction) (Used as input to a switch field)

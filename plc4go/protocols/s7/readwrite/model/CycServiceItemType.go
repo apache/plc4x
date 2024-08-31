@@ -234,10 +234,8 @@ func (pm *_CycServiceItemType) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for CycServiceItemType")
 	}
 
-	// Const Field (functionId)
-	_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x12))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteConstField(ctx, "functionId", CycServiceItemType_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
 	// Simple Field (byteLength)

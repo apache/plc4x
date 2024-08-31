@@ -248,10 +248,8 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_voltsErr, "Error serializing 'volts' field")
 		}
 
-		// Const Field (dot)
-		_dotErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("dot", 0x2C)
-		if _dotErr != nil {
-			return errors.Wrap(_dotErr, "Error serializing 'dot' field")
+		if err := WriteConstField(ctx, "dot", IdentifyReplyCommandNetworkVoltage_DOT, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'dot' field")
 		}
 
 		// Simple Field (voltsDecimalPlace)
@@ -261,10 +259,8 @@ func (m *_IdentifyReplyCommandNetworkVoltage) SerializeWithWriteBuffer(ctx conte
 			return errors.Wrap(_voltsDecimalPlaceErr, "Error serializing 'voltsDecimalPlace' field")
 		}
 
-		// Const Field (v)
-		_vErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("v", 0x56)
-		if _vErr != nil {
-			return errors.Wrap(_vErr, "Error serializing 'v' field")
+		if err := WriteConstField(ctx, "v", IdentifyReplyCommandNetworkVoltage_V, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'v' field")
 		}
 
 		if popErr := writeBuffer.PopContext("IdentifyReplyCommandNetworkVoltage"); popErr != nil {

@@ -259,10 +259,8 @@ func (pm *_KnxNetIpMessage) SerializeParent(ctx context.Context, writeBuffer uti
 		return errors.Wrap(_headerLengthErr, "Error serializing 'headerLength' field")
 	}
 
-	// Const Field (protocolVersion)
-	_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersion", 8, uint8(0x10))
-	if _protocolVersionErr != nil {
-		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+	if err := WriteConstField(ctx, "protocolVersion", KnxNetIpMessage_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
 	// Discriminator Field (msgType) (Used as input to a switch field)

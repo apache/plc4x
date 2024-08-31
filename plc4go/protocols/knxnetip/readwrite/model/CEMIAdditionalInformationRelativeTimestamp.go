@@ -209,10 +209,8 @@ func (m *_CEMIAdditionalInformationRelativeTimestamp) SerializeWithWriteBuffer(c
 			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationRelativeTimestamp")
 		}
 
-		// Const Field (len)
-		_lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("len", 8, uint8(2))
-		if _lenErr != nil {
-			return errors.Wrap(_lenErr, "Error serializing 'len' field")
+		if err := WriteConstField(ctx, "len", CEMIAdditionalInformationRelativeTimestamp_LEN, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
 		// Simple Field (relativeTimestamp)

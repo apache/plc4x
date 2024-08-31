@@ -254,10 +254,8 @@ func (m *_SendUnitData) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 			return errors.Wrap(pushErr, "Error pushing for SendUnitData")
 		}
 
-		// Const Field (interfaceHandle)
-		_interfaceHandleErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("interfaceHandle", 32, uint32(0x00000000))
-		if _interfaceHandleErr != nil {
-			return errors.Wrap(_interfaceHandleErr, "Error serializing 'interfaceHandle' field")
+		if err := WriteConstField(ctx, "interfaceHandle", SendUnitData_INTERFACEHANDLE, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'interfaceHandle' field")
 		}
 
 		// Simple Field (timeout)

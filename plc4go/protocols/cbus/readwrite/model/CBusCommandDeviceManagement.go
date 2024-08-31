@@ -237,10 +237,8 @@ func (m *_CBusCommandDeviceManagement) SerializeWithWriteBuffer(ctx context.Cont
 			return errors.Wrap(_paramNoErr, "Error serializing 'paramNo' field")
 		}
 
-		// Const Field (delimiter)
-		_delimiterErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("delimiter", 0x0)
-		if _delimiterErr != nil {
-			return errors.Wrap(_delimiterErr, "Error serializing 'delimiter' field")
+		if err := WriteConstField(ctx, "delimiter", CBusCommandDeviceManagement_DELIMITER, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'delimiter' field")
 		}
 
 		// Simple Field (parameterValue)

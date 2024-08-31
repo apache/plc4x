@@ -208,10 +208,8 @@ func (pm *_DF1Symbol) SerializeParent(ctx context.Context, writeBuffer utils.Wri
 		return errors.Wrap(pushErr, "Error pushing for DF1Symbol")
 	}
 
-	// Const Field (messageStart)
-	_messageStartErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("messageStart", 8, uint8(0x10))
-	if _messageStartErr != nil {
-		return errors.Wrap(_messageStartErr, "Error serializing 'messageStart' field")
+	if err := WriteConstField(ctx, "messageStart", DF1Symbol_MESSAGESTART, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'messageStart' field")
 	}
 
 	// Discriminator Field (symbolType) (Used as input to a switch field)

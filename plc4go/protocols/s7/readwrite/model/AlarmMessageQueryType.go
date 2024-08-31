@@ -286,10 +286,8 @@ func (m *_AlarmMessageQueryType) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(_transportSizeErr, "Error serializing 'transportSize' field")
 	}
 
-	// Const Field (dataLength)
-	_dataLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("dataLength", 16, uint16(0xFFFF))
-	if _dataLengthErr != nil {
-		return errors.Wrap(_dataLengthErr, "Error serializing 'dataLength' field")
+	if err := WriteConstField(ctx, "dataLength", AlarmMessageQueryType_DATALENGTH, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'dataLength' field")
 	}
 
 	if err := WriteComplexTypeArrayField(ctx, "messageObjects", m.GetMessageObjects(), writeBuffer); err != nil {

@@ -294,10 +294,8 @@ func (m *_CEMIAdditionalInformationBusmonitorInfo) SerializeWithWriteBuffer(ctx 
 			return errors.Wrap(pushErr, "Error pushing for CEMIAdditionalInformationBusmonitorInfo")
 		}
 
-		// Const Field (len)
-		_lenErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("len", 8, uint8(1))
-		if _lenErr != nil {
-			return errors.Wrap(_lenErr, "Error serializing 'len' field")
+		if err := WriteConstField(ctx, "len", CEMIAdditionalInformationBusmonitorInfo_LEN, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'len' field")
 		}
 
 		// Simple Field (frameErrorFlag)

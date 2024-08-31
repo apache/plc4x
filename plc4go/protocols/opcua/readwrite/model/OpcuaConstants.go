@@ -151,10 +151,8 @@ func (m *_OpcuaConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 		return errors.Wrap(pushErr, "Error pushing for OpcuaConstants")
 	}
 
-	// Const Field (protocolVersion)
-	_protocolVersionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolVersion", 8, uint8(0))
-	if _protocolVersionErr != nil {
-		return errors.Wrap(_protocolVersionErr, "Error serializing 'protocolVersion' field")
+	if err := WriteConstField(ctx, "protocolVersion", OpcuaConstants_PROTOCOLVERSION, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolVersion' field")
 	}
 
 	if popErr := writeBuffer.PopContext("OpcuaConstants"); popErr != nil {

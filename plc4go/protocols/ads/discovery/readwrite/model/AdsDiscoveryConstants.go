@@ -151,10 +151,8 @@ func (m *_AdsDiscoveryConstants) SerializeWithWriteBuffer(ctx context.Context, w
 		return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryConstants")
 	}
 
-	// Const Field (adsDiscoveryUdpDefaultPort)
-	_adsDiscoveryUdpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("adsDiscoveryUdpDefaultPort", 16, uint16(48899))
-	if _adsDiscoveryUdpDefaultPortErr != nil {
-		return errors.Wrap(_adsDiscoveryUdpDefaultPortErr, "Error serializing 'adsDiscoveryUdpDefaultPort' field")
+	if err := WriteConstField(ctx, "adsDiscoveryUdpDefaultPort", AdsDiscoveryConstants_ADSDISCOVERYUDPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsDiscoveryUdpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsDiscoveryConstants"); popErr != nil {

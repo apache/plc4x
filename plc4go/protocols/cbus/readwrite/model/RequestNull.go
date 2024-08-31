@@ -186,10 +186,8 @@ func (m *_RequestNull) SerializeWithWriteBuffer(ctx context.Context, writeBuffer
 			return errors.Wrap(pushErr, "Error pushing for RequestNull")
 		}
 
-		// Const Field (nullIndicator)
-		_nullIndicatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint32("nullIndicator", 32, uint32(0x6E756C6C))
-		if _nullIndicatorErr != nil {
-			return errors.Wrap(_nullIndicatorErr, "Error serializing 'nullIndicator' field")
+		if err := WriteConstField(ctx, "nullIndicator", RequestNull_NULLINDICATOR, WriteUnsignedInt(writeBuffer, 32)); err != nil {
+			return errors.Wrap(err, "Error serializing 'nullIndicator' field")
 		}
 
 		if popErr := writeBuffer.PopContext("RequestNull"); popErr != nil {

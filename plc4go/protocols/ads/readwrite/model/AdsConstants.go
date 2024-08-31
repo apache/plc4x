@@ -151,10 +151,8 @@ func (m *_AdsConstants) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 		return errors.Wrap(pushErr, "Error pushing for AdsConstants")
 	}
 
-	// Const Field (adsTcpDefaultPort)
-	_adsTcpDefaultPortErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("adsTcpDefaultPort", 16, uint16(48898))
-	if _adsTcpDefaultPortErr != nil {
-		return errors.Wrap(_adsTcpDefaultPortErr, "Error serializing 'adsTcpDefaultPort' field")
+	if err := WriteConstField(ctx, "adsTcpDefaultPort", AdsConstants_ADSTCPDEFAULTPORT, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+		return errors.Wrap(err, "Error serializing 'adsTcpDefaultPort' field")
 	}
 
 	if popErr := writeBuffer.PopContext("AdsConstants"); popErr != nil {

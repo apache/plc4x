@@ -211,16 +211,12 @@ func (pm *_S7DataAlarmMessage) SerializeParent(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for S7DataAlarmMessage")
 	}
 
-	// Const Field (functionId)
-	_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x00))
-	if _functionIdErr != nil {
-		return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+	if err := WriteConstField(ctx, "functionId", S7DataAlarmMessage_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'functionId' field")
 	}
 
-	// Const Field (numberMessageObj)
-	_numberMessageObjErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("numberMessageObj", 8, uint8(0x01))
-	if _numberMessageObjErr != nil {
-		return errors.Wrap(_numberMessageObjErr, "Error serializing 'numberMessageObj' field")
+	if err := WriteConstField(ctx, "numberMessageObj", S7DataAlarmMessage_NUMBERMESSAGEOBJ, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'numberMessageObj' field")
 	}
 
 	// Switch field (Depending on the discriminator values, passes the serialization to a sub-type)

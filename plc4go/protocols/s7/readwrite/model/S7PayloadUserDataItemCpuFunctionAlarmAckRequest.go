@@ -236,10 +236,8 @@ func (m *_S7PayloadUserDataItemCpuFunctionAlarmAckRequest) SerializeWithWriteBuf
 			return errors.Wrap(pushErr, "Error pushing for S7PayloadUserDataItemCpuFunctionAlarmAckRequest")
 		}
 
-		// Const Field (functionId)
-		_functionIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("functionId", 8, uint8(0x09))
-		if _functionIdErr != nil {
-			return errors.Wrap(_functionIdErr, "Error serializing 'functionId' field")
+		if err := WriteConstField(ctx, "functionId", S7PayloadUserDataItemCpuFunctionAlarmAckRequest_FUNCTIONID, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'functionId' field")
 		}
 
 		// Implicit Field (numberOfObjects) (Used for parsing, but it's value is not stored as it's implicitly given by the objects content)

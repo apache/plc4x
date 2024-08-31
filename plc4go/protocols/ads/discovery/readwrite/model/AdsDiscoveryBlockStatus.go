@@ -208,10 +208,8 @@ func (m *_AdsDiscoveryBlockStatus) SerializeWithWriteBuffer(ctx context.Context,
 			return errors.Wrap(pushErr, "Error pushing for AdsDiscoveryBlockStatus")
 		}
 
-		// Const Field (statusLength)
-		_statusLengthErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint16("statusLength", 16, uint16(0x0004))
-		if _statusLengthErr != nil {
-			return errors.Wrap(_statusLengthErr, "Error serializing 'statusLength' field")
+		if err := WriteConstField(ctx, "statusLength", AdsDiscoveryBlockStatus_STATUSLENGTH, WriteUnsignedShort(writeBuffer, 16)); err != nil {
+			return errors.Wrap(err, "Error serializing 'statusLength' field")
 		}
 
 		// Simple Field (status)

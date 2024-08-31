@@ -293,19 +293,14 @@ func (m *_DF1SymbolMessageFrame) SerializeWithWriteBuffer(ctx context.Context, w
 			return errors.Wrap(_commandErr, "Error serializing 'command' field")
 		}
 
-		// Const Field (messageEnd)
-		_messageEndErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("messageEnd", 8, uint8(0x10))
-		if _messageEndErr != nil {
-			return errors.Wrap(_messageEndErr, "Error serializing 'messageEnd' field")
+		if err := WriteConstField(ctx, "messageEnd", DF1SymbolMessageFrame_MESSAGEEND, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'messageEnd' field")
 		}
 
-		// Const Field (endTransaction)
-		_endTransactionErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("endTransaction", 8, uint8(0x03))
-		if _endTransactionErr != nil {
-			return errors.Wrap(_endTransactionErr, "Error serializing 'endTransaction' field")
+		if err := WriteConstField(ctx, "endTransaction", DF1SymbolMessageFrame_ENDTRANSACTION, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+			return errors.Wrap(err, "Error serializing 'endTransaction' field")
 		}
 
-		// Checksum Field (checksum) (Calculated)
 		if err := WriteChecksumField[uint16](ctx, "crc", CrcCheck(ctx, m.GetDestinationAddress(), m.GetSourceAddress(), m.GetCommand()), WriteUnsignedShort(writeBuffer, 16), codegen.WithByteOrder(binary.BigEndian)); err != nil {
 			return errors.Wrap(err, "Error serializing 'crc' field")
 		}

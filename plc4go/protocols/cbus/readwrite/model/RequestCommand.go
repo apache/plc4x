@@ -297,10 +297,8 @@ func (m *_RequestCommand) SerializeWithWriteBuffer(ctx context.Context, writeBuf
 			return errors.Wrap(pushErr, "Error pushing for RequestCommand")
 		}
 
-		// Const Field (initiator)
-		_initiatorErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteByte("initiator", 0x5C)
-		if _initiatorErr != nil {
-			return errors.Wrap(_initiatorErr, "Error serializing 'initiator' field")
+		if err := WriteConstField(ctx, "initiator", RequestCommand_INITIATOR, WriteByte(writeBuffer, 8)); err != nil {
+			return errors.Wrap(err, "Error serializing 'initiator' field")
 		}
 
 		// Manual Field (cbusCommand)

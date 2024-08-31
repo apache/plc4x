@@ -199,10 +199,8 @@ func (m *_TPKTPacket) SerializeWithWriteBuffer(ctx context.Context, writeBuffer 
 		return errors.Wrap(pushErr, "Error pushing for TPKTPacket")
 	}
 
-	// Const Field (protocolId)
-	_protocolIdErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("protocolId", 8, uint8(0x03))
-	if _protocolIdErr != nil {
-		return errors.Wrap(_protocolIdErr, "Error serializing 'protocolId' field")
+	if err := WriteConstField(ctx, "protocolId", TPKTPacket_PROTOCOLID, WriteUnsignedByte(writeBuffer, 8), codegen.WithByteOrder(binary.BigEndian)); err != nil {
+		return errors.Wrap(err, "Error serializing 'protocolId' field")
 	}
 
 	// Reserved Field (reserved)

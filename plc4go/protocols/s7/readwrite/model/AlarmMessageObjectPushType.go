@@ -312,10 +312,8 @@ func (m *_AlarmMessageObjectPushType) SerializeWithWriteBuffer(ctx context.Conte
 		return errors.Wrap(pushErr, "Error pushing for AlarmMessageObjectPushType")
 	}
 
-	// Const Field (variableSpec)
-	_variableSpecErr := /*TODO: migrate me*/ /*TODO: migrate me*/ writeBuffer.WriteUint8("variableSpec", 8, uint8(0x12))
-	if _variableSpecErr != nil {
-		return errors.Wrap(_variableSpecErr, "Error serializing 'variableSpec' field")
+	if err := WriteConstField(ctx, "variableSpec", AlarmMessageObjectPushType_VARIABLESPEC, WriteUnsignedByte(writeBuffer, 8)); err != nil {
+		return errors.Wrap(err, "Error serializing 'variableSpec' field")
 	}
 
 	// Simple Field (lengthSpec)

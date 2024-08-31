@@ -1240,32 +1240,13 @@ func (m *_${type.name}) SerializeWithWriteBuffer(ctx context.Context, writeBuffe
 					<#break>
 				<#case "const">
 					<#assign constField = field.asConstField().orElseThrow()>
+					<#assign typedField = field.asTypedField().orElseThrow()>
+					<#assign namedField = field.asNamedField().orElseThrow()>
 
-					<#if constField.type.isEnumTypeReference()>
-						<#-- TODO: finish me-->
-                        <#if constField.fieldName?has_content>
-                            <#assign enumValueFieldAccessor=type.name+"_"+constField.name?upper_case>
-	// Const field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField, constField.type.name, helper.getEnumFieldSimpleTypeReference(constField.type, constField.fieldName), enumValueFieldAccessor, constField, "utils.WithAdditionalStringRepresentation(${type.name}_${constField.name?upper_case}.PLC4XEnumName())")}
-	if _${constField.name}Err != nil {
-		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
+	if err := <#if typedField.type.isEnumTypeReference()>WriteConstField(ctx, "${constField.name}", ${type.name}_${namedField.name?upper_case}.getValue(), ${helper.getDataWriterCall(helper.getEnumBaseTypeReference(typedField.type), namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});<#else>WriteConstField(ctx, "${constField.name}", ${type.name}_${namedField.name?upper_case}, ${helper.getDataWriterCall(typedField.type, namedField.name)}${helper.getFieldOptions(typedField, parserArguments)});</#if>err != nil{
+		return errors.Wrap(err, "Error serializing '${namedField.name}' field")<@emitImport import="github.com/pkg/errors" />
 	}
-                        <#else>
-	// Const field (${constField.name})
-	${constField.name} := Cast${helper.getLanguageTypeNameForField(field)}(${type.name}_${constField.name?upper_case})
-	_${constField.name}Err := writeBuffer.WriteSerializable(ctx, ${constField.name})
-	if _${constField.name}Err != nil {
-		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-                        </#if>
-					<#else>
-	// Const Field (${constField.name})
-	_${constField.name}Err := ${helper.getWriteBufferWriteMethodCall(constField.name, constField.type.asSimpleTypeReference().orElseThrow(), constField.referenceValue, constField)}
-	if _${constField.name}Err != nil {
-		return errors.Wrap(_${constField.name}Err, "Error serializing '${constField.name}' field")<@emitImport import="github.com/pkg/errors" />
-	}
-					</#if>
-					<#break>
+				<#break>
 				<#case "discriminator">
 					<#assign discriminatorField = field.asDiscriminatorField().orElseThrow()>
 
