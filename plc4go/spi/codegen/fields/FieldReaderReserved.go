@@ -42,9 +42,7 @@ func NewFieldReaderReserved[T comparable](logger zerolog.Logger) *FieldReaderRes
 
 func (f *FieldReaderReserved[T]) ReadReservedField(ctx context.Context, logicalName string, dataReader io.DataReader[T], referenceValue T, readerArgs ...utils.WithReaderArgs) (*T, error) {
 	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
-	value, err := f.SwitchParseByteOrderIfNecessary(ctx, func(ctx context.Context) (T, error) {
-		return dataReader.Read(ctx, logicalName, readerArgs...)
-	}, dataReader, f.ExtractByteOrder(utils.UpcastReaderArgs(readerArgs...)...))
+	value, err := dataReader.Read(ctx, logicalName, readerArgs...)
 	if value != referenceValue {
 		return &value, utils.ParseAssertError{Message: fmt.Sprintf("Expected constant value %v but got %v for reserved field", referenceValue, value), Err: err}
 	}
