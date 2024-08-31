@@ -52,9 +52,6 @@ func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalN
 
 	currentPos := dataReader.GetPos()
 	optionalValue, err := dataReader.Read(ctx, logicalName, readerArgs...)
-	if errors.Is(err, io2.EOF) {
-		return &optionalValue, utils.ParseAssertError{Message: "Field: " + logicalName + ": Not enough data", Err: err}
-	}
 	switch {
 	case errors.Is(err, utils.ParseAssertError{}):
 		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint16("oldPos", currentPos).Msg("Assertion doesn't match for field. Resetting read position to oldPos")
