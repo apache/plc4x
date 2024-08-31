@@ -78,6 +78,9 @@ func (f *FieldReaderVirtual[T]) ReadVirtualField(ctx context.Context, logicalNam
 	case *string:
 		return any(fmt.Sprintf("%v", valueExpression)).(T), nil
 	}
+	if valueExpression == nil {
+		return f.toT(nil, nil)
+	}
 	return valueExpression.(T), nil
 }
 
