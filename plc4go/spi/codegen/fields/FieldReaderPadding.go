@@ -40,9 +40,9 @@ func NewFieldReaderPadding[T any](logger zerolog.Logger) *FieldReaderPadding[T] 
 	return &FieldReaderPadding[T]{log: logger}
 }
 
-func (f *FieldReaderPadding[T]) ReadPaddingField(ctx context.Context, logicalName string, dataReader io.DataReader[T], timesPadding int, readerArgs ...utils.WithReaderArgs) error {
-	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
-	if err := dataReader.PullContext(logicalName, utils.WithRenderAsList(true)); err != nil {
+func (f *FieldReaderPadding[T]) ReadPaddingField(ctx context.Context, dataReader io.DataReader[T], timesPadding int, readerArgs ...utils.WithReaderArgs) error {
+	f.log.Debug().Msg("reading padding field")
+	if err := dataReader.PullContext("padding", utils.WithRenderAsList(true)); err != nil {
 		return errors.Wrap(err, "error pulling context")
 	}
 	for timesPadding > 0 {
@@ -55,9 +55,9 @@ func (f *FieldReaderPadding[T]) ReadPaddingField(ctx context.Context, logicalNam
 		// last field item, then the packet might end here.
 		timesPadding--
 	}
-	if err := dataReader.CloseContext(logicalName, utils.WithRenderAsList(true)); err != nil {
+	if err := dataReader.CloseContext("padding", utils.WithRenderAsList(true)); err != nil {
 		return errors.Wrap(err, "error closing context")
 	}
-	f.log.Debug().Str("logicalName", logicalName).Msg("done reading field")
+	f.log.Debug().Msg("done reading padding field")
 	return nil
 }

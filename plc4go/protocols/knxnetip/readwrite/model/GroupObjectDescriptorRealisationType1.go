@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -196,21 +198,9 @@ func GroupObjectDescriptorRealisationType1ParseWithBuffer(ctx context.Context, r
 	}
 	dataPointer := _dataPointer
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 1)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of GroupObjectDescriptorRealisationType1")
-		}
-		if reserved != uint8(0x1) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x1),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 1), uint8(0x1))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (transmitEnable)

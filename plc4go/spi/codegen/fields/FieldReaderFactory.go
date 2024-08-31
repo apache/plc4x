@@ -120,12 +120,12 @@ func ReadManualField[T any](ctx context.Context, logicalName string, readBuffer 
 	return NewFieldReaderManual[T](log).ReadManualField(ctx, logicalName, readBuffer, parseSupplier, readerArgs...)
 }
 
-func ReadPaddingField[T any](ctx context.Context, logicalName string, dataReader io.DataReader[T], timesPadding int, readerArgs ...utils.WithReaderArgs) error {
+func ReadPaddingField[T any](ctx context.Context, dataReader io.DataReader[T], timesPadding int, readerArgs ...utils.WithReaderArgs) error {
 	log := *zerolog.Ctx(ctx)
-	return NewFieldReaderPadding[T](log).ReadPaddingField(ctx, logicalName, dataReader, timesPadding, readerArgs...)
+	return NewFieldReaderPadding[T](log).ReadPaddingField(ctx, dataReader, timesPadding, readerArgs...)
 }
 
-func ReadReservedField[T comparable](ctx context.Context, logicalName string, dataReader io.DataReader[T], expectedValue T, readerArgs ...utils.WithReaderArgs) (T, error) {
+func ReadReservedField[T comparable](ctx context.Context, logicalName string, dataReader io.DataReader[T], expectedValue T, readerArgs ...utils.WithReaderArgs) (*T, error) {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldReaderReserved[T](log).ReadReservedField(ctx, logicalName, dataReader, expectedValue, readerArgs...)
 }

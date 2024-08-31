@@ -941,45 +941,20 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#break>
 			<#case "padding">
 				<#assign paddingField = field.asPaddingField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign simpleTypeReference = paddingField.type.asSimpleTypeReference().orElseThrow()>
 
-	// Padding Field (padding)
-	{
-		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for padding")<@emitImport import="github.com/pkg/errors" />
-		}
-		_timesPadding := (${helper.toParseExpression(paddingField, helper.intTypeReference, paddingField.paddingCondition, parserArguments)})
-		for ;(readBuffer.HasMore(${helper.getNumBits(simpleTypeReference)})) && (_timesPadding > 0);_timesPadding-- {
-			// Just read the padding data and ignore it
-			_, _err := ${helper.getReadBufferReadMethodCall("", simpleTypeReference, paddingField)}
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'padding' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-			}
-		}
-		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for padding")<@emitImport import="github.com/pkg/errors" />
-		}
+	if err:= Read${field.typeName?cap_first}Field(ctx, ${helper.getDataReaderCall(typedField.type)}, (int) (${helper.toParseExpression(paddingField, paddingField.type, paddingField.paddingCondition, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)}); err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing padding field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "reserved">
 				<#assign reservedField = field.asReservedField().orElseThrow()>
-				<#assign simpleTypeReference = reservedField.type.asSimpleTypeReference().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
 
-	var reservedField${reservedFieldIndex} *${helper.getLanguageTypeNameForTypeReference(simpleTypeReference)}
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := ${helper.getReadBufferReadMethodCall("reserved", simpleTypeReference, reservedField)}
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-		if ${helper.toTypeSafeCompare(reservedField)} {
-			log.Info().Fields(map[string]any{
-				"expected value": ${helper.getReservedValue(reservedField)},
-				"got value": reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField${reservedFieldIndex}<#assign reservedFieldIndex=reservedFieldIndex+1> = &reserved
-		}
+	reservedField${reservedFieldIndex}<#assign reservedFieldIndex=reservedFieldIndex+1>,err := Read${field.typeName?cap_first}Field(ctx, "reserved", ${helper.getDataReaderCall(typedField.type)}, ${helper.getReservedValue(reservedField)}${helper.getFieldOptions(typedField, parserArguments)})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "simple">

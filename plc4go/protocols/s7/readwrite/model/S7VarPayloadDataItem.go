@@ -185,22 +185,8 @@ func S7VarPayloadDataItemParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}
 
-	// Padding Field (padding)
-	{
-		if pullErr := readBuffer.PullContext("padding", utils.WithRenderAsList(true)); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for padding")
-		}
-		_timesPadding := (utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return int32((int32(int32(len(data))) % int32(int32(2)))) }, func() any { return int32(int32(0)) }).(int32))
-		for ; (readBuffer.HasMore(8)) && (_timesPadding > 0); _timesPadding-- {
-			// Just read the padding data and ignore it
-			_, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("", 8)
-			if _err != nil {
-				return nil, errors.Wrap(_err, "Error parsing 'padding' field of S7VarPayloadDataItem")
-			}
-		}
-		if closeErr := readBuffer.CloseContext("padding", utils.WithRenderAsList(true)); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for padding")
-		}
+	if err := ReadPaddingField(ctx, ReadUnsignedByte(readBuffer, 8), (int)(utils.InlineIf((!(utils.GetLastItemFromContext(ctx))), func() any { return uint8((uint8(uint8(len(data))) % uint8(uint8(2)))) }, func() any { return uint8(uint8(0)) }).(uint8))); err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing padding field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7VarPayloadDataItem"); closeErr != nil {

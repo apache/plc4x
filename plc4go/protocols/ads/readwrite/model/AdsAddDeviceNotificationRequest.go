@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -264,38 +266,14 @@ func AdsAddDeviceNotificationRequestParseWithBuffer(ctx context.Context, readBuf
 	}
 	cycleTimeInMs := _cycleTimeInMs
 
-	var reservedField0 *uint64
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("reserved", 64)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
-		}
-		if reserved != uint64(0x0000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint64(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, 64), uint64(0x0000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	var reservedField1 *uint64
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint64("reserved", 64)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsAddDeviceNotificationRequest")
-		}
-		if reserved != uint64(0x0000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint64(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedLong(readBuffer, 64), uint64(0x0000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("AdsAddDeviceNotificationRequest"); closeErr != nil {

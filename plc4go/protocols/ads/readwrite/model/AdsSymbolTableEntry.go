@@ -476,21 +476,9 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	flagPersistent := _flagPersistent
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 3)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 3), uint8(0x00), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (flagExtendedFlags)
@@ -528,21 +516,9 @@ func AdsSymbolTableEntryParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	}
 	flagContextMask := _flagContextMask
 
-	var reservedField1 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AdsSymbolTableEntry")
-		}
-		if reserved != uint16(0x0000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0000), codegen.WithByteOrder(binary.LittleEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	nameLength, err := ReadImplicitField[uint16](ctx, "nameLength", ReadUnsignedShort(readBuffer, 16), codegen.WithByteOrder(binary.LittleEndian))

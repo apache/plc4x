@@ -445,21 +445,9 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	timeoutMultiplier := _timeoutMultiplier
 
-	var reservedField0 *uint32
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("reserved", 24)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectionManagerRequest")
-		}
-		if reserved != uint32(0x000000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x000000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, 24), uint32(0x000000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (otRpi)

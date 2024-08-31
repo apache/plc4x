@@ -220,21 +220,9 @@ func CIPEncapsulationPacketParseWithBuffer(ctx context.Context, readBuffer utils
 	}
 	options := _options
 
-	var reservedField0 *uint32
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("reserved", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CIPEncapsulationPacket")
-		}
-		if reserved != uint32(0x00000000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, 32), uint32(0x00000000), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)

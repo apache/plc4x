@@ -176,38 +176,14 @@ func CipConnectedRequestParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pathSegments' field"))
 	}
 
-	var reservedField0 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 16)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectedRequest")
-		}
-		if reserved != uint16(0x0001) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x0001),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 16), uint16(0x0001))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	var reservedField1 *uint32
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("reserved", 32)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of CipConnectedRequest")
-		}
-		if reserved != uint32(0x00000000) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint32(0x00000000),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedInt(readBuffer, 32), uint32(0x00000000))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("CipConnectedRequest"); closeErr != nil {

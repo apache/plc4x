@@ -203,21 +203,9 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	encapsulationProtocol := _encapsulationProtocol
 
-	var reservedField0 *uint8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserved", 2)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ServicesResponse")
-		}
-		if reserved != uint8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadUnsignedByte(readBuffer, 2), uint8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (supportsCIPEncapsulation)
@@ -227,21 +215,9 @@ func ServicesResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	}
 	supportsCIPEncapsulation := _supportsCIPEncapsulation
 
-	var reservedField1 *uint16
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("reserved", 12)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of ServicesResponse")
-		}
-		if reserved != uint16(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": uint16(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField1 = &reserved
-		}
+	reservedField1, err := ReadReservedField(ctx, "reserved", ReadUnsignedShort(readBuffer, 12), uint16(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (supportsUDP)

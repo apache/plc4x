@@ -378,21 +378,9 @@ func AmsPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_ = broadcast
 
-	var reservedField0 *int8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("reserved", 7)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of AmsPacket")
-		}
-		if reserved != int8(0x0) {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x0),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, 7), int8(0x0))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	length, err := ReadImplicitField[uint32](ctx, "length", ReadUnsignedInt(readBuffer, 32))

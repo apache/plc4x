@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -138,21 +140,9 @@ func NodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (No
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	var reservedField0 *int8
-	// Reserved Field (Compartmentalized so the "reserved" variable can't leak)
-	{
-		reserved, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("reserved", 2)
-		if _err != nil {
-			return nil, errors.Wrap(_err, "Error parsing 'reserved' field of NodeId")
-		}
-		if reserved != int8(0x00) {
-			log.Info().Fields(map[string]any{
-				"expected value": int8(0x00),
-				"got value":      reserved,
-			}).Msg("Got unexpected response for reserved field.")
-			// We save the value, so it can be re-serialized
-			reservedField0 = &reserved
-		}
+	reservedField0, err := ReadReservedField(ctx, "reserved", ReadSignedByte(readBuffer, 2), int8(0x00))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
 	// Simple Field (nodeId)
