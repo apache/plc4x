@@ -436,7 +436,7 @@ class DataItem:
             for _ in range(item_count):
                 value.append(
                     PlcSTRING(
-                        str(read_buffer.read_str(8, logical_name="", encoding=""))
+                        read_buffer.read_str(8, logical_name="", encoding="")
                     )
                 )
 

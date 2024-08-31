@@ -20,6 +20,7 @@ import asyncio
 import logging
 from asyncio import Transport
 from dataclasses import dataclass, field
+from math import ceil
 from typing import Dict, List
 
 from bitarray import bitarray
@@ -62,6 +63,7 @@ from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleCoilsRequest import
 from plc4py.protocols.modbus.readwrite.ModbusPDUWriteMultipleHoldingRegistersRequest import (
     ModbusPDUWriteMultipleHoldingRegistersRequestBuilder,
 )
+from protocols.modbus.readwrite.ModbusDataType import ModbusDataType
 
 
 @dataclass
@@ -92,13 +94,21 @@ class ModbusDevice:
         message_future = loop.create_future()
 
         if isinstance(tag, ModbusTagCoil):
+            if tag.data_type.value != ModbusDataType.BOOL.value:
+                raise NotImplementedError(f"Only BOOL data types can be used with the coil register area")
             pdu = ModbusPDUReadCoilsRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagDiscreteInput):
+            if tag.data_type.value != ModbusDataType.BOOL.value:
+                raise NotImplementedError(f"Only BOOL data types can be used with the digital input register area")
             pdu = ModbusPDUReadDiscreteInputsRequest(tag.address, tag.quantity)
         elif isinstance(tag, ModbusTagInputRegister):
-            pdu = ModbusPDUReadInputRegistersRequest(tag.address, tag.quantity)
+            number_of_registers_per_item = tag.data_type.data_type_size / 2
+            number_of_registers = ceil(tag.quantity * number_of_registers_per_item)
+            pdu = ModbusPDUReadInputRegistersRequest(tag.address,number_of_registers)
         elif isinstance(tag, ModbusTagHoldingRegister):
-            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, tag.quantity)
+            number_of_registers_per_item = tag.data_type.data_type_size / 2
+            number_of_registers = ceil(tag.quantity * number_of_registers_per_item)
+            pdu = ModbusPDUReadHoldingRegistersRequest(tag.address, number_of_registers)
         else:
             raise NotImplementedError(
                 "Modbus tag type not implemented " + str(tag.__class__)
@@ -182,10 +192,10 @@ class ModbusDevice:
         # Create future to be returned when a value is returned
         loop = asyncio.get_running_loop()
         message_future = loop.create_future()
-
+        values = request.values[request.tag_names[0]]
         if isinstance(tag, ModbusTagCoil):
             pdu = ModbusPDUWriteMultipleCoilsRequest(
-                tag.address, tag.quantity, [v for k, v in request.values]
+                tag.address, tag.quantity, values
             )
         elif isinstance(tag, ModbusTagDiscreteInput):
             raise PlcRuntimeException(
@@ -197,7 +207,7 @@ class ModbusDevice:
             )
         elif isinstance(tag, ModbusTagHoldingRegister):
             pdu = ModbusPDUWriteMultipleHoldingRegistersRequestBuilder(
-                tag.address, tag.quantity, request.values
+                tag.address, tag.quantity, [values]
             ).build()
         else:
             raise NotImplementedError(
