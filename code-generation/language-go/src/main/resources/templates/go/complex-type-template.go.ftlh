@@ -1065,14 +1065,12 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 
 			<#case "unknown">
 				<#assign unknownField = field.asUnknownField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
 
-	// Unknown field
-	_, _UnknownErr := ${helper.getReadBufferReadMethodCall("unknown", unknownField.type.asSimpleTypeReference().orElseThrow(), null, unknownField)}
-	if _UnknownErr != nil {
-		return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+	if _, err := read${field.typeName?cap_first}Field("unknown", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)}); err!=nil{
+			return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
-
 			<#case "virtual">
 				<#assign virtualField = field.asVirtualField().orElseThrow()>
 
