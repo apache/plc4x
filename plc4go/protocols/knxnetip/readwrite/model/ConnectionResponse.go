@@ -23,11 +23,13 @@ import (
 	"context"
 	"encoding/binary"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	"github.com/apache/plc4x/plc4go/spi/codegen"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -200,48 +202,22 @@ func ConnectionResponseParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
-	// Optional Field (hpaiDataEndpoint) (Can be skipped, if a given expression evaluates to false)
-	var hpaiDataEndpoint HPAIDataEndpoint = nil
-	if bool((status) == (Status_NO_ERROR)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("hpaiDataEndpoint"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for hpaiDataEndpoint")
-		}
-		_val, _err := HPAIDataEndpointParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'hpaiDataEndpoint' field of ConnectionResponse")
-		default:
-			hpaiDataEndpoint = _val.(HPAIDataEndpoint)
-			if closeErr := readBuffer.CloseContext("hpaiDataEndpoint"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for hpaiDataEndpoint")
-			}
-		}
+	_hpaiDataEndpoint, err := ReadOptionalField[HPAIDataEndpoint](ctx, "hpaiDataEndpoint", ReadComplex[HPAIDataEndpoint](HPAIDataEndpointParseWithBuffer, readBuffer), bool((status) == (Status_NO_ERROR)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hpaiDataEndpoint' field"))
+	}
+	var hpaiDataEndpoint HPAIDataEndpoint
+	if _hpaiDataEndpoint != nil {
+		hpaiDataEndpoint = *_hpaiDataEndpoint
 	}
 
-	// Optional Field (connectionResponseDataBlock) (Can be skipped, if a given expression evaluates to false)
-	var connectionResponseDataBlock ConnectionResponseDataBlock = nil
-	if bool((status) == (Status_NO_ERROR)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("connectionResponseDataBlock"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for connectionResponseDataBlock")
-		}
-		_val, _err := ConnectionResponseDataBlockParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'connectionResponseDataBlock' field of ConnectionResponse")
-		default:
-			connectionResponseDataBlock = _val.(ConnectionResponseDataBlock)
-			if closeErr := readBuffer.CloseContext("connectionResponseDataBlock"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for connectionResponseDataBlock")
-			}
-		}
+	_connectionResponseDataBlock, err := ReadOptionalField[ConnectionResponseDataBlock](ctx, "connectionResponseDataBlock", ReadComplex[ConnectionResponseDataBlock](ConnectionResponseDataBlockParseWithBuffer, readBuffer), bool((status) == (Status_NO_ERROR)), codegen.WithByteOrder(binary.BigEndian))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionResponseDataBlock' field"))
+	}
+	var connectionResponseDataBlock ConnectionResponseDataBlock
+	if _connectionResponseDataBlock != nil {
+		connectionResponseDataBlock = *_connectionResponseDataBlock
 	}
 
 	if closeErr := readBuffer.CloseContext("ConnectionResponse"); closeErr != nil {

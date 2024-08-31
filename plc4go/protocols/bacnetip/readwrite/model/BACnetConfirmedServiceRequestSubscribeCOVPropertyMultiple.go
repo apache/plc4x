@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -206,70 +207,49 @@ func BACnetConfirmedServiceRequestSubscribeCOVPropertyMultipleParseWithBuffer(ct
 		return nil, errors.Wrap(closeErr, "Error closing for subscriberProcessIdentifier")
 	}
 
-	// Optional Field (issueConfirmedNotifications) (Can be skipped, if a given expression evaluates to false)
-	var issueConfirmedNotifications BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("issueConfirmedNotifications"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for issueConfirmedNotifications")
+	_issueConfirmedNotifications, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "issueConfirmedNotifications", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'issueConfirmedNotifications' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			issueConfirmedNotifications = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("issueConfirmedNotifications"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for issueConfirmedNotifications")
-			}
-		}
+		return v.(BACnetContextTagBoolean), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'issueConfirmedNotifications' field"))
+	}
+	var issueConfirmedNotifications BACnetContextTagBoolean
+	if _issueConfirmedNotifications != nil {
+		issueConfirmedNotifications = *_issueConfirmedNotifications
 	}
 
-	// Optional Field (lifetime) (Can be skipped, if a given expression evaluates to false)
-	var lifetime BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("lifetime"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for lifetime")
+	_lifetime, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "lifetime", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lifetime' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			lifetime = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("lifetime"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for lifetime")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifetime' field"))
+	}
+	var lifetime BACnetContextTagUnsignedInteger
+	if _lifetime != nil {
+		lifetime = *_lifetime
 	}
 
-	// Optional Field (maxNotificationDelay) (Can be skipped, if a given expression evaluates to false)
-	var maxNotificationDelay BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("maxNotificationDelay"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for maxNotificationDelay")
+	_maxNotificationDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "maxNotificationDelay", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'maxNotificationDelay' field of BACnetConfirmedServiceRequestSubscribeCOVPropertyMultiple")
-		default:
-			maxNotificationDelay = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("maxNotificationDelay"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for maxNotificationDelay")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maxNotificationDelay' field"))
+	}
+	var maxNotificationDelay BACnetContextTagUnsignedInteger
+	if _maxNotificationDelay != nil {
+		maxNotificationDelay = *_maxNotificationDelay
 	}
 
 	// Simple Field (listOfCovSubscriptionSpecifications)

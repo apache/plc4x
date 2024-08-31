@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -218,26 +217,13 @@ func COTPPacketParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}
 
-	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	var payload S7Message = nil
-	if bool((positionAware.GetPos() - startPos) < (cotpLen)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for payload")
-		}
-		_val, _err := S7MessageParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field of COTPPacket")
-		default:
-			payload = _val.(S7Message)
-			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for payload")
-			}
-		}
+	_payload, err := ReadOptionalField[S7Message](ctx, "payload", ReadComplex[S7Message](S7MessageParseWithBuffer, readBuffer), bool((positionAware.GetPos()-startPos) < (cotpLen)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
+	}
+	var payload S7Message
+	if _payload != nil {
+		payload = *_payload
 	}
 
 	if closeErr := readBuffer.CloseContext("COTPPacket"); closeErr != nil {

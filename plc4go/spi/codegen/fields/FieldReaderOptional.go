@@ -41,12 +41,11 @@ func NewFieldReaderOptional[T any](logger zerolog.Logger) *FieldReaderOptional[T
 	return &FieldReaderOptional[T]{log: logger}
 }
 
-func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalName string, dataReader io.DataReader[T], condition bool, readerArgs ...utils.WithReaderArgs) (T, error) {
+func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalName string, dataReader io.DataReader[T], condition bool, readerArgs ...utils.WithReaderArgs) (*T, error) {
 	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
-	var zero T
 	if !condition {
 		f.log.Debug().Str("logicalName", logicalName).Msg("Condition doesn't match for field")
-		return zero, nil
+		return nil, nil
 	}
 
 	// TODO: add hex support
@@ -54,7 +53,7 @@ func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalN
 	currentPos := dataReader.GetPos()
 	optionalValue, err := dataReader.Read(ctx, logicalName, readerArgs...)
 	if errors.Is(err, io2.EOF) {
-		return optionalValue, utils.ParseAssertError{Message: "Field: " + logicalName + ": Not enough data", Err: err}
+		return &optionalValue, utils.ParseAssertError{Message: "Field: " + logicalName + ": Not enough data", Err: err}
 	}
 	switch {
 	case errors.Is(err, utils.ParseAssertError{}):
@@ -64,10 +63,10 @@ func (f *FieldReaderOptional[T]) ReadOptionalField(ctx context.Context, logicalN
 		f.log.Debug().Err(err).Str("logicalName", logicalName).Uint16("oldPos", currentPos).Msg("Not enough bytes. Resetting read position to oldPos")
 		dataReader.SetPos(currentPos)
 	case err != nil:
-		return zero, errors.Wrapf(err, "Error parsing '%s' field", logicalName)
+		return nil, errors.Wrapf(err, "Error parsing '%s' field", logicalName)
 	default:
 		// All good
 	}
 	f.log.Debug().Str("logicalName", logicalName).Msg("done reading field")
-	return optionalValue, nil
+	return &optionalValue, nil
 }

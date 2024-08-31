@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -374,26 +375,19 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		return nil, errors.Wrap(closeErr, "Error closing for eventType")
 	}
 
-	// Optional Field (messageText) (Can be skipped, if a given expression evaluates to false)
-	var messageText BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("messageText"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for messageText")
+	_messageText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "messageText", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(7)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(7), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'messageText' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
-		default:
-			messageText = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("messageText"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for messageText")
-			}
-		}
+		return v.(BACnetContextTagCharacterString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageText' field"))
+	}
+	var messageText BACnetContextTagCharacterString
+	if _messageText != nil {
+		messageText = *_messageText
 	}
 
 	// Simple Field (notifyType)
@@ -409,48 +403,34 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		return nil, errors.Wrap(closeErr, "Error closing for notifyType")
 	}
 
-	// Optional Field (ackRequired) (Can be skipped, if a given expression evaluates to false)
-	var ackRequired BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("ackRequired"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for ackRequired")
+	_ackRequired, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "ackRequired", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(9)), (BACnetDataType)(BACnetDataType_BOOLEAN))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(9), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'ackRequired' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
-		default:
-			ackRequired = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("ackRequired"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for ackRequired")
-			}
-		}
+		return v.(BACnetContextTagBoolean), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ackRequired' field"))
+	}
+	var ackRequired BACnetContextTagBoolean
+	if _ackRequired != nil {
+		ackRequired = *_ackRequired
 	}
 
-	// Optional Field (fromState) (Can be skipped, if a given expression evaluates to false)
-	var fromState BACnetEventStateTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("fromState"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for fromState")
+	_fromState, err := ReadOptionalField[BACnetEventStateTagged](ctx, "fromState", ReadComplex[BACnetEventStateTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetEventStateTagged, error) {
+		v, err := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(10)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetEventStateTaggedParseWithBuffer(ctx, readBuffer, uint8(10), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'fromState' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
-		default:
-			fromState = _val.(BACnetEventStateTagged)
-			if closeErr := readBuffer.CloseContext("fromState"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for fromState")
-			}
-		}
+		return v.(BACnetEventStateTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fromState' field"))
+	}
+	var fromState BACnetEventStateTagged
+	if _fromState != nil {
+		fromState = *_fromState
 	}
 
 	// Simple Field (toState)
@@ -466,26 +446,19 @@ func BACnetUnconfirmedServiceRequestUnconfirmedEventNotificationParseWithBuffer(
 		return nil, errors.Wrap(closeErr, "Error closing for toState")
 	}
 
-	// Optional Field (eventValues) (Can be skipped, if a given expression evaluates to false)
-	var eventValues BACnetNotificationParameters = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("eventValues"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for eventValues")
+	_eventValues, err := ReadOptionalField[BACnetNotificationParameters](ctx, "eventValues", ReadComplex[BACnetNotificationParameters](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetNotificationParameters, error) {
+		v, err := BACnetNotificationParametersParseWithBuffer(ctx, readBuffer, (uint8)(uint8(12)), (BACnetObjectType)(eventObjectIdentifier.GetObjectType()))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetNotificationParametersParseWithBuffer(ctx, readBuffer, uint8(12), eventObjectIdentifier.GetObjectType())
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventValues' field of BACnetUnconfirmedServiceRequestUnconfirmedEventNotification")
-		default:
-			eventValues = _val.(BACnetNotificationParameters)
-			if closeErr := readBuffer.CloseContext("eventValues"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for eventValues")
-			}
-		}
+		return v.(BACnetNotificationParameters), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventValues' field"))
+	}
+	var eventValues BACnetNotificationParameters
+	if _eventValues != nil {
+		eventValues = *_eventValues
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestUnconfirmedEventNotification"); closeErr != nil {

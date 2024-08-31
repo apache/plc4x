@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -169,26 +170,19 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (timeDuration) (Can be skipped, if a given expression evaluates to false)
-	var timeDuration BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("timeDuration"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for timeDuration")
+	_timeDuration, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "timeDuration", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeDuration' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
-		default:
-			timeDuration = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("timeDuration"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for timeDuration")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDuration' field"))
+	}
+	var timeDuration BACnetContextTagUnsignedInteger
+	if _timeDuration != nil {
+		timeDuration = *_timeDuration
 	}
 
 	// Simple Field (enableDisable)
@@ -204,26 +198,19 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlParseWithBuffer(ctx 
 		return nil, errors.Wrap(closeErr, "Error closing for enableDisable")
 	}
 
-	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
-	var password BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for password")
+	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'password' field of BACnetConfirmedServiceRequestDeviceCommunicationControl")
-		default:
-			password = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for password")
-			}
-		}
+		return v.(BACnetContextTagCharacterString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
+	}
+	var password BACnetContextTagCharacterString
+	if _password != nil {
+		password = *_password
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestDeviceCommunicationControl"); closeErr != nil {

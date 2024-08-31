@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -221,114 +222,79 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		return nil, errors.Wrap(closeErr, "Error closing for acknowledgmentFilter")
 	}
 
-	// Optional Field (enrollmentFilter) (Can be skipped, if a given expression evaluates to false)
-	var enrollmentFilter BACnetRecipientProcessEnclosed = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("enrollmentFilter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for enrollmentFilter")
+	_enrollmentFilter, err := ReadOptionalField[BACnetRecipientProcessEnclosed](ctx, "enrollmentFilter", ReadComplex[BACnetRecipientProcessEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetRecipientProcessEnclosed, error) {
+		v, err := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetRecipientProcessEnclosedParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'enrollmentFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-		default:
-			enrollmentFilter = _val.(BACnetRecipientProcessEnclosed)
-			if closeErr := readBuffer.CloseContext("enrollmentFilter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for enrollmentFilter")
-			}
-		}
+		return v.(BACnetRecipientProcessEnclosed), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enrollmentFilter' field"))
+	}
+	var enrollmentFilter BACnetRecipientProcessEnclosed
+	if _enrollmentFilter != nil {
+		enrollmentFilter = *_enrollmentFilter
 	}
 
-	// Optional Field (eventStateFilter) (Can be skipped, if a given expression evaluates to false)
-	var eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("eventStateFilter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for eventStateFilter")
+	_eventStateFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](ctx, "eventStateFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged, error) {
+		v, err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTaggedParseWithBuffer(ctx, readBuffer, uint8(2), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventStateFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-		default:
-			eventStateFilter = _val.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged)
-			if closeErr := readBuffer.CloseContext("eventStateFilter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for eventStateFilter")
-			}
-		}
+		return v.(BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventStateFilter' field"))
+	}
+	var eventStateFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryEventStateFilterTagged
+	if _eventStateFilter != nil {
+		eventStateFilter = *_eventStateFilter
 	}
 
-	// Optional Field (eventTypeFilter) (Can be skipped, if a given expression evaluates to false)
-	var eventTypeFilter BACnetEventTypeTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("eventTypeFilter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for eventTypeFilter")
+	_eventTypeFilter, err := ReadOptionalField[BACnetEventTypeTagged](ctx, "eventTypeFilter", ReadComplex[BACnetEventTypeTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetEventTypeTagged, error) {
+		v, err := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetEventTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'eventTypeFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-		default:
-			eventTypeFilter = _val.(BACnetEventTypeTagged)
-			if closeErr := readBuffer.CloseContext("eventTypeFilter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for eventTypeFilter")
-			}
-		}
+		return v.(BACnetEventTypeTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventTypeFilter' field"))
+	}
+	var eventTypeFilter BACnetEventTypeTagged
+	if _eventTypeFilter != nil {
+		eventTypeFilter = *_eventTypeFilter
 	}
 
-	// Optional Field (priorityFilter) (Can be skipped, if a given expression evaluates to false)
-	var priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("priorityFilter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for priorityFilter")
+	_priorityFilter, err := ReadOptionalField[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](ctx, "priorityFilter", ReadComplex[BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter, error) {
+		v, err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilterParseWithBuffer(ctx, readBuffer, uint8(4))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priorityFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-		default:
-			priorityFilter = _val.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter)
-			if closeErr := readBuffer.CloseContext("priorityFilter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for priorityFilter")
-			}
-		}
+		return v.(BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priorityFilter' field"))
+	}
+	var priorityFilter BACnetConfirmedServiceRequestGetEnrollmentSummaryPriorityFilter
+	if _priorityFilter != nil {
+		priorityFilter = *_priorityFilter
 	}
 
-	// Optional Field (notificationClassFilter) (Can be skipped, if a given expression evaluates to false)
-	var notificationClassFilter BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("notificationClassFilter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for notificationClassFilter")
+	_notificationClassFilter, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'notificationClassFilter' field of BACnetConfirmedServiceRequestGetEnrollmentSummary")
-		default:
-			notificationClassFilter = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("notificationClassFilter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for notificationClassFilter")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationClassFilter' field"))
+	}
+	var notificationClassFilter BACnetContextTagUnsignedInteger
+	if _notificationClassFilter != nil {
+		notificationClassFilter = *_notificationClassFilter
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEnrollmentSummary"); closeErr != nil {

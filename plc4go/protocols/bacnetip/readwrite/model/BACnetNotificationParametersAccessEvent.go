@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -299,26 +300,19 @@ func BACnetNotificationParametersAccessEventParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(closeErr, "Error closing for accessCredential")
 	}
 
-	// Optional Field (authenticationFactor) (Can be skipped, if a given expression evaluates to false)
-	var authenticationFactor BACnetAuthenticationFactorTypeTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("authenticationFactor"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for authenticationFactor")
+	_authenticationFactor, err := ReadOptionalField[BACnetAuthenticationFactorTypeTagged](ctx, "authenticationFactor", ReadComplex[BACnetAuthenticationFactorTypeTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetAuthenticationFactorTypeTagged, error) {
+		v, err := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx, readBuffer, uint8(5), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'authenticationFactor' field of BACnetNotificationParametersAccessEvent")
-		default:
-			authenticationFactor = _val.(BACnetAuthenticationFactorTypeTagged)
-			if closeErr := readBuffer.CloseContext("authenticationFactor"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for authenticationFactor")
-			}
-		}
+		return v.(BACnetAuthenticationFactorTypeTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationFactor' field"))
+	}
+	var authenticationFactor BACnetAuthenticationFactorTypeTagged
+	if _authenticationFactor != nil {
+		authenticationFactor = *_authenticationFactor
 	}
 
 	// Simple Field (innerClosingTag)

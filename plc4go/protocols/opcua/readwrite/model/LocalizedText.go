@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -185,48 +186,22 @@ func LocalizedTextParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	}
 	localeSpecified := _localeSpecified
 
-	// Optional Field (locale) (Can be skipped, if a given expression evaluates to false)
-	var locale PascalString = nil
-	if localeSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("locale"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for locale")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'locale' field of LocalizedText")
-		default:
-			locale = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("locale"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for locale")
-			}
-		}
+	_locale, err := ReadOptionalField[PascalString](ctx, "locale", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), localeSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'locale' field"))
+	}
+	var locale PascalString
+	if _locale != nil {
+		locale = *_locale
 	}
 
-	// Optional Field (text) (Can be skipped, if a given expression evaluates to false)
-	var text PascalString = nil
-	if textSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("text"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for text")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'text' field of LocalizedText")
-		default:
-			text = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("text"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for text")
-			}
-		}
+	_text, err := ReadOptionalField[PascalString](ctx, "text", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), textSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'text' field"))
+	}
+	var text PascalString
+	if _text != nil {
+		text = *_text
 	}
 
 	if closeErr := readBuffer.CloseContext("LocalizedText"); closeErr != nil {

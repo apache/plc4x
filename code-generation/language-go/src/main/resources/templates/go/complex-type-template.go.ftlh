@@ -845,7 +845,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${helper.toParseExpression(checksumField, checksumField.type, checksumField.checksumExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -856,7 +856,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}_${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}, ${type.name}_${namedField.name?upper_case}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -868,9 +868,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
 				<#if typedField.type.isEnumTypeReference()>
-	${namedField.name},err := ReadDiscriminatorEnumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${typedField.type.asEnumTypeReference().orElseThrow().typeDefinition.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := ReadDiscriminatorEnumField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${typedField.type.asEnumTypeReference().orElseThrow().typeDefinition.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)})
 				<#else>
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)})
 				</#if>
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
@@ -882,7 +882,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}", ReadEnum[${helper.getLanguageTypeNameForField(field)},${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type.asNonSimpleTypeReference().orElseThrow(), enumField.fieldName))}](${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}FirstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", "${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}", ReadEnum[${helper.getLanguageTypeNameForField(field)},${helper.getLanguageTypeNameForTypeReference(helper.getEnumFieldSimpleTypeReference(enumField.type.asNonSimpleTypeReference().orElseThrow(), enumField.fieldName))}](${enumField.type.asNonSimpleTypeReference().orElseThrow().typeDefinition.name}FirstEnumForField${enumField.fieldName?cap_first}, ${helper.getDataReaderCall(helper.getEnumFieldTypeReference(enumField.type, enumField.fieldName))})${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -892,7 +892,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -905,9 +905,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
 				<#if arrayElementTypeReference.isByteBased()>
-	${namedField.name},err  := ReadManualByteArrayField(ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err  := ReadManualByteArrayField(ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 				<#else>
-	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 				</#if>
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
@@ -918,126 +918,26 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, EnsureType[${helper.getLanguageTypeNameForField(field)}](${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
+	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, EnsureType[${helper.getLanguageTypeNameForField(field)}](${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
 			<#case "optional">
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Optional Field (${optionalField.name}) (Can be skipped, if a given expression evaluates to false)
-	var ${optionalField.name} <#if !optionalField.type.isComplexTypeReference()>*</#if>${helper.getLanguageTypeNameForField(field)} = nil
-	<#if optionalField.conditionExpression.present>
-	if ${helper.toBooleanParseExpression(optionalField, optionalField.conditionExpression.get(), parserArguments)} </#if>{
-			<#if optionalField.type.isSimpleTypeReference()>
-		currentPos = positionAware.GetPos()
-		_val, _err := ${helper.getReadBufferReadMethodCall(optionalField.name, optionalField.type.asSimpleTypeReference().orElseThrow(), optionalField)}
-		switch {
-			case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-		default:
-			${optionalField.name} = &_val
-		}
-			<#elseif helper.isEnumField(field)>
-		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
-		switch {
-			case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-		default:
-			${optionalField.name} = &_val
-		}
-		if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-			<#else>
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("${optionalField.name}"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-		}
-				<@compress single_line=true>
-                <#assign complexTypeReference=optionalField.type.asComplexTypeReference().orElseThrow()>
-                <#assign typeName=complexTypeReference.name>
-                <#assign typeDefinition=complexTypeReference.typeDefinition>
-                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                <#-- Usually you don't use child directly unless they are parameterized #-->
-                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
-                </#if>
-				<#assign hasRefParams=complexTypeReference.params.isPresent()>
-				<#assign refParams>
-					<#if hasRefParams>
-							,
-						<#list complexTypeReference.params.orElseThrow() as parserArgument>
-							${helper.toTypedParseExpression(optionalField, helper.getArgumentType(optionalField.type, parserArgument?index), parserArgument, parserArguments)}
-							<#sep>, </#sep>
-						</#list>
-					</#if>
-				</#assign>
-		_val, _err := ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
-                </@compress>
-
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):<@emitImport import="io" />
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing '${optionalField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-		default:
-			${optionalField.name} = _val.(${helper.getLanguageTypeNameForField(field)})
-			if closeErr := readBuffer.CloseContext("${optionalField.name}"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for ${optionalField.name}")<@emitImport import="github.com/pkg/errors" />
-			}
-		}
-			</#if>
+	<#if optionalField.type.isComplexTypeReference()>_</#if>${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if optionalField.conditionExpression.present>, ${helper.toParseExpression(optionalField, helper.boolTypeReference, optionalField.conditionExpression.get(), parserArguments)}<#else>, true</#if>${helper.getFieldOptions(typedField, parserArguments)})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
-			<#break>
-			<#case "assert">
-				<#assign assertField = field.asAssertField().orElseThrow()>
-
-	// Assert Field (${assertField.name}) (Can be skipped, if a given expression evaluates to false)
-			<#if assertField.type.isSimpleTypeReference()>
-	${assertField.name}, _err := ${helper.getReadBufferReadMethodCall(assertField.name, assertField.type.asSimpleTypeReference().orElseThrow(), assertField)}
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-			<#elseif helper.isEnumField(field)>
-	${assertField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-			<#else>
-				<@compress single_line=true>
-                <#assign complexTypeReference=assertField.type.asComplexTypeReference().orElseThrow()>
-                <#assign typeName=complexTypeReference.name>
-                <#assign typeDefinition=complexTypeReference.typeDefinition>
-                <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                <#-- Usually you don't use child directly unless they are parameterized #-->
-                    <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-                    <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
-                </#if>
-				<#assign hasRefParams=complexTypeReference.params.isPresent() && typeDefinition.parserArguments.isPresent()>
-				<#assign refParams> <#if hasRefParams>, <#list complexTypeReference.params.orElseThrow() as typeParam>${helper.toTypedParseExpression(assertField, null, typeParam, null)}<#sep>, </#sep></#list> </#if> </#assign>
-                </@compress>
-	_val, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer${refParams})
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing '${assertField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-	}
-	${assertField.name} = _val
-			</#if>
-	if ${assertField.name} != ${helper.toParseExpression(assertField, assertField.type, assertField.conditionExpression, parserArguments)} {
-		return nil, errors.WithStack(utils.ParseAssertError{Message:"${assertField.conditionExpression} doesn't match"})<@emitImport import="github.com/pkg/errors" />
-	}
+	<#if optionalField.type.isComplexTypeReference()>
+		var ${namedField.name} ${helper.getLanguageTypeNameForField(field)}
+		if _${namedField.name}!=nil{
+			${namedField.name}=*_${namedField.name}
+		}
+	</#if>
 				<#break>
 			<#case "padding">
 				<#assign paddingField = field.asPaddingField().orElseThrow()>

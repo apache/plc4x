@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -339,36 +338,14 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 		return nil, errors.Wrap(closeErr, "Error closing for control")
 	}
 
-	// Optional Field (destinationNetworkAddress) (Can be skipped, if a given expression evaluates to false)
-	var destinationNetworkAddress *uint16 = nil
-	if control.GetDestinationSpecified() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("destinationNetworkAddress", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'destinationNetworkAddress' field of NPDU")
-		default:
-			destinationNetworkAddress = &_val
-		}
+	destinationNetworkAddress, err := ReadOptionalField[uint16](ctx, "destinationNetworkAddress", ReadUnsignedShort(readBuffer, 16), control.GetDestinationSpecified())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationNetworkAddress' field"))
 	}
 
-	// Optional Field (destinationLength) (Can be skipped, if a given expression evaluates to false)
-	var destinationLength *uint8 = nil
-	if control.GetDestinationSpecified() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("destinationLength", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'destinationLength' field of NPDU")
-		default:
-			destinationLength = &_val
-		}
+	destinationLength, err := ReadOptionalField[uint8](ctx, "destinationLength", ReadUnsignedByte(readBuffer, 8), control.GetDestinationSpecified())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationLength' field"))
 	}
 
 	destinationAddress, err := ReadCountArrayField[uint8](ctx, "destinationAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetDestinationSpecified(), func() any { return int32((*destinationLength)) }, func() any { return int32(int32(0)) }).(int32)))
@@ -381,36 +358,14 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	destinationLengthAddon := uint16(_destinationLengthAddon)
 	_ = destinationLengthAddon
 
-	// Optional Field (sourceNetworkAddress) (Can be skipped, if a given expression evaluates to false)
-	var sourceNetworkAddress *uint16 = nil
-	if control.GetSourceSpecified() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("sourceNetworkAddress", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'sourceNetworkAddress' field of NPDU")
-		default:
-			sourceNetworkAddress = &_val
-		}
+	sourceNetworkAddress, err := ReadOptionalField[uint16](ctx, "sourceNetworkAddress", ReadUnsignedShort(readBuffer, 16), control.GetSourceSpecified())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceNetworkAddress' field"))
 	}
 
-	// Optional Field (sourceLength) (Can be skipped, if a given expression evaluates to false)
-	var sourceLength *uint8 = nil
-	if control.GetSourceSpecified() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("sourceLength", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'sourceLength' field of NPDU")
-		default:
-			sourceLength = &_val
-		}
+	sourceLength, err := ReadOptionalField[uint8](ctx, "sourceLength", ReadUnsignedByte(readBuffer, 8), control.GetSourceSpecified())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceLength' field"))
 	}
 
 	sourceAddress, err := ReadCountArrayField[uint8](ctx, "sourceAddress", ReadUnsignedByte(readBuffer, 8), uint64(utils.InlineIf(control.GetSourceSpecified(), func() any { return int32((*sourceLength)) }, func() any { return int32(int32(0)) }).(int32)))
@@ -423,20 +378,9 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	sourceLengthAddon := uint16(_sourceLengthAddon)
 	_ = sourceLengthAddon
 
-	// Optional Field (hopCount) (Can be skipped, if a given expression evaluates to false)
-	var hopCount *uint8 = nil
-	if control.GetDestinationSpecified() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("hopCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'hopCount' field of NPDU")
-		default:
-			hopCount = &_val
-		}
+	hopCount, err := ReadOptionalField[uint8](ctx, "hopCount", ReadUnsignedByte(readBuffer, 8), control.GetDestinationSpecified())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hopCount' field"))
 	}
 
 	// Virtual field
@@ -444,48 +388,34 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	payloadSubtraction := uint16(_payloadSubtraction)
 	_ = payloadSubtraction
 
-	// Optional Field (nlm) (Can be skipped, if a given expression evaluates to false)
-	var nlm NLM = nil
-	if control.GetMessageTypeFieldPresent() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("nlm"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for nlm")
+	_nlm, err := ReadOptionalField[NLM](ctx, "nlm", ReadComplex[NLM](func(ctx context.Context, buffer utils.ReadBuffer) (NLM, error) {
+		v, err := NLMParseWithBuffer(ctx, readBuffer, (uint16)(uint16(npduLength)-uint16(payloadSubtraction)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := NLMParseWithBuffer(ctx, readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'nlm' field of NPDU")
-		default:
-			nlm = _val.(NLM)
-			if closeErr := readBuffer.CloseContext("nlm"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for nlm")
-			}
-		}
+		return v.(NLM), nil
+	}, readBuffer), control.GetMessageTypeFieldPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nlm' field"))
+	}
+	var nlm NLM
+	if _nlm != nil {
+		nlm = *_nlm
 	}
 
-	// Optional Field (apdu) (Can be skipped, if a given expression evaluates to false)
-	var apdu APDU = nil
-	if !(control.GetMessageTypeFieldPresent()) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("apdu"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for apdu")
+	_apdu, err := ReadOptionalField[APDU](ctx, "apdu", ReadComplex[APDU](func(ctx context.Context, buffer utils.ReadBuffer) (APDU, error) {
+		v, err := APDUParseWithBuffer(ctx, readBuffer, (uint16)(uint16(npduLength)-uint16(payloadSubtraction)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := APDUParseWithBuffer(ctx, readBuffer, uint16(npduLength)-uint16(payloadSubtraction))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'apdu' field of NPDU")
-		default:
-			apdu = _val.(APDU)
-			if closeErr := readBuffer.CloseContext("apdu"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for apdu")
-			}
-		}
+		return v.(APDU), nil
+	}, readBuffer), !(control.GetMessageTypeFieldPresent()))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apdu' field"))
+	}
+	var apdu APDU
+	if _apdu != nil {
+		apdu = *_apdu
 	}
 
 	// Validation

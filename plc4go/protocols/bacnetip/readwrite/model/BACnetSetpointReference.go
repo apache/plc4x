@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -117,26 +118,19 @@ func BACnetSetpointReferenceParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (setPointReference) (Can be skipped, if a given expression evaluates to false)
-	var setPointReference BACnetObjectPropertyReferenceEnclosed = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("setPointReference"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for setPointReference")
+	_setPointReference, err := ReadOptionalField[BACnetObjectPropertyReferenceEnclosed](ctx, "setPointReference", ReadComplex[BACnetObjectPropertyReferenceEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetObjectPropertyReferenceEnclosed, error) {
+		v, err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(0))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'setPointReference' field of BACnetSetpointReference")
-		default:
-			setPointReference = _val.(BACnetObjectPropertyReferenceEnclosed)
-			if closeErr := readBuffer.CloseContext("setPointReference"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for setPointReference")
-			}
-		}
+		return v.(BACnetObjectPropertyReferenceEnclosed), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setPointReference' field"))
+	}
+	var setPointReference BACnetObjectPropertyReferenceEnclosed
+	if _setPointReference != nil {
+		setPointReference = *_setPointReference
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetSetpointReference"); closeErr != nil {

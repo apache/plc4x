@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -277,70 +278,49 @@ func BACnetNotificationParametersChangeOfTimerParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(closeErr, "Error closing for updateTime")
 	}
 
-	// Optional Field (lastStateChange) (Can be skipped, if a given expression evaluates to false)
-	var lastStateChange BACnetTimerTransitionTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("lastStateChange"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for lastStateChange")
+	_lastStateChange, err := ReadOptionalField[BACnetTimerTransitionTagged](ctx, "lastStateChange", ReadComplex[BACnetTimerTransitionTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetTimerTransitionTagged, error) {
+		v, err := BACnetTimerTransitionTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetTimerTransitionTaggedParseWithBuffer(ctx, readBuffer, uint8(3), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lastStateChange' field of BACnetNotificationParametersChangeOfTimer")
-		default:
-			lastStateChange = _val.(BACnetTimerTransitionTagged)
-			if closeErr := readBuffer.CloseContext("lastStateChange"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for lastStateChange")
-			}
-		}
+		return v.(BACnetTimerTransitionTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastStateChange' field"))
+	}
+	var lastStateChange BACnetTimerTransitionTagged
+	if _lastStateChange != nil {
+		lastStateChange = *_lastStateChange
 	}
 
-	// Optional Field (initialTimeout) (Can be skipped, if a given expression evaluates to false)
-	var initialTimeout BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("initialTimeout"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for initialTimeout")
+	_initialTimeout, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'initialTimeout' field of BACnetNotificationParametersChangeOfTimer")
-		default:
-			initialTimeout = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("initialTimeout"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for initialTimeout")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initialTimeout' field"))
+	}
+	var initialTimeout BACnetContextTagUnsignedInteger
+	if _initialTimeout != nil {
+		initialTimeout = *_initialTimeout
 	}
 
-	// Optional Field (expirationTime) (Can be skipped, if a given expression evaluates to false)
-	var expirationTime BACnetDateTimeEnclosed = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("expirationTime"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for expirationTime")
+	_expirationTime, err := ReadOptionalField[BACnetDateTimeEnclosed](ctx, "expirationTime", ReadComplex[BACnetDateTimeEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDateTimeEnclosed, error) {
+		v, err := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetDateTimeEnclosedParseWithBuffer(ctx, readBuffer, uint8(5))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'expirationTime' field of BACnetNotificationParametersChangeOfTimer")
-		default:
-			expirationTime = _val.(BACnetDateTimeEnclosed)
-			if closeErr := readBuffer.CloseContext("expirationTime"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for expirationTime")
-			}
-		}
+		return v.(BACnetDateTimeEnclosed), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'expirationTime' field"))
+	}
+	var expirationTime BACnetDateTimeEnclosed
+	if _expirationTime != nil {
+		expirationTime = *_expirationTime
 	}
 
 	// Simple Field (innerClosingTag)

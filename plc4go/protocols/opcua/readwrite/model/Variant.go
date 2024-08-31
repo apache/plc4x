@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -266,20 +265,9 @@ func VariantParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (V
 	}
 	_child = _childTemp.(VariantChildSerializeRequirement)
 
-	// Optional Field (noOfArrayDimensions) (Can be skipped, if a given expression evaluates to false)
-	var noOfArrayDimensions *int32 = nil
-	if arrayDimensionsSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("noOfArrayDimensions", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'noOfArrayDimensions' field of Variant")
-		default:
-			noOfArrayDimensions = &_val
-		}
+	noOfArrayDimensions, err := ReadOptionalField[int32](ctx, "noOfArrayDimensions", ReadSignedInt(readBuffer, 32), arrayDimensionsSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noOfArrayDimensions' field"))
 	}
 
 	arrayDimensions, err := ReadCountArrayField[bool](ctx, "arrayDimensions", ReadBoolean(readBuffer), uint64(utils.InlineIf(bool((noOfArrayDimensions) == (nil)), func() any { return int32(int32(0)) }, func() any { return int32((*noOfArrayDimensions)) }).(int32)))

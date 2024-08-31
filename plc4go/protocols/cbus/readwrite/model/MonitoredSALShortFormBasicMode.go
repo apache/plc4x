@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -209,52 +210,19 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 
 	readBuffer.Reset(currentPos)
 
-	// Optional Field (bridgeCount) (Can be skipped, if a given expression evaluates to false)
-	var bridgeCount *uint8 = nil
-	if bool((counts) != (0x00)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("bridgeCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'bridgeCount' field of MonitoredSALShortFormBasicMode")
-		default:
-			bridgeCount = &_val
-		}
+	bridgeCount, err := ReadOptionalField[uint8](ctx, "bridgeCount", ReadUnsignedByte(readBuffer, 8), bool((counts) != (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bridgeCount' field"))
 	}
 
-	// Optional Field (networkNumber) (Can be skipped, if a given expression evaluates to false)
-	var networkNumber *uint8 = nil
-	if bool((counts) != (0x00)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("networkNumber", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'networkNumber' field of MonitoredSALShortFormBasicMode")
-		default:
-			networkNumber = &_val
-		}
+	networkNumber, err := ReadOptionalField[uint8](ctx, "networkNumber", ReadUnsignedByte(readBuffer, 8), bool((counts) != (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkNumber' field"))
 	}
 
-	// Optional Field (noCounts) (Can be skipped, if a given expression evaluates to false)
-	var noCounts *byte = nil
-	if bool((counts) == (0x00)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("noCounts")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'noCounts' field of MonitoredSALShortFormBasicMode")
-		default:
-			noCounts = &_val
-		}
+	noCounts, err := ReadOptionalField[byte](ctx, "noCounts", ReadByte(readBuffer, 8), bool((counts) == (0x00)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noCounts' field"))
 	}
 
 	// Simple Field (application)
@@ -270,26 +238,19 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(closeErr, "Error closing for application")
 	}
 
-	// Optional Field (salData) (Can be skipped, if a given expression evaluates to false)
-	var salData SALData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("salData"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for salData")
+	_salData, err := ReadOptionalField[SALData](ctx, "salData", ReadComplex[SALData](func(ctx context.Context, buffer utils.ReadBuffer) (SALData, error) {
+		v, err := SALDataParseWithBuffer(ctx, readBuffer, (ApplicationId)(application.ApplicationId()))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := SALDataParseWithBuffer(ctx, readBuffer, application.ApplicationId())
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'salData' field of MonitoredSALShortFormBasicMode")
-		default:
-			salData = _val.(SALData)
-			if closeErr := readBuffer.CloseContext("salData"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for salData")
-			}
-		}
+		return v.(SALData), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salData' field"))
+	}
+	var salData SALData
+	if _salData != nil {
+		salData = *_salData
 	}
 
 	if closeErr := readBuffer.CloseContext("MonitoredSALShortFormBasicMode"); closeErr != nil {

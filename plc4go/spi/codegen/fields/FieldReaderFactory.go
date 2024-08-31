@@ -100,7 +100,7 @@ func ReadImplicitField[T any](ctx context.Context, logicalName string, dataReade
 	return NewFieldReaderImplicit[T](log).ReadImplicitField(ctx, logicalName, dataReader, readerArgs...)
 }
 
-func ReadOptionalField[T any](ctx context.Context, logicalName string, dataReader io.DataReader[T], condition bool, readerArgs ...utils.WithReaderArgs) (T, error) {
+func ReadOptionalField[T any](ctx context.Context, logicalName string, dataReader io.DataReader[T], condition bool, readerArgs ...utils.WithReaderArgs) (*T, error) {
 	log := *zerolog.Ctx(ctx)
 	return NewFieldReaderOptional[T](log).ReadOptionalField(ctx, logicalName, dataReader, condition, readerArgs...)
 }

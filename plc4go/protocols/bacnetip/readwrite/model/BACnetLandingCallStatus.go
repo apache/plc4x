@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -163,26 +164,19 @@ func BACnetLandingCallStatusParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(closeErr, "Error closing for command")
 	}
 
-	// Optional Field (floorText) (Can be skipped, if a given expression evaluates to false)
-	var floorText BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("floorText"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for floorText")
+	_floorText, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "floorText", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'floorText' field of BACnetLandingCallStatus")
-		default:
-			floorText = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("floorText"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for floorText")
-			}
-		}
+		return v.(BACnetContextTagCharacterString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
+	}
+	var floorText BACnetContextTagCharacterString
+	if _floorText != nil {
+		floorText = *_floorText
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLandingCallStatus"); closeErr != nil {

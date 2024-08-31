@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -177,26 +178,19 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 	peekedTagNumber := uint8(_peekedTagNumber)
 	_ = peekedTagNumber
 
-	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
-	var propertyValue BACnetConstructedData = nil
-	if bool((peekedTagNumber) == (4)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
+	_propertyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
+		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(4), objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetReadAccessPropertyReadResult")
-		default:
-			propertyValue = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
-			}
-		}
+		return v.(BACnetConstructedData), nil
+	}, readBuffer), bool((peekedTagNumber) == (4)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyValue' field"))
+	}
+	var propertyValue BACnetConstructedData
+	if _propertyValue != nil {
+		propertyValue = *_propertyValue
 	}
 
 	// Validation
@@ -204,26 +198,19 @@ func BACnetReadAccessPropertyReadResultParseWithBuffer(ctx context.Context, read
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "failure parsing field 4"})
 	}
 
-	// Optional Field (propertyAccessError) (Can be skipped, if a given expression evaluates to false)
-	var propertyAccessError ErrorEnclosed = nil
-	if bool((peekedTagNumber) == (5)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyAccessError"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for propertyAccessError")
+	_propertyAccessError, err := ReadOptionalField[ErrorEnclosed](ctx, "propertyAccessError", ReadComplex[ErrorEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (ErrorEnclosed, error) {
+		v, err := ErrorEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := ErrorEnclosedParseWithBuffer(ctx, readBuffer, uint8(5))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyAccessError' field of BACnetReadAccessPropertyReadResult")
-		default:
-			propertyAccessError = _val.(ErrorEnclosed)
-			if closeErr := readBuffer.CloseContext("propertyAccessError"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for propertyAccessError")
-			}
-		}
+		return v.(ErrorEnclosed), nil
+	}, readBuffer), bool((peekedTagNumber) == (5)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyAccessError' field"))
+	}
+	var propertyAccessError ErrorEnclosed
+	if _propertyAccessError != nil {
+		propertyAccessError = *_propertyAccessError
 	}
 
 	// Validation

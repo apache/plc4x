@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -217,26 +218,19 @@ func BACnetConfirmedServiceRequestLifeSafetyOperationParseWithBuffer(ctx context
 		return nil, errors.Wrap(closeErr, "Error closing for request")
 	}
 
-	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var objectIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	_objectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestLifeSafetyOperation")
-		default:
-			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-			}
-		}
+		return v.(BACnetContextTagObjectIdentifier), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
+	}
+	var objectIdentifier BACnetContextTagObjectIdentifier
+	if _objectIdentifier != nil {
+		objectIdentifier = *_objectIdentifier
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestLifeSafetyOperation"); closeErr != nil {

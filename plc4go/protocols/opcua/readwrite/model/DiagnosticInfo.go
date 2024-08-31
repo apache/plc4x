@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -330,134 +331,51 @@ func DiagnosticInfoParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	symbolicIdSpecified := _symbolicIdSpecified
 
-	// Optional Field (symbolicId) (Can be skipped, if a given expression evaluates to false)
-	var symbolicId *int32 = nil
-	if symbolicIdSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("symbolicId", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'symbolicId' field of DiagnosticInfo")
-		default:
-			symbolicId = &_val
-		}
+	symbolicId, err := ReadOptionalField[int32](ctx, "symbolicId", ReadSignedInt(readBuffer, 32), symbolicIdSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'symbolicId' field"))
 	}
 
-	// Optional Field (namespaceURI) (Can be skipped, if a given expression evaluates to false)
-	var namespaceURI *int32 = nil
-	if namespaceURISpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("namespaceURI", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'namespaceURI' field of DiagnosticInfo")
-		default:
-			namespaceURI = &_val
-		}
+	namespaceURI, err := ReadOptionalField[int32](ctx, "namespaceURI", ReadSignedInt(readBuffer, 32), namespaceURISpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceURI' field"))
 	}
 
-	// Optional Field (locale) (Can be skipped, if a given expression evaluates to false)
-	var locale *int32 = nil
-	if localeSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("locale", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'locale' field of DiagnosticInfo")
-		default:
-			locale = &_val
-		}
+	locale, err := ReadOptionalField[int32](ctx, "locale", ReadSignedInt(readBuffer, 32), localeSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'locale' field"))
 	}
 
-	// Optional Field (localizedText) (Can be skipped, if a given expression evaluates to false)
-	var localizedText *int32 = nil
-	if localizedTextSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("localizedText", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'localizedText' field of DiagnosticInfo")
-		default:
-			localizedText = &_val
-		}
+	localizedText, err := ReadOptionalField[int32](ctx, "localizedText", ReadSignedInt(readBuffer, 32), localizedTextSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localizedText' field"))
 	}
 
-	// Optional Field (additionalInfo) (Can be skipped, if a given expression evaluates to false)
-	var additionalInfo PascalString = nil
-	if additionalInfoSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("additionalInfo"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for additionalInfo")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'additionalInfo' field of DiagnosticInfo")
-		default:
-			additionalInfo = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("additionalInfo"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for additionalInfo")
-			}
-		}
+	_additionalInfo, err := ReadOptionalField[PascalString](ctx, "additionalInfo", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), additionalInfoSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'additionalInfo' field"))
+	}
+	var additionalInfo PascalString
+	if _additionalInfo != nil {
+		additionalInfo = *_additionalInfo
 	}
 
-	// Optional Field (innerStatusCode) (Can be skipped, if a given expression evaluates to false)
-	var innerStatusCode StatusCode = nil
-	if innerStatusCodeSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("innerStatusCode"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for innerStatusCode")
-		}
-		_val, _err := StatusCodeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'innerStatusCode' field of DiagnosticInfo")
-		default:
-			innerStatusCode = _val.(StatusCode)
-			if closeErr := readBuffer.CloseContext("innerStatusCode"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for innerStatusCode")
-			}
-		}
+	_innerStatusCode, err := ReadOptionalField[StatusCode](ctx, "innerStatusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), innerStatusCodeSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerStatusCode' field"))
+	}
+	var innerStatusCode StatusCode
+	if _innerStatusCode != nil {
+		innerStatusCode = *_innerStatusCode
 	}
 
-	// Optional Field (innerDiagnosticInfo) (Can be skipped, if a given expression evaluates to false)
-	var innerDiagnosticInfo DiagnosticInfo = nil
-	if innerDiagnosticInfoSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("innerDiagnosticInfo"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for innerDiagnosticInfo")
-		}
-		_val, _err := DiagnosticInfoParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'innerDiagnosticInfo' field of DiagnosticInfo")
-		default:
-			innerDiagnosticInfo = _val.(DiagnosticInfo)
-			if closeErr := readBuffer.CloseContext("innerDiagnosticInfo"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for innerDiagnosticInfo")
-			}
-		}
+	_innerDiagnosticInfo, err := ReadOptionalField[DiagnosticInfo](ctx, "innerDiagnosticInfo", ReadComplex[DiagnosticInfo](DiagnosticInfoParseWithBuffer, readBuffer), innerDiagnosticInfoSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerDiagnosticInfo' field"))
+	}
+	var innerDiagnosticInfo DiagnosticInfo
+	if _innerDiagnosticInfo != nil {
+		innerDiagnosticInfo = *_innerDiagnosticInfo
 	}
 
 	if closeErr := readBuffer.CloseContext("DiagnosticInfo"); closeErr != nil {

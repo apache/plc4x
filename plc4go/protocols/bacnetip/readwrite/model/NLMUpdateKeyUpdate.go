@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -297,68 +296,24 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(closeErr, "Error closing for controlFlags")
 	}
 
-	// Optional Field (set1KeyRevision) (Can be skipped, if a given expression evaluates to false)
-	var set1KeyRevision *byte = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("set1KeyRevision")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1KeyRevision' field of NLMUpdateKeyUpdate")
-		default:
-			set1KeyRevision = &_val
-		}
+	set1KeyRevision, err := ReadOptionalField[byte](ctx, "set1KeyRevision", ReadByte(readBuffer, 8), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyRevision' field"))
 	}
 
-	// Optional Field (set1ActivationTime) (Can be skipped, if a given expression evaluates to false)
-	var set1ActivationTime *uint32 = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set1ActivationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1ActivationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set1ActivationTime = &_val
-		}
+	set1ActivationTime, err := ReadOptionalField[uint32](ctx, "set1ActivationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ActivationTime' field"))
 	}
 
-	// Optional Field (set1ExpirationTime) (Can be skipped, if a given expression evaluates to false)
-	var set1ExpirationTime *uint32 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set1ExpirationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1ExpirationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set1ExpirationTime = &_val
-		}
+	set1ExpirationTime, err := ReadOptionalField[uint32](ctx, "set1ExpirationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1ExpirationTime' field"))
 	}
 
-	// Optional Field (set1KeyCount) (Can be skipped, if a given expression evaluates to false)
-	var set1KeyCount *uint8 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("set1KeyCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set1KeyCount' field of NLMUpdateKeyUpdate")
-		default:
-			set1KeyCount = &_val
-		}
+	set1KeyCount, err := ReadOptionalField[uint8](ctx, "set1KeyCount", ReadUnsignedByte(readBuffer, 8), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1KeyCount' field"))
 	}
 
 	set1Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set1Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))
@@ -366,68 +321,24 @@ func NLMUpdateKeyUpdateParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set1Keys' field"))
 	}
 
-	// Optional Field (set2KeyRevision) (Can be skipped, if a given expression evaluates to false)
-	var set2KeyRevision *byte = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("set2KeyRevision")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2KeyRevision' field of NLMUpdateKeyUpdate")
-		default:
-			set2KeyRevision = &_val
-		}
+	set2KeyRevision, err := ReadOptionalField[byte](ctx, "set2KeyRevision", ReadByte(readBuffer, 8), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyRevision' field"))
 	}
 
-	// Optional Field (set2ActivationTime) (Can be skipped, if a given expression evaluates to false)
-	var set2ActivationTime *uint32 = nil
-	if controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set2ActivationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2ActivationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set2ActivationTime = &_val
-		}
+	set2ActivationTime, err := ReadOptionalField[uint32](ctx, "set2ActivationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyRevisionActivationTimeExpirationTimePresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ActivationTime' field"))
 	}
 
-	// Optional Field (set2ExpirationTime) (Can be skipped, if a given expression evaluates to false)
-	var set2ExpirationTime *uint32 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("set2ExpirationTime", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2ExpirationTime' field of NLMUpdateKeyUpdate")
-		default:
-			set2ExpirationTime = &_val
-		}
+	set2ExpirationTime, err := ReadOptionalField[uint32](ctx, "set2ExpirationTime", ReadUnsignedInt(readBuffer, 32), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2ExpirationTime' field"))
 	}
 
-	// Optional Field (set2KeyCount) (Can be skipped, if a given expression evaluates to false)
-	var set2KeyCount *uint8 = nil
-	if controlFlags.GetSet1KeyCountKeyParametersPresent() {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("set2KeyCount", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'set2KeyCount' field of NLMUpdateKeyUpdate")
-		default:
-			set2KeyCount = &_val
-		}
+	set2KeyCount, err := ReadOptionalField[uint8](ctx, "set2KeyCount", ReadUnsignedByte(readBuffer, 8), controlFlags.GetSet1KeyCountKeyParametersPresent())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'set2KeyCount' field"))
 	}
 
 	set2Keys, err := ReadCountArrayField[NLMUpdateKeyUpdateKeyEntry](ctx, "set2Keys", ReadComplex[NLMUpdateKeyUpdateKeyEntry](NLMUpdateKeyUpdateKeyEntryParseWithBuffer, readBuffer), uint64(utils.InlineIf(bool((set1KeyCount) != (nil)), func() any { return int32((*set1KeyCount)) }, func() any { return int32(int32(0)) }).(int32)))

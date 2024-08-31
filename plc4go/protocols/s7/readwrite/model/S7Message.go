@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -269,48 +268,34 @@ func S7MessageParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	_child = _childTemp.(S7MessageChildSerializeRequirement)
 
-	// Optional Field (parameter) (Can be skipped, if a given expression evaluates to false)
-	var parameter S7Parameter = nil
-	if bool((parameterLength) > (0)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("parameter"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for parameter")
+	_parameter, err := ReadOptionalField[S7Parameter](ctx, "parameter", ReadComplex[S7Parameter](func(ctx context.Context, buffer utils.ReadBuffer) (S7Parameter, error) {
+		v, err := S7ParameterParseWithBuffer(ctx, readBuffer, (uint8)(messageType))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := S7ParameterParseWithBuffer(ctx, readBuffer, messageType)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'parameter' field of S7Message")
-		default:
-			parameter = _val.(S7Parameter)
-			if closeErr := readBuffer.CloseContext("parameter"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for parameter")
-			}
-		}
+		return v.(S7Parameter), nil
+	}, readBuffer), bool((parameterLength) > (0)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameter' field"))
+	}
+	var parameter S7Parameter
+	if _parameter != nil {
+		parameter = *_parameter
 	}
 
-	// Optional Field (payload) (Can be skipped, if a given expression evaluates to false)
-	var payload S7Payload = nil
-	if bool((payloadLength) > (0)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("payload"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for payload")
+	_payload, err := ReadOptionalField[S7Payload](ctx, "payload", ReadComplex[S7Payload](func(ctx context.Context, buffer utils.ReadBuffer) (S7Payload, error) {
+		v, err := S7PayloadParseWithBuffer(ctx, readBuffer, (uint8)(messageType), (S7Parameter)((parameter)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := S7PayloadParseWithBuffer(ctx, readBuffer, messageType, (parameter))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'payload' field of S7Message")
-		default:
-			payload = _val.(S7Payload)
-			if closeErr := readBuffer.CloseContext("payload"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for payload")
-			}
-		}
+		return v.(S7Payload), nil
+	}, readBuffer), bool((payloadLength) > (0)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payload' field"))
+	}
+	var payload S7Payload
+	if _payload != nil {
+		payload = *_payload
 	}
 
 	if closeErr := readBuffer.CloseContext("S7Message"); closeErr != nil {

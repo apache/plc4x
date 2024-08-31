@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -210,26 +211,19 @@ func CipReadResponseParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	extStatus := _extStatus
 
-	// Optional Field (data) (Can be skipped, if a given expression evaluates to false)
-	var data CIPData = nil
-	if bool(((serviceLen) - (4)) > (0)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("data"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for data")
+	_data, err := ReadOptionalField[CIPData](ctx, "data", ReadComplex[CIPData](func(ctx context.Context, buffer utils.ReadBuffer) (CIPData, error) {
+		v, err := CIPDataParseWithBuffer(ctx, readBuffer, (uint16)(uint16(serviceLen)-uint16(uint16(4))))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := CIPDataParseWithBuffer(ctx, readBuffer, uint16(serviceLen)-uint16(uint16(4)))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'data' field of CipReadResponse")
-		default:
-			data = _val.(CIPData)
-			if closeErr := readBuffer.CloseContext("data"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for data")
-			}
-		}
+		return v.(CIPData), nil
+	}, readBuffer), bool(((serviceLen)-(4)) > (0)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
+	}
+	var data CIPData
+	if _data != nil {
+		data = *_data
 	}
 
 	if closeErr := readBuffer.CloseContext("CipReadResponse"); closeErr != nil {

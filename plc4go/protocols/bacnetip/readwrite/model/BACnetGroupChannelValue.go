@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -150,26 +151,19 @@ func BACnetGroupChannelValueParseWithBuffer(ctx context.Context, readBuffer util
 		return nil, errors.Wrap(closeErr, "Error closing for channel")
 	}
 
-	// Optional Field (overridingPriority) (Can be skipped, if a given expression evaluates to false)
-	var overridingPriority BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("overridingPriority"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for overridingPriority")
+	_overridingPriority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "overridingPriority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'overridingPriority' field of BACnetGroupChannelValue")
-		default:
-			overridingPriority = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("overridingPriority"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for overridingPriority")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overridingPriority' field"))
+	}
+	var overridingPriority BACnetContextTagUnsignedInteger
+	if _overridingPriority != nil {
+		overridingPriority = *_overridingPriority
 	}
 
 	// Simple Field (value)

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -313,20 +314,9 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	}
 	lengthValueType := _lengthValueType
 
-	// Optional Field (extTagNumber) (Can be skipped, if a given expression evaluates to false)
-	var extTagNumber *uint8 = nil
-	if bool((tagNumber) == (15)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extTagNumber", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extTagNumber' field of BACnetTagHeader")
-		default:
-			extTagNumber = &_val
-		}
+	extTagNumber, err := ReadOptionalField[uint8](ctx, "extTagNumber", ReadUnsignedByte(readBuffer, 8), bool((tagNumber) == (15)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extTagNumber' field"))
 	}
 
 	// Virtual field
@@ -349,52 +339,19 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	isPrimitiveAndNotBoolean := bool(_isPrimitiveAndNotBoolean)
 	_ = isPrimitiveAndNotBoolean
 
-	// Optional Field (extLength) (Can be skipped, if a given expression evaluates to false)
-	var extLength *uint8 = nil
-	if bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("extLength", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extLength' field of BACnetTagHeader")
-		default:
-			extLength = &_val
-		}
+	extLength, err := ReadOptionalField[uint8](ctx, "extLength", ReadUnsignedByte(readBuffer, 8), bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extLength' field"))
 	}
 
-	// Optional Field (extExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtLength *uint16 = nil
-	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("extExtLength", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extExtLength' field of BACnetTagHeader")
-		default:
-			extExtLength = &_val
-		}
+	extExtLength, err := ReadOptionalField[uint16](ctx, "extExtLength", ReadUnsignedShort(readBuffer, 16), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (254))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtLength' field"))
 	}
 
-	// Optional Field (extExtExtLength) (Can be skipped, if a given expression evaluates to false)
-	var extExtExtLength *uint32 = nil
-	if bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("extExtExtLength", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'extExtExtLength' field of BACnetTagHeader")
-		default:
-			extExtExtLength = &_val
-		}
+	extExtExtLength, err := ReadOptionalField[uint32](ctx, "extExtExtLength", ReadUnsignedInt(readBuffer, 32), bool(bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5)))) && bool(bool((*extLength) == (255))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extExtExtLength' field"))
 	}
 
 	// Virtual field

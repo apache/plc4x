@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -206,48 +207,34 @@ func BACnetConfirmedServiceRequestAddListElementParseWithBuffer(ctx context.Cont
 		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
-	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
+	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetConfirmedServiceRequestAddListElement")
-		default:
-			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayIndex' field"))
+	}
+	var arrayIndex BACnetContextTagUnsignedInteger
+	if _arrayIndex != nil {
+		arrayIndex = *_arrayIndex
 	}
 
-	// Optional Field (listOfElements) (Can be skipped, if a given expression evaluates to false)
-	var listOfElements BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("listOfElements"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for listOfElements")
+	_listOfElements, err := ReadOptionalField[BACnetConstructedData](ctx, "listOfElements", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
+		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetObjectType)(objectIdentifier.GetObjectType()), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) })))))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfElements' field of BACnetConfirmedServiceRequestAddListElement")
-		default:
-			listOfElements = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("listOfElements"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for listOfElements")
-			}
-		}
+		return v.(BACnetConstructedData), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfElements' field"))
+	}
+	var listOfElements BACnetConstructedData
+	if _listOfElements != nil {
+		listOfElements = *_listOfElements
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAddListElement"); closeErr != nil {

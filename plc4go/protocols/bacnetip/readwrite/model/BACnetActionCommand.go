@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -205,26 +206,19 @@ func BACnetActionCommandParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (deviceIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var deviceIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("deviceIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for deviceIdentifier")
+	_deviceIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "deviceIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceIdentifier' field of BACnetActionCommand")
-		default:
-			deviceIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("deviceIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
-			}
-		}
+		return v.(BACnetContextTagObjectIdentifier), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceIdentifier' field"))
+	}
+	var deviceIdentifier BACnetContextTagObjectIdentifier
+	if _deviceIdentifier != nil {
+		deviceIdentifier = *_deviceIdentifier
 	}
 
 	// Simple Field (objectIdentifier)
@@ -253,92 +247,64 @@ func BACnetActionCommandParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
-	// Optional Field (arrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var arrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("arrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for arrayIndex")
+	_arrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "arrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'arrayIndex' field of BACnetActionCommand")
-		default:
-			arrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("arrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for arrayIndex")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'arrayIndex' field"))
+	}
+	var arrayIndex BACnetContextTagUnsignedInteger
+	if _arrayIndex != nil {
+		arrayIndex = *_arrayIndex
 	}
 
-	// Optional Field (propertyValue) (Can be skipped, if a given expression evaluates to false)
-	var propertyValue BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyValue"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for propertyValue")
+	_propertyValue, err := ReadOptionalField[BACnetConstructedData](ctx, "propertyValue", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
+		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)), (BACnetObjectType)(objectIdentifier.GetObjectType()), (BACnetPropertyIdentifier)(propertyIdentifier.GetValue()), (BACnetTagPayloadUnsignedInteger)((CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) })))))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(4), objectIdentifier.GetObjectType(), propertyIdentifier.GetValue(), (CastBACnetTagPayloadUnsignedInteger(utils.InlineIf(bool((arrayIndex) != (nil)), func() any { return CastBACnetTagPayloadUnsignedInteger((arrayIndex).GetPayload()) }, func() any { return CastBACnetTagPayloadUnsignedInteger(nil) }))))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyValue' field of BACnetActionCommand")
-		default:
-			propertyValue = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("propertyValue"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for propertyValue")
-			}
-		}
+		return v.(BACnetConstructedData), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyValue' field"))
+	}
+	var propertyValue BACnetConstructedData
+	if _propertyValue != nil {
+		propertyValue = *_propertyValue
 	}
 
-	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
-	var priority BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for priority")
+	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetActionCommand")
-		default:
-			priority = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for priority")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
+	}
+	var priority BACnetContextTagUnsignedInteger
+	if _priority != nil {
+		priority = *_priority
 	}
 
-	// Optional Field (postDelay) (Can be skipped, if a given expression evaluates to false)
-	var postDelay BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("postDelay"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for postDelay")
+	_postDelay, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "postDelay", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(6)), (BACnetDataType)(BACnetDataType_BOOLEAN))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(6), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'postDelay' field of BACnetActionCommand")
-		default:
-			postDelay = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("postDelay"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for postDelay")
-			}
-		}
+		return v.(BACnetContextTagBoolean), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'postDelay' field"))
+	}
+	var postDelay BACnetContextTagBoolean
+	if _postDelay != nil {
+		postDelay = *_postDelay
 	}
 
 	// Simple Field (quitOnFailure)

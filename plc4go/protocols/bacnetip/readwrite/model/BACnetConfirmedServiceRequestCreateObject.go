@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -169,26 +170,19 @@ func BACnetConfirmedServiceRequestCreateObjectParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(closeErr, "Error closing for objectSpecifier")
 	}
 
-	// Optional Field (listOfValues) (Can be skipped, if a given expression evaluates to false)
-	var listOfValues BACnetPropertyValues = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("listOfValues"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for listOfValues")
+	_listOfValues, err := ReadOptionalField[BACnetPropertyValues](ctx, "listOfValues", ReadComplex[BACnetPropertyValues](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetPropertyValues, error) {
+		v, err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetObjectType)(CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) }))))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetPropertyValuesParseWithBuffer(ctx, readBuffer, uint8(1), CastBACnetObjectType(utils.InlineIf(objectSpecifier.GetIsObjectType(), func() any { return CastBACnetObjectType(objectSpecifier.GetObjectType()) }, func() any { return CastBACnetObjectType(objectSpecifier.GetObjectIdentifier().GetObjectType()) })))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfValues' field of BACnetConfirmedServiceRequestCreateObject")
-		default:
-			listOfValues = _val.(BACnetPropertyValues)
-			if closeErr := readBuffer.CloseContext("listOfValues"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for listOfValues")
-			}
-		}
+		return v.(BACnetPropertyValues), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfValues' field"))
+	}
+	var listOfValues BACnetPropertyValues
+	if _listOfValues != nil {
+		listOfValues = *_listOfValues
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestCreateObject"); closeErr != nil {

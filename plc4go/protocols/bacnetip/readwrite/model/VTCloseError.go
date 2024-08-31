@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -168,26 +169,19 @@ func VTCloseErrorParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for errorType")
 	}
 
-	// Optional Field (listOfVtSessionIdentifiers) (Can be skipped, if a given expression evaluates to false)
-	var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("listOfVtSessionIdentifiers"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for listOfVtSessionIdentifiers")
+	_listOfVtSessionIdentifiers, err := ReadOptionalField[VTCloseErrorListOfVTSessionIdentifiers](ctx, "listOfVtSessionIdentifiers", ReadComplex[VTCloseErrorListOfVTSessionIdentifiers](func(ctx context.Context, buffer utils.ReadBuffer) (VTCloseErrorListOfVTSessionIdentifiers, error) {
+		v, err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfVtSessionIdentifiers' field of VTCloseError")
-		default:
-			listOfVtSessionIdentifiers = _val.(VTCloseErrorListOfVTSessionIdentifiers)
-			if closeErr := readBuffer.CloseContext("listOfVtSessionIdentifiers"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for listOfVtSessionIdentifiers")
-			}
-		}
+		return v.(VTCloseErrorListOfVTSessionIdentifiers), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfVtSessionIdentifiers' field"))
+	}
+	var listOfVtSessionIdentifiers VTCloseErrorListOfVTSessionIdentifiers
+	if _listOfVtSessionIdentifiers != nil {
+		listOfVtSessionIdentifiers = *_listOfVtSessionIdentifiers
 	}
 
 	if closeErr := readBuffer.CloseContext("VTCloseError"); closeErr != nil {

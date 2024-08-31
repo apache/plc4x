@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -152,48 +153,34 @@ func BACnetAuthenticationFactorFormatParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.Wrap(closeErr, "Error closing for formatType")
 	}
 
-	// Optional Field (vendorId) (Can be skipped, if a given expression evaluates to false)
-	var vendorId BACnetVendorIdTagged = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("vendorId"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for vendorId")
+	_vendorId, err := ReadOptionalField[BACnetVendorIdTagged](ctx, "vendorId", ReadComplex[BACnetVendorIdTagged](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetVendorIdTagged, error) {
+		v, err := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (TagClass)(TagClass_CONTEXT_SPECIFIC_TAGS))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetVendorIdTaggedParseWithBuffer(ctx, readBuffer, uint8(1), TagClass_CONTEXT_SPECIFIC_TAGS)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'vendorId' field of BACnetAuthenticationFactorFormat")
-		default:
-			vendorId = _val.(BACnetVendorIdTagged)
-			if closeErr := readBuffer.CloseContext("vendorId"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for vendorId")
-			}
-		}
+		return v.(BACnetVendorIdTagged), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
+	}
+	var vendorId BACnetVendorIdTagged
+	if _vendorId != nil {
+		vendorId = *_vendorId
 	}
 
-	// Optional Field (vendorFormat) (Can be skipped, if a given expression evaluates to false)
-	var vendorFormat BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("vendorFormat"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for vendorFormat")
+	_vendorFormat, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "vendorFormat", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'vendorFormat' field of BACnetAuthenticationFactorFormat")
-		default:
-			vendorFormat = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("vendorFormat"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for vendorFormat")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorFormat' field"))
+	}
+	var vendorFormat BACnetContextTagUnsignedInteger
+	if _vendorFormat != nil {
+		vendorFormat = *_vendorFormat
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationFactorFormat"); closeErr != nil {

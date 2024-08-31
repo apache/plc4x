@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,26 +141,19 @@ func BACnetBDTEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 		return nil, errors.Wrap(closeErr, "Error closing for bbmdAddress")
 	}
 
-	// Optional Field (broadcastMask) (Can be skipped, if a given expression evaluates to false)
-	var broadcastMask BACnetContextTagOctetString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("broadcastMask"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for broadcastMask")
+	_broadcastMask, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "broadcastMask", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'broadcastMask' field of BACnetBDTEntry")
-		default:
-			broadcastMask = _val.(BACnetContextTagOctetString)
-			if closeErr := readBuffer.CloseContext("broadcastMask"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for broadcastMask")
-			}
-		}
+		return v.(BACnetContextTagOctetString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'broadcastMask' field"))
+	}
+	var broadcastMask BACnetContextTagOctetString
+	if _broadcastMask != nil {
+		broadcastMask = *_broadcastMask
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetBDTEntry"); closeErr != nil {

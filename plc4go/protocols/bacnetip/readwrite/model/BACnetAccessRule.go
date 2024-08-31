@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -172,26 +173,19 @@ func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(closeErr, "Error closing for timeRangeSpecifier")
 	}
 
-	// Optional Field (timeRange) (Can be skipped, if a given expression evaluates to false)
-	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed = nil
-	if bool((timeRangeSpecifier) != (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("timeRange"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for timeRange")
+	_timeRange, err := ReadOptionalField[BACnetDeviceObjectPropertyReferenceEnclosed](ctx, "timeRange", ReadComplex[BACnetDeviceObjectPropertyReferenceEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDeviceObjectPropertyReferenceEnclosed, error) {
+		v, err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetDeviceObjectPropertyReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'timeRange' field of BACnetAccessRule")
-		default:
-			timeRange = _val.(BACnetDeviceObjectPropertyReferenceEnclosed)
-			if closeErr := readBuffer.CloseContext("timeRange"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for timeRange")
-			}
-		}
+		return v.(BACnetDeviceObjectPropertyReferenceEnclosed), nil
+	}, readBuffer), bool((timeRangeSpecifier) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeRange' field"))
+	}
+	var timeRange BACnetDeviceObjectPropertyReferenceEnclosed
+	if _timeRange != nil {
+		timeRange = *_timeRange
 	}
 
 	// Simple Field (locationSpecifier)
@@ -207,26 +201,19 @@ func BACnetAccessRuleParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(closeErr, "Error closing for locationSpecifier")
 	}
 
-	// Optional Field (location) (Can be skipped, if a given expression evaluates to false)
-	var location BACnetDeviceObjectReferenceEnclosed = nil
-	if bool((locationSpecifier) != (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("location"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for location")
+	_location, err := ReadOptionalField[BACnetDeviceObjectReferenceEnclosed](ctx, "location", ReadComplex[BACnetDeviceObjectReferenceEnclosed](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetDeviceObjectReferenceEnclosed, error) {
+		v, err := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetDeviceObjectReferenceEnclosedParseWithBuffer(ctx, readBuffer, uint8(3))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'location' field of BACnetAccessRule")
-		default:
-			location = _val.(BACnetDeviceObjectReferenceEnclosed)
-			if closeErr := readBuffer.CloseContext("location"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for location")
-			}
-		}
+		return v.(BACnetDeviceObjectReferenceEnclosed), nil
+	}, readBuffer), bool((locationSpecifier) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'location' field"))
+	}
+	var location BACnetDeviceObjectReferenceEnclosed
+	if _location != nil {
+		location = *_location
 	}
 
 	// Simple Field (enable)

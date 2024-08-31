@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,26 +141,19 @@ func BACnetReadAccessResultParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
 	}
 
-	// Optional Field (listOfResults) (Can be skipped, if a given expression evaluates to false)
-	var listOfResults BACnetReadAccessResultListOfResults = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("listOfResults"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for listOfResults")
+	_listOfResults, err := ReadOptionalField[BACnetReadAccessResultListOfResults](ctx, "listOfResults", ReadComplex[BACnetReadAccessResultListOfResults](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetReadAccessResultListOfResults, error) {
+		v, err := BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetObjectType)(objectIdentifier.GetObjectType()))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetReadAccessResultListOfResultsParseWithBuffer(ctx, readBuffer, uint8(1), objectIdentifier.GetObjectType())
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'listOfResults' field of BACnetReadAccessResult")
-		default:
-			listOfResults = _val.(BACnetReadAccessResultListOfResults)
-			if closeErr := readBuffer.CloseContext("listOfResults"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for listOfResults")
-			}
-		}
+		return v.(BACnetReadAccessResultListOfResults), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfResults' field"))
+	}
+	var listOfResults BACnetReadAccessResultListOfResults
+	if _listOfResults != nil {
+		listOfResults = *_listOfResults
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetReadAccessResult"); closeErr != nil {

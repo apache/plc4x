@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -206,48 +207,28 @@ func BACnetConfirmedServiceRequestReadRangeParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(closeErr, "Error closing for propertyIdentifier")
 	}
 
-	// Optional Field (propertyArrayIndex) (Can be skipped, if a given expression evaluates to false)
-	var propertyArrayIndex BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("propertyArrayIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for propertyArrayIndex")
+	_propertyArrayIndex, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "propertyArrayIndex", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'propertyArrayIndex' field of BACnetConfirmedServiceRequestReadRange")
-		default:
-			propertyArrayIndex = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("propertyArrayIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for propertyArrayIndex")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'propertyArrayIndex' field"))
+	}
+	var propertyArrayIndex BACnetContextTagUnsignedInteger
+	if _propertyArrayIndex != nil {
+		propertyArrayIndex = *_propertyArrayIndex
 	}
 
-	// Optional Field (readRange) (Can be skipped, if a given expression evaluates to false)
-	var readRange BACnetConfirmedServiceRequestReadRangeRange = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("readRange"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for readRange")
-		}
-		_val, _err := BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'readRange' field of BACnetConfirmedServiceRequestReadRange")
-		default:
-			readRange = _val.(BACnetConfirmedServiceRequestReadRangeRange)
-			if closeErr := readBuffer.CloseContext("readRange"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for readRange")
-			}
-		}
+	_readRange, err := ReadOptionalField[BACnetConfirmedServiceRequestReadRangeRange](ctx, "readRange", ReadComplex[BACnetConfirmedServiceRequestReadRangeRange](BACnetConfirmedServiceRequestReadRangeRangeParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readRange' field"))
+	}
+	var readRange BACnetConfirmedServiceRequestReadRangeRange
+	if _readRange != nil {
+		readRange = *_readRange
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReadRange"); closeErr != nil {

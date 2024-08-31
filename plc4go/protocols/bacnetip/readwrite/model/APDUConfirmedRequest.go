@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -383,36 +384,14 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	}
 	invokeId := _invokeId
 
-	// Optional Field (sequenceNumber) (Can be skipped, if a given expression evaluates to false)
-	var sequenceNumber *uint8 = nil
-	if segmentedMessage {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("sequenceNumber", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'sequenceNumber' field of APDUConfirmedRequest")
-		default:
-			sequenceNumber = &_val
-		}
+	sequenceNumber, err := ReadOptionalField[uint8](ctx, "sequenceNumber", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sequenceNumber' field"))
 	}
 
-	// Optional Field (proposedWindowSize) (Can be skipped, if a given expression evaluates to false)
-	var proposedWindowSize *uint8 = nil
-	if segmentedMessage {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("proposedWindowSize", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'proposedWindowSize' field of APDUConfirmedRequest")
-		default:
-			proposedWindowSize = &_val
-		}
+	proposedWindowSize, err := ReadOptionalField[uint8](ctx, "proposedWindowSize", ReadUnsignedByte(readBuffer, 8), segmentedMessage)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proposedWindowSize' field"))
 	}
 
 	// Virtual field
@@ -420,26 +399,19 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 	apduHeaderReduction := uint16(_apduHeaderReduction)
 	_ = apduHeaderReduction
 
-	// Optional Field (serviceRequest) (Can be skipped, if a given expression evaluates to false)
-	var serviceRequest BACnetConfirmedServiceRequest = nil
-	if !(segmentedMessage) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("serviceRequest"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for serviceRequest")
+	_serviceRequest, err := ReadOptionalField[BACnetConfirmedServiceRequest](ctx, "serviceRequest", ReadComplex[BACnetConfirmedServiceRequest](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequest, error) {
+		v, err := BACnetConfirmedServiceRequestParseWithBuffer(ctx, readBuffer, (uint32)(uint32(apduLength)-uint32(apduHeaderReduction)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConfirmedServiceRequestParseWithBuffer(ctx, readBuffer, uint32(apduLength)-uint32(apduHeaderReduction))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'serviceRequest' field of APDUConfirmedRequest")
-		default:
-			serviceRequest = _val.(BACnetConfirmedServiceRequest)
-			if closeErr := readBuffer.CloseContext("serviceRequest"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for serviceRequest")
-			}
-		}
+		return v.(BACnetConfirmedServiceRequest), nil
+	}, readBuffer), !(segmentedMessage))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequest' field"))
+	}
+	var serviceRequest BACnetConfirmedServiceRequest
+	if _serviceRequest != nil {
+		serviceRequest = *_serviceRequest
 	}
 
 	// Validation
@@ -447,26 +419,9 @@ func APDUConfirmedRequestParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "service request should be set"})
 	}
 
-	// Optional Field (segmentServiceChoice) (Can be skipped, if a given expression evaluates to false)
-	var segmentServiceChoice *BACnetConfirmedServiceChoice = nil
-	if bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))) {
-		if pullErr := readBuffer.PullContext("segmentServiceChoice"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for segmentServiceChoice")
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := BACnetConfirmedServiceChoiceParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'segmentServiceChoice' field of APDUConfirmedRequest")
-		default:
-			segmentServiceChoice = &_val
-		}
-		if closeErr := readBuffer.CloseContext("segmentServiceChoice"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for segmentServiceChoice")
-		}
+	segmentServiceChoice, err := ReadOptionalField[BACnetConfirmedServiceChoice](ctx, "segmentServiceChoice", ReadEnum(BACnetConfirmedServiceChoiceByValue, ReadUnsignedByte(readBuffer, 8)), bool(segmentedMessage) && bool(bool((*sequenceNumber) != (0))))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentServiceChoice' field"))
 	}
 
 	// Virtual field

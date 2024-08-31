@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -188,114 +189,79 @@ func BACnetLightingCommandParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.Wrap(closeErr, "Error closing for lightningOperation")
 	}
 
-	// Optional Field (targetLevel) (Can be skipped, if a given expression evaluates to false)
-	var targetLevel BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("targetLevel"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for targetLevel")
+	_targetLevel, err := ReadOptionalField[BACnetContextTagReal](ctx, "targetLevel", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'targetLevel' field of BACnetLightingCommand")
-		default:
-			targetLevel = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("targetLevel"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for targetLevel")
-			}
-		}
+		return v.(BACnetContextTagReal), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'targetLevel' field"))
+	}
+	var targetLevel BACnetContextTagReal
+	if _targetLevel != nil {
+		targetLevel = *_targetLevel
 	}
 
-	// Optional Field (rampRate) (Can be skipped, if a given expression evaluates to false)
-	var rampRate BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("rampRate"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for rampRate")
+	_rampRate, err := ReadOptionalField[BACnetContextTagReal](ctx, "rampRate", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_REAL))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(2), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rampRate' field of BACnetLightingCommand")
-		default:
-			rampRate = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("rampRate"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for rampRate")
-			}
-		}
+		return v.(BACnetContextTagReal), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rampRate' field"))
+	}
+	var rampRate BACnetContextTagReal
+	if _rampRate != nil {
+		rampRate = *_rampRate
 	}
 
-	// Optional Field (stepIncrement) (Can be skipped, if a given expression evaluates to false)
-	var stepIncrement BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("stepIncrement"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for stepIncrement")
+	_stepIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "stepIncrement", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_REAL))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'stepIncrement' field of BACnetLightingCommand")
-		default:
-			stepIncrement = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("stepIncrement"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for stepIncrement")
-			}
-		}
+		return v.(BACnetContextTagReal), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stepIncrement' field"))
+	}
+	var stepIncrement BACnetContextTagReal
+	if _stepIncrement != nil {
+		stepIncrement = *_stepIncrement
 	}
 
-	// Optional Field (fadeTime) (Can be skipped, if a given expression evaluates to false)
-	var fadeTime BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("fadeTime"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for fadeTime")
+	_fadeTime, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "fadeTime", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(4), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'fadeTime' field of BACnetLightingCommand")
-		default:
-			fadeTime = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("fadeTime"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for fadeTime")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fadeTime' field"))
+	}
+	var fadeTime BACnetContextTagUnsignedInteger
+	if _fadeTime != nil {
+		fadeTime = *_fadeTime
 	}
 
-	// Optional Field (priority) (Can be skipped, if a given expression evaluates to false)
-	var priority BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("priority"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for priority")
+	_priority, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "priority", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(5), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'priority' field of BACnetLightingCommand")
-		default:
-			priority = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("priority"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for priority")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'priority' field"))
+	}
+	var priority BACnetContextTagUnsignedInteger
+	if _priority != nil {
+		priority = *_priority
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingCommand"); closeErr != nil {

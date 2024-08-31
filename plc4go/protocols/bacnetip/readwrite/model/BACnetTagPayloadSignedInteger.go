@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -464,20 +465,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt8 := bool(_isInt8)
 	_ = isInt8
 
-	// Optional Field (valueInt8) (Can be skipped, if a given expression evaluates to false)
-	var valueInt8 *int8 = nil
-	if isInt8 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt8("valueInt8", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt8' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt8 = &_val
-		}
+	valueInt8, err := ReadOptionalField[int8](ctx, "valueInt8", ReadSignedByte(readBuffer, 8), isInt8)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt8' field"))
 	}
 
 	// Virtual field
@@ -485,20 +475,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt16 := bool(_isInt16)
 	_ = isInt16
 
-	// Optional Field (valueInt16) (Can be skipped, if a given expression evaluates to false)
-	var valueInt16 *int16 = nil
-	if isInt16 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt16("valueInt16", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt16' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt16 = &_val
-		}
+	valueInt16, err := ReadOptionalField[int16](ctx, "valueInt16", ReadSignedShort(readBuffer, 16), isInt16)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt16' field"))
 	}
 
 	// Virtual field
@@ -506,20 +485,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt24 := bool(_isInt24)
 	_ = isInt24
 
-	// Optional Field (valueInt24) (Can be skipped, if a given expression evaluates to false)
-	var valueInt24 *int32 = nil
-	if isInt24 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("valueInt24", 24)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt24' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt24 = &_val
-		}
+	valueInt24, err := ReadOptionalField[int32](ctx, "valueInt24", ReadSignedInt(readBuffer, 24), isInt24)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt24' field"))
 	}
 
 	// Virtual field
@@ -527,20 +495,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt32 := bool(_isInt32)
 	_ = isInt32
 
-	// Optional Field (valueInt32) (Can be skipped, if a given expression evaluates to false)
-	var valueInt32 *int32 = nil
-	if isInt32 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt32("valueInt32", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt32' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt32 = &_val
-		}
+	valueInt32, err := ReadOptionalField[int32](ctx, "valueInt32", ReadSignedInt(readBuffer, 32), isInt32)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt32' field"))
 	}
 
 	// Virtual field
@@ -548,20 +505,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt40 := bool(_isInt40)
 	_ = isInt40
 
-	// Optional Field (valueInt40) (Can be skipped, if a given expression evaluates to false)
-	var valueInt40 *int64 = nil
-	if isInt40 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("valueInt40", 40)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt40' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt40 = &_val
-		}
+	valueInt40, err := ReadOptionalField[int64](ctx, "valueInt40", ReadSignedLong(readBuffer, 40), isInt40)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt40' field"))
 	}
 
 	// Virtual field
@@ -569,20 +515,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt48 := bool(_isInt48)
 	_ = isInt48
 
-	// Optional Field (valueInt48) (Can be skipped, if a given expression evaluates to false)
-	var valueInt48 *int64 = nil
-	if isInt48 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("valueInt48", 48)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt48' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt48 = &_val
-		}
+	valueInt48, err := ReadOptionalField[int64](ctx, "valueInt48", ReadSignedLong(readBuffer, 48), isInt48)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt48' field"))
 	}
 
 	// Virtual field
@@ -590,20 +525,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt56 := bool(_isInt56)
 	_ = isInt56
 
-	// Optional Field (valueInt56) (Can be skipped, if a given expression evaluates to false)
-	var valueInt56 *int64 = nil
-	if isInt56 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("valueInt56", 56)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt56' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt56 = &_val
-		}
+	valueInt56, err := ReadOptionalField[int64](ctx, "valueInt56", ReadSignedLong(readBuffer, 56), isInt56)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt56' field"))
 	}
 
 	// Virtual field
@@ -611,20 +535,9 @@ func BACnetTagPayloadSignedIntegerParseWithBuffer(ctx context.Context, readBuffe
 	isInt64 := bool(_isInt64)
 	_ = isInt64
 
-	// Optional Field (valueInt64) (Can be skipped, if a given expression evaluates to false)
-	var valueInt64 *int64 = nil
-	if isInt64 {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("valueInt64", 64)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'valueInt64' field of BACnetTagPayloadSignedInteger")
-		default:
-			valueInt64 = &_val
-		}
+	valueInt64, err := ReadOptionalField[int64](ctx, "valueInt64", ReadSignedLong(readBuffer, 64), isInt64)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInt64' field"))
 	}
 
 	// Validation

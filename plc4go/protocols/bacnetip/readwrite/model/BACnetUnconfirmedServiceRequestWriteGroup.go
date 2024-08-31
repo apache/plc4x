@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -217,26 +218,19 @@ func BACnetUnconfirmedServiceRequestWriteGroupParseWithBuffer(ctx context.Contex
 		return nil, errors.Wrap(closeErr, "Error closing for changeList")
 	}
 
-	// Optional Field (inhibitDelay) (Can be skipped, if a given expression evaluates to false)
-	var inhibitDelay BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("inhibitDelay"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for inhibitDelay")
+	_inhibitDelay, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "inhibitDelay", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'inhibitDelay' field of BACnetUnconfirmedServiceRequestWriteGroup")
-		default:
-			inhibitDelay = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("inhibitDelay"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for inhibitDelay")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inhibitDelay' field"))
+	}
+	var inhibitDelay BACnetContextTagUnsignedInteger
+	if _inhibitDelay != nil {
+		inhibitDelay = *_inhibitDelay
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetUnconfirmedServiceRequestWriteGroup"); closeErr != nil {

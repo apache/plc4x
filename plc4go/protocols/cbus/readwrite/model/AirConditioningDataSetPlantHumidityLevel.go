@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -258,70 +259,31 @@ func AirConditioningDataSetPlantHumidityLevelParseWithBuffer(ctx context.Context
 		return nil, errors.Wrap(closeErr, "Error closing for humidityType")
 	}
 
-	// Optional Field (level) (Can be skipped, if a given expression evaluates to false)
-	var level HVACHumidity = nil
-	if humidityModeAndFlags.GetIsLevelHumidity() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("level"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for level")
-		}
-		_val, _err := HVACHumidityParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'level' field of AirConditioningDataSetPlantHumidityLevel")
-		default:
-			level = _val.(HVACHumidity)
-			if closeErr := readBuffer.CloseContext("level"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for level")
-			}
-		}
+	_level, err := ReadOptionalField[HVACHumidity](ctx, "level", ReadComplex[HVACHumidity](HVACHumidityParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsLevelHumidity())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'level' field"))
+	}
+	var level HVACHumidity
+	if _level != nil {
+		level = *_level
 	}
 
-	// Optional Field (rawLevel) (Can be skipped, if a given expression evaluates to false)
-	var rawLevel HVACRawLevels = nil
-	if humidityModeAndFlags.GetIsLevelRaw() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("rawLevel"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for rawLevel")
-		}
-		_val, _err := HVACRawLevelsParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rawLevel' field of AirConditioningDataSetPlantHumidityLevel")
-		default:
-			rawLevel = _val.(HVACRawLevels)
-			if closeErr := readBuffer.CloseContext("rawLevel"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for rawLevel")
-			}
-		}
+	_rawLevel, err := ReadOptionalField[HVACRawLevels](ctx, "rawLevel", ReadComplex[HVACRawLevels](HVACRawLevelsParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsLevelRaw())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawLevel' field"))
+	}
+	var rawLevel HVACRawLevels
+	if _rawLevel != nil {
+		rawLevel = *_rawLevel
 	}
 
-	// Optional Field (auxLevel) (Can be skipped, if a given expression evaluates to false)
-	var auxLevel HVACAuxiliaryLevel = nil
-	if humidityModeAndFlags.GetIsAuxLevelUsed() {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("auxLevel"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for auxLevel")
-		}
-		_val, _err := HVACAuxiliaryLevelParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'auxLevel' field of AirConditioningDataSetPlantHumidityLevel")
-		default:
-			auxLevel = _val.(HVACAuxiliaryLevel)
-			if closeErr := readBuffer.CloseContext("auxLevel"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for auxLevel")
-			}
-		}
+	_auxLevel, err := ReadOptionalField[HVACAuxiliaryLevel](ctx, "auxLevel", ReadComplex[HVACAuxiliaryLevel](HVACAuxiliaryLevelParseWithBuffer, readBuffer), humidityModeAndFlags.GetIsAuxLevelUsed())
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'auxLevel' field"))
+	}
+	var auxLevel HVACAuxiliaryLevel
+	if _auxLevel != nil {
+		auxLevel = *_auxLevel
 	}
 
 	if closeErr := readBuffer.CloseContext("AirConditioningDataSetPlantHumidityLevel"); closeErr != nil {

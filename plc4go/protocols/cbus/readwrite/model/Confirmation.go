@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -171,26 +172,13 @@ func ConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for alpha")
 	}
 
-	// Optional Field (secondAlpha) (Can be skipped, if a given expression evaluates to false)
-	var secondAlpha Alpha = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("secondAlpha"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for secondAlpha")
-		}
-		_val, _err := AlphaParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'secondAlpha' field of Confirmation")
-		default:
-			secondAlpha = _val.(Alpha)
-			if closeErr := readBuffer.CloseContext("secondAlpha"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for secondAlpha")
-			}
-		}
+	_secondAlpha, err := ReadOptionalField[Alpha](ctx, "secondAlpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondAlpha' field"))
+	}
+	var secondAlpha Alpha
+	if _secondAlpha != nil {
+		secondAlpha = *_secondAlpha
 	}
 
 	// Simple Field (confirmationType)

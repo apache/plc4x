@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -140,26 +141,19 @@ func BACnetPortPermissionParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(closeErr, "Error closing for port")
 	}
 
-	// Optional Field (enable) (Can be skipped, if a given expression evaluates to false)
-	var enable BACnetContextTagBoolean = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("enable"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for enable")
+	_enable, err := ReadOptionalField[BACnetContextTagBoolean](ctx, "enable", ReadComplex[BACnetContextTagBoolean](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagBoolean, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BOOLEAN))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BOOLEAN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'enable' field of BACnetPortPermission")
-		default:
-			enable = _val.(BACnetContextTagBoolean)
-			if closeErr := readBuffer.CloseContext("enable"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for enable")
-			}
-		}
+		return v.(BACnetContextTagBoolean), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
+	}
+	var enable BACnetContextTagBoolean
+	if _enable != nil {
+		enable = *_enable
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetPortPermission"); closeErr != nil {

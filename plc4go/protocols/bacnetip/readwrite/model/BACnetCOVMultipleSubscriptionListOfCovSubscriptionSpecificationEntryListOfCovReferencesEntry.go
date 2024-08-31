@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -150,26 +151,19 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfC
 		return nil, errors.Wrap(closeErr, "Error closing for monitoredProperty")
 	}
 
-	// Optional Field (covIncrement) (Can be skipped, if a given expression evaluates to false)
-	var covIncrement BACnetContextTagReal = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("covIncrement"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for covIncrement")
+	_covIncrement, err := ReadOptionalField[BACnetContextTagReal](ctx, "covIncrement", ReadComplex[BACnetContextTagReal](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagReal, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_REAL)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'covIncrement' field of BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryListOfCovReferencesEntry")
-		default:
-			covIncrement = _val.(BACnetContextTagReal)
-			if closeErr := readBuffer.CloseContext("covIncrement"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for covIncrement")
-			}
-		}
+		return v.(BACnetContextTagReal), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
+	}
+	var covIncrement BACnetContextTagReal
+	if _covIncrement != nil {
+		covIncrement = *_covIncrement
 	}
 
 	// Simple Field (timestamped)

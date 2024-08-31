@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -145,26 +146,19 @@ func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (lastReceivedObjectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("lastReceivedObjectIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for lastReceivedObjectIdentifier")
+	_lastReceivedObjectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'lastReceivedObjectIdentifier' field of BACnetConfirmedServiceRequestGetEventInformation")
-		default:
-			lastReceivedObjectIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("lastReceivedObjectIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for lastReceivedObjectIdentifier")
-			}
-		}
+		return v.(BACnetContextTagObjectIdentifier), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastReceivedObjectIdentifier' field"))
+	}
+	var lastReceivedObjectIdentifier BACnetContextTagObjectIdentifier
+	if _lastReceivedObjectIdentifier != nil {
+		lastReceivedObjectIdentifier = *_lastReceivedObjectIdentifier
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestGetEventInformation"); closeErr != nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -204,26 +205,19 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(closeErr, "Error closing for deviceIdentifier")
 	}
 
-	// Optional Field (openingTag) (Can be skipped, if a given expression evaluates to false)
-	var openingTag BACnetOpeningTag = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("openingTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for openingTag")
+	_openingTag, err := ReadOptionalField[BACnetOpeningTag](ctx, "openingTag", ReadComplex[BACnetOpeningTag](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetOpeningTag, error) {
+		v, err := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetOpeningTagParseWithBuffer(ctx, readBuffer, uint8(0))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'openingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-		default:
-			openingTag = _val.(BACnetOpeningTag)
-			if closeErr := readBuffer.CloseContext("openingTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for openingTag")
-			}
-		}
+		return v.(BACnetOpeningTag), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
+	}
+	var openingTag BACnetOpeningTag
+	if _openingTag != nil {
+		openingTag = *_openingTag
 	}
 
 	// Simple Field (fileStartPosition)
@@ -252,26 +246,19 @@ func BACnetConfirmedServiceRequestAtomicWriteFileParseWithBuffer(ctx context.Con
 		return nil, errors.Wrap(closeErr, "Error closing for fileData")
 	}
 
-	// Optional Field (closingTag) (Can be skipped, if a given expression evaluates to false)
-	var closingTag BACnetClosingTag = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("closingTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for closingTag")
+	_closingTag, err := ReadOptionalField[BACnetClosingTag](ctx, "closingTag", ReadComplex[BACnetClosingTag](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetClosingTag, error) {
+		v, err := BACnetClosingTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetClosingTagParseWithBuffer(ctx, readBuffer, uint8(0))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'closingTag' field of BACnetConfirmedServiceRequestAtomicWriteFile")
-		default:
-			closingTag = _val.(BACnetClosingTag)
-			if closeErr := readBuffer.CloseContext("closingTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for closingTag")
-			}
-		}
+		return v.(BACnetClosingTag), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'closingTag' field"))
+	}
+	var closingTag BACnetClosingTag
+	if _closingTag != nil {
+		closingTag = *_closingTag
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestAtomicWriteFile"); closeErr != nil {

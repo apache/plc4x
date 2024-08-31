@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -129,48 +130,34 @@ func BACnetVMACEntryParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (virtualMacAddress) (Can be skipped, if a given expression evaluates to false)
-	var virtualMacAddress BACnetContextTagOctetString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("virtualMacAddress"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for virtualMacAddress")
+	_virtualMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "virtualMacAddress", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_OCTET_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'virtualMacAddress' field of BACnetVMACEntry")
-		default:
-			virtualMacAddress = _val.(BACnetContextTagOctetString)
-			if closeErr := readBuffer.CloseContext("virtualMacAddress"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for virtualMacAddress")
-			}
-		}
+		return v.(BACnetContextTagOctetString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'virtualMacAddress' field"))
+	}
+	var virtualMacAddress BACnetContextTagOctetString
+	if _virtualMacAddress != nil {
+		virtualMacAddress = *_virtualMacAddress
 	}
 
-	// Optional Field (nativeMacAddress) (Can be skipped, if a given expression evaluates to false)
-	var nativeMacAddress BACnetContextTagOctetString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("nativeMacAddress"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for nativeMacAddress")
+	_nativeMacAddress, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "nativeMacAddress", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_OCTET_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'nativeMacAddress' field of BACnetVMACEntry")
-		default:
-			nativeMacAddress = _val.(BACnetContextTagOctetString)
-			if closeErr := readBuffer.CloseContext("nativeMacAddress"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for nativeMacAddress")
-			}
-		}
+		return v.(BACnetContextTagOctetString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nativeMacAddress' field"))
+	}
+	var nativeMacAddress BACnetContextTagOctetString
+	if _nativeMacAddress != nil {
+		nativeMacAddress = *_nativeMacAddress
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVMACEntry"); closeErr != nil {

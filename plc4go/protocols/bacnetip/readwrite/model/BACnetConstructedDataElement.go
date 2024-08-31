@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -259,70 +260,43 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.WithStack(utils.ParseValidationError{Message: "unexpected closing tag"})
 	}
 
-	// Optional Field (applicationTag) (Can be skipped, if a given expression evaluates to false)
-	var applicationTag BACnetApplicationTag = nil
-	if isApplicationTag {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("applicationTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for applicationTag")
-		}
-		_val, _err := BACnetApplicationTagParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'applicationTag' field of BACnetConstructedDataElement")
-		default:
-			applicationTag = _val.(BACnetApplicationTag)
-			if closeErr := readBuffer.CloseContext("applicationTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for applicationTag")
-			}
-		}
+	_applicationTag, err := ReadOptionalField[BACnetApplicationTag](ctx, "applicationTag", ReadComplex[BACnetApplicationTag](BACnetApplicationTagParseWithBuffer, readBuffer), isApplicationTag)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationTag' field"))
+	}
+	var applicationTag BACnetApplicationTag
+	if _applicationTag != nil {
+		applicationTag = *_applicationTag
 	}
 
-	// Optional Field (contextTag) (Can be skipped, if a given expression evaluates to false)
-	var contextTag BACnetContextTag = nil
-	if isContextTag {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("contextTag"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for contextTag")
+	_contextTag, err := ReadOptionalField[BACnetContextTag](ctx, "contextTag", ReadComplex[BACnetContextTag](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTag, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNKNOWN))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, peekedTagNumber, BACnetDataType_UNKNOWN)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'contextTag' field of BACnetConstructedDataElement")
-		default:
-			contextTag = _val.(BACnetContextTag)
-			if closeErr := readBuffer.CloseContext("contextTag"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for contextTag")
-			}
-		}
+		return v.(BACnetContextTag), nil
+	}, readBuffer), isContextTag)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'contextTag' field"))
+	}
+	var contextTag BACnetContextTag
+	if _contextTag != nil {
+		contextTag = *_contextTag
 	}
 
-	// Optional Field (constructedData) (Can be skipped, if a given expression evaluates to false)
-	var constructedData BACnetConstructedData = nil
-	if isConstructedData {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("constructedData"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for constructedData")
+	_constructedData, err := ReadOptionalField[BACnetConstructedData](ctx, "constructedData", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
+		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(peekedTagNumber), (BACnetObjectType)(objectTypeArgument), (BACnetPropertyIdentifier)(propertyIdentifierArgument), (BACnetTagPayloadUnsignedInteger)(arrayIndexArgument))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, peekedTagNumber, objectTypeArgument, propertyIdentifierArgument, arrayIndexArgument)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'constructedData' field of BACnetConstructedDataElement")
-		default:
-			constructedData = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("constructedData"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for constructedData")
-			}
-		}
+		return v.(BACnetConstructedData), nil
+	}, readBuffer), isConstructedData)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'constructedData' field"))
+	}
+	var constructedData BACnetConstructedData
+	if _constructedData != nil {
+		constructedData = *_constructedData
 	}
 
 	// Validation

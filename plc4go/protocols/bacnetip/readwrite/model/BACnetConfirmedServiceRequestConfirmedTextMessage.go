@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -191,26 +192,19 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageParseWithBuffer(ctx contex
 		return nil, errors.Wrap(closeErr, "Error closing for textMessageSourceDevice")
 	}
 
-	// Optional Field (messageClass) (Can be skipped, if a given expression evaluates to false)
-	var messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("messageClass"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for messageClass")
+	_messageClass, err := ReadOptionalField[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](ctx, "messageClass", ReadComplex[BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass, error) {
+		v, err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConfirmedServiceRequestConfirmedTextMessageMessageClassParseWithBuffer(ctx, readBuffer, uint8(1))
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'messageClass' field of BACnetConfirmedServiceRequestConfirmedTextMessage")
-		default:
-			messageClass = _val.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass)
-			if closeErr := readBuffer.CloseContext("messageClass"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for messageClass")
-			}
-		}
+		return v.(BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'messageClass' field"))
+	}
+	var messageClass BACnetConfirmedServiceRequestConfirmedTextMessageMessageClass
+	if _messageClass != nil {
+		messageClass = *_messageClass
 	}
 
 	// Simple Field (messagePriority)

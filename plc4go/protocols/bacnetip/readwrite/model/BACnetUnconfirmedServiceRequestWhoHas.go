@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -169,48 +170,34 @@ func BACnetUnconfirmedServiceRequestWhoHasParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Optional Field (deviceInstanceRangeLowLimit) (Can be skipped, if a given expression evaluates to false)
-	var deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("deviceInstanceRangeLowLimit"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeLowLimit")
+	_deviceInstanceRangeLowLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeLowLimit", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeLowLimit' field of BACnetUnconfirmedServiceRequestWhoHas")
-		default:
-			deviceInstanceRangeLowLimit = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("deviceInstanceRangeLowLimit"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for deviceInstanceRangeLowLimit")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeLowLimit' field"))
+	}
+	var deviceInstanceRangeLowLimit BACnetContextTagUnsignedInteger
+	if _deviceInstanceRangeLowLimit != nil {
+		deviceInstanceRangeLowLimit = *_deviceInstanceRangeLowLimit
 	}
 
-	// Optional Field (deviceInstanceRangeHighLimit) (Can be skipped, if a given expression evaluates to false)
-	var deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger = nil
-	if bool((deviceInstanceRangeLowLimit) != (nil)) {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("deviceInstanceRangeHighLimit"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for deviceInstanceRangeHighLimit")
+	_deviceInstanceRangeHighLimit, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "deviceInstanceRangeHighLimit", ReadComplex[BACnetContextTagUnsignedInteger](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagUnsignedInteger, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_UNSIGNED_INTEGER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'deviceInstanceRangeHighLimit' field of BACnetUnconfirmedServiceRequestWhoHas")
-		default:
-			deviceInstanceRangeHighLimit = _val.(BACnetContextTagUnsignedInteger)
-			if closeErr := readBuffer.CloseContext("deviceInstanceRangeHighLimit"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for deviceInstanceRangeHighLimit")
-			}
-		}
+		return v.(BACnetContextTagUnsignedInteger), nil
+	}, readBuffer), bool((deviceInstanceRangeLowLimit) != (nil)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceInstanceRangeHighLimit' field"))
+	}
+	var deviceInstanceRangeHighLimit BACnetContextTagUnsignedInteger
+	if _deviceInstanceRangeHighLimit != nil {
+		deviceInstanceRangeHighLimit = *_deviceInstanceRangeHighLimit
 	}
 
 	// Simple Field (object)

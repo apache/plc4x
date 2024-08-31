@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -214,42 +215,18 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	identifier := fmt.Sprintf("%v", _identifier)
 	_ = identifier
 
-	// Optional Field (namespaceURI) (Can be skipped, if a given expression evaluates to false)
-	var namespaceURI PascalString = nil
-	if namespaceURISpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("namespaceURI"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for namespaceURI")
-		}
-		_val, _err := PascalStringParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'namespaceURI' field of ExpandedNodeId")
-		default:
-			namespaceURI = _val.(PascalString)
-			if closeErr := readBuffer.CloseContext("namespaceURI"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for namespaceURI")
-			}
-		}
+	_namespaceURI, err := ReadOptionalField[PascalString](ctx, "namespaceURI", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), namespaceURISpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'namespaceURI' field"))
+	}
+	var namespaceURI PascalString
+	if _namespaceURI != nil {
+		namespaceURI = *_namespaceURI
 	}
 
-	// Optional Field (serverIndex) (Can be skipped, if a given expression evaluates to false)
-	var serverIndex *uint32 = nil
-	if serverIndexSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("serverIndex", 32)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'serverIndex' field of ExpandedNodeId")
-		default:
-			serverIndex = &_val
-		}
+	serverIndex, err := ReadOptionalField[uint32](ctx, "serverIndex", ReadUnsignedInt(readBuffer, 32), serverIndexSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverIndex' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("ExpandedNodeId"); closeErr != nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -198,26 +199,9 @@ func TriggerControlDataLabelParseWithBuffer(ctx context.Context, readBuffer util
 	}
 	actionSelector := _actionSelector
 
-	// Optional Field (language) (Can be skipped, if a given expression evaluates to false)
-	var language *Language = nil
-	if bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON)) {
-		if pullErr := readBuffer.PullContext("language"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for language")
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := LanguageParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'language' field of TriggerControlDataLabel")
-		default:
-			language = &_val
-		}
-		if closeErr := readBuffer.CloseContext("language"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for language")
-		}
+	language, err := ReadOptionalField[Language](ctx, "language", ReadEnum(LanguageByValue, ReadUnsignedByte(readBuffer, 8)), bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'language' field"))
 	}
 
 	data, err := readBuffer.ReadByteArray("data", int((int32(commandTypeContainer.NumBytes()) - int32((utils.InlineIf((bool((triggerControlOptions.GetLabelType()) != (TriggerControlLabelType_LOAD_DYNAMIC_ICON))), func() any { return int32((int32(4))) }, func() any { return int32((int32(3))) }).(int32))))))

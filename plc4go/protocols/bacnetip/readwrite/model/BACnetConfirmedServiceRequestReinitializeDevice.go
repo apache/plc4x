@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -169,26 +170,19 @@ func BACnetConfirmedServiceRequestReinitializeDeviceParseWithBuffer(ctx context.
 		return nil, errors.Wrap(closeErr, "Error closing for reinitializedStateOfDevice")
 	}
 
-	// Optional Field (password) (Can be skipped, if a given expression evaluates to false)
-	var password BACnetContextTagCharacterString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("password"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for password")
+	_password, err := ReadOptionalField[BACnetContextTagCharacterString](ctx, "password", ReadComplex[BACnetContextTagCharacterString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagCharacterString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_CHARACTER_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'password' field of BACnetConfirmedServiceRequestReinitializeDevice")
-		default:
-			password = _val.(BACnetContextTagCharacterString)
-			if closeErr := readBuffer.CloseContext("password"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for password")
-			}
-		}
+		return v.(BACnetContextTagCharacterString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'password' field"))
+	}
+	var password BACnetContextTagCharacterString
+	if _password != nil {
+		password = *_password
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestReinitializeDevice"); closeErr != nil {

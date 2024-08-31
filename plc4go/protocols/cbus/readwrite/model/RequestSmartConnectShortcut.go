@@ -22,7 +22,6 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
@@ -196,20 +195,9 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 
 	readBuffer.Reset(currentPos)
 
-	// Optional Field (secondPipe) (Can be skipped, if a given expression evaluates to false)
-	var secondPipe *byte = nil
-	if bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("secondPipe")
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'secondPipe' field of RequestSmartConnectShortcut")
-		default:
-			secondPipe = &_val
-		}
+	secondPipe, err := ReadOptionalField[byte](ctx, "secondPipe", ReadByte(readBuffer, 8), bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondPipe' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("RequestSmartConnectShortcut"); closeErr != nil {

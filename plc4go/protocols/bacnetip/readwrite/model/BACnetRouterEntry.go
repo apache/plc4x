@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -186,26 +187,19 @@ func BACnetRouterEntryParseWithBuffer(ctx context.Context, readBuffer utils.Read
 		return nil, errors.Wrap(closeErr, "Error closing for status")
 	}
 
-	// Optional Field (performanceIndex) (Can be skipped, if a given expression evaluates to false)
-	var performanceIndex BACnetContextTagOctetString = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("performanceIndex"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for performanceIndex")
+	_performanceIndex, err := ReadOptionalField[BACnetContextTagOctetString](ctx, "performanceIndex", ReadComplex[BACnetContextTagOctetString](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagOctetString, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_OCTET_STRING))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(3), BACnetDataType_OCTET_STRING)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'performanceIndex' field of BACnetRouterEntry")
-		default:
-			performanceIndex = _val.(BACnetContextTagOctetString)
-			if closeErr := readBuffer.CloseContext("performanceIndex"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for performanceIndex")
-			}
-		}
+		return v.(BACnetContextTagOctetString), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'performanceIndex' field"))
+	}
+	var performanceIndex BACnetContextTagOctetString
+	if _performanceIndex != nil {
+		performanceIndex = *_performanceIndex
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRouterEntry"); closeErr != nil {

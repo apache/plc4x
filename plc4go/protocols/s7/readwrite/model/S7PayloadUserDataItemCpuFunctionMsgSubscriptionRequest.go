@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -227,42 +228,14 @@ func S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequestParseWithBuffer(ctx c
 	}
 	magicKey := _magicKey
 
-	// Optional Field (alarmtype) (Can be skipped, if a given expression evaluates to false)
-	var alarmtype *AlarmStateType = nil
-	if bool((subscription) >= (128)) {
-		if pullErr := readBuffer.PullContext("alarmtype"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for alarmtype")
-		}
-		currentPos = positionAware.GetPos()
-		_val, _err := AlarmStateTypeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'alarmtype' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
-		default:
-			alarmtype = &_val
-		}
-		if closeErr := readBuffer.CloseContext("alarmtype"); closeErr != nil {
-			return nil, errors.Wrap(closeErr, "Error closing for alarmtype")
-		}
+	alarmtype, err := ReadOptionalField[AlarmStateType](ctx, "alarmtype", ReadEnum(AlarmStateTypeByValue, ReadUnsignedByte(readBuffer, 8)), bool((subscription) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmtype' field"))
 	}
 
-	// Optional Field (reserve) (Can be skipped, if a given expression evaluates to false)
-	var reserve *uint8 = nil
-	if bool((subscription) >= (128)) {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint8("reserve", 8)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'reserve' field of S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest")
-		default:
-			reserve = &_val
-		}
+	reserve, err := ReadOptionalField[uint8](ctx, "reserve", ReadUnsignedByte(readBuffer, 8), bool((subscription) >= (128)))
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'reserve' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("S7PayloadUserDataItemCpuFunctionMsgSubscriptionRequest"); closeErr != nil {

@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -301,112 +302,42 @@ func DataValueParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) 
 	}
 	valueSpecified := _valueSpecified
 
-	// Optional Field (value) (Can be skipped, if a given expression evaluates to false)
-	var value Variant = nil
-	if valueSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("value"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for value")
-		}
-		_val, _err := VariantParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'value' field of DataValue")
-		default:
-			value = _val.(Variant)
-			if closeErr := readBuffer.CloseContext("value"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for value")
-			}
-		}
+	_value, err := ReadOptionalField[Variant](ctx, "value", ReadComplex[Variant](VariantParseWithBuffer, readBuffer), valueSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
+	}
+	var value Variant
+	if _value != nil {
+		value = *_value
 	}
 
-	// Optional Field (statusCode) (Can be skipped, if a given expression evaluates to false)
-	var statusCode StatusCode = nil
-	if statusCodeSpecified {
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("statusCode"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for statusCode")
-		}
-		_val, _err := StatusCodeParseWithBuffer(ctx, readBuffer)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'statusCode' field of DataValue")
-		default:
-			statusCode = _val.(StatusCode)
-			if closeErr := readBuffer.CloseContext("statusCode"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for statusCode")
-			}
-		}
+	_statusCode, err := ReadOptionalField[StatusCode](ctx, "statusCode", ReadComplex[StatusCode](StatusCodeParseWithBuffer, readBuffer), statusCodeSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusCode' field"))
+	}
+	var statusCode StatusCode
+	if _statusCode != nil {
+		statusCode = *_statusCode
 	}
 
-	// Optional Field (sourceTimestamp) (Can be skipped, if a given expression evaluates to false)
-	var sourceTimestamp *int64 = nil
-	if sourceTimestampSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("sourceTimestamp", 64)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'sourceTimestamp' field of DataValue")
-		default:
-			sourceTimestamp = &_val
-		}
+	sourceTimestamp, err := ReadOptionalField[int64](ctx, "sourceTimestamp", ReadSignedLong(readBuffer, 64), sourceTimestampSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceTimestamp' field"))
 	}
 
-	// Optional Field (sourcePicoseconds) (Can be skipped, if a given expression evaluates to false)
-	var sourcePicoseconds *uint16 = nil
-	if sourcePicosecondsSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("sourcePicoseconds", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'sourcePicoseconds' field of DataValue")
-		default:
-			sourcePicoseconds = &_val
-		}
+	sourcePicoseconds, err := ReadOptionalField[uint16](ctx, "sourcePicoseconds", ReadUnsignedShort(readBuffer, 16), sourcePicosecondsSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourcePicoseconds' field"))
 	}
 
-	// Optional Field (serverTimestamp) (Can be skipped, if a given expression evaluates to false)
-	var serverTimestamp *int64 = nil
-	if serverTimestampSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadInt64("serverTimestamp", 64)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'serverTimestamp' field of DataValue")
-		default:
-			serverTimestamp = &_val
-		}
+	serverTimestamp, err := ReadOptionalField[int64](ctx, "serverTimestamp", ReadSignedLong(readBuffer, 64), serverTimestampSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverTimestamp' field"))
 	}
 
-	// Optional Field (serverPicoseconds) (Can be skipped, if a given expression evaluates to false)
-	var serverPicoseconds *uint16 = nil
-	if serverPicosecondsSpecified {
-		currentPos = positionAware.GetPos()
-		_val, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("serverPicoseconds", 16)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'serverPicoseconds' field of DataValue")
-		default:
-			serverPicoseconds = &_val
-		}
+	serverPicoseconds, err := ReadOptionalField[uint16](ctx, "serverPicoseconds", ReadUnsignedShort(readBuffer, 16), serverPicosecondsSpecified)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serverPicoseconds' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("DataValue"); closeErr != nil {

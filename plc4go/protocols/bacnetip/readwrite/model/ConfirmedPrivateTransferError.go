@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -216,26 +217,19 @@ func ConfirmedPrivateTransferErrorParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for serviceNumber")
 	}
 
-	// Optional Field (errorParameters) (Can be skipped, if a given expression evaluates to false)
-	var errorParameters BACnetConstructedData = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("errorParameters"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for errorParameters")
+	_errorParameters, err := ReadOptionalField[BACnetConstructedData](ctx, "errorParameters", ReadComplex[BACnetConstructedData](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetConstructedData, error) {
+		v, err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, (uint8)(uint8(3)), (BACnetObjectType)(BACnetObjectType_VENDOR_PROPRIETARY_VALUE), (BACnetPropertyIdentifier)(BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE), (BACnetTagPayloadUnsignedInteger)(nil))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetConstructedDataParseWithBuffer(ctx, readBuffer, uint8(3), BACnetObjectType_VENDOR_PROPRIETARY_VALUE, BACnetPropertyIdentifier_VENDOR_PROPRIETARY_VALUE, nil)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'errorParameters' field of ConfirmedPrivateTransferError")
-		default:
-			errorParameters = _val.(BACnetConstructedData)
-			if closeErr := readBuffer.CloseContext("errorParameters"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for errorParameters")
-			}
-		}
+		return v.(BACnetConstructedData), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorParameters' field"))
+	}
+	var errorParameters BACnetConstructedData
+	if _errorParameters != nil {
+		errorParameters = *_errorParameters
 	}
 
 	if closeErr := readBuffer.CloseContext("ConfirmedPrivateTransferError"); closeErr != nil {

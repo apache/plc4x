@@ -22,11 +22,12 @@ package model
 import (
 	"context"
 	"fmt"
-	"io"
 
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -216,26 +217,19 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	// Optional Field (rawObjectType) (Can be skipped, if a given expression evaluates to false)
-	var rawObjectType BACnetContextTagEnumerated = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("rawObjectType"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for rawObjectType")
+	_rawObjectType, err := ReadOptionalField[BACnetContextTagEnumerated](ctx, "rawObjectType", ReadComplex[BACnetContextTagEnumerated](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagEnumerated, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_ENUMERATED))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(0), BACnetDataType_ENUMERATED)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'rawObjectType' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
-		default:
-			rawObjectType = _val.(BACnetContextTagEnumerated)
-			if closeErr := readBuffer.CloseContext("rawObjectType"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for rawObjectType")
-			}
-		}
+		return v.(BACnetContextTagEnumerated), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'rawObjectType' field"))
+	}
+	var rawObjectType BACnetContextTagEnumerated
+	if _rawObjectType != nil {
+		rawObjectType = *_rawObjectType
 	}
 
 	// Virtual field
@@ -248,26 +242,19 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 	objectType := BACnetObjectType(_objectType)
 	_ = objectType
 
-	// Optional Field (objectIdentifier) (Can be skipped, if a given expression evaluates to false)
-	var objectIdentifier BACnetContextTagObjectIdentifier = nil
-	{
-		currentPos = positionAware.GetPos()
-		if pullErr := readBuffer.PullContext("objectIdentifier"); pullErr != nil {
-			return nil, errors.Wrap(pullErr, "Error pulling for objectIdentifier")
+	_objectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "objectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](func(ctx context.Context, buffer utils.ReadBuffer) (BACnetContextTagObjectIdentifier, error) {
+		v, err := BACnetContextTagParseWithBuffer(ctx, readBuffer, (uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER))
+		if err != nil {
+			return nil, err
 		}
-		_val, _err := BACnetContextTagParseWithBuffer(ctx, readBuffer, uint8(1), BACnetDataType_BACNET_OBJECT_IDENTIFIER)
-		switch {
-		case errors.Is(_err, utils.ParseAssertError{}) || errors.Is(_err, io.EOF):
-			log.Debug().Err(_err).Msg("Resetting position because optional threw an error")
-			readBuffer.Reset(currentPos)
-		case _err != nil:
-			return nil, errors.Wrap(_err, "Error parsing 'objectIdentifier' field of BACnetConfirmedServiceRequestCreateObjectObjectSpecifier")
-		default:
-			objectIdentifier = _val.(BACnetContextTagObjectIdentifier)
-			if closeErr := readBuffer.CloseContext("objectIdentifier"); closeErr != nil {
-				return nil, errors.Wrap(closeErr, "Error closing for objectIdentifier")
-			}
-		}
+		return v.(BACnetContextTagObjectIdentifier), nil
+	}, readBuffer), true)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectIdentifier' field"))
+	}
+	var objectIdentifier BACnetContextTagObjectIdentifier
+	if _objectIdentifier != nil {
+		objectIdentifier = *_objectIdentifier
 	}
 
 	// Virtual field
