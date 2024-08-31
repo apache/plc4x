@@ -213,6 +213,9 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 	_ = currentPos
 
 	peekedByte, err := ReadPeekField[RequestType](ctx, "peekedByte", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
+	}
 
 	startingCR, err := ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_EMPTY)))
 	if err != nil {
@@ -225,6 +228,9 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 	}
 
 	secondPeek, err := ReadPeekField[RequestType](ctx, "secondPeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondPeek' field"))
+	}
 
 	actualPeek, err := ReadVirtualField[RequestType](ctx, "actualPeek", (*RequestType)(nil), CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) })))
 	if err != nil {

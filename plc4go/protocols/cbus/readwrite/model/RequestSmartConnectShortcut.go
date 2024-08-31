@@ -187,6 +187,9 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 	_ = pipe
 
 	pipePeek, err := ReadPeekField[RequestType](ctx, "pipePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'pipePeek' field"))
+	}
 
 	secondPipe, err := ReadOptionalField[byte](ctx, "secondPipe", ReadByte(readBuffer, 8), bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)))
 	if err != nil {

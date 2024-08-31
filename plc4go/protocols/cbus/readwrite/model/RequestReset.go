@@ -183,6 +183,9 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	tildePeek, err := ReadPeekField[RequestType](ctx, "tildePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tildePeek' field"))
+	}
 
 	secondTilde, err := ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek) == (RequestType_RESET)))
 	if err != nil {
@@ -190,6 +193,9 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	tildePeek2, err := ReadPeekField[RequestType](ctx, "tildePeek2", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tildePeek2' field"))
+	}
 
 	thirdTilde, err := ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek2) == (RequestType_RESET)))
 	if err != nil {

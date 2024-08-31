@@ -236,6 +236,9 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	_ = currentPos
 
 	raw, err := ReadPeekField[uint16](ctx, "raw", ReadUnsignedShort(readBuffer, uint8(16)), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'raw' field"))
+	}
 
 	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12))
 	if err != nil {

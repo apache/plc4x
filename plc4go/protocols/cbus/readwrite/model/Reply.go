@@ -150,6 +150,9 @@ func ReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cBus
 	_ = currentPos
 
 	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyChildSerializeRequirement interface {

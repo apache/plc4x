@@ -1076,7 +1076,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", (*${helper.getLanguageTypeNameForField(field)})(nil), ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", (*${helper.getLanguageTypeNameForField(field)})(nil), ${helper.toParseExpression(virtualField, virtualField.type, virtualField.valueExpression, parserArguments,true)}${helper.getFieldOptions(typedField, parserArguments)});
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
@@ -1098,6 +1098,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
 	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}<#else>, 0</#if>${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
+	}
 				<#break>
 		</#switch>
 	</#list>

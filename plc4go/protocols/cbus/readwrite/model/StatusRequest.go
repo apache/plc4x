@@ -146,6 +146,9 @@ func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	_ = currentPos
 
 	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type StatusRequestChildSerializeRequirement interface {

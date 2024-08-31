@@ -170,6 +170,9 @@ func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	_ = currentPos
 
 	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
+	}
 
 	isAlpha, err := ReadVirtualField[bool](ctx, "isAlpha", (*bool)(nil), bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A)))))
 	if err != nil {

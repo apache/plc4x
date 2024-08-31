@@ -149,6 +149,9 @@ func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer
 	_ = currentPos
 
 	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedApplication' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToMultiPointCommandChildSerializeRequirement interface {

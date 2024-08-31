@@ -149,6 +149,9 @@ func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'salType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MonitoredSALChildSerializeRequirement interface {

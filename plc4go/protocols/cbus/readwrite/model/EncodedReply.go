@@ -169,6 +169,9 @@ func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	_ = currentPos
 
 	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedByte' field"))
+	}
 
 	isMonitoredSAL, err := ReadVirtualField[bool](ctx, "isMonitoredSAL", (*bool)(nil), bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore())))
 	if err != nil {

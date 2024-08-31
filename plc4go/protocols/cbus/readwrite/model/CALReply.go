@@ -160,6 +160,9 @@ func CALReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, c
 	_ = currentPos
 
 	calType, err := ReadPeekField[byte](ctx, "calType", ReadByte(readBuffer, 8), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calType' field"))
+	}
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CALReplyChildSerializeRequirement interface {

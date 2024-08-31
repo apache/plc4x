@@ -230,7 +230,7 @@ func BACnetConfirmedServiceRequestCreateObjectObjectSpecifierParseWithBuffer(ctx
 	}
 	_ = isObjectType
 
-	objectType, err := ReadVirtualField[BACnetObjectType](ctx, "objectType", (*BACnetObjectType)(nil), MapBACnetObjectType(ctx, (*rawObjectType)))
+	objectType, err := ReadVirtualField[BACnetObjectType](ctx, "objectType", (*BACnetObjectType)(nil), MapBACnetObjectType(ctx, (rawObjectType)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
 	}

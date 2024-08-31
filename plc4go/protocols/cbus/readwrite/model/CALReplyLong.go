@@ -246,6 +246,9 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	}
 
 	terminatingByte, err := ReadPeekField[uint32](ctx, "terminatingByte", ReadUnsignedInt(readBuffer, uint8(24)), 0)
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'terminatingByte' field"))
+	}
 
 	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)))
 	if err != nil {
