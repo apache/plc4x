@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -234,14 +235,7 @@ func LevelInformationParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (raw)
-	currentPos = positionAware.GetPos()
-	raw, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("raw", 16)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'raw' field of LevelInformation")
-	}
-
-	readBuffer.Reset(currentPos)
+	raw, err := ReadPeekField[uint16](ctx, "raw", ReadUnsignedShort(readBuffer, uint8(16)), 0)
 
 	nibble1, err := ReadVirtualField[uint8](ctx, "nibble1", (*uint8)(nil), (raw&0xF000)>>uint8(12))
 	if err != nil {

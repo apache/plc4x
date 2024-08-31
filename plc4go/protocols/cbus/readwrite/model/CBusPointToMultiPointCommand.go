@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,14 +148,7 @@ func CBusPointToMultiPointCommandParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedApplication)
-	currentPos = positionAware.GetPos()
-	peekedApplication, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedApplication")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field of CBusPointToMultiPointCommand")
-	}
-
-	readBuffer.Reset(currentPos)
+	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToMultiPointCommandChildSerializeRequirement interface {

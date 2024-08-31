@@ -207,14 +207,7 @@ func MonitoredSALShortFormBasicModeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (counts)
-	currentPos = positionAware.GetPos()
-	counts, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("counts")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'counts' field of MonitoredSALShortFormBasicMode")
-	}
-
-	readBuffer.Reset(currentPos)
+	counts, err := ReadPeekField[byte](ctx, "counts", ReadByte(readBuffer, 8), 0)
 
 	bridgeCount, err := ReadOptionalField[uint8](ctx, "bridgeCount", ReadUnsignedByte(readBuffer, uint8(8)), bool((counts) != (0x00)))
 	if err != nil {

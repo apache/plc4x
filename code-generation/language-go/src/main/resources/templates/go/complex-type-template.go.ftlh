@@ -1092,58 +1092,13 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.WithStack(utils.${errorType}{Message: ${validationField.getDescription().orElse("\"Validation failed\"")}})<@emitImport import="github.com/pkg/errors" />
 	}
                 <#break>
-            <#case "peek">
-                <#assign peekField = field.asPeekField().orElseThrow()>
+			<#case "peek">
+				<#assign peekField = field.asPeekField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-				// Peek Field (${peekField.name})
-                <#if peekField.type.isSimpleTypeReference()>
-				currentPos = positionAware.GetPos()
-				${peekField.name}, _err := ${helper.getReadBufferReadMethodCall(peekField.name, peekField.type.asSimpleTypeReference().orElseThrow(), peekField)}
-				if _err != nil {
-					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-				}
-                <#elseif helper.isEnumField(field)>
-				currentPos = positionAware.GetPos()
-				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
-					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
-				}
-				${peekField.name}, _err := ${helper.getLanguageTypeNameForField(field)}ParseWithBuffer(ctx, readBuffer)
-				if _err != nil {
-					return nil, errors.Wrap(_err, "Error parsing '${peekField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
-				}
-				if closeErr := readBuffer.CloseContext("${peekField.name}"); closeErr != nil {
-					return nil, errors.Wrap(closeErr, "Error closing for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
-				}
-                <#else>
-				currentPos = positionAware.GetPos()
-				if pullErr := readBuffer.PullContext("${peekField.name}"); pullErr != nil {
-					return nil, errors.Wrap(pullErr, "Error pulling for ${peekField.name}")<@emitImport import="github.com/pkg/errors" />
-				}
-                    <@compress single_line=true>
-                        <#assign complexTypeReference=peekField.type.asComplexTypeReference().orElseThrow()>
-                        <#assign typeName=complexTypeReference.name>
-                        <#assign typeDefinition=complexTypeReference.typeDefinition>
-                        <#if typeDefinition.isDiscriminatedChildTypeDefinition()>
-                        <#-- Usually you don't use child directly unless they are parameterized #-->
-                            <#assign typeName=typeDefinition.parentType.orElseThrow().name>
-                            <#assign typeDefinition=typeDefinition.parentType.orElseThrow()>
-                        </#if>
-                        <#assign hasRefParams=complexTypeReference.params.isPresent()>
-                        <#assign refParams>
-                            <#if hasRefParams>
-								,
-                                <#list complexTypeReference.params.orElseThrow() as parserArgument>
-                                    ${helper.toTypedParseExpression(peekField, helper.getArgumentType(peekField.type, parserArgument?index), parserArgument, parserArguments)}
-                                    <#sep>, </#sep>
-                                </#list>
-                            </#if>
-                        </#assign>
-				${peekField.name}, _ := ${typeName}ParseWithBuffer(ctx, readBuffer${refParams})
-                    </@compress>
-                </#if>
-
-				readBuffer.Reset(currentPos)
-                <#break>
+	${namedField.name},err := Read${field.typeName?cap_first}Field[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", ${helper.getDataReaderCall(typedField.type)}<#if peekField.offsetExpression.present>, ${helper.toParseExpression(peekField, helper.boolTypeReference, peekField.offsetExpression.get(), parserArguments)}<#else>, 0</#if>${helper.getFieldOptions(typedField, parserArguments)});
+				<#break>
 		</#switch>
 	</#list>
 

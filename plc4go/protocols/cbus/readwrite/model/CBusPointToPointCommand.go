@@ -177,14 +177,7 @@ func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (bridgeAddressCountPeek)
-	currentPos = positionAware.GetPos()
-	bridgeAddressCountPeek, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint16("bridgeAddressCountPeek", 16)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'bridgeAddressCountPeek' field of CBusPointToPointCommand")
-	}
-
-	readBuffer.Reset(currentPos)
+	bridgeAddressCountPeek, err := ReadPeekField[uint16](ctx, "bridgeAddressCountPeek", ReadUnsignedShort(readBuffer, uint8(16)), 0)
 
 	isDirect, err := ReadVirtualField[bool](ctx, "isDirect", (*bool)(nil), bool((bridgeAddressCountPeek&0x00FF) == (0x0000)))
 	if err != nil {

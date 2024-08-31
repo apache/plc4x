@@ -178,14 +178,7 @@ func CBusPointToPointToMultiPointCommandParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkRoute' field"))
 	}
 
-	// Peek Field (peekedApplication)
-	currentPos = positionAware.GetPos()
-	peekedApplication, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedApplication")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedApplication' field of CBusPointToPointToMultiPointCommand")
-	}
-
-	readBuffer.Reset(currentPos)
+	peekedApplication, err := ReadPeekField[byte](ctx, "peekedApplication", ReadByte(readBuffer, 8), 0)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointToMultiPointCommandChildSerializeRequirement interface {

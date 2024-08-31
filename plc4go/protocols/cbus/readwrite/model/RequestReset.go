@@ -182,40 +182,14 @@ func RequestResetParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (tildePeek)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("tildePeek"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek")
-	}
-	tildePeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'tildePeek' field of RequestReset")
-	}
-	if closeErr := readBuffer.CloseContext("tildePeek"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tildePeek")
-	}
-
-	readBuffer.Reset(currentPos)
+	tildePeek, err := ReadPeekField[RequestType](ctx, "tildePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
 
 	secondTilde, err := ReadOptionalField[RequestType](ctx, "secondTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek) == (RequestType_RESET)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondTilde' field"))
 	}
 
-	// Peek Field (tildePeek2)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("tildePeek2"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for tildePeek2")
-	}
-	tildePeek2, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'tildePeek2' field of RequestReset")
-	}
-	if closeErr := readBuffer.CloseContext("tildePeek2"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for tildePeek2")
-	}
-
-	readBuffer.Reset(currentPos)
+	tildePeek2, err := ReadPeekField[RequestType](ctx, "tildePeek2", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
 
 	thirdTilde, err := ReadOptionalField[RequestType](ctx, "thirdTilde", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((tildePeek2) == (RequestType_RESET)))
 	if err != nil {

@@ -186,20 +186,7 @@ func RequestSmartConnectShortcutParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	_ = pipe
 
-	// Peek Field (pipePeek)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("pipePeek"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for pipePeek")
-	}
-	pipePeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'pipePeek' field of RequestSmartConnectShortcut")
-	}
-	if closeErr := readBuffer.CloseContext("pipePeek"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for pipePeek")
-	}
-
-	readBuffer.Reset(currentPos)
+	pipePeek, err := ReadPeekField[RequestType](ctx, "pipePeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
 
 	secondPipe, err := ReadOptionalField[byte](ctx, "secondPipe", ReadByte(readBuffer, 8), bool((pipePeek) == (RequestType_SMART_CONNECT_SHORTCUT)))
 	if err != nil {

@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -168,14 +169,7 @@ func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedByte)
-	currentPos = positionAware.GetPos()
-	peekedByte, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedByte")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of ReplyOrConfirmation")
-	}
-
-	readBuffer.Reset(currentPos)
+	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
 
 	isAlpha, err := ReadVirtualField[bool](ctx, "isAlpha", (*bool)(nil), bool((bool((peekedByte) >= (0x67)))) && bool((bool((peekedByte) <= (0x7A)))))
 	if err != nil {

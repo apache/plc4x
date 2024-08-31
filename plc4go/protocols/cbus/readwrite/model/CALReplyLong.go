@@ -245,14 +245,7 @@ func CALReplyLongParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing reserved field"))
 	}
 
-	// Peek Field (terminatingByte)
-	currentPos = positionAware.GetPos()
-	terminatingByte, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadUint32("terminatingByte", 24)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'terminatingByte' field of CALReplyLong")
-	}
-
-	readBuffer.Reset(currentPos)
+	terminatingByte, err := ReadPeekField[uint32](ctx, "terminatingByte", ReadUnsignedInt(readBuffer, uint8(24)), 0)
 
 	isUnitAddress, err := ReadVirtualField[bool](ctx, "isUnitAddress", (*bool)(nil), bool((terminatingByte&0xff) == (0x00)))
 	if err != nil {

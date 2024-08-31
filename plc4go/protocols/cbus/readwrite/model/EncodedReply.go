@@ -27,6 +27,7 @@ import (
 	"github.com/rs/zerolog"
 
 	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -167,14 +168,7 @@ func EncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedByte)
-	currentPos = positionAware.GetPos()
-	peekedByte, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("peekedByte")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of EncodedReply")
-	}
-
-	readBuffer.Reset(currentPos)
+	peekedByte, err := ReadPeekField[byte](ctx, "peekedByte", ReadByte(readBuffer, 8), 0)
 
 	isMonitoredSAL, err := ReadVirtualField[bool](ctx, "isMonitoredSAL", (*bool)(nil), bool((bool(bool(bool((peekedByte&0x3F) == (0x05))) || bool(bool((peekedByte) == (0x00)))) || bool(bool((peekedByte&0xF8) == (0x00))))) && bool(!(requestContext.GetSendIdentifyRequestBefore())))
 	if err != nil {

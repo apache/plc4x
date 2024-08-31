@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -143,14 +145,7 @@ func StatusRequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (statusType)
-	currentPos = positionAware.GetPos()
-	statusType, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("statusType")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'statusType' field of StatusRequest")
-	}
-
-	readBuffer.Reset(currentPos)
+	statusType, err := ReadPeekField[byte](ctx, "statusType", ReadByte(readBuffer, 8), 0)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type StatusRequestChildSerializeRequirement interface {

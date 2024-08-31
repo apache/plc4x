@@ -212,20 +212,7 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (peekedByte)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("peekedByte"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for peekedByte")
-	}
-	peekedByte, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'peekedByte' field of Request")
-	}
-	if closeErr := readBuffer.CloseContext("peekedByte"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for peekedByte")
-	}
-
-	readBuffer.Reset(currentPos)
+	peekedByte, err := ReadPeekField[RequestType](ctx, "peekedByte", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
 
 	startingCR, err := ReadOptionalField[RequestType](ctx, "startingCR", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), bool((peekedByte) == (RequestType_EMPTY)))
 	if err != nil {
@@ -237,20 +224,7 @@ func RequestParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, cB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resetMode' field"))
 	}
 
-	// Peek Field (secondPeek)
-	currentPos = positionAware.GetPos()
-	if pullErr := readBuffer.PullContext("secondPeek"); pullErr != nil {
-		return nil, errors.Wrap(pullErr, "Error pulling for secondPeek")
-	}
-	secondPeek, _err := RequestTypeParseWithBuffer(ctx, readBuffer)
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'secondPeek' field of Request")
-	}
-	if closeErr := readBuffer.CloseContext("secondPeek"); closeErr != nil {
-		return nil, errors.Wrap(closeErr, "Error closing for secondPeek")
-	}
-
-	readBuffer.Reset(currentPos)
+	secondPeek, err := ReadPeekField[RequestType](ctx, "secondPeek", ReadEnum(RequestTypeByValue, ReadUnsignedByte(readBuffer, uint8(8))), 0)
 
 	actualPeek, err := ReadVirtualField[RequestType](ctx, "actualPeek", (*RequestType)(nil), CastRequestType(utils.InlineIf(bool((bool(bool((startingCR) == (nil))) && bool(bool((resetMode) == (nil))))) || bool((bool(bool(bool((startingCR) == (nil))) && bool(bool((resetMode) != (nil)))) && bool(bool((secondPeek) == (RequestType_EMPTY))))), func() any { return CastRequestType(peekedByte) }, func() any { return CastRequestType(secondPeek) })))
 	if err != nil {

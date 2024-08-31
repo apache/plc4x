@@ -26,6 +26,8 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
+	. "github.com/apache/plc4x/plc4go/spi/codegen/io"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,14 +148,7 @@ func MonitoredSALParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Peek Field (salType)
-	currentPos = positionAware.GetPos()
-	salType, _err := /*TODO: migrate me*/ /*TODO: migrate me*/ readBuffer.ReadByte("salType")
-	if _err != nil {
-		return nil, errors.Wrap(_err, "Error parsing 'salType' field of MonitoredSAL")
-	}
-
-	readBuffer.Reset(currentPos)
+	salType, err := ReadPeekField[byte](ctx, "salType", ReadByte(readBuffer, 8), 0)
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MonitoredSALChildSerializeRequirement interface {
