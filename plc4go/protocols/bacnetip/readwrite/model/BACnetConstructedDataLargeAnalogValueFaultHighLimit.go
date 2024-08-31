@@ -176,7 +176,7 @@ func BACnetConstructedDataLargeAnalogValueFaultHighLimitParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	faultHighLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "faultHighLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	faultHighLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "faultHighLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultHighLimit' field"))
 	}

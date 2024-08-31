@@ -176,7 +176,7 @@ func BACnetConstructedDataActiveAuthenticationPolicyParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	activeAuthenticationPolicy, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	activeAuthenticationPolicy, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "activeAuthenticationPolicy", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeAuthenticationPolicy' field"))
 	}

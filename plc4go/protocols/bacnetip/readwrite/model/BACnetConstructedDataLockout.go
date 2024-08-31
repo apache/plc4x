@@ -176,7 +176,7 @@ func BACnetConstructedDataLockoutParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lockout, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "lockout", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	lockout, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "lockout", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lockout' field"))
 	}

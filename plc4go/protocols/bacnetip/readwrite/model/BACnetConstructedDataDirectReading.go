@@ -176,7 +176,7 @@ func BACnetConstructedDataDirectReadingParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	directReading, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "directReading", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	directReading, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "directReading", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'directReading' field"))
 	}

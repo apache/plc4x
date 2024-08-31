@@ -176,7 +176,7 @@ func BACnetConstructedDataNextStoppingFloorParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nextStoppingFloor, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "nextStoppingFloor", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	nextStoppingFloor, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "nextStoppingFloor", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nextStoppingFloor' field"))
 	}

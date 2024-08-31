@@ -176,7 +176,7 @@ func BACnetConstructedDataAutoSlaveDiscoveryParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	autoSlaveDiscovery, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	autoSlaveDiscovery, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "autoSlaveDiscovery", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'autoSlaveDiscovery' field"))
 	}

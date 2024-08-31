@@ -176,7 +176,7 @@ func BACnetConstructedDataValidSamplesParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	validSamples, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "validSamples", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	validSamples, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "validSamples", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'validSamples' field"))
 	}

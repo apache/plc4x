@@ -132,12 +132,12 @@ func BACnetDateRangeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	startDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "startDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	startDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "startDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'startDate' field"))
 	}
 
-	endDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "endDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	endDate, err := ReadSimpleField[BACnetApplicationTagDate](ctx, "endDate", ReadComplex[BACnetApplicationTagDate](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDate](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'endDate' field"))
 	}

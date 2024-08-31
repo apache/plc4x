@@ -256,7 +256,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryParseWithBuffer(ctx contex
 		priorityFilter = *_priorityFilter
 	}
 
-	_notificationClassFilter, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	_notificationClassFilter, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "notificationClassFilter", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(5)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationClassFilter' field"))
 	}

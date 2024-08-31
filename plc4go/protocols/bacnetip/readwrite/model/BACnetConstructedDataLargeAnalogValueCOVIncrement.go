@@ -176,7 +176,7 @@ func BACnetConstructedDataLargeAnalogValueCOVIncrementParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	covIncrement, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "covIncrement", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	covIncrement, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "covIncrement", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covIncrement' field"))
 	}

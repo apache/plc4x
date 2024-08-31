@@ -176,7 +176,7 @@ func BACnetConstructedDataIntegerValueResolutionParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	resolution, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "resolution", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	resolution, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "resolution", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'resolution' field"))
 	}

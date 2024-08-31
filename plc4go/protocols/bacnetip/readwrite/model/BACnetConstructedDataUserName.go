@@ -176,7 +176,7 @@ func BACnetConstructedDataUserNameParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	userName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userName' field"))
 	}

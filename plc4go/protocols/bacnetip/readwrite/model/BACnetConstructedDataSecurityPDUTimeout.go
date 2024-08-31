@@ -176,7 +176,7 @@ func BACnetConstructedDataSecurityPDUTimeoutParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	securityPduTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityPduTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	securityPduTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "securityPduTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'securityPduTimeout' field"))
 	}

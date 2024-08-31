@@ -176,7 +176,7 @@ func BACnetConstructedDataFileTypeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fileType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "fileType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	fileType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "fileType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileType' field"))
 	}

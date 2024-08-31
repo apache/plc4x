@@ -137,7 +137,7 @@ func BACnetAuthenticationPolicyListEntryParseWithBuffer(ctx context.Context, rea
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'credentialDataInput' field"))
 	}
 
-	index, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	index, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "index", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'index' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataDeviceTypeParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deviceType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "deviceType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	deviceType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "deviceType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceType' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataLargeAnalogValueLowLimitParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lowLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "lowLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	lowLimit, err := ReadSimpleField[BACnetApplicationTagDouble](ctx, "lowLimit", ReadComplex[BACnetApplicationTagDouble](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagDouble](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}

@@ -203,12 +203,12 @@ func BACnetNotificationParametersBufferReadyParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bufferProperty' field"))
 	}
 
-	previousNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	previousNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "previousNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'previousNotification' field"))
 	}
 
-	currentNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "currentNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	currentNotification, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "currentNotification", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'currentNotification' field"))
 	}

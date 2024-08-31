@@ -176,7 +176,7 @@ func BACnetConstructedDataAllWritesSuccessfulParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	allWritesSuccessful, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	allWritesSuccessful, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allWritesSuccessful", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allWritesSuccessful' field"))
 	}

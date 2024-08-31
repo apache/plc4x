@@ -147,7 +147,7 @@ func BACnetSpecialEventPeriodCalendarReferenceParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	calendarReference, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "calendarReference", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
+	calendarReference, err := ReadSimpleField[BACnetContextTagObjectIdentifier](ctx, "calendarReference", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calendarReference' field"))
 	}

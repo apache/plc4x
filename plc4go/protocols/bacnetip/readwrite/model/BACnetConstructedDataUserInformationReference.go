@@ -176,7 +176,7 @@ func BACnetConstructedDataUserInformationReferenceParseWithBuffer(ctx context.Co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userInformationReference, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	userInformationReference, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userInformationReference", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userInformationReference' field"))
 	}

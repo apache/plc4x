@@ -176,7 +176,7 @@ func BACnetConstructedDataDoNotHideParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	doNotHide, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "doNotHide", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	doNotHide, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "doNotHide", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doNotHide' field"))
 	}

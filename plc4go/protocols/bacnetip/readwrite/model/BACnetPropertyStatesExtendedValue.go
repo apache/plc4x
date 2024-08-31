@@ -147,7 +147,7 @@ func BACnetPropertyStatesExtendedValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	extendedValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	extendedValue, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedValue", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(peekedTagNumber), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedValue' field"))
 	}

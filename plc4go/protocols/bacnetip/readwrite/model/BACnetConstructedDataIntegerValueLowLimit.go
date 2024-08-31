@@ -176,7 +176,7 @@ func BACnetConstructedDataIntegerValueLowLimitParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lowLimit, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "lowLimit", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	lowLimit, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "lowLimit", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimit' field"))
 	}

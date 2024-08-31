@@ -176,7 +176,7 @@ func BACnetConstructedDataActiveTextParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	activeText, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "activeText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	activeText, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "activeText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeText' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataLogIntervalParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	logInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "logInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	logInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "logInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logInterval' field"))
 	}

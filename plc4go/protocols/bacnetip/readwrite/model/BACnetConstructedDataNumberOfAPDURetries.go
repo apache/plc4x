@@ -176,7 +176,7 @@ func BACnetConstructedDataNumberOfAPDURetriesParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numberOfApduRetries, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	numberOfApduRetries, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfApduRetries", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfApduRetries' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataReadOnlyParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	readOnly, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "readOnly", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	readOnly, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "readOnly", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readOnly' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataNotificationThresholdParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	notificationThreshold, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationThreshold", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	notificationThreshold, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "notificationThreshold", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationThreshold' field"))
 	}

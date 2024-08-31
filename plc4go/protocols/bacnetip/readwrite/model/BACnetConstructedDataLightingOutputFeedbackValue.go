@@ -176,7 +176,7 @@ func BACnetConstructedDataLightingOutputFeedbackValueParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	feedbackValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "feedbackValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	feedbackValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "feedbackValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'feedbackValue' field"))
 	}

@@ -157,7 +157,7 @@ func BACnetConfirmedServiceRequestVTCloseParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	listOfRemoteVtSessionIdentifiers, err := ReadLengthArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfRemoteVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), int(serviceRequestPayloadLength))
+	listOfRemoteVtSessionIdentifiers, err := ReadLengthArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfRemoteVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), int(serviceRequestPayloadLength))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfRemoteVtSessionIdentifiers' field"))
 	}

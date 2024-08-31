@@ -176,7 +176,7 @@ func BACnetConstructedDataOccupancyCountParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	occupancyCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	occupancyCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "occupancyCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyCount' field"))
 	}

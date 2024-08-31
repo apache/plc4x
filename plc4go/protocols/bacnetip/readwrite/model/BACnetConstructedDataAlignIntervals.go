@@ -176,7 +176,7 @@ func BACnetConstructedDataAlignIntervalsParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	alignIntervals, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "alignIntervals", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	alignIntervals, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "alignIntervals", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alignIntervals' field"))
 	}

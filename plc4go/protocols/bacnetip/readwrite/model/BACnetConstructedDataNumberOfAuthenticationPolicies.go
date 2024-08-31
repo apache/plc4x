@@ -176,7 +176,7 @@ func BACnetConstructedDataNumberOfAuthenticationPoliciesParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	numberOfAuthenticationPolicies, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfAuthenticationPolicies", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	numberOfAuthenticationPolicies, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfAuthenticationPolicies", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfAuthenticationPolicies' field"))
 	}

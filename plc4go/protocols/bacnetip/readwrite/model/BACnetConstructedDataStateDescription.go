@@ -176,7 +176,7 @@ func BACnetConstructedDataStateDescriptionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	stateDescription, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "stateDescription", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	stateDescription, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "stateDescription", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stateDescription' field"))
 	}

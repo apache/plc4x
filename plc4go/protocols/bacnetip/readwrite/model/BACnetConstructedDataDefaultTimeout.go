@@ -176,7 +176,7 @@ func BACnetConstructedDataDefaultTimeoutParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	defaultTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	defaultTimeout, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "defaultTimeout", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultTimeout' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataLinkSpeedParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	linkSpeed, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "linkSpeed", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	linkSpeed, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "linkSpeed", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'linkSpeed' field"))
 	}

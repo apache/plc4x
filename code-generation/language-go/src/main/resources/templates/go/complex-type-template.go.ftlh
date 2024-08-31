@@ -1071,7 +1071,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 			return nil, errors.Wrap(_UnknownErr, "Error parsing unknown field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
-			<#case "virtual">
+			<#case "virtual">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
 				<#assign virtualField = field.asVirtualField().orElseThrow()>
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>

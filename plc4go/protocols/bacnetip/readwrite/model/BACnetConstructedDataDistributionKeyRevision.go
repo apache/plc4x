@@ -176,7 +176,7 @@ func BACnetConstructedDataDistributionKeyRevisionParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	distributionKeyRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "distributionKeyRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'distributionKeyRevision' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataCOVUPeriodParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	covuPeriod, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covuPeriod", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	covuPeriod, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "covuPeriod", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'covuPeriod' field"))
 	}

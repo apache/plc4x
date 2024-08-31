@@ -176,7 +176,7 @@ func BACnetConstructedDataBBMDAcceptFDRegistrationsParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bbmdAcceptFDRegistrations, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	bbmdAcceptFDRegistrations, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bbmdAcceptFDRegistrations", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdAcceptFDRegistrations' field"))
 	}

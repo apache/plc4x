@@ -176,7 +176,7 @@ func BACnetConstructedDataSerialNumberParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	serialNumber, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "serialNumber", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	serialNumber, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "serialNumber", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serialNumber' field"))
 	}

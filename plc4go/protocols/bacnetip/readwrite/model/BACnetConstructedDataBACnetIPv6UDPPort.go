@@ -176,7 +176,7 @@ func BACnetConstructedDataBACnetIPv6UDPPortParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6UdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6UdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipv6UdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6UdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6UdpPort' field"))
 	}

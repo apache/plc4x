@@ -122,7 +122,7 @@ func BACnetAccessThreatLevelParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	threatLevel, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "threatLevel", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	threatLevel, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "threatLevel", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'threatLevel' field"))
 	}

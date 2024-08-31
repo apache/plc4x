@@ -154,7 +154,7 @@ func VTCloseErrorListOfVTSessionIdentifiersParseWithBuffer(ctx context.Context, 
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	listOfVtSessionIdentifiers, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1))
+	listOfVtSessionIdentifiers, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "listOfVtSessionIdentifiers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfVtSessionIdentifiers' field"))
 	}

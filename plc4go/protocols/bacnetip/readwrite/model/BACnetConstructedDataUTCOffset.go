@@ -176,7 +176,7 @@ func BACnetConstructedDataUTCOffsetParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	utcOffset, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "utcOffset", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	utcOffset, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "utcOffset", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcOffset' field"))
 	}

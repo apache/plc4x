@@ -176,7 +176,7 @@ func BACnetConstructedDataDatabaseRevisionParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	databaseRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	databaseRevision, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "databaseRevision", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'databaseRevision' field"))
 	}

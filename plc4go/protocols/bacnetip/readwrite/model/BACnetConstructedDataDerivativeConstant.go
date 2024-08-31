@@ -176,7 +176,7 @@ func BACnetConstructedDataDerivativeConstantParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	derivativeConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "derivativeConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	derivativeConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "derivativeConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'derivativeConstant' field"))
 	}

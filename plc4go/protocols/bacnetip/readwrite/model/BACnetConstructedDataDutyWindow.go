@@ -176,7 +176,7 @@ func BACnetConstructedDataDutyWindowParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dutyWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "dutyWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	dutyWindow, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "dutyWindow", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dutyWindow' field"))
 	}

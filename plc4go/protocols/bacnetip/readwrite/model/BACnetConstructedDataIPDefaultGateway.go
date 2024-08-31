@@ -176,7 +176,7 @@ func BACnetConstructedDataIPDefaultGatewayParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipDefaultGateway, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipDefaultGateway", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipDefaultGateway' field"))
 	}

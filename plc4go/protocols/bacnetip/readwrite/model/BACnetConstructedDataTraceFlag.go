@@ -176,7 +176,7 @@ func BACnetConstructedDataTraceFlagParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	traceFlag, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "traceFlag", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	traceFlag, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "traceFlag", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'traceFlag' field"))
 	}

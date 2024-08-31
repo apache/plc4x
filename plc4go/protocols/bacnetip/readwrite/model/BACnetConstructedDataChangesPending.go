@@ -176,7 +176,7 @@ func BACnetConstructedDataChangesPendingParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	changesPending, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "changesPending", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changesPending' field"))
 	}

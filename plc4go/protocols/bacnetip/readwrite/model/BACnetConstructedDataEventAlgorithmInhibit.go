@@ -176,7 +176,7 @@ func BACnetConstructedDataEventAlgorithmInhibitParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eventAlgorithmInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	eventAlgorithmInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventAlgorithmInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventAlgorithmInhibit' field"))
 	}

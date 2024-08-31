@@ -187,7 +187,7 @@ func BACnetNotificationParametersChangeOfBitStringParseWithBuffer(ctx context.Co
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'innerOpeningTag' field"))
 	}
 
-	changeOfBitString, err := ReadSimpleField[BACnetContextTagBitString](ctx, "changeOfBitString", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
+	changeOfBitString, err := ReadSimpleField[BACnetContextTagBitString](ctx, "changeOfBitString", ReadComplex[BACnetContextTagBitString](BACnetContextTagParseWithBufferProducer[BACnetContextTagBitString]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BIT_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changeOfBitString' field"))
 	}

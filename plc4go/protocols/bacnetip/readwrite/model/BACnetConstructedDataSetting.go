@@ -176,7 +176,7 @@ func BACnetConstructedDataSettingParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	setting, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "setting", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	setting, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "setting", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setting' field"))
 	}

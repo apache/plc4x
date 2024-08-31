@@ -176,7 +176,7 @@ func BACnetConstructedDataIntegerValueHighLimitParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	highLimit, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "highLimit", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	highLimit, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "highLimit", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimit' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataMinActualValueParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minActualValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minActualValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	minActualValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minActualValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minActualValue' field"))
 	}

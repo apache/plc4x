@@ -176,7 +176,7 @@ func BACnetConstructedDataCountBeforeChangeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	countBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "countBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	countBeforeChange, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "countBeforeChange", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'countBeforeChange' field"))
 	}

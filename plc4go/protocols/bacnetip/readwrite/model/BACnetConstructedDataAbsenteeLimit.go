@@ -176,7 +176,7 @@ func BACnetConstructedDataAbsenteeLimitParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	absenteeLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "absenteeLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	absenteeLimit, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "absenteeLimit", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'absenteeLimit' field"))
 	}

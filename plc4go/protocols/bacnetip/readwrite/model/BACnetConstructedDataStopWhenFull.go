@@ -176,7 +176,7 @@ func BACnetConstructedDataStopWhenFullParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	stopWhenFull, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "stopWhenFull", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	stopWhenFull, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "stopWhenFull", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'stopWhenFull' field"))
 	}

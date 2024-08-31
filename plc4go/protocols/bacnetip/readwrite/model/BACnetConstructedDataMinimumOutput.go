@@ -176,7 +176,7 @@ func BACnetConstructedDataMinimumOutputParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minimumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	minimumOutput, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "minimumOutput", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOutput' field"))
 	}

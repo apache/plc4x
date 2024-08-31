@@ -176,7 +176,7 @@ func BACnetConstructedDataInstallationIDParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	installationId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "installationId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	installationId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "installationId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'installationId' field"))
 	}

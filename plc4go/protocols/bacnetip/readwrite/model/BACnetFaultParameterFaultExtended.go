@@ -201,7 +201,7 @@ func BACnetFaultParameterFaultExtendedParseWithBuffer(ctx context.Context, readB
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vendorId' field"))
 	}
 
-	extendedFaultType, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedFaultType", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	extendedFaultType, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "extendedFaultType", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedFaultType' field"))
 	}

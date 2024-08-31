@@ -176,7 +176,7 @@ func BACnetConstructedDataUsesRemainingParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	usesRemaining, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "usesRemaining", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	usesRemaining, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "usesRemaining", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'usesRemaining' field"))
 	}

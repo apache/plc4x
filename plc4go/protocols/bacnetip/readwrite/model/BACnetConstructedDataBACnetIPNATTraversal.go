@@ -176,7 +176,7 @@ func BACnetConstructedDataBACnetIPNATTraversalParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bacnetIPNATTraversal, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	bacnetIPNATTraversal, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "bacnetIPNATTraversal", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bacnetIPNATTraversal' field"))
 	}

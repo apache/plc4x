@@ -176,7 +176,7 @@ func BACnetConstructedDataTimeSynchronizationIntervalParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	timeSynchronization, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeSynchronization", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronization' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataCountParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	count, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	count, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}

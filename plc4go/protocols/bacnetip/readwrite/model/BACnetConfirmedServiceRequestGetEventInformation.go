@@ -152,7 +152,7 @@ func BACnetConfirmedServiceRequestGetEventInformationParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	_lastReceivedObjectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
+	_lastReceivedObjectIdentifier, err := ReadOptionalField[BACnetContextTagObjectIdentifier](ctx, "lastReceivedObjectIdentifier", ReadComplex[BACnetContextTagObjectIdentifier](BACnetContextTagParseWithBufferProducer[BACnetContextTagObjectIdentifier]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_BACNET_OBJECT_IDENTIFIER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastReceivedObjectIdentifier' field"))
 	}

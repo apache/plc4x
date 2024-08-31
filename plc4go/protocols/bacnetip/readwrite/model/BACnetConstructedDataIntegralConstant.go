@@ -176,7 +176,7 @@ func BACnetConstructedDataIntegralConstantParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	integralConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "integralConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	integralConstant, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "integralConstant", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'integralConstant' field"))
 	}

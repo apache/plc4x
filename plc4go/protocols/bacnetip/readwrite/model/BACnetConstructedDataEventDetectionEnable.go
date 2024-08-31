@@ -176,7 +176,7 @@ func BACnetConstructedDataEventDetectionEnableParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	eventDetectionEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventDetectionEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	eventDetectionEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "eventDetectionEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventDetectionEnable' field"))
 	}

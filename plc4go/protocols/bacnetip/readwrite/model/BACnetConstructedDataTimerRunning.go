@@ -176,7 +176,7 @@ func BACnetConstructedDataTimerRunningParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timerRunning, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "timerRunning", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	timerRunning, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "timerRunning", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timerRunning' field"))
 	}

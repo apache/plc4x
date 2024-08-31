@@ -176,7 +176,7 @@ func BACnetConstructedDataShedDurationParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	shedDuration, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "shedDuration", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	shedDuration, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "shedDuration", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'shedDuration' field"))
 	}

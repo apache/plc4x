@@ -147,7 +147,7 @@ func BACnetTimerStateChangeValueNoValueParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	noValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "noValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
+	noValue, err := ReadSimpleField[BACnetContextTagNull](ctx, "noValue", ReadComplex[BACnetContextTagNull](BACnetContextTagParseWithBufferProducer[BACnetContextTagNull]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_NULL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'noValue' field"))
 	}

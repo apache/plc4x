@@ -176,7 +176,7 @@ func BACnetConstructedDataErrorLimitParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	errorLimit, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "errorLimit", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	errorLimit, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "errorLimit", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'errorLimit' field"))
 	}

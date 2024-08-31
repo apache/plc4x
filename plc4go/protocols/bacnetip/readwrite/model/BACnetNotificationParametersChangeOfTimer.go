@@ -261,7 +261,7 @@ func BACnetNotificationParametersChangeOfTimerParseWithBuffer(ctx context.Contex
 		lastStateChange = *_lastStateChange
 	}
 
-	_initialTimeout, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
+	_initialTimeout, err := ReadOptionalField[BACnetContextTagUnsignedInteger](ctx, "initialTimeout", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(4)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer), true)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'initialTimeout' field"))
 	}

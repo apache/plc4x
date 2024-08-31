@@ -176,7 +176,7 @@ func BACnetConstructedDataInstanceOfParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	instanceOf, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "instanceOf", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	instanceOf, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "instanceOf", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceOf' field"))
 	}

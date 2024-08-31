@@ -176,7 +176,7 @@ func BACnetConstructedDataOccupancyLowerLimitEnforcedParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	occupancyLowerLimitEnforced, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyLowerLimitEnforced", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	occupancyLowerLimitEnforced, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "occupancyLowerLimitEnforced", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'occupancyLowerLimitEnforced' field"))
 	}

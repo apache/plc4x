@@ -176,7 +176,7 @@ func BACnetConstructedDataLightingCommandDefaultPriorityParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	lightingCommandDefaultPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lightingCommandDefaultPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingCommandDefaultPriority' field"))
 	}

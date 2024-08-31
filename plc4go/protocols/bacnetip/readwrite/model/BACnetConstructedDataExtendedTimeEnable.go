@@ -176,7 +176,7 @@ func BACnetConstructedDataExtendedTimeEnableParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	extendedTimeEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "extendedTimeEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	extendedTimeEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "extendedTimeEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'extendedTimeEnable' field"))
 	}

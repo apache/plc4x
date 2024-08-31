@@ -154,7 +154,7 @@ func BACnetFaultParameterFaultCharacterStringListOfFaultValuesParseWithBuffer(ct
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	listOfFaultValues, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "listOfFaultValues", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	listOfFaultValues, err := ReadTerminatedArrayField[BACnetApplicationTagCharacterString](ctx, "listOfFaultValues", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfFaultValues' field"))
 	}

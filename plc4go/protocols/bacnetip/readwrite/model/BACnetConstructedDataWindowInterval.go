@@ -176,7 +176,7 @@ func BACnetConstructedDataWindowIntervalParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	windowInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	windowInterval, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "windowInterval", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'windowInterval' field"))
 	}

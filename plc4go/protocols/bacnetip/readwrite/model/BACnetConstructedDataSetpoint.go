@@ -176,7 +176,7 @@ func BACnetConstructedDataSetpointParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	setpoint, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "setpoint", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	setpoint, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "setpoint", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'setpoint' field"))
 	}

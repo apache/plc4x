@@ -176,7 +176,7 @@ func BACnetConstructedDataNetworkInterfaceNameParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	networkInterfaceName, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "networkInterfaceName", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkInterfaceName' field"))
 	}

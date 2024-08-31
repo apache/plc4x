@@ -176,7 +176,7 @@ func BACnetConstructedDataAllowGroupDelayInhibitParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	allowGroupDelayInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	allowGroupDelayInhibit, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "allowGroupDelayInhibit", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'allowGroupDelayInhibit' field"))
 	}

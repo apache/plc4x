@@ -176,7 +176,7 @@ func BACnetConstructedDataLocationParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	location, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "location", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	location, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "location", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'location' field"))
 	}

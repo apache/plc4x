@@ -176,7 +176,7 @@ func BACnetConstructedDataCarDoorZoneParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	carDoorZone, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "carDoorZone", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	carDoorZone, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "carDoorZone", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carDoorZone' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataBlinkWarnEnableParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	blinkWarnEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "blinkWarnEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	blinkWarnEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "blinkWarnEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'blinkWarnEnable' field"))
 	}

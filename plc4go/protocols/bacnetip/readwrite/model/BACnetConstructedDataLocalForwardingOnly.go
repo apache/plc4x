@@ -176,7 +176,7 @@ func BACnetConstructedDataLocalForwardingOnlyParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	localForwardingOnly, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "localForwardingOnly", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	localForwardingOnly, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "localForwardingOnly", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localForwardingOnly' field"))
 	}

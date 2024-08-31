@@ -176,7 +176,7 @@ func BACnetConstructedDataStrikeCountParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	strikeCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "strikeCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	strikeCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "strikeCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'strikeCount' field"))
 	}

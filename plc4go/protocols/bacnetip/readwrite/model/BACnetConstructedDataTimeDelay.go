@@ -176,7 +176,7 @@ func BACnetConstructedDataTimeDelayParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timeDelay, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	timeDelay, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "timeDelay", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeDelay' field"))
 	}

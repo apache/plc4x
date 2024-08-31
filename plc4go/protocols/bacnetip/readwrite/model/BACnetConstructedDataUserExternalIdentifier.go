@@ -176,7 +176,7 @@ func BACnetConstructedDataUserExternalIdentifierParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	userExternalIdentifier, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "userExternalIdentifier", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'userExternalIdentifier' field"))
 	}

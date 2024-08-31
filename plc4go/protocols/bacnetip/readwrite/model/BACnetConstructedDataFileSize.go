@@ -176,7 +176,7 @@ func BACnetConstructedDataFileSizeParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	fileSize, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fileSize", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	fileSize, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "fileSize", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileSize' field"))
 	}

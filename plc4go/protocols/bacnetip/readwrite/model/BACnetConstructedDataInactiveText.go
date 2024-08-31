@@ -176,7 +176,7 @@ func BACnetConstructedDataInactiveTextParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	inactiveText, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "inactiveText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	inactiveText, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "inactiveText", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inactiveText' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataAPDULengthParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	apduLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	apduLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "apduLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduLength' field"))
 	}

@@ -160,12 +160,12 @@ func BACnetConfirmedServiceRequestReadRangeRangeBySequenceNumberParseWithBuffer(
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	referenceSequenceNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceSequenceNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	referenceSequenceNumber, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referenceSequenceNumber", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referenceSequenceNumber' field"))
 	}
 
-	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	count, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "count", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'count' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataTotalRecordCountParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	totalRecordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "totalRecordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	totalRecordCount, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "totalRecordCount", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'totalRecordCount' field"))
 	}

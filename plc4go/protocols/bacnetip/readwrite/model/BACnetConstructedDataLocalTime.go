@@ -176,7 +176,7 @@ func BACnetConstructedDataLocalTimeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	localTime, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "localTime", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	localTime, err := ReadSimpleField[BACnetApplicationTagTime](ctx, "localTime", ReadComplex[BACnetApplicationTagTime](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagTime](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localTime' field"))
 	}

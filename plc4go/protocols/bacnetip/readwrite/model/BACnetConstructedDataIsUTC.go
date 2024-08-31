@@ -176,7 +176,7 @@ func BACnetConstructedDataIsUTCParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	isUtc, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "isUtc", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	isUtc, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "isUtc", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUtc' field"))
 	}

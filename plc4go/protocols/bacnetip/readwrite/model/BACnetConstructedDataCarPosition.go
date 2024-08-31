@@ -176,7 +176,7 @@ func BACnetConstructedDataCarPositionParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	carPosition, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "carPosition", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	carPosition, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "carPosition", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carPosition' field"))
 	}

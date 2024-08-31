@@ -176,7 +176,7 @@ func BACnetConstructedDataApplicationSoftwareVersionParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	applicationSoftwareVersion, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	applicationSoftwareVersion, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "applicationSoftwareVersion", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'applicationSoftwareVersion' field"))
 	}

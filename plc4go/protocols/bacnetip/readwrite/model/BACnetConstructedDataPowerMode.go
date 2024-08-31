@@ -176,7 +176,7 @@ func BACnetConstructedDataPowerModeParseWithBuffer(ctx context.Context, readBuff
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	powerMode, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "powerMode", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	powerMode, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "powerMode", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'powerMode' field"))
 	}

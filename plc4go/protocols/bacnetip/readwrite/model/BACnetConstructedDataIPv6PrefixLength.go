@@ -176,7 +176,7 @@ func BACnetConstructedDataIPv6PrefixLengthParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6PrefixLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipv6PrefixLength, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipv6PrefixLength", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6PrefixLength' field"))
 	}

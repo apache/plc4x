@@ -142,12 +142,12 @@ func BACnetVTSessionParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	localVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	localVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "localVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'localVtSessionId' field"))
 	}
 
-	removeVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "removeVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	removeVtSessionId, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "removeVtSessionId", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'removeVtSessionId' field"))
 	}

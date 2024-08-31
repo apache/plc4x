@@ -176,7 +176,7 @@ func BACnetConstructedDataVerificationTimeParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	verificationTime, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	verificationTime, err := ReadSimpleField[BACnetApplicationTagSignedInteger](ctx, "verificationTime", ReadComplex[BACnetApplicationTagSignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagSignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'verificationTime' field"))
 	}

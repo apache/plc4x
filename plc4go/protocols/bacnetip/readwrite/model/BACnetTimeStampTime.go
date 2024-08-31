@@ -147,7 +147,7 @@ func BACnetTimeStampTimeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timeValue, err := ReadSimpleField[BACnetContextTagTime](ctx, "timeValue", ReadComplex[BACnetContextTagTime](BACnetContextTagParseWithBufferProducer((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_TIME)), readBuffer))
+	timeValue, err := ReadSimpleField[BACnetContextTagTime](ctx, "timeValue", ReadComplex[BACnetContextTagTime](BACnetContextTagParseWithBufferProducer[BACnetContextTagTime]((uint8)(uint8(0)), (BACnetDataType)(BACnetDataType_TIME)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}

@@ -147,7 +147,7 @@ func BACnetClientCOVObjectParseWithBuffer(ctx context.Context, readBuffer utils.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	realIncrement, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realIncrement", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	realIncrement, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "realIncrement", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'realIncrement' field"))
 	}

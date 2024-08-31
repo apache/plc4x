@@ -154,7 +154,7 @@ func BACnetLiftCarCallListFloorListParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'openingTag' field"))
 	}
 
-	floorNumbers, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "floorNumbers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
+	floorNumbers, err := ReadTerminatedArrayField[BACnetApplicationTagUnsignedInteger](ctx, "floorNumbers", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorNumbers' field"))
 	}

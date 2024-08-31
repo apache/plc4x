@@ -176,7 +176,7 @@ func BACnetConstructedDataAverageValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	averageValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "averageValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	averageValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "averageValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'averageValue' field"))
 	}

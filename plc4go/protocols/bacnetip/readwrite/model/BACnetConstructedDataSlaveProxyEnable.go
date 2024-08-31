@@ -176,7 +176,7 @@ func BACnetConstructedDataSlaveProxyEnableParseWithBuffer(ctx context.Context, r
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	slaveProxyEnable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "slaveProxyEnable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'slaveProxyEnable' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataIPSubnetMaskParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipSubnetMask, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipSubnetMask, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "ipSubnetMask", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagOctetString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipSubnetMask' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataMinimumOnTimeParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	minimumOnTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOnTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	minimumOnTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "minimumOnTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minimumOnTime' field"))
 	}

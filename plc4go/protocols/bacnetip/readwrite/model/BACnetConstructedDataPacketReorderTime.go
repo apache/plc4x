@@ -176,7 +176,7 @@ func BACnetConstructedDataPacketReorderTimeParseWithBuffer(ctx context.Context, 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	packetReorderTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "packetReorderTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	packetReorderTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "packetReorderTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'packetReorderTime' field"))
 	}

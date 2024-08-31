@@ -176,7 +176,7 @@ func BACnetConstructedDataDoorUnlockDelayTimeParseWithBuffer(ctx context.Context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	doorUnlockDelayTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	doorUnlockDelayTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "doorUnlockDelayTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorUnlockDelayTime' field"))
 	}

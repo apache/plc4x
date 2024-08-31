@@ -176,7 +176,7 @@ func BACnetConstructedDataControlledVariableValueParseWithBuffer(ctx context.Con
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	controlledVariableValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "controlledVariableValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	controlledVariableValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "controlledVariableValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'controlledVariableValue' field"))
 	}

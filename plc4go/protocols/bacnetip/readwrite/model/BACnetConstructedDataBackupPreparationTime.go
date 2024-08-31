@@ -176,7 +176,7 @@ func BACnetConstructedDataBackupPreparationTimeParseWithBuffer(ctx context.Conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	backupPreparationTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupPreparationTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	backupPreparationTime, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "backupPreparationTime", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'backupPreparationTime' field"))
 	}

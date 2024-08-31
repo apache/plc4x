@@ -176,7 +176,7 @@ func BACnetConstructedDataDeadbandParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deadband, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "deadband", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	deadband, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "deadband", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deadband' field"))
 	}

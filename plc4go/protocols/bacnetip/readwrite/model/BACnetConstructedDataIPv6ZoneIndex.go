@@ -176,7 +176,7 @@ func BACnetConstructedDataIPv6ZoneIndexParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipv6ZoneIndex, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "ipv6ZoneIndex", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipv6ZoneIndex, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "ipv6ZoneIndex", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipv6ZoneIndex' field"))
 	}

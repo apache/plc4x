@@ -176,7 +176,7 @@ func BACnetConstructedDataNodeSubtypeParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	nodeSubType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	nodeSubType, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "nodeSubType", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'nodeSubType' field"))
 	}

@@ -176,7 +176,7 @@ func BACnetConstructedDataScaleFactorParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	scaleFactor, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "scaleFactor", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	scaleFactor, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "scaleFactor", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'scaleFactor' field"))
 	}

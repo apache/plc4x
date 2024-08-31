@@ -176,7 +176,7 @@ func BACnetConstructedDataHigherDeckParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	higherDeck, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	higherDeck, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "higherDeck", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'higherDeck' field"))
 	}

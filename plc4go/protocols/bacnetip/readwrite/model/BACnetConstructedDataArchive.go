@@ -176,7 +176,7 @@ func BACnetConstructedDataArchiveParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	archive, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "archive", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	archive, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "archive", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'archive' field"))
 	}

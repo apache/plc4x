@@ -176,7 +176,7 @@ func BACnetConstructedDataCarLoadParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	carLoad, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "carLoad", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	carLoad, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "carLoad", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'carLoad' field"))
 	}

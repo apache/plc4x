@@ -147,7 +147,7 @@ func BACnetUnconfirmedServiceRequestWhoHasObjectNameParseWithBuffer(ctx context.
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	objectName, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "objectName", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
+	objectName, err := ReadSimpleField[BACnetContextTagCharacterString](ctx, "objectName", ReadComplex[BACnetContextTagCharacterString](BACnetContextTagParseWithBufferProducer[BACnetContextTagCharacterString]((uint8)(uint8(3)), (BACnetDataType)(BACnetDataType_CHARACTER_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectName' field"))
 	}

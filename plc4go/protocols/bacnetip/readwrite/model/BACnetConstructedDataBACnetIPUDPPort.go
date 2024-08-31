@@ -176,7 +176,7 @@ func BACnetConstructedDataBACnetIPUDPPortParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipUdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipUdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	ipUdpPort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "ipUdpPort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipUdpPort' field"))
 	}

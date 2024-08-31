@@ -176,7 +176,7 @@ func BACnetConstructedDataAccessEventTagParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	accessEventTag, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	accessEventTag, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventTag' field"))
 	}

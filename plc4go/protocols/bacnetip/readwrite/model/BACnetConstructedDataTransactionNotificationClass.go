@@ -176,7 +176,7 @@ func BACnetConstructedDataTransactionNotificationClassParseWithBuffer(ctx contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	transactionNotificationClass, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "transactionNotificationClass", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	transactionNotificationClass, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "transactionNotificationClass", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'transactionNotificationClass' field"))
 	}

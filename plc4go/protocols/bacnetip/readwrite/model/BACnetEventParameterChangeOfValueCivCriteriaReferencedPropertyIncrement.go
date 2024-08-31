@@ -149,7 +149,7 @@ func BACnetEventParameterChangeOfValueCivCriteriaReferencedPropertyIncrementPars
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	referencedPropertyIncrement, err := ReadSimpleField[BACnetContextTagReal](ctx, "referencedPropertyIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	referencedPropertyIncrement, err := ReadSimpleField[BACnetContextTagReal](ctx, "referencedPropertyIncrement", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencedPropertyIncrement' field"))
 	}

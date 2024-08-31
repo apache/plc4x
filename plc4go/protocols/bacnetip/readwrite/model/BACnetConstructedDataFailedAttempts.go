@@ -176,7 +176,7 @@ func BACnetConstructedDataFailedAttemptsParseWithBuffer(ctx context.Context, rea
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	failedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "failedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	failedAttempts, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "failedAttempts", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'failedAttempts' field"))
 	}

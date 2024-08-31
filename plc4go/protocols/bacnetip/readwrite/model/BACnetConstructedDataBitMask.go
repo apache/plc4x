@@ -176,7 +176,7 @@ func BACnetConstructedDataBitMaskParseWithBuffer(ctx context.Context, readBuffer
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	bitString, err := ReadSimpleField[BACnetApplicationTagBitString](ctx, "bitString", ReadComplex[BACnetApplicationTagBitString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBitString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bitString' field"))
 	}

@@ -149,7 +149,7 @@ func BACnetNotificationParametersChangeOfValueNewValueChangedValueParseWithBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	changedValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "changedValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
+	changedValue, err := ReadSimpleField[BACnetContextTagReal](ctx, "changedValue", ReadComplex[BACnetContextTagReal](BACnetContextTagParseWithBufferProducer[BACnetContextTagReal]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_REAL)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'changedValue' field"))
 	}

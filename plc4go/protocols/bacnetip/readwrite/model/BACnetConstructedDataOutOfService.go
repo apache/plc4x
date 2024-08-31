@@ -176,7 +176,7 @@ func BACnetConstructedDataOutOfServiceParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	outOfService, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "outOfService", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	outOfService, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "outOfService", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outOfService' field"))
 	}

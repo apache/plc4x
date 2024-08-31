@@ -176,7 +176,7 @@ func BACnetConstructedDataMaximumValueParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	maximumValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maximumValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	maximumValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "maximumValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'maximumValue' field"))
 	}

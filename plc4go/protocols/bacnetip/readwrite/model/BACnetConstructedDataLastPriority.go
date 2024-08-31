@@ -176,7 +176,7 @@ func BACnetConstructedDataLastPriorityParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	lastPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	lastPriority, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "lastPriority", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastPriority' field"))
 	}

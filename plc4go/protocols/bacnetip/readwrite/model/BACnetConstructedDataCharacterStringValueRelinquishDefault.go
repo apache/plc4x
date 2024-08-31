@@ -176,7 +176,7 @@ func BACnetConstructedDataCharacterStringValueRelinquishDefaultParseWithBuffer(c
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	relinquishDefault, err := ReadSimpleField[BACnetApplicationTagCharacterString](ctx, "relinquishDefault", ReadComplex[BACnetApplicationTagCharacterString](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagCharacterString](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'relinquishDefault' field"))
 	}

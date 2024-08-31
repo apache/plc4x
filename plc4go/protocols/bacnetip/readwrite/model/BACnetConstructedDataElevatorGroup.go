@@ -176,7 +176,7 @@ func BACnetConstructedDataElevatorGroupParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	elevatorGroup, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	elevatorGroup, err := ReadSimpleField[BACnetApplicationTagObjectIdentifier](ctx, "elevatorGroup", ReadComplex[BACnetApplicationTagObjectIdentifier](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagObjectIdentifier](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elevatorGroup' field"))
 	}

@@ -243,7 +243,7 @@ func BACnetNotificationParametersAccessEventParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'statusFlags' field"))
 	}
 
-	accessEventTag, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
+	accessEventTag, err := ReadSimpleField[BACnetContextTagUnsignedInteger](ctx, "accessEventTag", ReadComplex[BACnetContextTagUnsignedInteger](BACnetContextTagParseWithBufferProducer[BACnetContextTagUnsignedInteger]((uint8)(uint8(2)), (BACnetDataType)(BACnetDataType_UNSIGNED_INTEGER)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'accessEventTag' field"))
 	}

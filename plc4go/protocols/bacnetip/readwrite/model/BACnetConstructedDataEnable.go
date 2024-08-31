@@ -176,7 +176,7 @@ func BACnetConstructedDataEnableParseWithBuffer(ctx context.Context, readBuffer 
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	enable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "enable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	enable, err := ReadSimpleField[BACnetApplicationTagBoolean](ctx, "enable", ReadComplex[BACnetApplicationTagBoolean](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagBoolean](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'enable' field"))
 	}

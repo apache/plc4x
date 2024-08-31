@@ -176,7 +176,7 @@ func BACnetConstructedDataDefaultRampRateParseWithBuffer(ctx context.Context, re
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	defaultRampRate, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "defaultRampRate", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	defaultRampRate, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "defaultRampRate", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'defaultRampRate' field"))
 	}

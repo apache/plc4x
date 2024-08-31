@@ -176,7 +176,7 @@ func BACnetConstructedDataReferencePortParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	referencePort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referencePort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	referencePort, err := ReadSimpleField[BACnetApplicationTagUnsignedInteger](ctx, "referencePort", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagUnsignedInteger](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'referencePort' field"))
 	}

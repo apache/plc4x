@@ -176,7 +176,7 @@ func BACnetConstructedDataLightingOutputTrackingValueParseWithBuffer(ctx context
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	trackingValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "trackingValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	trackingValue, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "trackingValue", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'trackingValue' field"))
 	}

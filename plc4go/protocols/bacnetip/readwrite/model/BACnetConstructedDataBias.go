@@ -176,7 +176,7 @@ func BACnetConstructedDataBiasParseWithBuffer(ctx context.Context, readBuffer ut
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bias, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "bias", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
+	bias, err := ReadSimpleField[BACnetApplicationTagReal](ctx, "bias", ReadComplex[BACnetApplicationTagReal](BACnetApplicationTagParseWithBufferProducer[BACnetApplicationTagReal](), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bias' field"))
 	}

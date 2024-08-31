@@ -43,7 +43,7 @@ import java.util.*;
 @SuppressWarnings({"unused", "WeakerAccess"})
 public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BaseFreemarkerLanguageTemplateHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(GoLanguageTemplateHelper.class);
 
     private final Map<String, String> options;
 
@@ -465,8 +465,8 @@ public class GoLanguageTemplateHelper extends BaseFreemarkerLanguageTemplateHelp
             String paramsStringString = paramsString.toString();
             if (StringUtils.isNotBlank(paramsStringString) || typeDefinition.isDiscriminatedChildTypeDefinition()) { // In this case we need to spell the function out
                 String genericTypeParam = "";
-                if (typeDefinition.isDiscriminatedParentTypeDefinition()) {
-                    genericTypeParam = "["+typeName+"]";
+                if (typeDefinition.isDiscriminatedParentTypeDefinition()||typeDefinition.isDiscriminatedChildTypeDefinition()) {
+                    genericTypeParam = "[" + typeName + "]";
                 }
                 return "ReadComplex[" + typeName + "](" + parserCallString + "ParseWithBufferProducer" + genericTypeParam + "(" + StringUtils.substring(paramsStringString, 2) + "), readBuffer)";
             } else {

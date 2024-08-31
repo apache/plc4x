@@ -147,7 +147,7 @@ func BACnetHostAddressIpAddressParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	ipAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "ipAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
+	ipAddress, err := ReadSimpleField[BACnetContextTagOctetString](ctx, "ipAddress", ReadComplex[BACnetContextTagOctetString](BACnetContextTagParseWithBufferProducer[BACnetContextTagOctetString]((uint8)(uint8(1)), (BACnetDataType)(BACnetDataType_OCTET_STRING)), readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'ipAddress' field"))
 	}
