@@ -217,7 +217,7 @@ func BACnetConstructedDataSubordinateListParseWithBuffer(ctx context.Context, re
 		}
 	}
 
-	subordinateList, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "subordinateList", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	subordinateList, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "subordinateList", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subordinateList' field"))
 	}

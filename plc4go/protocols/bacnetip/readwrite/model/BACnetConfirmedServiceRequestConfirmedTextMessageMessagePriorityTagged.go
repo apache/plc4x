@@ -152,14 +152,7 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority](ctx, "value", readBuffer, func(ctx context.Context) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL)
-		var zero BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority), err
-	})
+	value, err := ReadManualField[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority](ctx, "value", readBuffer, EnsureType[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

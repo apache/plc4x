@@ -176,7 +176,7 @@ func BACnetReadAccessSpecificationParseWithBuffer(ctx context.Context, readBuffe
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	listOfPropertyReferences, err := ReadTerminatedArrayField[BACnetPropertyReference](ctx, "listOfPropertyReferences", ReadComplex[BACnetPropertyReference](BACnetPropertyReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	listOfPropertyReferences, err := ReadTerminatedArrayField[BACnetPropertyReference](ctx, "listOfPropertyReferences", ReadComplex[BACnetPropertyReference](BACnetPropertyReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfPropertyReferences' field"))
 	}

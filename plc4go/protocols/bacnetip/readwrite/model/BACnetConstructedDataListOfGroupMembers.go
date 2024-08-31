@@ -155,7 +155,7 @@ func BACnetConstructedDataListOfGroupMembersParseWithBuffer(ctx context.Context,
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	listOfGroupMembers, err := ReadTerminatedArrayField[BACnetReadAccessSpecification](ctx, "listOfGroupMembers", ReadComplex[BACnetReadAccessSpecification](BACnetReadAccessSpecificationParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	listOfGroupMembers, err := ReadTerminatedArrayField[BACnetReadAccessSpecification](ctx, "listOfGroupMembers", ReadComplex[BACnetReadAccessSpecification](BACnetReadAccessSpecificationParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfGroupMembers' field"))
 	}

@@ -152,14 +152,7 @@ func BACnetBinaryPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetBinaryPV](ctx, "value", readBuffer, func(ctx context.Context) (BACnetBinaryPV, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
-		var zero BACnetBinaryPV
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetBinaryPV), err
-	})
+	value, err := ReadManualField[BACnetBinaryPV](ctx, "value", readBuffer, EnsureType[BACnetBinaryPV](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

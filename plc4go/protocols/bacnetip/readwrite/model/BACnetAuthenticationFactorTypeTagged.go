@@ -152,14 +152,7 @@ func BACnetAuthenticationFactorTypeTaggedParseWithBuffer(ctx context.Context, re
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetAuthenticationFactorType](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAuthenticationFactorType, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAuthenticationFactorType_UNDEFINED)
-		var zero BACnetAuthenticationFactorType
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetAuthenticationFactorType), err
-	})
+	value, err := ReadManualField[BACnetAuthenticationFactorType](ctx, "value", readBuffer, EnsureType[BACnetAuthenticationFactorType](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAuthenticationFactorType_UNDEFINED)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

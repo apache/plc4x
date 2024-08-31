@@ -205,14 +205,7 @@ func RequestDirectCommandAccessParseWithBuffer(ctx context.Context, readBuffer u
 	}
 	_ = at
 
-	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, func(ctx context.Context) (CALData, error) {
-		v, err := ReadCALData(ctx, readBuffer)
-		var zero CALData
-		if err != nil {
-			return zero, err
-		}
-		return v.(CALData), err
-	})
+	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, EnsureType[CALData](ReadCALData(ctx, readBuffer)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}

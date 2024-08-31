@@ -182,7 +182,7 @@ func ListOfCovNotificationsParseWithBuffer(ctx context.Context, readBuffer utils
 			return nil, err
 		}
 		return v.(ListOfCovNotificationsValue), nil
-	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfValues' field"))
 	}

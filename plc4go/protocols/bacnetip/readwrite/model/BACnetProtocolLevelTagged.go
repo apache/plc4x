@@ -152,14 +152,7 @@ func BACnetProtocolLevelTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetProtocolLevel](ctx, "value", readBuffer, func(ctx context.Context) (BACnetProtocolLevel, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)
-		var zero BACnetProtocolLevel
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetProtocolLevel), err
-	})
+	value, err := ReadManualField[BACnetProtocolLevel](ctx, "value", readBuffer, EnsureType[BACnetProtocolLevel](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

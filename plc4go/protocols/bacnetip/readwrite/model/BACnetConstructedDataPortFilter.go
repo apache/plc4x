@@ -217,7 +217,7 @@ func BACnetConstructedDataPortFilterParseWithBuffer(ctx context.Context, readBuf
 		}
 	}
 
-	portFilter, err := ReadTerminatedArrayField[BACnetPortPermission](ctx, "portFilter", ReadComplex[BACnetPortPermission](BACnetPortPermissionParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	portFilter, err := ReadTerminatedArrayField[BACnetPortPermission](ctx, "portFilter", ReadComplex[BACnetPortPermission](BACnetPortPermissionParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'portFilter' field"))
 	}

@@ -156,7 +156,7 @@ func BACnetSecurityKeySetKeyIdsParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	keyIds, err := ReadTerminatedArrayField[BACnetKeyIdentifier](ctx, "keyIds", ReadComplex[BACnetKeyIdentifier](BACnetKeyIdentifierParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	keyIds, err := ReadTerminatedArrayField[BACnetKeyIdentifier](ctx, "keyIds", ReadComplex[BACnetKeyIdentifier](BACnetKeyIdentifierParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'keyIds' field"))
 	}

@@ -155,7 +155,7 @@ func BACnetConstructedDataUTCTimeSynchronizationRecipientsParseWithBuffer(ctx co
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	utcTimeSynchronizationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "utcTimeSynchronizationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	utcTimeSynchronizationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "utcTimeSynchronizationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcTimeSynchronizationRecipients' field"))
 	}

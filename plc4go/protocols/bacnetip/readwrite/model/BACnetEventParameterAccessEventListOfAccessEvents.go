@@ -156,7 +156,7 @@ func BACnetEventParameterAccessEventListOfAccessEventsParseWithBuffer(ctx contex
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	listOfAccessEvents, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "listOfAccessEvents", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	listOfAccessEvents, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "listOfAccessEvents", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfAccessEvents' field"))
 	}

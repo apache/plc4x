@@ -152,14 +152,7 @@ func SecurityResponseCodeTaggedParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[SecurityResponseCode](ctx, "value", readBuffer, func(ctx context.Context) (SecurityResponseCode, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), SecurityResponseCode_SUCCESS)
-		var zero SecurityResponseCode
-		if err != nil {
-			return zero, err
-		}
-		return v.(SecurityResponseCode), err
-	})
+	value, err := ReadManualField[SecurityResponseCode](ctx, "value", readBuffer, EnsureType[SecurityResponseCode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), SecurityResponseCode_SUCCESS)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

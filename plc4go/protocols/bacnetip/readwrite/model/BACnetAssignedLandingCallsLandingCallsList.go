@@ -156,7 +156,7 @@ func BACnetAssignedLandingCallsLandingCallsListParseWithBuffer(ctx context.Conte
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	landingCalls, err := ReadTerminatedArrayField[BACnetAssignedLandingCallsLandingCallsListEntry](ctx, "landingCalls", ReadComplex[BACnetAssignedLandingCallsLandingCallsListEntry](BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	landingCalls, err := ReadTerminatedArrayField[BACnetAssignedLandingCallsLandingCallsListEntry](ctx, "landingCalls", ReadComplex[BACnetAssignedLandingCallsLandingCallsListEntry](BACnetAssignedLandingCallsLandingCallsListEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingCalls' field"))
 	}

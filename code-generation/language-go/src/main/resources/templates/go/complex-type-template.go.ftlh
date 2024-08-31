@@ -821,7 +821,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	${arrayField.name},err := ReadLengthArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, int(${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)})
 						<#-- A terminated array keeps on reading data as long as the termination expression evaluates to false -->
 						<#elseif field.isTerminatedArrayField()>
-	${arrayField.name},err := ReadTerminatedArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, func() bool {return ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)})
+	${arrayField.name},err := ReadTerminatedArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${arrayField.name}", ${helper.getDataReaderCall(arrayField.type)}, ${helper.toParseExpression(arrayField, helper.intTypeReference, arrayField.loopExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)})
 						</#if>
 					</#if>
 				</#if>
@@ -905,9 +905,9 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign arrayElementTypeReference = manualArrayField.type.asArrayTypeReference().orElseThrow().getElementTypeReference()>
 
 				<#if arrayElementTypeReference.isByteBased()>
-	${namedField.name},err  := ReadManualByteArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, func(_values []byte) bool {return (bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)})}, func(ctx context.Context)(byte,error){return ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err  := ReadManualByteArrayField(ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
 				<#else>
-	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, func(_values ${helper.getLanguageTypeNameForField(manualArrayField)}) bool {return (bool) (${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)})}, func() ${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)} { (${helper.getLanguageTypeNameForTypeReference(manualArrayField.type.elementTypeReference)}) (${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)})}${helper.getFieldOptions(typedField, parserArguments)});
+	${namedField.name},err := ReadManualArrayField[${helper.getLanguageTypeNameForTypeReference(arrayElementTypeReference)}](ctx, "${namedField.name}", readBuffer, ${helper.toParseExpression(manualArrayField, helper.boolTypeReference, manualArrayField.loopExpression, parserArguments)}, ${helper.toParseExpression(manualArrayField, manualArrayField.type, manualArrayField.parseExpression, parserArguments)}${helper.getFieldOptions(typedField, parserArguments)});
 				</#if>
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
@@ -918,7 +918,7 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 				<#assign typedField = field.asTypedField().orElseThrow()>
 				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, func(ctx context.Context)(${helper.getLanguageTypeNameForField(manualField)},error) {v,err:= ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)};var zero ${helper.getLanguageTypeNameForField(manualField)};if err!=nil{return zero,err};return v.(${helper.getLanguageTypeNameForField(manualField)}),err}${helper.getFieldOptions(typedField, parserArguments)});
+	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, EnsureType[${helper.getLanguageTypeNameForField(field)}](${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)})${helper.getFieldOptions(typedField, parserArguments)});
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}

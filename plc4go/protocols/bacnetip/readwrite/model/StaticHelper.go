@@ -618,28 +618,30 @@ func MapBACnetObjectType(ctx context.Context, rawObjectType BACnetContextTagEnum
 	}
 }
 
-func IsBACnetConstructedDataClosingTag(ctx context.Context, readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) bool {
-	if instantTerminate {
-		return true
-	}
-	oldPos := readBuffer.GetPos()
-	// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
-	tagNumber, err := readBuffer.ReadUint8("", 4)
-	if err != nil {
-		return true
-	}
-	isContextTag, err := readBuffer.ReadBit("")
-	if err != nil {
-		return true
-	}
-	tagValue, err := readBuffer.ReadUint8("", 3)
-	if err != nil {
-		return true
-	}
+func IsBACnetConstructedDataClosingTag(ctx context.Context, readBuffer utils.ReadBuffer, instantTerminate bool, expectedTagNumber byte) func() bool {
+	return func() bool {
+		if instantTerminate {
+			return true
+		}
+		oldPos := readBuffer.GetPos()
+		// TODO: add graceful exit if we know already that we are at the end (we might need to add available bytes to reader)
+		tagNumber, err := readBuffer.ReadUint8("", 4)
+		if err != nil {
+			return true
+		}
+		isContextTag, err := readBuffer.ReadBit("")
+		if err != nil {
+			return true
+		}
+		tagValue, err := readBuffer.ReadUint8("", 3)
+		if err != nil {
+			return true
+		}
 
-	foundOurClosingTag := isContextTag && tagNumber == expectedTagNumber && tagValue == 0x7
-	readBuffer.Reset(oldPos)
-	return foundOurClosingTag
+		foundOurClosingTag := isContextTag && tagNumber == expectedTagNumber && tagValue == 0x7
+		readBuffer.Reset(oldPos)
+		return foundOurClosingTag
+	}
 }
 
 func ParseVarUint(ctx context.Context, data []byte) uint32 {

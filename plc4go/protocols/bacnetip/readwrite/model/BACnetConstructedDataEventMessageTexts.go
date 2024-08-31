@@ -253,7 +253,7 @@ func BACnetConstructedDataEventMessageTextsParseWithBuffer(ctx context.Context, 
 		}
 	}
 
-	eventMessageTexts, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "eventMessageTexts", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	eventMessageTexts, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "eventMessageTexts", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'eventMessageTexts' field"))
 	}

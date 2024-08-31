@@ -217,7 +217,7 @@ func BACnetConstructedDataAssignedAccessRightsParseWithBuffer(ctx context.Contex
 		}
 	}
 
-	assignedAccessRights, err := ReadTerminatedArrayField[BACnetAssignedAccessRights](ctx, "assignedAccessRights", ReadComplex[BACnetAssignedAccessRights](BACnetAssignedAccessRightsParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	assignedAccessRights, err := ReadTerminatedArrayField[BACnetAssignedAccessRights](ctx, "assignedAccessRights", ReadComplex[BACnetAssignedAccessRights](BACnetAssignedAccessRightsParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedAccessRights' field"))
 	}

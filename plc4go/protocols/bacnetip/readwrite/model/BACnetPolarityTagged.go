@@ -152,14 +152,7 @@ func BACnetPolarityTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetPolarity](ctx, "value", readBuffer, func(ctx context.Context) (BACnetPolarity, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetPolarity_NORMAL)
-		var zero BACnetPolarity
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetPolarity), err
-	})
+	value, err := ReadManualField[BACnetPolarity](ctx, "value", readBuffer, EnsureType[BACnetPolarity](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetPolarity_NORMAL)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

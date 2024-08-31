@@ -156,7 +156,7 @@ func BACnetFaultParameterFaultStateListOfFaultValuesParseWithBuffer(ctx context.
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	listIfFaultValues, err := ReadTerminatedArrayField[BACnetPropertyStates](ctx, "listIfFaultValues", ReadComplex[BACnetPropertyStates](BACnetPropertyStatesParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	listIfFaultValues, err := ReadTerminatedArrayField[BACnetPropertyStates](ctx, "listIfFaultValues", ReadComplex[BACnetPropertyStates](BACnetPropertyStatesParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listIfFaultValues' field"))
 	}

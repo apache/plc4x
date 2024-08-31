@@ -152,14 +152,7 @@ func BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisableTaggedP
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable](ctx, "value", readBuffer, func(ctx context.Context) (BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE)
-		var zero BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable), err
-	})
+	value, err := ReadManualField[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable](ctx, "value", readBuffer, EnsureType[BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestDeviceCommunicationControlEnableDisable_ENABLE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

@@ -152,14 +152,7 @@ func BACnetIPModeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetIPMode](ctx, "value", readBuffer, func(ctx context.Context) (BACnetIPMode, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetIPMode_NORMAL)
-		var zero BACnetIPMode
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetIPMode), err
-	})
+	value, err := ReadManualField[BACnetIPMode](ctx, "value", readBuffer, EnsureType[BACnetIPMode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetIPMode_NORMAL)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

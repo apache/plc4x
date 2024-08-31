@@ -217,7 +217,7 @@ func BACnetConstructedDataCharacterStringValueFaultValuesParseWithBuffer(ctx con
 		}
 	}
 
-	faultValues, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "faultValues", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	faultValues, err := ReadTerminatedArrayField[BACnetOptionalCharacterString](ctx, "faultValues", ReadComplex[BACnetOptionalCharacterString](BACnetOptionalCharacterStringParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'faultValues' field"))
 	}

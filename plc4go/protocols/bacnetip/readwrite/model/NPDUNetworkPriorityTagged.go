@@ -152,14 +152,7 @@ func NPDUNetworkPriorityTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[NPDUNetworkPriority](ctx, "value", readBuffer, func(ctx context.Context) (NPDUNetworkPriority, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), NPDUNetworkPriority_LIFE_SAVETY_MESSAGE)
-		var zero NPDUNetworkPriority
-		if err != nil {
-			return zero, err
-		}
-		return v.(NPDUNetworkPriority), err
-	})
+	value, err := ReadManualField[NPDUNetworkPriority](ctx, "value", readBuffer, EnsureType[NPDUNetworkPriority](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), NPDUNetworkPriority_LIFE_SAVETY_MESSAGE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

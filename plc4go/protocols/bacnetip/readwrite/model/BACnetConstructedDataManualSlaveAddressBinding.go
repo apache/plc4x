@@ -155,7 +155,7 @@ func BACnetConstructedDataManualSlaveAddressBindingParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	manualSlaveAddressBinding, err := ReadTerminatedArrayField[BACnetAddressBinding](ctx, "manualSlaveAddressBinding", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	manualSlaveAddressBinding, err := ReadTerminatedArrayField[BACnetAddressBinding](ctx, "manualSlaveAddressBinding", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'manualSlaveAddressBinding' field"))
 	}

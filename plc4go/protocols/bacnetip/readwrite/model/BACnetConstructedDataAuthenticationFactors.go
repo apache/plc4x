@@ -217,7 +217,7 @@ func BACnetConstructedDataAuthenticationFactorsParseWithBuffer(ctx context.Conte
 		}
 	}
 
-	authenticationFactors, err := ReadTerminatedArrayField[BACnetCredentialAuthenticationFactor](ctx, "authenticationFactors", ReadComplex[BACnetCredentialAuthenticationFactor](BACnetCredentialAuthenticationFactorParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	authenticationFactors, err := ReadTerminatedArrayField[BACnetCredentialAuthenticationFactor](ctx, "authenticationFactors", ReadComplex[BACnetCredentialAuthenticationFactor](BACnetCredentialAuthenticationFactorParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationFactors' field"))
 	}

@@ -152,14 +152,7 @@ func BACnetFaultTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetFaultType](ctx, "value", readBuffer, func(ctx context.Context) (BACnetFaultType, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetFaultType_NONE)
-		var zero BACnetFaultType
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetFaultType), err
-	})
+	value, err := ReadManualField[BACnetFaultType](ctx, "value", readBuffer, EnsureType[BACnetFaultType](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetFaultType_NONE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

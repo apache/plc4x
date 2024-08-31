@@ -217,7 +217,7 @@ func BACnetConstructedDataValueSourceArrayParseWithBuffer(ctx context.Context, r
 		}
 	}
 
-	vtClassesSupported, err := ReadTerminatedArrayField[BACnetValueSource](ctx, "vtClassesSupported", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	vtClassesSupported, err := ReadTerminatedArrayField[BACnetValueSource](ctx, "vtClassesSupported", ReadComplex[BACnetValueSource](BACnetValueSourceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'vtClassesSupported' field"))
 	}

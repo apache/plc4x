@@ -152,14 +152,7 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx context.Context
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetAccessRuleTimeRangeSpecifier](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessRuleTimeRangeSpecifier, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)
-		var zero BACnetAccessRuleTimeRangeSpecifier
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetAccessRuleTimeRangeSpecifier), err
-	})
+	value, err := ReadManualField[BACnetAccessRuleTimeRangeSpecifier](ctx, "value", readBuffer, EnsureType[BACnetAccessRuleTimeRangeSpecifier](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

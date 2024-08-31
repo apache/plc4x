@@ -152,14 +152,7 @@ func BVLCResultCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BVLCResultCode](ctx, "value", readBuffer, func(ctx context.Context) (BVLCResultCode, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BVLCResultCode_SUCCESSFUL_COMPLETION)
-		var zero BVLCResultCode
-		if err != nil {
-			return zero, err
-		}
-		return v.(BVLCResultCode), err
-	})
+	value, err := ReadManualField[BVLCResultCode](ctx, "value", readBuffer, EnsureType[BVLCResultCode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BVLCResultCode_SUCCESSFUL_COMPLETION)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

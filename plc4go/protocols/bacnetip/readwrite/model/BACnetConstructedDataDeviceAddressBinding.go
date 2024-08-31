@@ -155,7 +155,7 @@ func BACnetConstructedDataDeviceAddressBindingParseWithBuffer(ctx context.Contex
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	deviceAddressBinding, err := ReadTerminatedArrayField[BACnetAddressBinding](ctx, "deviceAddressBinding", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	deviceAddressBinding, err := ReadTerminatedArrayField[BACnetAddressBinding](ctx, "deviceAddressBinding", ReadComplex[BACnetAddressBinding](BACnetAddressBindingParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'deviceAddressBinding' field"))
 	}

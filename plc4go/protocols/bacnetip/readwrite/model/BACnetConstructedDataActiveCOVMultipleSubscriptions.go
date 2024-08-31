@@ -155,7 +155,7 @@ func BACnetConstructedDataActiveCOVMultipleSubscriptionsParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	activeCOVMultipleSubscriptions, err := ReadTerminatedArrayField[BACnetCOVMultipleSubscription](ctx, "activeCOVMultipleSubscriptions", ReadComplex[BACnetCOVMultipleSubscription](BACnetCOVMultipleSubscriptionParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	activeCOVMultipleSubscriptions, err := ReadTerminatedArrayField[BACnetCOVMultipleSubscription](ctx, "activeCOVMultipleSubscriptions", ReadComplex[BACnetCOVMultipleSubscription](BACnetCOVMultipleSubscriptionParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'activeCOVMultipleSubscriptions' field"))
 	}

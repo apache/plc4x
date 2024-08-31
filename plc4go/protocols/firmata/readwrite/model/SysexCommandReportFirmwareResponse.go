@@ -182,7 +182,7 @@ func SysexCommandReportFirmwareResponseParseWithBuffer(ctx context.Context, read
 	}
 	minorVersion := _minorVersion
 
-	fileName, err := ReadManualByteArrayField[byte](ctx, "fileName", readBuffer, func(_values []byte) bool { return (bool)(IsSysexEnd(ctx, readBuffer)) }, func(ctx context.Context) (byte, error) { return ParseSysexString(ctx, readBuffer) })
+	fileName, err := ReadManualByteArrayField(ctx, "fileName", readBuffer, IsSysexEnd(ctx, readBuffer), ParseSysexString(ctx, readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fileName' field"))
 	}

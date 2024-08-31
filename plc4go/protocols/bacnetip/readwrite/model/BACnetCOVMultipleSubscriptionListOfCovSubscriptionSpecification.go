@@ -156,7 +156,7 @@ func BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationParseWithBuf
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	listOfCovSubscriptionSpecificationEntry, err := ReadTerminatedArrayField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](ctx, "listOfCovSubscriptionSpecificationEntry", ReadComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	listOfCovSubscriptionSpecificationEntry, err := ReadTerminatedArrayField[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](ctx, "listOfCovSubscriptionSpecificationEntry", ReadComplex[BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntry](BACnetCOVMultipleSubscriptionListOfCovSubscriptionSpecificationEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfCovSubscriptionSpecificationEntry' field"))
 	}

@@ -181,14 +181,7 @@ func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetLiftCarDriveStatus](ctx, "value", readBuffer, func(ctx context.Context) (BACnetLiftCarDriveStatus, error) {
-		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE)
-		var zero BACnetLiftCarDriveStatus
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetLiftCarDriveStatus), err
-	})
+	value, err := ReadManualField[BACnetLiftCarDriveStatus](ctx, "value", readBuffer, EnsureType[BACnetLiftCarDriveStatus](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -198,14 +191,7 @@ func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuff
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
-		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-		var zero uint32
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint32), err
-	})
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}

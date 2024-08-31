@@ -152,14 +152,7 @@ func BACnetLiftGroupModeTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetLiftGroupMode](ctx, "value", readBuffer, func(ctx context.Context) (BACnetLiftGroupMode, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftGroupMode_UNKNOWN)
-		var zero BACnetLiftGroupMode
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetLiftGroupMode), err
-	})
+	value, err := ReadManualField[BACnetLiftGroupMode](ctx, "value", readBuffer, EnsureType[BACnetLiftGroupMode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftGroupMode_UNKNOWN)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

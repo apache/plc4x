@@ -181,14 +181,7 @@ func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, rea
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetAccessCredentialDisable](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessCredentialDisable, error) {
-		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE)
-		var zero BACnetAccessCredentialDisable
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetAccessCredentialDisable), err
-	})
+	value, err := ReadManualField[BACnetAccessCredentialDisable](ctx, "value", readBuffer, EnsureType[BACnetAccessCredentialDisable](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetAccessCredentialDisable_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -198,14 +191,7 @@ func BACnetAccessCredentialDisableTaggedParseWithBuffer(ctx context.Context, rea
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
-		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-		var zero uint32
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint32), err
-	})
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}

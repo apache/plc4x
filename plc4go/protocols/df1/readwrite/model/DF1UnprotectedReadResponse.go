@@ -145,7 +145,7 @@ func DF1UnprotectedReadResponseParseWithBuffer(ctx context.Context, readBuffer u
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	data, err := ReadManualByteArrayField[byte](ctx, "data", readBuffer, func(_values []byte) bool { return (bool)(DataTerminate(ctx, readBuffer)) }, func(ctx context.Context) (byte, error) { return ReadData(ctx, readBuffer) })
+	data, err := ReadManualByteArrayField(ctx, "data", readBuffer, DataTerminate(ctx, readBuffer), ReadData(ctx, readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'data' field"))
 	}

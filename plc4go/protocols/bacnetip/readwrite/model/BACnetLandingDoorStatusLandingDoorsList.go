@@ -156,7 +156,7 @@ func BACnetLandingDoorStatusLandingDoorsListParseWithBuffer(ctx context.Context,
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	landingDoors, err := ReadTerminatedArrayField[BACnetLandingDoorStatusLandingDoorsListEntry](ctx, "landingDoors", ReadComplex[BACnetLandingDoorStatusLandingDoorsListEntry](BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	landingDoors, err := ReadTerminatedArrayField[BACnetLandingDoorStatusLandingDoorsListEntry](ctx, "landingDoors", ReadComplex[BACnetLandingDoorStatusLandingDoorsListEntry](BACnetLandingDoorStatusLandingDoorsListEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingDoors' field"))
 	}

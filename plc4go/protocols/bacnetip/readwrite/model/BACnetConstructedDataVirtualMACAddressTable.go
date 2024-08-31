@@ -155,7 +155,7 @@ func BACnetConstructedDataVirtualMACAddressTableParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	virtualMacAddressTable, err := ReadTerminatedArrayField[BACnetVMACEntry](ctx, "virtualMacAddressTable", ReadComplex[BACnetVMACEntry](BACnetVMACEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	virtualMacAddressTable, err := ReadTerminatedArrayField[BACnetVMACEntry](ctx, "virtualMacAddressTable", ReadComplex[BACnetVMACEntry](BACnetVMACEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'virtualMacAddressTable' field"))
 	}

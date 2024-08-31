@@ -155,7 +155,7 @@ func BACnetConstructedDataLandingCallsParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	landingCallStatus, err := ReadTerminatedArrayField[BACnetLandingCallStatus](ctx, "landingCallStatus", ReadComplex[BACnetLandingCallStatus](BACnetLandingCallStatusParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	landingCallStatus, err := ReadTerminatedArrayField[BACnetLandingCallStatus](ctx, "landingCallStatus", ReadComplex[BACnetLandingCallStatus](BACnetLandingCallStatusParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'landingCallStatus' field"))
 	}

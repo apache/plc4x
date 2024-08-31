@@ -155,7 +155,7 @@ func BACnetConstructedDataCredentialsParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	credentials, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "credentials", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	credentials, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "credentials", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'credentials' field"))
 	}

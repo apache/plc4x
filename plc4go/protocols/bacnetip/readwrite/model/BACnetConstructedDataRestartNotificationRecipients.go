@@ -155,7 +155,7 @@ func BACnetConstructedDataRestartNotificationRecipientsParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	restartNotificationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "restartNotificationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	restartNotificationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "restartNotificationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'restartNotificationRecipients' field"))
 	}

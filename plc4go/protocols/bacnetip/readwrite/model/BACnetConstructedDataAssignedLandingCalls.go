@@ -217,7 +217,7 @@ func BACnetConstructedDataAssignedLandingCallsParseWithBuffer(ctx context.Contex
 		}
 	}
 
-	assignedLandingCalls, err := ReadTerminatedArrayField[BACnetAssignedLandingCalls](ctx, "assignedLandingCalls", ReadComplex[BACnetAssignedLandingCalls](BACnetAssignedLandingCallsParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	assignedLandingCalls, err := ReadTerminatedArrayField[BACnetAssignedLandingCalls](ctx, "assignedLandingCalls", ReadComplex[BACnetAssignedLandingCalls](BACnetAssignedLandingCallsParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'assignedLandingCalls' field"))
 	}

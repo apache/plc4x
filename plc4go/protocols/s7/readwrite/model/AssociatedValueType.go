@@ -174,14 +174,7 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
-	valueLength, err := ReadManualField[uint16](ctx, "valueLength", readBuffer, func(ctx context.Context) (uint16, error) {
-		v, err := RightShift3(ctx, readBuffer, transportSize)
-		var zero uint16
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint16), err
-	})
+	valueLength, err := ReadManualField[uint16](ctx, "valueLength", readBuffer, EnsureType[uint16](RightShift3(ctx, readBuffer, transportSize)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueLength' field"))
 	}

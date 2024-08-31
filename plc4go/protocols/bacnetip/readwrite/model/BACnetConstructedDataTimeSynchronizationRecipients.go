@@ -155,7 +155,7 @@ func BACnetConstructedDataTimeSynchronizationRecipientsParseWithBuffer(ctx conte
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	timeSynchronizationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "timeSynchronizationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	timeSynchronizationRecipients, err := ReadTerminatedArrayField[BACnetRecipient](ctx, "timeSynchronizationRecipients", ReadComplex[BACnetRecipient](BACnetRecipientParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeSynchronizationRecipients' field"))
 	}

@@ -17,37 +17,21 @@
  * under the License.
  */
 
-package model
+package fields
 
-import (
-	"context"
+import "context"
 
-	"github.com/apache/plc4x/plc4go/spi/utils"
-)
-
-func IsSysexEnd(ctx context.Context, io utils.ReadBuffer) func([]byte) bool {
-	return func(bytes []byte) bool {
-		return io.(utils.ReadBufferByteBased).PeekByte(0) == 0xF7
-	}
-}
-
-func ParseSysexString(ctx context.Context, io utils.ReadBuffer) func(context.Context) (byte, error) {
-	return func(context.Context) (byte, error) {
-		aByte, err := io.ReadByte("")
+// EnsureType is used to convert from one (any,error) to (T, error)
+func EnsureType[T any](r any, err error) func(context.Context) (T, error) {
+	return func(ctx context.Context) (T, error) {
 		if err != nil {
-			return 0, err
+			var zero T
+			return zero, err
 		}
-		// Skip the empty byte.
-		_, _ = io.ReadByte("")
-		return aByte, err
+		var zero T
+		if r == nil {
+			return zero, nil
+		}
+		return r.(T), nil
 	}
-}
-
-func SerializeSysexString(ctx context.Context, io utils.WriteBuffer, data byte) {
-	_ = io.WriteByte("", data)
-	_ = io.WriteByte("", 0x00)
-}
-
-func LengthSysexString(ctx context.Context, data []byte) uint16 {
-	return uint16(len(data) * 2)
 }

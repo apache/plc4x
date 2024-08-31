@@ -156,7 +156,7 @@ func BACnetSpecialEventListOfTimeValuesParseWithBuffer(ctx context.Context, read
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	listOfTimeValues, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "listOfTimeValues", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	listOfTimeValues, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "listOfTimeValues", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'listOfTimeValues' field"))
 	}

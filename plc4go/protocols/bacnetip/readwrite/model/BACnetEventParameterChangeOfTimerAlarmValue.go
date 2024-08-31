@@ -162,7 +162,7 @@ func BACnetEventParameterChangeOfTimerAlarmValueParseWithBuffer(ctx context.Cont
 			return nil, err
 		}
 		return v.(BACnetTimerStateTagged), nil
-	}, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	}, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alarmValues' field"))
 	}

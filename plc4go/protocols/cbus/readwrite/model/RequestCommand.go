@@ -228,14 +228,7 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	}
 	_ = initiator
 
-	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, func(ctx context.Context) (CBusCommand, error) {
-		v, err := ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())
-		var zero CBusCommand
-		if err != nil {
-			return zero, err
-		}
-		return v.(CBusCommand), err
-	})
+	cbusCommand, err := ReadManualField[CBusCommand](ctx, "cbusCommand", readBuffer, EnsureType[CBusCommand](ReadCBusCommand(ctx, readBuffer, cBusOptions, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'cbusCommand' field"))
 	}
@@ -245,14 +238,7 @@ func RequestCommandParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	cbusCommandDecoded := _cbusCommandDecoded
 	_ = cbusCommandDecoded
 
-	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, func(ctx context.Context) (Checksum, error) {
-		v, err := ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())
-		var zero Checksum
-		if err != nil {
-			return zero, err
-		}
-		return v.(Checksum), err
-	})
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, cbusCommand, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}

@@ -155,7 +155,7 @@ func BACnetConstructedDataBBMDBroadcastDistributionTableParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bbmdBroadcastDistributionTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdBroadcastDistributionTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	bbmdBroadcastDistributionTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdBroadcastDistributionTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdBroadcastDistributionTable' field"))
 	}

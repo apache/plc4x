@@ -156,7 +156,7 @@ func ListOfCovNotificationsListParseWithBuffer(ctx context.Context, readBuffer u
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	specifications, err := ReadTerminatedArrayField[ListOfCovNotifications](ctx, "specifications", ReadComplex[ListOfCovNotifications](ListOfCovNotificationsParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	specifications, err := ReadTerminatedArrayField[ListOfCovNotifications](ctx, "specifications", ReadComplex[ListOfCovNotifications](ListOfCovNotificationsParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'specifications' field"))
 	}

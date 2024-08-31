@@ -217,7 +217,7 @@ func BACnetConstructedDataNetworkAccessSecurityPoliciesParseWithBuffer(ctx conte
 		}
 	}
 
-	networkAccessSecurityPolicies, err := ReadTerminatedArrayField[BACnetNetworkSecurityPolicy](ctx, "networkAccessSecurityPolicies", ReadComplex[BACnetNetworkSecurityPolicy](BACnetNetworkSecurityPolicyParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	networkAccessSecurityPolicies, err := ReadTerminatedArrayField[BACnetNetworkSecurityPolicy](ctx, "networkAccessSecurityPolicies", ReadComplex[BACnetNetworkSecurityPolicy](BACnetNetworkSecurityPolicyParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkAccessSecurityPolicies' field"))
 	}

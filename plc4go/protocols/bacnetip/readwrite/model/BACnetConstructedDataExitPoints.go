@@ -155,7 +155,7 @@ func BACnetConstructedDataExitPointsParseWithBuffer(ctx context.Context, readBuf
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	exitPoints, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "exitPoints", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	exitPoints, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "exitPoints", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'exitPoints' field"))
 	}

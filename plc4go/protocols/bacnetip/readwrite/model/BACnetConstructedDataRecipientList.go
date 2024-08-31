@@ -155,7 +155,7 @@ func BACnetConstructedDataRecipientListParseWithBuffer(ctx context.Context, read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	recipientList, err := ReadTerminatedArrayField[BACnetDestination](ctx, "recipientList", ReadComplex[BACnetDestination](BACnetDestinationParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	recipientList, err := ReadTerminatedArrayField[BACnetDestination](ctx, "recipientList", ReadComplex[BACnetDestination](BACnetDestinationParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'recipientList' field"))
 	}

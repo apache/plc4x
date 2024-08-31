@@ -155,7 +155,7 @@ func BACnetConstructedDataListOfObjectPropertyReferencesParseWithBuffer(ctx cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	references, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "references", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	references, err := ReadTerminatedArrayField[BACnetDeviceObjectPropertyReference](ctx, "references", ReadComplex[BACnetDeviceObjectPropertyReference](BACnetDeviceObjectPropertyReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'references' field"))
 	}

@@ -217,7 +217,7 @@ func BACnetConstructedDataPositiveAccessRulesParseWithBuffer(ctx context.Context
 		}
 	}
 
-	positiveAccessRules, err := ReadTerminatedArrayField[BACnetAccessRule](ctx, "positiveAccessRules", ReadComplex[BACnetAccessRule](BACnetAccessRuleParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	positiveAccessRules, err := ReadTerminatedArrayField[BACnetAccessRule](ctx, "positiveAccessRules", ReadComplex[BACnetAccessRule](BACnetAccessRuleParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'positiveAccessRules' field"))
 	}

@@ -153,7 +153,7 @@ func BACnetDailyScheduleParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	daySchedule, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "daySchedule", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0) })
+	daySchedule, err := ReadTerminatedArrayField[BACnetTimeValue](ctx, "daySchedule", ReadComplex[BACnetTimeValue](BACnetTimeValueParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daySchedule' field"))
 	}

@@ -155,7 +155,7 @@ func BACnetConstructedDataMemberOfParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	zones, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "zones", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	zones, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "zones", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zones' field"))
 	}

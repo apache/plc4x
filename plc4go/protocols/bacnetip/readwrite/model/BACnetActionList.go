@@ -153,7 +153,7 @@ func BACnetActionListParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
-	action, err := ReadTerminatedArrayField[BACnetActionCommand](ctx, "action", ReadComplex[BACnetActionCommand](BACnetActionCommandParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0) })
+	action, err := ReadTerminatedArrayField[BACnetActionCommand](ctx, "action", ReadComplex[BACnetActionCommand](BACnetActionCommandParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 0))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'action' field"))
 	}

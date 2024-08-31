@@ -155,7 +155,7 @@ func BACnetConstructedDataDateListParseWithBuffer(ctx context.Context, readBuffe
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	dateList, err := ReadTerminatedArrayField[BACnetCalendarEntry](ctx, "dateList", ReadComplex[BACnetCalendarEntry](BACnetCalendarEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	dateList, err := ReadTerminatedArrayField[BACnetCalendarEntry](ctx, "dateList", ReadComplex[BACnetCalendarEntry](BACnetCalendarEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dateList' field"))
 	}

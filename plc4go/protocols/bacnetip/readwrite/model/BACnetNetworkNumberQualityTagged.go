@@ -152,14 +152,7 @@ func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetNetworkNumberQuality](ctx, "value", readBuffer, func(ctx context.Context) (BACnetNetworkNumberQuality, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)
-		var zero BACnetNetworkNumberQuality
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetNetworkNumberQuality), err
-	})
+	value, err := ReadManualField[BACnetNetworkNumberQuality](ctx, "value", readBuffer, EnsureType[BACnetNetworkNumberQuality](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

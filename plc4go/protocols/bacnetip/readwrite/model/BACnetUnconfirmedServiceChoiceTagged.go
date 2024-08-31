@@ -152,14 +152,7 @@ func BACnetUnconfirmedServiceChoiceTaggedParseWithBuffer(ctx context.Context, re
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetUnconfirmedServiceChoice](ctx, "value", readBuffer, func(ctx context.Context) (BACnetUnconfirmedServiceChoice, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetUnconfirmedServiceChoice_I_AM)
-		var zero BACnetUnconfirmedServiceChoice
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetUnconfirmedServiceChoice), err
-	})
+	value, err := ReadManualField[BACnetUnconfirmedServiceChoice](ctx, "value", readBuffer, EnsureType[BACnetUnconfirmedServiceChoice](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetUnconfirmedServiceChoice_I_AM)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

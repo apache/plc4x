@@ -181,14 +181,7 @@ func BACnetBinaryLightingPVTaggedParseWithBuffer(ctx context.Context, readBuffer
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetBinaryLightingPV](ctx, "value", readBuffer, func(ctx context.Context) (BACnetBinaryLightingPV, error) {
-		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE)
-		var zero BACnetBinaryLightingPV
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetBinaryLightingPV), err
-	})
+	value, err := ReadManualField[BACnetBinaryLightingPV](ctx, "value", readBuffer, EnsureType[BACnetBinaryLightingPV](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetBinaryLightingPV_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -198,14 +191,7 @@ func BACnetBinaryLightingPVTaggedParseWithBuffer(ctx context.Context, readBuffer
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
-		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-		var zero uint32
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint32), err
-	})
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}

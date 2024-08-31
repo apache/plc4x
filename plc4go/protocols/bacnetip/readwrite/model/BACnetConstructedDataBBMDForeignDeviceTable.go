@@ -155,7 +155,7 @@ func BACnetConstructedDataBBMDForeignDeviceTableParseWithBuffer(ctx context.Cont
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	bbmdForeignDeviceTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdForeignDeviceTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	bbmdForeignDeviceTable, err := ReadTerminatedArrayField[BACnetBDTEntry](ctx, "bbmdForeignDeviceTable", ReadComplex[BACnetBDTEntry](BACnetBDTEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bbmdForeignDeviceTable' field"))
 	}

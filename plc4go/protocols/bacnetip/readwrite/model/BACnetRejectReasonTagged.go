@@ -147,14 +147,7 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	value, err := ReadManualField[BACnetRejectReason](ctx, "value", readBuffer, func(ctx context.Context) (BACnetRejectReason, error) {
-		v, err := ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)
-		var zero BACnetRejectReason
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetRejectReason), err
-	})
+	value, err := ReadManualField[BACnetRejectReason](ctx, "value", readBuffer, EnsureType[BACnetRejectReason](ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -164,14 +157,7 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
-		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)
-		var zero uint32
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint32), err
-	})
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}

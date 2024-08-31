@@ -217,7 +217,7 @@ func BACnetConstructedDataRegisteredCarCallParseWithBuffer(ctx context.Context, 
 		}
 	}
 
-	registeredCarCall, err := ReadTerminatedArrayField[BACnetLiftCarCallList](ctx, "registeredCarCall", ReadComplex[BACnetLiftCarCallList](BACnetLiftCarCallListParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	registeredCarCall, err := ReadTerminatedArrayField[BACnetLiftCarCallList](ctx, "registeredCarCall", ReadComplex[BACnetLiftCarCallList](BACnetLiftCarCallListParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'registeredCarCall' field"))
 	}

@@ -155,7 +155,7 @@ func BACnetConstructedDataRoutingTableParseWithBuffer(ctx context.Context, readB
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	routingTable, err := ReadTerminatedArrayField[BACnetRouterEntry](ctx, "routingTable", ReadComplex[BACnetRouterEntry](BACnetRouterEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	routingTable, err := ReadTerminatedArrayField[BACnetRouterEntry](ctx, "routingTable", ReadComplex[BACnetRouterEntry](BACnetRouterEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'routingTable' field"))
 	}

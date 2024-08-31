@@ -152,14 +152,7 @@ func BACnetAccessRuleLocationSpecifierTaggedParseWithBuffer(ctx context.Context,
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetAccessRuleLocationSpecifier](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessRuleLocationSpecifier, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleLocationSpecifier_SPECIFIED)
-		var zero BACnetAccessRuleLocationSpecifier
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetAccessRuleLocationSpecifier), err
-	})
+	value, err := ReadManualField[BACnetAccessRuleLocationSpecifier](ctx, "value", readBuffer, EnsureType[BACnetAccessRuleLocationSpecifier](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleLocationSpecifier_SPECIFIED)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

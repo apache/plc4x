@@ -217,7 +217,7 @@ func BACnetConstructedDataActionParseWithBuffer(ctx context.Context, readBuffer 
 		}
 	}
 
-	actionLists, err := ReadTerminatedArrayField[BACnetActionList](ctx, "actionLists", ReadComplex[BACnetActionList](BACnetActionListParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	actionLists, err := ReadTerminatedArrayField[BACnetActionList](ctx, "actionLists", ReadComplex[BACnetActionList](BACnetActionListParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actionLists' field"))
 	}

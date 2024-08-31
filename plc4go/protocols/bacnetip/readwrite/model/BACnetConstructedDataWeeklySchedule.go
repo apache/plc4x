@@ -217,7 +217,7 @@ func BACnetConstructedDataWeeklyScheduleParseWithBuffer(ctx context.Context, rea
 		}
 	}
 
-	weeklySchedule, err := ReadTerminatedArrayField[BACnetDailySchedule](ctx, "weeklySchedule", ReadComplex[BACnetDailySchedule](BACnetDailyScheduleParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	weeklySchedule, err := ReadTerminatedArrayField[BACnetDailySchedule](ctx, "weeklySchedule", ReadComplex[BACnetDailySchedule](BACnetDailyScheduleParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'weeklySchedule' field"))
 	}

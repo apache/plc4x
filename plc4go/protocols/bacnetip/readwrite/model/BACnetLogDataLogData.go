@@ -182,7 +182,7 @@ func BACnetLogDataLogDataParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.Wrap(closeErr, "Error closing for innerOpeningTag")
 	}
 
-	logData, err := ReadTerminatedArrayField[BACnetLogDataLogDataEntry](ctx, "logData", ReadComplex[BACnetLogDataLogDataEntry](BACnetLogDataLogDataEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1) })
+	logData, err := ReadTerminatedArrayField[BACnetLogDataLogDataEntry](ctx, "logData", ReadComplex[BACnetLogDataLogDataEntry](BACnetLogDataLogDataEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, 1))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logData' field"))
 	}

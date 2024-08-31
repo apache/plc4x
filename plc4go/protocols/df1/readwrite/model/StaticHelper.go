@@ -48,22 +48,26 @@ func CrcCheck(ctx context.Context, destinationAddress uint8, sourceAddress uint8
 	}
 }
 
-func DataTerminate(ctx context.Context, io utils.ReadBuffer) bool {
-	rbbb := io.(utils.ReadBufferByteBased)
-	// The byte sequence 0x10 followed by 0x03 indicates the end of the message,
-	// so if we would read this, we abort the loop and stop reading data.
-	return rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x03
+func DataTerminate(ctx context.Context, io utils.ReadBuffer) func([]byte) bool {
+	return func([]byte) bool {
+		rbbb := io.(utils.ReadBufferByteBased)
+		// The byte sequence 0x10 followed by 0x03 indicates the end of the message,
+		// so if we would read this, we abort the loop and stop reading data.
+		return rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x03
+	}
 }
 
-func ReadData(ctx context.Context, io utils.ReadBuffer) (uint8, error) {
-	rbbb := io.(utils.ReadBufferByteBased)
-	// If we read a 0x10, this has to be followed by another 0x10, which is how
-	// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
-	if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
-		_, _ = io.ReadUint8("", 8)
+func ReadData(ctx context.Context, io utils.ReadBuffer) func(context.Context) (uint8, error) {
+	return func(context.Context) (uint8, error) {
+		rbbb := io.(utils.ReadBufferByteBased)
+		// If we read a 0x10, this has to be followed by another 0x10, which is how
+		// this value is escaped in DF1, so if we encounter two 0x10, we simply ignore the first.
+		if rbbb.PeekByte(0) == 0x10 && rbbb.PeekByte(1) == 0x10 {
+			_, _ = io.ReadUint8("", 8)
+		}
+		data, _ := io.ReadUint8("", 8)
+		return data, nil
 	}
-	data, _ := io.ReadUint8("", 8)
-	return data, nil
 }
 
 func WriteData(ctx context.Context, io utils.WriteBuffer, element uint8) {

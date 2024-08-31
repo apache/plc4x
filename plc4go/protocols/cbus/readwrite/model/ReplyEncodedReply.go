@@ -180,14 +180,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	encodedReply, err := ReadManualField[EncodedReply](ctx, "encodedReply", readBuffer, func(ctx context.Context) (EncodedReply, error) {
-		v, err := ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
-		var zero EncodedReply
-		if err != nil {
-			return zero, err
-		}
-		return v.(EncodedReply), err
-	})
+	encodedReply, err := ReadManualField[EncodedReply](ctx, "encodedReply", readBuffer, EnsureType[EncodedReply](ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReply' field"))
 	}
@@ -197,14 +190,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	encodedReplyDecoded := _encodedReplyDecoded
 	_ = encodedReplyDecoded
 
-	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, func(ctx context.Context) (Checksum, error) {
-		v, err := ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())
-		var zero Checksum
-		if err != nil {
-			return zero, err
-		}
-		return v.(Checksum), err
-	})
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}

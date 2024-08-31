@@ -181,14 +181,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetVendorId](ctx, "value", readBuffer, func(ctx context.Context) (BACnetVendorId, error) {
-		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)
-		var zero BACnetVendorId
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetVendorId), err
-	})
+	value, err := ReadManualField[BACnetVendorId](ctx, "value", readBuffer, EnsureType[BACnetVendorId](ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
@@ -198,14 +191,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	isUnknownId := bool(_isUnknownId)
 	_ = isUnknownId
 
-	unknownId, err := ReadManualField[uint32](ctx, "unknownId", readBuffer, func(ctx context.Context) (uint32, error) {
-		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)
-		var zero uint32
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint32), err
-	})
+	unknownId, err := ReadManualField[uint32](ctx, "unknownId", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownId' field"))
 	}

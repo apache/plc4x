@@ -152,14 +152,7 @@ func BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilterTagge
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ctx, "value", readBuffer, func(ctx context.Context) (BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL)
-		var zero BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter), err
-	})
+	value, err := ReadManualField[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ctx, "value", readBuffer, EnsureType[BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestGetEnrollmentSummaryAcknowledgementFilter_ALL)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

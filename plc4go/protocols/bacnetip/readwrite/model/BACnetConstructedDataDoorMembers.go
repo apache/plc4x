@@ -217,7 +217,7 @@ func BACnetConstructedDataDoorMembersParseWithBuffer(ctx context.Context, readBu
 		}
 	}
 
-	doorMembers, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "doorMembers", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	doorMembers, err := ReadTerminatedArrayField[BACnetDeviceObjectReference](ctx, "doorMembers", ReadComplex[BACnetDeviceObjectReference](BACnetDeviceObjectReferenceParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'doorMembers' field"))
 	}

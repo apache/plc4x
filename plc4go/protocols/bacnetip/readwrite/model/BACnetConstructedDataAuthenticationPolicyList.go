@@ -217,7 +217,7 @@ func BACnetConstructedDataAuthenticationPolicyListParseWithBuffer(ctx context.Co
 		}
 	}
 
-	authenticationPolicyList, err := ReadTerminatedArrayField[BACnetAuthenticationPolicy](ctx, "authenticationPolicyList", ReadComplex[BACnetAuthenticationPolicy](BACnetAuthenticationPolicyParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	authenticationPolicyList, err := ReadTerminatedArrayField[BACnetAuthenticationPolicy](ctx, "authenticationPolicyList", ReadComplex[BACnetAuthenticationPolicy](BACnetAuthenticationPolicyParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'authenticationPolicyList' field"))
 	}

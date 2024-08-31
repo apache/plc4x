@@ -522,7 +522,7 @@ func CipConnectionManagerRequestParseWithBuffer(ctx context.Context, readBuffer 
 	}
 	connectionPathSize := _connectionPathSize
 
-	connectionPaths, err := ReadTerminatedArrayField[PathSegment](ctx, "connectionPaths", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer), func() bool { return NoMorePathSegments(ctx, readBuffer) })
+	connectionPaths, err := ReadTerminatedArrayField[PathSegment](ctx, "connectionPaths", ReadComplex[PathSegment](PathSegmentParseWithBuffer, readBuffer), NoMorePathSegments(ctx, readBuffer))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'connectionPaths' field"))
 	}

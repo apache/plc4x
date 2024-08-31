@@ -156,7 +156,7 @@ func BACnetFaultParameterFaultExtendedParametersParseWithBuffer(ctx context.Cont
 		return nil, errors.Wrap(closeErr, "Error closing for openingTag")
 	}
 
-	parameters, err := ReadTerminatedArrayField[BACnetFaultParameterFaultExtendedParametersEntry](ctx, "parameters", ReadComplex[BACnetFaultParameterFaultExtendedParametersEntry](BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	parameters, err := ReadTerminatedArrayField[BACnetFaultParameterFaultExtendedParametersEntry](ctx, "parameters", ReadComplex[BACnetFaultParameterFaultExtendedParametersEntry](BACnetFaultParameterFaultExtendedParametersEntryParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'parameters' field"))
 	}

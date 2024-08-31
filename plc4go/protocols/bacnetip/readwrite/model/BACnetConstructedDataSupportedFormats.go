@@ -217,7 +217,7 @@ func BACnetConstructedDataSupportedFormatsParseWithBuffer(ctx context.Context, r
 		}
 	}
 
-	supportedFormats, err := ReadTerminatedArrayField[BACnetAuthenticationFactorFormat](ctx, "supportedFormats", ReadComplex[BACnetAuthenticationFactorFormat](BACnetAuthenticationFactorFormatParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	supportedFormats, err := ReadTerminatedArrayField[BACnetAuthenticationFactorFormat](ctx, "supportedFormats", ReadComplex[BACnetAuthenticationFactorFormat](BACnetAuthenticationFactorFormatParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'supportedFormats' field"))
 	}

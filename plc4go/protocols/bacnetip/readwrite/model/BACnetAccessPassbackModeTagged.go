@@ -152,14 +152,7 @@ func BACnetAccessPassbackModeTaggedParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetAccessPassbackMode](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessPassbackMode, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessPassbackMode_PASSBACK_OFF)
-		var zero BACnetAccessPassbackMode
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetAccessPassbackMode), err
-	})
+	value, err := ReadManualField[BACnetAccessPassbackMode](ctx, "value", readBuffer, EnsureType[BACnetAccessPassbackMode](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessPassbackMode_PASSBACK_OFF)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

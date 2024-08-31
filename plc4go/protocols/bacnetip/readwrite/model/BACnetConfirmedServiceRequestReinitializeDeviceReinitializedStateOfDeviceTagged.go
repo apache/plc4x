@@ -152,14 +152,7 @@ func BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDeviceTa
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice](ctx, "value", readBuffer, func(ctx context.Context) (BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART)
-		var zero BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice), err
-	})
+	value, err := ReadManualField[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice](ctx, "value", readBuffer, EnsureType[BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestReinitializeDeviceReinitializedStateOfDevice_COLDSTART)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

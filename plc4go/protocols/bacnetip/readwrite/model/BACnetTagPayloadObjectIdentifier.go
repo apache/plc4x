@@ -154,26 +154,12 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	objectType, err := ReadManualField[BACnetObjectType](ctx, "objectType", readBuffer, func(ctx context.Context) (BACnetObjectType, error) {
-		v, err := ReadObjectType(ctx, readBuffer)
-		var zero BACnetObjectType
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetObjectType), err
-	})
+	objectType, err := ReadManualField[BACnetObjectType](ctx, "objectType", readBuffer, EnsureType[BACnetObjectType](ReadObjectType(ctx, readBuffer)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
 	}
 
-	proprietaryValue, err := ReadManualField[uint16](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint16, error) {
-		v, err := ReadProprietaryObjectType(ctx, readBuffer, objectType)
-		var zero uint16
-		if err != nil {
-			return zero, err
-		}
-		return v.(uint16), err
-	})
+	proprietaryValue, err := ReadManualField[uint16](ctx, "proprietaryValue", readBuffer, EnsureType[uint16](ReadProprietaryObjectType(ctx, readBuffer, objectType)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}

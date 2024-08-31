@@ -155,7 +155,7 @@ func BACnetConstructedDataTrendLogMultipleLogBufferParseWithBuffer(ctx context.C
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	floorText, err := ReadTerminatedArrayField[BACnetLogMultipleRecord](ctx, "floorText", ReadComplex[BACnetLogMultipleRecord](BACnetLogMultipleRecordParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	floorText, err := ReadTerminatedArrayField[BACnetLogMultipleRecord](ctx, "floorText", ReadComplex[BACnetLogMultipleRecord](BACnetLogMultipleRecordParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'floorText' field"))
 	}

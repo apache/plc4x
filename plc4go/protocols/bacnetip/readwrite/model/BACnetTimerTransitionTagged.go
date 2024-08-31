@@ -152,14 +152,7 @@ func BACnetTimerTransitionTaggedParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetTimerTransition](ctx, "value", readBuffer, func(ctx context.Context) (BACnetTimerTransition, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)
-		var zero BACnetTimerTransition
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetTimerTransition), err
-	})
+	value, err := ReadManualField[BACnetTimerTransition](ctx, "value", readBuffer, EnsureType[BACnetTimerTransition](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

@@ -152,14 +152,7 @@ func BACnetNodeTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	value, err := ReadManualField[BACnetNodeType](ctx, "value", readBuffer, func(ctx context.Context) (BACnetNodeType, error) {
-		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNodeType_UNKNOWN)
-		var zero BACnetNodeType
-		if err != nil {
-			return zero, err
-		}
-		return v.(BACnetNodeType), err
-	})
+	value, err := ReadManualField[BACnetNodeType](ctx, "value", readBuffer, EnsureType[BACnetNodeType](ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNodeType_UNKNOWN)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}

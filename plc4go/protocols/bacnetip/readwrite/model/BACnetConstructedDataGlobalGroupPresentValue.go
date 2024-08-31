@@ -217,7 +217,7 @@ func BACnetConstructedDataGlobalGroupPresentValueParseWithBuffer(ctx context.Con
 		}
 	}
 
-	presentValue, err := ReadTerminatedArrayField[BACnetPropertyAccessResult](ctx, "presentValue", ReadComplex[BACnetPropertyAccessResult](BACnetPropertyAccessResultParseWithBuffer, readBuffer), func() bool { return IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber) })
+	presentValue, err := ReadTerminatedArrayField[BACnetPropertyAccessResult](ctx, "presentValue", ReadComplex[BACnetPropertyAccessResult](BACnetPropertyAccessResultParseWithBuffer, readBuffer), IsBACnetConstructedDataClosingTag(ctx, readBuffer, false, tagNumber))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'presentValue' field"))
 	}
