@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,14 +181,16 @@ func BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx context.Context, re
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessZoneOccupancyStateTagged")
-	}
-	var value BACnetAccessZoneOccupancyState
-	if _value != nil {
-		value = _value.(BACnetAccessZoneOccupancyState)
+	value, err := ReadManualField[BACnetAccessZoneOccupancyState](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessZoneOccupancyState, error) {
+		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetAccessZoneOccupancyState_VENDOR_PROPRIETARY_VALUE)
+		var zero BACnetAccessZoneOccupancyState
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetAccessZoneOccupancyState), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	// Virtual field
@@ -195,14 +198,16 @@ func BACnetAccessZoneOccupancyStateTaggedParseWithBuffer(ctx context.Context, re
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAccessZoneOccupancyStateTagged")
-	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
+		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
+		var zero uint32
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint32), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessZoneOccupancyStateTagged"); closeErr != nil {

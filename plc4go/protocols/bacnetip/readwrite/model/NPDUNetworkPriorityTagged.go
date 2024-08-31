@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func NPDUNetworkPriorityTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), NPDUNetworkPriority_LIFE_SAVETY_MESSAGE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of NPDUNetworkPriorityTagged")
-	}
-	var value NPDUNetworkPriority
-	if _value != nil {
-		value = _value.(NPDUNetworkPriority)
+	value, err := ReadManualField[NPDUNetworkPriority](ctx, "value", readBuffer, func(ctx context.Context) (NPDUNetworkPriority, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), NPDUNetworkPriority_LIFE_SAVETY_MESSAGE)
+		var zero NPDUNetworkPriority
+		if err != nil {
+			return zero, err
+		}
+		return v.(NPDUNetworkPriority), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("NPDUNetworkPriorityTagged"); closeErr != nil {

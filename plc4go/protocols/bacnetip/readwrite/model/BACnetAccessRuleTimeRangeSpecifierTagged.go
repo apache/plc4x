@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetAccessRuleTimeRangeSpecifierTaggedParseWithBuffer(ctx context.Context
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAccessRuleTimeRangeSpecifierTagged")
-	}
-	var value BACnetAccessRuleTimeRangeSpecifier
-	if _value != nil {
-		value = _value.(BACnetAccessRuleTimeRangeSpecifier)
+	value, err := ReadManualField[BACnetAccessRuleTimeRangeSpecifier](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAccessRuleTimeRangeSpecifier, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAccessRuleTimeRangeSpecifier_SPECIFIED)
+		var zero BACnetAccessRuleTimeRangeSpecifier
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetAccessRuleTimeRangeSpecifier), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAccessRuleTimeRangeSpecifierTagged"); closeErr != nil {

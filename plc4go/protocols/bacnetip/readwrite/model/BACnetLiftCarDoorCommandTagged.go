@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetLiftCarDoorCommandTaggedParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDoorCommand_NONE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDoorCommandTagged")
-	}
-	var value BACnetLiftCarDoorCommand
-	if _value != nil {
-		value = _value.(BACnetLiftCarDoorCommand)
+	value, err := ReadManualField[BACnetLiftCarDoorCommand](ctx, "value", readBuffer, func(ctx context.Context) (BACnetLiftCarDoorCommand, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDoorCommand_NONE)
+		var zero BACnetLiftCarDoorCommand
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetLiftCarDoorCommand), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarDoorCommandTagged"); closeErr != nil {

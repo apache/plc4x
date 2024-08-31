@@ -27,6 +27,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -178,14 +179,16 @@ func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (calData)
-	_calData, _calDataErr := ReadCALData(ctx, readBuffer)
-	if _calDataErr != nil {
-		return nil, errors.Wrap(_calDataErr, "Error parsing 'calData' field of RequestObsolete")
-	}
-	var calData CALData
-	if _calData != nil {
-		calData = _calData.(CALData)
+	calData, err := ReadManualField[CALData](ctx, "calData", readBuffer, func(ctx context.Context) (CALData, error) {
+		v, err := ReadCALData(ctx, readBuffer)
+		var zero CALData
+		if err != nil {
+			return zero, err
+		}
+		return v.(CALData), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calData' field"))
 	}
 
 	// Virtual field

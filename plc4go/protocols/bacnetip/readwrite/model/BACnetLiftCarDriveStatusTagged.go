@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,14 +181,16 @@ func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLiftCarDriveStatusTagged")
-	}
-	var value BACnetLiftCarDriveStatus
-	if _value != nil {
-		value = _value.(BACnetLiftCarDriveStatus)
+	value, err := ReadManualField[BACnetLiftCarDriveStatus](ctx, "value", readBuffer, func(ctx context.Context) (BACnetLiftCarDriveStatus, error) {
+		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetLiftCarDriveStatus_VENDOR_PROPRIETARY_VALUE)
+		var zero BACnetLiftCarDriveStatus
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetLiftCarDriveStatus), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	// Virtual field
@@ -195,14 +198,16 @@ func BACnetLiftCarDriveStatusTaggedParseWithBuffer(ctx context.Context, readBuff
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetLiftCarDriveStatusTagged")
-	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
+		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isProprietary)
+		var zero uint32
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint32), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLiftCarDriveStatusTagged"); closeErr != nil {

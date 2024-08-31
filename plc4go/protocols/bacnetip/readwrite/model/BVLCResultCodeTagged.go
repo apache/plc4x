@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BVLCResultCodeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BVLCResultCode_SUCCESSFUL_COMPLETION)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BVLCResultCodeTagged")
-	}
-	var value BVLCResultCode
-	if _value != nil {
-		value = _value.(BVLCResultCode)
+	value, err := ReadManualField[BVLCResultCode](ctx, "value", readBuffer, func(ctx context.Context) (BVLCResultCode, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BVLCResultCode_SUCCESSFUL_COMPLETION)
+		var zero BVLCResultCode
+		if err != nil {
+			return zero, err
+		}
+		return v.(BVLCResultCode), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BVLCResultCodeTagged"); closeErr != nil {

@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,14 +147,16 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetRejectReasonTagged")
-	}
-	var value BACnetRejectReason
-	if _value != nil {
-		value = _value.(BACnetRejectReason)
+	value, err := ReadManualField[BACnetRejectReason](ctx, "value", readBuffer, func(ctx context.Context) (BACnetRejectReason, error) {
+		v, err := ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetRejectReason_VENDOR_PROPRIETARY_VALUE)
+		var zero BACnetRejectReason
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetRejectReason), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	// Virtual field
@@ -161,14 +164,16 @@ func BACnetRejectReasonTaggedParseWithBuffer(ctx context.Context, readBuffer uti
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetRejectReasonTagged")
-	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
+		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)
+		var zero uint32
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint32), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetRejectReasonTagged"); closeErr != nil {

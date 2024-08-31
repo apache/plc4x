@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTaggedParse
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged")
-	}
-	var value BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
-	if _value != nil {
-		value = _value.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority)
+	value, err := ReadManualField[BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority](ctx, "value", readBuffer, func(ctx context.Context) (BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority_NORMAL)
+		var zero BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriority), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetConfirmedServiceRequestConfirmedTextMessageMessagePriorityTagged"); closeErr != nil {

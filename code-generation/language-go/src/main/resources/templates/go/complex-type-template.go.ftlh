@@ -913,19 +913,16 @@ func ${type.name}ParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
 				<#break>
-			<#case "manual">
+			<#case "manual">${helper.emitRequiredImportRaw(". \"github.com/apache/plc4x/plc4go/spi/codegen/fields\"")}
 				<#assign manualField = field.asManualField().orElseThrow()>
+				<#assign typedField = field.asTypedField().orElseThrow()>
+				<#assign namedField = field.asNamedField().orElseThrow()>
 
-	// Manual Field (${manualField.name})
-	_${manualField.name}, _${manualField.name}Err := ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)}
-	if _${manualField.name}Err != nil {
-		return nil, errors.Wrap(_${manualField.name}Err, "Error parsing '${manualField.name}' field of ${type.name}")<@emitImport import="github.com/pkg/errors" />
+	${manualField.name},err := ReadManualField[${helper.getLanguageTypeNameForField(field)}](ctx, "${namedField.name}", readBuffer, func(ctx context.Context)(${helper.getLanguageTypeNameForField(manualField)},error) {v,err:= ${helper.toParseExpression(manualField, manualField.type, manualField.parseExpression, parserArguments)};var zero ${helper.getLanguageTypeNameForField(manualField)};if err!=nil{return zero,err};return v.(${helper.getLanguageTypeNameForField(manualField)}),err}${helper.getFieldOptions(typedField, parserArguments)});
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing '${namedField.name}' field"))<@emitImport import="github.com/pkg/errors" />
 	}
-	var ${manualField.name} ${helper.getLanguageTypeNameForField(manualField)}
-	if _${manualField.name} != nil {
-            ${manualField.name} = _${manualField.name}.(${helper.getLanguageTypeNameForField(manualField)})
-	}
-			<#break>
+				<#break>
 			<#case "optional">
 				<#assign optionalField = field.asOptionalField().orElseThrow()>
 

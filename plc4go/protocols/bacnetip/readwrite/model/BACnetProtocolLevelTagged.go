@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetProtocolLevelTaggedParseWithBuffer(ctx context.Context, readBuffer ut
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetProtocolLevelTagged")
-	}
-	var value BACnetProtocolLevel
-	if _value != nil {
-		value = _value.(BACnetProtocolLevel)
+	value, err := ReadManualField[BACnetProtocolLevel](ctx, "value", readBuffer, func(ctx context.Context) (BACnetProtocolLevel, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetProtocolLevel_PHYSICAL)
+		var zero BACnetProtocolLevel
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetProtocolLevel), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetProtocolLevelTagged"); closeErr != nil {

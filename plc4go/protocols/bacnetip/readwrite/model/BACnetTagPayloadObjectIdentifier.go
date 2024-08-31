@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -153,24 +154,28 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (objectType)
-	_objectType, _objectTypeErr := ReadObjectType(ctx, readBuffer)
-	if _objectTypeErr != nil {
-		return nil, errors.Wrap(_objectTypeErr, "Error parsing 'objectType' field of BACnetTagPayloadObjectIdentifier")
-	}
-	var objectType BACnetObjectType
-	if _objectType != nil {
-		objectType = _objectType.(BACnetObjectType)
+	objectType, err := ReadManualField[BACnetObjectType](ctx, "objectType", readBuffer, func(ctx context.Context) (BACnetObjectType, error) {
+		v, err := ReadObjectType(ctx, readBuffer)
+		var zero BACnetObjectType
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetObjectType), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
 	}
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryObjectType(ctx, readBuffer, objectType)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetTagPayloadObjectIdentifier")
-	}
-	var proprietaryValue uint16
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint16)
+	proprietaryValue, err := ReadManualField[uint16](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint16, error) {
+		v, err := ReadProprietaryObjectType(ctx, readBuffer, objectType)
+		var zero uint16
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint16), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
 	// Virtual field

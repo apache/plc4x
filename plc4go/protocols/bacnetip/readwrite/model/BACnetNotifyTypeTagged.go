@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetNotifyTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNotifyType_ALARM)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNotifyTypeTagged")
-	}
-	var value BACnetNotifyType
-	if _value != nil {
-		value = _value.(BACnetNotifyType)
+	value, err := ReadManualField[BACnetNotifyType](ctx, "value", readBuffer, func(ctx context.Context) (BACnetNotifyType, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNotifyType_ALARM)
+		var zero BACnetNotifyType
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetNotifyType), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNotifyTypeTagged"); closeErr != nil {

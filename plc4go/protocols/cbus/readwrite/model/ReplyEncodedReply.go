@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -179,14 +180,16 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (encodedReply)
-	_encodedReply, _encodedReplyErr := ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
-	if _encodedReplyErr != nil {
-		return nil, errors.Wrap(_encodedReplyErr, "Error parsing 'encodedReply' field of ReplyEncodedReply")
-	}
-	var encodedReply EncodedReply
-	if _encodedReply != nil {
-		encodedReply = _encodedReply.(EncodedReply)
+	encodedReply, err := ReadManualField[EncodedReply](ctx, "encodedReply", readBuffer, func(ctx context.Context) (EncodedReply, error) {
+		v, err := ReadEncodedReply(ctx, readBuffer, cBusOptions, requestContext, cBusOptions.GetSrchk())
+		var zero EncodedReply
+		if err != nil {
+			return zero, err
+		}
+		return v.(EncodedReply), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReply' field"))
 	}
 
 	// Virtual field
@@ -194,14 +197,16 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	encodedReplyDecoded := _encodedReplyDecoded
 	_ = encodedReplyDecoded
 
-	// Manual Field (chksum)
-	_chksum, _chksumErr := ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())
-	if _chksumErr != nil {
-		return nil, errors.Wrap(_chksumErr, "Error parsing 'chksum' field of ReplyEncodedReply")
-	}
-	var chksum Checksum
-	if _chksum != nil {
-		chksum = _chksum.(Checksum)
+	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, func(ctx context.Context) (Checksum, error) {
+		v, err := ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())
+		var zero Checksum
+		if err != nil {
+			return zero, err
+		}
+		return v.(Checksum), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksum' field"))
 	}
 
 	// Virtual field

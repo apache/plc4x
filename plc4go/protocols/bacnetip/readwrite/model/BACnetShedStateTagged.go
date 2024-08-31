@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetShedStateTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetShedState_SHED_INACTIVE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetShedStateTagged")
-	}
-	var value BACnetShedState
-	if _value != nil {
-		value = _value.(BACnetShedState)
+	value, err := ReadManualField[BACnetShedState](ctx, "value", readBuffer, func(ctx context.Context) (BACnetShedState, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetShedState_SHED_INACTIVE)
+		var zero BACnetShedState
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetShedState), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetShedStateTagged"); closeErr != nil {

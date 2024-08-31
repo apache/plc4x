@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetTimerTransitionTaggedParseWithBuffer(ctx context.Context, readBuffer 
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetTimerTransitionTagged")
-	}
-	var value BACnetTimerTransition
-	if _value != nil {
-		value = _value.(BACnetTimerTransition)
+	value, err := ReadManualField[BACnetTimerTransition](ctx, "value", readBuffer, func(ctx context.Context) (BACnetTimerTransition, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetTimerTransition_NONE)
+		var zero BACnetTimerTransition
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetTimerTransition), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetTimerTransitionTagged"); closeErr != nil {

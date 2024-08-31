@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetNetworkNumberQualityTaggedParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNetworkNumberQualityTagged")
-	}
-	var value BACnetNetworkNumberQuality
-	if _value != nil {
-		value = _value.(BACnetNetworkNumberQuality)
+	value, err := ReadManualField[BACnetNetworkNumberQuality](ctx, "value", readBuffer, func(ctx context.Context) (BACnetNetworkNumberQuality, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNetworkNumberQuality_UNKNOWN)
+		var zero BACnetNetworkNumberQuality
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetNetworkNumberQuality), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNetworkNumberQualityTagged"); closeErr != nil {

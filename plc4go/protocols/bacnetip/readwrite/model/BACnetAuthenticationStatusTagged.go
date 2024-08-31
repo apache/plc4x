@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetAuthenticationStatusTaggedParseWithBuffer(ctx context.Context, readBu
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAuthenticationStatus_NOT_READY)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAuthenticationStatusTagged")
-	}
-	var value BACnetAuthenticationStatus
-	if _value != nil {
-		value = _value.(BACnetAuthenticationStatus)
+	value, err := ReadManualField[BACnetAuthenticationStatus](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAuthenticationStatus, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetAuthenticationStatus_NOT_READY)
+		var zero BACnetAuthenticationStatus
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetAuthenticationStatus), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAuthenticationStatusTagged"); closeErr != nil {

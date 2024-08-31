@@ -174,14 +174,16 @@ func AssociatedValueTypeParseWithBuffer(ctx context.Context, readBuffer utils.Re
 		return nil, errors.Wrap(closeErr, "Error closing for transportSize")
 	}
 
-	// Manual Field (valueLength)
-	_valueLength, _valueLengthErr := RightShift3(ctx, readBuffer, transportSize)
-	if _valueLengthErr != nil {
-		return nil, errors.Wrap(_valueLengthErr, "Error parsing 'valueLength' field of AssociatedValueType")
-	}
-	var valueLength uint16
-	if _valueLength != nil {
-		valueLength = _valueLength.(uint16)
+	valueLength, err := ReadManualField[uint16](ctx, "valueLength", readBuffer, func(ctx context.Context) (uint16, error) {
+		v, err := RightShift3(ctx, readBuffer, transportSize)
+		var zero uint16
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint16), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueLength' field"))
 	}
 
 	data, err := ReadCountArrayField[uint8](ctx, "data", ReadUnsignedByte(readBuffer, 8), uint64(EventItemLength(ctx, readBuffer, valueLength)))

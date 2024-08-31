@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetBinaryPVTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetBinaryPVTagged")
-	}
-	var value BACnetBinaryPV
-	if _value != nil {
-		value = _value.(BACnetBinaryPV)
+	value, err := ReadManualField[BACnetBinaryPV](ctx, "value", readBuffer, func(ctx context.Context) (BACnetBinaryPV, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetBinaryPV_INACTIVE)
+		var zero BACnetBinaryPV
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetBinaryPV), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetBinaryPVTagged"); closeErr != nil {

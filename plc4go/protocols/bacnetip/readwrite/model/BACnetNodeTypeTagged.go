@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetNodeTypeTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNodeType_UNKNOWN)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetNodeTypeTagged")
-	}
-	var value BACnetNodeType
-	if _value != nil {
-		value = _value.(BACnetNodeType)
+	value, err := ReadManualField[BACnetNodeType](ctx, "value", readBuffer, func(ctx context.Context) (BACnetNodeType, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetNodeType_UNKNOWN)
+		var zero BACnetNodeType
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetNodeType), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetNodeTypeTagged"); closeErr != nil {

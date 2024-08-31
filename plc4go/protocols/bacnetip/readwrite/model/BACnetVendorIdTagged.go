@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -180,14 +181,16 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetVendorIdTagged")
-	}
-	var value BACnetVendorId
-	if _value != nil {
-		value = _value.(BACnetVendorId)
+	value, err := ReadManualField[BACnetVendorId](ctx, "value", readBuffer, func(ctx context.Context) (BACnetVendorId, error) {
+		v, err := ReadEnumGeneric(ctx, readBuffer, header.GetActualLength(), BACnetVendorId_UNKNOWN_VENDOR)
+		var zero BACnetVendorId
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetVendorId), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	// Virtual field
@@ -195,14 +198,16 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	isUnknownId := bool(_isUnknownId)
 	_ = isUnknownId
 
-	// Manual Field (unknownId)
-	_unknownId, _unknownIdErr := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)
-	if _unknownIdErr != nil {
-		return nil, errors.Wrap(_unknownIdErr, "Error parsing 'unknownId' field of BACnetVendorIdTagged")
-	}
-	var unknownId uint32
-	if _unknownId != nil {
-		unknownId = _unknownId.(uint32)
+	unknownId, err := ReadManualField[uint32](ctx, "unknownId", readBuffer, func(ctx context.Context) (uint32, error) {
+		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)
+		var zero uint32
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint32), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unknownId' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetVendorIdTagged"); closeErr != nil {

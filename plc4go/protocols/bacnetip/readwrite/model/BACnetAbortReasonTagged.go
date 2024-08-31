@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -146,14 +147,16 @@ func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	currentPos := positionAware.GetPos()
 	_ = currentPos
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetAbortReason_VENDOR_PROPRIETARY_VALUE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetAbortReasonTagged")
-	}
-	var value BACnetAbortReason
-	if _value != nil {
-		value = _value.(BACnetAbortReason)
+	value, err := ReadManualField[BACnetAbortReason](ctx, "value", readBuffer, func(ctx context.Context) (BACnetAbortReason, error) {
+		v, err := ReadEnumGeneric(ctx, readBuffer, actualLength, BACnetAbortReason_VENDOR_PROPRIETARY_VALUE)
+		var zero BACnetAbortReason
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetAbortReason), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	// Virtual field
@@ -161,14 +164,16 @@ func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	isProprietary := bool(_isProprietary)
 	_ = isProprietary
 
-	// Manual Field (proprietaryValue)
-	_proprietaryValue, _proprietaryValueErr := ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)
-	if _proprietaryValueErr != nil {
-		return nil, errors.Wrap(_proprietaryValueErr, "Error parsing 'proprietaryValue' field of BACnetAbortReasonTagged")
-	}
-	var proprietaryValue uint32
-	if _proprietaryValue != nil {
-		proprietaryValue = _proprietaryValue.(uint32)
+	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, func(ctx context.Context) (uint32, error) {
+		v, err := ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)
+		var zero uint32
+		if err != nil {
+			return zero, err
+		}
+		return v.(uint32), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'proprietaryValue' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetAbortReasonTagged"); closeErr != nil {

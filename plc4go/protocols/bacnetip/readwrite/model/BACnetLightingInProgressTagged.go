@@ -26,6 +26,7 @@ import (
 	"github.com/pkg/errors"
 	"github.com/rs/zerolog"
 
+	. "github.com/apache/plc4x/plc4go/spi/codegen/fields"
 	"github.com/apache/plc4x/plc4go/spi/utils"
 )
 
@@ -151,14 +152,16 @@ func BACnetLightingInProgressTaggedParseWithBuffer(ctx context.Context, readBuff
 		return nil, errors.WithStack(utils.ParseAssertError{Message: "tagnumber doesn't match"})
 	}
 
-	// Manual Field (value)
-	_value, _valueErr := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLightingInProgress_IDLE)
-	if _valueErr != nil {
-		return nil, errors.Wrap(_valueErr, "Error parsing 'value' field of BACnetLightingInProgressTagged")
-	}
-	var value BACnetLightingInProgress
-	if _value != nil {
-		value = _value.(BACnetLightingInProgress)
+	value, err := ReadManualField[BACnetLightingInProgress](ctx, "value", readBuffer, func(ctx context.Context) (BACnetLightingInProgress, error) {
+		v, err := ReadEnumGenericFailing(ctx, readBuffer, header.GetActualLength(), BACnetLightingInProgress_IDLE)
+		var zero BACnetLightingInProgress
+		if err != nil {
+			return zero, err
+		}
+		return v.(BACnetLightingInProgress), err
+	})
+	if err != nil {
+		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
 
 	if closeErr := readBuffer.CloseContext("BACnetLightingInProgressTagged"); closeErr != nil {
