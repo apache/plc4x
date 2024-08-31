@@ -70,7 +70,7 @@ func CompareResults(t *testing.T, actualString []byte, referenceString []byte) e
 	}
 	cleanDiff := make([]xdiff.Delta, 0)
 	for _, delta := range diff {
-		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil {
+		if delta.Operation == xdiff.Delete && delta.Subject.Value == nil || delta.Operation == xdiff.Insert && delta.Subject.Value == nil || delta.Operation == xdiff.InsertSubtree && delta.Subject.Value == nil {
 			localLog.Info().Interface("delta", delta).Msg("We ignore empty elements which should be deleted")
 			continue
 		}
