@@ -199,16 +199,19 @@ func BACnetLogStatusTaggedParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logDisabled' field"))
 	}
+	_ = logDisabled
 
 	bufferPurged, err := ReadVirtualField[bool](ctx, "bufferPurged", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bufferPurged' field"))
 	}
+	_ = bufferPurged
 
 	logInterrupted, err := ReadVirtualField[bool](ctx, "logInterrupted", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'logInterrupted' field"))
 	}
+	_ = logInterrupted
 
 	if closeErr := readBuffer.CloseContext("BACnetLogStatusTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLogStatusTagged")

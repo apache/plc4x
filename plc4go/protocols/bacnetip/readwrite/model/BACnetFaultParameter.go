@@ -174,6 +174,7 @@ func BACnetFaultParameterParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
 	}
+	_ = peekedTagNumber
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetFaultParameterChildSerializeRequirement interface {

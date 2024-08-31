@@ -181,6 +181,7 @@ func MeasurementDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type MeasurementDataChildSerializeRequirement interface {

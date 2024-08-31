@@ -269,51 +269,61 @@ func BACnetObjectTypesSupportedTaggedParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'timeValue' field"))
 	}
+	_ = timeValue
 
 	notificationForwarder, err := ReadVirtualField[bool](ctx, "notificationForwarder", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'notificationForwarder' field"))
 	}
+	_ = notificationForwarder
 
 	alertEnrollment, err := ReadVirtualField[bool](ctx, "alertEnrollment", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'alertEnrollment' field"))
 	}
+	_ = alertEnrollment
 
 	channel, err := ReadVirtualField[bool](ctx, "channel", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'channel' field"))
 	}
+	_ = channel
 
 	lightingOutput, err := ReadVirtualField[bool](ctx, "lightingOutput", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lightingOutput' field"))
 	}
+	_ = lightingOutput
 
 	binaryLightingOutput, err := ReadVirtualField[bool](ctx, "binaryLightingOutput", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'binaryLightingOutput' field"))
 	}
+	_ = binaryLightingOutput
 
 	networkPort, err := ReadVirtualField[bool](ctx, "networkPort", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkPort' field"))
 	}
+	_ = networkPort
 
 	elevatorGroup, err := ReadVirtualField[bool](ctx, "elevatorGroup", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'elevatorGroup' field"))
 	}
+	_ = elevatorGroup
 
 	escalator, err := ReadVirtualField[bool](ctx, "escalator", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'escalator' field"))
 	}
+	_ = escalator
 
 	lift, err := ReadVirtualField[bool](ctx, "lift", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lift' field"))
 	}
+	_ = lift
 
 	if closeErr := readBuffer.CloseContext("BACnetObjectTypesSupportedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetObjectTypesSupportedTagged")

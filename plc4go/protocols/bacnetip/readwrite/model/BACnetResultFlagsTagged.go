@@ -199,16 +199,19 @@ func BACnetResultFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'firstItem' field"))
 	}
+	_ = firstItem
 
 	lastItem, err := ReadVirtualField[bool](ctx, "lastItem", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastItem' field"))
 	}
+	_ = lastItem
 
 	moreItems, err := ReadVirtualField[bool](ctx, "moreItems", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'moreItems' field"))
 	}
+	_ = moreItems
 
 	if closeErr := readBuffer.CloseContext("BACnetResultFlagsTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetResultFlagsTagged")

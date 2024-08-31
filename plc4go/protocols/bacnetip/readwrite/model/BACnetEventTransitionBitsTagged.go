@@ -199,16 +199,19 @@ func BACnetEventTransitionBitsTaggedParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormal' field"))
 	}
+	_ = toOffnormal
 
 	toFault, err := ReadVirtualField[bool](ctx, "toFault", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFault' field"))
 	}
+	_ = toFault
 
 	toNormal, err := ReadVirtualField[bool](ctx, "toNormal", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormal' field"))
 	}
+	_ = toNormal
 
 	if closeErr := readBuffer.CloseContext("BACnetEventTransitionBitsTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetEventTransitionBitsTagged")

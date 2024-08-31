@@ -170,16 +170,19 @@ func PanicStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoPanic' field"))
 	}
+	_ = isNoPanic
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	isPanicCurrentlyActive, err := ReadVirtualField[bool](ctx, "isPanicCurrentlyActive", (*bool)(nil), bool((status) > (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPanicCurrentlyActive' field"))
 	}
+	_ = isPanicCurrentlyActive
 
 	if closeErr := readBuffer.CloseContext("PanicStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for PanicStatus")

@@ -164,6 +164,7 @@ func BACnetConfirmedServiceRequestParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'serviceRequestPayloadLength' field"))
 	}
+	_ = serviceRequestPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BACnetConfirmedServiceRequestChildSerializeRequirement interface {

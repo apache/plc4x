@@ -235,6 +235,7 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
 	}
+	_ = zero
 
 	_numberOfDataElements, err := ReadOptionalField[BACnetApplicationTagUnsignedInteger](ctx, "numberOfDataElements", ReadComplex[BACnetApplicationTagUnsignedInteger](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool((arrayIndexArgument) != (nil))) && bool(bool((arrayIndexArgument.GetActualValue()) == (zero))))
 	if err != nil {
@@ -254,16 +255,19 @@ func BACnetConstructedDataEventMessageTextsConfigParseWithBuffer(ctx context.Con
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toOffnormalTextConfig' field"))
 	}
+	_ = toOffnormalTextConfig
 
 	toFaultTextConfig, err := ReadVirtualField[BACnetOptionalCharacterString](ctx, "toFaultTextConfig", (*BACnetOptionalCharacterString)(nil), CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[1]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toFaultTextConfig' field"))
 	}
+	_ = toFaultTextConfig
 
 	toNormalTextConfig, err := ReadVirtualField[BACnetOptionalCharacterString](ctx, "toNormalTextConfig", (*BACnetOptionalCharacterString)(nil), CastBACnetOptionalCharacterString(utils.InlineIf(bool((len(eventMessageTextsConfig)) == (3)), func() any { return CastBACnetOptionalCharacterString(eventMessageTextsConfig[2]) }, func() any { return CastBACnetOptionalCharacterString(nil) })))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'toNormalTextConfig' field"))
 	}
+	_ = toNormalTextConfig
 
 	// Validation
 	if !(bool(bool((arrayIndexArgument) != (nil))) || bool(bool((len(eventMessageTextsConfig)) == (3)))) {

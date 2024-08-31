@@ -185,6 +185,7 @@ func BACnetConstructedDataFaultLowLimitParseWithBuffer(ctx context.Context, read
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetConstructedDataFaultLowLimit"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetConstructedDataFaultLowLimit")

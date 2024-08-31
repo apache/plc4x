@@ -186,11 +186,13 @@ func MediaTransportControlDataSourcePowerControlParseWithBuffer(ctx context.Cont
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isShouldPowerOn' field"))
 	}
+	_ = isShouldPowerOn
 
 	isShouldPowerOff, err := ReadVirtualField[bool](ctx, "isShouldPowerOff", (*bool)(nil), bool((state) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isShouldPowerOff' field"))
 	}
+	_ = isShouldPowerOff
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataSourcePowerControl"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataSourcePowerControl")

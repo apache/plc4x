@@ -216,26 +216,31 @@ func SecurityDataPasswordEntryStatusParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPasswordEntrySucceeded' field"))
 	}
+	_ = isPasswordEntrySucceeded
 
 	isPasswordEntryFailed, err := ReadVirtualField[bool](ctx, "isPasswordEntryFailed", (*bool)(nil), bool((code) == (0x02)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPasswordEntryFailed' field"))
 	}
+	_ = isPasswordEntryFailed
 
 	isPasswordEntryDisabled, err := ReadVirtualField[bool](ctx, "isPasswordEntryDisabled", (*bool)(nil), bool((code) == (0x03)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPasswordEntryDisabled' field"))
 	}
+	_ = isPasswordEntryDisabled
 
 	isPasswordEntryEnabledAgain, err := ReadVirtualField[bool](ctx, "isPasswordEntryEnabledAgain", (*bool)(nil), bool((code) == (0x04)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPasswordEntryEnabledAgain' field"))
 	}
+	_ = isPasswordEntryEnabledAgain
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool((code) >= (0x05)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	if closeErr := readBuffer.CloseContext("SecurityDataPasswordEntryStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataPasswordEntryStatus")

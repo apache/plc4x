@@ -270,11 +270,13 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUnused' field"))
 	}
+	_ = isAuxLevelUnused
 
 	isAuxLevelUsed, err := ReadVirtualField[bool](ctx, "isAuxLevelUsed", (*bool)(nil), auxiliaryLevel)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUsed' field"))
 	}
+	_ = isAuxLevelUsed
 
 	guard, err := ReadSimpleField(ctx, "guard", ReadBoolean(readBuffer))
 	if err != nil {
@@ -285,11 +287,13 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardDisabled' field"))
 	}
+	_ = isGuardDisabled
 
 	isGuardEnabled, err := ReadVirtualField[bool](ctx, "isGuardEnabled", (*bool)(nil), guard)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardEnabled' field"))
 	}
+	_ = isGuardEnabled
 
 	setback, err := ReadSimpleField(ctx, "setback", ReadBoolean(readBuffer))
 	if err != nil {
@@ -300,11 +304,13 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackDisabled' field"))
 	}
+	_ = isSetbackDisabled
 
 	isSetbackEnabled, err := ReadVirtualField[bool](ctx, "isSetbackEnabled", (*bool)(nil), setback)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackEnabled' field"))
 	}
+	_ = isSetbackEnabled
 
 	level, err := ReadSimpleField(ctx, "level", ReadBoolean(readBuffer))
 	if err != nil {
@@ -315,11 +321,13 @@ func HVACHumidityModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelHumidity' field"))
 	}
+	_ = isLevelHumidity
 
 	isLevelRaw, err := ReadVirtualField[bool](ctx, "isLevelRaw", (*bool)(nil), level)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelRaw' field"))
 	}
+	_ = isLevelRaw
 
 	mode, err := ReadEnumField[HVACHumidityModeAndFlagsMode](ctx, "mode", "HVACHumidityModeAndFlagsMode", ReadEnum(HVACHumidityModeAndFlagsModeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
 	if err != nil {

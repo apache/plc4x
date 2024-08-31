@@ -200,6 +200,7 @@ func BACnetContextTagBooleanParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagBoolean")

@@ -201,11 +201,13 @@ func BACnetContextTagParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tagNumber' field"))
 	}
+	_ = tagNumber
 
 	actualLength, err := ReadVirtualField[uint32](ctx, "actualLength", (*uint32)(nil), header.GetActualLength())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
 	}
+	_ = actualLength
 
 	// Validation
 	if !(bool(bool((header.GetLengthValueType()) != (6))) && bool(bool((header.GetLengthValueType()) != (7)))) {

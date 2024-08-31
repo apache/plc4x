@@ -170,16 +170,19 @@ func TamperStatusParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoTamper' field"))
 	}
+	_ = isNoTamper
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((status) >= (0x01))) && bool(bool((status) <= (0xFE))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	isTamperActive, err := ReadVirtualField[bool](ctx, "isTamperActive", (*bool)(nil), bool((status) > (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isTamperActive' field"))
 	}
+	_ = isTamperActive
 
 	if closeErr := readBuffer.CloseContext("TamperStatus"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TamperStatus")

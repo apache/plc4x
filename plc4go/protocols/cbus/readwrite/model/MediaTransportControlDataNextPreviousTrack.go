@@ -186,11 +186,13 @@ func MediaTransportControlDataNextPreviousTrackParseWithBuffer(ctx context.Conte
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetThePreviousTrack' field"))
 	}
+	_ = isSetThePreviousTrack
 
 	isSetTheNextTrack, err := ReadVirtualField[bool](ctx, "isSetTheNextTrack", (*bool)(nil), bool((operation) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetTheNextTrack' field"))
 	}
+	_ = isSetTheNextTrack
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataNextPreviousTrack"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataNextPreviousTrack")

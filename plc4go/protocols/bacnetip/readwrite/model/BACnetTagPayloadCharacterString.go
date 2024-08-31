@@ -164,6 +164,7 @@ func BACnetTagPayloadCharacterStringParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLengthInBit' field"))
 	}
+	_ = actualLengthInBit
 
 	value, err := ReadSimpleField(ctx, "value", ReadString(readBuffer, uint32(actualLengthInBit)), codegen.WithEncoding("UTF-8"))
 	if err != nil {

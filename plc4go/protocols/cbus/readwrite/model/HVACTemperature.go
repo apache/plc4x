@@ -150,6 +150,7 @@ func HVACTemperatureParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureInCelcius' field"))
 	}
+	_ = temperatureInCelcius
 
 	if closeErr := readBuffer.CloseContext("HVACTemperature"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACTemperature")

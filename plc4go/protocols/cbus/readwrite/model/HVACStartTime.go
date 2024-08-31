@@ -190,26 +190,31 @@ func HVACStartTimeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hoursSinceSunday12AM' field"))
 	}
+	_ = hoursSinceSunday12AM
 
 	daysSinceSunday12AM, err := ReadVirtualField[float32](ctx, "daysSinceSunday12AM", (*float32)(nil), float32(hoursSinceSunday12AM)/float32(float32(24)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'daysSinceSunday12AM' field"))
 	}
+	_ = daysSinceSunday12AM
 
 	dayOfWeek, err := ReadVirtualField[uint8](ctx, "dayOfWeek", (*uint8)(nil), uint8(daysSinceSunday12AM)+uint8(uint8(1)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfWeek' field"))
 	}
+	_ = dayOfWeek
 
 	hour, err := ReadVirtualField[uint8](ctx, "hour", (*uint8)(nil), uint8(hoursSinceSunday12AM)%uint8(uint8(24)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hour' field"))
 	}
+	_ = hour
 
 	minute, err := ReadVirtualField[uint8](ctx, "minute", (*uint8)(nil), uint8(minutesSinceSunday12AM)%uint8(uint8(60)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minute' field"))
 	}
+	_ = minute
 
 	if closeErr := readBuffer.CloseContext("HVACStartTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACStartTime")

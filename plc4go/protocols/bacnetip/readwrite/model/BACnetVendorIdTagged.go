@@ -189,6 +189,7 @@ func BACnetVendorIdTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnknownId' field"))
 	}
+	_ = isUnknownId
 
 	unknownId, err := ReadManualField[uint32](ctx, "unknownId", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, header.GetActualLength(), isUnknownId)))
 	if err != nil {

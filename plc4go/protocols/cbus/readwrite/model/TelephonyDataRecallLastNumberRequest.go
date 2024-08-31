@@ -186,11 +186,13 @@ func TelephonyDataRecallLastNumberRequestParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastOutgoingCall' field"))
 	}
+	_ = isNumberOfLastOutgoingCall
 
 	isNumberOfLastIncomingCall, err := ReadVirtualField[bool](ctx, "isNumberOfLastIncomingCall", (*bool)(nil), bool((recallLastNumberType) == (0x02)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNumberOfLastIncomingCall' field"))
 	}
+	_ = isNumberOfLastIncomingCall
 
 	if closeErr := readBuffer.CloseContext("TelephonyDataRecallLastNumberRequest"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TelephonyDataRecallLastNumberRequest")

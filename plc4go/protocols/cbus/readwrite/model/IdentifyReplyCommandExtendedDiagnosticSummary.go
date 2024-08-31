@@ -414,6 +414,7 @@ func IdentifyReplyCommandExtendedDiagnosticSummaryParseWithBuffer(ctx context.Co
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'networkVoltageInVolts' field"))
 	}
+	_ = networkVoltageInVolts
 
 	unitInLearnMode, err := ReadSimpleField(ctx, "unitInLearnMode", ReadBoolean(readBuffer))
 	if err != nil {

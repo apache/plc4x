@@ -147,16 +147,19 @@ func BACnetTagPayloadBooleanParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
+	_ = value
 
 	isTrue, err := ReadVirtualField[bool](ctx, "isTrue", (*bool)(nil), value)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isTrue' field"))
 	}
+	_ = isTrue
 
 	isFalse, err := ReadVirtualField[bool](ctx, "isFalse", (*bool)(nil), !(value))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFalse' field"))
 	}
+	_ = isFalse
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadBoolean"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadBoolean")

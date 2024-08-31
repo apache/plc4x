@@ -201,6 +201,7 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	triggerGroup, err := ReadSimpleField(ctx, "triggerGroup", ReadByte(readBuffer, 8))
 	if err != nil {
@@ -211,6 +212,7 @@ func TriggerControlDataParseWithBuffer(ctx context.Context, readBuffer utils.Rea
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnused' field"))
 	}
+	_ = isUnused
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type TriggerControlDataChildSerializeRequirement interface {

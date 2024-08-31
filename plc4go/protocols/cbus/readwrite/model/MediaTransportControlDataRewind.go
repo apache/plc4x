@@ -246,41 +246,49 @@ func MediaTransportControlDataRewindParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCeaseRewind' field"))
 	}
+	_ = isCeaseRewind
 
 	is2x, err := ReadVirtualField[bool](ctx, "is2x", (*bool)(nil), bool((operation) == (0x02)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is2x' field"))
 	}
+	_ = is2x
 
 	is4x, err := ReadVirtualField[bool](ctx, "is4x", (*bool)(nil), bool((operation) == (0x04)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is4x' field"))
 	}
+	_ = is4x
 
 	is8x, err := ReadVirtualField[bool](ctx, "is8x", (*bool)(nil), bool((operation) == (0x06)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is8x' field"))
 	}
+	_ = is8x
 
 	is16x, err := ReadVirtualField[bool](ctx, "is16x", (*bool)(nil), bool((operation) == (0x08)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is16x' field"))
 	}
+	_ = is16x
 
 	is32x, err := ReadVirtualField[bool](ctx, "is32x", (*bool)(nil), bool((operation) == (0x0A)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is32x' field"))
 	}
+	_ = is32x
 
 	is64x, err := ReadVirtualField[bool](ctx, "is64x", (*bool)(nil), bool((operation) == (0x0C)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'is64x' field"))
 	}
+	_ = is64x
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool(bool(bool(bool(bool(!(isCeaseRewind)) && bool(!(is2x))) && bool(!(is4x))) && bool(!(is8x))) && bool(!(is16x))) && bool(!(is32x))) && bool(!(is64x)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataRewind"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataRewind")

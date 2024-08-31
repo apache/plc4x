@@ -320,6 +320,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'apduHeaderReduction' field"))
 	}
+	_ = apduHeaderReduction
 
 	_serviceAck, err := ReadOptionalField[BACnetServiceAck](ctx, "serviceAck", ReadComplex[BACnetServiceAck](BACnetServiceAckParseWithBufferProducer[BACnetServiceAck]((uint32)(uint32(apduLength)-uint32(apduHeaderReduction))), readBuffer), !(segmentedMessage))
 	if err != nil {
@@ -344,6 +345,7 @@ func APDUComplexAckParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'segmentReduction' field"))
 	}
+	_ = segmentReduction
 
 	segment, err := readBuffer.ReadByteArray("segment", int(utils.InlineIf(segmentedMessage, func() any {
 		return int32((utils.InlineIf((bool((apduLength) > (0))), func() any { return int32((int32(apduLength) - int32(segmentReduction))) }, func() any { return int32(int32(0)) }).(int32)))

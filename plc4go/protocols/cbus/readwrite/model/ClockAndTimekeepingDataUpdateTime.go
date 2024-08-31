@@ -254,21 +254,25 @@ func ClockAndTimekeepingDataUpdateTimeParseWithBuffer(ctx context.Context, readB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNoDaylightSavings' field"))
 	}
+	_ = isNoDaylightSavings
 
 	isAdvancedBy1Hour, err := ReadVirtualField[bool](ctx, "isAdvancedBy1Hour", (*bool)(nil), bool((daylightSaving) == (0x01)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAdvancedBy1Hour' field"))
 	}
+	_ = isAdvancedBy1Hour
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool((daylightSaving) > (0x01))) && bool(bool((daylightSaving) <= (0xFE))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	isUnknown, err := ReadVirtualField[bool](ctx, "isUnknown", (*bool)(nil), bool((daylightSaving) > (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUnknown' field"))
 	}
+	_ = isUnknown
 
 	if closeErr := readBuffer.CloseContext("ClockAndTimekeepingDataUpdateTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ClockAndTimekeepingDataUpdateTime")

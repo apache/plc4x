@@ -186,11 +186,13 @@ func MediaTransportControlDataNextPreviousCategoryParseWithBuffer(ctx context.Co
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetThePreviousCategory' field"))
 	}
+	_ = isSetThePreviousCategory
 
 	isSetTheNextCategory, err := ReadVirtualField[bool](ctx, "isSetTheNextCategory", (*bool)(nil), bool((operation) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetTheNextCategory' field"))
 	}
+	_ = isSetTheNextCategory
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataNextPreviousCategory"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataNextPreviousCategory")

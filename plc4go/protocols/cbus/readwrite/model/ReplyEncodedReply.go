@@ -195,6 +195,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'encodedReplyDecoded' field"))
 	}
+	_ = encodedReplyDecoded
 
 	chksum, err := ReadManualField[Checksum](ctx, "chksum", readBuffer, EnsureType[Checksum](ReadAndValidateChecksum(ctx, readBuffer, encodedReply, cBusOptions.GetSrchk())))
 	if err != nil {
@@ -205,6 +206,7 @@ func ReplyEncodedReplyParseWithBuffer(ctx context.Context, readBuffer utils.Read
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'chksumDecoded' field"))
 	}
+	_ = chksumDecoded
 
 	if closeErr := readBuffer.CloseContext("ReplyEncodedReply"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ReplyEncodedReply")

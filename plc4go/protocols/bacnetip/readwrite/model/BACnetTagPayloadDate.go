@@ -275,6 +275,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'wildcard' field"))
 	}
+	_ = wildcard
 
 	yearMinus1900, err := ReadSimpleField(ctx, "yearMinus1900", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -285,11 +286,13 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'yearIsWildcard' field"))
 	}
+	_ = yearIsWildcard
 
 	year, err := ReadVirtualField[uint16](ctx, "year", (*uint16)(nil), uint16(yearMinus1900)+uint16(uint16(1900)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'year' field"))
 	}
+	_ = year
 
 	month, err := ReadSimpleField(ctx, "month", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -300,16 +303,19 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monthIsWildcard' field"))
 	}
+	_ = monthIsWildcard
 
 	oddMonthWildcard, err := ReadVirtualField[bool](ctx, "oddMonthWildcard", (*bool)(nil), bool((month) == (13)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'oddMonthWildcard' field"))
 	}
+	_ = oddMonthWildcard
 
 	evenMonthWildcard, err := ReadVirtualField[bool](ctx, "evenMonthWildcard", (*bool)(nil), bool((month) == (14)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'evenMonthWildcard' field"))
 	}
+	_ = evenMonthWildcard
 
 	dayOfMonth, err := ReadSimpleField(ctx, "dayOfMonth", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -320,21 +326,25 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfMonthIsWildcard' field"))
 	}
+	_ = dayOfMonthIsWildcard
 
 	lastDayOfMonthWildcard, err := ReadVirtualField[bool](ctx, "lastDayOfMonthWildcard", (*bool)(nil), bool((dayOfMonth) == (32)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lastDayOfMonthWildcard' field"))
 	}
+	_ = lastDayOfMonthWildcard
 
 	oddDayOfMonthWildcard, err := ReadVirtualField[bool](ctx, "oddDayOfMonthWildcard", (*bool)(nil), bool((dayOfMonth) == (33)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'oddDayOfMonthWildcard' field"))
 	}
+	_ = oddDayOfMonthWildcard
 
 	evenDayOfMonthWildcard, err := ReadVirtualField[bool](ctx, "evenDayOfMonthWildcard", (*bool)(nil), bool((dayOfMonth) == (34)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'evenDayOfMonthWildcard' field"))
 	}
+	_ = evenDayOfMonthWildcard
 
 	dayOfWeek, err := ReadSimpleField(ctx, "dayOfWeek", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -345,6 +355,7 @@ func BACnetTagPayloadDateParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'dayOfWeekIsWildcard' field"))
 	}
+	_ = dayOfWeekIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadDate"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadDate")

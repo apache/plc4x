@@ -193,6 +193,7 @@ func NodeIdStringParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
+	_ = identifier
 
 	if closeErr := readBuffer.CloseContext("NodeIdString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdString")

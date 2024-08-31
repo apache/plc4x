@@ -174,6 +174,7 @@ func BACnetSpecialEventPeriodParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
 	}
+	_ = peekedTagNumber
 
 	// Validation
 	if !(bool((peekedTagHeader.GetTagClass()) == (TagClass_CONTEXT_SPECIFIC_TAGS))) {

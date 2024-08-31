@@ -245,21 +245,25 @@ func BACnetConstructedDataElementParseWithBuffer(ctx context.Context, readBuffer
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
 	}
+	_ = peekedTagNumber
 
 	isApplicationTag, err := ReadVirtualField[bool](ctx, "isApplicationTag", (*bool)(nil), bool((peekedTagHeader.GetTagClass()) == (TagClass_APPLICATION_TAGS)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isApplicationTag' field"))
 	}
+	_ = isApplicationTag
 
 	isConstructedData, err := ReadVirtualField[bool](ctx, "isConstructedData", (*bool)(nil), bool(!(isApplicationTag)) && bool(bool((peekedTagHeader.GetLengthValueType()) == (0x6))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isConstructedData' field"))
 	}
+	_ = isConstructedData
 
 	isContextTag, err := ReadVirtualField[bool](ctx, "isContextTag", (*bool)(nil), bool(!(isConstructedData)) && bool(!(isApplicationTag)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isContextTag' field"))
 	}
+	_ = isContextTag
 
 	// Validation
 	if !(bool(!(isContextTag)) || bool((bool(isContextTag) && bool(bool((peekedTagHeader.GetLengthValueType()) != (0x7)))))) {

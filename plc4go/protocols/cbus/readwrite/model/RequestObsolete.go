@@ -194,6 +194,7 @@ func RequestObsoleteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'calDataDecoded' field"))
 	}
+	_ = calDataDecoded
 
 	_alpha, err := ReadOptionalField[Alpha](ctx, "alpha", ReadComplex[Alpha](AlphaParseWithBuffer, readBuffer), true)
 	if err != nil {

@@ -317,21 +317,25 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualTagNumber' field"))
 	}
+	_ = actualTagNumber
 
 	isBoolean, err := ReadVirtualField[bool](ctx, "isBoolean", (*bool)(nil), bool(bool((tagNumber) == (1))) && bool(bool((tagClass) == (TagClass_APPLICATION_TAGS))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBoolean' field"))
 	}
+	_ = isBoolean
 
 	isConstructed, err := ReadVirtualField[bool](ctx, "isConstructed", (*bool)(nil), bool(bool((tagClass) == (TagClass_CONTEXT_SPECIFIC_TAGS))) && bool(bool((lengthValueType) == (6))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isConstructed' field"))
 	}
+	_ = isConstructed
 
 	isPrimitiveAndNotBoolean, err := ReadVirtualField[bool](ctx, "isPrimitiveAndNotBoolean", (*bool)(nil), bool(!(isConstructed)) && bool(!(isBoolean)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPrimitiveAndNotBoolean' field"))
 	}
+	_ = isPrimitiveAndNotBoolean
 
 	extLength, err := ReadOptionalField[uint8](ctx, "extLength", ReadUnsignedByte(readBuffer, uint8(8)), bool(isPrimitiveAndNotBoolean) && bool(bool((lengthValueType) == (5))))
 	if err != nil {
@@ -356,6 +360,7 @@ func BACnetTagHeaderParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualLength' field"))
 	}
+	_ = actualLength
 
 	if closeErr := readBuffer.CloseContext("BACnetTagHeader"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagHeader")

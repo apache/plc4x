@@ -185,6 +185,7 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	temperatureGroup, err := ReadSimpleField(ctx, "temperatureGroup", ReadByte(readBuffer, 8))
 	if err != nil {
@@ -200,6 +201,7 @@ func TemperatureBroadcastDataParseWithBuffer(ctx context.Context, readBuffer uti
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'temperatureInCelsius' field"))
 	}
+	_ = temperatureInCelsius
 
 	if closeErr := readBuffer.CloseContext("TemperatureBroadcastData"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for TemperatureBroadcastData")

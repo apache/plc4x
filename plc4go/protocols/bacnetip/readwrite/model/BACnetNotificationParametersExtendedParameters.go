@@ -450,16 +450,19 @@ func BACnetNotificationParametersExtendedParametersParseWithBuffer(ctx context.C
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'peekedTagNumber' field"))
 	}
+	_ = peekedTagNumber
 
 	isOpeningTag, err := ReadVirtualField[bool](ctx, "isOpeningTag", (*bool)(nil), bool((peekedTagHeader.GetLengthValueType()) == (0x6)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOpeningTag' field"))
 	}
+	_ = isOpeningTag
 
 	isClosingTag, err := ReadVirtualField[bool](ctx, "isClosingTag", (*bool)(nil), bool((peekedTagHeader.GetLengthValueType()) == (0x7)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isClosingTag' field"))
 	}
+	_ = isClosingTag
 
 	_nullValue, err := ReadOptionalField[BACnetApplicationTagNull](ctx, "nullValue", ReadComplex[BACnetApplicationTagNull](BACnetApplicationTagParseWithBufferProducer(), readBuffer), bool(bool(bool((peekedTagNumber) == (0x0))) && bool(!(isOpeningTag))) && bool(!(isClosingTag)))
 	if err != nil {

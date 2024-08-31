@@ -276,56 +276,67 @@ func SecurityDataEmulatedKeypadParseWithBuffer(ctx context.Context, readBuffer u
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAscii' field"))
 	}
+	_ = isAscii
 
 	isCustom, err := ReadVirtualField[bool](ctx, "isCustom", (*bool)(nil), bool((key) >= (0x80)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isCustom' field"))
 	}
+	_ = isCustom
 
 	isEnter, err := ReadVirtualField[bool](ctx, "isEnter", (*bool)(nil), bool((key) == (0x0D)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isEnter' field"))
 	}
+	_ = isEnter
 
 	isShift, err := ReadVirtualField[bool](ctx, "isShift", (*bool)(nil), bool((key) == (0x80)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isShift' field"))
 	}
+	_ = isShift
 
 	isPanic, err := ReadVirtualField[bool](ctx, "isPanic", (*bool)(nil), bool((key) == (0x81)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPanic' field"))
 	}
+	_ = isPanic
 
 	isFire, err := ReadVirtualField[bool](ctx, "isFire", (*bool)(nil), bool((key) == (0x82)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFire' field"))
 	}
+	_ = isFire
 
 	isARM, err := ReadVirtualField[bool](ctx, "isARM", (*bool)(nil), bool((key) == (0x83)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isARM' field"))
 	}
+	_ = isARM
 
 	isAway, err := ReadVirtualField[bool](ctx, "isAway", (*bool)(nil), bool((key) == (0x84)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAway' field"))
 	}
+	_ = isAway
 
 	isNight, err := ReadVirtualField[bool](ctx, "isNight", (*bool)(nil), bool((key) == (0x85)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isNight' field"))
 	}
+	_ = isNight
 
 	isDay, err := ReadVirtualField[bool](ctx, "isDay", (*bool)(nil), bool((key) == (0x86)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDay' field"))
 	}
+	_ = isDay
 
 	isVacation, err := ReadVirtualField[bool](ctx, "isVacation", (*bool)(nil), bool((key) == (0x87)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isVacation' field"))
 	}
+	_ = isVacation
 
 	if closeErr := readBuffer.CloseContext("SecurityDataEmulatedKeypad"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityDataEmulatedKeypad")

@@ -270,11 +270,13 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUnused' field"))
 	}
+	_ = isAuxLevelUnused
 
 	isAuxLevelUsed, err := ReadVirtualField[bool](ctx, "isAuxLevelUsed", (*bool)(nil), auxiliaryLevel)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAuxLevelUsed' field"))
 	}
+	_ = isAuxLevelUsed
 
 	guard, err := ReadSimpleField(ctx, "guard", ReadBoolean(readBuffer))
 	if err != nil {
@@ -285,11 +287,13 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardDisabled' field"))
 	}
+	_ = isGuardDisabled
 
 	isGuardEnabled, err := ReadVirtualField[bool](ctx, "isGuardEnabled", (*bool)(nil), guard)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isGuardEnabled' field"))
 	}
+	_ = isGuardEnabled
 
 	setback, err := ReadSimpleField(ctx, "setback", ReadBoolean(readBuffer))
 	if err != nil {
@@ -300,11 +304,13 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackDisabled' field"))
 	}
+	_ = isSetbackDisabled
 
 	isSetbackEnabled, err := ReadVirtualField[bool](ctx, "isSetbackEnabled", (*bool)(nil), setback)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetbackEnabled' field"))
 	}
+	_ = isSetbackEnabled
 
 	level, err := ReadSimpleField(ctx, "level", ReadBoolean(readBuffer))
 	if err != nil {
@@ -315,11 +321,13 @@ func HVACModeAndFlagsParseWithBuffer(ctx context.Context, readBuffer utils.ReadB
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelTemperature' field"))
 	}
+	_ = isLevelTemperature
 
 	isLevelRaw, err := ReadVirtualField[bool](ctx, "isLevelRaw", (*bool)(nil), level)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLevelRaw' field"))
 	}
+	_ = isLevelRaw
 
 	mode, err := ReadEnumField[HVACModeAndFlagsMode](ctx, "mode", "HVACModeAndFlagsMode", ReadEnum(HVACModeAndFlagsModeByValue, ReadUnsignedByte(readBuffer, uint8(3))))
 	if err != nil {

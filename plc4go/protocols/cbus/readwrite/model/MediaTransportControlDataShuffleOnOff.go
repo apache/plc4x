@@ -186,11 +186,13 @@ func MediaTransportControlDataShuffleOnOffParseWithBuffer(ctx context.Context, r
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOff' field"))
 	}
+	_ = isOff
 
 	isOn, err := ReadVirtualField[bool](ctx, "isOn", (*bool)(nil), bool((state) > (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOn' field"))
 	}
+	_ = isOn
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataShuffleOnOff"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataShuffleOnOff")

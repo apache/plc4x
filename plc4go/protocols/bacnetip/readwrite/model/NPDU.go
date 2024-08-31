@@ -353,6 +353,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'destinationLengthAddon' field"))
 	}
+	_ = destinationLengthAddon
 
 	sourceNetworkAddress, err := ReadOptionalField[uint16](ctx, "sourceNetworkAddress", ReadUnsignedShort(readBuffer, uint8(16)), control.GetSourceSpecified())
 	if err != nil {
@@ -373,6 +374,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sourceLengthAddon' field"))
 	}
+	_ = sourceLengthAddon
 
 	hopCount, err := ReadOptionalField[uint8](ctx, "hopCount", ReadUnsignedByte(readBuffer, uint8(8)), control.GetDestinationSpecified())
 	if err != nil {
@@ -383,6 +385,7 @@ func NPDUParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, npduL
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'payloadSubtraction' field"))
 	}
+	_ = payloadSubtraction
 
 	_nlm, err := ReadOptionalField[NLM](ctx, "nlm", ReadComplex[NLM](NLMParseWithBufferProducer[NLM]((uint16)(uint16(npduLength)-uint16(payloadSubtraction))), readBuffer), control.GetMessageTypeFieldPresent())
 	if err != nil {

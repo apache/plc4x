@@ -40,5 +40,13 @@ func NewFieldReaderVirtual[T any](logger zerolog.Logger) *FieldReaderVirtual[T] 
 
 func (f *FieldReaderVirtual[T]) ReadVirtualField(ctx context.Context, logicalName string, klass any, valueExpression any, readerArgs ...utils.WithReaderArgs) (T, error) {
 	f.log.Debug().Str("logicalName", logicalName).Msg("reading field")
-	panic("doh... what to do... needs debugging") // TODO: implement me
+	switch klass.(type) {
+	case *bool:
+		return valueExpression.(T), nil
+	case *byte:
+		panic(valueExpression)
+		return valueExpression.(T), nil
+	default:
+		panic("asd")
+	}
 }

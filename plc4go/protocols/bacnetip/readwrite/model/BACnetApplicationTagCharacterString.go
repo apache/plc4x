@@ -175,6 +175,7 @@ func BACnetApplicationTagCharacterStringParseWithBuffer(ctx context.Context, rea
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'value' field"))
 	}
+	_ = value
 
 	if closeErr := readBuffer.CloseContext("BACnetApplicationTagCharacterString"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetApplicationTagCharacterString")

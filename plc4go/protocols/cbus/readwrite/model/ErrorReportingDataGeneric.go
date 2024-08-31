@@ -292,16 +292,19 @@ func ErrorReportingDataGenericParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostSevereError' field"))
 	}
+	_ = isMostSevereError
 
 	isMostRecentError, err := ReadVirtualField[bool](ctx, "isMostRecentError", (*bool)(nil), mostRecent)
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostRecentError' field"))
 	}
+	_ = isMostRecentError
 
 	isMostRecentAndMostSevere, err := ReadVirtualField[bool](ctx, "isMostRecentAndMostSevere", (*bool)(nil), bool(isMostRecentError) && bool(isMostSevereError))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isMostRecentAndMostSevere' field"))
 	}
+	_ = isMostRecentAndMostSevere
 
 	severity, err := ReadEnumField[ErrorReportingSeverity](ctx, "severity", "ErrorReportingSeverity", ReadEnum(ErrorReportingSeverityByValue, ReadUnsignedByte(readBuffer, uint8(3))))
 	if err != nil {

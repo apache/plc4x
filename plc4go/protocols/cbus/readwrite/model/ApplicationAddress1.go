@@ -150,6 +150,7 @@ func ApplicationAddress1ParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isWildcard' field"))
 	}
+	_ = isWildcard
 
 	if closeErr := readBuffer.CloseContext("ApplicationAddress1"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for ApplicationAddress1")

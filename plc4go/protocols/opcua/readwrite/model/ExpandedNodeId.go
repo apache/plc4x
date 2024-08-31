@@ -208,6 +208,7 @@ func ExpandedNodeIdParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
+	_ = identifier
 
 	_namespaceURI, err := ReadOptionalField[PascalString](ctx, "namespaceURI", ReadComplex[PascalString](PascalStringParseWithBuffer, readBuffer), namespaceURISpecified)
 	if err != nil {

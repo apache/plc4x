@@ -180,11 +180,13 @@ func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'zero' field"))
 	}
+	_ = zero
 
 	isLocalNetwork, err := ReadVirtualField[bool](ctx, "isLocalNetwork", (*bool)(nil), bool((networkNumber.GetActualValue()) == (zero)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isLocalNetwork' field"))
 	}
+	_ = isLocalNetwork
 
 	macAddress, err := ReadSimpleField[BACnetApplicationTagOctetString](ctx, "macAddress", ReadComplex[BACnetApplicationTagOctetString](BACnetApplicationTagParseWithBufferProducer(), readBuffer))
 	if err != nil {
@@ -195,6 +197,7 @@ func BACnetAddressParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isBroadcast' field"))
 	}
+	_ = isBroadcast
 
 	if closeErr := readBuffer.CloseContext("BACnetAddress"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetAddress")

@@ -197,6 +197,7 @@ func BVLCParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer) (BVLC
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'bvlcPayloadLength' field"))
 	}
+	_ = bvlcPayloadLength
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type BVLCChildSerializeRequirement interface {

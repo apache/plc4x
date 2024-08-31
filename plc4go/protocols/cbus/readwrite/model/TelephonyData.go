@@ -192,6 +192,7 @@ func TelephonyDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	argument, err := ReadSimpleField(ctx, "argument", ReadByte(readBuffer, 8))
 	if err != nil {

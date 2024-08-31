@@ -177,6 +177,7 @@ func NodeIdTwoByteParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'identifier' field"))
 	}
+	_ = identifier
 
 	if closeErr := readBuffer.CloseContext("NodeIdTwoByte"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for NodeIdTwoByte")

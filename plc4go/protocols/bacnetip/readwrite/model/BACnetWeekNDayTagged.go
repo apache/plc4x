@@ -334,16 +334,19 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'oddMonths' field"))
 	}
+	_ = oddMonths
 
 	evenMonths, err := ReadVirtualField[bool](ctx, "evenMonths", (*bool)(nil), bool((month) == (14)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'evenMonths' field"))
 	}
+	_ = evenMonths
 
 	anyMonth, err := ReadVirtualField[bool](ctx, "anyMonth", (*bool)(nil), bool((month) == (0xFF)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'anyMonth' field"))
 	}
+	_ = anyMonth
 
 	weekOfMonth, err := ReadSimpleField(ctx, "weekOfMonth", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -354,51 +357,61 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'days1to7' field"))
 	}
+	_ = days1to7
 
 	days8to14, err := ReadVirtualField[bool](ctx, "days8to14", (*bool)(nil), bool((weekOfMonth) == (2)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'days8to14' field"))
 	}
+	_ = days8to14
 
 	days15to21, err := ReadVirtualField[bool](ctx, "days15to21", (*bool)(nil), bool((weekOfMonth) == (3)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'days15to21' field"))
 	}
+	_ = days15to21
 
 	days22to28, err := ReadVirtualField[bool](ctx, "days22to28", (*bool)(nil), bool((weekOfMonth) == (4)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'days22to28' field"))
 	}
+	_ = days22to28
 
 	days29to31, err := ReadVirtualField[bool](ctx, "days29to31", (*bool)(nil), bool((weekOfMonth) == (5)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'days29to31' field"))
 	}
+	_ = days29to31
 
 	last7DaysOfThisMonth, err := ReadVirtualField[bool](ctx, "last7DaysOfThisMonth", (*bool)(nil), bool((weekOfMonth) == (6)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'last7DaysOfThisMonth' field"))
 	}
+	_ = last7DaysOfThisMonth
 
 	any7DaysPriorToLast7DaysOfThisMonth, err := ReadVirtualField[bool](ctx, "any7DaysPriorToLast7DaysOfThisMonth", (*bool)(nil), bool((weekOfMonth) == (7)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'any7DaysPriorToLast7DaysOfThisMonth' field"))
 	}
+	_ = any7DaysPriorToLast7DaysOfThisMonth
 
 	any7DaysPriorToLast14DaysOfThisMonth, err := ReadVirtualField[bool](ctx, "any7DaysPriorToLast14DaysOfThisMonth", (*bool)(nil), bool((weekOfMonth) == (8)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'any7DaysPriorToLast14DaysOfThisMonth' field"))
 	}
+	_ = any7DaysPriorToLast14DaysOfThisMonth
 
 	any7DaysPriorToLast21DaysOfThisMonth, err := ReadVirtualField[bool](ctx, "any7DaysPriorToLast21DaysOfThisMonth", (*bool)(nil), bool((weekOfMonth) == (9)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'any7DaysPriorToLast21DaysOfThisMonth' field"))
 	}
+	_ = any7DaysPriorToLast21DaysOfThisMonth
 
 	anyWeekOfthisMonth, err := ReadVirtualField[bool](ctx, "anyWeekOfthisMonth", (*bool)(nil), bool((weekOfMonth) == (0xFF)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'anyWeekOfthisMonth' field"))
 	}
+	_ = anyWeekOfthisMonth
 
 	dayOfWeek, err := ReadSimpleField(ctx, "dayOfWeek", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -409,6 +422,7 @@ func BACnetWeekNDayTaggedParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'anyDayOfWeek' field"))
 	}
+	_ = anyDayOfWeek
 
 	if closeErr := readBuffer.CloseContext("BACnetWeekNDayTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetWeekNDayTagged")

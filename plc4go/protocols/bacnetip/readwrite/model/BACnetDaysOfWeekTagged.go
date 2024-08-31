@@ -239,36 +239,43 @@ func BACnetDaysOfWeekTaggedParseWithBuffer(ctx context.Context, readBuffer utils
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'monday' field"))
 	}
+	_ = monday
 
 	tuesday, err := ReadVirtualField[bool](ctx, "tuesday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'tuesday' field"))
 	}
+	_ = tuesday
 
 	wednesday, err := ReadVirtualField[bool](ctx, "wednesday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'wednesday' field"))
 	}
+	_ = wednesday
 
 	thursday, err := ReadVirtualField[bool](ctx, "thursday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'thursday' field"))
 	}
+	_ = thursday
 
 	friday, err := ReadVirtualField[bool](ctx, "friday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'friday' field"))
 	}
+	_ = friday
 
 	saturday, err := ReadVirtualField[bool](ctx, "saturday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'saturday' field"))
 	}
+	_ = saturday
 
 	sunday, err := ReadVirtualField[bool](ctx, "sunday", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sunday' field"))
 	}
+	_ = sunday
 
 	if closeErr := readBuffer.CloseContext("BACnetDaysOfWeekTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetDaysOfWeekTagged")

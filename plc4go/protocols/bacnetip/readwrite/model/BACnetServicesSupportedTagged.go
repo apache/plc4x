@@ -269,51 +269,61 @@ func BACnetServicesSupportedTaggedParseWithBuffer(ctx context.Context, readBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'writeGroup' field"))
 	}
+	_ = writeGroup
 
 	subscribeCovPropertyMultiple, err := ReadVirtualField[bool](ctx, "subscribeCovPropertyMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovPropertyMultiple' field"))
 	}
+	_ = subscribeCovPropertyMultiple
 
 	confirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "confirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'confirmedCovNotificationMultiple' field"))
 	}
+	_ = confirmedCovNotificationMultiple
 
 	unconfirmedCovNotificationMultiple, err := ReadVirtualField[bool](ctx, "unconfirmedCovNotificationMultiple", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'unconfirmedCovNotificationMultiple' field"))
 	}
+	_ = unconfirmedCovNotificationMultiple
 
 	whoIs, err := ReadVirtualField[bool](ctx, "whoIs", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (4))), func() any { return bool(payload.GetData()[4]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'whoIs' field"))
 	}
+	_ = whoIs
 
 	readRange, err := ReadVirtualField[bool](ctx, "readRange", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (5))), func() any { return bool(payload.GetData()[5]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'readRange' field"))
 	}
+	_ = readRange
 
 	utcTimeSynchronization, err := ReadVirtualField[bool](ctx, "utcTimeSynchronization", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (6))), func() any { return bool(payload.GetData()[6]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'utcTimeSynchronization' field"))
 	}
+	_ = utcTimeSynchronization
 
 	lifeSafetyOperation, err := ReadVirtualField[bool](ctx, "lifeSafetyOperation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (7))), func() any { return bool(payload.GetData()[7]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lifeSafetyOperation' field"))
 	}
+	_ = lifeSafetyOperation
 
 	subscribeCovProperty, err := ReadVirtualField[bool](ctx, "subscribeCovProperty", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (8))), func() any { return bool(payload.GetData()[8]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'subscribeCovProperty' field"))
 	}
+	_ = subscribeCovProperty
 
 	getEventInformation, err := ReadVirtualField[bool](ctx, "getEventInformation", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (9))), func() any { return bool(payload.GetData()[9]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'getEventInformation' field"))
 	}
+	_ = getEventInformation
 
 	if closeErr := readBuffer.CloseContext("BACnetServicesSupportedTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetServicesSupportedTagged")

@@ -215,6 +215,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'wildcard' field"))
 	}
+	_ = wildcard
 
 	hour, err := ReadSimpleField(ctx, "hour", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -225,6 +226,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'hourIsWildcard' field"))
 	}
+	_ = hourIsWildcard
 
 	minute, err := ReadSimpleField(ctx, "minute", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -235,6 +237,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'minuteIsWildcard' field"))
 	}
+	_ = minuteIsWildcard
 
 	second, err := ReadSimpleField(ctx, "second", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -245,6 +248,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'secondIsWildcard' field"))
 	}
+	_ = secondIsWildcard
 
 	fractional, err := ReadSimpleField(ctx, "fractional", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {
@@ -255,6 +259,7 @@ func BACnetTagPayloadTimeParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fractionalIsWildcard' field"))
 	}
+	_ = fractionalIsWildcard
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadTime"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadTime")

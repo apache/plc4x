@@ -196,16 +196,19 @@ func MediaTransportControlDataRepeatOnOffParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isOff' field"))
 	}
+	_ = isOff
 
 	isRepeatCurrent, err := ReadVirtualField[bool](ctx, "isRepeatCurrent", (*bool)(nil), bool(bool((repeatType) > (0x00))) && bool(bool((repeatType) <= (0xFE))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatCurrent' field"))
 	}
+	_ = isRepeatCurrent
 
 	isRepeatTracks, err := ReadVirtualField[bool](ctx, "isRepeatTracks", (*bool)(nil), bool((repeatType) >= (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isRepeatTracks' field"))
 	}
+	_ = isRepeatTracks
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataRepeatOnOff"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataRepeatOnOff")

@@ -180,6 +180,7 @@ func ReplyOrConfirmationParseWithBuffer(ctx context.Context, readBuffer utils.Re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isAlpha' field"))
 	}
+	_ = isAlpha
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type ReplyOrConfirmationChildSerializeRequirement interface {

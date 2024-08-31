@@ -162,6 +162,7 @@ func BACnetAbortReasonTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
 	}
+	_ = isProprietary
 
 	proprietaryValue, err := ReadManualField[uint32](ctx, "proprietaryValue", readBuffer, EnsureType[uint32](ReadProprietaryEnumGeneric(ctx, readBuffer, actualLength, isProprietary)))
 	if err != nil {

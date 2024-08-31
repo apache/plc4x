@@ -191,6 +191,7 @@ func MediaTransportControlDataParseWithBuffer(ctx context.Context, readBuffer ut
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	mediaLinkGroup, err := ReadSimpleField(ctx, "mediaLinkGroup", ReadByte(readBuffer, 8))
 	if err != nil {

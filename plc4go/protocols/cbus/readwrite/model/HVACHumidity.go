@@ -150,6 +150,7 @@ func HVACHumidityParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffe
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'humidityInPercent' field"))
 	}
+	_ = humidityInPercent
 
 	if closeErr := readBuffer.CloseContext("HVACHumidity"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACHumidity")

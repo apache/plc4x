@@ -190,26 +190,31 @@ func SecurityArmCodeParseWithBuffer(ctx context.Context, readBuffer utils.ReadBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDisarmed' field"))
 	}
+	_ = isDisarmed
 
 	isFullyArmed, err := ReadVirtualField[bool](ctx, "isFullyArmed", (*bool)(nil), bool((code) == (0x01)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isFullyArmed' field"))
 	}
+	_ = isFullyArmed
 
 	isPartiallyArmed, err := ReadVirtualField[bool](ctx, "isPartiallyArmed", (*bool)(nil), bool((code) == (0x02)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPartiallyArmed' field"))
 	}
+	_ = isPartiallyArmed
 
 	isArmSubtype, err := ReadVirtualField[bool](ctx, "isArmSubtype", (*bool)(nil), bool(bool((code) >= (0x03))) && bool(bool((code) <= (0x7F))))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isArmSubtype' field"))
 	}
+	_ = isArmSubtype
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool((code) > (0x7F)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	if closeErr := readBuffer.CloseContext("SecurityArmCode"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for SecurityArmCode")

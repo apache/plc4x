@@ -228,21 +228,25 @@ func MediaTransportControlDataEnumerationsSizeParseWithBuffer(ctx context.Contex
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListCategories' field"))
 	}
+	_ = isListCategories
 
 	isListSelections, err := ReadVirtualField[bool](ctx, "isListSelections", (*bool)(nil), bool((sizeType) == (0x01)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListSelections' field"))
 	}
+	_ = isListSelections
 
 	isListTracks, err := ReadVirtualField[bool](ctx, "isListTracks", (*bool)(nil), bool((sizeType) == (0x02)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isListTracks' field"))
 	}
+	_ = isListTracks
 
 	isReserved, err := ReadVirtualField[bool](ctx, "isReserved", (*bool)(nil), bool(bool(!(isListCategories)) && bool(!(isListSelections))) && bool(!(isListTracks)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isReserved' field"))
 	}
+	_ = isReserved
 
 	start, err := ReadSimpleField(ctx, "start", ReadUnsignedByte(readBuffer, uint8(8)))
 	if err != nil {

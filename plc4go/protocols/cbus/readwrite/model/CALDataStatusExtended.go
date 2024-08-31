@@ -256,6 +256,7 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfStatusBytes' field"))
 	}
+	_ = numberOfStatusBytes
 
 	numberOfLevelInformation, err := ReadVirtualField[uint8](ctx, "numberOfLevelInformation", (*uint8)(nil), utils.InlineIf((bool(bool((coding) == (StatusCoding_LEVEL_BY_THIS_SERIAL_INTERFACE))) || bool(bool((coding) == (StatusCoding_LEVEL_BY_ELSEWHERE)))), func() any {
 		return uint8((uint8((uint8(commandTypeContainer.NumBytes()) - uint8(uint8(3)))) / uint8(uint8(2))))
@@ -263,6 +264,7 @@ func CALDataStatusExtendedParseWithBuffer(ctx context.Context, readBuffer utils.
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'numberOfLevelInformation' field"))
 	}
+	_ = numberOfLevelInformation
 
 	statusBytes, err := ReadCountArrayField[StatusByte](ctx, "statusBytes", ReadComplex[StatusByte](StatusByteParseWithBuffer, readBuffer), uint64(numberOfStatusBytes))
 	if err != nil {

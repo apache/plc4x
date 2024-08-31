@@ -167,6 +167,7 @@ func AdsDataTypeArrayInfoParseWithBuffer(ctx context.Context, readBuffer utils.R
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'upperBound' field"))
 	}
+	_ = upperBound
 
 	if closeErr := readBuffer.CloseContext("AdsDataTypeArrayInfo"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for AdsDataTypeArrayInfo")

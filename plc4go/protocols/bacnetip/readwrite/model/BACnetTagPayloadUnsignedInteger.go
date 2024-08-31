@@ -470,6 +470,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint8' field"))
 	}
+	_ = isUint8
 
 	valueUint8, err := ReadOptionalField[uint8](ctx, "valueUint8", ReadUnsignedByte(readBuffer, uint8(8)), isUint8)
 	if err != nil {
@@ -480,6 +481,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint16' field"))
 	}
+	_ = isUint16
 
 	valueUint16, err := ReadOptionalField[uint16](ctx, "valueUint16", ReadUnsignedShort(readBuffer, uint8(16)), isUint16)
 	if err != nil {
@@ -490,6 +492,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint24' field"))
 	}
+	_ = isUint24
 
 	valueUint24, err := ReadOptionalField[uint32](ctx, "valueUint24", ReadUnsignedInt(readBuffer, uint8(24)), isUint24)
 	if err != nil {
@@ -500,6 +503,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint32' field"))
 	}
+	_ = isUint32
 
 	valueUint32, err := ReadOptionalField[uint32](ctx, "valueUint32", ReadUnsignedInt(readBuffer, uint8(32)), isUint32)
 	if err != nil {
@@ -510,6 +514,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint40' field"))
 	}
+	_ = isUint40
 
 	valueUint40, err := ReadOptionalField[uint64](ctx, "valueUint40", ReadUnsignedLong(readBuffer, uint8(40)), isUint40)
 	if err != nil {
@@ -520,6 +525,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint48' field"))
 	}
+	_ = isUint48
 
 	valueUint48, err := ReadOptionalField[uint64](ctx, "valueUint48", ReadUnsignedLong(readBuffer, uint8(48)), isUint48)
 	if err != nil {
@@ -530,6 +536,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint56' field"))
 	}
+	_ = isUint56
 
 	valueUint56, err := ReadOptionalField[uint64](ctx, "valueUint56", ReadUnsignedLong(readBuffer, uint8(56)), isUint56)
 	if err != nil {
@@ -540,6 +547,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isUint64' field"))
 	}
+	_ = isUint64
 
 	valueUint64, err := ReadOptionalField[uint64](ctx, "valueUint64", ReadUnsignedLong(readBuffer, uint8(64)), isUint64)
 	if err != nil {
@@ -567,6 +575,7 @@ func BACnetTagPayloadUnsignedIntegerParseWithBuffer(ctx context.Context, readBuf
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'actualValue' field"))
 	}
+	_ = actualValue
 
 	if closeErr := readBuffer.CloseContext("BACnetTagPayloadUnsignedInteger"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetTagPayloadUnsignedInteger")

@@ -186,11 +186,13 @@ func MediaTransportControlDataNextPreviousSelectionParseWithBuffer(ctx context.C
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetThePreviousSelection' field"))
 	}
+	_ = isSetThePreviousSelection
 
 	isSetTheNextSelection, err := ReadVirtualField[bool](ctx, "isSetTheNextSelection", (*bool)(nil), bool((operation) != (0x00)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isSetTheNextSelection' field"))
 	}
+	_ = isSetTheNextSelection
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataNextPreviousSelection"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataNextPreviousSelection")

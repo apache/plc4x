@@ -211,11 +211,13 @@ func CALDataParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuffer, re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'commandType' field"))
 	}
+	_ = commandType
 
 	sendIdentifyRequestBefore, err := ReadVirtualField[bool](ctx, "sendIdentifyRequestBefore", (*bool)(nil), utils.InlineIf(bool((requestContext) != (nil)), func() any { return bool(requestContext.GetSendIdentifyRequestBefore()) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'sendIdentifyRequestBefore' field"))
 	}
+	_ = sendIdentifyRequestBefore
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CALDataChildSerializeRequirement interface {

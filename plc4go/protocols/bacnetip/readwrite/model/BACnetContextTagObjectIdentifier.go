@@ -189,11 +189,13 @@ func BACnetContextTagObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'objectType' field"))
 	}
+	_ = objectType
 
 	instanceNumber, err := ReadVirtualField[uint32](ctx, "instanceNumber", (*uint32)(nil), payload.GetInstanceNumber())
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'instanceNumber' field"))
 	}
+	_ = instanceNumber
 
 	if closeErr := readBuffer.CloseContext("BACnetContextTagObjectIdentifier"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetContextTagObjectIdentifier")

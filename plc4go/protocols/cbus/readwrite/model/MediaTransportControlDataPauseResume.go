@@ -186,11 +186,13 @@ func MediaTransportControlDataPauseResumeParseWithBuffer(ctx context.Context, re
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isPause' field"))
 	}
+	_ = isPause
 
 	isResume, err := ReadVirtualField[bool](ctx, "isResume", (*bool)(nil), bool((operation) > (0xFE)))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isResume' field"))
 	}
+	_ = isResume
 
 	if closeErr := readBuffer.CloseContext("MediaTransportControlDataPauseResume"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for MediaTransportControlDataPauseResume")

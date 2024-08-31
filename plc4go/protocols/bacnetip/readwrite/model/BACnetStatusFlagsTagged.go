@@ -209,21 +209,25 @@ func BACnetStatusFlagsTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'inAlarm' field"))
 	}
+	_ = inAlarm
 
 	fault, err := ReadVirtualField[bool](ctx, "fault", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'fault' field"))
 	}
+	_ = fault
 
 	overridden, err := ReadVirtualField[bool](ctx, "overridden", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (2))), func() any { return bool(payload.GetData()[2]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'overridden' field"))
 	}
+	_ = overridden
 
 	outOfService, err := ReadVirtualField[bool](ctx, "outOfService", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (3))), func() any { return bool(payload.GetData()[3]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'outOfService' field"))
 	}
+	_ = outOfService
 
 	if closeErr := readBuffer.CloseContext("BACnetStatusFlagsTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetStatusFlagsTagged")

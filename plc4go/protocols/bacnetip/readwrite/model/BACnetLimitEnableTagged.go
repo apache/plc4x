@@ -189,11 +189,13 @@ func BACnetLimitEnableTaggedParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'lowLimitEnable' field"))
 	}
+	_ = lowLimitEnable
 
 	highLimitEnable, err := ReadVirtualField[bool](ctx, "highLimitEnable", (*bool)(nil), utils.InlineIf((bool((len(payload.GetData())) > (1))), func() any { return bool(payload.GetData()[1]) }, func() any { return bool(bool(false)) }).(bool))
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'highLimitEnable' field"))
 	}
+	_ = highLimitEnable
 
 	if closeErr := readBuffer.CloseContext("BACnetLimitEnableTagged"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for BACnetLimitEnableTagged")

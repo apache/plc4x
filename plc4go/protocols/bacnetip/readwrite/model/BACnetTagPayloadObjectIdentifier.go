@@ -175,6 +175,7 @@ func BACnetTagPayloadObjectIdentifierParseWithBuffer(ctx context.Context, readBu
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isProprietary' field"))
 	}
+	_ = isProprietary
 
 	instanceNumber, err := ReadSimpleField(ctx, "instanceNumber", ReadUnsignedInt(readBuffer, uint8(22)))
 	if err != nil {

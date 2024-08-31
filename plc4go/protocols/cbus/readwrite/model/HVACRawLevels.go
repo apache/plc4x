@@ -150,6 +150,7 @@ func HVACRawLevelsParseWithBuffer(ctx context.Context, readBuffer utils.ReadBuff
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'valueInPercent' field"))
 	}
+	_ = valueInPercent
 
 	if closeErr := readBuffer.CloseContext("HVACRawLevels"); closeErr != nil {
 		return nil, errors.Wrap(closeErr, "Error closing for HVACRawLevels")

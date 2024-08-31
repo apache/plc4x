@@ -190,6 +190,7 @@ func CBusPointToPointCommandParseWithBuffer(ctx context.Context, readBuffer util
 	if err != nil {
 		return nil, errors.Wrap(err, fmt.Sprintf("Error parsing 'isDirect' field"))
 	}
+	_ = isDirect
 
 	// Switch Field (Depending on the discriminator values, passes the instantiation to a sub-type)
 	type CBusPointToPointCommandChildSerializeRequirement interface {
